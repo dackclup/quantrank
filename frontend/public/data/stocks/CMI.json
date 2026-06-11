@@ -34,6 +34,7 @@
     "eps_basic": 20.197252293908182,
     "eps_diluted": 20.197252293908182,
     "shares_outstanding": 137989067.0,
+    "shares_outstanding_listed_class": null,
     "market_cap": 87004869219.93896,
     "pe_ratio_ttm": 31.218108797968775,
     "goodwill": 2219000000.0
@@ -94,14 +95,13 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 36,
+    "filing_lag_days": 37,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_rim_estimate",
-    "insider_sell_cluster"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 57.53354358139113,
@@ -130,8 +130,8 @@
   "recommendation": "lean_bullish",
   "loss_chance_pct": 57.83606200199203,
   "price_change_1d_pct": -5.7843,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 55.83,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 56.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,7 +147,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {

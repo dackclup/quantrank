@@ -170,7 +170,7 @@
     "price_change_1d_pct": -2.9134,
     "manipulation_index": 0.0,
     "composite_score_adjusted": 69.21,
-    "entered_top5": true,
+    "entered_top5": false,
     "exited_top5": false
   },
   {
@@ -204,7 +204,7 @@
     "price_change_1d_pct": -6.9224,
     "manipulation_index": 0.0,
     "composite_score_adjusted": 69.03,
-    "entered_top5": false,
+    "entered_top5": true,
     "exited_top5": false
   },
   {
@@ -1161,14 +1161,13 @@
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "extreme_estimate_majority",
-      "insider_sell_cluster"
+      "extreme_estimate_majority"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 56.84971572045153,
     "price_change_1d_pct": -6.1194,
-    "manipulation_index": 5.0,
-    "composite_score_adjusted": 63.8,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 64.3,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4477,14 +4476,13 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "extreme_rim_estimate",
-      "insider_sell_cluster"
+      "extreme_rim_estimate"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 57.83606200199203,
     "price_change_1d_pct": -5.7843,
-    "manipulation_index": 5.0,
-    "composite_score_adjusted": 55.83,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 56.33,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4629,7 +4627,7 @@
     "ticker": "HUBB",
     "name": "Hubbell Incorporated",
     "sector": "Industrials",
-    "composite_score": 56.15,
+    "composite_score": 56.16,
     "current_price": 467.59,
     "fair_price": 463.67938291897985,
     "max_fair_price": 472.48536999943195,
@@ -4641,7 +4639,7 @@
       "momentum": 60.01,
       "health": 62.33,
       "profitability": 58.96,
-      "technical": 43.63,
+      "technical": 43.73,
       "risk": 53.82,
       "sentiment": null,
       "ml": null
@@ -4649,10 +4647,10 @@
     "risk_flags": [],
     "valuation_warnings": [],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 37.218277072701596,
+    "loss_chance_pct": 37.21578703286096,
     "price_change_1d_pct": -3.881,
     "manipulation_index": 0.0,
-    "composite_score_adjusted": 56.15,
+    "composite_score_adjusted": 56.16,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -7222,15 +7220,13 @@
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
-      "beneish_high",
-      "insider_sell_cluster",
-      "c_suite_unusual_sell"
+      "beneish_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 63.828083499335996,
     "price_change_1d_pct": -6.3999,
-    "manipulation_index": 31.0,
-    "composite_score_adjusted": 49.24,
+    "manipulation_index": 23.0,
+    "composite_score_adjusted": 50.04,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -10363,7 +10359,7 @@
     "ticker": "EXC",
     "name": "Exelon",
     "sector": "Utilities",
-    "composite_score": 48.42,
+    "composite_score": 48.41,
     "current_price": 45.61,
     "fair_price": 47.50733894964158,
     "max_fair_price": 67.88550280653023,
@@ -10375,7 +10371,7 @@
       "momentum": 43.23,
       "health": 20.48,
       "profitability": 40.32,
-      "technical": 60.86,
+      "technical": 60.81,
       "risk": 72.58,
       "sentiment": null,
       "ml": null
@@ -10385,10 +10381,10 @@
     ],
     "valuation_warnings": [],
     "recommendation": "cautious",
-    "loss_chance_pct": 51.39355201646721,
+    "loss_chance_pct": 51.39479703638753,
     "price_change_1d_pct": 0.6177,
     "manipulation_index": 0.0,
-    "composite_score_adjusted": 48.42,
+    "composite_score_adjusted": 48.41,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -11283,14 +11279,13 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk",
-      "insider_sell_cluster"
+      "value_trap_risk"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 37.268666017160584,
     "price_change_1d_pct": -0.543,
-    "manipulation_index": 5.0,
-    "composite_score_adjusted": 46.64,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 47.14,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -11692,7 +11687,7 @@
       "momentum": 64.79,
       "health": 45.66,
       "profitability": 45.65,
-      "technical": 50.05,
+      "technical": 50.0,
       "risk": 51.83,
       "sentiment": null,
       "ml": null
@@ -11702,7 +11697,7 @@
       "extreme_multiples_pe_estimate"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 62.84553633292916,
+    "loss_chance_pct": 62.846781352849476,
     "price_change_1d_pct": 2.9755,
     "manipulation_index": 0.0,
     "composite_score_adjusted": 46.31,
@@ -12810,14 +12805,13 @@
     "valuation_warnings": [
       "extreme_graham_estimate",
       "value_trap_risk",
-      "insider_sell_cluster",
-      "c_suite_unusual_sell"
+      "insider_sell_cluster"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 65.64051606075697,
     "price_change_1d_pct": -3.3172,
-    "manipulation_index": 8.0,
-    "composite_score_adjusted": 43.92,
+    "manipulation_index": 5.0,
+    "composite_score_adjusted": 44.22,
     "entered_top5": false,
     "exited_top5": false
   },
