@@ -397,16 +397,18 @@ class Metadata(BaseModel):
     # (10% × universe median market_cap) per methodology-scientist
     # Mode B 2026-05-26 verdict.
     multi_class_aggregate_shares_suspected_count: int | None = None
-    # Issue #261 PR-B (0.10.6-phase4.5e) — Rule 18 observability for the
-    # structural per-class XBRL extraction path. Counts tickers where
-    # the primary `companyfacts` aggregate ``shares_outstanding`` was
-    # OVERRIDDEN by a per-filing XBRL filter against the
-    # ``MULTI_CLASS_OVERCOUNT_ALLOWLIST`` (GOOG → goog:CapitalClassCMember,
-    # GOOGL → us-gaap:CommonClassAMember). Disjoint from
-    # ``shares_fallback_dimensional_override_count`` — that counter
-    # covers the UNDERCOUNT path (PR #257 sums all dimensional contexts
-    # for V/NWS/NWSA/FOX/FOXA/BRK-B/STZ); this counter covers the
-    # OVERCOUNT path (filters one specific class member for GOOG/GOOGL).
+    # Issue #261 PR-B (0.10.6-phase4.5e); semantics updated #374 (RATIFY-B,
+    # 2026-06-11) — Rule 18 observability for the structural per-class XBRL
+    # extraction path. Counts tickers where Branch 3 CAPTURED the listed
+    # line's per-class count into ``shares_outstanding_listed_class`` via a
+    # per-filing XBRL filter against the ``MULTI_CLASS_OVERCOUNT_ALLOWLIST``
+    # (GOOG → goog:CapitalClassCMember, GOOGL → us-gaap:CommonClassAMember).
+    # Since #374 ``shares_outstanding`` RETAINS the company-total aggregate
+    # (ASC 260) — this counts per-class FIELD capture, NOT a shares_outstanding
+    # override. Disjoint from ``shares_fallback_dimensional_override_count`` —
+    # that counter covers the UNDERCOUNT path (PR #257 sums all dimensional
+    # contexts for V/NWS/NWSA/FOX/FOXA/BRK-B/STZ); this counter covers the
+    # per-class capture (one specific class member for GOOG/GOOGL).
     # Expected steady-state firing rate: 2 (GOOG + GOOGL).
     multi_class_per_class_override_count: int | None = None
     # Issue #288 (0.10.8-phase4.6, 2026-05-28) — Rule-18 disambiguator.
@@ -521,6 +523,15 @@ class RawMetrics(BaseModel):
     eps_basic: float | None = None
     eps_diluted: float | None = None
     shares_outstanding: float | None = None
+    # Issue #374 (RATIFY-B, 2026-06-11) — listed line's own per-class share
+    # count extracted from per-filing XBRL (e.g., GOOG Class C = 5.43B, GOOGL
+    # Class A = 5.82B).  Company-total common shares across ALL classes live
+    # in ``shares_outstanding`` above (the SEC companyfacts aggregate).
+    # Checksum/display only — no scoring consumer reads this field.
+    # On warm-cache crons the value may be None or reflect the class of
+    # whichever ticker last wrote the CIK-keyed parquet (harmless; see
+    # compute/ingest/fundamentals.py §CIK-keyed-parquet caveat).
+    shares_outstanding_listed_class: float | None = None
     market_cap: float | None = None
     pe_ratio_ttm: float | None = None
     goodwill: float | None = None

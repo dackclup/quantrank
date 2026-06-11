@@ -2955,3 +2955,97 @@ PHASE_STATUS_INFLIGHT.md (this) · CLAUDE.md (§In-flight rotation).
 the cron's warm veto-replayed copy on `main`.)
 
 ---
+
+## fix(ingest) — issue #374 RATIFY-B dual-class share-count fix (in flight, 2026-06-11)
+
+**Schema `0.10.17 → 0.10.18-phase4.6`** (additive PATCH). Closes the
+warm-cache silently-wrong `shares_outstanding` for the 6 dual-class S&P 500
+tickers (GOOG/GOOGL · FOX/FOXA · NWS/NWSA, all on
+`MULTI_CLASS_OVERCOUNT_ALLOWLIST`).
+
+**Origin** — surfaced this session by a post-cron audit cascade on the
+2026-06-10 cron (`data-pipeline-engineer` → `stock-detail-auditor`): metadata
+`multi_class_per_class_attempt_count=0` flagged the per-class override not
+firing on warm crons; the per-stock audit found GOOG=GOOGL=5,438M (and
+NWS=NWSA, FOX=FOXA carrying byte-identical `fair_price.median` within each
+pair) = shared-CIK-parquet contamination. `data-analyst` counterfactual:
+the fix moves GOOGL rank 42→~85 (per-class) or the convention determines
+4-vs-43 swing. `methodology-scientist` ruled **RATIFY-B** (all-classes
+company-total divisor) on four unanimous anchors (US GAAP ASC 260 ·
+issuer's own filed combined EPS · Graham/Ohlson-RIM/Penman per-share theory ·
+Damodaran 2019 Ch.16), correcting one brief error (Altman X4 here is Z″
+book-equity, not MVE → outside blast radius).
+
+**Root cause** — the fundamentals cache is keyed by CIK
+(`compute/cache/fundamentals/<CIK>.parquet`); both tickers of a dual-class
+pair share one file. PR #269's Branch 3 OVERWROTE `shares_outstanding` with
+the listed line's per-class count → (a) a category error for the per-share
+chain (company NI ÷ one class ≈ 2.2× EPS inflation; GOOGL EPS 29.46 vs
+Alphabet's filed ≈13.2), and (b) on warm crons the last-writer-wins race
+served one class's count to both lines (9/11 cron commits wrong).
+
+**Fix** (compute/** + schema triple + tests):
+- `compute/ingest/fundamentals.py` — Branch 3 line
+  `balance_values["shares_outstanding"] = per_class_shares` →
+  `_shares_outstanding_listed_class = per_class_shares`. `shares_outstanding`
+  retains the companyfacts COMPANY-TOTAL aggregate (class-invariant → the
+  CIK-cache collision **can no longer corrupt it**: the structural close of
+  #374, not a re-pin). New `FundamentalsSnapshot.shares_outstanding_listed_class`
+  attribute carries the per-class value (cold-path-only; `None` on warm —
+  documented, no scoring consumer).
+- `compute/output/schemas.py` — additive `RawMetrics.shares_outstanding_listed_class:
+  float | None = None`; `compute/main.py` `_build_raw_metrics` wires it through.
+- `compute/config.py` — `MULTI_CLASS_OVERCOUNT_ALLOWLIST` docstring rewritten
+  (now drives the per-class FIELD, not a `shares_outstanding` override; BRK-B
+  1500:1 deferral retained).
+- Series-consistency SELF-HEAL: `compute/scoring/risk_overlay.py`
+  `_net_stock_issuance` + `compute/scoring/dechow_f.py` `_issuance_dummy` —
+  invariant comments; the annual share-count history is already the companyfacts
+  aggregate, so the revert does NOT fabricate a one-time ln(5.4B/12.1B)≈−0.80
+  issuance spike (the transition hazard the methodology pinned).
+- Schema triple: `frontend/lib/types.ts` mirror + `schema-snapshot.json`
+  regenerated (`schema_check` green).
+
+**Expected production effect** (latent until a cache-key bump / cold backfill
+repopulates the 6 parquets — PR #298 cache-v5 precedent): GOOGL's ~7%
+EPS/fair-price overstatement removed (rank 42→~85, GOOG converges adjacent —
+both honest, artifact removal); NWS/NWSA/FOX/FOXA UNCHANGED (their aggregate
+counts were accidentally ASC-260-correct, confirming RATIFY-B over the rejected
+per-class RATIFY-A which would have standardized the artifact onto four more
+lines). Defense layer UNCHANGED (Sloan/Beneish/Altman share-count-independent;
+`multi_class_aggregate_shares_suspected` annotate still fires ≈6 as the
+new-entrant discovery signal). No manipulation_index weight change, no new flag.
+
+**Verify** (deps installed in-container this session — network policy allows
+PyPI): `ruff check .` clean · `schema_check` in-sync (snapshot regenerated) ·
+`pytest -m "not network"` 1603 pass / 0 fail (+10: `test_issue374_ratifyb.py`
+×7 [GOOG/GOOGL aggregate-retained · non-allowlist None ×2 · `_build_raw_metrics`
+wiring ×2 · NSI series-consistency] + 3 reversed-semantics repairs in
+`test_fundamentals.py`/`test_issue288_xbrl_concept_tuple.py`) · `test_config.py`
+SCHEMA_VERSION assertion bumped.
+
+**Tests** were green on first run (production landed before the test pass), so
+they document RATIFY-B rather than driving it red→green — noted honestly.
+
+**Spun off**: **#455** (Phase 7.1 — CIK-level Top-N dedup; the methodology Q5
+flag: post-convergence GOOG+GOOGL can both rank into Top-N = doubled
+single-issuer exposure that inverse-vol won't dedupe; also affects the 7.0c
+PIT backtest `nav.by_count[N]`).
+
+**Open follow-ups** (NOT this PR): (1) the cache-key bump / cold backfill to
+manifest the fix in production; (2) `no_fundamentals_filing` annotate for new
+index entrants with `snap=None` (FDXF pattern, surfaced in the same audit
+cascade — display-legibility gap, fold into the data-integrity hardening
+sprint).
+
+**Files**: compute/ingest/fundamentals.py · compute/output/schemas.py ·
+compute/main.py · compute/config.py · compute/scoring/risk_overlay.py ·
+compute/scoring/dechow_f.py · frontend/lib/types.ts ·
+frontend/lib/schema-snapshot.json · tests/test_ingest/test_issue374_ratifyb.py
+(new) · tests/test_ingest/test_fundamentals.py ·
+tests/test_ingest/test_issue288_xbrl_concept_tuple.py · tests/test_config.py ·
+CLAUDE.md (§Gotchas one-liner + §In-flight rotation) · AGENTS.md (§Boundaries
+🚫 Never) · SKILL.md (schema-version table) · docs/GOTCHAS.md (full detail) ·
+PHASE_STATUS_INFLIGHT.md (this).
+
+---

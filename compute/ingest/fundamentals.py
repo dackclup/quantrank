@@ -49,11 +49,15 @@ _FALLBACK_STATS: dict[str, int] = {
     "triggered": 0,
     "too_low": 0,
     "dimensional_override": 0,
-    # Issue #261 PR-B (0.10.6-phase4.5e) — per-class XBRL extraction.
-    # ``per_class_override`` = tickers where the new MULTI_CLASS_OVERCOUNT
-    # allowlist path replaced the companyfacts aggregate with a single
-    # class member's count (GOOG / GOOGL). ``mc_reconcile_failure`` =
-    # defensive Rule-18 counter for the post-override sanity check
+    # Issue #261 PR-B (0.10.6-phase4.5e); semantics updated #374 (RATIFY-B,
+    # 2026-06-11). ``per_class_override`` = tickers where the
+    # MULTI_CLASS_OVERCOUNT allowlist path (Branch 3) CAPTURED the listed
+    # line's per-class count into ``shares_outstanding_listed_class`` (GOOG /
+    # GOOGL). Since #374 ``shares_outstanding`` RETAINS the companyfacts
+    # company-total aggregate (ASC 260, class-invariant) — the per-class value
+    # no longer overrides it; the counter still increments per Branch-3 capture
+    # (name kept for cross-cron comparability). ``mc_reconcile_failure`` =
+    # defensive Rule-18 counter for the post-capture sanity check
     # |Σ per-class − aggregate| / aggregate < 5% (Damodaran 2019 Ch. 16
     # identity check; expected steady-state = 0 firings).
     "per_class_override": 0,
@@ -443,6 +447,14 @@ class FundamentalsSnapshot:
     intangibles_net: float | None = None
     # Phase 3e.1 — Property/plant/equipment net (Beneish M-score AQI + DEPI)
     property_plant_equipment: float | None = None
+    # Issue #374 (RATIFY-B, 2026-06-11) — listed ticker's own per-class share
+    # count from per-filing XBRL (e.g., GOOG Class C ≈ 5.43B, GOOGL Class A
+    # ≈ 5.82B).  ``shares_outstanding`` above now holds the SEC companyfacts
+    # AGGREGATE (company-total across ALL classes) per ASC 260 / RATIFY-B.
+    # This field is populated only on cold/live crons for MULTI_CLASS_OVERCOUNT
+    # tickers; warm-cache crons leave it as whatever was cached (may be None or
+    # stale — acceptable because no scoring consumer reads this field).
+    shares_outstanding_listed_class: float | None = None
     # Filing dates
     latest_filed_date: date | None = None
     latest_period_end: date | None = None
@@ -886,6 +898,11 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
 
     snapshot_dates: list[date | None] = []
     period_dates: list[date | None] = []
+    # Issue #374 (RATIFY-B, 2026-06-11) — accumulates the per-class share
+    # count for MULTI_CLASS_OVERCOUNT tickers (GOOG / GOOGL).  Populated in
+    # Branch 3 below; None for all other tickers.  ``shares_outstanding``
+    # always holds the companyfacts AGGREGATE (company-total, class-invariant).
+    _shares_outstanding_listed_class: float | None = None
 
     # TTM revenue + net_income via the freshness-aware MAX helper, NOT
     # edgartools' get_ttm_revenue() / get_ttm_net_income() helpers — see
@@ -1067,16 +1084,22 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
             and per_class_shares > 0
             and per_class_shares < primary_shares
         ):
-            balance_values["shares_outstanding"] = per_class_shares
+            # Issue #374 (RATIFY-B, 2026-06-11) — REVERT the shares_outstanding
+            # override.  ``shares_outstanding`` must hold the company-total
+            # aggregate (ASC 260 / RATIFY-B convention) so it is class-invariant
+            # and cannot corrupt the CIK-keyed parquet cache.  The per-class value
+            # is preserved in the new ``shares_outstanding_listed_class`` field for
+            # checksum / display purposes; no scoring consumer reads it.
+            _shares_outstanding_listed_class = per_class_shares
             with _FALLBACK_STATS_LOCK:
                 _FALLBACK_STATS["per_class_override"] += 1
             reduction_pct = (
                 (primary_shares - per_class_shares) / primary_shares * 100.0
             )
             logger.info(
-                "shares_outstanding per-class override for %s/%s — "
-                "primary=%.0f (aggregate), per_class=%.0f (%s), "
-                "reduction %.1f%%",
+                "shares_outstanding_listed_class captured for %s/%s — "
+                "aggregate=%.0f (kept in shares_outstanding), per_class=%.0f (%s), "
+                "delta %.1f%% (RATIFY-B: aggregate is company-total, class-invariant)",
                 ticker,
                 cik,
                 primary_shares,
@@ -1089,8 +1112,8 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
             # for GOOG/GOOGL (Alphabet's Class A ≈ Class C economic
             # weight). If the per-class is < 5% or > 95% of primary,
             # something looks structurally wrong — flag it. Does NOT
-            # block the override (the per-class value IS still better
-            # than the aggregate for the per-ticker MC display) but
+            # discard the captured ``shares_outstanding_listed_class``
+            # value (it is still the best available per-class figure) but
             # surfaces the surprise for cohort-audit review.
             fraction = per_class_shares / primary_shares
             if fraction < 0.05 or fraction > 0.95:
@@ -1111,12 +1134,14 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
             # the filter returned a value that's the same or larger
             # than the aggregate. Could mean (a) the filer's XBRL is
             # malformed, (b) we picked the wrong member, (c) the
-            # allowlist entry is stale. DO NOT override; log as warning
-            # so the operator notices.
+            # allowlist entry is stale. DO NOT capture into
+            # shares_outstanding_listed_class; log as warning so the
+            # operator notices. (shares_outstanding stays the aggregate
+            # regardless — RATIFY-B #374.)
             with _FALLBACK_STATS_LOCK:
                 _FALLBACK_STATS["mc_reconcile_failure"] += 1
             logger.warning(
-                "multi_class per-class override SKIPPED for %s/%s — "
+                "multi_class per-class capture SKIPPED for %s/%s — "
                 "per_class=%.0f (%s) >= primary=%.0f; possible stale "
                 "allowlist or XBRL shape drift",
                 ticker,
@@ -1205,6 +1230,9 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         goodwill=balance_values.get("goodwill"),
         intangibles_net=balance_values.get("intangibles_net"),
         property_plant_equipment=balance_values.get("property_plant_equipment"),
+        # Issue #374 (RATIFY-B, 2026-06-11) — populated only when Branch 3 fires
+        # (MULTI_CLASS_OVERCOUNT tickers on cold/live crons); None otherwise.
+        shares_outstanding_listed_class=_shares_outstanding_listed_class,
         latest_filed_date=_max_date(*snapshot_dates),
         latest_period_end=max(period_dates) if period_dates else None,
     )

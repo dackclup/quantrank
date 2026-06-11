@@ -64,8 +64,15 @@ def test_schema_version_is_phase4_6():
     ``mad_scalefree`` + ``mad_diagnostics`` + the 3 ``Metadata.mad_*``
     fields + the dead ``macd_hist`` pillar slot are deleted. Schema
     bumped 0.10.16 → 0.10.17 (breaking removal → PATCH under the
-    additive-only MINOR convention)."""
-    assert config.SCHEMA_VERSION == "0.10.17-phase4.6"
+    additive-only MINOR convention).
+
+    Issue #374 (0.10.18-phase4.6) — RATIFY-B dual-class share-count fix.
+    Additive ``RawMetrics.shares_outstanding_listed_class`` field (the
+    listed line's own per-class count); ``shares_outstanding`` reverts to
+    the SEC companyfacts company-total aggregate (ASC 260, class-invariant,
+    so the CIK-keyed parquet cache can no longer corrupt it). PATCH bump
+    per the additive-optional-field convention."""
+    assert config.SCHEMA_VERSION == "0.10.18-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

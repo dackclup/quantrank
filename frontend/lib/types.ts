@@ -377,6 +377,10 @@ export type RawMetrics = {
   eps_basic: number | null;
   eps_diluted: number | null;
   shares_outstanding: number | null;
+  // Issue #374 (RATIFY-B) — listed line's own per-class share count;
+  // company-total (all classes) lives in `shares_outstanding`. Checksum/
+  // display only, no scoring consumer. May be null on warm-cache crons.
+  shares_outstanding_listed_class: number | null;
   market_cap: number | null;
   pe_ratio_ttm: number | null;
   goodwill: number | null;

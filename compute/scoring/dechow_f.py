@@ -218,6 +218,11 @@ def _delta_roa(
 def _issuance_dummy(
     snap: FundamentalsSnapshot, prior_shares: float | None
 ) -> float | None:
+    # Series-consistency invariant (Issue #374, RATIFY-B, 2026-06-11):
+    # ``snap.shares_outstanding`` is the SEC companyfacts AGGREGATE (company-total
+    # across all classes); ``prior_shares`` is from ``_ANNUAL_TAGS``
+    # (us-gaap:CommonStockSharesOutstanding via the same aggregate path). Both
+    # are on the same basis post-RATIFY-B revert — no fabricated YoY spike.
     if (
         snap.shares_outstanding is None
         or snap.shares_outstanding <= 0

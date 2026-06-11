@@ -32,6 +32,50 @@
   shares_outstanding fallback FAILED ...)` on the outer except;
   inner exceptions log at `DEBUG`. Annotate
   `share_count_extraction_missing` keeps firing as the safety net.
+- **Dual-class `shares_outstanding` = COMPANY-TOTAL across all classes
+  (ASC 260 / RATIFY-B, issue #374, 2026-06-11) — NOT the listed line's
+  per-class float.** Distinct from the ~12-ticker partial-extraction (`=None`)
+  mode above: this is a multi-class *convention* bug. Six S&P 500 tickers are
+  two listed classes of one issuer sharing one SEC CIK — Alphabet GOOG (Class C)
+  / GOOGL (Class A) + the unlisted Class B, Fox FOX/FOXA, News Corp NWS/NWSA
+  (`MULTI_CLASS_OVERCOUNT_ALLOWLIST` in `compute/config.py`). The fundamentals
+  parquet cache is keyed by CIK (`compute/cache/fundamentals/<CIK>.parquet`), so
+  **both tickers of a pair share one cache file**. PR #269 made Branch 3 of
+  `_build_snapshot` (`compute/ingest/fundamentals.py`) OVERWRITE
+  `shares_outstanding` with the listed line's *per-class* count — which (a) is a
+  category error for the per-share chain (company-level NI ÷ one class's count
+  overstates EPS ~2.2×: GOOGL showed EPS 29.46 vs Alphabet's own filed
+  ≈13.2 = NI/12.088B; P/E 12.3 vs the ~27 the market prices), and (b) on warm
+  crons the CIK-shared parquet served whichever ticker wrote last (last-writer
+  race → 9/11 cron commits served GOOG's Class C count to *both* lines).
+  **RATIFY-B fix**: `shares_outstanding` reverts to the SEC companyfacts
+  COMPANY-TOTAL aggregate (the value before the #269 override) — which is
+  *class-invariant*, so the CIK-keyed cache collision **can no longer corrupt
+  it** (the structural close of #374, not just a re-pin). ASC 260: basic EPS
+  divides company income by *total* weighted-avg shares across all classes; the
+  two-class method triggers only on different *distribution* rights (voting
+  differences never trigger it). The listed line's per-class count moves to the
+  additive `RawMetrics.shares_outstanding_listed_class` (`schemas.py`) —
+  checksum / detail-page display only, **no scoring/valuation consumer**, and
+  populated cold-path-only (may be `None` on warm crons; harmless). All
+  per-share + market-cap consumers (EPS/BVPS/TBVPS, P/E·P/B·P/S·EV-family,
+  market_cap, NSI, Dechow issuance) read the company-total. Series-consistency
+  SELF-HEALS: NSI (`_net_stock_issuance`) + the Dechow 1%-YoY issuance dummy
+  (`_issuance_dummy`) read share-count *history* that is ALSO the companyfacts
+  aggregate, so reverting does not fabricate a one-time ln(5.4B/12.1B)≈−0.80
+  "dilution" spike (invariant comments added at both sites). Effect of the fix:
+  GOOGL ~7% EPS/fair-price overstatement removed (rank 42→~85, GOOG converges
+  adjacent — both honest, *artifact removal* not regression); NWS/NWSA/FOX/FOXA
+  *unchanged* (their aggregate counts were accidentally ASC-260-correct, so the
+  rejected RATIFY-A per-class alternative would have standardized the artifact
+  onto four more lines). Scope: ratio-1 classes only — BRK-B (1500:1 economic
+  ratio) stays deferred per the existing `config.py` caveat. **Deploy caveat:
+  the source fix is latent on warm crons until a cache-key bump / cold backfill
+  repopulates the 6 tickers' parquets** (PR #298 cache-v5 was the precedent
+  workaround). Spun off **#455** (Phase 7.1 CIK-level Top-N dedup — once GOOG &
+  GOOGL converge to adjacent ranks a Top-N portfolio can hold doubled
+  single-issuer Alphabet exposure; inverse-vol won't dedupe ~0.99-correlated
+  lines).
 - **`eps_basic` / `eps_diluted` display fields now derive from
   `NI_TTM / shares_outstanding`** (DD cron-#3 fix) — `compute/main.py`
   `_build_raw_metrics` previously passed `snapshot.eps_diluted`

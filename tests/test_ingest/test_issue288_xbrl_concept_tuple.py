@@ -316,5 +316,13 @@ def test_per_class_attempt_increments_on_branch_3_entry():
         f"Expected per_class_override=1, got {stats['per_class_override']}."
     )
 
-    # (c) Snapshot reflects the per-class value, not the aggregate
-    assert snapshot.shares_outstanding == float(per_class)
+    # (c) RATIFY-B: aggregate retained in shares_outstanding (class-invariant);
+    # per-class value lands in shares_outstanding_listed_class
+    assert snapshot.shares_outstanding == float(primary), (
+        f"RATIFY-B: expected aggregate ({primary}) in shares_outstanding, "
+        f"got {snapshot.shares_outstanding}"
+    )
+    assert snapshot.shares_outstanding_listed_class == float(per_class), (
+        f"RATIFY-B: expected per_class ({per_class}) in "
+        f"shares_outstanding_listed_class, got {snapshot.shares_outstanding_listed_class}"
+    )

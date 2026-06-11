@@ -456,6 +456,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
 - **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR caveat + AiPickPortfolio footnote are DATA-DRIVEN on `meta.veto_layer_replayed` (PR #451 replays 6-of-7 vetoes; `non_reliance_filing` disclosed-excluded) — never hardcode either state, and never quote a window's result as timeless (5y artifact lost to SPY at every N; the 10y artifact has N≥3 ahead — read the live artifact). Even replayed, the backtest ≠ the live product's track record. Full detail: `docs/GOTCHAS.md`**
 - **Agent teams (experimental, ≠ subagents) — flag `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enables multi-session teams whose teammates MESSAGE each other + reuse subagent defs as roles; the 2 write-capable Tier-5 builders own DISJOINT layers (`compute-builder`=`compute/**`, `frontend-builder`=`frontend/**`) in a Feature Squad; live teams are desktop-terminal only (every recipe ships a mobile/web subagent fallback); teammates DON'T apply a def's `skills`/`mcpServers` frontmatter (load from settings). Recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
+- **Dual-class share count: `shares_outstanding` = SEC companyfacts COMPANY-TOTAL across ALL classes (ASC 260 / RATIFY-B, #374), NOT the listed line's per-class float — it must be class-invariant so the CIK-keyed parquet cache (one file per CIK, both tickers of a pair share it) can't corrupt it. The listed line's own per-class count lives in the additive `shares_outstanding_listed_class` (checksum/display only, NO scoring consumer, cold-path-only). EPS/BVPS/fair-price/market_cap/NSI/Dechow all consume the company-total. Applies to ratio-1 classes only (GOOG/GOOGL · FOX/FOXA · NWS/NWSA via `MULTI_CLASS_OVERCOUNT_ALLOWLIST`); BRK-B (1500:1) stays deferred. Full detail: `docs/GOTCHAS.md`**
 
 ## Phase status
 
@@ -545,6 +546,31 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   signal problem. Sloan-veto disposition routed to `methodology-scientist`
   via issue #454 (Q3 2026-08-19 cohort audit); no threshold change ships
   from this in-sample evidence alone. Full detail: PHASE_STATUS_INFLIGHT.md.
+
+- **fix(ingest) — Issue #374 RATIFY-B dual-class share-count fix (this PR,
+  2026-06-11)** — schema **`0.10.18-phase4.6`** PATCH (additive
+  `RawMetrics.shares_outstanding_listed_class: float | None`). REVERSES PR
+  #269's per-class override: `shares_outstanding` now holds the SEC
+  companyfacts **company-total aggregate** across all classes (ASC 260 /
+  methodology-scientist RATIFY-B), so it is class-invariant and the
+  CIK-keyed parquet cache collision (#374 root cause) **can no longer
+  corrupt it**. The listed line's own per-class count moves to the new
+  `shares_outstanding_listed_class` field (checksum/display only, no scoring
+  consumer; populated cold-path-only — may be None on warm crons). Fixes the
+  GOOGL ~7% EPS/fair-price overstatement (EPS 29.46→~13.2, reproducing
+  Alphabet's filed figure); GOOGL rank 42→~85, GOOG converges adjacent —
+  both honest (artifact removal). NWS/NWSA/FOX/FOXA unchanged (their
+  aggregate counts were accidentally ASC-260-correct, so RATIFY-A would have
+  standardized the artifact onto four more lines). Series-consistency
+  SELF-HEALS (NSI `_net_stock_issuance` + Dechow `_issuance_dummy` history is
+  already aggregate-basis → no spurious ln(5.4B/12.1B)≈−0.80 issuance spike;
+  invariant comments added). Tests +10 (`test_issue374_ratifyb.py` ×7 + 3
+  reversed-semantics repairs). **Deploy note: needs a cache-key bump / cold
+  backfill to repopulate the 6 tickers' parquets — the source fix is latent
+  on warm crons until then** (PR #298 cache-v5 precedent). Spun off **#455**
+  (Phase 7.1 CIK-level Top-N dedup — GOOG+GOOGL doubled-issuer exposure once
+  the lines converge). Docs lockstep: CLAUDE.md / AGENTS.md / SKILL.md schema
+  table / docs/GOTCHAS.md / PHASE_STATUS_INFLIGHT.md.
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):

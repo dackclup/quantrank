@@ -603,6 +603,15 @@ export function FairPriceCard(props) {  // no types
   triggers production compute runs from GitHub mobile
 - Modify `compute/output/schema-snapshot.json` by hand (always
   regenerate via `--update-snapshot`)
+- Set `shares_outstanding` to a per-class share count for a dual-class
+  ticker (GOOG/GOOGL · FOX/FOXA · NWS/NWSA in
+  `MULTI_CLASS_OVERCOUNT_ALLOWLIST`) — it MUST be the SEC companyfacts
+  **company-total** across all classes (ASC 260 / RATIFY-B, #374), so it
+  stays class-invariant and the CIK-keyed parquet cache can't corrupt it;
+  the listed line's per-class count belongs in the additive
+  `shares_outstanding_listed_class` (display/checksum only, no scoring
+  consumer). Ratio-1 classes only — BRK-B (1500:1) stays deferred. See
+  `docs/GOTCHAS.md`.
 - Propose `git tag` / `git push origin <tag>` / `gh release create`
   shell commands for release ladder — the user is **mobile-only**
   (locked 2026-05-27); always emit a pre-filled
