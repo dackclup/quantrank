@@ -167,7 +167,9 @@ export function getAiPickData(): AiPickData | null {
         ticker: h.ticker,
         sector: h.sector,
         composite_score: round2(h.composite_score) ?? h.composite_score,
-        weight: round2(adaptiveWeights[h.ticker] ?? null) ?? 0,
+        // Use null (not 0) when weight is missing so the display renders "—"
+        // (em-dash) rather than "0.0%" — mirrors the slider branch's treatment.
+        weight: round2(adaptiveWeights[h.ticker] ?? null),
       }));
 
     adaptive = {
@@ -201,9 +203,13 @@ export function getAiPickData(): AiPickData | null {
     // Every rebalance, trimmed to ticker + sector (oldest → newest). The full
     // holdings/weights stay in the raw artifact; the timeline only needs the
     // composite-ordered ticker list per quarter to render the rotation.
+    // `adaptiveCount` is carried through when present so HoldingsTimeline can
+    // slice each quarter to ITS OWN count (the adaptive basket varies 5-13)
+    // rather than back-projecting today's count onto every historical quarter.
     timeline: rebalances.map((r) => ({
       date: r.date,
       holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
+      ...(typeof r.adaptive_count === 'number' ? { adaptiveCount: r.adaptive_count } : {}),
     })),
     entryCloses,
     lastCloses,

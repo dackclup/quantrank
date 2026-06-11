@@ -4,11 +4,19 @@ import Link from 'next/link';
 import { AiPickPortfolio } from '@/components/AiPickPortfolio';
 import { getAiPickData, getMetadata } from '@/lib/data';
 
-export const metadata: Metadata = {
-  title: 'QuantRank — AI stock picks, backtested',
-  description:
-    'A deterministic, point-in-time backtested portfolio drawn from the QuantRank 8-pillar composite — AI-sized basket, inverse-volatility weighted, measured against the S&P 500 and other US indices.',
-};
+// Build-time metadata — branches on isAdaptive so the SEO description matches
+// the rendered branch during the artifact-regeneration window (WARN-1 fix).
+// generateMetadata runs at build time (static export) so getAiPickData() is safe.
+export function generateMetadata(): Metadata {
+  const aiPick = getAiPickData();
+  const isAdaptive = aiPick?.adaptive !== null && aiPick?.adaptive !== undefined;
+  return {
+    title: 'QuantRank — AI stock picks, backtested',
+    description: isAdaptive
+      ? 'A deterministic, point-in-time backtested portfolio drawn from the QuantRank 8-pillar composite — AI-sized basket, inverse-volatility weighted, measured against the S&P 500 and other US indices.'
+      : 'A deterministic, point-in-time backtested portfolio drawn from the QuantRank 8-pillar composite, inverse-volatility weighted, and tracked against the S&P 500 and other US indices over the past decade.',
+  };
+}
 
 export default function HomePage() {
   const aiPick = getAiPickData();

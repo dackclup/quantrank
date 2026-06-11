@@ -659,6 +659,11 @@ export type AiPickTimelineHolding = {
 export type AiPickTimelineEntry = {
   date: string;
   holdings: AiPickTimelineHolding[];
+  // Per-rebalance adaptive basket count — present when the artifact was generated
+  // with the adaptive rule (rebalances[*].adaptive_count). Absent/undefined on
+  // legacy slider-mode artifacts. When present, HoldingsTimeline slices this
+  // entry to adaptiveCount rather than the fixed `count` prop.
+  adaptiveCount?: number;
 };
 
 // Adaptive-mode view model — present when the artifact carries nav.adaptive.
@@ -679,11 +684,13 @@ export type AiPickAdaptive = {
   // Latest-rebalance adaptive holdings: the prefix holdings[:latestCount],
   // sorted by weight descending (same order as the "Current picks" card for
   // fixed-count books), each with ticker + sector + composite_score + weight.
+  // weight is null when the inverse-vol weight was unavailable for a name
+  // (sigma_90d missing); rendered as "—" (em-dash) in the UI.
   latestHoldings: Array<{
     ticker: string;
     sector: string;
     composite_score: number;
-    weight: number;
+    weight: number | null;
   }>;
 };
 
