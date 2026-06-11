@@ -873,7 +873,10 @@ def run_backfill(
                 if t in prior_band_tenure and scores_this.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
             }
             band_carry_weight_share = round(
-                sum(band_weights_map.get(t, 0.0) for t in carry_names_in_book), 4
+                # float() guards the empty-carry case: sum() over an empty
+                # generator returns int(0); the artifact contract is float.
+                float(sum(band_weights_map.get(t, 0.0) for t in carry_names_in_book)),
+                4,
             )
 
         # Collect this leg's band weights for the adaptive NAV (replaces the old

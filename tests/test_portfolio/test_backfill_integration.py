@@ -988,3 +988,655 @@ def test_disclaimer_mentions_adaptive_threshold_tokens(tmp_path, _universe) -> N
         "disclaimer does not mention that holding count 'varies'; "
         "adaptive-book disclosure requires this"
     )
+
+
+# ---------------------------------------------------------------------------
+# V55 hysteresis hold-band — C2 boundary pins (methodology-scientist
+# RATIFY-WITH-CONDITIONS 2026-06-11).
+#
+# All tests below exercise ``_band_book(order, scores, tenure)`` directly —
+# the pure helper that implements the hold-band logic (C2 unit-testability
+# gate).  Style: one assertion cluster per invariant, honest docstrings
+# stating exactly what the fixture forces.  Mirror the
+# ``test_adaptive_count_boundary_inclusive_at_exactly_65`` convention for
+# boundary pins (comment the constant value, then the inclusive / exclusive
+# edges).
+# ---------------------------------------------------------------------------
+
+
+def test_band_book_first_rebalance_tenure_empty_band_inert() -> None:
+    """C2 pin — Item 1: first rebalance (tenure=empty) → band is inert.
+
+    Fixture forces:
+      - order = [AAA, BBB, CCC] with AAA=70, BBB=66, CCC=50 (all HC-eligible).
+      - tenure = set() (first rebalance; no prior incumbents).
+
+    Expected: book = fresh >= 65 entries only (AAA, BBB) padded to reach
+    min(ADAPTIVE_MIN_PICKS=5, len(order)=3) = 3, so CCC is added as a pad;
+    carry_count = 0 (band was inert — no tenured names to carry); next_tenure
+    = {AAA, BBB} only (core names; CCC is a pad — C0 strict tenure).
+    """
+    order = ["AAA", "BBB", "CCC"]
+    scores = {"AAA": 70.0, "BBB": 66.0, "CCC": 50.0}
+    tenure: set[str] = set()
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # carry_count must be 0 on first rebalance (no tenured names).
+    assert carry_count == 0, (
+        f"Expected carry_count=0 on first rebalance; got {carry_count}"
+    )
+    # All three are in the book (CCC padded in to reach target=3).
+    assert set(book) == {"AAA", "BBB", "CCC"}, (
+        f"Expected book={{'AAA','BBB','CCC'}} (pad fills to min(5,3)=3); got {set(book)}"
+    )
+    # next_tenure contains ONLY core names (>= 65) — pad CCC excluded (C0).
+    assert next_tenure == {"AAA", "BBB"}, (
+        f"Expected next_tenure={{'AAA','BBB'}} (core only, pad CCC excluded); "
+        f"got {next_tenure}"
+    )
+
+
+def test_band_book_hold_path_exactly_55_inclusive_boundary() -> None:
+    """C2 pin — Item 2: tenured name at EXACTLY 55.0 is retained (inclusive).
+
+    The boundary mirrors the 65.0 entry-threshold convention — both ends of
+    the band are closed (>= 55.0 hold; >= 65.0 enter).  This test pins the
+    INCLUSIVE lower edge of the hold range.
+
+    Fixture forces:
+      - order = [AAA, BBB] — both HC-eligible.
+      - scores: AAA = 70.0 (fresh, above entry threshold); BBB = 55.0 (exactly
+        at hold-band floor; should be retained as a carry).
+      - tenure = {BBB} (BBB entered last rebalance at >= 65, decayed to 55.0).
+
+    Expected: BBB is in book (retained via band — score == ADAPTIVE_HOLD_BAND_MIN);
+    carry_count = 1 (BBB is in tenure AND score < ADAPTIVE_COMPOSITE_MIN=65).
+    """
+    order = ["AAA", "BBB"]
+    scores = {"AAA": 70.0, "BBB": 55.0}   # BBB = exactly ADAPTIVE_HOLD_BAND_MIN (55.0)
+    tenure = {"BBB"}
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # Inclusive boundary: BBB at exactly 55.0 is retained.
+    assert "BBB" in book, (
+        "Expected BBB (score=55.0 == ADAPTIVE_HOLD_BAND_MIN) to be retained; "
+        f"got book={book}"
+    )
+    # carry_count = 1: BBB is the sole carry (tenured + score < 65).
+    assert carry_count == 1, (
+        f"Expected carry_count=1 for BBB at exactly 55.0; got {carry_count}"
+    )
+    # BBB propagates into next_tenure (still in core — was not evicted).
+    assert "BBB" in next_tenure, (
+        f"Expected BBB in next_tenure after hold-band retention; got {next_tenure}"
+    )
+
+
+def test_band_book_force_sell_at_54_99_exclusive_boundary() -> None:
+    """C2 pin — Item 3: tenured name at 54.99 is force-sold (exclusive below 55).
+
+    This pins the EXCLUSIVE lower edge: a score just below ADAPTIVE_HOLD_BAND_MIN
+    is not sufficient to retain the incumbent.
+
+    Fixture forces:
+      - order = [AAA, BBB] — both HC-eligible.
+      - scores: AAA = 70.0 (fresh); BBB = 54.99 (one tick below hold-band floor).
+      - tenure = {BBB} (BBB was tenured; now decays below the floor).
+
+    Expected: BBB is excluded from book (force-sold); carry_count = 0; BBB absent
+    from next_tenure (no longer has band rights).
+    """
+    order = ["AAA", "BBB"]
+    scores = {"AAA": 70.0, "BBB": 54.99}  # one tick below ADAPTIVE_HOLD_BAND_MIN
+    tenure = {"BBB"}
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # BBB must be force-sold when score < 55.0.
+    # (BBB may still appear as a PAD if len(core) < min(ADAPTIVE_MIN_PICKS, len(order)).
+    # With order=[AAA,BBB] -> target=min(5,2)=2, core=[AAA] (len 1 < 2), so BBB is
+    # padded in — this is correct pad behaviour, not a carry.  We verify it is NOT in
+    # next_tenure, confirming the force-sell semantics (pad != carry rights).
+    assert "BBB" not in next_tenure, (
+        "Expected BBB (score=54.99 < 55.0) to be excluded from next_tenure "
+        f"(force-sold); got next_tenure={next_tenure}"
+    )
+    # carry_count must be 0: BBB is not a carry (it failed the band floor).
+    assert carry_count == 0, (
+        f"Expected carry_count=0 for BBB at 54.99 (force-sold); got {carry_count}"
+    )
+
+
+def test_band_book_fresh_name_at_64_99_not_entered() -> None:
+    """C2 pin — Item 4: fresh (non-tenured) name at 64.99 is NOT entered.
+
+    Asymmetry invariant: the hold band NEVER admits new names.  A fresh name
+    requires score >= ADAPTIVE_COMPOSITE_MIN (65.0) for entry; 64.99 is below
+    the entry threshold and the name is not tenured, so it cannot enter via the
+    band either.  64.99 may only appear as a PAD if book size < target.
+
+    Fixture forces:
+      - order = [AAA, BBB, CCC] — all HC-eligible.
+      - scores: AAA = 70.0 (fresh entrant, above 65); BBB = 64.99 (fresh, just
+        below entry threshold); CCC = 50.0 (pad candidate).
+      - tenure = set() (no incumbents; first rebalance for clarity).
+
+    Expected: BBB is NOT in next_tenure (no core rights); carry_count = 0;
+    AAA IS in next_tenure.
+    """
+    order = ["AAA", "BBB", "CCC"]
+    scores = {"AAA": 70.0, "BBB": 64.99, "CCC": 50.0}
+    tenure: set[str] = set()
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # Fresh name at 64.99 must NOT gain tenure (not in core).
+    assert "BBB" not in next_tenure, (
+        "Expected fresh BBB (score=64.99 < 65.0) to be excluded from next_tenure; "
+        f"got next_tenure={next_tenure}"
+    )
+    # AAA at 70.0 is a fresh entrant above threshold — should gain tenure.
+    assert "AAA" in next_tenure, (
+        f"Expected AAA (score=70.0 >= 65.0) in next_tenure; got {next_tenure}"
+    )
+    # carry_count = 0: no tenured names present (first rebalance).
+    assert carry_count == 0
+
+
+def test_band_book_veto_supremacy_absent_from_order() -> None:
+    """C2 pin — Item 5: tenured name absent from order is evicted (veto supremacy).
+
+    ``order`` carries only HC-eligible tickers (the caller's veto / HC gate is
+    applied before ``_band_book``).  A name absent from ``order`` is treated as
+    vetoed/HC-evicted: it must be excluded from the book AND from next_tenure,
+    even if its score is above 70.
+
+    Fixture forces:
+      - order = [AAA, BBB] (two HC-eligible names; CCC is NOT in order — vetoed).
+      - scores: AAA=70, BBB=68, CCC=72 (CCC score present in dict but absent from order).
+      - tenure = {AAA, BBB, CCC} (all three were previously tenured).
+
+    Expected: CCC not in book; CCC not in next_tenure; AAA and BBB retained.
+    """
+    order = ["AAA", "BBB"]          # CCC deliberately absent (vetoed / HC-evicted)
+    scores = {"AAA": 70.0, "BBB": 68.0, "CCC": 72.0}
+    tenure = {"AAA", "BBB", "CCC"}
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # Veto supremacy: CCC absent from order means it cannot enter the book.
+    assert "CCC" not in book, (
+        f"Expected CCC (absent from order — vetoed) to be excluded from book; "
+        f"got book={book}"
+    )
+    # CCC must also be absent from next_tenure (no tenure propagation for evicted names).
+    assert "CCC" not in next_tenure, (
+        f"Expected CCC to be excluded from next_tenure (veto supremacy); "
+        f"got next_tenure={next_tenure}"
+    )
+    # AAA and BBB are tenured + in order with scores >= 65 → carried as fresh
+    # (score >= ADAPTIVE_COMPOSITE_MIN) — both should be in book and next_tenure.
+    assert "AAA" in book and "BBB" in book, (
+        f"Expected AAA and BBB (tenured, in order, score>=65) in book; got {book}"
+    )
+
+
+def test_band_book_pads_not_in_next_tenure_c0() -> None:
+    """C2 pin — Item 6: pad names get NO tenure (C0 strict tenure).
+
+    Fixture forces:
+      - order = [AAA, BBB, CCC, DDD, EEE] (5 HC-eligible).
+      - scores: AAA=70.0 only name above entry threshold; BBB=60, CCC=55,
+        DDD=50, EEE=45 — all below 65.
+      - tenure = set() (first rebalance; no carries).
+      - target = min(ADAPTIVE_MIN_PICKS=5, len(order)=5) = 5.
+      - core = [AAA] (only one >= 65); pads = [BBB, CCC, DDD, EEE] (4 pads to
+        reach target 5).
+
+    Expected: only AAA in next_tenure; BBB/CCC/DDD/EEE are pads with no tenure.
+    """
+    order = ["AAA", "BBB", "CCC", "DDD", "EEE"]
+    scores = {"AAA": 70.0, "BBB": 60.0, "CCC": 55.0, "DDD": 50.0, "EEE": 45.0}
+    tenure: set[str] = set()
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # All 5 names should be in the book (core[AAA] + 4 pads).
+    assert set(book) == {"AAA", "BBB", "CCC", "DDD", "EEE"}, (
+        f"Expected all 5 names in book; got {set(book)}"
+    )
+    # Only AAA (core) gets tenure — pads excluded (C0).
+    assert next_tenure == {"AAA"}, (
+        f"Expected next_tenure={{'AAA'}} only (pads BBB/CCC/DDD/EEE excluded C0); "
+        f"got {next_tenure}"
+    )
+    assert carry_count == 0  # no tenured names on first rebalance
+
+
+def test_band_book_pad_gains_no_carry_rights_two_step_sequence() -> None:
+    """C2 pin — Item 6 (two-step): pad from rebalance N gains no carry rights at N+1.
+
+    A name that enters the book as a PAD at rebalance N (score < 65, non-tenured)
+    must NOT be carried at rebalance N+1 via the band even if its score stays
+    between 55 and 65.
+
+    Fixture forces rebalance N:
+      - order = [AAA, BBB]; AAA=70 (core, gains tenure); BBB=60 (pad, no tenure).
+      - tenure = set() — first rebalance.
+      - next_tenure after step 1 = {AAA}.
+
+    Fixture forces rebalance N+1:
+      - order = [AAA, BBB] again; same scores.
+      - tenure = {AAA} (BBB is NOT in tenure — it was a pad at N).
+
+    Expected at N+1: BBB absent from next_tenure (no carry rights accrued at N);
+    carry_count = 0 (BBB below 65 but not tenured — not a band-carry).
+    """
+    # --- Rebalance N ---
+    order = ["AAA", "BBB"]
+    scores = {"AAA": 70.0, "BBB": 60.0}
+    tenure_n: set[str] = set()
+
+    _book_n, next_tenure_n, _cc_n = bf._band_book(order, scores, tenure_n)
+
+    # After N: only AAA has tenure — BBB was padded in with no tenure rights.
+    assert "BBB" not in next_tenure_n, (
+        f"After rebalance N: BBB (pad) must not be in next_tenure; got {next_tenure_n}"
+    )
+
+    # --- Rebalance N+1 (using next_tenure from N) ---
+    _book_n1, next_tenure_n1, carry_count_n1 = bf._band_book(order, scores, next_tenure_n)
+
+    # BBB still absent from tenure at N+1: pads never accumulate band rights.
+    assert "BBB" not in next_tenure_n1, (
+        "After rebalance N+1: BBB (pad at N) must still not be in next_tenure; "
+        f"got {next_tenure_n1}"
+    )
+    # carry_count = 0: BBB is present in order + scores 55-65 range, but since it has
+    # no tenure it is NOT a band-carry — it is a pad again.
+    assert carry_count_n1 == 0, (
+        f"Expected carry_count=0 at N+1 (BBB is a re-padded name, not a carry); "
+        f"got {carry_count_n1}"
+    )
+
+
+def test_band_book_reentry_after_force_sell_requires_65() -> None:
+    """C2 pin — Item 7: re-entry after force-sell requires score >= 65 (ADAPTIVE_COMPOSITE_MIN).
+
+    Sequence:
+      Step 1 — name BBB is tenured (entered at >= 65).
+      Step 2 — BBB decays to 50.0 (< 55): force-sold, tenure revoked.
+      Step 3 — BBB recovers to 60.0 (>= 55 but < 65): NOT re-entered (no tenure,
+               below entry threshold; may appear only as a PAD).
+      Step 4 — BBB recovers to 65.0: re-enters as a fresh entrant.
+
+    Fixture construction:
+      - ``order`` always contains BBB so it stays HC-eligible throughout.
+      - AAA is present as a stable high-scorer (70.0) to ensure the sequence
+        can carry without corner-case empty-book paths.
+    """
+    # Step 1: BBB gains initial tenure by scoring >= 65.
+    order = ["AAA", "BBB"]
+    scores_step1 = {"AAA": 70.0, "BBB": 66.0}
+    _, tenure_after_1, _ = bf._band_book(order, scores_step1, set())
+    assert "BBB" in tenure_after_1, "Setup failure: BBB must gain tenure at step 1"
+
+    # Step 2: BBB decays to 50.0 — force-sold (< ADAPTIVE_HOLD_BAND_MIN=55).
+    scores_step2 = {"AAA": 70.0, "BBB": 50.0}
+    _, tenure_after_2, cc2 = bf._band_book(order, scores_step2, tenure_after_1)
+    assert "BBB" not in tenure_after_2, (
+        "Step 2: BBB at 50.0 must be force-sold and removed from tenure"
+    )
+    assert cc2 == 0, f"Step 2: carry_count must be 0 after force-sell; got {cc2}"
+
+    # Step 3: BBB at 60.0 — above 55 hold floor but tenure was revoked.
+    # BBB cannot re-enter as a carry (no tenure) and cannot enter as a fresh name
+    # (60.0 < 65.0).  It may appear as a PAD, but must NOT be in next_tenure.
+    scores_step3 = {"AAA": 70.0, "BBB": 60.0}
+    _, tenure_after_3, cc3 = bf._band_book(order, scores_step3, tenure_after_2)
+    assert "BBB" not in tenure_after_3, (
+        "Step 3: BBB (score=60.0, no tenure) must not be re-admitted to tenure; "
+        f"got {tenure_after_3}"
+    )
+    assert cc3 == 0, f"Step 3: carry_count must be 0 (BBB has no tenure); got {cc3}"
+
+    # Step 4: BBB at 65.0 — exactly at entry threshold → re-enters as a fresh entrant.
+    scores_step4 = {"AAA": 70.0, "BBB": 65.0}
+    book4, tenure_after_4, _ = bf._band_book(order, scores_step4, tenure_after_3)
+    assert "BBB" in book4, (
+        f"Step 4: BBB at exactly 65.0 must re-enter the book; got {book4}"
+    )
+    assert "BBB" in tenure_after_4, (
+        "Step 4: BBB (score=65.0 >= entry threshold) must regain tenure; "
+        f"got {tenure_after_4}"
+    )
+
+
+def test_band_book_cap_max_picks_highest_composite_wins() -> None:
+    """C2 pin — Item 8: when carries + fresh exceed MAX_PICKS, core truncates to MAX_PICKS.
+
+    Fixture forces MAX_PICKS + 2 names all scoring >= 65, so carries ∪ fresh >
+    MAX_PICKS.  The top MAX_PICKS by composite must be in core; the remaining two
+    are dropped.  book ⊆ order is verified (no name outside the eligible set).
+
+    Fixture construction:
+      - tenure = set of MAX_PICKS + 2 names (all previously tenured).
+      - order = all MAX_PICKS + 2 names (all HC-eligible this rebalance).
+      - scores: ascending from 65.0 so the top MAX_PICKS are deterministic.
+    """
+    n = bf.MAX_PICKS + 2        # 22 total candidates; only 20 (MAX_PICKS) allowed in core
+    tickers = [f"T{i:02d}" for i in range(n)]
+    # Scores: 65.0, 66.0, …, 65+n-1 (all >= 65; higher index = higher score).
+    scores = {t: 65.0 + i for i, t in enumerate(tickers)}
+    # Order: sorted composite-desc (highest score first) so the caller's ordering
+    # convention is respected.
+    order = sorted(tickers, key=lambda t: -scores[t])
+    tenure = set(tickers)  # all were tenured
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
+
+    # Core must be capped at MAX_PICKS.
+    assert len(next_tenure) <= bf.MAX_PICKS, (
+        f"next_tenure has {len(next_tenure)} names; expected <= MAX_PICKS={bf.MAX_PICKS}"
+    )
+    # book may include pads, but core (captured by next_tenure) is <= MAX_PICKS.
+    # Also verify the top-MAX_PICKS by score are the ones kept (highest composite wins).
+    expected_core = set(order[:bf.MAX_PICKS])
+    assert next_tenure == expected_core, (
+        f"Expected top-{bf.MAX_PICKS} composites in next_tenure; "
+        f"got {next_tenure} vs expected {expected_core}"
+    )
+    # book ⊆ order (no name outside the eligible set).
+    assert set(book) <= set(order), (
+        f"book contains names outside order (eligible set): {set(book) - set(order)}"
+    )
+
+
+def test_band_book_constant_pin_adaptive_hold_band_min_equals_55() -> None:
+    """C2 pin — Item 12: freeze-lock ADAPTIVE_HOLD_BAND_MIN == 55.0.
+
+    Pre-registered value from the methodology-scientist RATIFY-WITH-CONDITIONS
+    2026-06-11.  V60 FAILED the C2 CAGR gate (-0.8pp vs -0.5pp ceiling); V55
+    PASSED (CAGR -0.27pp, turnover -33.8%, beats +3).  H-C freeze lock: no
+    re-sweeps without a fresh pre-registration.  This assertion is the CI trip-
+    wire for any accidental constant drift.
+    """
+    assert bf.ADAPTIVE_HOLD_BAND_MIN == 55.0, (
+        f"ADAPTIVE_HOLD_BAND_MIN must be 55.0 (pre-registered V55 PASS, H-C freeze lock); "
+        f"got {bf.ADAPTIVE_HOLD_BAND_MIN!r}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# V55 band — end-to-end (run_backfill) integration tests (Items 9 & 10).
+# ---------------------------------------------------------------------------
+
+
+def test_band_exports_structural_invariants_end_to_end(tmp_path, _universe) -> None:
+    """C2 pin — Item 9: every rebalance in the artifact satisfies the band export schema.
+
+    Verifies the per-rebalance band field contract across all rebalances produced
+    by a synthetic end-to-end run:
+      - band_book: list of tickers (subset of holdings tickers).
+      - band_held_count: == len(band_book).
+      - band_weights: dict; keys ⊆ band_book; values sum ≈ 1.0 when non-empty.
+      - band_carry_count: int >= 0.
+      - band_carry_weight_share: float in [0, 1] or None (None only when
+        band_weights is empty — degenerate leg with no usable sigmas).
+
+    Uses the standard wiring-isolation mock pattern (gate='veto_only',
+    _compute_pit_risk_flags={}); synthetic data provides picks so all structural
+    paths execute.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0, "Expected at least one rebalance"
+
+    for reb in payload["rebalances"]:
+        # band_book: list of ticker strings.
+        assert "band_book" in reb, f"band_book missing from rebalance {reb['date']}"
+        assert isinstance(reb["band_book"], list), (
+            f"band_book must be a list; got {type(reb['band_book'])}"
+        )
+        hold_tickers = {h["ticker"] for h in reb["holdings"]}
+        # band_book must be a subset of holdings (the eligible domain).
+        assert set(reb["band_book"]) <= hold_tickers, (
+            f"band_book {set(reb['band_book'])} is not a subset of holdings "
+            f"tickers {hold_tickers} at {reb['date']}"
+        )
+
+        # band_held_count == len(band_book).
+        assert "band_held_count" in reb, (
+            f"band_held_count missing at {reb['date']}"
+        )
+        assert reb["band_held_count"] == len(reb["band_book"]), (
+            f"band_held_count {reb['band_held_count']} != len(band_book) "
+            f"{len(reb['band_book'])} at {reb['date']}"
+        )
+
+        # band_weights: keys ⊆ band_book; non-empty sum ≈ 1.
+        assert "band_weights" in reb, f"band_weights missing at {reb['date']}"
+        assert isinstance(reb["band_weights"], dict), (
+            f"band_weights must be a dict; got {type(reb['band_weights'])}"
+        )
+        assert set(reb["band_weights"].keys()) <= set(reb["band_book"]), (
+            f"band_weights keys not a subset of band_book at {reb['date']}"
+        )
+        if reb["band_weights"]:
+            total_w = sum(reb["band_weights"].values())
+            assert total_w == pytest.approx(1.0, abs=1e-5), (
+                f"band_weights sum {total_w} != 1.0 at {reb['date']}"
+            )
+
+        # band_carry_count: non-negative int.
+        assert "band_carry_count" in reb, f"band_carry_count missing at {reb['date']}"
+        assert isinstance(reb["band_carry_count"], int), (
+            f"band_carry_count must be int; got {type(reb['band_carry_count'])}"
+        )
+        assert reb["band_carry_count"] >= 0, (
+            f"band_carry_count {reb['band_carry_count']} < 0 at {reb['date']}"
+        )
+
+        # band_carry_weight_share: float in [0, 1] or None.
+        assert "band_carry_weight_share" in reb, (
+            f"band_carry_weight_share missing at {reb['date']}"
+        )
+        bws = reb["band_carry_weight_share"]
+        if bws is not None:
+            assert isinstance(bws, float), (
+                f"band_carry_weight_share must be float or None; got {type(bws)}"
+            )
+            assert 0.0 <= bws <= 1.0, (
+                f"band_carry_weight_share {bws} out of [0, 1] at {reb['date']}"
+            )
+
+
+def test_band_tenure_threading_no_crash_and_correct_types(tmp_path, _universe) -> None:
+    """C2 pin — Item 10: tenure threads correctly across consecutive rebalances.
+
+    Weak invariant (honest docstring): the 3-ticker synthetic universe with
+    gate='veto_only' produces picks but the exact composites are not engineered
+    to guarantee a carry in this e2e path (scores depend on the full pillar
+    pipeline and the synthetic metric scales).  The unit tests above (Items 2-4)
+    carry the load for precise boundary semantics.  This test asserts:
+      - The orchestrator does not crash during tenure threading.
+      - Every rebalance's band_carry_count is a non-negative int.
+      - band_carry_count is non-negative across all rebalances (monotone lower
+        bound; carries can only be present if tenure was built in a prior leg).
+
+    The 2022-Q2 to 2023-Q2 window produces >= 2 rebalances so tenure CAN
+    propagate; whether it does depends on the synthetic composite scores.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    payload = json.loads(out.read_text())
+    rebs = payload["rebalances"]
+    assert len(rebs) >= 1, "Expected at least one rebalance for tenure test"
+
+    # Weak invariant: no crash + correct types across all rebalances.
+    for reb in rebs:
+        cc = reb["band_carry_count"]
+        assert isinstance(cc, int) and cc >= 0, (
+            f"band_carry_count must be a non-negative int at {reb['date']}; got {cc!r}"
+        )
+
+    # First rebalance: band inert on first leg → carry_count must be 0.
+    assert rebs[0]["band_carry_count"] == 0, (
+        f"First rebalance must have band_carry_count=0 (tenure empty); "
+        f"got {rebs[0]['band_carry_count']}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# V55 band — nav.adaptive from band legs (Item 11).
+# ---------------------------------------------------------------------------
+
+
+def test_assemble_nav_adaptive_from_band_legs_produces_correct_shape(tmp_path) -> None:
+    """C2 pin — Item 11a: ``_assemble_nav(..., band_legs=[...])`` builds nav['adaptive']
+    from the supplied band legs (not the prefix-based fallback).
+
+    Fixture forces:
+      - Two rebalances with distinct band-leg weight maps supplied via band_legs.
+      - rebalance_picks carries 3-tuples with n_adaptive=2 (prefix path would use
+        weights_by_count[2]) — but the explicit band_legs override takes precedence.
+
+    Expected: nav['adaptive'] has the 4-key inner shape (gross/net/net_conservative/
+    turnover_by_rebalance); len(gross) == len(dates); first non-None gross == 100.0.
+    """
+    prices_by_ticker = {
+        "AAA": _bday_frame([100.0 + i for i in range(120)]),
+        "BBB": _bday_frame([100.0 - 0.2 * i for i in range(120)]),
+    }
+    # rebalance_picks: 3-tuples (date, wbc, n_adaptive).
+    # n_adaptive=2 points at the prefix-based path, but band_legs overrides it.
+    rebalance_picks = [
+        ("2022-01-10", {1: {"AAA": 1.0}, 2: {"AAA": 0.5, "BBB": 0.5}}, 2),
+        ("2022-03-14", {1: {"AAA": 1.0}, 2: {"AAA": 0.6, "BBB": 0.4}}, 2),
+    ]
+    # Explicit band_legs: different weight distribution than the n_adaptive=2 prefix.
+    # This is the band-book weights — only AAA (single-name band book for clarity).
+    band_legs = [
+        ("2022-01-10", {"AAA": 1.0}),
+        ("2022-03-14", {"AAA": 1.0}),
+    ]
+
+    out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path,
+                           band_legs=band_legs)
+
+    assert "adaptive" in out, "nav['adaptive'] key must be present when band_legs provided"
+    adp = out["adaptive"]
+    nd = len(out["dates"])
+    assert nd > 0, "dates must be non-empty"
+
+    # Inner shape: 4-key dict.
+    assert set(adp.keys()) == {"gross", "net", "net_conservative", "turnover_by_rebalance"}, (
+        f"adaptive inner shape mismatch; got keys {set(adp.keys())}"
+    )
+    # Length alignment: all series aligned to the shared dates axis.
+    assert len(adp["gross"]) == nd, (
+        f"adaptive gross length {len(adp['gross'])} != dates length {nd}"
+    )
+    assert len(adp["net"]) == nd
+    assert len(adp["net_conservative"]) == nd
+
+    # Rebased start: first non-None gross value must be 100.0.
+    first_gross = next((v for v in adp["gross"] if v is not None), None)
+    assert first_gross is not None, "adaptive gross is entirely None"
+    assert first_gross == pytest.approx(100.0), (
+        f"adaptive gross must rebase to 100.0; got {first_gross}"
+    )
+
+
+def test_assemble_nav_adaptive_fallback_when_no_band_legs(tmp_path) -> None:
+    """C2 pin — Item 11b: ``_assemble_nav`` without band_legs falls back to the legacy
+    prefix-based adaptive path (backward-compatible for pre-band tests).
+
+    Fixture forces:
+      - rebalance_picks with n_adaptive=1 and weights_by_count={1: {'AAA': 1.0}}.
+      - band_legs=None (default; the legacy path).
+
+    Expected: nav['adaptive'] is non-empty (built from the prefix path); inner shape
+    matches the 4-key contract; by_count still populated (regression guard).
+    """
+    prices_by_ticker = {
+        "AAA": _bday_frame([100.0 + i for i in range(120)]),
+    }
+    rebalance_picks = [
+        ("2022-01-10", {1: {"AAA": 1.0}}, 1),
+        ("2022-03-14", {1: {"AAA": 1.0}}, 1),
+    ]
+
+    # Omit band_legs entirely — exercises the legacy fallback branch.
+    out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path)
+
+    assert "adaptive" in out
+    adp = out["adaptive"]
+    # Legacy path should produce a non-empty adaptive dict.
+    assert adp, (
+        "Expected non-empty adaptive dict via legacy prefix-based fallback "
+        "(band_legs=None path)"
+    )
+    nd = len(out["dates"])
+    assert set(adp.keys()) == {"gross", "net", "net_conservative", "turnover_by_rebalance"}, (
+        f"adaptive inner shape mismatch (legacy path); keys={set(adp.keys())}"
+    )
+    assert len(adp["gross"]) == nd
+    # by_count still populated (3-tuple not corrupted by omitting band_legs).
+    assert "1" in out["by_count"], "by_count['1'] must be present regardless of band_legs"
+
+
+def test_band_exports_present_in_artifact_meta_adaptive_rule(tmp_path, _universe) -> None:
+    """C2 pin — Item 12 integration: meta.adaptive_rule.hold_band_min is 55.0 in the
+    artifact (tests the JSON serialisation path, not just the constant directly).
+
+    The constant pin is already checked by test_band_book_constant_pin_* above.
+    This test ensures the value survives the run_backfill → JSON write pipeline
+    without truncation or type conversion.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    meta = json.loads(out.read_text())["meta"]
+    assert "adaptive_rule" in meta, "meta.adaptive_rule missing from artifact"
+    rule = meta["adaptive_rule"]
+    assert "hold_band_min" in rule, "meta.adaptive_rule.hold_band_min missing"
+    assert rule["hold_band_min"] == 55.0, (
+        f"meta.adaptive_rule.hold_band_min must be 55.0 (pre-registered V55); "
+        f"got {rule['hold_band_min']!r}"
+    )
