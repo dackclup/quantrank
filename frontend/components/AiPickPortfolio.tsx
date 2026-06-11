@@ -258,11 +258,16 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                     {rule.min_picks}
                   </span>
-                  , max{' '}
-                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                    {rule.max_picks}
-                  </span>
-                  {').'}
+                  {rule.max_picks === null ? (
+                    <>, no cap{'.)'}</>
+                  ) : (
+                    <>, max{' '}
+                      <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                        {rule.max_picks}
+                      </span>
+                      {').'}
+                    </>
+                  )}
                 </>
               ) : (
                 // Original pre-band wording for STATE 2 (current artifact).
@@ -276,11 +281,16 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                     {rule.min_picks}
                   </span>
-                  , max{' '}
-                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                    {rule.max_picks}
-                  </span>
-                  {').'}
+                  {rule.max_picks === null ? (
+                    <>, no cap{'.)'}</>
+                  ) : (
+                    <>, max{' '}
+                      <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                        {rule.max_picks}
+                      </span>
+                      {').'}
+                    </>
+                  )}
                 </>
               )}{' '}
               Replays{' '}
@@ -320,11 +330,16 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                     {rule.min_picks}
                   </span>
-                  , max{' '}
-                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                    {rule.max_picks}
-                  </span>
-                  {').'}
+                  {rule.max_picks === null ? (
+                    <>, no cap{'.)'}</>
+                  ) : (
+                    <>, max{' '}
+                      <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                        {rule.max_picks}
+                      </span>
+                      {').'}
+                    </>
+                  )}
                 </>
               ) : (
                 // Original pre-band wording for STATE 2 (current artifact).
@@ -338,11 +353,16 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                     {rule.min_picks}
                   </span>
-                  , max{' '}
-                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                    {rule.max_picks}
-                  </span>
-                  {').'}
+                  {rule.max_picks === null ? (
+                    <>, no cap{'.)'}</>
+                  ) : (
+                    <>, max{' '}
+                      <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                        {rule.max_picks}
+                      </span>
+                      {').'}
+                    </>
+                  )}
                 </>
               )}{' '}
               Factor-tilted book — the defense-layer vetoes that filter the live
@@ -453,14 +473,24 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> enters;
               holdings stay while{' '}
               <span className="font-mono tabular-nums">≥{holdBandMin!.toFixed(0)}</span>{' '}
-              (min <span className="font-mono tabular-nums">{rule.min_picks}</span>,
-              max <span className="font-mono tabular-nums">{rule.max_picks}</span>).
+              (min <span className="font-mono tabular-nums">{rule.min_picks}</span>
+              {rule.max_picks === null ? (
+                <>, no cap).</>
+              ) : (
+                <>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).</>
+              )}
+
             </>
           ) : (
             <>
               Every pick scoring{' '}
               <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> is
-              included (min <span className="font-mono tabular-nums">{rule.min_picks}</span>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).
+              included (min <span className="font-mono tabular-nums">{rule.min_picks}</span>
+              {rule.max_picks === null ? (
+                <>, no cap).</>
+              ) : (
+                <>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).</>
+              )}
             </>
           )}
           {topSector && (
