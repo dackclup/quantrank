@@ -67,10 +67,10 @@ jobs:
             compute/cache/prices
             compute/cache/universe-v2.parquet
             compute/cache/edgar_amendments
-          key: cache-v6-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v7-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v6-${{ steps.quarter.outputs.q }}-
-            cache-v6-
+            cache-v7-${{ steps.quarter.outputs.q }}-
+            cache-v7-
 
       # The backfill READS frontend/public/data/portfolio/benchmarks.json for the
       # SPY/QQQ/DIA/IWM comparison lines but does NOT produce it — that file is a

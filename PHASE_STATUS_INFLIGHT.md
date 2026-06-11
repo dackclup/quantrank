@@ -3100,3 +3100,59 @@ gotcha rewritten adaptive-first) · CLAUDE.md (§In-flight rotation + gotcha
 index line) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## chore(ci) — cache-v7 bump: manifest the #374 RATIFY-B fix (in flight, 2026-06-11)
+
+The deploy step #456 deliberately deferred: the RATIFY-B source fix is latent
+on warm crons because the 6 `MULTI_CLASS_OVERCOUNT_ALLOWLIST` tickers'
+CIK-keyed parquets still carry pre-fix per-class / cross-contaminated values
+(`fetch_fundamentals` short-circuits at `_is_fresh()` before Branch 3; the
+#456 pre-merge sim proved it live — all 6 tickers absent from the movers on a
+warm restore). PR #298 cache-v5 precedent; bump-taxonomy trigger 3
+("value-correctness fix inside a live-fetch-only code path that cache replay
+short-circuits past"), second firing — same Branch 3 both times.
+
+**Changes** (key-string bumps only, no workflow logic):
+- `compute-rankings.yml` fast bundle `cache-v6-fast → cache-v7-fast` — next
+  weekday cron (22:00 UTC) cold-fetches fundamentals (~25-50 min, inside
+  `timeout-minutes: 195`) and repopulates all parquets on the ratified
+  company-total basis. Slow-text `cache-v5-text` untouched (run-id idiom, no
+  share data, governed separately).
+- `backfill-portfolio.yml` `cache-v6 → cache-v7` — its prefix restore-keys
+  keep matching the cron's `cache-v7-fast-*` saves (the stated "same cache
+  key as compute-rankings" design).
+- `pre-merge-prod-sim.yml` `cache-v5 → cache-v7` — heals a real drift: the
+  sim was stuck on the dead v5 family (last shared with the cron pre-#416),
+  which post-#456 would have recomputed GOOG/GOOGL on stale shares against a
+  corrected main baseline → phantom ±4.5 movers on EVERY future PR sim. On
+  the v7 family the sim restores the cron's corrected saves
+  (basis-consistent + warm). First sim on this PR runs cold — expected to
+  SHOW the fix manifesting (GOOGL ≈ −4.5 composite, rank → ~85).
+- `tests/test_workflow_cache_coverage.py` — `test_workflow_cache_key_is_v5`
+  was ROTTED: after the v6-fast bump it kept passing by matching the
+  slow-text key substring (`key: cache-v5-text-…`). Rewritten as
+  `test_workflow_fast_cache_key_is_v7` pinning the FAST key explicitly,
+  with the full v4→v5→v6-fast→v7-fast bump history + taxonomy in the
+  docstring.
+
+**Expected first-cold-cron evidence** (next weekday cron after merge):
+`multi_class_per_class_override_count` = `…attempt_count` = 2 ·
+GOOG = GOOGL `shares_outstanding` ≈ 12.09B (class-invariant) ·
+`shares_outstanding_listed_class` populated (GOOG 5.43B / GOOGL 5.82B) ·
+GOOGL EPS ≈ 13.2 (Alphabet's filed figure) · GOOGL rank ≈ 85, GOOG adjacent ·
+NWS/NWSA/FOX/FOXA |Δrank| ≤ ~2 · `cross_source_disagreement` −2 fires
+(GOOG/GOOGL reconcile with yfinance company-total marketCap).
+
+**Verify**: ruff clean · `pytest tests/test_workflow_cache_coverage.py
+tests/test_config.py` green (rewritten test passes against the bumped YAML) ·
+YAML parse check on all 3 workflows · security-reviewer pass on the
+workflow diff (key-strings only; permissions/triggers/steps untouched).
+
+**Files**: .github/workflows/compute-rankings.yml ·
+.github/workflows/backfill-portfolio.yml ·
+.github/workflows/pre-merge-prod-sim.yml ·
+tests/test_workflow_cache_coverage.py · CLAUDE.md (§In-flight rotation —
+drained merged #453 + #456 bullets — + §Next-deliverables item-1 pointer
+fix) · PHASE_STATUS_INFLIGHT.md (this).
+
+---

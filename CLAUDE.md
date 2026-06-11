@@ -550,39 +550,36 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   `nav.adaptive` is absent so the deploy is safe across the artifact
   regeneration boundary. Full detail: PHASE_STATUS_INFLIGHT.md.
 
-- **fix(ingest) — Issue #374 RATIFY-B dual-class share-count fix (this PR,
-  2026-06-11)** — schema **`0.10.18-phase4.6`** PATCH (additive
-  `RawMetrics.shares_outstanding_listed_class: float | None`). REVERSES PR
-  #269's per-class override: `shares_outstanding` now holds the SEC
-  companyfacts **company-total aggregate** across all classes (ASC 260 /
-  methodology-scientist RATIFY-B), so it is class-invariant and the
-  CIK-keyed parquet cache collision (#374 root cause) **can no longer
-  corrupt it**. The listed line's own per-class count moves to the new
-  `shares_outstanding_listed_class` field (checksum/display only, no scoring
-  consumer; populated cold-path-only — may be None on warm crons). Fixes the
-  GOOGL ~7% EPS/fair-price overstatement (EPS 29.46→~13.2, reproducing
-  Alphabet's filed figure); GOOGL rank 42→~85, GOOG converges adjacent —
-  both honest (artifact removal). NWS/NWSA/FOX/FOXA unchanged (their
-  aggregate counts were accidentally ASC-260-correct, so RATIFY-A would have
-  standardized the artifact onto four more lines). Series-consistency
-  SELF-HEALS (NSI `_net_stock_issuance` + Dechow `_issuance_dummy` history is
-  already aggregate-basis → no spurious ln(5.4B/12.1B)≈−0.80 issuance spike;
-  invariant comments added). Tests +10 (`test_issue374_ratifyb.py` ×7 + 3
-  reversed-semantics repairs). **Deploy note: needs a cache-key bump / cold
-  backfill to repopulate the 6 tickers' parquets — the source fix is latent
-  on warm crons until then** (PR #298 cache-v5 precedent). Spun off **#455**
-  (Phase 7.1 CIK-level Top-N dedup — GOOG+GOOGL doubled-issuer exposure once
-  the lines converge). Docs lockstep: CLAUDE.md / AGENTS.md / SKILL.md schema
-  table / docs/GOTCHAS.md / PHASE_STATUS_INFLIGHT.md.
+- **chore(ci) — cache-v7 bump: manifest the #374 RATIFY-B fix (this PR,
+  2026-06-11)** — flips the fast cache family `cache-v6-fast → cache-v7-fast`
+  in `compute-rankings.yml` so the next cron cold-fetches fundamentals and
+  repopulates the 6 `MULTI_CLASS_OVERCOUNT_ALLOWLIST` tickers' parquets on
+  the ratified company-total basis (the #456 source fix is latent on warm
+  crons until this lands — PR #298 cache-v5 precedent, taxonomy trigger 3
+  second firing). `backfill-portfolio.yml` `cache-v6 → v7` +
+  `pre-merge-prod-sim.yml` `cache-v5 → v7` move to the SAME family so their
+  prefix restore-keys keep matching the cron's saves — the sim had drifted
+  to the dead v5 family, which post-#456 would have produced phantom
+  GOOG/GOOGL movers on every future PR sim. The rotted
+  `test_workflow_cache_key_is_v5` (matched via the slow-text key substring
+  after the v6-fast bump) is rewritten as
+  `test_workflow_fast_cache_key_is_v7` pinning the FAST key explicitly +
+  full bump-history docstring. Slow-text `cache-v5-text` untouched
+  (run-id idiom, no share data). Expected first-cold-cron evidence:
+  `multi_class_per_class_override_count` back to 2 · GOOG = GOOGL
+  `shares_outstanding` ≈ 12.09B · GOOGL rank ≈ 85 with GOOG adjacent ·
+  `shares_outstanding_listed_class` populated (5.43B / 5.82B). Cold run
+  ~25-50 min, inside `timeout-minutes: 195`.
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
-- **1 · Phase 7.0c — PIT veto-layer replay** — **CODE MERGED (#451)**; first
-  `veto_layer_replayed=True` artifact **ON MAIN** (2026-06-10 23:51 UTC cron
-  warm refresh); the gate (a) counterfactual tool + verdict docs MERGED
-  (#453, 2026-06-11). Gate (a) ANSWERED: the
-  defense layer does not rescue the composite's returns (drawdown-year
-  protection only); the 2025 failure lives in the composite signal itself.
+- **1 · Phase 7.0c — PIT veto-layer replay** — **DONE**: code merged (#451),
+  first `veto_layer_replayed=True` artifact ON MAIN (2026-06-10 23:51 UTC
+  cron warm refresh), gate (a) counterfactual tool + verdict docs merged
+  (#453). Gate (a) ANSWERED: the defense layer does not rescue the
+  composite's returns (drawdown-year protection only); the 2025 failure
+  lives in the composite signal itself (Sloan disposition → issue #454,
+  Q3 2026-08-19 cohort audit).
 - **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —
   the acceptance gate FAILED on the first cron (ρ = 0.834 / 0.807 ≫ 0.30 →
   momentum echo; `methodology-scientist` RATIFY-REMOVE). MAD construct +
