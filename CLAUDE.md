@@ -354,24 +354,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(portfolio) — V55 hysteresis hold-band on the adaptive book
-  (this PR, 2026-06-11)** — incumbents stay while composite ≥ 55 AND
-  still in the rebalance's HC `holdings` (entry unchanged ≥ 65, frozen); strict C0 tenure (band rights only via ≥ 65
-  entry; floor-pads excluded; re-entry needs ≥ 65). Pre-registered grid
-  {60,55}: V60 FAIL recorded; **V55 passes all 3 criteria** (turnover
-  −33.8% · CAGR −0.27pp · beats 26/40 → 29/40 · maxDD better; per-half:
-  beats up in both, growth +H1/−H2; strict re-run identical). methodology-scientist
-  RATIFY-WITH-CONDITIONS (Constantinides 1986 no-trade region ·
-  Novy-Marx-Velikov 2016 buy/hold spread); H1/H2/H3/H-B/H-C gates on
-  issue #130; claim discipline = turnover device ONLY. Artifact: book is
-  no longer a holdings prefix → new `band_book`/`band_weights`/
-  `band_held_count`/`band_carry_*` per rebalance +
-  `meta.adaptive_rule.hold_band_min`; `nav.adaptive` = banded NAV;
-  frontend 3-state degradation (band → adaptive-prefix → slider).
-  Companion analysis record: issue #461 (2025 attribution: value traps +
-  MoS growth-exclusion + nil 10y IC ≈ +0.025; TTM-lag hypothesis KILLED
-  — would have ejected 2025's winner STLD). Detail:
-  PHASE_STATUS_INFLIGHT.md.
+- **feat(portfolio) — adaptive-book CAP REMOVAL (this PR, 2026-06-11)** —
+  user decision: `max_picks` 20 → unbounded (floor 5 / entry 65 / band 55
+  unchanged, locks untouched). `methodology-scientist`
+  RATIFY-WITH-CONDITIONS U1-U6: the cap was a display-ladder reuse with
+  zero in-sample bite (max raw 13 / max book 15 over 40 rebalances); no
+  replacement ceiling — guards move to the gate layer (A2 re-pointed to
+  the FULL deduped HC-eligible pool + NEW A2-S spike tripwire raw ≥ 25
+  single-rebalance → reopen, registered #130). Implementation:
+  `select_picks(count=None)` skips the clamp (same order + dual-class
+  dedup); `picks = full_order[:MAX_PICKS]` keeps holdings/by_count
+  byte-identical; `_band_book` uncapped; σ covers every band member;
+  `meta.adaptive_rule.max_picks: null` (key kept; `max_holdings` stays
+  20); `RULE_VERSION` += `+uncapped`; UI captions render "min 5, no cap"
+  data-driven. **Merge gate U1**: the regen'd artifact must DIFF EMPTY
+  against the capped one across all 40 rebalances' band fields + NAV
+  (fresh-leg invariance is proven; the carry-leg is an empirical
+  prediction — non-empty diff voids the verdict, back to Mode B). Full
+  detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see

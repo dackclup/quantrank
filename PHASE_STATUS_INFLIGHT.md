@@ -3388,3 +3388,51 @@ export against this artifact renders STATE-1: band caption, sr-only
 commit `4bfcdb32`) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## feat(portfolio) — adaptive-book cap removal (max_picks 20 → unbounded) (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+User decision after evidence review (the AskUserQuestion offered uncap-both
+/ uncap-ceiling-only / keep — user chose ceiling-only; floor 5 retained as
+the evidence-backed left-tail guard: floor-0/1 measured at CAGR −1.2pp +
+maxDD ~3pp worse). `methodology-scientist` Mode B re-ratification:
+**RATIFY-WITH-CONDITIONS U1-U6** — the cap had NO academic anchor (a
+display-ladder constant reuse), was never in the swept grid, and bound
+0/40 in-sample (max raw 13 / max band book 15); removal violates neither
+freeze lock (no new hypothesis tested against the data). No replacement
+ceiling — a silent clamp would mask exactly the anomaly a human should
+inspect; guards move to the gate layer: **A2 re-pointed to the full
+deduped HC-eligible pool** (the old top-20-slice statistic was censored
+and would blind the gate in its own patrol regime) + **NEW A2-S spike
+tripwire** (full-pool raw ≥ 25 in any single rebalance → immediate
+reopen, scoring-regression hypothesis first) — both registered on issue
+#130 BEFORE any uncapped data exists.
+
+Conditions landed: U2 `select_picks(count=None)` (clamp skipped, same
+ordering + dual-class canonical-class dedup; `picks =
+full_order[:MAX_PICKS]` keeps holdings / by_count / weights_by_count
+byte-identical) · U3 σ loop covers every band-book member (a rank-21+
+name can never silently zero-weight) · U4 `adaptive_count_raw` counts the
+full pool uncensored; legacy clamped `adaptive_count` documented as
+analytics-only; `band_held_count` authoritative · U5
+`meta.adaptive_rule.max_picks: null` (key kept, explicit-null
+disclosure convention; `meta.max_holdings` stays 20) + C1 provenance
+update + `RULE_VERSION` += `+uncapped` + the 3 contract pins updated
+(uncap book pin replaces the cap pin) + UI captions three-way data-driven
+("min 5, no cap" when null) · U6 gate registration (#130).
+
+**Merge gate U1 (pending)**: regenerate the artifact on this branch and
+diff ALL 40 rebalances' band fields + adaptive NAV against the capped
+`4bfcdb32` generation — the fresh-entry leg is proven invariant (raw ≥ 21
+never occurred) but the carry leg is only an empirical prediction (a
+[55,65) incumbent outside the old top-20 slice would have been force-sold
+by truncation). EMPTY diff → merge; non-empty → verdict void, Mode B
+re-entry with the diff attached.
+
+**Files**: compute/portfolio/weights.py · scripts/backfill_portfolio_pit.py ·
+tests/test_portfolio/ (pins + uncap coverage) · frontend/lib/types.ts ·
+frontend/components/AiPickPortfolio.tsx · CLAUDE.md (§In-flight rotation) ·
+PHASE_STATUS_INFLIGHT.md (this).
+
+---
