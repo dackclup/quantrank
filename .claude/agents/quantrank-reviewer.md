@@ -64,7 +64,9 @@ If the diff touches any function that hits SEC EDGAR (`compute/ingest/*`,
   `wait_exponential(min=2, max=8)`. Anything more aggressive caused the
   PR-3d 60-90s/stuck-stock cascade. If the diff changes this, FAIL with
   the incident reference.
-- Worker count: `EDGAR_MAX_WORKERS=5` (env var). Hardcoding more is FAIL.
+- Worker count: env var `EDGAR_MAX_WORKERS` (canonical 8 per CLAUDE.md
+  §Conventions + `compute/config.py`). Hardcoding above 8 is FAIL; the
+  env-var override must stay available.
 
 ### Section E. Pydantic ↔ TS ↔ snapshot
 

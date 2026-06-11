@@ -3277,3 +3277,22 @@ docs/PHASE_STATUS_ARCHIVE.md (drain archive) · .claude/agents/*.md (25) ·
 THIRD_PARTY_NOTICES.md · 3 skill dirs removed · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+### Addendum (same PR, 2026-06-11): agentic-workflow audit round
+
+User-requested audit of the agentic + dynamic workflow (correct / complete /
+non-redundant / token-fit). `docs-reviewer` walked WORKFLOW.md + agents/README
++ TEAMS.md vs the new routing table. Verdict: mechanics SOUND (HANDOFF routing
+live-verified; all multi-agent events complementary, not duplicative; cadence
+maps the 25-roster with no orphan phase). Fixes shipped: WORKFLOW Step-6
+roster (drop `vercel-preview-auditor` — deploy-gate agent, guaranteed-GO waste
+post-cron; add missing `expert-user-explorer`); README gate-only trigger ×2;
+TEAMS.md "22"→25 ×4 + AGENTS.md ×2; **defense-layer-auditor false-FAIL bug**
+(hardcoded `0.9.4-phase4h.4` → read CLAUDE.md at run time) + A-J→A-L ×5 (K/L
+findings were silently dropped from reports); **quantrank-reviewer false-FAIL
+bug** (`EDGAR_MAX_WORKERS=5` pin → canonical 8); `delegate-first.sh` hook
+injection slimmed ~195→~80 tok/turn. Deferred recommendation: drain
+PHASE_STATUS.md §Current state (8.6K-tok forced read every session-start) to
+~2K — separate PR (collision-prone file).
+
+---
