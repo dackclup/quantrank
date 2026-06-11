@@ -3056,8 +3056,13 @@ holding count is no longer a user choice. Bounds 1-20 (cap = MAX_PICKS),
 count varies by quarter. Rule: every high-conviction-gated pick with
 `composite_score >= 65`, floor 5 names. Constants `ADAPTIVE_COMPOSITE_MIN`
 / `ADAPTIVE_MIN_PICKS` live in ONE place (`scripts/backfill_portfolio_pit.py`)
-and were routed to `methodology-scientist` for Mode-B ratification in the
-same session (in-sample-sweep concern explicitly disclosed: 65 is not a
+`methodology-scientist` Mode-B verdict: **RATIFY 2026-06-11** — all three
+constants as proposed, conditional on C1 (provenance comment on the
+constants block — landed) + C2 (test pins incl. the inclusive-65.0
+boundary — landed) + C3 (gates A1 score-drought / A2 inflation / B
+relative-vs-by_count[8]-and-SPY @ 8th live rebalance / C freeze-lock
+registered on issue #130 — landed). The in-sample-sweep concern was
+explicitly disclosed in the dossier (: 65 is not a
 canonical TIERS boundary; mitigants = coarse 4-point grid, monotone
 dose-response 55→60→65 in BOTH window halves with a documented cliff at 70,
 floor-5 chosen from {1,3,5} where it binds only in tiny-count quarters, and
@@ -3087,7 +3092,9 @@ regenerates the artifact).
 
 **Files**: scripts/backfill_portfolio_pit.py · frontend/lib/data.ts ·
 frontend/lib/types.ts (non-schema section) ·
-frontend/components/AiPickPortfolio.tsx (+ children as needed) ·
+frontend/components/AiPickPortfolio.tsx ·
+frontend/components/HoldingsTimeline.tsx (per-quarter adaptive counts) ·
+frontend/app/page.tsx (hero + metadata branch) ·
 tests/test_portfolio/ (adaptive-book tests) · docs/GOTCHAS.md (slider
 gotcha rewritten adaptive-first) · CLAUDE.md (§In-flight rotation + gotcha
 index line) · PHASE_STATUS_INFLIGHT.md (this).

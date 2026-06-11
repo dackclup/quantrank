@@ -210,8 +210,8 @@ DISCLAIMER_BASE = (
     "published-factor edges decay ~32% post-publication. "
     "The adaptive AI-pick book sizes itself each rebalance: it holds every "
     "high-conviction pick with composite score >= 65, with a minimum of 5 names and "
-    "a maximum of 20, so holding count varies by quarter (rule pending "
-    "methodology-scientist ratification)."
+    "a maximum of 20, so holding count varies by quarter (rule ratified "
+    "2026-06-11; forward acceptance gates pre-registered)."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -694,7 +694,7 @@ def run_backfill(
                 sigmas[t] = sig
         # Per-count inverse-vol weights: for each selectable basket size N=1..MAX_PICKS,
         # weight the top-N picks by inverse vol (the SAME ratified rule, applied to the
-        # top-N subset of THIS rebalance's cohort). The 1-10 slider reads
+        # top-N subset of THIS rebalance's cohort). The legacy 1-20 slider fallback reads
         # weights_by_count[N]; _assemble_nav builds a NAV per N from these.
         weights_by_count: dict[int, dict[str, float]] = {}
         for n in range(1, MAX_PICKS + 1):
@@ -842,7 +842,7 @@ def run_backfill(
             },
             # Adaptive-book rule: AI sizes its own basket each rebalance.
             # Hold every HC pick with composite >= composite_min; min_picks floor;
-            # max_picks cap (= MAX_PICKS). Pending methodology-scientist ratification.
+            # max_picks cap (= MAX_PICKS). methodology-scientist RATIFY 2026-06-11.
             "adaptive_rule": {
                 "composite_min": ADAPTIVE_COMPOSITE_MIN,
                 "min_picks": ADAPTIVE_MIN_PICKS,
@@ -880,7 +880,7 @@ def _assemble_nav(
 
     ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
     For each count N the matching per-rebalance weight maps become one daily NAV series
-    (the 1-10 slider selects the count); ``dates`` + ``benchmark`` are shared across all
+    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are shared across all
     counts (same trading calendar, same rebased index lines).
     Additionally builds an ``"adaptive"`` NAV entry using ``weights_by_count[n_adaptive]``
     per rebalance (same inner shape as a by_count entry; left-padded with None when a leg
