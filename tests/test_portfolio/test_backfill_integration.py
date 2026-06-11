@@ -958,6 +958,7 @@ def test_meta_adaptive_rule_values(tmp_path, _universe) -> None:
         "composite_min": bf.ADAPTIVE_COMPOSITE_MIN,
         "min_picks": bf.ADAPTIVE_MIN_PICKS,
         "max_picks": bf.MAX_PICKS,
+        "hold_band_min": bf.ADAPTIVE_HOLD_BAND_MIN,
     }, f"adaptive_rule mismatch: {rule}"
 
 
