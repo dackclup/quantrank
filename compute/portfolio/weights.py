@@ -165,23 +165,43 @@ def _company_key(ticker: str) -> str:
 
 
 def select_picks(
-    candidates: Sequence[PickCandidate], count: int, *, gate: str = "veto_only"
+    candidates: Sequence[PickCandidate],
+    count: int | None,
+    *,
+    gate: str = "veto_only",
 ) -> list[str]:
-    """Return the ordered ``count`` AI-picked tickers (deterministic + fair).
+    """Return the ordered AI-picked tickers (deterministic + fair).
+
+    ``count`` controls how many tickers to return:
+
+    * ``int`` — take at most this many, clamped to ``[MIN_PICKS, MAX_PICKS]``
+      (legacy behaviour; the by_count 1-20 ladder and the per-rebalance ``picks``
+      prefix both use this path).
+    * ``None`` — return ALL eligible deduplicated tickers in composite-desc order,
+      skipping the ``[MIN_PICKS, MAX_PICKS]`` clamp entirely.  This is the
+      *uncapped domain* needed by the adaptive/band uncap (2026-06-11 user
+      decision: the band book may hold ALL names scoring >= 65 without a hard
+      ceiling — cap removed per the 2026-06-11 uncap ratification; in-sample max
+      raw 13 / max book 15 over 40 rebalances; A2 spike tripwire re-pointed to
+      full pool with raw >= 25 single-rebalance -> reopen, registered #130).
+      The caller is responsible for slicing when a bounded prefix is needed
+      (e.g. ``full_order = select_picks(candidates, count=None, gate=gate);
+      picks = full_order[:MAX_PICKS]``).
 
     ``gate`` selects the eligibility filter: ``"veto_only"`` (default) drops only the
     7 active rank-gate vetoes (``is_eligible``); ``"high_conviction"`` ALSO requires
-    Strong Buy/Buy + MoS>0 + composite≥50 + loss-chance≤45 (``is_high_conviction``,
+    Strong Buy/Buy + MoS>0 + composite>=50 + loss-chance<=45 (``is_high_conviction``,
     Phase 7 PR-2 — needs ``recommendation``/``mos_pct``/``loss_chance_pct`` populated;
     the backfill replays them point-in-time). Sell-eviction is implicit: a name that
     decays out of the gate at a rebalance is simply not re-selected (the basket is
     rebuilt from scratch every quarter).
 
     composite desc -> drop the active rank-gate vetoes -> dedup dual-class issuers
-    -> take the top ``count`` (clamped to ``[MIN_PICKS, MAX_PICKS]``). NO sector
-    cap (removed 2026-06-06): the basket is purely the highest-composite eligible
-    NAMES (one ticker per issuer), so it can concentrate in one sector — that
-    concentration is surfaced in the UI + disclaimer, never silently constrained.
+    -> take the top ``count`` (clamped to ``[MIN_PICKS, MAX_PICKS]`` when count is
+    an int; uncapped when count is None). NO sector cap (removed 2026-06-06): the
+    basket is purely the highest-composite eligible NAMES (one ticker per issuer),
+    so it can concentrate in one sector — that concentration is surfaced in the UI +
+    disclaimer, never silently constrained.
     Tiebreak: ``composite_score_adjusted`` desc (nets the manipulation index) then
     ``ticker`` asc. Dual-class (GOOG/GOOGL, FOX/FOXA, NWS/NWSA) collapses to ONE
     slot per issuer, CANONICALIZED to a fixed class (the ``_DUAL_CLASS_GROUP``
@@ -191,7 +211,8 @@ def select_picks(
     company (spurious turnover). Falls back to the held class only if the canonical
     class is itself ineligible (e.g. vetoed or out of the high-conviction gate).
     """
-    count = max(MIN_PICKS, min(MAX_PICKS, count))
+    if count is not None:
+        count = max(MIN_PICKS, min(MAX_PICKS, count))
     if gate == "high_conviction":
         eligible = [c for c in candidates if is_high_conviction(c)]
     else:
@@ -217,7 +238,7 @@ def select_picks(
         seen_issuers.add(key)
         # Canonical class (stable across quarters) when eligible; else the held one.
         out.append(key if key in eligible_tickers else c.ticker)
-        if len(out) >= count:
+        if count is not None and len(out) >= count:
             break
     return out
 

@@ -618,7 +618,10 @@ export type BacktestNav = {
 export type AdaptiveRule = {
   composite_min: number;
   min_picks: number;
-  max_picks: number;
+  // null on NEW artifacts (cap removed — AI sizes freely above the floor).
+  // number on legacy artifacts that carried an explicit max (e.g. 20).
+  // Key is always present; never absent.
+  max_picks: number | null;
   // V55 hold-band minimum — composite threshold below which a name exits the
   // basket. When present the basket is the band_book (not a prefix of holdings).
   // Absent on pre-band artifacts.

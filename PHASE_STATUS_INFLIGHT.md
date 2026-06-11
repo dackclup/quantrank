@@ -3388,3 +3388,72 @@ export against this artifact renders STATE-1: band caption, sr-only
 commit `4bfcdb32`) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## feat(portfolio) — adaptive-book cap removal (max_picks 20 → unbounded) (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+User decision after evidence review (the AskUserQuestion offered uncap-both
+/ uncap-ceiling-only / keep — user chose ceiling-only; floor 5 retained as
+the evidence-backed left-tail guard: floor-0/1 measured at CAGR −1.2pp +
+maxDD ~3pp worse). `methodology-scientist` Mode B re-ratification:
+**RATIFY-WITH-CONDITIONS U1-U6** — the cap had NO academic anchor (a
+display-ladder constant reuse), was never in the swept grid, and bound
+0/40 in-sample (max raw 13 / max band book 15); removal violates neither
+freeze lock (no new hypothesis tested against the data). No replacement
+ceiling — a silent clamp would mask exactly the anomaly a human should
+inspect; guards move to the gate layer: **A2 re-pointed to the full
+deduped HC-eligible pool** (the old top-20-slice statistic was censored
+and would blind the gate in its own patrol regime) + **NEW A2-S spike
+tripwire** (full-pool raw ≥ 25 in any single rebalance → immediate
+reopen, scoring-regression hypothesis first) — both registered on issue
+#130 BEFORE any uncapped data exists.
+
+Conditions landed: U2 `select_picks(count=None)` (clamp skipped, same
+ordering + dual-class canonical-class dedup; `picks =
+full_order[:MAX_PICKS]` keeps holdings / by_count / weights_by_count
+byte-identical) · U3 σ loop covers every band-book member (a rank-21+
+name can never silently zero-weight) · U4 `adaptive_count_raw` counts the
+full pool uncensored; legacy clamped `adaptive_count` documented as
+analytics-only; `band_held_count` authoritative · U5
+`meta.adaptive_rule.max_picks: null` (key kept, explicit-null
+disclosure convention; `meta.max_holdings` stays 20) + C1 provenance
+update + `RULE_VERSION` += `+uncapped` + the 3 contract pins updated
+(uncap book pin replaces the cap pin) + UI captions three-way data-driven
+("min 5, no cap" when null) · U6 gate registration (#130).
+
+**Merge gate U1 — FIRED (non-empty)**: the regen diff (`3dbe4798` vs
+`4bfcdb32`) showed 12/40 rebalances with different band books (72 field
+diffs; first instance BF-B 2016-11-14; zero same-key weight drift — pure
+selection law). The cap was inert as a COUNT clamp (fresh leg, max raw
+13) but BOUND as a rank-slice membership test on the CARRY leg. Mode B
+re-entry verdict: **RATIFY-AMENDED-WITH-CONDITIONS (U7-U13)** — the
+uncapped domain is adopted as a **post-results protocol amendment V55.0 →
+V55.1** (not a defect-erasure): the V55.0 registered text was internally
+ambiguous (slice vs eligibility reading) and the slice exit keyed
+retention to an undesigned display constant + third-party score crowding,
+which none of the band's anchors (Constantinides/Davis-Norman/
+Garleanu-Pedersen) support. U11 re-verification vs the same no-band
+counterfactual: turnover **−35.8%** / CAGR **+0.33pp** / beats **+4** —
+all three V55 criteria pass under BOTH protocols (both rows retained in
+the C1 block). U10 reads: H2 zero consecutive >0.50 carry-share pairs
+under both domains; H3's trailing-4 wire (>14) is exceeded IN-SAMPLE
+under BOTH domains (capped max 14.25 / uncapped 14.75, the 2017-18
+high-count regime) — pre-existing finding, recorded not recalibrated
+(H-C lock), Q3 2026-08-19 cohort-audit agenda. Capped-vs-uncapped
+scoreboard claim-quarantined (U8): CAGR 22.4 → 23.0, turnover 2.324 →
+2.251, beats 30/40 both, maxDD −31.4% both. +1 multiplicity charged
+(U9). U12 rank-free carry pins landed (rank-25 carry retained; vetoed
+inverse). Reopen criteria U13: any live H-gate breach attributable to
+the diff-cohort carries reopens the domain question; Q3 audit reviews
+the first live uncapped carry-cohort health as a standing item.
+USER COUNTERSIGNED the V55.0 → V55.1 amendment framing 2026-06-11
+(post-U10/U11 reads); H-gate baselines re-base on `3dbe4798`; `4bfcdb32`
+archived as the U1 counterfactual record.
+
+**Files**: compute/portfolio/weights.py · scripts/backfill_portfolio_pit.py ·
+tests/test_portfolio/ (pins + uncap coverage) · frontend/lib/types.ts ·
+frontend/components/AiPickPortfolio.tsx · CLAUDE.md (§In-flight rotation) ·
+PHASE_STATUS_INFLIGHT.md (this).
+
+---

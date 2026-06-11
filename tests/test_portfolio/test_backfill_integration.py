@@ -422,8 +422,11 @@ def test_rule_version_carries_veto_replay_and_band_suffixes() -> None:
     assert "+veto-replay" in bf.RULE_VERSION, (
         f"Expected RULE_VERSION to contain '+veto-replay', got {bf.RULE_VERSION!r}"
     )
-    assert bf.RULE_VERSION.endswith("+hold-band-55"), (
-        f"Expected RULE_VERSION to end with '+hold-band-55', got {bf.RULE_VERSION!r}"
+    assert "+hold-band-55" in bf.RULE_VERSION, (
+        f"Expected RULE_VERSION to contain '+hold-band-55', got {bf.RULE_VERSION!r}"
+    )
+    assert bf.RULE_VERSION.endswith("+uncapped"), (
+        f"Expected RULE_VERSION to end with '+uncapped', got {bf.RULE_VERSION!r}"
     )
 
 
@@ -961,7 +964,9 @@ def test_meta_adaptive_rule_values(tmp_path, _universe) -> None:
     assert rule == {
         "composite_min": bf.ADAPTIVE_COMPOSITE_MIN,
         "min_picks": bf.ADAPTIVE_MIN_PICKS,
-        "max_picks": bf.MAX_PICKS,
+        # Uncap (2026-06-11, condition U5): the key is KEPT with an explicit null —
+        # "considered and deliberately removed", never key-drop ambiguity.
+        "max_picks": None,
         "hold_band_min": bf.ADAPTIVE_HOLD_BAND_MIN,
     }, f"adaptive_rule mismatch: {rule}"
 
@@ -1318,41 +1323,22 @@ def test_band_book_reentry_after_force_sell_requires_65() -> None:
     )
 
 
-def test_band_book_cap_max_picks_highest_composite_wins() -> None:
-    """C2 pin — Item 8: when carries + fresh exceed MAX_PICKS, core truncates to MAX_PICKS.
-
-    Fixture forces MAX_PICKS + 2 names all scoring >= 65, so carries ∪ fresh >
-    MAX_PICKS.  The top MAX_PICKS by composite must be in core; the remaining two
-    are dropped.  book ⊆ order is verified (no name outside the eligible set).
-
-    Fixture construction:
-      - tenure = set of MAX_PICKS + 2 names (all previously tenured).
-      - order = all MAX_PICKS + 2 names (all HC-eligible this rebalance).
-      - scores: ascending from 65.0 so the top MAX_PICKS are deterministic.
-    """
-    n = bf.MAX_PICKS + 2        # 22 total candidates; only 20 (MAX_PICKS) allowed in core
+def test_band_book_uncapped_holds_all_qualifying_names() -> None:
+    """Uncap pin (methodology RATIFY-WITH-CONDITIONS 2026-06-11, U2/U5): when more
+    than MAX_PICKS names qualify (all >= 65 here), the book holds ALL of them —
+    the former core[:MAX_PICKS] truncation is gone. Forward guards live at the
+    gate layer (A2 full-pool / A2-S spike >= 25 / H3), not in a silent clamp.
+    book ⊆ order still holds (no name outside the eligible set)."""
+    n = bf.MAX_PICKS + 2        # 22 candidates, every one >= 65
     tickers = [f"T{i:02d}" for i in range(n)]
-    # Scores: 65.0, 66.0, …, 65+n-1 (all >= 65; higher index = higher score).
     scores = {t: 65.0 + i for i, t in enumerate(tickers)}
-    # Order: sorted composite-desc (highest score first) so the caller's ordering
-    # convention is respected.
     order = sorted(tickers, key=lambda t: -scores[t])
     tenure = set(tickers)  # all were tenured
 
     book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
 
-    # Core must be capped at MAX_PICKS.
-    assert len(next_tenure) <= bf.MAX_PICKS, (
-        f"next_tenure has {len(next_tenure)} names; expected <= MAX_PICKS={bf.MAX_PICKS}"
-    )
-    # book may include pads, but core (captured by next_tenure) is <= MAX_PICKS.
-    # Also verify the top-MAX_PICKS by score are the ones kept (highest composite wins).
-    expected_core = set(order[:bf.MAX_PICKS])
-    assert next_tenure == expected_core, (
-        f"Expected top-{bf.MAX_PICKS} composites in next_tenure; "
-        f"got {next_tenure} vs expected {expected_core}"
-    )
-    # book ⊆ order (no name outside the eligible set).
+    assert len(book) == n, f"uncapped book must hold all {n} qualifying names; got {len(book)}"
+    assert next_tenure == set(tickers), "uncapped core keeps tenure for every qualifying name"
     assert set(book) <= set(order), (
         f"book contains names outside order (eligible set): {set(book) - set(order)}"
     )
@@ -1664,3 +1650,142 @@ def test_band_exports_present_in_artifact_meta_adaptive_rule(tmp_path, _universe
         f"meta.adaptive_rule.hold_band_min must be 55.0 (pre-registered V55); "
         f"got {rule['hold_band_min']!r}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Uncap coverage pins — methodology conditions U5/U3 (e2e level, 2026-06-11).
+#
+# U5: meta.adaptive_rule["max_picks"] is None in the artifact.
+# U3: sigma coverage — set(band_weights.keys()) ⊆ set(band_book ∩ priced).
+#
+# Engineering a >20-name cohort with the 3-ticker synthetic fixture is
+# impossible (the real pillar pipeline only processes the 3 members), so U3
+# sigma coverage is pinned at the structural seam available in the e2e artifact:
+# band_weights.keys() ⊆ band_book (every band-weighted name is in band_book).
+# The direct unit-level U3 invariant is inherently satisfied by the sigma-loop
+# design (the loop extends sigmas to cover band_book members not in picks); see
+# the inline docstring below for the engineering boundary explanation.
+# ---------------------------------------------------------------------------
+
+
+def test_meta_adaptive_rule_max_picks_is_none_u5(tmp_path, _universe) -> None:
+    """U5 pin: meta.adaptive_rule['max_picks'] is None in the artifact.
+
+    The uncap (2026-06-11 ratification) removes the MAX_PICKS hard ceiling from
+    the band book.  The artifact contract is: the key is KEPT but set to None
+    explicitly — 'considered and deliberately removed', no key-drop ambiguity
+    (see test_meta_adaptive_rule_values above, which also pins this, and which
+    this test exists alongside as an isolated per-condition pin per the U2/U3/U4
+    coverage task list).
+
+    Fixture: standard 3-ticker synthetic universe; gate='veto_only' for wiring
+    isolation.  The max_picks=None value must survive JSON serialisation.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path,
+                              gate="veto_only")
+
+    meta = json.loads(out.read_text())["meta"]
+    assert "adaptive_rule" in meta, "meta.adaptive_rule key missing from artifact"
+    rule = meta["adaptive_rule"]
+    assert "max_picks" in rule, (
+        "meta.adaptive_rule['max_picks'] key must be present (explicit null contract, "
+        "not key-drop)"
+    )
+    assert rule["max_picks"] is None, (
+        f"meta.adaptive_rule['max_picks'] must be None (uncap removes the ceiling); "
+        f"got {rule['max_picks']!r}"
+    )
+
+
+def test_band_weights_keys_subset_of_band_book_u3_structural(tmp_path, _universe) -> None:
+    """U3 sigma-coverage structural pin: set(band_weights.keys()) ⊆ set(band_book).
+
+    Engineering boundary note: the direct unit-level U3 invariant
+    (set(band_weights.keys()) == set(band_book ∩ priced)) cannot be exercised by
+    engineering a >20-name e2e cohort using the 3-ticker synthetic fixture — the
+    real pillar pipeline only processes the 3 members and cannot produce a cohort
+    larger than MAX_PICKS=20.  The sigma loop in run_backfill extends sigmas to
+    cover rank-21+ band_book members before inverse_vol_weights is called;
+    that path only fires when len(band_book) > 20, which is structurally
+    unreachable with a 3-ticker universe.
+
+    What CAN be pinned at this seam: the subset invariant
+    set(band_weights.keys()) ⊆ set(band_book) holds for every rebalance — no
+    ticker is weighted that is not in the band book.  This covers the wiring
+    (band_sigmas filtering step) without requiring a >20-name fixture.
+
+    Fixture: standard 3-ticker synthetic universe; gate='veto_only' for wiring
+    isolation.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path,
+                              gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0, "Expected at least one rebalance"
+
+    for reb in payload["rebalances"]:
+        band_book_set = set(reb["band_book"])
+        band_weights_keys = set(reb["band_weights"].keys())
+        assert band_weights_keys <= band_book_set, (
+            f"band_weights keys {band_weights_keys} not a subset of band_book "
+            f"{band_book_set} at {reb['date']} — U3 sigma-coverage wiring violated"
+        )
+
+
+# ---------------------------------------------------------------------------
+# U12 (Mode B re-entry, V55.1 amendment 2026-06-11): the carry domain is
+# RANK-FREE — retention depends only on score >= 55 + HC-eligibility, never on
+# rank vs MAX_PICKS (the V55.0 slice-exit was the amended-away defect).
+# ---------------------------------------------------------------------------
+
+
+def test_band_carry_retained_beyond_rank_20_v551() -> None:
+    """U12 pin: a tenured incumbent scoring in [55, 65) whose POOL RANK is > 20
+    (24 fresh >= 65 names rank above it) is RETAINED — the BF-B 2016-11-14
+    fixture shape. Under the V55.0 slice domain it would have been force-sold
+    at rank 25; V55.1 keeps it while score >= 55 and HC-eligible."""
+    fresh = [f"F{i:02d}" for i in range(24)]               # 24 names, all >= 65
+    scores = {t: 80.0 - i * 0.5 for i, t in enumerate(fresh)}  # 80.0 .. 68.5
+    scores["CARRY"] = 58.0                                  # tenured, rank 25
+    order = sorted([*fresh, "CARRY"], key=lambda t: -scores[t])
+    assert order.index("CARRY") == 24  # pool rank 25 — beyond the old slice
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure={"CARRY"})
+
+    assert "CARRY" in book, "rank-21+ carry must be retained (V55.1 rank-free domain)"
+    assert "CARRY" in next_tenure
+    assert carry_count == 1
+
+
+def test_band_carry_vetoed_force_sold_regardless_of_score_v551() -> None:
+    """U12 inverse pin: the SAME tenured name absent from `order` (vetoed /
+    HC-evicted upstream) is force-sold and loses tenure even at score >= 55 —
+    veto supremacy is untouched by the V55.1 domain amendment."""
+    fresh = [f"F{i:02d}" for i in range(24)]
+    scores = {t: 80.0 - i * 0.5 for i, t in enumerate(fresh)}
+    scores["CARRY"] = 58.0
+    order = sorted(fresh, key=lambda t: -scores[t])  # CARRY not eligible this leg
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure={"CARRY"})
+
+    assert "CARRY" not in book
+    assert "CARRY" not in next_tenure
+    assert carry_count == 0

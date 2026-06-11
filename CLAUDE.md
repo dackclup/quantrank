@@ -322,7 +322,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed — never reaches `dark:` solid-fills (theme audit #401)**
 - **Home + ranking pages derive stats at BUILD TIME (Server Components) — never `fs`-import into a `'use client'` component**
 - **`data/sp500_membership_historical.csv` must stay ADD/REMOVE-balanced — run `scripts/verify_membership_ledger.py` after ANY edit; Track B covers 2016→present, rename-aware**
-- **The home page IS the AI-pick portfolio — `getAiPickData()` fs-read; NEVER static-`import` the 1.3MB `backtest_pit.json`. The AI sizes its own basket when `nav.adaptive` is present (composite ≥ 65 / floor 5 / cap 20); the 1-20 slider + `nav.by_count[N]` are the legacy fallback for pre-adaptive artifacts**
+- **The home page IS the AI-pick portfolio — `getAiPickData()` fs-read; NEVER static-`import` the 1.3MB `backtest_pit.json`. The AI sizes its own basket when `nav.adaptive` is present (composite ≥ 65 / floor 5 / no cap (uncapped 2026-06-11)); the 1-20 slider + `nav.by_count[N]` are the legacy fallback for pre-adaptive artifacts**
 - **Per-stock JSON for dropped tickers auto-pruned by `prune_orphan_stock_files()` — don't glob `stocks/` for param-gen**
 - **`AnnualReturnsTable` + `NavCompareChart` money mode derive in-browser from NAV; the CAGR caveat is DATA-DRIVEN on `meta.veto_layer_replayed` — never hardcode it, and backtest ≠ live track record**
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
@@ -337,8 +337,8 @@ COMPANY-TOTAL across classes, additive
 manifests it landed as #458; first post-bump cron ran 2026-06-11 —
 verify `multi_class_per_class_override_count` = 2 + GOOG ≡ GOOGL
 ≈ 12.09B on that artifact). The AI-pick home now sizes its own basket
-(adaptive rule, composite ≥ 65 / floor 5 / cap 20 — see §Gotchas; gates
-A1/A2/B/C tracked on issue #130). The technical
+(adaptive rule, composite ≥ 65 / floor 5 / no cap (uncapped 2026-06-11) — see §Gotchas; gates
+A1/A2/A2-S/B/C tracked on issue #130). The technical
 pillar is an honest 4-metric mean after the #441 MAD close-out
 (`0.10.17`, RATIFY-REMOVE) — **no 5th technical input without a fresh
 pre-registration**. Defense layer **33 declared boolean flags** (7
@@ -354,24 +354,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(portfolio) — V55 hysteresis hold-band on the adaptive book
-  (this PR, 2026-06-11)** — incumbents stay while composite ≥ 55 AND
-  still in the rebalance's HC `holdings` (entry unchanged ≥ 65, frozen); strict C0 tenure (band rights only via ≥ 65
-  entry; floor-pads excluded; re-entry needs ≥ 65). Pre-registered grid
-  {60,55}: V60 FAIL recorded; **V55 passes all 3 criteria** (turnover
-  −33.8% · CAGR −0.27pp · beats 26/40 → 29/40 · maxDD better; per-half:
-  beats up in both, growth +H1/−H2; strict re-run identical). methodology-scientist
-  RATIFY-WITH-CONDITIONS (Constantinides 1986 no-trade region ·
-  Novy-Marx-Velikov 2016 buy/hold spread); H1/H2/H3/H-B/H-C gates on
-  issue #130; claim discipline = turnover device ONLY. Artifact: book is
-  no longer a holdings prefix → new `band_book`/`band_weights`/
-  `band_held_count`/`band_carry_*` per rebalance +
-  `meta.adaptive_rule.hold_band_min`; `nav.adaptive` = banded NAV;
-  frontend 3-state degradation (band → adaptive-prefix → slider).
-  Companion analysis record: issue #461 (2025 attribution: value traps +
-  MoS growth-exclusion + nil 10y IC ≈ +0.025; TTM-lag hypothesis KILLED
-  — would have ejected 2025's winner STLD). Detail:
-  PHASE_STATUS_INFLIGHT.md.
+- **feat(portfolio) — adaptive-book CAP REMOVAL (this PR, 2026-06-11)** —
+  user decision: `max_picks` 20 → unbounded (floor 5 / entry 65 / band 55
+  unchanged, locks untouched). `methodology-scientist`
+  RATIFY-WITH-CONDITIONS U1-U6: the cap was a display-ladder reuse with
+  zero in-sample bite (max raw 13 / max book 15 over 40 rebalances); no
+  replacement ceiling — guards move to the gate layer (A2 re-pointed to
+  the FULL deduped HC-eligible pool + NEW A2-S spike tripwire raw ≥ 25
+  single-rebalance → reopen, registered #130). Implementation:
+  `select_picks(count=None)` skips the clamp (same order + dual-class
+  dedup); `picks = full_order[:MAX_PICKS]` keeps holdings/by_count
+  byte-identical; `_band_book` uncapped; σ covers every band member;
+  `meta.adaptive_rule.max_picks: null` (key kept; `max_holdings` stays
+  20); `RULE_VERSION` += `+uncapped`; UI captions render "min 5, no cap"
+  data-driven. **Merge gate U1**: the regen'd artifact must DIFF EMPTY
+  against the capped one across all 40 rebalances' band fields + NAV
+  (fresh-leg invariance is proven; the carry-leg is an empirical
+  prediction — non-empty diff voids the verdict, back to Mode B). Full
+  detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see

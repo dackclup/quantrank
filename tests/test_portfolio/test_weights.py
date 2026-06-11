@@ -560,3 +560,184 @@ def test_pit_filing_lag_empty_rows_returns_none():
     """No rows at all → None (ensemble treats as 'unknown', not hard-stale)."""
     from scripts.backfill_portfolio_pit import _pit_filing_lag
     assert _pit_filing_lag([], "2025-01-01", date(2025, 1, 1)) is None
+
+
+# ---------------------------------------------------------------------------
+# Uncap coverage pins — methodology conditions U1/U2/U3/U4 (2026-06-11).
+#
+# U1: select_picks(count=None) returns ALL eligible deduped names (no clamp).
+# U2: dual-class dedup holds at count=None — one canonical slot per issuer.
+# U3: regression guard — int count still clamps (no regression from uncap).
+# U4: _adaptive_count with full 25-element pool scores all >= 65 → raw == 25.
+#
+# Fixture style: plain _cand() / _hc() builders (no mocks); matches every
+# existing test in this file.  All tests are fully offline.
+# ---------------------------------------------------------------------------
+
+
+def test_select_picks_count_none_returns_all_eligible():
+    """U1 pin: select_picks(count=None) returns ALL eligible deduped names,
+    more than MAX_PICKS when the eligible pool exceeds MAX_PICKS.
+
+    Fixture forces:
+      - 25 eligible candidates (composite 100-down, no flags, no dual-class)
+        plus 1 vetoed candidate with composite 999.
+      - count=None → no [MIN_PICKS, MAX_PICKS] clamp.
+
+    Expected:
+      - Result length == 25 (all eligible, > MAX_PICKS=20).
+      - The vetoed name is absent.
+      - Ordering is composite-desc.
+      - All 25 eligible tickers present.
+    """
+    vetoed = _cand("VETO", 999.0, flags=["altman_distress"])
+    eligible = [_cand(f"E{i:02d}", float(100 - i)) for i in range(25)]
+    cands = [vetoed] + eligible
+
+    result = select_picks(cands, count=None)
+
+    assert len(result) == 25, (
+        f"Expected 25 names with count=None (all eligible, > MAX_PICKS={MAX_PICKS}); "
+        f"got {len(result)}"
+    )
+    assert "VETO" not in result, "Vetoed ticker must be excluded even with count=None"
+    # Correct composite-desc order.
+    assert result == [f"E{i:02d}" for i in range(25)], (
+        f"Expected composite-desc order; got {result}"
+    )
+
+
+def test_select_picks_count_none_composite_desc_order():
+    """U1 pin: composite-desc ordering is preserved across the full uncapped domain.
+
+    Fixture forces a 3-element unordered input so the sort is exercised without
+    relying on insertion order.
+    """
+    cands = [_cand("LOW", 55.0), _cand("HIGH", 90.0), _cand("MID", 70.0)]
+    result = select_picks(cands, count=None)
+    assert result == ["HIGH", "MID", "LOW"], (
+        f"Expected composite-desc order with count=None; got {result}"
+    )
+
+
+def test_select_picks_count_none_dual_class_u2_one_slot_canonical():
+    """U2 pin: dual-class dedup holds with count=None — both classes eligible,
+    ONE canonical slot emitted (GOOGL), sibling (GOOG) dropped.
+
+    Fixture forces:
+      - GOOG=95, GOOGL=94, AAA=90, BBB=88 — all eligible, no vetoes.
+      - count=None → uncapped.
+
+    Expected:
+      - 'GOOG' absent (canonicalized to GOOGL slot).
+      - 'GOOGL' present.
+      - Full composite-desc order: GOOGL, AAA, BBB (3 distinct issuers, not 4).
+    """
+    cands = [
+        _cand("GOOG", 95.0),
+        _cand("GOOGL", 94.0),
+        _cand("AAA", 90.0),
+        _cand("BBB", 88.0),
+    ]
+    result = select_picks(cands, count=None)
+
+    assert "GOOG" not in result, (
+        "GOOG must be canonicalized to GOOGL slot even with count=None"
+    )
+    assert "GOOGL" in result, "GOOGL (canonical class) must appear in result"
+    assert result == ["GOOGL", "AAA", "BBB"], (
+        f"Expected ['GOOGL','AAA','BBB'] (one slot per dual-class issuer); got {result}"
+    )
+
+
+def test_select_picks_count_none_all_dual_class_pairs_dedup():
+    """U2 pin: all three known dual-class pairs (Alphabet, Fox, News Corp) each
+    collapse to one canonical slot with count=None.
+
+    Fixture forces all 6 dual-class tickers eligible (no vetoes).
+    Expected: 3 canonical tickers only (GOOGL, FOXA, NWSA).
+    """
+    cands = [
+        _cand("GOOGL", 90.0), _cand("GOOG", 89.0),
+        _cand("FOXA", 80.0), _cand("FOX", 79.0),
+        _cand("NWSA", 70.0), _cand("NWS", 69.0),
+    ]
+    result = select_picks(cands, count=None)
+
+    assert result == ["GOOGL", "FOXA", "NWSA"], (
+        f"All dual-class siblings must be deduped with count=None; got {result}"
+    )
+    for non_canonical in ("GOOG", "FOX", "NWS"):
+        assert non_canonical not in result, (
+            f"{non_canonical} must be canonicalized away even with count=None"
+        )
+
+
+def test_select_picks_int_count_regression_guard():
+    """U3 regression guard: integer count still clamps to [MIN_PICKS, MAX_PICKS].
+
+    The uncap change (count=None) must not affect the existing int-count path.
+    This test is a direct regression pin: 25 eligible candidates + count=5
+    must return exactly 5 (the top 5 by composite), same as before the uncap.
+    """
+    eligible = [_cand(f"E{i:02d}", float(100 - i)) for i in range(25)]
+
+    result = select_picks(eligible, count=5)
+
+    assert len(result) == 5, (
+        f"int count=5 must still return exactly 5 (clamp unchanged); got {len(result)}"
+    )
+    assert result == ["E00", "E01", "E02", "E03", "E04"], (
+        f"Must return top-5 by composite with int count; got {result}"
+    )
+
+
+def test_select_picks_int_count_max_clamp_regression():
+    """U3 regression guard: count > MAX_PICKS is still clamped to MAX_PICKS.
+
+    Fixture: 25 eligible candidates, count=99.  Result must be exactly MAX_PICKS names.
+    """
+    eligible = [_cand(f"E{i:02d}", float(100 - i)) for i in range(25)]
+    result = select_picks(eligible, count=99)
+
+    assert len(result) == MAX_PICKS, (
+        f"count=99 must clamp to MAX_PICKS={MAX_PICKS} (regression guard); "
+        f"got {len(result)}"
+    )
+    assert result == [f"E{i:02d}" for i in range(MAX_PICKS)], (
+        "Clamped result must be the top-MAX_PICKS by composite"
+    )
+
+
+def test_adaptive_count_raw_uncensored_25_element_pool_u4():
+    """U4 pin: _adaptive_count with 25 scores all >= ADAPTIVE_COMPOSITE_MIN
+    returns raw == 25 (the uncensored full-pool count, not clamped to MAX_PICKS).
+
+    The uncap change (2026-06-11) removed the MAX_PICKS ceiling from the raw
+    count.  This test freezes the contract: raw is counted over the FULL deduped
+    pool, not just the first MAX_PICKS names.
+
+    Fixture forces:
+      - 25 scores, all 65.0 (exactly at entry threshold — inclusive boundary).
+      - available_counts = list(range(1, MAX_PICKS + 1)) — the real wbc key range.
+
+    Expected:
+      - raw == 25 (full pool counted).
+      - final is clamped to max(available_counts) = MAX_PICKS = 20 (since
+        raw=25 > MAX_PICKS=20 and the largest available key is 20).
+    """
+    from scripts.backfill_portfolio_pit import ADAPTIVE_COMPOSITE_MIN, _adaptive_count
+
+    scores = [ADAPTIVE_COMPOSITE_MIN] * 25
+    available = list(range(1, MAX_PICKS + 1))
+
+    raw, final = _adaptive_count(scores, available)
+
+    assert raw == 25, (
+        f"Expected raw=25 (uncensored full-pool count); got raw={raw}. "
+        "The MAX_PICKS ceiling must be removed from the raw count (U4 uncap)."
+    )
+    # final clamps to MAX_PICKS (largest available <= 25 → that's MAX_PICKS=20).
+    assert final == MAX_PICKS, (
+        f"Expected final={MAX_PICKS} (clamped to largest available); got final={final}"
+    )
