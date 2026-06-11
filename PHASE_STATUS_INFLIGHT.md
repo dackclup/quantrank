@@ -3365,3 +3365,26 @@ tests/test_portfolio/ (C2 pins) · CLAUDE.md (§In-flight rotation) ·
 PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## docs(portfolio) — band-artifact verification record (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+First post-#462 band artifact (backfill dispatch, 10:18 UTC). **Engine
+matches the ratified experiment to the decimal**: band-adaptive net CAGR
+22.4% (experiment 22.4) · annualized Σ|Δw| 2.324 (experiment 2.324
+EXACT) · book 5-15 mean 10.7 · `rule_version` carries both markers.
+Contract complete (band_book/weights/held_count/carry_count/carry_names/
+carry_weight_share); reconcile invariants hold artifact-wide; first
+rebalance band-inert. **First H-gate input read**: carries at 38/40
+rebalances (mean 2.85 names); carry weight-share mean 0.273, max 0.624
+(single quarter — H2's >50%×2-consecutive does NOT fire on history).
+The live book demonstrates the feature: 2026-05-15 holds 6 names — the
+floor 5 + **SYF carried via the band** (score in 55-65). Local static
+export against this artifact renders STATE-1: band caption, sr-only
+"(held)" on SYF, no slider, veto caption intact.
+
+**Files**: frontend/public/data/portfolio/backtest_pit.json (workflow
+commit `4bfcdb32`) · PHASE_STATUS_INFLIGHT.md (this).
+
+---
