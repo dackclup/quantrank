@@ -355,12 +355,12 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
 
 **In flight** (not yet merged on `main`):
 - **feat(portfolio) — V55 hysteresis hold-band on the adaptive book
-  (this PR, 2026-06-11)** — incumbents stay while composite ≥ 55 (entry
-  unchanged ≥ 65, frozen); strict C0 tenure (band rights only via ≥ 65
+  (this PR, 2026-06-11)** — incumbents stay while composite ≥ 55 AND
+  still in the rebalance's HC `holdings` (entry unchanged ≥ 65, frozen); strict C0 tenure (band rights only via ≥ 65
   entry; floor-pads excluded; re-entry needs ≥ 65). Pre-registered grid
   {60,55}: V60 FAIL recorded; **V55 passes all 3 criteria** (turnover
-  −33.8% · CAGR −0.27pp · beats 26/40 → 29/40 · maxDD better; both
-  window halves better; strict re-run identical). methodology-scientist
+  −33.8% · CAGR −0.27pp · beats 26/40 → 29/40 · maxDD better; per-half:
+  beats up in both, growth +H1/−H2; strict re-run identical). methodology-scientist
   RATIFY-WITH-CONDITIONS (Constantinides 1986 no-trade region ·
   Novy-Marx-Velikov 2016 buy/hold spread); H1/H2/H3/H-B/H-C gates on
   issue #130; claim discipline = turnover device ONLY. Artifact: book is

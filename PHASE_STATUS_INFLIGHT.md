@@ -3316,12 +3316,16 @@ item 5 — CLAUDE.md pointer updated item 7→5).
 
 **Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
 
-Iteration-2 outcome. Pre-registered experiment (grid {60,55} declared
+Iteration-2 outcome. Exact rule: an incumbent stays while composite
+>= 55 AND it is still present in the rebalance's top-MAX_PICKS HC
+`holdings` (a >= 55 incumbent can still exit by rank/eligibility).
+Pre-registered experiment (grid {60,55} declared
 before running; criteria: turnover −30% / CAGR ≥ −0.5pp / beats ≥ −2q):
 **V55 passes all three** — annualized Σ|Δw| 3.508 → 2.324 (−33.8%), net
 CAGR 22.7% → 22.4% (−0.27pp), beats vs SPY 26/40 → 29/40, maxDD −32.0% →
-−31.4%, BOTH window halves better (x2.89→x3.35 + 15/20→17/20 ·
-x2.57→x2.17 + 11/20→12/20). V60 FAIL recorded (−27.7% turnover, −0.8pp).
+−31.4%. Per-half (neutral record): beats improved in both halves
+(15/20→17/20 · 11/20→12/20); growth +H1 (x2.89→x3.35) / −H2
+(x2.57→x2.17). V60 FAIL recorded (−27.7% turnover, −0.8pp).
 `methodology-scientist` **RATIFY-WITH-CONDITIONS** — hysteresis is a
 canonical implementation-cost device (Constantinides 1986 JPE no-trade
 region · Davis-Norman 1990 · Garleanu-Pedersen 2013 JF ·
@@ -3337,7 +3341,13 @@ artifact gains `rebalances[*].band_book` + `band_weights` +
 (incl. freeze lock on 55). **Claim discipline**: the band is a TURNOVER
 device only — beat/maxDD deltas are within-noise, never marketed.
 Frontend: 3-state graceful degradation (band artifact → adaptive-prefix
-artifact → legacy slider) so the deploy is safe across regeneration.
+artifact → legacy slider) so the deploy is safe across regeneration;
+carried names get an sr-only "(held)" suffix + the canonical muted token
+(AA both modes); the timeline renders the exact `band_book` membership
+(never a prefix slice). As-landed extras: the C2 e2e pin caught an
+int-vs-float `band_carry_weight_share` contract bug (float() guard
+landed); `band_carry_names` exported per rebalance (exact H2 cohort);
+`RULE_VERSION` gains `+hold-band-55` per the `+veto-replay` precedent.
 
 Companion analyses recorded on issue #461: 2025 attribution (value-trap
 capture DECK/BLDR/LULU/DVA + structural MoS-gate growth exclusion —

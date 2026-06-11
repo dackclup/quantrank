@@ -415,11 +415,15 @@ def test_snap_to_trading_day_returns_none_on_empty_dates() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_rule_version_carries_veto_replay_suffix() -> None:
-    """``RULE_VERSION`` carries the ``+veto-replay`` suffix that marks artifacts
-    where ``veto_layer_replayed=True``, so callers can distinguish the two datasets."""
-    assert bf.RULE_VERSION.endswith("+veto-replay"), (
-        f"Expected RULE_VERSION to end with '+veto-replay', got {bf.RULE_VERSION!r}"
+def test_rule_version_carries_veto_replay_and_band_suffixes() -> None:
+    """``RULE_VERSION`` carries the ``+veto-replay`` marker (veto_layer_replayed=True
+    datasets) AND the ``+hold-band-55`` marker (nav.adaptive built from the banded
+    book) so callers can distinguish all three artifact generations."""
+    assert "+veto-replay" in bf.RULE_VERSION, (
+        f"Expected RULE_VERSION to contain '+veto-replay', got {bf.RULE_VERSION!r}"
+    )
+    assert bf.RULE_VERSION.endswith("+hold-band-55"), (
+        f"Expected RULE_VERSION to end with '+hold-band-55', got {bf.RULE_VERSION!r}"
     )
 
 
@@ -1463,6 +1467,26 @@ def test_band_exports_structural_invariants_end_to_end(tmp_path, _universe) -> N
             assert 0.0 <= bws <= 1.0, (
                 f"band_carry_weight_share {bws} out of [0, 1] at {reb['date']}"
             )
+            # H2-input reconcile: a positive carry SHARE implies a positive carry
+            # COUNT — a sub-55 tenured floor-pad may never inflate the share while
+            # the count excludes it (the reviewer-flagged pollution path).
+            if bws > 0.0:
+                assert reb["band_carry_count"] > 0, (
+                    f"carry share {bws} > 0 with carry count 0 at {reb['date']}"
+                )
+        # band_carry_names: sorted carry cohort, consistent with the count.
+        assert "band_carry_names" in reb, f"band_carry_names missing at {reb['date']}"
+        bcn = reb["band_carry_names"]
+        assert isinstance(bcn, list) and bcn == sorted(bcn), (
+            f"band_carry_names must be a sorted list at {reb['date']}"
+        )
+        assert len(bcn) == reb["band_carry_count"], (
+            f"band_carry_names/{len(bcn)} disagrees with band_carry_count/"
+            f"{reb['band_carry_count']} at {reb['date']}"
+        )
+        assert set(bcn) <= set(reb["band_book"]), (
+            f"band_carry_names not a subset of band_book at {reb['date']}"
+        )
 
 
 def test_band_tenure_threading_no_crash_and_correct_types(tmp_path, _universe) -> None:

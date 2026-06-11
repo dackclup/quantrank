@@ -180,7 +180,7 @@ ADAPTIVE_HOLD_BAND_MIN: float = 55.0
 # Phase 7.0c: +veto-replay suffix marks artifacts where veto_layer_replayed=True.
 # Prior artifacts (veto_layer_replayed=False) carry the plain "phase3-effective-weights"
 # version so callers can distinguish the two datasets unambiguously.
-RULE_VERSION = "phase3-effective-weights+veto-replay"
+RULE_VERSION = "phase3-effective-weights+veto-replay+hold-band-55"
 
 # methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
 # ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
@@ -866,12 +866,16 @@ def run_backfill(
         # Carry-weight share: fraction of the band book's total weight held by carry names
         # (those in prior tenure AND score < ADAPTIVE_COMPOSITE_MIN — the band's value).
         # Rounded to 4 dp per spec; None when the book has no weight (degenerate leg).
+        # Carry names: tenured incumbents held via the band (55 <= score < 65).
+        # Lower bound matters: a force-sold (< 55) tenured name re-entering as a
+        # floor PAD must not pollute the H2 gate's carry-share input.
+        carry_names_in_book = {
+            t for t in band_book
+            if t in prior_band_tenure
+            and ADAPTIVE_HOLD_BAND_MIN <= scores_this.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
+        }
         band_carry_weight_share: float | None = None
         if band_weights_map:
-            carry_names_in_book = {
-                t for t in band_book
-                if t in prior_band_tenure and scores_this.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
-            }
             band_carry_weight_share = round(
                 # float() guards the empty-carry case: sum() over an empty
                 # generator returns int(0); the artifact contract is float.
@@ -964,6 +968,10 @@ def run_backfill(
                 # band_carry_weight_share: fraction of band book weight from carry names;
                 # None when band_weights is empty (degenerate leg with no usable sigmas).
                 "band_carry_weight_share": band_carry_weight_share,
+                # band_carry_names: the exact carry cohort (sorted) — lets the UI mark
+                # carried names without inferring from scores, and the H2 audit read
+                # the cohort directly.
+                "band_carry_names": sorted(carry_names_in_book),
             }
         )
 
