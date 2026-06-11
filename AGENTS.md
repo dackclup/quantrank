@@ -94,7 +94,7 @@ frontend/                         # Next.js static site (read/write OK)
 
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
-.claude/skills/                   # 47 first-party skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
+.claude/skills/                   # first-party + vendored skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
 .claude/agents/                   # 25 subagents (5 fable / 20 sonnet; 23 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 3 (incl. ci-triage-engineer) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh — orchestrator reminder + agent-team auto-propose for team-fit tasks) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
@@ -577,7 +577,7 @@ export function FairPriceCard(props) {  // no types
 - CI workflow file edits (`.github/workflows/*.yml`)
 - New top-level files at repo root (we already have 8; adding more
   needs justification)
-- Editing the 17 vendored Anthropic skills under `.claude/skills/`
+- Editing the 15 vendored Anthropic skills under `.claude/skills/`
   (treat as upstream-frozen; if upstream changes, re-vendor)
 - Phase status updates (`PHASE_STATUS.md`, `SKILL.md`, `WORKFLOW.md`)
   — these three move in lockstep; use the
@@ -801,7 +801,7 @@ agents fire on **non-trivial edit** to their domain (schema-
 sentinel on the triple, defense-layer-auditor on `compute/
 scoring/*` or `compute/valuation/*`, frontend-design-reviewer on
 `frontend/components/*`, etc.) — see [`CLAUDE.md`](CLAUDE.md)
-§Auto-routing policy for the full cue table. Opus agents
+§Auto-routing policy for the routing table. Fable agents
 (`incident-commander` · `release-captain` · `methodology-scientist`
 · `quantrank-reviewer` · `financial-engineer`) stay rare-fire on gates /
 signals so they don't drain the all-models pool. "Non-trivial" = > 5 added lines

@@ -12,10 +12,10 @@ sub-directories like `phase-N/`. So this directory has two
 populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
-  see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the canonical
-  breakdown (currently 47 invocation-triggerable skills). Bump that
-  CLAUDE.md row when adding/removing a top-level skill; this file
-  references rather than duplicates the count to avoid drift.
+  see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the role split
+  (it intentionally carries no count). The count lives HERE — currently
+  45 invocation-triggerable skills (first-party + vendored incl. the impeccable symlink); bump THIS line when adding/removing
+  a top-level skill.
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
   roadmap docs for skills that don't yet exist. Renamed from
   `SKILL.md` to `PLAN.md` to honestly reflect that Claude Code does
@@ -120,7 +120,7 @@ intent + acceptance criteria so the implementation has a clear target.
 | Phase 7 — regime + portfolio | `student-t-hmm-fit`, `nco-portfolio-allocate`, `tda-risk-off` |
 | Phase 8 — universe expansion | `universe-expand-sp1500`, `microcap-skip` |
 
-## Vendored third-party skills (17, from `anthropics/skills`)
+## Vendored third-party skills (15, from `anthropics/skills`)
 
 Full snapshot of [`anthropics/skills`](https://github.com/anthropics/skills)
 @ main (2026-05-09). Placed flat alongside the QuantRank skills so
