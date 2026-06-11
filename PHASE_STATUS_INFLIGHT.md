@@ -3296,3 +3296,18 @@ PHASE_STATUS.md §Current state (8.6K-tok forced read every session-start) to
 ~2K — separate PR (collision-prone file).
 
 ---
+
+### Addendum (same PR, 2026-06-11): PHASE_STATUS.md §Current state drain
+
+User-confirmed follow-through of the workflow-audit recommendation: §Current
+state (the forced-read session-start section) drained 244 lines / ~8.6K tok →
+92 lines / ~2.1K tok. All merged-PR lists + closed next-deliverables entries +
+stale table prose MOVED VERBATIM (python slice, not retyped) into
+§Chronological history §"Relocated from §Current state". Currency fixes folded
+in: schema row → 0.10.18 (#456 + #458 manifest, verification pending on the
+2026-06-11 artifact), skill inventory 47→45, subagent inventory 22→25,
+production-run pointer → `65bfd335`, in-flight → PR #459 single entry,
+next-deliverables renumbered (DONE items relocated; 7a/7b spec retained as
+item 5 — CLAUDE.md pointer updated item 7→5).
+
+---

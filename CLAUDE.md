@@ -384,7 +384,7 @@ PHASE_STATUS.md):
   Supabase client-wiring pre-PR (§Connectors). Entry gates: WORKFLOW.md
   §Phase 5.
 - **5 · Stock-attribute tiles (Dividend + Security-type)** —
-  display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 7.
+  display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
   pilot (#249 off-cycle pre-cache prerequisite) — detail in WORKFLOW.md.
