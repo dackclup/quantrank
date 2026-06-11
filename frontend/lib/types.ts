@@ -564,6 +564,11 @@ export type BacktestRebalance = {
   // { "1": { TICKER: weight, ... }, ..., "10": {...} } — inverse-vol weights
   // for each selectable basket size N. Weights within a count sum to ~1.
   weights_by_count: Record<string, Record<string, number>>;
+  // Phase 7.0 ADAPTIVE — the number of holdings selected by the adaptive rule
+  // (composite >= 65, floor 5, cap 20) at this rebalance. The adaptive book is
+  // the PREFIX holdings[:adaptive_count] with weights_by_count[String(adaptive_count)].
+  // Present only when the artifact was generated with the adaptive rule.
+  adaptive_count?: number;
 };
 
 export type BacktestNavCountSeries = {
@@ -581,6 +586,18 @@ export type BacktestNav = {
   // Daily NAV per holding count N=1..max_holdings, all on `dates`.
   by_count: Record<string, BacktestNavCountSeries>;
   default_count: number;
+  // Phase 7.0 ADAPTIVE book — composite >= 65, floor 5, cap 20. Present only
+  // when the artifact was generated with the adaptive rule (parallel compute
+  // change). The series shape matches any by_count entry.
+  adaptive?: BacktestNavCountSeries;
+};
+
+// Phase 7.0 ADAPTIVE — the threshold rule that sizes the basket each rebalance.
+// Present only when the artifact was generated with the adaptive rule.
+export type AdaptiveRule = {
+  composite_min: number;
+  min_picks: number;
+  max_picks: number;
 };
 
 export type BacktestMeta = {
@@ -604,6 +621,9 @@ export type BacktestMeta = {
   // could NOT be replayed point-in-time (names only; full reason in
   // the artifact). Absent / null on old artifacts (veto_layer_replayed=false).
   vetoes_not_replayed?: { name: string; reason?: string }[] | null;
+  // Phase 7.0 ADAPTIVE — present when the artifact was generated with the
+  // adaptive basket-sizing rule.
+  adaptive_rule?: AdaptiveRule | null;
   disclaimer: string;
 };
 
@@ -639,6 +659,32 @@ export type AiPickTimelineHolding = {
 export type AiPickTimelineEntry = {
   date: string;
   holdings: AiPickTimelineHolding[];
+};
+
+// Adaptive-mode view model — present when the artifact carries nav.adaptive.
+// null when the artifact predates the adaptive rule contract (current artifact).
+export type AiPickAdaptive = {
+  // The threshold rule that sized the basket each rebalance.
+  rule: AdaptiveRule;
+  // Rounded net NAV series for the adaptive book, aligned to `dates`.
+  net: (number | null)[];
+  // Rounded gross NAV series for the adaptive book.
+  gross: (number | null)[];
+  // Rounded conservative-cost NAV series for the adaptive book.
+  conservative: (number | null)[];
+  // Final (last-finite) gross/net/conservative for the adaptive book.
+  finals: AiPickFinals;
+  // Number of picks at the latest rebalance (from rebalances[-1].adaptive_count).
+  latestCount: number;
+  // Latest-rebalance adaptive holdings: the prefix holdings[:latestCount],
+  // sorted by weight descending (same order as the "Current picks" card for
+  // fixed-count books), each with ticker + sector + composite_score + weight.
+  latestHoldings: Array<{
+    ticker: string;
+    sector: string;
+    composite_score: number;
+    weight: number;
+  }>;
 };
 
 export type AiPickData = {
@@ -679,4 +725,8 @@ export type AiPickData = {
   // Names of vetoes excluded from the replay (only meaningful when
   // vetoLayerReplayed=true; undefined on old artifacts).
   vetoesNotReplayed: { name: string }[] | undefined;
+  // Phase 7.0 ADAPTIVE — non-null when the artifact carries nav.adaptive.
+  // null when the artifact predates the adaptive rule contract (backward-compat
+  // fallback: render the slider UI exactly as today).
+  adaptive: AiPickAdaptive | null;
 };

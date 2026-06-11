@@ -79,7 +79,377 @@ function toneClass(v: number | null): string {
   return v >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
 }
 
-export function AiPickPortfolio({ data }: { data: AiPickData }) {
+// ---------------------------------------------------------------------------
+// Shared chart-view builder — used by both adaptive + slider branches.
+// ---------------------------------------------------------------------------
+function buildView(
+  net: (number | null)[],
+  gross: (number | null)[],
+  cons: (number | null)[],
+  bser: (number | null)[],
+  dates: string[],
+  period: string,
+  capital: number,
+) {
+  const years = PERIODS.find((p) => p.value === period)?.years ?? 5;
+  const startIdx = startIndexForYears(dates, years);
+  const pAnchor = firstFiniteFrom(net, startIdx);
+  const gAnchor = firstFiniteFrom(gross, startIdx);
+  const cAnchor = firstFiniteFrom(cons, startIdx);
+  const bAnchor = firstFiniteFrom(bser, startIdx);
+
+  const span = dates.length - startIdx;
+  const step = Math.max(1, Math.ceil(span / MAX_CHART_POINTS));
+  const point = (i: number) => ({
+    date: dates[i],
+    portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * capital) : null,
+    benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * capital) : null,
+    yearStart: false,
+  });
+  const points: ReturnType<typeof point>[] = [];
+  for (let i = startIdx; i < dates.length; i += step) points.push(point(i));
+  if (dates.length > 0 && (dates.length - 1 - startIdx) % step !== 0) {
+    points.push(point(dates.length - 1));
+  }
+  // Mark the first sampled point of each calendar year — NavCompareChart draws
+  // a hollow ring there and uses these as the year x-axis ticks (Jitta look).
+  let prevYear = '';
+  for (const p of points) {
+    const yr = p.date.slice(0, 4);
+    p.yearStart = yr !== prevYear;
+    prevYear = yr;
+  }
+
+  const lastPoint = points[points.length - 1];
+  // 1Y → quarterly · 3Y → semi-annual · 5Y+ → yearly boundary points
+  const tickMode: 'quarter' | 'halfyear' | 'year' =
+    years <= 1 ? 'quarter' : years <= 3 ? 'halfyear' : 'year';
+  const thinPoints: typeof points[0][] = [];
+  if (tickMode !== 'year') {
+    let prevBucket = '';
+    for (const p of points) {
+      const [y, m] = p.date.split('-');
+      const bucket = tickMode === 'quarter'
+        ? `${y}-${Math.ceil(Number(m) / 3)}`
+        : `${y}-${Math.ceil(Number(m) / 6)}`;
+      if (bucket !== prevBucket) { p.yearStart = true; thinPoints.push(p); prevBucket = bucket; }
+    }
+  } else {
+    for (const p of points) { if (p.yearStart) thinPoints.push(p); }
+  }
+  if (lastPoint && thinPoints[thinPoints.length - 1] !== lastPoint) {
+    thinPoints.push(lastPoint);
+  }
+  const retFromBase = (v: number | null | undefined) =>
+    v === null || v === undefined ? null : (v / capital - 1) * 100;
+  const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
+  const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
+  const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
+  const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
+  return {
+    points: thinPoints,
+    tickMode,
+    endPortfolio: lastPoint ? lastPoint.portfolio : null,
+    endBenchmark: lastPoint ? lastPoint.benchmark : null,
+    periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
+    periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
+    periodGross,
+    periodConservative,
+    periodStart: dates[startIdx] ?? null,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// ADAPTIVE branch — shown when data.adaptive is non-null.
+// The slider is removed; the AI sizes the basket automatically.
+// ---------------------------------------------------------------------------
+function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
+  const { meta, dates, benchmark, timeline, vetoLayerReplayed, vetoesNotReplayed } = data;
+  // adaptive is guaranteed non-null in this branch (the parent gates on it)
+  const adaptive = data.adaptive!;
+
+  const [bench, setBench] = useState<string>(meta.default_benchmark);
+  const [period, setPeriod] = useState<string>('MAX');
+  const [capital, setCapital] = useState<number>(CHART_BASE);
+
+  const benchLabel = (BENCHMARKS.find((b) => b.value === bench)?.label ?? bench).toUpperCase();
+  const portfolioLabel = `AI pick · adaptive`;
+
+  const bser = useMemo(() => benchmark[bench] ?? [], [benchmark, bench]);
+
+  const view = useMemo(
+    () => buildView(adaptive.net, adaptive.gross, adaptive.conservative, bser, dates, period, capital),
+    [adaptive.net, adaptive.gross, adaptive.conservative, bser, dates, period, capital],
+  );
+
+  const { latestCount, latestHoldings, rule, finals } = adaptive;
+
+  const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
+  const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
+  const netReturn   = view.periodPortfolio;
+  const benchReturn = view.periodBenchmark;
+
+  // Sector-concentration disclosure (methodology-scientist 2026-06-06).
+  const topSector = latestHoldings.reduce<{ sector: string; n: number } | null>((best, h) => {
+    const n = latestHoldings.filter((x) => x.sector === h.sector).length;
+    return !best || n > best.n ? { sector: h.sector, n } : best;
+  }, null);
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-5 rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
+        {/* Headline — full-window net return vs the chosen index */}
+        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+              AI pick · adaptive basket · net of cost
+            </div>
+            <div className={`font-mono text-4xl font-bold tabular-nums ${toneClass(netReturn)}`}>
+              {pctStr(netReturn)}
+            </div>
+            <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              since {view.periodStart ?? meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+              {benchLabel}
+            </div>
+            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
+              {pctStr(benchReturn)}
+            </div>
+            <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              {netReturn !== null && benchReturn !== null
+                ? `${pctStr(netReturn - benchReturn)} vs index`
+                : 'benchmark'}
+            </div>
+          </div>
+        </div>
+
+        {/* Adaptive basket context — explains the sizing rule clearly */}
+        <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          {vetoLayerReplayed ? (
+            <>
+              AI-sized basket — this quarter{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {latestCount} {latestCount === 1 ? 'name' : 'names'}
+              </span>{' '}
+              (holds every pick scoring{' '}
+              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                ≥{rule.composite_min.toFixed(0)}
+              </span>
+              ; min{' '}
+              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                {rule.min_picks}
+              </span>
+              , max{' '}
+              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                {rule.max_picks}
+              </span>
+              ). Replays{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {vetoesNotReplayed && vetoesNotReplayed.length > 0
+                  ? `${7 - vetoesNotReplayed.length} of 7`
+                  : 'all 7'}{' '}
+                live defense vetoes
+              </span>{' '}
+              point-in-time
+              {vetoesNotReplayed && vetoesNotReplayed.length > 0 && (
+                <>
+                  {' '}({vetoesNotReplayed.map((v) => flagLabel(v.name)).join(', ')} excluded)
+                </>
+              )}
+              — a closer proxy to the live product, but still not identical.
+            </>
+          ) : (
+            <>
+              AI-sized basket — this quarter{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {latestCount} {latestCount === 1 ? 'name' : 'names'}
+              </span>{' '}
+              (holds every pick scoring{' '}
+              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                ≥{rule.composite_min.toFixed(0)}
+              </span>
+              ; min{' '}
+              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                {rule.min_picks}
+              </span>
+              , max{' '}
+              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                {rule.max_picks}
+              </span>
+              ). Factor-tilted book — the defense-layer vetoes that filter the live
+              Top-5 are{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                not replayed here
+              </span>
+              .
+            </>
+          )}
+        </p>
+
+        {/* Controls — benchmark picker only (no count slider in adaptive mode) */}
+        <div className="max-w-sm space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+            Compare with
+          </span>
+          <SegmentedSelector
+            options={BENCHMARKS}
+            value={bench}
+            onChange={setBench}
+            ariaLabel="Benchmark index"
+          />
+        </div>
+
+        {/* Chart + timeframe */}
+        <div className="space-y-2">
+          <div className="flex items-baseline gap-1 text-xs text-slate-400 dark:text-slate-500">
+            <span>$</span>
+            <input
+              type="number"
+              min={100}
+              step={1000}
+              value={capital}
+              onChange={(e) => { const v = Math.round(Number(e.target.value)); if (v >= 100) setCapital(v); }}
+              className="w-24 rounded border border-slate-300 bg-transparent px-1.5 py-0.5 font-mono tabular-nums text-slate-600 focus:border-slate-400 focus:outline-none dark:border-slate-600 dark:text-slate-300 dark:focus:border-slate-400 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <span>invested at window start</span>
+          </div>
+          <div className="relative">
+            <NavCompareChartLazy
+              data={view.points}
+              portfolioLabel={portfolioLabel}
+              benchmarkLabel={benchLabel}
+              money
+              baseline={capital}
+              tickMode={view.tickMode}
+            />
+            {/* Stats overlay — top-left inside the plot area */}
+            <div className="pointer-events-none absolute left-10 top-3 space-y-0.5">
+              <div className="flex items-baseline gap-1 text-[10px] leading-tight">
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{portfolioLabel} (net)</span>
+                <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endPortfolio)}</span>
+                {view.periodPortfolio !== null && (
+                  <span className={`font-mono tabular-nums ${toneClass(view.periodPortfolio)}`}>{pctStr(view.periodPortfolio)}</span>
+                )}
+              </div>
+              <div className="flex items-baseline gap-1 text-[10px] leading-tight">
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{benchLabel}</span>
+                <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endBenchmark)}</span>
+                {view.periodBenchmark !== null && (
+                  <span className={`font-mono tabular-nums ${toneClass(view.periodBenchmark)}`}>{pctStr(view.periodBenchmark)}</span>
+                )}
+              </div>
+            </div>
+          </div>
+          <SegmentedSelector
+            options={PERIODS}
+            value={period}
+            onChange={setPeriod}
+            ariaLabel="Chart timeframe"
+          />
+        </div>
+
+        {/* Cost band */}
+        <div className="grid grid-cols-3 gap-2 border-t border-slate-100 pt-4 text-center dark:border-slate-800">
+          <CostStat label="Gross" value={grossReturn} />
+          <CostStat label="Net (10bps)" value={netReturn} />
+          <CostStat label="Net (25bps)" value={consReturn} />
+        </div>
+      </div>
+
+      {/* Current picks — adaptive basket */}
+      <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
+        <div className="mb-1 flex items-baseline justify-between gap-2">
+          <h2 className="font-slab text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Current picks
+          </h2>
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            as of {data.latest?.date ?? meta.as_of_end}
+          </span>
+        </div>
+        <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
+          AI-sized basket —{' '}
+          <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+            {latestCount}
+          </span>{' '}
+          {latestCount === 1 ? 'stock' : 'stocks'} this quarter, inverse-volatility weighted. Every
+          pick scoring{' '}
+          <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> is
+          included (min {rule.min_picks}, max {rule.max_picks}).
+          {topSector && (
+            <>
+              {' '}Top sector:{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">{topSector.sector}</span>{' '}
+              — <span className="font-mono tabular-nums">{topSector.n}</span> of{' '}
+              <span className="font-mono tabular-nums">{latestCount}</span>.
+            </>
+          )}
+        </p>
+        <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <span className="w-4 shrink-0">#</span>
+          <span>Ticker</span>
+          <span className="hidden sm:inline">Sector</span>
+          <span className="ml-auto w-14 shrink-0 text-right">Score</span>
+          <span className="w-12 shrink-0 text-right">Weight</span>
+        </div>
+        <ol className="divide-y divide-slate-100 dark:divide-slate-800">
+          {latestHoldings.map((h, i) => (
+            <li key={h.ticker} className="flex items-center gap-3 py-2">
+              <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                {i + 1}
+              </span>
+              <Link
+                href={`/stock/${h.ticker}/`}
+                className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
+              >
+                {h.ticker}
+              </Link>
+              <span className="hidden sm:inline">
+                <SectorChip sector={h.sector} />
+              </span>
+              <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
+                {h.composite_score.toFixed(1)}
+              </span>
+              <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* Annual returns — derived from the adaptive net series */}
+      <AnnualReturnsTable
+        dates={dates}
+        portfolio={adaptive.net}
+        benchmark={benchmark[bench] ?? []}
+        portfolioLabel={portfolioLabel}
+        benchmarkLabel={benchLabel}
+        vetoLayerReplayed={vetoLayerReplayed}
+        vetoesNotReplayed={vetoesNotReplayed}
+      />
+
+      {timeline.length > 0 && (
+        <HoldingsTimeline timeline={timeline} count={latestCount} />
+      )}
+
+      <p className="text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+        {meta.disclaimer}
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// SLIDER (legacy) branch — shown when data.adaptive is null.
+// This is the EXISTING UI, unchanged, so the deploy is safe until the next
+// backfill/cron regenerates the artifact with nav.adaptive.
+// ---------------------------------------------------------------------------
+function AiPickSliderBranch({ data }: { data: AiPickData }) {
   const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline, entryCloses, lastCloses, vetoLayerReplayed, vetoesNotReplayed } = data;
 
   // Default to the count with the highest Max-window net return so the first
@@ -103,78 +473,20 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
   const benchLabel = (BENCHMARKS.find((b) => b.value === bench)?.label ?? bench).toUpperCase();
   const portfolioLabel = `AI pick · ${count}`;
 
-  const view = useMemo(() => {
-    const net = netByCount[countKey] ?? [];
-    const gross = grossByCount[countKey] ?? [];
-    const cons = conservativeByCount[countKey] ?? [];
-    const bser = benchmark[bench] ?? [];
-    const years = PERIODS.find((p) => p.value === period)?.years ?? 5;
-    const startIdx = startIndexForYears(dates, years);
-    const pAnchor = firstFiniteFrom(net, startIdx);
-    const gAnchor = firstFiniteFrom(gross, startIdx);
-    const cAnchor = firstFiniteFrom(cons, startIdx);
-    const bAnchor = firstFiniteFrom(bser, startIdx);
+  const bser = useMemo(() => benchmark[bench] ?? [], [benchmark, bench]);
 
-    const span = dates.length - startIdx;
-    const step = Math.max(1, Math.ceil(span / MAX_CHART_POINTS));
-    const point = (i: number) => ({
-      date: dates[i],
-      portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * capital) : null,
-      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * capital) : null,
-      yearStart: false,
-    });
-    const points: ReturnType<typeof point>[] = [];
-    for (let i = startIdx; i < dates.length; i += step) points.push(point(i));
-    if (dates.length > 0 && (dates.length - 1 - startIdx) % step !== 0) {
-      points.push(point(dates.length - 1));
-    }
-    // Mark the first sampled point of each calendar year — NavCompareChart draws
-    // a hollow ring there and uses these as the year x-axis ticks (Jitta look).
-    let prevYear = '';
-    for (const p of points) {
-      const yr = p.date.slice(0, 4);
-      p.yearStart = yr !== prevYear;
-      prevYear = yr;
-    }
-
-    const lastPoint = points[points.length - 1];
-    // 1Y → quarterly · 3Y → semi-annual · 5Y+ → yearly boundary points
-    const tickMode: 'quarter' | 'halfyear' | 'year' =
-      years <= 1 ? 'quarter' : years <= 3 ? 'halfyear' : 'year';
-    const thinPoints: typeof points[0][] = [];
-    if (tickMode !== 'year') {
-      let prevBucket = '';
-      for (const p of points) {
-        const [y, m] = p.date.split('-');
-        const bucket = tickMode === 'quarter'
-          ? `${y}-${Math.ceil(Number(m) / 3)}`
-          : `${y}-${Math.ceil(Number(m) / 6)}`;
-        if (bucket !== prevBucket) { p.yearStart = true; thinPoints.push(p); prevBucket = bucket; }
-      }
-    } else {
-      for (const p of points) { if (p.yearStart) thinPoints.push(p); }
-    }
-    if (lastPoint && thinPoints[thinPoints.length - 1] !== lastPoint) {
-      thinPoints.push(lastPoint);
-    }
-    const retFromBase = (v: number | null | undefined) =>
-      v === null || v === undefined ? null : (v / capital - 1) * 100;
-    const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
-    const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
-    const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
-    const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
-    return {
-      points: thinPoints,
-      tickMode,
-      endPortfolio: lastPoint ? lastPoint.portfolio : null,
-      endBenchmark: lastPoint ? lastPoint.benchmark : null,
-      periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
-      periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
-      periodGross,
-      periodConservative,
-      periodStart: dates[startIdx] ?? null,
-    };
-  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period, capital]);
+  const view = useMemo(
+    () => buildView(
+      netByCount[countKey] ?? [],
+      grossByCount[countKey] ?? [],
+      conservativeByCount[countKey] ?? [],
+      bser,
+      dates,
+      period,
+      capital,
+    ),
+    [netByCount, grossByCount, conservativeByCount, bser, dates, countKey, period, capital],
+  );
 
   // All three cost-band columns are now period-aware (series exposed via grossByCount /
   // conservativeByCount); finalsByCount is kept only as a fallback when series are absent.
@@ -466,6 +778,16 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       </p>
     </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Public export — routes to adaptive or slider branch based on data.adaptive.
+// ---------------------------------------------------------------------------
+export function AiPickPortfolio({ data }: { data: AiPickData }) {
+  if (data.adaptive !== null) {
+    return <AiPickAdaptiveBranch data={data} />;
+  }
+  return <AiPickSliderBranch data={data} />;
 }
 
 function CostStat({ label, value }: { label: string; value: number | null }) {

@@ -5,6 +5,7 @@ import rankingsJson from '@/public/data/rankings.json';
 import metadataJson from '@/public/data/metadata.json';
 
 import type {
+  AiPickAdaptive,
   AiPickData,
   AiPickFinals,
   BacktestPIT,
@@ -142,6 +143,48 @@ export function getAiPickData(): AiPickData | null {
     lastCloses[h.ticker] = hist ? round2(lastFinite(hist.closes)) : null;
   }
 
+  // Phase 7.0 ADAPTIVE — resolve when the artifact carries nav.adaptive AND
+  // the latest rebalance has adaptive_count. Build-time only; never fs-imports
+  // into a 'use client' component (the build-time-data rule). Null-safe: when
+  // the artifact predates the contract the component falls back to slider UI.
+  let adaptive: AiPickAdaptive | null = null;
+  if (
+    nav.adaptive &&
+    meta.adaptive_rule &&
+    typeof last.adaptive_count === 'number'
+  ) {
+    const adaptiveSeries = nav.adaptive;
+    const adaptiveCount = last.adaptive_count;
+    const adaptiveCountKey = String(adaptiveCount);
+    const adaptiveWeights = last.weights_by_count[adaptiveCountKey] ?? {};
+
+    // The adaptive basket is the PREFIX holdings[:adaptiveCount], sorted by
+    // weight descending to match the "Current picks" card display order.
+    const adaptiveHoldings = last.holdings
+      .slice(0, adaptiveCount)
+      .sort((a, b) => (adaptiveWeights[b.ticker] ?? 0) - (adaptiveWeights[a.ticker] ?? 0))
+      .map((h) => ({
+        ticker: h.ticker,
+        sector: h.sector,
+        composite_score: round2(h.composite_score) ?? h.composite_score,
+        weight: round2(adaptiveWeights[h.ticker] ?? null) ?? 0,
+      }));
+
+    adaptive = {
+      rule: meta.adaptive_rule,
+      net: adaptiveSeries.net.map(round2),
+      gross: adaptiveSeries.gross.map(round2),
+      conservative: adaptiveSeries.net_conservative.map(round2),
+      finals: {
+        gross: round2(lastFinite(adaptiveSeries.gross)),
+        net: round2(lastFinite(adaptiveSeries.net)),
+        conservative: round2(lastFinite(adaptiveSeries.net_conservative)),
+      },
+      latestCount: adaptiveCount,
+      latestHoldings: adaptiveHoldings,
+    };
+  }
+
   return {
     meta,
     dates: nav.dates,
@@ -171,6 +214,7 @@ export function getAiPickData(): AiPickData | null {
     vetoesNotReplayed: meta.vetoes_not_replayed
       ? meta.vetoes_not_replayed.map((v) => ({ name: v.name }))
       : undefined,
+    adaptive,
   };
 }
 
