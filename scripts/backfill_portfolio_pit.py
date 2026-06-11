@@ -118,7 +118,24 @@ BENCHMARKS_JSON = "portfolio/benchmarks.json"
 # Adaptive-book rule: the AI sizes its own basket each rebalance by holding EVERY
 # high-conviction pick whose composite_score >= ADAPTIVE_COMPOSITE_MIN, subject to
 # a floor of ADAPTIVE_MIN_PICKS and a cap of MAX_PICKS.
-# Pending methodology-scientist ratification — keep these as the single flip point.
+# Provenance: EMPIRICAL-IN-SAMPLE (grid-swept {55,60,65,70} x {1,3,5} floors, 40
+# rebalances 2016-08..2026-05 on the veto-replayed artifact; NOT literature-anchored,
+# NOT a canonical TIERS boundary). Structural corroboration: monotone dose-response
+# 55->60->65 in the full window AND both halves (Patton-Timmermann 2010 MR-test
+# logic); the >=70 cliff has a known mechanism (0-8-name concentration books) and
+# floor 5 de-fangs it (Evans-Archer 1968 / Elton-Gruber 1977 — the 1->5 leg removes
+# ~80% of idiosyncratic variance); the rule's mean count (8.0) lands on the
+# independent fixed-N sweet spot (N=8-14). Expect roughly HALF the in-sample edge
+# forward (McLean-Pontiff 2016 decay + in-sample-selection haircut).
+# Forward acceptance gates (pre-registered; evaluated at quarterly cohort audits):
+#   A1 score-drought: raw pre-floor count < 5 in >= 3 of any 4 consecutive
+#      rebalances -> reopen threshold (candidate 60).
+#   A2 inflation: raw count >= 18 in 2 consecutive rebalances -> reopen.
+#   B  relative gate @ 8th live rebalance: adaptive net NAV trails BOTH
+#      by_count[8] AND SPY -> reopen (fallback = quasi-fixed-N=8, NOT a higher floor).
+#   C  freeze lock: no grid re-sweeps on refreshed artifacts until A or B fires.
+# methodology-scientist RATIFY 2026-06-11 (conditions C1 provenance comment = this
+# block; C2 test pin in tests/test_portfolio; C3 gate registration on issue #130).
 ADAPTIVE_COMPOSITE_MIN: float = 65.0
 ADAPTIVE_MIN_PICKS: int = 5
 
@@ -374,6 +391,25 @@ def _sector_weights_by_count(
         if by_sector:
             out[str(n)] = by_sector
     return out
+
+
+def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[int, int]:
+    """``(raw, final)`` adaptive-book counts for one rebalance.
+
+    ``raw`` = #{score >= ADAPTIVE_COMPOSITE_MIN}, INCLUSIVE boundary (a pick scoring
+    exactly 65.0 is in the book) — the A1/A2 acceptance gates read the raw count.
+    ``final`` = raw floored at ``min(ADAPTIVE_MIN_PICKS, len(scores))`` (cap implicit:
+    ``len(scores) <= MAX_PICKS`` via select_picks), then clamped to the largest
+    available weights count <= it — falling back to the smallest available when none
+    is (the sigma-coverage degradation path; gate A1 monitors the final count for
+    exactly this reason). C2 test pin: tests/test_portfolio/test_backfill_integration.py.
+    """
+    raw = sum(1 for s in scores if s >= ADAPTIVE_COMPOSITE_MIN)
+    final = max(raw, min(ADAPTIVE_MIN_PICKS, len(scores)))
+    avail = sorted(available_counts)
+    if avail:
+        final = max((c for c in avail if c <= final), default=avail[0])
+    return raw, final
 
 
 def run_backfill(
@@ -670,20 +706,11 @@ def run_backfill(
             continue  # no name in this leg had a computable 90d sigma
 
         # Adaptive-book count for this rebalance: prefix of `picks` (composite-desc,
-        # HC-gated) whose composite_score >= ADAPTIVE_COMPOSITE_MIN.
-        n_adaptive = sum(
-            1 for t in picks if float(composite[t]) >= ADAPTIVE_COMPOSITE_MIN
+        # HC-gated) whose composite_score >= ADAPTIVE_COMPOSITE_MIN. The RAW pre-floor
+        # count is exported separately — the A1/A2 acceptance gates read it.
+        n_adaptive_raw, n_adaptive = _adaptive_count(
+            [float(composite[t]) for t in picks], list(weights_by_count.keys())
         )
-        # Floor: at least ADAPTIVE_MIN_PICKS (or len(picks) if the basket is smaller).
-        n_adaptive = max(n_adaptive, min(ADAPTIVE_MIN_PICKS, len(picks)))
-        # Cap is implicit: len(picks) <= MAX_PICKS (select_picks never exceeds MAX_PICKS).
-        # Clamp to the largest count that has weights (sigma-less names may shrink maps).
-        available_counts = sorted(weights_by_count.keys())
-        if available_counts:
-            n_adaptive = max(
-                (c for c in available_counts if c <= n_adaptive),
-                default=available_counts[0],
-            )
 
         rebalance_picks.append((T_iso, weights_by_count, n_adaptive))
 
@@ -750,6 +777,10 @@ def run_backfill(
                 # (composite >= ADAPTIVE_COMPOSITE_MIN, floored at ADAPTIVE_MIN_PICKS,
                 # capped at MAX_PICKS, clamped to an available weights map).
                 "adaptive_count": n_adaptive,
+                # adaptive_count_raw: the PRE-floor/clamp count (#{composite >= 65}
+                # among HC picks) — the A1 score-drought / A2 inflation acceptance
+                # gates read this, not the floored count.
+                "adaptive_count_raw": n_adaptive_raw,
             }
         )
 

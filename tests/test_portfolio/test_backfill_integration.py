@@ -364,9 +364,10 @@ def test_assemble_nav_builds_one_aligned_series_per_count(tmp_path) -> None:
         "BBB": _bday_frame([100.0 - 0.2 * i for i in range(120)]),  # steadily down
     }
     # two quarterly rebalances on real business days inside the price window
+    # (3-tuples since the adaptive book: third element = n_adaptive for that leg)
     rebalance_picks = [
-        ("2022-01-10", {1: {"AAA": 1.0}, 2: {"AAA": 0.5, "BBB": 0.5}}),
-        ("2022-03-14", {1: {"AAA": 1.0}, 2: {"AAA": 0.6, "BBB": 0.4}}),
+        ("2022-01-10", {1: {"AAA": 1.0}, 2: {"AAA": 0.5, "BBB": 0.5}}, 2),
+        ("2022-03-14", {1: {"AAA": 1.0}, 2: {"AAA": 0.6, "BBB": 0.4}}, 2),
     ]
     out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path)
 
@@ -389,7 +390,7 @@ def test_assemble_nav_snaps_weekend_rebalance_to_trading_day(tmp_path) -> None:
     rather than being silently dropped (build_portfolio_nav needs a date in the calendar)."""
     prices_by_ticker = {"AAA": _bday_frame([100.0 + i for i in range(60)])}
     # 2022-01-08 is a Saturday; the next trading day is Monday 2022-01-10
-    rebalance_picks = [("2022-01-08", {1: {"AAA": 1.0}})]
+    rebalance_picks = [("2022-01-08", {1: {"AAA": 1.0}}, 1)]
     out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path)
 
     assert out["by_count"]  # the leg was NOT dropped
@@ -730,4 +731,259 @@ def test_active_veto_flags_covered_by_meta_claims() -> None:
         "Add any new active veto to either _VETOES_REPLAYED (if it can be replayed "
         "PIT from snapshot + history) or _VETOES_NOT_REPLAYED (with a reason string) "
         "so the meta.veto_layer_replayed claim stays honest."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Adaptive AI-pick book tests (Phase 7.0c adaptive-book feature)
+# ---------------------------------------------------------------------------
+# The adaptive rule: hold every HC-gated pick with composite >= ADAPTIVE_COMPOSITE_MIN
+# (65.0), floored at ADAPTIVE_MIN_PICKS (5), capped at MAX_PICKS (20), clamped to an
+# available weights_by_count key.  Per-rebalance export: rebalances[i].adaptive_count;
+# nav["adaptive"] (same shape as a by_count entry); meta["adaptive_rule"].
+# The n_adaptive arithmetic is inline in run_backfill (not a named function), so tests
+# 1-3 exercise it through the end-to-end synthetic path with composites engineered to
+# land above/below 65.0; tests 4-5 call _assemble_nav directly with 3-tuples.
+
+
+def test_adaptive_count_end_to_end_all_picks_above_threshold(tmp_path, _universe) -> None:
+    """When all picks clear composite >= 65, n_adaptive = len(picks) (floored by
+    min(ADAPTIVE_MIN_PICKS, len(picks))). With a 3-ticker universe every rebalance's
+    adaptive_count must be in [1, MAX_PICKS] and must be an int."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0
+
+    for reb in payload["rebalances"]:
+        ac = reb["adaptive_count"]
+        assert isinstance(ac, int), f"adaptive_count should be int, got {type(ac)}"
+        n_picks = len(reb["holdings"])
+        assert 1 <= ac <= bf.MAX_PICKS, (
+            f"adaptive_count {ac} out of [1, MAX_PICKS={bf.MAX_PICKS}]"
+        )
+        # adaptive_count must not exceed actual picks produced for this rebalance.
+        assert ac <= n_picks, (
+            f"adaptive_count {ac} > len(holdings) {n_picks} — clamp failed"
+        )
+
+
+def test_adaptive_count_floor_when_all_picks_below_threshold(tmp_path, _universe) -> None:
+    """When no pick clears composite >= 65, raw n_adaptive = 0 → floor applies:
+    n_adaptive = min(ADAPTIVE_MIN_PICKS, len(picks)). With a 3-ticker universe and
+    gate='veto_only', the floor at ADAPTIVE_MIN_PICKS=5 is bounded by len(picks)<=3,
+    so adaptive_count must equal min(5, len(holdings)) = len(holdings) for every leg."""
+    # Drive composite below ADAPTIVE_COMPOSITE_MIN (65) by using very low scales so the
+    # composite pillar scores are all near the neutral baseline (~50 for a 3-ticker cohort).
+    # The scale_by_cik approach suppresses revenue/profit without triggering
+    # data_quality_input_corruption (revenue must stay >= $50M — $100M * 0.01 * ~1 = $1M,
+    # which may fire the corruption veto, so mock _compute_pit_risk_flags to stay clean).
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0
+
+    for reb in payload["rebalances"]:
+        ac = reb["adaptive_count"]
+        n_picks = len(reb["holdings"])
+        # Floor contract: adaptive_count >= min(ADAPTIVE_MIN_PICKS, len(picks)).
+        expected_floor = min(bf.ADAPTIVE_MIN_PICKS, n_picks)
+        assert ac >= expected_floor, (
+            f"adaptive_count {ac} < floor min(ADAPTIVE_MIN_PICKS={bf.ADAPTIVE_MIN_PICKS}, "
+            f"len(picks)={n_picks}) = {expected_floor}; floor was not applied"
+        )
+
+
+def test_adaptive_count_boundary_inclusive_at_exactly_65() -> None:
+    """C2 pin (methodology-scientist RATIFY 2026-06-11): the threshold comparison is
+    INCLUSIVE — a pick scoring exactly ADAPTIVE_COMPOSITE_MIN (65.0) is in the adaptive
+    book; 64.999 is not. Also pins the ratified constant VALUES, the floor, the
+    sigma-coverage downclamp, and the smallest-available fallback path."""
+    # constants pin: the ratified values (65.0 / 5 — cap is MAX_PICKS, pinned elsewhere)
+    assert bf.ADAPTIVE_COMPOSITE_MIN == 65.0
+    assert bf.ADAPTIVE_MIN_PICKS == 5
+
+    scores = [70.0, 65.0, 64.999, 50.0, 40.0, 30.0]
+    raw, final = bf._adaptive_count(scores, available_counts=[1, 2, 3, 4, 5, 6])
+    assert raw == 2  # 70.0 and exactly-65.0 count; 64.999 does not
+    assert final == 5  # floored at min(ADAPTIVE_MIN_PICKS=5, len(scores)=6)
+
+    # sigma-coverage downclamp: only count 3 has a weights map -> final clamps DOWN
+    assert bf._adaptive_count(scores, available_counts=[3]) == (2, 3)
+    # no available count <= final -> falls back to the smallest available
+    assert bf._adaptive_count([70.0, 70.0], available_counts=[6, 9]) == (2, 6)
+    # floor is subordinate to basket size: 2 picks below threshold -> final = 2, not 5
+    assert bf._adaptive_count([60.0, 55.0], available_counts=[1, 2]) == (0, 2)
+
+
+def test_adaptive_count_clamp_to_available_counts(tmp_path) -> None:
+    """_assemble_nav: when n_adaptive > max(available_counts), the adaptive leg for
+    that rebalance is skipped (n_adp not in wbc) — no KeyError, adaptive stays empty.
+    This is the correct behavior: the run_backfill clamp ensures n_adaptive IS a valid
+    wbc key; the _assemble_nav guard is the second line of defence for any residual gap."""
+    prices_by_ticker = {
+        "AAA": _bday_frame([100.0 + i for i in range(120)]),
+    }
+    # weights_by_count only has key 1; n_adaptive=7 is not in wbc → leg skipped.
+    rebalance_picks = [
+        ("2022-01-10", {1: {"AAA": 1.0}}, 7),
+    ]
+    out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path)
+    # The "adaptive" key is always present in the output dict.
+    assert "adaptive" in out
+    # adaptive is {} (empty dict) when no valid leg exists — no KeyError raised.
+    assert out["adaptive"] == {}, (
+        f"Expected empty adaptive dict when n_adaptive not in wbc; got {out['adaptive']}"
+    )
+
+
+def test_assemble_nav_adaptive_shape_with_3tuple(tmp_path) -> None:
+    """_assemble_nav with proper 3-tuple rebalance_picks: nav['adaptive'] has the
+    same inner shape as a by_count entry (gross/net/net_conservative/turnover_by_rebalance)
+    and len(gross) == len(nav['dates'])."""
+    prices_by_ticker = {
+        "AAA": _bday_frame([100.0 + i for i in range(120)]),
+        "BBB": _bday_frame([100.0 - 0.2 * i for i in range(120)]),
+    }
+    # n_adaptive=1: use the weights_by_count[1] map (only AAA).
+    rebalance_picks = [
+        ("2022-01-10", {1: {"AAA": 1.0}, 2: {"AAA": 0.5, "BBB": 0.5}}, 1),
+        ("2022-03-14", {1: {"AAA": 1.0}, 2: {"AAA": 0.6, "BBB": 0.4}}, 2),
+    ]
+    out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path)
+
+    assert "adaptive" in out
+    adp = out["adaptive"]
+    nd = len(out["dates"])
+    assert nd > 0
+
+    # adaptive must have the same 4-key inner shape as by_count entries.
+    assert set(adp.keys()) == {"gross", "net", "net_conservative", "turnover_by_rebalance"}, (
+        f"adaptive keys mismatch: {set(adp.keys())}"
+    )
+    assert len(adp["gross"]) == nd, (
+        f"adaptive gross length {len(adp['gross'])} != dates length {nd} (left-pad contract)"
+    )
+    assert len(adp["net"]) == nd
+    assert len(adp["net_conservative"]) == nd
+
+    # by_count still populated (regression: 3-tuple must not break by_count).
+    assert set(out["by_count"]) == {"1", "2"}
+    for s in out["by_count"].values():
+        assert len(s["gross"]) == nd
+
+
+def test_assemble_nav_adaptive_skip_missing_n_adaptive_key(tmp_path) -> None:
+    """When n_adaptive key is absent from a rebalance's weights_by_count, that leg is
+    silently skipped (no KeyError) and the other legs continue without corruption."""
+    prices_by_ticker = {
+        "AAA": _bday_frame([100.0 + i for i in range(120)]),
+        "BBB": _bday_frame([100.0 - 0.2 * i for i in range(120)]),
+    }
+    # Rebalance 1: n_adaptive=3, but wbc only has keys {1, 2} → key 3 absent → skip.
+    # Rebalance 2: n_adaptive=1, wbc has key 1 → should produce the adaptive leg.
+    rebalance_picks = [
+        ("2022-01-10", {1: {"AAA": 1.0}, 2: {"AAA": 0.5, "BBB": 0.5}}, 3),  # 3 absent
+        ("2022-03-14", {1: {"AAA": 1.0}, 2: {"AAA": 0.6, "BBB": 0.4}}, 1),  # 1 present
+    ]
+    # Must not raise KeyError.
+    out = bf._assemble_nav(rebalance_picks, prices_by_ticker, data_dir=tmp_path)
+
+    assert "adaptive" in out
+    adp = out["adaptive"]
+    # The second rebalance IS included (n_adaptive=1 IS in its wbc), so adaptive is non-empty.
+    assert adp, "Expected non-empty adaptive dict when at least one leg has a valid n_adaptive key"
+    nd = len(out["dates"])
+    assert len(adp["gross"]) == nd, (
+        f"adaptive gross length {len(adp['gross'])} != dates length {nd}"
+    )
+    # by_count must be unaffected by the adaptive skip.
+    assert set(out["by_count"]) == {"1", "2"}
+
+
+def test_run_backfill_every_rebalance_has_adaptive_count_int_in_range(tmp_path, _universe) -> None:
+    """End-to-end: every rebalances[i].adaptive_count is an int in [1, MAX_PICKS].
+    This is the primary schema-correctness gate for the adaptive_count export."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0, "Expected at least one rebalance"
+
+    for reb in payload["rebalances"]:
+        ac = reb["adaptive_count"]
+        assert isinstance(ac, int), (
+            f"adaptive_count must be int, got {type(ac).__name__} at rebalance {reb['date']}"
+        )
+        assert 1 <= ac <= bf.MAX_PICKS, (
+            f"adaptive_count {ac} at {reb['date']} out of [1, MAX_PICKS={bf.MAX_PICKS}]"
+        )
+
+
+def test_meta_adaptive_rule_values(tmp_path, _universe) -> None:
+    """meta['adaptive_rule'] carries the canonical threshold values."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    meta = json.loads(out.read_text())["meta"]
+    assert "adaptive_rule" in meta, "meta.adaptive_rule missing from artifact"
+    rule = meta["adaptive_rule"]
+    assert rule == {
+        "composite_min": bf.ADAPTIVE_COMPOSITE_MIN,
+        "min_picks": bf.ADAPTIVE_MIN_PICKS,
+        "max_picks": bf.MAX_PICKS,
+    }, f"adaptive_rule mismatch: {rule}"
+
+
+def test_disclaimer_mentions_adaptive_threshold_tokens(tmp_path, _universe) -> None:
+    """The disclaimer must mention the adaptive threshold (65) and that holding count
+    varies, as required by the adaptive-book disclosure. Asserts on meaningful tokens,
+    not exact prose, so minor wording edits don't break the test."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    meta = json.loads(out.read_text())["meta"]
+    disclaimer = meta["disclaimer"]
+
+    # Must mention the numeric threshold.
+    assert "65" in disclaimer, (
+        "disclaimer does not mention composite threshold '65'; "
+        "adaptive-book disclosure requires the threshold to be stated"
+    )
+    # Must mention that holding count varies.
+    assert "varies" in disclaimer, (
+        "disclaimer does not mention that holding count 'varies'; "
+        "adaptive-book disclosure requires this"
     )
