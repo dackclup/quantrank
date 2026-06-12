@@ -370,7 +370,7 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   zero, and the benchmarks.json late-rebase cliff (~Aug 2026) dies free. Tests:
   22 mock-signature repairs + 12 new pins (min_start contract P1-P4 +
   anchor pins A1-A4 + Design-A pins A5-A8 + the tri-file v8 key pin);
-  full suite 1649 passed. Companion finding recorded
+  full suite 1650 passed. Companion finding recorded
   on issue #465: pre-2016 extension is blocked on a licensed
   delisted-price source (yfinance has zero pre-2021 delisted coverage) —
   2016 is the honest floor on the free stack. Detail:

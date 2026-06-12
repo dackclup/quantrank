@@ -3516,13 +3516,13 @@ would silently rebase after the portfolio start ~Aug 2026) is eliminated
 policy: revisit if the window exceeds ~15y (≈2031). Live consumers
 re-verified deeper-frame-safe (everything tail/iloc-capped).
 
-Tests: 22 mock-signature repairs (`fetch_prices` now receives kwargs) + 8
+Tests: 22 mock-signature repairs (`fetch_prices` now receives kwargs) + 12
 new pins — min_start contract (shallow-refetch-once / deep-no-download /
 new-listing-no-loop / None-bypass) + anchor pins (canonical-start value &
 type / A2 exercising main()'s REAL parser / buffer 185 / A4 full-window
 magnitude ≥130d) + Design-A pins (A5 cross-layer floor equality · A6
 fetch_prices downloads from the fixed floor · A7 period-branch regression
-· v8-fast key pin covering BOTH workflows). Full suite 1649 passed (osap modules excluded — sandbox env gap,
+· v8-fast key pin covering BOTH workflows). Full suite 1650 passed (osap modules excluded — sandbox env gap,
 CI installs .[factors]).
 
 **Files**: compute/ingest/prices.py · scripts/backfill_portfolio_pit.py ·

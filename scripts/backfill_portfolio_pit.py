@@ -145,7 +145,7 @@ BACKTEST_CANONICAL_START: date = date(2016, 6, 1)
 # because the cache already satisfies the floor.  Do NOT import compute.config
 # here to verify this at runtime — scripts may import compute, never the
 # reverse (layering invariant).  The equality is maintained by construction
-# and guarded by the A4 pin in tests/test_ingest/test_prices_min_start.py.
+# and guarded by the A5 pin in tests/test_ingest/test_prices_min_start.py.
 _SIGMA_LOOKBACK_BUFFER_DAYS: int = 185
 
 # The slider's default landing position. The artifact carries a NAV per holding
