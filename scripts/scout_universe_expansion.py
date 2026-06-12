@@ -379,26 +379,60 @@ def _score_ticker_batch(
         except Exception as e:
             logger.warning("[scout] Price fetch failed for %s: %s", ticker, e)
 
-    # Step 2: fetch fundamentals + history for each midcap ticker
+    # Step 2: fetch fundamentals + history for each midcap ticker.
+    # CIK resolution: the S&P 400 Wikipedia page carries no CIK column (all
+    # None at parse time), so we must resolve ticker → CIK via edgartools'
+    # Company(ticker) lookup.  Precedence:
+    #   1. CIK from the row (wiki-provided, if ever populated)
+    #   2. CIK captured from FundamentalsSnapshot.cik after fetch_fundamentals
+    #      succeeds — _build_snapshot stores it when Company(cik or ticker)
+    #      resolves via the numeric CIK path.
+    #   3. Explicit Company(ticker).cik lookup as a last resort.
+    # fetch_fundamentals_history(cik) calls Company(cik) directly and will
+    # query a random company when given an empty string, so a real CIK is
+    # required before calling it.
     snapshots: dict[str, Any] = {}
     histories: dict[str, pd.DataFrame] = {}
+    resolved_ciks: dict[str, str] = {}
     for row in ticker_rows:
         ticker = row["ticker"]
         cik = str(row.get("cik") or "")
         try:
             snap = fetch_fundamentals(ticker, cik)
             snapshots[ticker] = snap
+            # Attempt to harvest the resolved CIK from the snapshot itself.
+            # _build_snapshot writes the cik it was called with into the
+            # snapshot; when cik was '' the snapshot also has '' — so we
+            # fall through to the explicit lookup below in that case.
+            if snap is not None and snap.cik and snap.cik.strip():
+                cik = snap.cik.strip()
         except Exception as e:
             logger.warning("[scout] Fundamentals failed for %s: %s", ticker, e)
             snapshots[ticker] = None
+
+        # Resolve CIK from Company(ticker) if still missing.
+        if not cik:
+            try:
+                from edgar import Company as _Company  # already imported at module top
+                co = _Company(ticker)
+                raw_cik = getattr(co, "cik", None)
+                if raw_cik is not None:
+                    cik = str(int(str(raw_cik))).zfill(10)
+                    logger.debug("[scout] Resolved CIK for %s via ticker lookup: %s", ticker, cik)
+            except Exception as e:
+                logger.warning("[scout] CIK lookup failed for %s: %s", ticker, e)
+
+        resolved_ciks[ticker] = cik
+
         try:
             if cik:
                 hist = fetch_fundamentals_history(cik)
             else:
+                logger.warning("[scout] No CIK resolved for %s — history skipped", ticker)
                 hist = pd.DataFrame()
             histories[ticker] = hist
         except Exception as e:
-            logger.warning("[scout] History failed for %s: %s", ticker, e)
+            logger.warning("[scout] History failed for %s (cik=%s): %s", ticker, cik, e)
             histories[ticker] = pd.DataFrame()
 
     # Step 3: build TickerInputs for midcaps (only those with prices)
@@ -547,8 +581,16 @@ def mode_sp400_stage1(args: argparse.Namespace) -> None:
         sp400_df = sp400_df.head(args.limit)
         logger.info("Limiting to first %d tickers", len(sp400_df))
 
+    # --force-rescore: truncate the JSONL so all tickers re-score from scratch,
+    # reusing on-disk ingest caches (prices + fundamentals snapshots); only the
+    # annual-history fetch adds network time.
+    force_rescore = getattr(args, "force_rescore", False)
+    if force_rescore and SP400_STAGE1_JSONL.exists():
+        logger.info("--force-rescore: truncating %s for fresh re-score", SP400_STAGE1_JSONL)
+        SP400_STAGE1_JSONL.write_text("")
+
     # Check which tickers are already done (resumable)
-    already_done = _already_processed_tickers(SP400_STAGE1_JSONL)
+    already_done = set() if force_rescore else _already_processed_tickers(SP400_STAGE1_JSONL)
     pending = sp400_df[~sp400_df["ticker"].isin(already_done)].reset_index(drop=True)
     logger.info(
         "%d tickers to process (%d already in JSONL, %d remaining)",
@@ -602,6 +644,35 @@ def mode_sp400_stage1(args: argparse.Namespace) -> None:
     _build_stage1_summary()
 
 
+def _dominant_cross_section_note(records: list[dict]) -> str:
+    """Return the cross_section_note that applies to the MAJORITY of records.
+
+    The summary previously used records[0] which could be a cold-cache record
+    from a prior partial run, causing the note to say CAVEAT even when 390+/400
+    records were scored on the combined warm path.  We pick the note held by
+    the most records; ties break in favour of ``combined_sp500_plus_midcap``
+    (honest mode beats caveat mode in tie-breaking).
+    """
+    if not records:
+        return "no_data"
+    from collections import Counter
+    note_counts: Counter[str] = Counter(
+        r.get("cross_section_note", "unknown") for r in records
+    )
+    if not note_counts:
+        return "unknown"
+    # If combined mode is present at all, pick it when it ties with CAVEAT
+    # (it is the honest representation of what most tickers were scored on).
+    most_common = note_counts.most_common()
+    top_note, top_count = most_common[0]
+    if len(most_common) > 1:
+        combined_key = "combined_sp500_plus_midcap"
+        combined_count = note_counts.get(combined_key, 0)
+        if combined_count >= top_count:
+            return combined_key
+    return top_note
+
+
 def _build_stage1_summary() -> None:
     """Read the JSONL and write a summary JSON."""
     if not SP400_STAGE1_JSONL.exists():
@@ -646,7 +717,7 @@ def _build_stage1_summary() -> None:
             "max": round(max(composites), 2) if composites else None,
         },
         "degradation_summary": _degradation_summary(records),
-        "cross_section_note": records[0].get("cross_section_note", "unknown") if records else "no_data",
+        "cross_section_note": _dominant_cross_section_note(records),
         "top30_by_composite": sorted(
             [
                 {
@@ -940,15 +1011,40 @@ def mode_sp400_stage2(args: argparse.Namespace) -> None:
                 continue
             logger.info("[stage2] Processing %s...", ticker)
 
-            # Fetch snapshot + history (may hit cache from stage-1)
+            # Fetch snapshot + history (may hit cache from stage-1).
+            # CIK resolution: same pattern as _score_ticker_batch — resolve via
+            # Company(ticker).cik because the S&P 400 rows carry no wiki CIK.
+            # Beneish + Dechow need the annual history, which fetch_fundamentals_
+            # history() keys by CIK; passing "" calls Company("") and fetches a
+            # random company's history.
+            s2_cik = ""
             try:
                 snap = fetch_fundamentals(ticker, "")
+                if snap is not None and snap.cik and snap.cik.strip():
+                    s2_cik = snap.cik.strip()
             except Exception as e:
                 snap = None
                 logger.warning("[stage2] fundamentals failed for %s: %s", ticker, e)
+
+            if not s2_cik:
+                try:
+                    from edgar import Company as _Company
+                    _co = _Company(ticker)
+                    _raw = getattr(_co, "cik", None)
+                    if _raw is not None:
+                        s2_cik = str(int(str(_raw))).zfill(10)
+                        logger.debug("[stage2] Resolved CIK for %s: %s", ticker, s2_cik)
+                except Exception as e:
+                    logger.warning("[stage2] CIK lookup failed for %s: %s", ticker, e)
+
             try:
-                hist = fetch_fundamentals_history("")
-            except Exception:
+                if s2_cik:
+                    hist = fetch_fundamentals_history(s2_cik)
+                else:
+                    logger.warning("[stage2] No CIK resolved for %s — history skipped", ticker)
+                    hist = pd.DataFrame()
+            except Exception as e:
+                logger.warning("[stage2] History failed for %s (cik=%s): %s", ticker, s2_cik, e)
                 hist = pd.DataFrame()
 
             flags: dict[str, bool | None] = {}
@@ -1344,6 +1440,17 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Force re-fetch of cached universe list",
+    )
+    parser.add_argument(
+        "--force-rescore",
+        action="store_true",
+        default=False,
+        help=(
+            "(sp400-stage1) Re-score ALL tickers even if already present in the "
+            "JSONL; truncates the existing JSONL before starting.  Reuses on-disk "
+            "ingest caches (prices + fundamentals snapshots) so only the annual-"
+            "history fetch adds network time (~1 s/ticker)."
+        ),
     )
     return parser
 
