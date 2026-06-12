@@ -3561,6 +3561,23 @@ only 2-3 US-GAAP tags, BP = 0), **1/26 SCOREABLE_FULL (MELI — a
 on the free stack; any ADR surface would need the Phase-8 20-F/6-K IFRS
 ingest build and still lack TTM comparability.
 
-**Files**: scripts/scout_universe_expansion.py (new) · .gitignore
+**Rider — rebalance-frequency experiment (owner ask mid-scout)**:
+`scripts/experiment_rebalance_frequency.py` (dev-only) replays the
+shipped `backtest_pit.json` books on filtered anchor sets (quarterly
+40 / semiannual 20 / annual 10; identical first rebalance) with a
+baseline-faithfulness gate (quarterly reconstruction matched the
+artifact: 0.000% NAV error, 0.0071pp CAGR) + per-side cost model
+0/10/20bps on traded notional. Verdict per the pre-registered rule
+(switch only if the variant wins BOTH gross AND net CAGR with no worse
+maxDD): **KEEP QUARTERLY** — annual loses gross 23.01% vs 23.30%, loses
+net@10bps, maxDD worse (32.2% vs 31.3%) despite turnover −54%
+(2.34 → 1.08); semiannual loses everything (21.94% gross — small-N
+anchor-timing noise explains the non-monotonicity). Caveat recorded in
+the output meta: variant books are quarterly-derived holds (band logic
+NOT re-run at the new frequency); veto-latency between rebalances IS
+faithfully modeled. Production unchanged.
+
+**Files**: scripts/scout_universe_expansion.py (new) ·
+scripts/experiment_rebalance_frequency.py (new) · .gitignore
 (scout_out/) · PHASE_STATUS_INFLIGHT.md (this).
 ---
