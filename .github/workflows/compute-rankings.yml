@@ -28,6 +28,22 @@ env:
 permissions:
   contents: read
 
+# Issue #249 Option B: precache-edgar.yml (Sat 08:00 UTC) warms the SAME two
+# actions/cache bundles this cron restores. Sharing one concurrency group
+# guarantees the two cache WRITERS never run at the same time — a dispatched
+# cron during a Saturday cold rebuild (or a dispatched precache during a
+# weekday run) QUEUES instead of racing it: no duplicate full-cold EDGAR
+# crawls, and the precache's post-job save deterministically lands before
+# the queued cron restores. `cancel-in-progress: false` (the default, made
+# explicit) because a queued run must RUN later, never cancel the in-flight
+# one. The scheduled triggers can't overlap by construction (Mon-Fri 22:00
+# vs Sat 08:00, both jobs ≤ 240 min) — this group exists for the
+# workflow_dispatch paths. pre-merge-prod-sim.yml restores-only and
+# backfill-portfolio.yml saves under its own -bf- key, so neither joins.
+concurrency:
+  group: edgar-cache-writers
+  cancel-in-progress: false
+
 jobs:
   # Trading-day gate (2026-06-06): the schedule fires Mon-Fri, but ~9-10 of
   # those weekdays are NYSE full-day holidays where the market is closed and the
@@ -222,51 +238,92 @@ jobs:
           restore-keys: |
             cache-v5-text-${{ runner.os }}-
 
-      - name: Cache restore canary (Issue #287 PR A)
-        # Emits size (MB) + age (hours since newest file) for each of the
-        # 10 cache layers BEFORE any SEC fetch begins. Goal: surface cache
-        # eviction (→ cold run) in ~30 seconds rather than after 150-195m
-        # of SEC polling. A size of 0 MB or `age=empty` means that
-        # directory was not restored and the upcoming fetch will be fully
-        # cold for that loop. Expected steady-state warm sizes (empirical):
-        #   fundamentals/           ~80-120 MB   (502 parquets)
-        #   fundamentals_history/   ~40-60 MB    (502 parquets)
-        #   prices/                 ~20-40 MB    (502 parquets)
-        #   edgar_8k/               ~10-30 MB
-        #   edgar_10k_text/         ~50-150 MB   (lazy: ~80% present)
-        #   yfinance_info/          ~5-20 MB
-        #   edgar_amendments/       ~2-10 MB
-        #   edgar_late_filings/     ~1-5 MB
-        #   edgar_form4/            ~5-15 MB     (502 dirs)
-        #   osap/                   ~1-5 MB      (parquet)
-        # `bc` + GNU `find -printf` are standard on ubuntu-latest runners.
-        # Fails-open if `bc` is missing — size still prints.
+      # Issue #287 PR A, upgraded by Issue #249 Option C — post-restore
+      # canary. Emits per-layer size / file count / newest-file age into the
+      # log + a $GITHUB_STEP_SUMMARY table BEFORE any SEC fetch begins, so
+      # cache eviction (→ cold run) is visible in ~30 s rather than after
+      # hours of SEC polling. Dependency-free shell (find/du/awk only).
+      # DELIBERATE DEVIATION from issue #249's "loud signal": the cold
+      # signal is a ::warning::, NOT a fail-fast — with the Saturday
+      # precache (Option B, precache-edgar.yml) in place, a cold cache here
+      # usually means an INTENTIONAL rebuild (cache-family vN bump, quarter
+      # rollover, post-eviction dispatch), and failing fast would self-abort
+      # exactly the run that re-warms the cache.
+      # Keep this step textually IDENTICAL to its sibling in
+      # precache-edgar.yml so future edits stay in lockstep.
+      # Expected steady-state warm sizes (empirical, Issue #287 PR A):
+      #   fundamentals/           ~80-120 MB   (502 parquets)
+      #   fundamentals_history/   ~40-60 MB    (502 parquets)
+      #   prices/                 ~20-40 MB    (502 parquets)
+      #   edgar_8k/               ~10-30 MB
+      #   edgar_10k_text/         ~50-150 MB   (lazy: ~80% present)
+      #   yfinance_info/          ~5-20 MB
+      #   edgar_amendments/       ~2-10 MB
+      #   edgar_late_filings/     ~1-5 MB
+      #   edgar_form4/            ~5-15 MB     (502 dirs)
+      #   osap/                   ~1-5 MB      (parquet)
+      - name: "Cache restore canary (Issue #287 PR A + #249 Option C)"
         run: |
-          echo "=== Cache restore canary (Issue #287) ==="
-          for dir in \
-            compute/cache/fundamentals \
-            compute/cache/fundamentals_history \
-            compute/cache/prices \
-            compute/cache/edgar_8k \
-            compute/cache/edgar_10k_text \
-            compute/cache/yfinance_info \
-            compute/cache/edgar_amendments \
-            compute/cache/edgar_late_filings \
-            compute/cache/edgar_form4 \
-            compute/cache/osap; do
-            if [ -d "$dir" ]; then
-              size_mb=$(du -sm "$dir" 2>/dev/null | cut -f1)
-              newest=$(find "$dir" -type f -printf '%T@\n' 2>/dev/null | sort -n | tail -1)
+          echo "=== Cache restore canary (Issues #287 + #249) ==="
+          now=$(date +%s)
+          {
+            echo "## Cache restore canary"
+            echo ""
+            echo "| Cache layer | Size | Files | Newest-file age |"
+            echo "|---|---|---|---|"
+          } >> "$GITHUB_STEP_SUMMARY"
+          emit() {
+            path="$1"
+            if [ -e "$path" ]; then
+              size=$(du -sh "$path" 2>/dev/null | cut -f1)
+              files=$(find "$path" -type f 2>/dev/null | wc -l)
+              newest=$(find "$path" -type f -printf '%T@\n' 2>/dev/null | sort -n | tail -1)
               if [ -n "$newest" ]; then
-                age_h=$(echo "scale=1; ($(date +%s) - ${newest%.*}) / 3600" | bc 2>/dev/null || echo "?")
+                age="$(awk -v now="$now" -v ts="${newest%.*}" 'BEGIN { printf "%.1f", (now - ts) / 3600 }')h"
               else
-                age_h="empty"
+                age="empty"
               fi
-              echo "  $dir: ${size_mb}MB, age=${age_h}h"
+              echo "  $path: ${size}, ${files} files, newest age ${age}"
+              echo "| \`$path\` | $size | $files | $age |" >> "$GITHUB_STEP_SUMMARY"
             else
-              echo "  $dir: MISSING (cold — not in restored cache)"
+              echo "  $path: MISSING (cold — not in restored cache)"
+              echo "| \`$path\` | MISSING | 0 | — |" >> "$GITHUB_STEP_SUMMARY"
             fi
-          done
+          }
+          # Union of the declared cache layers (so MISSING rows still print
+          # on a cold runner) + whatever else exists under compute/cache/
+          # (so a newly-added layer shows up even before this list is
+          # extended).
+          layers=$(
+            {
+              printf '%s\n' \
+                compute/cache/fundamentals \
+                compute/cache/fundamentals_history \
+                compute/cache/prices \
+                compute/cache/edgar_8k \
+                compute/cache/edgar_10k_text \
+                compute/cache/yfinance_info \
+                compute/cache/edgar_amendments \
+                compute/cache/edgar_late_filings \
+                compute/cache/edgar_form4 \
+                compute/cache/osap
+              find compute/cache -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+            } | sort -u
+          )
+          for d in $layers; do emit "$d"; done
+          emit compute/cache/universe-v2.parquet
+          # Cold signal: Form-4 + 10-K-text are the two most expensive loops
+          # to rebuild (the #249 timeout drivers). Warning, NOT fail-fast —
+          # see the step comment above for why.
+          form4_n=$(find compute/cache/edgar_form4 -type f 2>/dev/null | wc -l)
+          tenk_n=$(find compute/cache/edgar_10k_text -type f 2>/dev/null | wc -l)
+          if [ "$form4_n" -eq 0 ] || [ "$tenk_n" -eq 0 ]; then
+            echo "::warning::cache cold — expect a long run (see #249)"
+            {
+              echo ""
+              echo "> **WARNING — cache cold**: the Form-4 and/or 10-K-text layer is empty; expect a long run (see #249)."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
           echo "=== End canary ==="
 
       - name: Run weekly compute

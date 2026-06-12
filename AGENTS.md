@@ -659,9 +659,15 @@ export function FairPriceCard(props) {  // no types
   (2026-06-06, edgar-debugger root-cause of tier2-cold-every-run): the old
   single 11-path bundle (~250-500 MB) was too big to save reliably post-job, so
   `edgar_10k_text`/`edgar_8k` never persisted → tier2 ran cold ~80m every run.
-  Now: **fast** (fundamentals/prices/form4, `cache-v5-fast-<quarter>-<os>`) +
-  **slow-text** (edgar_10k_text/edgar_8k/osap, `cache-v5-text-<os>-<run_id>` +
-  prefix restore-keys so each run persists fresh text + restores last-good).
+  Now: **fast** (fundamentals/prices/form4, `cache-v8-fast-<quarter>-<os>`;
+  family bumped v5→…→v8 — current pin lives in
+  tests/test_workflow_cache_coverage.py) + **slow-text**
+  (edgar_10k_text/edgar_8k/osap, `cache-v5-text-<os>-<run_id>` + prefix
+  restore-keys so each run persists fresh text + restores last-good).
+  Saturday `precache-edgar.yml` (#249) is a SECOND writer on the SAME keys
+  (shared `edgar-cache-writers` concurrency group, queue-not-cancel): warm
+  Saturdays exact-hit and skip the save (~free); post-eviction Saturdays eat
+  the cold rebuild and SAVE so Monday's cron restores warm.
   Plus a "Stage timing summary" step (per-stage wall-clock → `$GITHUB_STEP_SUMMARY`,
   `if: always()`). Full detail in CLAUDE.md §Gotchas / docs/GOTCHAS.md.
 - **CI escape-hatch env-var combo for simulate** (5 vars, all set
