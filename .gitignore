@@ -222,6 +222,8 @@ compute/cache/
 models/
 *.parquet
 .DS_Store
+# Phase-8 scout raw outputs (only report.md gets committed later)
+scout_out/
 
 # Claude Code hooks — session-local audit log (PostToolUse Bash hook)
 .claude/session.log

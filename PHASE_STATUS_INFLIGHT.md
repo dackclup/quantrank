@@ -3531,3 +3531,36 @@ tests/test_ingest/test_prices_min_start.py (new) · CLAUDE.md (§In-flight
 rotation) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## feat(scripts) — Phase-8 universe-expansion scout (S&P 400 + ADR, free-stack) (2026-06-12)
+
+Owner direction (2026-06-12, after #465 closed not-planned): widen the
+universe as far as the FREE stack honestly allows — no licensed data. The
+roadmap ceiling stands: staged 500 → S&P 900 pilot → S&P 1500 (#249
+pre-cache prerequisite; explicit stop before Russell-2000 territory).
+This PR lands the measure-first scout tool
+(`scripts/scout_universe_expansion.py`, dev-only, no production wiring;
+raw outputs gitignored under `scout_out/`), four modes:
+
+- `sp400-stage1` — scores the S&P 400 through the PRODUCTION ingest +
+  scoring path inside a combined ~900-name cross-section (falls back to
+  midcap-only cohort with a loud caveat when the 500's caches are cold);
+  JSONL append/resume.
+- `adr-probe` — measures EDGAR form mix + US-GAAP tag resolution per
+  foreign issuer through the production extractor.
+- `sp400-stage2` — per-ticker defense flags on the ≥60-composite band
+  (sloan_accruals / net_issuance percentile vetoes excluded — they need
+  full-universe artifacts; stage-2 verdicts are optimistic by those two).
+- `report` — synthesis + book-impact vs the uncapped adaptive rule
+  (composite ≥ 65 + HC-clean enters; floor 5, no cap).
+
+First probe result (26 large US-listed foreign issuers): **25/26
+ANNUAL_ONLY** (20-F/6-K filers, no quarterlies → no TTM; most resolve
+only 2-3 US-GAAP tags, BP = 0), **1/26 SCOREABLE_FULL (MELI — a
+10-K/10-Q domestic-style filer)** → ADRs are effectively un-scoreable
+on the free stack; any ADR surface would need the Phase-8 20-F/6-K IFRS
+ingest build and still lack TTM comparability.
+
+**Files**: scripts/scout_universe_expansion.py (new) · .gitignore
+(scout_out/) · PHASE_STATUS_INFLIGHT.md (this).
+---
