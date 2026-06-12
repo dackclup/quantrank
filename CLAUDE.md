@@ -368,8 +368,9 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   2015-11-29` shared fixed floor — the live fetch downloads from the floor
   (not rolling 10y), cache v7→v8-fast both workflows, per-run extra cost
   zero, and the benchmarks.json late-rebase cliff (~Aug 2026) dies free. Tests:
-  22 mock-signature repairs + 8 new pins (min_start contract P1-P4 +
-  anchor pins A1-A4); full suite 1645 passed. Companion finding recorded
+  22 mock-signature repairs + 12 new pins (min_start contract P1-P4 +
+  anchor pins A1-A4 + Design-A pins A5-A8 + the tri-file v8 key pin);
+  full suite 1649 passed. Companion finding recorded
   on issue #465: pre-2016 extension is blocked on a licensed
   delisted-price source (yfinance has zero pre-2021 delisted coverage) —
   2016 is the honest floor on the free stack. Detail:

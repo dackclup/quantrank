@@ -3522,8 +3522,8 @@ new-listing-no-loop / None-bypass) + anchor pins (canonical-start value &
 type / A2 exercising main()'s REAL parser / buffer 185 / A4 full-window
 magnitude ≥130d) + Design-A pins (A5 cross-layer floor equality · A6
 fetch_prices downloads from the fixed floor · A7 period-branch regression
-· v8-fast key pin covering BOTH workflows). Full suite 1645 passed (1 pre-existing alpha158
-Hypothesis flake, unrelated).
+· v8-fast key pin covering BOTH workflows). Full suite 1649 passed (osap modules excluded — sandbox env gap,
+CI installs .[factors]).
 
 **Files**: compute/ingest/prices.py · scripts/backfill_portfolio_pit.py ·
 tests/test_portfolio/test_backfill_integration.py ·

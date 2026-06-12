@@ -204,9 +204,10 @@ def write_benchmarks_json(
          "spy": [float | null, ...], "qqq": [...], "dia": [...], "iwm": [...]}
 
     keyed by LOWERCASE ticker. Each series is the Adj-Close-preferred close over the
-    FULL fetched window (``config.PRICES_PERIOD``, now 10y) — NOT capped at the
+    FULL fetched window (fixed floor ``config.PRICES_FETCH_START`` = 2015-11-29,
+    ~10.5y and growing ~1y/year) — NOT capped at the
     per-stock ``HISTORY_TAIL_DAYS`` (~5y) — so the AI-pick backtest's "Max" chart can
-    show the benchmark line across the full 10y span (a 5y cap would blank the SPY/QQQ
+    show the benchmark line across the full fixed-floor span (a 5y cap would blank the SPY/QQQ
     line for the pre-2021 half). This file is read ONLY by the backfill (the frontend
     uses the pre-aligned ``nav.benchmark`` in ``backtest_pit.json``), so its size is
     not a frontend-payload concern. Aligned to the UNION of all benchmarks' trading
@@ -231,7 +232,7 @@ def write_benchmarks_json(
         if close_col not in df.columns:
             continue
         # Full window (not HISTORY_TAIL_DAYS-capped) — the backtest needs the whole
-        # PRICES_PERIOD span for its Max benchmark line; benchmarks.json is backfill-only.
+        # fixed-floor span for its Max benchmark line; benchmarks.json is backfill-only.
         series_by_sym[sym] = df[close_col]
 
     coverage_pct = (

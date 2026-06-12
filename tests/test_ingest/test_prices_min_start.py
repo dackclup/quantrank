@@ -1,5 +1,7 @@
 """Tests for ``fetch_prices`` ``min_start`` depth-check contract and the
 rolling-window anchor constants in ``scripts.backfill_portfolio_pit``.
+Design-A pins: A5 cross-layer floor equality · A6 fixed-floor download wiring ·
+A7 period-branch regression · A8 warm-boundary grace (non-trading-day floor).
 
 Coverage:
 - P1–P4: ``fetch_prices(ticker, period, min_start=...)`` depth-miss / depth-ok
@@ -68,7 +70,6 @@ def test_P1_shallow_cache_triggers_one_refetch(tmp_path, monkeypatch) -> None:
 
     # Write a shallow frame to the cache.
     shallow = _bday_frame("2018-01-02", 5)
-    (cache_dir / "TST.parquet").write_bytes(b"")  # create first so we can write
     shallow.to_parquet(cache_dir / "TST.parquet")
 
     deep = _bday_frame("2015-01-02", 10)
@@ -381,3 +382,28 @@ def test_A7_yf_download_period_branch_without_start() -> None:
     assert "start" in sig.parameters
     assert sig.parameters["start"].default is None
     assert "period" in sig.parameters
+
+
+def test_A8_warm_boundary_floor_on_non_trading_day(tmp_path, monkeypatch) -> None:
+    """FAIL-A boundary pin (the warm-cron contract): a cached frame whose earliest
+    row is 2015-11-30 (Monday) MUST satisfy min_start=PRICES_FETCH_START
+    (2015-11-29, a SUNDAY) with ZERO downloads — the depth check carries a
+    grace window for non-trading-day floors; without it every warm run would
+    depth-miss the entire universe and silently reinstate the per-run refetch."""
+    from compute import config
+
+    monkeypatch.setattr(config, "PRICES_CACHE_DIR", tmp_path)
+    idx = pd.bdate_range("2015-11-30", periods=50)
+    cached = pd.DataFrame({"Close": [100.0] * len(idx)}, index=idx)
+    cached.to_parquet(tmp_path / "TESTY.parquet")
+
+    calls: list = []
+
+    def fake_download(ticker: str, period: str, *, start=None) -> pd.DataFrame:
+        calls.append(ticker)
+        return cached
+
+    monkeypatch.setattr(prices_mod, "_yf_download", fake_download)
+    out = fetch_prices("TESTY", min_start=config.PRICES_FETCH_START)
+    assert out is not None
+    assert calls == [], "warm boundary must NOT trigger a download (grace window)"

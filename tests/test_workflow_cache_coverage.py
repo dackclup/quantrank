@@ -129,3 +129,15 @@ def test_workflow_fast_cache_key_is_v8() -> None:
         "backfill-portfolio.yml must share the v8-fast key family (aligned in "
         "the fixed-floor PR so both consumers see the same depth)"
     )
+    assert "cache-v8-bf-" in bf_text, (
+        "backfill-portfolio.yml must SAVE under its own -bf- key (its bundle is "
+        "a subset of the cron's — an exact-key save would poison the quarter)"
+    )
+    sim_text = (
+        _WORKFLOW_PATH.parent / "pre-merge-prod-sim.yml"
+    ).read_text(encoding="utf-8")
+    assert "cache-v8-fast-" in sim_text and "cache-v7-" not in sim_text, (
+        "pre-merge-prod-sim.yml mirrors the cron's key family (its own header "
+        "comment commands bumping together) — a stale family goes silently cold "
+        "after archive eviction"
+    )

@@ -209,9 +209,20 @@ def _earliest_date(df: pd.DataFrame) -> datetime.date | None:
     return None
 
 
+# Depth-check grace window: the floor may land on a non-trading day (e.g. the
+# canonical PRICES_FETCH_START 2015-11-29 is a SUNDAY — the first available row
+# is Monday 2015-11-30), so an exact `earliest <= floor` comparison would fail
+# against the floor itself and re-trigger the deep refetch on EVERY warm run —
+# silently reinstating the per-run cost Design A removes. 7 days absorbs any
+# weekend/holiday cluster. Design choice: a grace window beats moving the floor
+# to a trading day — it stays correct if the floor constant is ever edited.
+_DEPTH_GRACE_DAYS = 7
+
+
 def _frame_covers(df: pd.DataFrame, floor: datetime.date) -> bool:
-    """Return True when ``df``'s earliest row is on or before ``floor``."""
+    """True when ``df``'s earliest row is within ``_DEPTH_GRACE_DAYS`` of ``floor``
+    (on/before it, or just after when the floor is a non-trading day)."""
     earliest = _earliest_date(df)
     if earliest is None:
         return False
-    return earliest <= floor
+    return earliest <= floor + datetime.timedelta(days=_DEPTH_GRACE_DAYS)

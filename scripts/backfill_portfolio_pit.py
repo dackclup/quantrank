@@ -655,9 +655,11 @@ def run_backfill(
     #
     # Price depth contract: the backfill needs price history back to
     # ``start - _SIGMA_LOOKBACK_BUFFER_DAYS`` so the FIRST rebalance's
-    # trailing-90-day sigma window is fully populated.  We fetch with
-    # ``period="max"`` and assert the depth floor via ``min_start`` so that
-    # a stale (too-shallow) period-blind cache entry is automatically refetched.
+    # trailing-90-day sigma window is fully populated.  Under Design A the
+    # download path always fetches from config.PRICES_FETCH_START, so the
+    # ``period="max"`` argument here is VESTIGIAL — ``min_start`` is the
+    # load-bearing backstop that turns a too-shallow cached frame into a deep
+    # refetch (do NOT delete it on the strength of the period arg).
     # Newly-listed tickers whose entire history is shallower than the floor are
     # returned as-is (single refetch, no loop — see fetch_prices docstring).
     _price_floor: date = start - timedelta(days=_SIGMA_LOOKBACK_BUFFER_DAYS)

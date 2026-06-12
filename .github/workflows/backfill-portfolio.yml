@@ -68,7 +68,11 @@ jobs:
             compute/cache/prices
             compute/cache/universe-v2.parquet
             compute/cache/edgar_amendments
-          key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          # Distinct SAVE key (-bf-): this job bundles a SUBSET of the cron's fast
+          # dirs — saving under the cron's exact key would poison the quarter with
+          # an impoverished archive (the cron exact-hits it and never re-saves).
+          # Restore still borrows the cron's family via restore-keys below.
+          key: cache-v8-bf-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v8-fast-${{ steps.quarter.outputs.q }}-
             cache-v8-fast-
