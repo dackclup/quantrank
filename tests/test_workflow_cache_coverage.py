@@ -62,6 +62,10 @@ _REQUIRED_CACHE_PATHS = (
     config.OSAP_RETURNS_CACHE.parent,
 )
 
+# ---------------------------------------------------------------------------
+# Helpers — path-block + canary-block extraction (string/regex only; no PyYAML)
+# ---------------------------------------------------------------------------
+
 
 def _workflow_text(filename: str = "compute-rankings.yml") -> str:
     path = _WORKFLOWS_DIR / filename
@@ -69,18 +73,169 @@ def _workflow_text(filename: str = "compute-rankings.yml") -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _extract_path_blocks(text: str) -> list[str]:
+    """Return the raw contents of every ``path: |`` block in *text*.
+
+    WHY: the parametrized path-presence scan (WARN 2) must check that each
+    required path lives INSIDE a ``path: |`` block of a cache step, not
+    merely anywhere in the file.  The canary step lists every cache layer
+    in a shell script — those lines would shadow a removal from the actual
+    ``path:`` block, making the scan pass even though the cache step had
+    lost the entry.  Whole-line matching within the extracted blocks also
+    eliminates the substring-subsumption nit where
+    ``compute/cache/fundamentals`` matches inside
+    ``compute/cache/fundamentals_history``.
+
+    Strategy: split on ``path: |`` and take everything after each
+    occurrence up to the first line that, when stripped, starts with a
+    YAML key (``<word>:``) — that signals the end of the scalar block.
+    """
+    blocks: list[str] = []
+    # Each element after splitting on "path: |" is the text that follows
+    # that marker; the first element (index 0) is text before the first marker.
+    parts = text.split("path: |")
+    for part in parts[1:]:
+        lines = part.splitlines()
+        block_lines: list[str] = []
+        for line in lines:
+            stripped = line.strip()
+            # A non-empty line that looks like a YAML key at any indent
+            # level signals the end of the block-scalar content.
+            if stripped and re.match(r"^[a-zA-Z_-]+:", stripped):
+                break
+            block_lines.append(line)
+        blocks.append("\n".join(block_lines))
+    return blocks
+
+
+def _extract_canary_block(text: str) -> str:
+    """Return the canary step block from its ``- name:`` line to the next
+    sibling ``- name:`` at the same 6-space indent, trailing whitespace
+    stripped.
+
+    WHY: both workflows carry a comment "Keep this step textually IDENTICAL"
+    but that was purely a social contract (WARN 3).  Extracting the block
+    deterministically lets ``test_canary_step_identical_in_both_workflows``
+    enforce byte-equality so any divergence is caught by the test suite
+    rather than at the next human review.
+
+    Delimiting strategy (no PyYAML):
+      1. Locate the quoted step name literal that appears verbatim in both
+         files.
+      2. Capture from that line up to (but not including) the next line
+         that starts with ``      - name:`` at the same 6-space indent —
+         that is the exclusive end boundary of the canary step block.
+      3. Strip trailing whitespace so trailing-newline differences between
+         files don't produce spurious inequality.
+      4. Drop TRAILING blank/comment-only lines from the captured block —
+         an inter-step comment that documents the FOLLOWING step (e.g.
+         precache's "# The real pipeline, all loops enabled..." banner)
+         sits between the canary body and the next ``- name:`` and is NOT
+         part of the canary step's lockstep surface; without this, adding
+         legitimate documentation for a neighbouring step would force a
+         false divergence.
+    """
+    step_name_literal = (
+        '      - name: "Cache restore canary (Issue #287 PR A + #249 Option C)"'
+    )
+    # Sibling step at the same 6-space indent — exclusive end boundary.
+    next_step_re = re.compile(r"^      - name:", re.MULTILINE)
+
+    start_idx = text.find(step_name_literal)
+    if start_idx == -1:
+        raise AssertionError(
+            f"Canary step name not found in workflow text. "
+            f"Expected literal: {step_name_literal!r}"
+        )
+
+    # Search for the next sibling step AFTER our opening line.
+    search_from = start_idx + len(step_name_literal)
+    match = next_step_re.search(text, search_from)
+    if match:
+        block = text[start_idx : match.start()]
+    else:
+        # Canary is the last step — take to end of file.
+        block = text[start_idx:]
+
+    # Step 4: trailing blank / comment-only lines belong to the NEXT step's
+    # documentation, not the canary's lockstep surface — drop them.
+    lines = block.rstrip().splitlines()
+    while lines and (not lines[-1].strip() or lines[-1].lstrip().startswith("#")):
+        lines.pop()
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+
+
 @pytest.mark.parametrize("workflow", _CACHE_WARMING_WORKFLOWS)
 @pytest.mark.parametrize("cache_path", _REQUIRED_CACHE_PATHS)
 def test_workflow_restores_each_cache_dir(workflow: str, cache_path: Path) -> None:
-    """Every config CACHE_* path is restored by every cache-warming workflow."""
+    """Every config CACHE_* path appears as a whole line inside a ``path: |``
+    block in every cache-warming workflow.
+
+    WHY the scope change (WARN 2): the original check used ``repo_relative in
+    text`` — a plain substring match across the entire file.  The canary step
+    enumerates every cache layer in a shell ``printf`` block, so removing a
+    path from the actual ``path: |`` block while the canary still lists it
+    would have made the old test pass silently.  Whole-line matching within
+    the extracted ``path: |`` blocks eliminates that shadow AND the substring-
+    subsumption nit (``fundamentals`` matching inside ``fundamentals_history``).
+    """
     text = _workflow_text(workflow)
     # Workflow paths are repo-relative POSIX strings.
     repo_relative = cache_path.relative_to(config.PROJECT_ROOT).as_posix()
-    assert repo_relative in text, (
-        f"Workflow {workflow} is missing cache path "
-        f"'{repo_relative}'. Add it to the cache steps' `path:` blocks — "
+
+    path_blocks = _extract_path_blocks(text)
+    assert path_blocks, (
+        f"No ``path: |`` blocks found in {workflow} — the cache steps may have "
+        f"been restructured; update ``_extract_path_blocks`` accordingly."
+    )
+
+    # Whole-line match: the path must appear as a complete trimmed line within
+    # at least one ``path: |`` block, not merely as a substring anywhere.
+    found = any(
+        repo_relative in {line.strip() for line in block.splitlines()}
+        for block in path_blocks
+    )
+    assert found, (
+        f"Workflow {workflow} is missing cache path '{repo_relative}' inside a "
+        f"``path: |`` block. Add it to the cache steps' `path:` blocks — "
         f"in BOTH cache-warming workflows ({', '.join(_CACHE_WARMING_WORKFLOWS)})."
     )
+
+
+def test_workflow_fast_cache_key_full_shape_pinned() -> None:
+    """FAST cache key has the full shape ``cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
+    in BOTH compute-rankings.yml and precache-edgar.yml.
+
+    WHY (WARN 1): the predecessor test only asserted the prefix
+    ``key: cache-v8-fast-`` — it would pass if the suffix were reordered
+    (e.g., ``-<os>-<quarter>``), breaking the exact-key parity that the
+    Saturday precache depends on to no-op its save on warm Saturdays.
+    The slow-text test already pins the full shape of that key; this test
+    mirrors that discipline for the fast-bundle key.
+
+    The ``${{ }}`` delimiters are regex-escaped because they are literal
+    characters in the workflow YAML, not regex metacharacters.
+    """
+    # Full shape: version token + quarter expression + OS expression.
+    # Regex-escape ${{ and }} so they match literally in the workflow text.
+    full_shape_re = re.compile(
+        r"key: cache-v8-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
+        r"-\$\{\{ runner\.os \}\}"
+    )
+    for workflow in ("compute-rankings.yml", "precache-edgar.yml"):
+        text = _workflow_text(workflow)
+        assert full_shape_re.search(text), (
+            f"{workflow} fast-cache key is missing or has the wrong full shape. "
+            f"Expected: ``key: cache-v8-fast-"
+            f"${{{{ steps.quarter.outputs.q }}}}-${{{{ runner.os }}}}`` — "
+            f"a suffix reorder (e.g., -<os>-<quarter>) would silently break "
+            f"exact-key parity between the cron and the Saturday precache."
+        )
 
 
 def test_workflow_fast_cache_key_is_v8() -> None:
@@ -203,3 +358,45 @@ def test_precache_slow_text_family_matches_cron() -> None:
             f"post-job save on hit and freezes the text cache into the "
             f"90-day TTL cliff"
         )
+
+
+def test_canary_step_identical_in_both_workflows() -> None:
+    """The cache-restore canary step body is byte-identical in both workflows.
+
+    WHY (WARN 3): both files carry a comment "Keep this step textually
+    IDENTICAL" but a comment-only invariant is unenforceable.  This test
+    extracts the canary block from each workflow by its quoted step name and
+    asserts equality so any divergence (added line, changed path, different
+    warning threshold) is caught immediately rather than at the next review.
+
+    The block delimiter is the next ``      - name:`` line at the same
+    6-space indent — deterministic and immune to internal whitespace changes
+    inside the block body.  See ``_extract_canary_block`` for full rationale.
+    """
+    cron_text = _workflow_text("compute-rankings.yml")
+    pre_text = _workflow_text("precache-edgar.yml")
+
+    cron_canary = _extract_canary_block(cron_text)
+    pre_canary = _extract_canary_block(pre_text)
+
+    assert cron_canary == pre_canary, (
+        "The cache-restore canary step has diverged between compute-rankings.yml "
+        "and precache-edgar.yml. Edit BOTH files to restore byte-equality. "
+        "Diff (first differing line index):\n"
+        + _first_diff(cron_canary, pre_canary)
+    )
+
+
+def _first_diff(a: str, b: str) -> str:
+    """Return a short diagnostic string showing the first differing line."""
+    a_lines = a.splitlines()
+    b_lines = b.splitlines()
+    for i, (la, lb) in enumerate(zip(a_lines, b_lines, strict=False)):
+        if la != lb:
+            return f"  line {i}: cron={la!r}\n  line {i}: pre ={lb!r}"
+    if len(a_lines) != len(b_lines):
+        return (
+            f"  compute-rankings.yml has {len(a_lines)} lines, "
+            f"precache-edgar.yml has {len(b_lines)} lines"
+        )
+    return "  (no difference found — strings are equal)"
