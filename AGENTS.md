@@ -61,6 +61,9 @@ this section doesn't duplicate them.
 compute/                          # Python compute pipeline (read/write OK)
 ├── ingest/                       # SEC EDGAR + yfinance fetchers
 │   ├── fundamentals.py           # XBRL fact extraction
+│   │                             #   (CIK discipline: never `Company("")` —
+│   │                             #   resolves to an arbitrary company; see
+│   │                             #   CLAUDE.md §Gotchas + docs/GOTCHAS.md)
 │   ├── prices.py                 # yfinance wrapper (daily OHLCV from the fixed
 │   │                             #   floor 2015-11-29 — Design A 2026-06-11,
 │   │                             #   covers the decade AI-pick backtest;

@@ -327,6 +327,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`AnnualReturnsTable` + `NavCompareChart` money mode derive in-browser from NAV; the CAGR caveat is DATA-DRIVEN on `meta.veto_layer_replayed` — never hardcode it, and backtest ≠ live track record**
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
 - **Dual-class `shares_outstanding` = SEC company-TOTAL across classes (ASC 260 / RATIFY-B #374); the per-class count lives in `shares_outstanding_listed_class` (display-only)**
+- **edgartools `Company("")` resolves to an ARBITRARY company (no raise) — resolve a real CIK (`snap.cik` → `Company(ticker).cik`) before any history fetch; empty-CIK `fetch_fundamentals` calls also bypass the snapshot parquet cache BOTH ways**
 
 ## Phase status
 
@@ -354,27 +355,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **fix(backtest) — rolling-window anchors pinned (this PR, 2026-06-11)** —
-  two silent run-date-relative time bombs found while answering "does the
-  first rebalance have enough data?": (1) the backfill `--start` default
-  was today−10y (rolling — the cron would silently drop the canonical
-  2016-08 first rebalance ~Aug 2026) → now `BACKTEST_CANONICAL_START =
-  2016-06-01`, fixed, ledger-anchored; (2) `fetch_prices` pulled 10y from
-  the RUN date with a period-blind cache → the first rebalance's 90d sigma
-  computed on ~45 trading days, degrading as the window slid → `min_start`
-  param (None = legacy behavior; shallow fresh cache → at-most-once deeper
-  refetch with `period="max"`, overwrite); the backfill passes
-  `min_start = start − 185d`. Round 2 (cron-cost): `PRICES_FETCH_START =
-  2015-11-29` shared fixed floor — the live fetch downloads from the floor
-  (not rolling 10y), cache v7→v8-fast both workflows, per-run extra cost
-  zero, and the benchmarks.json late-rebase cliff (~Aug 2026) dies free. Tests:
-  22 mock-signature repairs + 12 new pins (min_start contract P1-P4 +
-  anchor pins A1-A4 + Design-A pins A5-A8 + the tri-file v8 key pin);
-  full suite 1650 passed. Companion finding recorded
-  on issue #465: pre-2016 extension is blocked on a licensed
-  delisted-price source (yfinance has zero pre-2021 delisted coverage) —
-  2016 is the honest floor on the free stack. Detail:
-  PHASE_STATUS_INFLIGHT.md.
+- **feat(scripts) — Phase-8 universe-expansion scout + rebalance-frequency
+  experiment (this PR, 2026-06-12)** — dev-only analysis tooling, zero
+  production wiring. Scout (`scripts/scout_universe_expansion.py`, 4
+  modes) ran the S&P 400 through the production ingest+scoring path in a
+  combined ~900-name cross-section: **24 midcaps ≥ 65** (entry bar; 31
+  more in 60-65), **23/24 clean on every evaluable veto — SSD (72.7)
+  Beneish-vetoed (m = −1.17 > −1.78)**, SON/GEF annotate-only; sloan +
+  net-issuance unevaluable pre-pilot (full-universe percentiles). ADR
+  probe: 25/26 ANNUAL_ONLY (20-F/6-K) → ADRs stay out on the free stack.
+  `scripts/experiment_rebalance_frequency.py` (owner ask): quarterly /
+  semiannual / annual replay with a baseline-faithfulness gate + 0/10/20
+  bps cost model — verdict **KEEP QUARTERLY** (annual loses gross AND
+  net@10bps with worse maxDD, despite turnover −54%). Two scout defect
+  cycles caught by the gates (stale-smoke cross-section rows + empty-CIK
+  history; Beneish/Dechow attribute misread silently un-evaluating both
+  models) — fixed + re-run before trusting any number. Decision: staged
+  ladder unblocked → #249 pre-cache (next PR) → S&P 900 pilot → 1500.
+  Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see

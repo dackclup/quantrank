@@ -3531,3 +3531,108 @@ tests/test_ingest/test_prices_min_start.py (new) · CLAUDE.md (§In-flight
 rotation) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## feat(scripts) — Phase-8 universe-expansion scout (S&P 400 + ADR, free-stack) (2026-06-12)
+
+Owner direction (2026-06-12, after #465 closed not-planned): widen the
+universe as far as the FREE stack honestly allows — no licensed data. The
+roadmap ceiling stands: staged 500 → S&P 900 pilot → S&P 1500 (#249
+pre-cache prerequisite; explicit stop before Russell-2000 territory).
+This PR lands the measure-first scout tool
+(`scripts/scout_universe_expansion.py`, dev-only, no production wiring;
+raw outputs gitignored under `scout_out/`), four modes:
+
+- `sp400-stage1` — scores the S&P 400 through the PRODUCTION ingest +
+  scoring path inside a combined ~900-name cross-section (falls back to
+  midcap-only cohort with a loud caveat when the 500's caches are cold);
+  JSONL append/resume.
+- `adr-probe` — measures EDGAR form mix + US-GAAP tag resolution per
+  foreign issuer through the production extractor.
+- `sp400-stage2` — per-ticker defense flags on the ≥60-composite band
+  (sloan_accruals / net_issuance percentile vetoes excluded — they need
+  full-universe artifacts; stage-2 verdicts are optimistic by those two).
+- `report` — synthesis + book-impact vs the uncapped adaptive rule
+  (composite ≥ 65 + HC-clean enters; floor 5, no cap).
+
+First probe result (26 large US-listed foreign issuers): **25/26
+ANNUAL_ONLY** (20-F/6-K filers, no quarterlies → no TTM; most resolve
+only 2-3 US-GAAP tags, BP = 0), **1/26 SCOREABLE_FULL (MELI — a
+10-K/10-Q domestic-style filer)** → ADRs are effectively un-scoreable
+on the free stack; any ADR surface would need the Phase-8 20-F/6-K IFRS
+ingest build and still lack TTM comparability.
+
+**Rider — rebalance-frequency experiment (owner ask mid-scout)**:
+`scripts/experiment_rebalance_frequency.py` (dev-only) replays the
+shipped `backtest_pit.json` books on filtered anchor sets (quarterly
+40 / semiannual 20 / annual 10; identical first rebalance) with a
+baseline-faithfulness gate (quarterly reconstruction matched the
+artifact: 0.000% NAV error, 0.0071pp CAGR) + per-side cost model
+0/10/20bps on traded notional. Verdict per the pre-registered rule
+(switch only if the variant wins BOTH gross AND net CAGR with no worse
+maxDD): **KEEP QUARTERLY** — annual loses gross 23.01% vs 23.30%, loses
+net@10bps, maxDD worse (32.2% vs 31.3%) despite turnover −54%
+(2.34 → 1.08); semiannual loses everything (21.94% gross — small-N
+anchor-timing noise explains the non-monotonicity). Caveat recorded in
+the output meta: variant books are quarterly-derived holds (band logic
+NOT re-run at the new frequency); veto-latency between rebalances IS
+faithfully modeled. Production unchanged.
+
+**Files**: scripts/scout_universe_expansion.py (new) ·
+scripts/experiment_rebalance_frequency.py (new) · .gitignore
+(scout_out/) · PHASE_STATUS_INFLIGHT.md (this).
+---
+
+## 2026-06-12 — Scout results addendum (same PR): S&P 400 verdict — midcaps WOULD reshape the book
+
+Stage-1 full run (400/400 scored, combined 900-name cross-section
+confirmed in-record): **24 midcaps ≥ 65** (entry bar) + 31 in the 60-65
+band; cohort mean 50.6. Two scout defects found + fixed before trusting
+numbers (commit `025eaa83`): (1) summary cross-section note read
+`records[0]` — stale midcap-only smoke rows; scoring itself was
+combined for 392/400, `--force-rescore` wiped the 8 stale rows;
+(2) `fetch_fundamentals_history` called with empty CIK — history failed
+for ALL 400 (growth pillar imputed); root cause `Company("")` resolves
+to a RANDOM company under an identity (dangerous bug class — failed
+neutral here); fixed via snapshot-CIK harvest → `Company(ticker).cik`
+fallback, both stages. Post-fix composites shifted +0.7..+1.5 and the
+top-8-alphabet stale names (AAL et al.) fell out of the ≥65 set.
+
+Stage-2 defense pass on all 55 (≥60): **all 24 book candidates clean on
+every evaluable flag** (`filing_lag_days` is numeric-informational; 38d
+typical). NOT evaluated: `sloan_accruals_top_decile` +
+`net_issuance_top_decile` (full-universe percentiles) — sloan is 97% of
+historical veto bite, expect ~2-3 of 24 trimmed in a real 900 run.
+
+Book impact (today-snapshot, NOT a backtest — pre-2016-style history
+for midcaps stays impossible free, #465): current S&P 500 has 23 names
+≥ 65 → a 900 universe roughly **doubles the eligible pool**; EXEL 76.8
+/ MLI 72.8 / SSD 72.7 would outrank today's #1 (HST 71.8); the live
+book (6 names, drought regime) would thicken. Caveat: the 500's own
+percentiles would shift slightly under a true 900 re-rank (held fixed
+from rankings.json here). → Proceeds to the staged ladder: #249
+pre-cache → S&P 900 pilot (forward-only picks + disclosure) → 1500.
+ADRs stay out (25/26 ANNUAL_ONLY).
+---
+
+## 2026-06-12 — Stage-2 CORRECTION (fable-gate catch, same PR): Beneish/Dechow were silently un-evaluated; corrected verdict 23/24 clean, SSD vetoed
+
+Gate review found nonexistent attribute reads in scout stage-2
+(`.beneish_manipulation` / `.dechow_high`; real API: `.is_high` +
+`.m_score` / `.f_score`) swallowed by a bare except — all 55 stage-2
+records carried `*_compute_failed`, so the prior addendum's "all 24 clean
+on every evaluable flag" OVERSTATED the evaluated set (the two
+manipulation models behind 2 of the 7 active vetoes never ran). Fixed
+mirroring production semantics (Beneish veto m > −1.78, annotate
+−2.22..−1.78; Dechow is_high > 2.45, veto > 3.0), excepts narrowed to
+record the exception class in flag_notes, stage-2 re-run on all 55:
+**23/24 clean; SSD (72.7) VETOED — Beneish m = −1.17; SON (67.4)
+m = −2.04 + GEF (66.8) m = −1.98 annotate-only; zero Dechow fires.**
+N/A scores = missing annual-history ratios (model returns None — honest
+insufficiency, not a crash). sloan + net-issuance remain unevaluable
+pre-pilot. Rider WARN fixes: report-mode records[0] → dominant-note
+helper + `cross_section_note_counts` histogram; experiment vacuous gate
+condition fixed + missing-NAV loud-fail; cost docstring ×2 corrected;
+comment honesty (empty-CIK cache bypass, local import); 500-side
+history=None cross-section deviation disclosed. Gotcha pre-registered:
+CLAUDE.md §Gotchas + docs/GOTCHAS.md "edgartools Company(\"\")".
+---
