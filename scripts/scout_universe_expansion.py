@@ -1018,9 +1018,10 @@ def mode_sp400_stage2(args: argparse.Namespace) -> None:
             logger.info("[stage2] Processing %s...", ticker)
 
             # Fetch snapshot + history.
-            # Snapshot: fetch_fundamentals hits the on-disk parquet cache when the
-            # snapshot is fresh (CIK keyed) — warm cache from a prior stage-1 or
-            # weekly cron run will be reused for the snapshot itself.
+            # Snapshot: called with cik="" so the parquet cache is bypassed BOTH
+            # ways (read and write are guarded on a non-empty CIK — see
+            # docs/GOTCHAS.md "edgartools Company('')") — expect a live EDGAR
+            # fetch per ticker here.
             # History: fetch_fundamentals_history is CIK-keyed (annual parquet cache);
             # on a fresh scout run this cache is cold because stage-1 does NOT call
             # fetch_fundamentals_history — expect a live EDGAR fetch per ticker here.
