@@ -61,8 +61,9 @@ this section doesn't duplicate them.
 compute/                          # Python compute pipeline (read/write OK)
 ├── ingest/                       # SEC EDGAR + yfinance fetchers
 │   ├── fundamentals.py           # XBRL fact extraction
-│   ├── prices.py                 # yfinance wrapper (10y DAILY OHLCV since
-│   │                             #   2026-06-08 for the decade AI-pick backtest;
+│   ├── prices.py                 # yfinance wrapper (daily OHLCV from the fixed
+│   │                             #   floor 2015-11-29 — Design A 2026-06-11,
+│   │                             #   covers the decade AI-pick backtest;
 │   │                             #   per-stock history tail-capped to ~5y by
 │   │                             #   HISTORY_TAIL_DAYS, so the stock chart's per-
 │   │                             #   period resolution — 5Y monthly, shorter

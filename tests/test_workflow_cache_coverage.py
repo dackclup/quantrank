@@ -67,8 +67,8 @@ def test_workflow_restores_each_cache_dir(cache_path: Path) -> None:
     )
 
 
-def test_workflow_fast_cache_key_is_v7() -> None:
-    """FAST cache key is `cache-v7-fast-` (Issue #374 RATIFY-B follow-up).
+def test_workflow_fast_cache_key_is_v8() -> None:
+    """FAST cache key is `cache-v8-fast-` (fixed-floor PR).
 
     Bump history on the fundamentals/prices ("fast", quarter-keyed) bundle:
 
@@ -84,6 +84,9 @@ def test_workflow_fast_cache_key_is_v7() -> None:
       flush. (The old form of this test kept matching `key: cache-v5-`
       via the SLOW-TEXT key substring after that bump — the guard had
       rotted; it now pins the fast key explicitly.)
+    - v7-fast → v8-fast (fixed-floor PR, 2026-06-11): PRICES_FETCH_START
+      = 2015-11-29 replaces the rolling period='10y' — v7's period-blind
+      parquets are shallow vs the new floor and must be discarded.
     - v6-fast → v7-fast (Issue #374 / PR #456 RATIFY-B, 2026-06-11):
       second firing of taxonomy trigger 3. The RATIFY-B revert makes
       `shares_outstanding` the companyfacts company-total aggregate, but
@@ -106,17 +109,35 @@ def test_workflow_fast_cache_key_is_v7() -> None:
     - **Bump on *value-correctness* fix inside a live-fetch-only code path
       that cache replay short-circuits past** (Branch 3, both firings).
 
-    Bump again to v8-fast next time any of the three triggers fires.
+    Bump again to v9-fast next time any of the three triggers fires.
     The slow-text bundle (`cache-v5-text-` + run-id key) is governed
     separately — bump it only on a text-cache schema change per the
     workflow comment.
     """
     text = _workflow_text()
-    assert "key: cache-v7-fast-" in text, (
-        "compute-rankings.yml FAST cache key must be `cache-v7-fast-${{ ... }}` "
-        "per Issue #374 RATIFY-B follow-up (2026-06-11). Bump to v8-fast only "
-        "when a cache directory's *schema* changes, a new metric is added to "
-        "`_ANNUAL_TAGS` / `_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness "
-        "fix lands in a live-fetch-only path that cache replay would "
-        "short-circuit past."
+    assert "key: cache-v8-fast-" in text, (
+        "compute-rankings.yml FAST cache key must be `cache-v8-fast-${{ ... }}` "
+        "(fixed-floor PR, 2026-06-11). Bump to v9-fast only when a cache "
+        "directory's *schema* changes, a new metric is added to `_ANNUAL_TAGS` "
+        "/ `_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness fix lands in a "
+        "live-fetch-only path that cache replay would short-circuit past."
+    )
+    bf_text = (
+        _WORKFLOW_PATH.parent / "backfill-portfolio.yml"
+    ).read_text(encoding="utf-8")
+    assert "cache-v8-fast-" in bf_text, (
+        "backfill-portfolio.yml must share the v8-fast key family (aligned in "
+        "the fixed-floor PR so both consumers see the same depth)"
+    )
+    assert "cache-v8-bf-" in bf_text, (
+        "backfill-portfolio.yml must SAVE under its own -bf- key (its bundle is "
+        "a subset of the cron's — an exact-key save would poison the quarter)"
+    )
+    sim_text = (
+        _WORKFLOW_PATH.parent / "pre-merge-prod-sim.yml"
+    ).read_text(encoding="utf-8")
+    assert "cache-v8-fast-" in sim_text and "cache-v7-" not in sim_text, (
+        "pre-merge-prod-sim.yml mirrors the cron's key family (its own header "
+        "comment commands bumping together) — a stale family goes silently cold "
+        "after archive eviction"
     )

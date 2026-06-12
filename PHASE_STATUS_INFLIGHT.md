@@ -3457,3 +3457,77 @@ frontend/components/AiPickPortfolio.tsx · CLAUDE.md (§In-flight rotation) ·
 PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## fix(backtest) — rolling-window anchors pinned + pre-2016 scout record (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+User question "ไตรมาสแรกมีข้อมูลพอไหม / ควรดึงย้อนหลังเพิ่มไหม" surfaced
+two silent run-date-relative time bombs:
+1. `--start` default = today−10y (ROLLING) — the cron passes no --start,
+   so the artifact window slid daily and would have silently dropped the
+   canonical 2016-08 first rebalance around Aug 2026. Fixed:
+   `BACKTEST_CANONICAL_START = date(2016, 6, 1)` (ledger-Track-B-anchored,
+   never run-date-relative; changing it gates on a ledger-coverage check +
+   methodology sign-off).
+2. `fetch_prices(period="10y")` reached back 10y from the RUN date with a
+   PERIOD-BLIND parquet cache — the first rebalance's trailing-90d sigma
+   was computed on ~45 trading days (silent; the function accepts >= 3
+   points), degrading toward zero as the window slid. Fixed: `min_start`
+   param on fetch_prices (None = byte-identical legacy; a fresh-but-shallow
+   cache triggers an at-most-once deeper refetch with period="max" that
+   overwrites the cache; new listings whose full history starts after the
+   floor are cached as-is — no retry loop). The backfill passes
+   `min_start = start − 185d` (90 trading ≈ 130 calendar + margin) for the
+   universe + benchmarks; compute/main.py never passes it (live unchanged).
+
+Fundamentals depth was verified NOT to be a problem: the pillars already
+consume every 10-K filed <= T (XBRL back to ~2009-2011), independent of
+the backtest start — "pull more history" is already maximal on that axis.
+
+Companion scout (data-pipeline-engineer) on extending the window pre-2016
+recorded on issue #465: ledger extendable (fja05680 to ~1996) and XBRL
+coverage ~90% at 2013-Q1 / 100% by 2013-Q3 — but **yfinance has ZERO
+price data for pre-~2021 delisted tickers** (SWY/FDO/DTV/JDSU verified
+empty), so a 2013-2015 extension would silently drop ~58 names/rebalance
+(~12% of the cross-section) = the exact survivorship bias the ledger
+prevents. **2016 is the honest floor on the free stack**; 2013-Q3 (+12
+rebalances) requires a licensed delisted-price source — owner decision,
+parked on #465. Side finding: fundamentals_latency_p95 28.12s > 15s on
+the latest run — watch next cron.
+
+**Design A (round-2, the cron-cost fix)**: the reviewer traced that the
+min_start backstop alone would have cost EVERY warm cron a sequential
+~500-ticker `period="max"` refetch (+5-15 min vs the 55m folded cap,
+silent stall risk) because the quarter-keyed fast cache only saves on the
+first run of a quarter and the compute step re-downloads SHALLOW 10y
+frames daily. data-pipeline-engineer design verdict (4 options ranked):
+**shared fixed floor** — `config.PRICES_FETCH_START = date(2015, 11, 29)`
+(= BACKTEST_CANONICAL_START − 185d, equality asserted by test pin A5);
+`_yf_download` gains `start=` and `fetch_prices` always downloads from
+the floor (period vestigial on the live path); cache family bumped
+v7-fast → v8-fast in BOTH workflows (backfill key aligned to the same
+family). Per-run extra cost: ZERO (the compute step's existing daily
+re-download is simply ~6 months deeper, +5.4% rows); the min_start
+backstop stays and is a verified no-op on warm cache. FREE side-fix: the
+benchmarks.json late-rebase cliff (QQQ/DIA/IWM lines were rolling-10y and
+would silently rebase after the portfolio start ~Aug 2026) is eliminated
+— benchmarks now start at the floor, before the first NAV date. Growth
+policy: revisit if the window exceeds ~15y (≈2031). Live consumers
+re-verified deeper-frame-safe (everything tail/iloc-capped).
+
+Tests: 22 mock-signature repairs (`fetch_prices` now receives kwargs) + 12
+new pins — min_start contract (shallow-refetch-once / deep-no-download /
+new-listing-no-loop / None-bypass) + anchor pins (canonical-start value &
+type / A2 exercising main()'s REAL parser / buffer 185 / A4 full-window
+magnitude ≥130d) + Design-A pins (A5 cross-layer floor equality · A6
+fetch_prices downloads from the fixed floor · A7 period-branch regression
+· v8-fast key pin covering BOTH workflows). Full suite 1650 passed (osap modules excluded — sandbox env gap,
+CI installs .[factors]).
+
+**Files**: compute/ingest/prices.py · scripts/backfill_portfolio_pit.py ·
+tests/test_portfolio/test_backfill_integration.py ·
+tests/test_ingest/test_prices_min_start.py (new) · CLAUDE.md (§In-flight
+rotation) · PHASE_STATUS_INFLIGHT.md (this).
+
+---

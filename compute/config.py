@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 from pathlib import Path
 
 PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
@@ -36,6 +37,26 @@ SCHEMA_VERSION: str = "0.10.18-phase4.6"
 # workflow cache-key bump (cache-vN-fast) to invalidate the stale 5y parquets —
 # otherwise a warm run silently returns the old 5y data.
 PRICES_PERIOD: str = "10y"
+
+# Provenance: STRUCTURAL — equals BACKTEST_CANONICAL_START (2016-06-01) minus
+# _SIGMA_LOOKBACK_BUFFER_DAYS (185) so the first PIT rebalance's (2016-08-14)
+# sigma window is fully populated in the shared price cache. Replaces the rolling
+# period='10y' anchor so the live compute's daily re-download serves the same depth
+# the backfill's min_start floor needs — eliminating the per-run sequential
+# max-refetch (+5-15 min vs the 55m folded-step cap) AND fixing the
+# benchmarks.json late-rebase cliff (align_benchmark_nav never rebases
+# QQQ/DIA/IWM after the portfolio start). Growth: ~+252 rows/year (~+5.4%
+# today); revisit if the window exceeds ~15y (≈2031) or prices/ cache > 200 MB.
+# Changing this constant requires a cache-vN-fast bump + methodology confirmation
+# the backtest window is unchanged.
+#
+# Consistency note: scripts/backfill_portfolio_pit.py independently derives its
+# own price floor as BACKTEST_CANONICAL_START - _SIGMA_LOOKBACK_BUFFER_DAYS =
+# date(2016, 6, 1) - timedelta(days=185) = date(2015, 11, 29) — the same date
+# as this constant. The scripts layer may NOT import compute.config (layering:
+# scripts may import compute, never the reverse), so the equality is maintained
+# by derivation rather than shared reference. Do not introduce a circular import.
+PRICES_FETCH_START: datetime.date = datetime.date(2015, 11, 29)
 MAX_PARALLEL_FETCHES: int = 10
 # Bumped from 5 to 8 (PR-3d quick wins). SEC EDGAR fair-access policy
 # documents a 10 req/s ceiling per IP. With ~5-10s per snapshot HTTP

@@ -57,7 +57,7 @@ import bisect
 import dataclasses
 import logging
 import statistics
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -107,6 +107,46 @@ from compute.scoring.risk_overlay import compute_risk_flags
 from compute.valuation.ensemble import compute_fair_price_ensemble
 
 logger = logging.getLogger(__name__)
+
+# Canonical backtest start — FIXED, never run-date-relative.
+#
+# Anchored to the survivorship membership ledger's Track-B coverage start
+# (data/sp500_membership_historical.csv Track B begins 2016-01-04) plus a
+# ~5-month buffer so the sigma lookback for the FIRST rebalance (2016-08-14)
+# has a full 90-trading-day window of price history before it.
+#
+# WHY FIXED: the previous default was ``today - 10y`` (rolling).  With a rolling
+# start the cron artifact's window slides forward one day per run, so around
+# Aug 2026 the canonical first rebalance (2016-08-14) silently drops off the
+# left edge and all rebalance NAVs, IC stats, and band-tenure counts quietly
+# shift.  A fixed constant eliminates that drift entirely.
+#
+# Changing this value requires:
+#   1. A ledger-coverage check (``scripts/verify_membership_ledger.py``) to
+#      confirm Track-B data exists for the new start date.
+#   2. Methodology-scientist sign-off (any change to the window extent affects
+#      the in-sample record used for the adaptive-rule pre-registration).
+BACKTEST_CANONICAL_START: date = date(2016, 6, 1)
+
+# Sigma lookback buffer used when fetching prices for the backfill.
+# 90 trading days ≈ 130 calendar days; 185 adds a further margin so the
+# first rebalance's trailing-sigma window is fully populated even after
+# non-trading gaps (holidays, early-history sparse data).
+#
+# Consistency with compute.config.PRICES_FETCH_START: the fixed price floor
+# used by the live compute's fetch_prices is defined as
+#   BACKTEST_CANONICAL_START - timedelta(days=_SIGMA_LOOKBACK_BUFFER_DAYS)
+#   = date(2016, 6, 1) - timedelta(days=185)
+#   = date(2015, 11, 29)
+# which equals compute.config.PRICES_FETCH_START exactly.  The backfill's
+# _price_floor (start - 185d) == PRICES_FETCH_START when start ==
+# BACKTEST_CANONICAL_START — so on a warm cache from the live cron, the
+# backfill's depth-check (fetch_prices min_start=_price_floor) is a no-op
+# because the cache already satisfies the floor.  Do NOT import compute.config
+# here to verify this at runtime — scripts may import compute, never the
+# reverse (layering invariant).  The equality is maintained by construction
+# and guarded by the A5 pin in tests/test_ingest/test_prices_min_start.py.
+_SIGMA_LOOKBACK_BUFFER_DAYS: int = 185
 
 # The slider's default landing position. The artifact carries a NAV per holding
 # count N=1..MAX_PICKS (the 1-20 slider re-runs the backtest line), so this is the
@@ -612,17 +652,28 @@ def run_backfill(
     sector_by_ticker = {str(r.ticker): str(r.sector) for r in members.itertuples(index=False)}
 
     # Load each name's caches ONCE (warm in CI). annual rows (PIT) + price frame.
+    #
+    # Price depth contract: the backfill needs price history back to
+    # ``start - _SIGMA_LOOKBACK_BUFFER_DAYS`` so the FIRST rebalance's
+    # trailing-90-day sigma window is fully populated.  Under Design A the
+    # download path always fetches from config.PRICES_FETCH_START, so the
+    # ``period="max"`` argument here is VESTIGIAL — ``min_start`` is the
+    # load-bearing backstop that turns a too-shallow cached frame into a deep
+    # refetch (do NOT delete it on the strength of the period arg).
+    # Newly-listed tickers whose entire history is shallower than the floor are
+    # returned as-is (single refetch, no loop — see fetch_prices docstring).
+    _price_floor: date = start - timedelta(days=_SIGMA_LOOKBACK_BUFFER_DAYS)
     rows_by_ticker: dict[str, list[dict]] = {}
     prices_by_ticker: dict[str, pd.DataFrame] = {}
     for ticker in sorted(current):
         try:
             rows_by_ticker[ticker] = _annual_rows(fetch_fundamentals_history(cik_by_ticker[ticker]))
-            pf = fetch_prices(ticker)
+            pf = fetch_prices(ticker, period="max", min_start=_price_floor)
             if pf is not None and len(pf) > 0:
                 prices_by_ticker[ticker] = pf
         except Exception as e:  # noqa: BLE001 — one bad name never kills the backfill
             logger.warning("backfill: load failed for %s: %s", ticker, e)
-    spy = fetch_prices("SPY")
+    spy = fetch_prices("SPY", period="max", min_start=_price_floor)
 
     rebal_dates = quarterly_rebalance_dates(start, end)
     rebalances_out: list[dict] = []
@@ -1311,17 +1362,17 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(description="Phase 7.0 point-in-time portfolio backtest backfill")
     today = datetime.now(UTC).date()
-    # 10-year window. The survivorship ledger covers 2016+
-    # (historical_universe.EARLIEST_EVENT_DATE = 2016-01) and the DATA layer is now 10y
-    # too (config.PRICES_PERIOD="10y" + fundamentals.ANNUAL_HISTORY_YEARS=10). Caveat:
-    # ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY) — yfinance can't resolve the
-    # historical alias from the current symbol, so their pre-rename legs are dropped and
-    # the 2016-2020 cohort is slightly thinner than 2021+. The FIRST 10y backfill must run
-    # via the manual backfill-portfolio.yml dispatch: the cold run (~60-85m: 10y price +
-    # 10y fundamentals re-fetch + ~40 quarterly rebalances) exceeds the cron's 40m folded-
-    # step cap; warm steady-state (~30-35m) fits. Requires the cache-vN-fast key bump
-    # (period-blind caches) to have landed first.
-    parser.add_argument("--start", default=date(today.year - 10, today.month, 1).isoformat())
+    # The default start is BACKTEST_CANONICAL_START (2016-06-01), not a rolling
+    # ``today - 10y``.  A rolling default caused the artifact's window to advance
+    # one day per run: around Aug 2026 the canonical first rebalance (2016-08-14)
+    # would have silently dropped off the left edge.  The fixed constant keeps the
+    # rebalance count, NAV, and band-tenure history stable across every cron run.
+    # Survivorship ledger covers 2016+ (historical_universe.EARLIEST_EVENT_DATE =
+    # 2016-01); ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY) are missing
+    # pre-rename legs.  The FIRST (cold) backfill must still run via the manual
+    # backfill-portfolio.yml dispatch: cold runtime (~60-85m) exceeds the cron's
+    # 55m folded-step cap (bumped 2026-06-08); warm steady-state ~35-45m fits.
+    parser.add_argument("--start", default=BACKTEST_CANONICAL_START.isoformat())
     parser.add_argument("--end", default=today.isoformat())
     args = parser.parse_args(argv)
     run_backfill(date.fromisoformat(args.start), date.fromisoformat(args.end))
