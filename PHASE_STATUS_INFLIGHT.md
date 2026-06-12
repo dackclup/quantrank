@@ -3581,3 +3581,35 @@ faithfully modeled. Production unchanged.
 scripts/experiment_rebalance_frequency.py (new) · .gitignore
 (scout_out/) · PHASE_STATUS_INFLIGHT.md (this).
 ---
+
+## 2026-06-12 — Scout results addendum (same PR): S&P 400 verdict — midcaps WOULD reshape the book
+
+Stage-1 full run (400/400 scored, combined 900-name cross-section
+confirmed in-record): **24 midcaps ≥ 65** (entry bar) + 31 in the 60-65
+band; cohort mean 50.6. Two scout defects found + fixed before trusting
+numbers (commit `025eaa83`): (1) summary cross-section note read
+`records[0]` — stale midcap-only smoke rows; scoring itself was
+combined for 392/400, `--force-rescore` wiped the 8 stale rows;
+(2) `fetch_fundamentals_history` called with empty CIK — history failed
+for ALL 400 (growth pillar imputed); root cause `Company("")` resolves
+to a RANDOM company under an identity (dangerous bug class — failed
+neutral here); fixed via snapshot-CIK harvest → `Company(ticker).cik`
+fallback, both stages. Post-fix composites shifted +0.7..+1.5 and the
+top-8-alphabet stale names (AAL et al.) fell out of the ≥65 set.
+
+Stage-2 defense pass on all 55 (≥60): **all 24 book candidates clean on
+every evaluable flag** (`filing_lag_days` is numeric-informational; 38d
+typical). NOT evaluated: `sloan_accruals_top_decile` +
+`net_issuance_top_decile` (full-universe percentiles) — sloan is 97% of
+historical veto bite, expect ~2-3 of 24 trimmed in a real 900 run.
+
+Book impact (today-snapshot, NOT a backtest — pre-2016-style history
+for midcaps stays impossible free, #465): current S&P 500 has 23 names
+≥ 65 → a 900 universe roughly **doubles the eligible pool**; EXEL 76.8
+/ MLI 72.8 / SSD 72.7 would outrank today's #1 (HST 71.8); the live
+book (6 names, drought regime) would thicken. Caveat: the 500's own
+percentiles would shift slightly under a true 900 re-rank (held fixed
+from rankings.json here). → Proceeds to the staged ladder: #249
+pre-cache → S&P 900 pilot (forward-only picks + disclosure) → 1500.
+ADRs stay out (25/26 ANNUAL_ONLY).
+---
