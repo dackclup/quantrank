@@ -1399,3 +1399,22 @@ backtest CAGR as the live product's track record.
   `PillarRadarChart` / `RiskSummaryCard`. When adding a new pillar hue or a
   new risk-flag label, extend the shared module — re-inlining a private copy
   in a component re-creates the divergence the centralization fixed.
+
+- **edgartools `Company("")` resolves to an ARBITRARY company — no raise**
+  (found 2026-06-12 by the Phase-8 scout, PR #467). With an EDGAR identity
+  set, `Company("")` constructs successfully and resolves to a seemingly
+  random CIK (observed: 1816125) instead of raising — any downstream
+  history/filing fetch then silently returns the WRONG COMPANY's data;
+  without an identity it raises immediately. Discipline: never pass a
+  possibly-empty CIK to `Company(...)` / `fetch_fundamentals_history(...)`;
+  resolve first via the fundamentals snapshot's `.cik`, falling back to
+  `str(Company(ticker).cik).zfill(10)`. Related semantics: production
+  `fetch_fundamentals(ticker, cik="")` survives because `_build_snapshot`
+  does `Company(cik or ticker)`, BUT an empty CIK keys the snapshot-cache
+  read AND write on `""` — every such call is a live EDGAR round-trip
+  (cache bypassed both directions) and the returned snapshot carries
+  `.cik = ""`. Any non-S&P-500 ingest caller (scout, Phase-8 pilot) must
+  resolve the CIK explicitly before history fetches; the in-universe
+  production path is unaffected (universe.py supplies real CIKs). Guard
+  idea for the Phase-8 pilot PR: assert non-empty CIK at the
+  `_build_annual_history` boundary.

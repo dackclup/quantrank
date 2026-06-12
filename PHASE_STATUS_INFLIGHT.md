@@ -3613,3 +3613,26 @@ from rankings.json here). → Proceeds to the staged ladder: #249
 pre-cache → S&P 900 pilot (forward-only picks + disclosure) → 1500.
 ADRs stay out (25/26 ANNUAL_ONLY).
 ---
+
+## 2026-06-12 — Stage-2 CORRECTION (fable-gate catch, same PR): Beneish/Dechow were silently un-evaluated; corrected verdict 23/24 clean, SSD vetoed
+
+Gate review found nonexistent attribute reads in scout stage-2
+(`.beneish_manipulation` / `.dechow_high`; real API: `.is_high` +
+`.m_score` / `.f_score`) swallowed by a bare except — all 55 stage-2
+records carried `*_compute_failed`, so the prior addendum's "all 24 clean
+on every evaluable flag" OVERSTATED the evaluated set (the two
+manipulation models behind 2 of the 7 active vetoes never ran). Fixed
+mirroring production semantics (Beneish veto m > −1.78, annotate
+−2.22..−1.78; Dechow is_high > 2.45, veto > 3.0), excepts narrowed to
+record the exception class in flag_notes, stage-2 re-run on all 55:
+**23/24 clean; SSD (72.7) VETOED — Beneish m = −1.17; SON (67.4)
+m = −2.04 + GEF (66.8) m = −1.98 annotate-only; zero Dechow fires.**
+N/A scores = missing annual-history ratios (model returns None — honest
+insufficiency, not a crash). sloan + net-issuance remain unevaluable
+pre-pilot. Rider WARN fixes: report-mode records[0] → dominant-note
+helper + `cross_section_note_counts` histogram; experiment vacuous gate
+condition fixed + missing-NAV loud-fail; cost docstring ×2 corrected;
+comment honesty (empty-CIK cache bypass, local import); 500-side
+history=None cross-section deviation disclosed. Gotcha pre-registered:
+CLAUDE.md §Gotchas + docs/GOTCHAS.md "edgartools Company(\"\")".
+---

@@ -46,13 +46,15 @@ in the output and can be implemented after this initial signal check.
 
 Net-of-cost formula
 -------------------
-Each rebalance charges: ``cost = turnover × cost_bps_per_side × 2``
-(round-trip on the traded notional fraction).
+Each rebalance charges the L1 half-turnover cost::
 
-Turnover at rebalance t = Sum |w_target_t - w_drifted_{t-1}|, where w_drifted
-is the portfolio weight vector that drifted from the previous rebalance's target
-through price returns. ``build_portfolio_nav`` (the engine function) computes
-this exactly and returns ``turnover_by_rebalance``.
+    NAV_net *= (1 - turnover * cost_bps_per_side / 10_000)
+
+where ``turnover = Sum |w_target_t - w_drifted_{t-1}|`` is the L1 norm of the
+weight change vector (already counts both the buy and sell legs — no additional
+``× 2`` is applied). ``build_portfolio_nav`` (the engine function) computes
+turnover from price-drifted weight vectors between consecutive rebalances and
+returns both ``turnover_by_rebalance`` and the cumulative ``net_nav``.
 
 For the frequency variants we pass the FILTERED legs to ``build_portfolio_nav``
 with the SAME per-side bps, so the longer hold periods produce real drift and the
@@ -380,24 +382,36 @@ def _verify_baseline(
 
     # Check 2: final NAV.
     art_nav_series = artifact_nav.get("adaptive", {}).get("net", [])
-    art_final = next((v for v in reversed(art_nav_series) if v is not None), None)
-    # Net at 10 bps matches the artifact (which was built with DEFAULT_COST_BPS_PER_SIDE=10).
-    exp_final = quarterly_metrics["net_final_nav_by_bps"].get("10")
-    if art_final is not None and exp_final is not None:
-        diff_pct = abs(exp_final - art_final) / max(abs(art_final), 1.0) * 100.0
-        if diff_pct <= _NAV_TOLERANCE_PCT:
-            print(
-                f"  [PASS] final NAV: reconstructed {exp_final:.4f} vs artifact {art_final:.4f}"
-                f" (diff {diff_pct:.3f}% <= {_NAV_TOLERANCE_PCT}%)"
-            )
-        else:
-            print(
-                f"  [FAIL] final NAV mismatch: reconstructed {exp_final:.4f}"
-                f" vs artifact {art_final:.4f} (diff {diff_pct:.3f}% > {_NAV_TOLERANCE_PCT}%)"
-            )
-            passed = False
+    if not art_nav_series:
+        # nav.adaptive.net is the required comparison series — its absence means
+        # the artifact was built without an adaptive NAV series and the gate cannot
+        # run. Treat as a hard FAIL (not a silent skip) so the caller knows.
+        print(
+            "  [FAIL] nav.adaptive.net absent from artifact — cannot verify NAV faithfulness. "
+            "Artifact may pre-date the adaptive NAV series (pre-V55 artifact). "
+            "Use --skip-baseline-assert if this artifact intentionally lacks an adaptive series."
+        )
+        passed = False
+        art_final = None
     else:
-        print(f"  [WARN] final NAV check skipped (art={art_final}, exp={exp_final})")
+        art_final = next((v for v in reversed(art_nav_series) if v is not None), None)
+        # Net at 10 bps matches the artifact (which was built with DEFAULT_COST_BPS_PER_SIDE=10).
+        exp_final = quarterly_metrics["net_final_nav_by_bps"].get("10")
+        if art_final is not None and exp_final is not None:
+            diff_pct = abs(exp_final - art_final) / max(abs(art_final), 1.0) * 100.0
+            if diff_pct <= _NAV_TOLERANCE_PCT:
+                print(
+                    f"  [PASS] final NAV: reconstructed {exp_final:.4f} vs artifact {art_final:.4f}"
+                    f" (diff {diff_pct:.3f}% <= {_NAV_TOLERANCE_PCT}%)"
+                )
+            else:
+                print(
+                    f"  [FAIL] final NAV mismatch: reconstructed {exp_final:.4f}"
+                    f" vs artifact {art_final:.4f} (diff {diff_pct:.3f}% > {_NAV_TOLERANCE_PCT}%)"
+                )
+                passed = False
+        else:
+            print(f"  [WARN] final NAV check skipped (art={art_final}, exp={exp_final})")
 
     # Check 3: CAGR.
     exp_cagr = quarterly_metrics["net_cagr_pct_by_bps"].get("10")
@@ -700,7 +714,15 @@ def main(argv: list[str] | None = None) -> int:  # noqa: PLR0912, PLR0915
             )
 
     # 5. Engine-faithfulness gate (baseline assert).
-    if "quarterly" in variant_results and "quarterly" not in ({"error"} & set(variant_results.get("quarterly", {}))):
+    # The gate fires only when quarterly was requested AND completed without error.
+    # Old check ``"quarterly" not in ({"error"} & set(variant_results.get("quarterly", {})))``
+    # was vacuously True (intersection of a singleton set and a dict-key set of
+    # non-"error" strings is always empty). Fixed to check the actual error key.
+    quarterly_ok = (
+        "quarterly" in variant_results
+        and "error" not in variant_results["quarterly"]
+    )
+    if quarterly_ok:
         print("\n--- Engine-faithfulness gate (quarterly vs artifact) ---", flush=True)
         gate_ok = _verify_baseline(
             variant_results["quarterly"],
@@ -718,6 +740,16 @@ def main(argv: list[str] | None = None) -> int:  # noqa: PLR0912, PLR0915
             )
             return 2
         print("--- Gate passed ---\n", flush=True)
+    elif "quarterly" in variant_results and "error" in variant_results["quarterly"]:
+        print(
+            f"\nFATAL: quarterly variant failed with error: "
+            f"{variant_results['quarterly']['error']}. "
+            "Cannot run engine-faithfulness gate without a successful quarterly baseline.",
+            flush=True,
+        )
+        if not args.skip_baseline_assert:
+            return 2
+        print("[Gate skipped via --skip-baseline-assert despite quarterly error]\n", flush=True)
     elif args.skip_baseline_assert:
         print("\n[Gate skipped — quarterly not in requested variants or --skip-baseline-assert set]\n", flush=True)
 

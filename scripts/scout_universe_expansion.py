@@ -413,7 +413,7 @@ def _score_ticker_batch(
         # Resolve CIK from Company(ticker) if still missing.
         if not cik:
             try:
-                from edgar import Company as _Company  # already imported at module top
+                from edgar import Company as _Company  # function-local import (not at module top)
                 co = _Company(ticker)
                 raw_cik = getattr(co, "cik", None)
                 if raw_cik is not None:
@@ -718,6 +718,12 @@ def _build_stage1_summary() -> None:
         },
         "degradation_summary": _degradation_summary(records),
         "cross_section_note": _dominant_cross_section_note(records),
+        "cross_section_note_counts": dict(
+            # Full histogram so mixed JSONLs (partial cold + warm re-runs) are loud.
+            __import__("collections").Counter(
+                r.get("cross_section_note", "unknown") for r in records
+            )
+        ),
         "top30_by_composite": sorted(
             [
                 {
@@ -1011,12 +1017,16 @@ def mode_sp400_stage2(args: argparse.Namespace) -> None:
                 continue
             logger.info("[stage2] Processing %s...", ticker)
 
-            # Fetch snapshot + history (may hit cache from stage-1).
-            # CIK resolution: same pattern as _score_ticker_batch — resolve via
-            # Company(ticker).cik because the S&P 400 rows carry no wiki CIK.
-            # Beneish + Dechow need the annual history, which fetch_fundamentals_
-            # history() keys by CIK; passing "" calls Company("") and fetches a
-            # random company's history.
+            # Fetch snapshot + history.
+            # Snapshot: fetch_fundamentals hits the on-disk parquet cache when the
+            # snapshot is fresh (CIK keyed) — warm cache from a prior stage-1 or
+            # weekly cron run will be reused for the snapshot itself.
+            # History: fetch_fundamentals_history is CIK-keyed (annual parquet cache);
+            # on a fresh scout run this cache is cold because stage-1 does NOT call
+            # fetch_fundamentals_history — expect a live EDGAR fetch per ticker here.
+            # CIK resolution: the S&P 400 rows carry no wiki CIK, so we resolve via
+            # Company(ticker).cik. Passing "" to fetch_fundamentals_history would call
+            # Company("") and fetch a random company's history — a real CIK is required.
             s2_cik = ""
             try:
                 snap = fetch_fundamentals(ticker, "")
@@ -1088,24 +1098,40 @@ def mode_sp400_stage2(args: argparse.Namespace) -> None:
                 flag_notes.append("no_filing_date_stale_check_skipped")
 
             # beneish_manipulation
+            # BeneishResult fields: m_score, is_high (threshold -2.22), missing_ratios.
+            # Production veto (risk_overlay / BENEISH_VETO_THRESHOLD = -1.78) fires
+            # when m_score > -1.78 (stricter than the annotate threshold of -2.22).
+            # We record both booleans so callers can replicate production semantics.
             try:
+                from compute.scoring.beneish import BENEISH_VETO_THRESHOLD as _BVT
                 b_result = compute_beneish(snap, hist if not hist.empty else None)
-                flags["beneish_manipulation"] = b_result.beneish_manipulation
+                flags["beneish_is_high"] = b_result.is_high  # m_score > -2.22
+                flags["beneish_above_veto_threshold"] = (
+                    b_result.m_score is not None and b_result.m_score > _BVT
+                )  # production soft-veto: m_score > -1.78
                 flags["beneish_m_score"] = b_result.m_score
-            except Exception:
-                flags["beneish_manipulation"] = None
+            except Exception as _be:
+                flags["beneish_is_high"] = None
+                flags["beneish_above_veto_threshold"] = None
                 flags["beneish_m_score"] = None
-                flag_notes.append("beneish_compute_failed")
+                flag_notes.append(f"beneish_compute_failed:{type(_be).__name__}:{_be!s:.80}")
 
             # dechow_f
+            # DechowResult fields: f_score, is_high (threshold 2.45), missing_inputs.
+            # Production soft-veto (DECHOW_VETO_THRESHOLD = 3.0) fires when f_score > 3.0.
             try:
+                from compute.scoring.dechow_f import DECHOW_VETO_THRESHOLD as _DVT
                 d_result = compute_dechow_f(snap, hist if not hist.empty else None)
-                flags["dechow_high"] = d_result.dechow_high
+                flags["dechow_is_high"] = d_result.is_high  # f_score > 2.45
+                flags["dechow_above_veto_threshold"] = (
+                    d_result.f_score is not None and d_result.f_score > _DVT
+                )  # production soft-veto: f_score > 3.0
                 flags["dechow_f_score"] = d_result.f_score
-            except Exception:
-                flags["dechow_high"] = None
+            except Exception as _de:
+                flags["dechow_is_high"] = None
+                flags["dechow_above_veto_threshold"] = None
                 flags["dechow_f_score"] = None
-                flag_notes.append("dechow_compute_failed")
+                flag_notes.append(f"dechow_compute_failed:{type(_de).__name__}:{_de!s:.80}")
 
             # Tier-2 defenses (8-K + 10-K text) — independent per-ticker fetches
             try:
@@ -1121,12 +1147,19 @@ def mode_sp400_stage2(args: argparse.Namespace) -> None:
                 flag_notes.append(f"tier2_fetch_failed:{e!s:.50}")
 
             # HC gate approximation: any active veto fires?
-            # Production active vetoes: altman_distress, sloan_accruals_top_decile,
-            # net_issuance_top_decile, non_reliance_filing, data_quality_input_corruption
+            # Production has 7 active vetoes (Phase 4.5a; CLAUDE.md §Phase status):
+            #   altman_distress, sloan_accruals_top_decile, net_issuance_top_decile,
+            #   non_reliance_filing, data_quality_input_corruption,
+            #   beneish_above_veto_threshold (m_score > -1.78), dechow_above_veto_threshold (f_score > 3.0).
+            # sloan_accruals_top_decile + net_issuance_top_decile cannot be evaluated
+            # without the full universe cross-section — they are listed in SKIPPED_FLAGS.
+            # beneish + dechow soft-vetoes ARE evaluated above.
             evaluable_vetoes = [
                 "altman_distress",
                 "non_reliance_filing",
                 "data_quality_input_corruption",
+                "beneish_above_veto_threshold",
+                "dechow_above_veto_threshold",
             ]
             veto_fired_evaluable = any(flags.get(v) for v in evaluable_vetoes)
 
@@ -1231,10 +1264,16 @@ def mode_report(args: argparse.Namespace) -> None:
             null_count = sum(1 for r in scored if r.get("pillars", {}).get(col) is None)
             _p(f"- {col}: {null_count}/{len(scored)} null ({100*null_count/max(len(scored),1):.0f}%)")
 
-        # Cross-section caveat
+        # Cross-section caveat — use the majority note, not records[0] which may
+        # be a stale cold-cache entry from a prior partial run.
         if stage1_records:
-            cs_note = stage1_records[0].get("cross_section_note", "unknown")
-            _p(f"\n**Cross-section mode:** `{cs_note}`")
+            from collections import Counter as _Counter
+            cs_note_counts: dict[str, int] = dict(
+                _Counter(r.get("cross_section_note", "unknown") for r in stage1_records)
+            )
+            cs_note = _dominant_cross_section_note(stage1_records)
+            _p(f"\n**Cross-section mode (majority):** `{cs_note}`")
+            _p(f"**Cross-section note counts:** {cs_note_counts}")
             if "CAVEAT" in cs_note:
                 _p("> WARNING: S&P 500 caches were cold — sector-relative pillars (quality, value, "
                    "growth, profitability) were ranked within the midcap cohort only, NOT vs the S&P 500. "
@@ -1256,18 +1295,28 @@ def mode_report(args: argparse.Namespace) -> None:
         veto_count = sum(1 for r in stage2_records if r.get("veto_fired_evaluable"))
         _p(f"\nEvaluable-veto fired: {veto_count} / {len(stage2_records)} tickers")
 
-        _p("\n| Ticker | altman | non_reliance | data_quality | beneish | dechow | going_concern | stale_filing |")
-        _p("|--------|--------|--------------|--------------|---------|--------|---------------|--------------|")
+        # beneish column = beneish_is_high (annotate, -2.22) + *veto* if above_veto_threshold (-1.78)
+        # dechow column  = dechow_is_high  (annotate, 2.45)  + *veto* if above_veto_threshold (3.0)
+        _p("\n| Ticker | altman | non_reliance | data_quality | beneish_is_high | beneish_veto | dechow_is_high | dechow_veto | going_concern | stale_filing |")
+        _p("|--------|--------|--------------|--------------|-----------------|--------------|----------------|-------------|---------------|--------------|")
         for r in stage2_records:
             f = r.get("flags", {})
             def _fmt(v: bool | None) -> str:
                 if v is None:
                     return "?"
                 return "YES" if v else "no"
-            _p(f"| {r['ticker']} | {_fmt(f.get('altman_distress'))} | {_fmt(f.get('non_reliance_filing'))} | "
-               f"{_fmt(f.get('data_quality_input_corruption'))} | {_fmt(f.get('beneish_manipulation'))} | "
-               f"{_fmt(f.get('dechow_high'))} | {_fmt(f.get('going_concern_disclosure'))} | "
-               f"{_fmt(f.get('stale_filing_hard'))} |")
+            _p(
+                f"| {r['ticker']} "
+                f"| {_fmt(f.get('altman_distress'))} "
+                f"| {_fmt(f.get('non_reliance_filing'))} "
+                f"| {_fmt(f.get('data_quality_input_corruption'))} "
+                f"| {_fmt(f.get('beneish_is_high'))} "
+                f"| {_fmt(f.get('beneish_above_veto_threshold'))} "
+                f"| {_fmt(f.get('dechow_is_high'))} "
+                f"| {_fmt(f.get('dechow_above_veto_threshold'))} "
+                f"| {_fmt(f.get('going_concern_disclosure'))} "
+                f"| {_fmt(f.get('stale_filing_hard'))} |"
+            )
 
         _p("\n> CAVEAT: `sloan_accruals_top_decile` and `net_issuance_top_decile` were NOT evaluated. "
            "The HC gate assessment above is therefore OPTIMISTIC — additional vetoes may fire on these "
@@ -1389,6 +1438,13 @@ def mode_report(args: argparse.Namespace) -> None:
         "**ADR probe**: The non_null_gaap_fields count calls fetch_fundamentals with an empty CIK string, "
         "which may not find the correct CIK for all tickers. Verdict may be less accurate for "
         "tickers where edgartools Company() lookup works but CIK was not provided.",
+        "**Combined-900 cross-section is input-degraded on the S&P 500 side**: "
+        "_load_sp500_pillar_inputs_from_cache reconstructs S&P 500 TickerInputs with "
+        "``history=None`` and ``benchmark_prices=None``. As a result, growth-pillar "
+        "inputs (CAGR metrics from annual history) and beta inputs are imputed to neutral "
+        "for every S&P 500 ticker in the combined cross-section. The combined-900 ranking "
+        "is NOT input-faithful for the 500 side — midcap composite scores are directionally "
+        "correct but the relative ordering between midcaps and S&P 500 names is degraded.",
     ]
     for d in deviations:
         _p(f"- {d}")
