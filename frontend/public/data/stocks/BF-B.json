@@ -5,84 +5,84 @@
   "industry": "Distillers & Vintners",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 12511639503.112793,
+  "market_cap": 12452436582.435608,
   "current_price": 26.68,
   "rank": 156,
   "composite_score": 54.91,
   "pillar_scores": {
-    "quality": 55.56,
-    "value": 65.28,
-    "growth": 31.6,
+    "quality": 51.39,
+    "value": 62.96,
+    "growth": 43.06,
     "momentum": 46.76,
-    "health": 70.24,
-    "profitability": 63.89,
+    "health": 72.91,
+    "profitability": 63.43,
     "technical": 59.41,
     "risk": 30.89,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 5044000000.0,
-    "net_income": 807000000.0,
-    "total_assets": 8302000000.0,
-    "total_liabilities": 4220000000.0,
-    "stockholders_equity": 4082000000.0,
-    "cash": 383000000.0,
-    "operating_cash_flow": 861000000.0,
-    "capex": 131000000.0,
-    "free_cash_flow": 730000000.0,
-    "eps_basic": 1.720858424742831,
-    "eps_diluted": 1.720858424742831,
-    "shares_outstanding": 468952000.0,
+    "revenue": 5082000000.0,
+    "net_income": 715000000.0,
+    "total_assets": 7894000000.0,
+    "total_liabilities": 3874000000.0,
+    "stockholders_equity": 4020000000.0,
+    "cash": 308000000.0,
+    "operating_cash_flow": 1000000000.0,
+    "capex": 107000000.0,
+    "free_cash_flow": 893000000.0,
+    "eps_basic": 1.5319251049315132,
+    "eps_diluted": 1.5319251049315132,
+    "shares_outstanding": 466733000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 12511639503.112793,
-    "pe_ratio_ttm": 15.50389033842973,
-    "goodwill": 1536000000.0
+    "market_cap": 12452436582.435608,
+    "pe_ratio_ttm": 17.41599522018966,
+    "goodwill": 1522000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 11.437382043665428,
+        "value": 11.733764663038507,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 42.81817749605738,
+        "value": 38.117162987086765,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 30.227006240515788,
+        "value": 29.90942557973864,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 32.94058706495984,
+        "value": 29.586753094650955,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 6.210103792421405,
+        "value": 6.12449048658976,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 7.4415518837916705,
+        "value": 7.350520830984464,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 20.832194142090607,
-    "max": 42.81817749605738,
-    "low": 6.210103792421405,
-    "high": 42.81817749605738,
-    "mos_pct": -28.071004538450982,
+    "median": 20.66025887884473,
+    "max": 38.117162987086765,
+    "low": 6.12449048658976,
+    "high": 38.117162987086765,
+    "mos_pct": -29.136815088483836,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
@@ -96,18 +96,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 100,
-    "latest_period_end": "2026-01-31",
-    "latest_filed_date": "2026-03-04"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-06-12"
   },
-  "risk_flags": [
-    "sloan_accruals_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy"
   ],
   "has_history": true,
-  "tangible_book_value": 3.109060202323479,
+  "tangible_book_value": 3.3316692841517526,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,8 +117,8 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.31,
-      "Value": 52.43,
-      "Growth": 49.65,
+      "Value": 52.89,
+      "Growth": 49.48,
       "Momentum": 43.48,
       "Health": 39.54,
       "Profitability": 53.7,
@@ -128,15 +126,15 @@
       "Risk": 50.7
     }
   },
-  "beneish_m_score": -2.391731627605287,
-  "dechow_f_score": 0.5664740792269928,
+  "beneish_m_score": -2.6724114749884866,
+  "dechow_f_score": 0.5310242995376506,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 51.3716677958505,
+  "loss_chance_pct": 48.74289044549643,
   "price_change_1d_pct": 0.5654,
-  "manipulation_index": 20.0,
-  "composite_score_adjusted": 52.91,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 54.91,
   "manipulation_components": {
-    "sloan_accruals_top_decile": true,
+    "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
@@ -191,5 +189,5 @@
     "latest_filing_date": "2026-05-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.021853761295213686
+  "cross_source_delta": 0.017203336954775106
 }
