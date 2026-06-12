@@ -3636,3 +3636,41 @@ comment honesty (empty-CIK cache bypass, local import); 500-side
 history=None cross-section deviation disclosed. Gotcha pre-registered:
 CLAUDE.md §Gotchas + docs/GOTCHAS.md "edgartools Company(\"\")".
 ---
+
+## 2026-06-12 — ci(precache): Issue #249 Options B+C — Saturday EDGAR pre-cache workflow + cache-restore canary
+
+Durable fix for the 2026-05-25 P1 (full-cold 5-loop run blew the cron's
+`timeout-minutes`; warm ~12-25 min, cold > 2.5 h). (B) NEW
+`precache-edgar.yml`: Sat 08:00 UTC + `workflow_dispatch`, no trading-day
+gate, runs the REAL `compute.main` with ALL loops enabled (no skip vars)
+and discards outputs; restores BOTH bundles with the cron's EXACT keys —
+fast `cache-v8-fast-<quarter>` exact-hit-skips-save (warm Saturdays
+~free; post-eviction Saturdays eat the cold rebuild and SAVE so Monday's
+cron restores warm), slow-text run-id key always saves a fresh snapshot;
+`timeout-minutes: 240`, `permissions: contents: read`; end-of-job
+per-loop wall-clock + fundamentals p50/p95 step summary with a
+stale-committed-metadata guard (`git diff --quiet` on metadata.json so an
+aborted compute can't report the prior cron's numbers). (C) Post-restore
+canary upgraded in `compute-rankings.yml` + mirrored in precache:
+per-layer size / file count / newest-file age into log +
+`$GITHUB_STEP_SUMMARY` table; empty/absent Form-4 or 10-K-text layer →
+`::warning::cache cold — expect a long run (see #249)` — warning NOT
+fail-fast (deliberate deviation from the issue's C: with B in place a
+cold dispatch is usually an intentional rebuild; rationale in YAML
+comment). NEW shared concurrency group `edgar-cache-writers`
+(`cancel-in-progress: false`) on BOTH workflows so the two cache writers
+never overlap (additive on the cron — schedules can't collide by
+construction; the group covers the dispatch paths). Guard test now
+quad-file: cache-path parametrization × both warming workflows
+(+ `edgar_form4` / `osap` added to the required list — pre-existing guard
+rot), `cache-v8-fast-` present / `cache-v7-` absent pinned in precache,
+NEW version-agnostic slow-text family lockstep test + run-id-key idiom
+pin. Sandbox-verified: YAML parse, canary execution on warm / cold /
+empty-form4 / stale-metadata paths, 24/24 guard tests, ruff clean.
+Doc fixes riding along: AGENTS.md cache-section stale `cache-v5-fast-`
+→ v8 + precache second-writer note; CLAUDE.md §Stack CI line + §In
+flight rotation. Follow-up (out of scope): `universe=sp900` dispatch
+input for Phase-8 S&P-400 warming — separate PR on the pilot's timeline.
+This workflow is also the **Phase 8 prerequisite** (#249 listed as the
+hard gate before the S&P 900 pilot).
+---

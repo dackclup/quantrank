@@ -22,7 +22,9 @@ design-system spec.
   [`docs/design.md`](docs/design.md).
 - **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri
   22:00 UTC; `trading-day-gate` skips weekends + NYSE holidays; folds a
-  warm PIT-backtest refresh so the AI-pick home updates each cron)
+  warm PIT-backtest refresh so the AI-pick home updates each cron) +
+  Saturday `precache-edgar.yml` (08:00 UTC off-cycle EDGAR cache warmer,
+  #249 — full 5-loop `compute.main`, outputs discarded, caches saved)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia
 
@@ -355,24 +357,22 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(scripts) — Phase-8 universe-expansion scout + rebalance-frequency
-  experiment (this PR, 2026-06-12)** — dev-only analysis tooling, zero
-  production wiring. Scout (`scripts/scout_universe_expansion.py`, 4
-  modes) ran the S&P 400 through the production ingest+scoring path in a
-  combined ~900-name cross-section: **24 midcaps ≥ 65** (entry bar; 31
-  more in 60-65), **23/24 clean on every evaluable veto — SSD (72.7)
-  Beneish-vetoed (m = −1.17 > −1.78)**, SON/GEF annotate-only; sloan +
-  net-issuance unevaluable pre-pilot (full-universe percentiles). ADR
-  probe: 25/26 ANNUAL_ONLY (20-F/6-K) → ADRs stay out on the free stack.
-  `scripts/experiment_rebalance_frequency.py` (owner ask): quarterly /
-  semiannual / annual replay with a baseline-faithfulness gate + 0/10/20
-  bps cost model — verdict **KEEP QUARTERLY** (annual loses gross AND
-  net@10bps with worse maxDD, despite turnover −54%). Two scout defect
-  cycles caught by the gates (stale-smoke cross-section rows + empty-CIK
-  history; Beneish/Dechow attribute misread silently un-evaluating both
-  models) — fixed + re-run before trusting any number. Decision: staged
-  ladder unblocked → #249 pre-cache (next PR) → S&P 900 pilot → 1500.
-  Detail: PHASE_STATUS_INFLIGHT.md.
+- **ci(precache) — Issue #249 Options B+C: Saturday EDGAR pre-cache
+  workflow + cache-restore canary (this PR, 2026-06-12)** — durable fix
+  for the 2026-05-25 P1 (full-cold 5-loop run blew the cron's
+  150-min ceiling). NEW `precache-edgar.yml`: Sat 08:00 UTC +
+  `workflow_dispatch`, no trading-day gate, runs the REAL `compute.main`
+  with ALL loops (no skip vars), discards outputs; restores BOTH bundles
+  with the cron's EXACT keys — fast `cache-v8-fast-<quarter>`
+  exact-hit-skips-save (warm Sat ~free; post-eviction Sat eats the cold
+  rebuild + SAVES so Monday restores warm), slow-text run-id key always
+  saves fresh. Canary (both workflows): post-restore per-layer size /
+  count / age table + `::warning` on empty Form-4 / 10-K-text — warning
+  NOT fail-fast (a cold dispatch is usually an intentional rebuild).
+  Shared `edgar-cache-writers` concurrency group (queue-not-cancel).
+  Guard test now quad-file + slow-text family lockstep pin. Also the
+  Phase-8 prerequisite (S&P 900 pilot warms via this path). Detail:
+  PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
