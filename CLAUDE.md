@@ -364,7 +364,10 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   computed on ~45 trading days, degrading as the window slid → `min_start`
   param (None = legacy behavior; shallow fresh cache → at-most-once deeper
   refetch with `period="max"`, overwrite); the backfill passes
-  `min_start = start − 185d`. Live weekly compute path untouched. Tests:
+  `min_start = start − 185d`. Round 2 (cron-cost): `PRICES_FETCH_START =
+  2015-11-29` shared fixed floor — the live fetch downloads from the floor
+  (not rolling 10y), cache v7→v8-fast both workflows, per-run extra cost
+  zero, and the benchmarks.json late-rebase cliff (~Aug 2026) dies free. Tests:
   22 mock-signature repairs + 8 new pins (min_start contract P1-P4 +
   anchor pins A1-A4); full suite 1645 passed. Companion finding recorded
   on issue #465: pre-2016 extension is blocked on a licensed

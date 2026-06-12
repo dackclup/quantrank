@@ -74,7 +74,7 @@ def test_P1_shallow_cache_triggers_one_refetch(tmp_path, monkeypatch) -> None:
     deep = _bday_frame("2015-01-02", 10)
     download_calls: list[tuple[str, str]] = []
 
-    def fake_download(ticker: str, period: str) -> pd.DataFrame:
+    def fake_download(ticker: str, period: str, *, start=None) -> pd.DataFrame:
         download_calls.append((ticker, period))
         return deep
 
@@ -127,7 +127,7 @@ def test_P2_deep_enough_cache_returned_without_download(tmp_path, monkeypatch) -
 
     download_calls: list[str] = []
 
-    def fake_download(ticker: str, period: str) -> pd.DataFrame:
+    def fake_download(ticker: str, period: str, *, start=None) -> pd.DataFrame:
         download_calls.append(ticker)
         return deep_cached  # should never be reached
 
@@ -168,7 +168,7 @@ def test_P3_new_listing_shallow_refetch_cached_and_returned_once(tmp_path, monke
     shallow_new = _bday_frame("2021-01-04", 5)
     download_calls: list[str] = []
 
-    def fake_download(ticker: str, period: str) -> pd.DataFrame:
+    def fake_download(ticker: str, period: str, *, start=None) -> pd.DataFrame:
         download_calls.append(ticker)
         return shallow_new  # still shallow — new listing
 
@@ -216,7 +216,7 @@ def test_P4_min_start_none_skips_depth_check_old_behavior(tmp_path, monkeypatch)
 
     download_calls: list[str] = []
 
-    def fake_download(ticker: str, period: str) -> pd.DataFrame:
+    def fake_download(ticker: str, period: str, *, start=None) -> pd.DataFrame:
         download_calls.append(ticker)
         return shallow
 
@@ -328,3 +328,56 @@ def test_A4_price_floor_covers_full_sigma_window() -> None:
         f"sigma window short: floor {floor} is only "
         f"{(first_rebalance - floor).days}d before the first rebalance"
     )
+
+
+def test_A5_prices_fetch_start_constant_pin() -> None:
+    """Design-A anchor pin: the shared fixed price floor equals
+    BACKTEST_CANONICAL_START (2016-06-01) - 185d = 2015-11-29, and the two
+    layers' constants agree (scripts may import compute, never the reverse —
+    the equality is asserted here, across the layering boundary)."""
+    from compute import config
+    from scripts.backfill_portfolio_pit import (
+        _SIGMA_LOOKBACK_BUFFER_DAYS,
+        BACKTEST_CANONICAL_START,
+    )
+
+    assert config.PRICES_FETCH_START == datetime.date(2015, 11, 29)
+    assert (
+        BACKTEST_CANONICAL_START
+        - datetime.timedelta(days=_SIGMA_LOOKBACK_BUFFER_DAYS)
+        == config.PRICES_FETCH_START
+    )
+
+
+def test_A6_fetch_prices_downloads_from_fixed_floor(tmp_path, monkeypatch) -> None:
+    """Design-A wiring pin: a live download from fetch_prices passes
+    start=config.PRICES_FETCH_START to _yf_download (the fixed floor, not the
+    rolling period path) — the property that keeps the shared cache deep enough
+    for the backfill's min_start backstop without any per-run refetch."""
+    from compute import config
+
+    monkeypatch.setattr(config, "PRICES_CACHE_DIR", tmp_path)
+    seen: dict = {}
+
+    def fake_download(ticker: str, period: str, *, start=None) -> pd.DataFrame:
+        seen["start"] = start
+        idx = pd.bdate_range("2015-11-30", periods=30)
+        return pd.DataFrame({"Close": [100.0] * len(idx)}, index=idx)
+
+    monkeypatch.setattr(prices_mod, "_yf_download", fake_download)
+    out = fetch_prices("TESTX")
+    assert out is not None
+    assert seen["start"] == config.PRICES_FETCH_START
+
+
+def test_A7_yf_download_period_branch_without_start() -> None:
+    """Direct _yf_download callers with start=None keep the period branch —
+    asserted structurally: the signature accepts start=None and the period
+    parameter remains (regression guard for test/tooling callers that bypass
+    the fixed floor)."""
+    import inspect
+
+    sig = inspect.signature(prices_mod._yf_download)
+    assert "start" in sig.parameters
+    assert sig.parameters["start"].default is None
+    assert "period" in sig.parameters

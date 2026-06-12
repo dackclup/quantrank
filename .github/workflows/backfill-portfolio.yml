@@ -59,6 +59,7 @@ jobs:
       # synthetic point-in-time snapshots from the latter; the live TTM snapshot
       # cache is NOT used). Same cache key as compute-rankings so a recent cron's
       # warm cache is reused.
+      # v8-fast (fixed-floor PR): PRICES_FETCH_START=2015-11-29 replaces period=10y — period-blind parquets from v7 are shallow and must be discarded.
       - name: Restore compute caches
         uses: actions/cache@v5
         with:
@@ -67,10 +68,10 @@ jobs:
             compute/cache/prices
             compute/cache/universe-v2.parquet
             compute/cache/edgar_amendments
-          key: cache-v7-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v7-${{ steps.quarter.outputs.q }}-
-            cache-v7-
+            cache-v8-fast-${{ steps.quarter.outputs.q }}-
+            cache-v8-fast-
 
       # The backfill READS frontend/public/data/portfolio/benchmarks.json for the
       # SPY/QQQ/DIA/IWM comparison lines but does NOT produce it — that file is a

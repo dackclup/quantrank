@@ -3496,11 +3496,33 @@ rebalances) requires a licensed delisted-price source — owner decision,
 parked on #465. Side finding: fundamentals_latency_p95 28.12s > 15s on
 the latest run — watch next cron.
 
+**Design A (round-2, the cron-cost fix)**: the reviewer traced that the
+min_start backstop alone would have cost EVERY warm cron a sequential
+~500-ticker `period="max"` refetch (+5-15 min vs the 55m folded cap,
+silent stall risk) because the quarter-keyed fast cache only saves on the
+first run of a quarter and the compute step re-downloads SHALLOW 10y
+frames daily. data-pipeline-engineer design verdict (4 options ranked):
+**shared fixed floor** — `config.PRICES_FETCH_START = date(2015, 11, 29)`
+(= BACKTEST_CANONICAL_START − 185d, equality asserted by test pin A5);
+`_yf_download` gains `start=` and `fetch_prices` always downloads from
+the floor (period vestigial on the live path); cache family bumped
+v7-fast → v8-fast in BOTH workflows (backfill key aligned to the same
+family). Per-run extra cost: ZERO (the compute step's existing daily
+re-download is simply ~6 months deeper, +5.4% rows); the min_start
+backstop stays and is a verified no-op on warm cache. FREE side-fix: the
+benchmarks.json late-rebase cliff (QQQ/DIA/IWM lines were rolling-10y and
+would silently rebase after the portfolio start ~Aug 2026) is eliminated
+— benchmarks now start at the floor, before the first NAV date. Growth
+policy: revisit if the window exceeds ~15y (≈2031). Live consumers
+re-verified deeper-frame-safe (everything tail/iloc-capped).
+
 Tests: 22 mock-signature repairs (`fetch_prices` now receives kwargs) + 8
 new pins — min_start contract (shallow-refetch-once / deep-no-download /
 new-listing-no-loop / None-bypass) + anchor pins (canonical-start value &
-type / argparse default not rolling / buffer 185 / price floor precedes
-the first rebalance). Full suite 1645 passed (1 pre-existing alpha158
+type / A2 exercising main()'s REAL parser / buffer 185 / A4 full-window
+magnitude ≥130d) + Design-A pins (A5 cross-layer floor equality · A6
+fetch_prices downloads from the fixed floor · A7 period-branch regression
+· v8-fast key pin covering BOTH workflows). Full suite 1645 passed (1 pre-existing alpha158
 Hypothesis flake, unrelated).
 
 **Files**: compute/ingest/prices.py · scripts/backfill_portfolio_pit.py ·

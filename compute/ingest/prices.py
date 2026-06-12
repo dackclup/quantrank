@@ -20,15 +20,47 @@ logger = logging.getLogger(__name__)
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
-def _yf_download(ticker: str, period: str) -> pd.DataFrame:
-    df = yf.download(
-        ticker,
-        period=period,
-        auto_adjust=False,
-        progress=False,
-        threads=False,
-        group_by="column",
-    )
+def _yf_download(
+    ticker: str,
+    period: str,
+    *,
+    start: datetime.date | None = None,
+) -> pd.DataFrame:
+    """Download OHLCV from yfinance with tenacity retry.
+
+    Parameters
+    ----------
+    ticker:
+        Exchange symbol.
+    period:
+        yfinance period string (e.g. ``"10y"``, ``"max"``).  Used only when
+        ``start`` is ``None`` — when ``start`` is provided the ``start=`` date
+        path is used instead and ``period`` is ignored by this function.
+        Callers that bypass ``fetch_prices`` and call ``_yf_download`` directly
+        (e.g. tests) may still use ``period`` alone (``start=None``).
+    start:
+        Optional fixed calendar floor for the download.  When provided,
+        ``yf.download`` is called with ``start=start.isoformat()`` and no
+        ``period`` argument, fetching all available data from that date forward.
+    """
+    if start is not None:
+        df = yf.download(
+            ticker,
+            start=start.isoformat(),
+            auto_adjust=False,
+            progress=False,
+            threads=False,
+            group_by="column",
+        )
+    else:
+        df = yf.download(
+            ticker,
+            period=period,
+            auto_adjust=False,
+            progress=False,
+            threads=False,
+            group_by="column",
+        )
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
     return df
@@ -83,19 +115,24 @@ def fetch_prices(
     ticker:
         Exchange symbol to fetch.
     period:
-        yfinance period string (e.g. ``"10y"``, ``"max"``). Used both for
-        fresh downloads and for cache-miss refetches triggered by ``min_start``.
+        yfinance period string (e.g. ``"10y"``, ``"max"``).  On the default
+        code path ALL downloads use ``start=config.PRICES_FETCH_START`` (a
+        fixed calendar floor) regardless of this argument, so ``period`` is
+        vestigial on that path and is kept only for interface stability and for
+        callers that call ``_yf_download`` directly (e.g. tests).  Passing an
+        explicit ``period`` here does NOT override the fixed start floor.
     min_start:
         Optional earliest-date floor for depth-sensitive callers.  The cache is
         period-blind (keyed by ticker, not by period), so a cached frame may be
         shallower than required for a long backtest window.  When ``min_start``
         is provided and a fresh cache hit's earliest index date is AFTER
         ``min_start``, the cached frame is treated as a depth miss: the function
-        refetches once with the given ``period`` (typically ``"max"``), writes
-        the deeper frame to the cache, and returns it.  The refetch happens AT
-        MOST ONCE per call — if the newly fetched frame still starts after
-        ``min_start`` that IS the full history available (e.g. a recently-listed
-        ticker), and the result is cached and returned without looping.
+        refetches once (using ``start=config.PRICES_FETCH_START`` — the fixed
+        floor satisfies any ``min_start`` that is <= it), writes the deeper
+        frame to the cache, and returns it.  The refetch happens AT MOST ONCE
+        per call — if the newly fetched frame still starts after ``min_start``
+        that IS the full history available (e.g. a recently-listed ticker), and
+        the result is cached and returned without looping.
         Default ``None`` = byte-identical current behaviour (the live weekly
         compute path never passes this argument).
         Fail-closed: if the deeper refetch itself fails, ``None`` is returned
@@ -126,7 +163,11 @@ def fetch_prices(
                 logger.warning("Cache read failed for %s: %s", ticker, e)
 
     try:
-        df = _yf_download(ticker, period)
+        # All downloads use the fixed PRICES_FETCH_START floor — this ensures
+        # the shared cache always carries the depth the backfill's min_start
+        # contract requires, eliminating the per-run sequential max-refetch.
+        # The ``period`` argument is vestigial on this path (see docstring).
+        df = _yf_download(ticker, period=period, start=config.PRICES_FETCH_START)
     except Exception as e:  # noqa: BLE001
         logger.warning("yfinance download failed for %s: %s", ticker, e)
         return None
