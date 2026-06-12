@@ -5,19 +5,19 @@
   "industry": "Household Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 23265492858.85559,
-  "current_price": 98.19,
-  "rank": 212,
-  "composite_score": 52.09,
+  "market_cap": 23002485316.016693,
+  "current_price": 97.08,
+  "rank": 230,
+  "composite_score": 51.46,
   "pillar_scores": {
     "quality": 55.56,
-    "value": 26.39,
+    "value": 26.85,
     "growth": 79.86,
-    "momentum": 49.55,
+    "momentum": 44.67,
     "health": 60.4,
     "profitability": 63.89,
-    "technical": 49.55,
-    "risk": 58.37,
+    "technical": 48.21,
+    "risk": 56.94,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 3.0935631678292794,
     "shares_outstanding": 236943602.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 23265492858.85559,
-    "pe_ratio_ttm": 31.74009939816588,
+    "market_cap": 23002485316.016693,
+    "pe_ratio_ttm": 31.38128965350163,
     "goodwill": 2629400000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 76.08845461528202,
+        "value": 75.18180101298785,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 57.1196980232935,
+        "value": 56.79059156996457,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 73.04657793630317,
+        "value": 72.81008026136577,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 65.08313797979834,
-    "max": 76.08845461528202,
+    "median": 64.80033591566517,
+    "max": 75.18180101298785,
     "low": 40.553956201016184,
-    "high": 76.08845461528202,
-    "mos_pct": -50.86857439462156,
+    "high": 75.18180101298785,
+    "mos_pct": -49.81404102194794,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -91,12 +91,14 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -110,22 +112,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.31,
-      "Value": 51.97,
+      "Value": 52.43,
       "Growth": 49.65,
-      "Momentum": 47.14,
+      "Momentum": 43.48,
       "Health": 39.54,
       "Profitability": 53.7,
-      "Technical": 54.66,
-      "Risk": 51.13
+      "Technical": 53.54,
+      "Risk": 50.7
     }
   },
   "beneish_m_score": -2.6345545856944055,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 56.75844022581121,
-  "price_change_1d_pct": 1.1955,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.09,
+  "loss_chance_pct": 56.702683558655664,
+  "price_change_1d_pct": -1.1305,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 50.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,7 +143,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -173,14 +175,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.97,
+  "osap_blended_score": 51.66,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 24,
-    "latest_filing_date": "2026-06-02",
+    "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0021896749475565033
+  "cross_source_delta": 2.521539238681166e-08
 }
