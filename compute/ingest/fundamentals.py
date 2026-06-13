@@ -98,6 +98,29 @@ def get_fallback_stats() -> dict[str, int]:
         return dict(_FALLBACK_STATS)
 
 
+# Issue #471 / #15 — Design B filing-precheck skip counter.
+# Incremented (thread-safe) each time fetch_fundamentals serves the cached
+# snapshot because SEC shows no new filing since the cached snapshot, skipping
+# the heavy get_facts() companyfacts pull.
+# Reset by reset_filing_precheck_skip_count() before the fetch loop; read by
+# get_filing_precheck_skip_count() after.  Log-only diagnostic — no
+# Metadata/schema field (keeps this PR off the schema triple).
+_FILING_PRECHECK_SKIP_LOCK = threading.Lock()
+_FILING_PRECHECK_SKIP_COUNT: list[int] = [0]  # list wrapper so the lock closure mutates in place
+
+
+def reset_filing_precheck_skip_count() -> None:
+    """Reset the filing-precheck skip counter. Call BEFORE the fundamentals fetch loop."""
+    with _FILING_PRECHECK_SKIP_LOCK:
+        _FILING_PRECHECK_SKIP_COUNT[0] = 0
+
+
+def get_filing_precheck_skip_count() -> int:
+    """Return the filing-precheck skip count accumulated since the last reset."""
+    with _FILING_PRECHECK_SKIP_LOCK:
+        return _FILING_PRECHECK_SKIP_COUNT[0]
+
+
 # Initialize EDGAR identity at module import. Failure is fatal — Phase 2
 # compute hard-requires it; running without a real UA will get rejected by
 # SEC with 403s and give the operator zero coverage.
@@ -1238,6 +1261,52 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
     )
 
 
+def _latest_filing_date(cik: str) -> date | None:
+    """Return the most-recent 10-K or 10-Q filing date for ``cik``, or ``None``
+    on any failure.
+
+    Design B (#471 / #15): a cheap precheck that re-verifies the latest SEC
+    filing date each cron run, so fetch_fundamentals can skip the heavy
+    get_facts() / companyfacts pull when no new filing has appeared since the
+    cached snapshot was written.
+
+    Reuses the exact same Company + get_filings() pattern already proven in
+    ``_fetch_shares_from_per_filing_xbrl`` (lines 764-765).  No new edgartools
+    API surface introduced — ``get_filings`` is already called in-file.
+
+    The whole body is wrapped in a broad ``except Exception`` so any edgartools
+    drift, network blip, or unexpected shape returns ``None`` and the caller
+    falls through to ``_build_snapshot`` (never skips on uncertainty).
+    """
+    try:
+        company = Company(cik)
+        filings_10k = company.get_filings(form="10-K")
+        filings_10q = company.get_filings(form="10-Q")
+        latest: date | None = None
+        for fset in (filings_10k, filings_10q):
+            if fset is None:
+                continue
+            try:
+                top = fset.head(1)
+            except Exception:  # noqa: BLE001
+                continue
+            if top is None or len(top) == 0:
+                continue
+            filing = top[0]
+            fd = getattr(filing, "filing_date", None)
+            if fd is None:
+                continue
+            # filing_date may be a date or datetime depending on edgartools
+            # version; normalise to date.
+            if isinstance(fd, datetime):
+                fd = fd.date()
+            if latest is None or fd > latest:
+                latest = fd
+        return latest
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _cache_path_for(cik: str) -> os.PathLike[str]:
     config.FUNDAMENTALS_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     return config.FUNDAMENTALS_CACHE_DIR / f"{cik}.parquet"
@@ -1325,6 +1394,54 @@ def fetch_fundamentals(
     if cached is not None and _is_fresh(cached, today=today):
         logger.debug("Fundamentals cache HIT for %s (filed=%s)", ticker, cached.latest_filed_date)
         return cached
+
+    # Issue #471 / #15 — Design B filing-date precheck (replaces Design C mtime gate).
+    #
+    # ROOT CAUSE: when a ticker's latest SEC filing is >FUNDAMENTALS_REFETCH_DAYS
+    # old (e.g. big filers C/GE/IBM/Chubb in the quiet period between 10-Qs),
+    # _is_fresh() returns False and we fall through to _build_snapshot() on EVERY
+    # cron run.  But _build_snapshot() calls Company(cik).get_facts() — the heavy
+    # companyfacts XBRL pull (19-36s for big filers).  Since the company hasn't
+    # filed anything new, the refetch returns IDENTICAL data and latest_filed_date
+    # doesn't advance, so it's stale again next run: a 100%-wasteful refetch loop.
+    #
+    # WHY NOT DESIGN C (mtime gate): the cron's fast cache uses an EXACT quarter
+    # key (cache-v8-fast-<quarter>-<os>); on a cache hit, actions/cache SKIPS the
+    # post-job save (immutability).  The fast cache is FROZEN within a quarter, so
+    # a restored parquet's st_mtime is the last reseed time — often weeks old —
+    # and the mtime < 7d gate NEVER fires for the stale tickers it was meant to
+    # help.  Under the frozen cache the "wasteful" refetch is also LOAD-BEARING
+    # for output freshness: a plain serve-cache design causes real staleness.
+    #
+    # FIX (Design B — filing-date precheck): for a stale-but-cached ticker, call
+    # _latest_filing_date(cik) (a cheap get_filings("10-K"/"10-Q") that re-verifies
+    # the latest SEC filing date each run) and skip _build_snapshot ONLY when no new
+    # filing has appeared since the cached snapshot.  This reuses the Company
+    # construction the refetch path already pays and skips ONLY the heavy get_facts()
+    # companyfacts pull — less SEC load, no staleness.  The precheck itself is a
+    # single HTTP call for the filings index, not the full companyfacts blob.
+    #
+    # FALLTHROUGH rule: if _latest_filing_date returns None (network error, missing
+    # filings, any edgartools drift) OR if a newer filing is found, we ALWAYS fall
+    # through to _build_snapshot.  Never skip on uncertainty.
+    if cached is not None and cik and cached.latest_filed_date is not None:
+        latest = _latest_filing_date(cik)  # cheap; None on any error
+        if latest is not None and latest <= cached.latest_filed_date:
+            # No new SEC filing since the cached snapshot — companyfacts are
+            # unchanged; serve cache and skip the heavy get_facts() pull (#471/#15).
+            with _FILING_PRECHECK_SKIP_LOCK:
+                _FILING_PRECHECK_SKIP_COUNT[0] += 1
+            logger.debug(
+                "Fundamentals filing-precheck SKIP for %s "
+                "(cached filed=%s, SEC latest=%s) — "
+                "no new filing, skipping companyfacts pull (#471)",
+                ticker,
+                cached.latest_filed_date,
+                latest,
+            )
+            return cached
+        # else: latest is None (helper failed) or latest > cached.latest_filed_date
+        # (new filing exists) → fall through to live _build_snapshot below.
 
     try:
         snapshot = _build_snapshot(ticker, cik)

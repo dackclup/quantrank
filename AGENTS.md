@@ -63,7 +63,10 @@ compute/                          # Python compute pipeline (read/write OK)
 │   ├── fundamentals.py           # XBRL fact extraction
 │   │                             #   (CIK discipline: never `Company("")` —
 │   │                             #   resolves to an arbitrary company; see
-│   │                             #   CLAUDE.md §Gotchas + docs/GOTCHAS.md)
+│   │                             #   CLAUDE.md §Gotchas + docs/GOTCHAS.md;
+│   │                             #   fast cache frozen-immutable per quarter →
+│   │                             #   filing-date precheck the only safe skip
+│   │                             #   path for stale-but-cached tickers, #471)
 │   ├── prices.py                 # yfinance wrapper (daily OHLCV from the fixed
 │   │                             #   floor 2015-11-29 — Design A 2026-06-11,
 │   │                             #   covers the decade AI-pick backtest;

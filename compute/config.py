@@ -70,6 +70,21 @@ EDGAR_MAX_WORKERS: int = 8
 UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
 PRICES_CACHE_MAX_AGE_HOURS: int = 24
 FUNDAMENTALS_REFETCH_DAYS: int = 45
+# Issue #471 / #15 — Design B filing-date precheck (replaces Design C mtime gate).
+# Design C used the parquet's st_mtime to decide whether to skip _build_snapshot —
+# but the cron's fast cache uses an EXACT quarter key
+# (cache-v8-fast-<quarter>-<os>), so on a cache hit actions/cache SKIPS the
+# post-job save (immutability).  The fast cache is FROZEN within a quarter, so a
+# restored parquet's mtime is the last reseed time (often weeks old) and the
+# mtime gate never fired for the stale tickers it was meant to help.  Under the
+# frozen cache the "wasteful" refetch is also load-bearing for output freshness —
+# a plain serve-cache design causes real staleness.
+# Design B avoids all of this: for a stale-but-cached ticker, a CHEAP
+# get_filings("10-K"/"10-Q") call re-verifies the latest SEC filing date each run
+# and skips _build_snapshot only when no new filing exists.  This reuses the
+# Company construction the refetch path already pays and skips only the heavy
+# get_facts() pull.  No day constant needed: the precheck queries SEC directly.
+# See compute/ingest/fundamentals._latest_filing_date + fetch_fundamentals.
 MIN_VALID_TICKERS: int = 100
 MIN_FUNDAMENTALS_COVERAGE: float = 0.5
 

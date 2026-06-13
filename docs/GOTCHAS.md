@@ -1440,3 +1440,33 @@ backtest CAGR as the live product's track record.
   de-sync is only fully visible on the SECOND cold-rebuild cycle (~1 week of
   crons) — the first post-deploy cold build still bursts, but its *expiry* is
   now spread.
+- **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency
+  signals are NO-OPs; the only safe skip path for stale-but-cached tickers is filing-date
+  precheck against SEC each run** (`compute/ingest/fundamentals.py`, PR #471, 2026-06-13).
+  The cron's FAST cache (`compute/cache/fundamentals/*`) uses an EXACT quarter key
+  (`cache-v8-fast-<quarter>`) — `actions/cache` **skips the post-job save** on an
+  exact-key hit (that is the point of a stable quarter key: no churn). Consequence:
+  the fast cache is frozen at whatever was saved at the start of the quarter (the
+  preceding Saturday pre-cache run or the first cold cron of the quarter). Within the
+  quarter, the fast cache is NEVER updated by a normal cron run. Two things follow:
+  (1) **Parquet mtimes are meaningless across cron runs.** A fundamentals parquet
+  written by the pre-cache on Saturday reads the SAME mtime on Monday, Wednesday,
+  and Friday — `os.path.getmtime()`-type freshness checks are NO-OPs as a per-run
+  refetch signal. A Design-C "skip if mtime is recent" gate would silently serve a
+  quarter-old snapshot to any ticker whose filing date moved while the quarter was frozen.
+  (2) **The per-run live refetch of stale-but-cached tickers is LOAD-BEARING for
+  output freshness.** A plain "serve cache if file exists" optimization emits stale
+  output. The ONLY correct way to skip the heavy `Company.get_facts()` companyfacts
+  pull is to re-verify the latest filing date against SEC EACH RUN — which is exactly
+  what `_latest_filing_date(cik)` does (cheap `Company.get_filings("10-K"/"10-Q")`
+  call, reuses the `Company` already built, much lighter than a full companyfacts
+  fetch). If the helper returns `None` OR if a newer filing has appeared since the
+  cached snapshot date, the precheck falls through to the live `_build_snapshot` path
+  — it can never suppress a genuine filing update.
+  **Relevant code**: `compute/ingest/fundamentals.py` `_latest_filing_date()` +
+  `fetch_fundamentals()` "Design B" middle path; `compute/main.py`
+  `fundamentals_filing_precheck_skip_count` reset + log (log-only, no schema field).
+  Performance context: on the 2026-06-12 cron, 84/502 tickers had
+  `fundamentals_latency >= 15s` (p95 = 19.27s, p50 = 0.0s) — the bimodal histogram
+  was the stale-but-cached refetch loop. Design B addresses that tail while keeping
+  the "any uncertainty → live build" invariant.
