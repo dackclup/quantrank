@@ -275,6 +275,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`loss_avoidance_pattern` thresholds rescaled**
 - **Hypothesis property-based tests**
 - **CI escape-hatch env-var combo for simulate**
+- **pre-merge-prod-sim must mirror the cron's TWO cache bundles AND its `timeout-minutes` — the 5 QR_SKIP_* skips only help on a cache HIT**
 - **The cron cache is split into TWO `actions/cache` steps (don't re-merge): fast (quarter-key) + slow-text (run-id key)**
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
 - **`IMPECCABLE_NO_UPDATE_CHECK` + `IMPECCABLE_UPDATE_HOST`**
