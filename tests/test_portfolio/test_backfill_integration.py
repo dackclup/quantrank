@@ -87,6 +87,30 @@ def _universe() -> pd.DataFrame:
     )
 
 
+@pytest.fixture(autouse=True)
+def _mock_list_known_events_default():
+    """Default autouse fixture: mock ``list_known_events`` to return ``()`` (no
+    historical REMOVE events) for all tests in this file that do NOT explicitly
+    override it.
+
+    Why: ``run_backfill`` now calls ``list_known_events(since=start)`` to build the
+    survivorship-bias fix pre-fetch set.  Without this mock, tests using the synthetic
+    3-ticker universe (AAA/BBB/CCC) would read the REAL membership CSV, discover
+    real historical removed tickers (TFX, ATVI, …), and add them to the scoring
+    cohort via ``members_at`` — changing cross-sectional normalization and breaking
+    assertions that compare two ``run_backfill`` calls (e.g. ``hc_names <= vo_names``).
+
+    Tests that explicitly test the survivorship fix override this default by providing
+    their own ``list_known_events`` mock inside their ``with mock.patch.object(bf,
+    "list_known_events", ...)`` context.  That override takes precedence over the
+    autouse fixture because ``mock.patch.object`` within a test body re-patches the
+    same attribute, shadowing the fixture's patch for the duration of the ``with``
+    block.
+    """
+    with mock.patch.object(bf, "list_known_events", return_value=()):
+        yield
+
+
 def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
     scale_by_cik = {"1": 1.0, "2": 1.4, "3": 0.7}
 
@@ -1789,3 +1813,272 @@ def test_band_carry_vetoed_force_sold_regardless_of_score_v551() -> None:
     assert "CARRY" not in book
     assert "CARRY" not in next_tenure
     assert carry_count == 0
+
+
+# ---------------------------------------------------------------------------
+# Survivorship-bias fix: pre-fetch expansion to include removed tickers.
+# Branch on claude/gallant-feynman-tpipx1.
+#
+# These tests verify (offline, synthetic fixtures) that:
+# (a) A ticker that is in a historical cohort via ``members_at`` but was
+#     removed from the index by today is now in the pre-fetch set and gets
+#     SCORED when data is available.
+# (b) A removed ticker whose data is unavailable (no-CIK / no-prices /
+#     fetch-error) is gracefully skipped with a logged reason — never
+#     silently dropped at the pre-fetch stage.
+# (c) The three Rule-18 observability counters appear in meta.
+# (d) ``_resolve_cik_for_removed_ticker`` guards against empty CIK
+#     (the Company("") gotcha, CLAUDE.md §Gotchas).
+# ---------------------------------------------------------------------------
+
+
+def _removed_event(ticker: str, effective_date_iso: str):  # type: ignore[return]  # noqa: ANN201
+    """Synthetic MembershipEvent fixture for removed-ticker tests."""
+    from datetime import date as _date
+
+    from compute.ingest.historical_universe import MembershipEvent
+
+    return MembershipEvent(
+        effective_date=_date.fromisoformat(effective_date_iso),
+        ticker=ticker,
+        action="REMOVE",
+        name=f"{ticker} Corp",
+        source_url="https://example.com",
+    )
+
+
+def test_survivorship_fix_removed_ticker_is_scored_when_data_available(
+    tmp_path, _universe
+) -> None:
+    """A ticker REMOVED from the S&P 500 (i.e., absent from today's universe but
+    present in a historical cohort via ``members_at``) enters the scoring universe
+    when its fundamentals + prices can be fetched.
+
+    Verifies:
+    - ``meta.scoring_universe_removed_fetched_count >= 1`` (at least one removed
+      ticker contributed data).
+    - The observability counters are present in meta.
+    - ``meta.scoring_universe_removed_candidates_count >= 1``.
+    - fetched + unavailable == candidates (accounting identity).
+    """
+    # "OLD" is NOT in _universe (current). The synthetic remove event makes it
+    # appear as a removed candidate in the pre-fetch loop.
+    remove_event = _removed_event("OLD", "2022-09-01")
+
+    def _fake_resolve_cik(ticker: str) -> str | None:
+        return "0000099999" if ticker == "OLD" else None
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+        mock.patch.object(bf, "_resolve_cik_for_removed_ticker", side_effect=_fake_resolve_cik),
+        # Inject the synthetic remove event into list_known_events output so the
+        # pre-fetch loop sees OLD as a removed candidate.
+        mock.patch.object(bf, "list_known_events", return_value=(remove_event,)),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    meta = json.loads(out.read_text())["meta"]
+
+    # Rule 18 observability: all three counters must be present.
+    for field in (
+        "scoring_universe_removed_candidates_count",
+        "scoring_universe_removed_fetched_count",
+        "scoring_universe_removed_unavailable_count",
+    ):
+        assert field in meta, f"Rule-18 field {field} missing from meta"
+
+    # The removed ticker resolved CIK and had usable data — should be fetched.
+    assert meta["scoring_universe_removed_candidates_count"] >= 1, (
+        f"Expected >=1 removed candidate; got {meta['scoring_universe_removed_candidates_count']}"
+    )
+    assert meta["scoring_universe_removed_fetched_count"] >= 1, (
+        f"Expected OLD to be fetched; got {meta['scoring_universe_removed_fetched_count']}"
+    )
+    # Accounting identity: fetched + unavailable = candidates.
+    assert (
+        meta["scoring_universe_removed_fetched_count"]
+        + meta["scoring_universe_removed_unavailable_count"]
+        == meta["scoring_universe_removed_candidates_count"]
+    ), (
+        "fetched + unavailable must equal candidates: "
+        f"{meta['scoring_universe_removed_fetched_count']} + "
+        f"{meta['scoring_universe_removed_unavailable_count']} != "
+        f"{meta['scoring_universe_removed_candidates_count']}"
+    )
+
+
+def test_survivorship_fix_removed_ticker_gracefully_skipped_no_cik(
+    tmp_path, _universe
+) -> None:
+    """A removed ticker whose CIK cannot be resolved is gracefully skipped:
+    scored as unavailable (not as a silent pre-fetch drop), and the rest of
+    the backfill completes normally.
+
+    Before the fix: the ticker was absent from rows_by_ticker entirely AND
+    no diagnostic was emitted — purely silent.  After the fix: the ticker
+    enters the removed-candidates set, the CIK resolution returns None, and
+    ``scoring_universe_removed_unavailable_count`` increments instead.
+    """
+    remove_event = _removed_event("NOCIK", "2022-09-01")
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+        # CIK resolution fails for the removed ticker.
+        mock.patch.object(bf, "_resolve_cik_for_removed_ticker", return_value=None),
+        mock.patch.object(bf, "list_known_events", return_value=(remove_event,)),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    meta = json.loads(out.read_text())["meta"]
+
+    # The backfill must complete with normal rebalances (graceful degradation).
+    assert meta["rebalance_count"] > 0, (
+        "Backfill aborted when a removed ticker had no CIK — expected graceful skip"
+    )
+    # The removed ticker is counted as unavailable (not silently absent).
+    assert meta["scoring_universe_removed_candidates_count"] == 1
+    assert meta["scoring_universe_removed_fetched_count"] == 0
+    assert meta["scoring_universe_removed_unavailable_count"] == 1
+
+
+def test_survivorship_fix_removed_ticker_gracefully_skipped_fetch_error(
+    tmp_path, _universe
+) -> None:
+    """A removed ticker whose fundamentals fetch raises (EDGAR error) is
+    gracefully degraded: unavailable count increments, backfill completes."""
+    remove_event = _removed_event("ERRORED", "2022-09-01")
+
+    def _fetch_history_side_effect(cik: str) -> pd.DataFrame:
+        # The removed ticker's resolved CIK triggers a synthetic EDGAR error.
+        if cik == "0000011111":
+            raise RuntimeError("Synthetic EDGAR error for removed ticker")
+        return _annual_history(1.0)
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=_fetch_history_side_effect),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+        mock.patch.object(bf, "_resolve_cik_for_removed_ticker", return_value="0000011111"),
+        mock.patch.object(bf, "list_known_events", return_value=(remove_event,)),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    meta = json.loads(out.read_text())["meta"]
+    # Backfill must survive the fetch error for the removed ticker.
+    assert meta["rebalance_count"] > 0, (
+        "Backfill aborted on a fetch error for a removed ticker — expected graceful degradation"
+    )
+    assert meta["scoring_universe_removed_unavailable_count"] == 1
+    assert meta["scoring_universe_removed_fetched_count"] == 0
+
+
+def test_resolve_cik_for_removed_ticker_guards_empty_cik() -> None:
+    """``_resolve_cik_for_removed_ticker`` returns None (not an empty / zero-padded
+    string) when ``Company(ticker).cik`` is falsy — the ``Company('')`` gotcha guard.
+
+    The gotcha (CLAUDE.md §Gotchas): calling ``Company('')`` / ``Company(<empty>)``
+    with an EDGAR identity set resolves silently to an arbitrary company instead of
+    raising.  ``_resolve_cik_for_removed_ticker`` must detect the empty-CIK case and
+    return None so the caller skips the ticker rather than fetching wrong-company data.
+    """
+    import sys
+
+    def _check_falsy_cik(falsy_cik: object, label: str) -> None:
+        class _FakeCompany:
+            cik = falsy_cik
+
+        edgar_backup = sys.modules.pop("edgar", None)
+        try:
+            edgar_mock = mock.MagicMock()
+            edgar_mock.Company = lambda t: _FakeCompany()
+            sys.modules["edgar"] = edgar_mock
+            result = bf._resolve_cik_for_removed_ticker("DEAD")
+        finally:
+            if edgar_backup is not None:
+                sys.modules["edgar"] = edgar_backup
+            else:
+                sys.modules.pop("edgar", None)
+
+        assert result is None, (
+            f"Expected None for {label} CIK (gotcha guard), got {result!r}"
+        )
+
+    _check_falsy_cik("", "empty-string")
+    _check_falsy_cik(0, "zero-int")
+    _check_falsy_cik(None, "None")
+
+
+def test_resolve_cik_for_removed_ticker_returns_zero_padded_cik() -> None:
+    """``_resolve_cik_for_removed_ticker`` returns a 10-digit zero-padded CIK string
+    when the Company lookup succeeds with a real numeric CIK."""
+    import sys
+
+    class _FakeCompanyRealCIK:
+        cik = 12345  # numeric CIK — should become "0000012345"
+
+    edgar_backup = sys.modules.pop("edgar", None)
+    try:
+        edgar_mock = mock.MagicMock()
+        edgar_mock.Company = lambda t: _FakeCompanyRealCIK()
+        sys.modules["edgar"] = edgar_mock
+        result = bf._resolve_cik_for_removed_ticker("OLDTICKER")
+    finally:
+        if edgar_backup is not None:
+            sys.modules["edgar"] = edgar_backup
+        else:
+            sys.modules.pop("edgar", None)
+
+    assert result == "0000012345", f"Expected '0000012345', got {result!r}"
+
+
+def test_survivorship_fix_current_tickers_excluded_from_removed_set(
+    tmp_path, _universe
+) -> None:
+    """Tickers in both the REMOVE ledger and today's current universe are NOT added
+    to the removed-ticker pre-fetch loop (they are already fetched in the main loop).
+
+    This tests the ``- current`` set-difference in the survivorship fix:
+    a ticker that was removed and later RE-ADDED should not be double-fetched.
+    """
+    # AAA is in the current universe (_universe fixture) AND appears as a REMOVE event.
+    # It should NOT be added to the removed-ticker set (already fetched in current loop).
+    readd_event = _removed_event("AAA", "2022-09-01")  # AAA is present in _universe
+
+    resolve_calls: list[str] = []
+
+    def _spy_resolve(ticker: str) -> str | None:
+        resolve_calls.append(ticker)
+        return None
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+        mock.patch.object(bf, "_resolve_cik_for_removed_ticker", side_effect=_spy_resolve),
+        mock.patch.object(bf, "list_known_events", return_value=(readd_event,)),
+    ):
+        bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    # AAA is in current, so it must NOT appear in the removed-ticker loop.
+    assert "AAA" not in resolve_calls, (
+        "AAA is in today's current universe but was passed to _resolve_cik_for_removed_ticker "
+        "— the `- current` set-difference is broken"
+    )

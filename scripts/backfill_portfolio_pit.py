@@ -64,7 +64,7 @@ import pandas as pd
 
 from compute import config
 from compute.ingest.fundamentals import FundamentalsSnapshot, fetch_fundamentals_history
-from compute.ingest.historical_universe import members_at
+from compute.ingest.historical_universe import _ACTION_REMOVE, list_known_events, members_at
 from compute.ingest.prices import fetch_prices
 from compute.ingest.universe import get_sp500_constituents
 
@@ -427,6 +427,52 @@ def _restatement_at_risk(amendments: list[dict] | None, as_of: str) -> bool:
     return False
 
 
+def _resolve_cik_for_removed_ticker(ticker: str) -> str | None:
+    """Resolve a real CIK for a historically-removed ticker via edgartools.
+
+    Guards the ``Company('')`` gotcha (CLAUDE.md §Gotchas): calling
+    ``Company('')`` / ``Company(<empty>)`` with an EDGAR identity set
+    resolves silently to an ARBITRARY company rather than raising — any
+    subsequent history fetch then returns the WRONG company's data.
+
+    Returns the 10-digit zero-padded CIK string when the ticker resolves to
+    a real entity, or ``None`` when the CIK cannot be determined (caller
+    must skip that ticker rather than proceeding with an empty or wrong CIK).
+
+    Callers: the backfill removed-ticker pre-fetch loop only.  In-universe
+    current tickers are handled by ``cik_by_ticker`` from ``get_sp500_constituents``
+    (those CIKs come from the Wikipedia scrape, not from this path).
+    """
+    try:
+        from edgar import Company  # local import — avoid top-level dependency change
+
+        company = Company(ticker)
+        raw_cik = getattr(company, "cik", None)
+        if raw_cik is None:
+            logger.warning(
+                "backfill: removed ticker %s CIK resolved to None — skipping",
+                ticker,
+            )
+            return None
+        cik_str = str(raw_cik).strip().lstrip("0") or ""
+        if not cik_str:
+            logger.warning(
+                "backfill: removed ticker %s CIK is blank after stripping — skipping "
+                "(Company('') gotcha guard)",
+                ticker,
+            )
+            return None
+        # Zero-pad to 10 digits — canonical form used by edgartools.
+        return cik_str.zfill(10)
+    except Exception as exc:  # noqa: BLE001 — any resolution failure = skip
+        logger.warning(
+            "backfill: CIK resolution failed for removed ticker %s: %s — skipping",
+            ticker,
+            exc,
+        )
+        return None
+
+
 def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
     """Result-dependent honesty sentence appended to the disclaimer.
 
@@ -673,6 +719,85 @@ def run_backfill(
                 prices_by_ticker[ticker] = pf
         except Exception as e:  # noqa: BLE001 — one bad name never kills the backfill
             logger.warning("backfill: load failed for %s: %s", ticker, e)
+
+    # --- Survivorship-bias fix: expand the pre-fetch set to include REMOVED tickers.
+    #
+    # The pre-fetch loop above only covers today's S&P 500 (~502 tickers).  At each
+    # rebalance T, ``members_at(T)`` correctly reverse-walks the ledger and adds back
+    # tickers that WERE members at T but have since been removed (the ``cohort``).
+    # Without this block those removed tickers are absent from ``rows_by_ticker`` /
+    # ``prices_by_ticker``, so the scoring loop's ``if prices is None: continue``
+    # silently drops them — preserving residual survivorship bias even though the
+    # membership is PIT-correct.
+    #
+    # GUARDRAIL: NEVER pass an empty / unresolved CIK to ``fetch_fundamentals_history``
+    # (``Company('')`` resolves to an ARBITRARY company, CLAUDE.md §Gotchas).  For each
+    # removed ticker we resolve a real CIK via ``_resolve_cik_for_removed_ticker``; any
+    # ticker whose CIK cannot be resolved is skipped entirely with a structured log line.
+    #
+    # Rule 18 observability (SKILL.md): three counters land in ``meta`` so the next run
+    # makes the closure VISIBLE without requiring manual log parsing.
+    _removed_events = list_known_events(since=start)
+    _removed_tickers: set[str] = {
+        ev.ticker for ev in _removed_events if ev.action == _ACTION_REMOVE
+    } - current  # exclude any ticker re-added to current universe
+    _scoring_universe_removed_candidates_count: int = len(_removed_tickers)
+    _scoring_universe_removed_fetched_count: int = 0
+    _scoring_universe_removed_unavailable_count: int = 0
+
+    for ticker in sorted(_removed_tickers):
+        cik = _resolve_cik_for_removed_ticker(ticker)
+        if cik is None:
+            # CIK unresolvable — log already emitted by the resolver.
+            logger.warning(
+                "backfill: removed ticker %s skipped — no-CIK (survivorship fix)",
+                ticker,
+            )
+            _scoring_universe_removed_unavailable_count += 1
+            continue
+        try:
+            rows = _annual_rows(fetch_fundamentals_history(cik))
+            pf = fetch_prices(ticker, period="max", min_start=_price_floor)
+            if pf is not None and len(pf) > 0:
+                rows_by_ticker[ticker] = rows
+                prices_by_ticker[ticker] = pf
+                _scoring_universe_removed_fetched_count += 1
+                logger.info(
+                    "backfill: removed ticker %s (CIK=%s) pre-fetched successfully"
+                    " — rows=%d price_rows=%d",
+                    ticker, cik, len(rows), len(pf),
+                )
+            else:
+                logger.warning(
+                    "backfill: removed ticker %s (CIK=%s) skipped — no usable prices"
+                    " (survivorship fix)",
+                    ticker, cik,
+                )
+                _scoring_universe_removed_unavailable_count += 1
+        except Exception as exc:  # noqa: BLE001 — one bad removed ticker never kills the backfill
+            logger.warning(
+                "backfill: removed ticker %s (CIK=%s) fetch-error — %s"
+                " (survivorship fix, graceful-degradation)",
+                ticker, cik, exc,
+            )
+            _scoring_universe_removed_unavailable_count += 1
+
+    # Removed tickers only need sector assignment for the rebalances where they
+    # appear.  We use "Unknown" as a safe fallback — GICS sector is "stable from
+    # today" (the existing backtest approximation; see meta.sector_from_today).
+    # Tickers already in sector_by_ticker (current universe) are unaffected.
+    for ticker in _removed_tickers:
+        if ticker not in sector_by_ticker:
+            sector_by_ticker[ticker] = "Unknown"
+
+    logger.info(
+        "backfill: survivorship-fix pre-fetch complete — candidates=%d fetched=%d"
+        " unavailable=%d",
+        _scoring_universe_removed_candidates_count,
+        _scoring_universe_removed_fetched_count,
+        _scoring_universe_removed_unavailable_count,
+    )
+
     spy = fetch_prices("SPY", period="max", min_start=_price_floor)
 
     rebal_dates = quarterly_rebalance_dates(start, end)
@@ -1184,6 +1309,18 @@ def run_backfill(
                 "min_picks": ADAPTIVE_MIN_PICKS,
                 "max_picks": None,  # uncapped per 2026-06-11 ratification
             },
+            # Survivorship-bias fix: Rule 18 observability counters.
+            # scoring_universe_removed_candidates_count: tickers in the ledger as REMOVE
+            #   events on/after ``start`` that are NOT in today's current universe — the
+            #   full set of historically-removed names we ATTEMPT to pre-fetch.
+            # scoring_universe_removed_fetched_count: subset with usable EDGAR + price data
+            #   that actually entered the scoring universe (the win of this fix).
+            # scoring_universe_removed_unavailable_count: subset that could not be loaded
+            #   (no-CIK / no-prices / fetch-error) and remain absent from scoring
+            #   (graceful degradation — same behavior as the pre-fix code, but explicit).
+            "scoring_universe_removed_candidates_count": _scoring_universe_removed_candidates_count,
+            "scoring_universe_removed_fetched_count": _scoring_universe_removed_fetched_count,
+            "scoring_universe_removed_unavailable_count": _scoring_universe_removed_unavailable_count,
             "disclaimer": disclaimer,
         },
         "rebalances": rebalances_out,
