@@ -582,9 +582,11 @@ export type BacktestHoldoutResult = {
   embargo_quarters: number;
   embargo_leg_indices: number[];
   train_winner_config: string;
-  test_return: number;
-  test_sharpe: number;
-  benchmark_test_return: number;
+  // null when the test window is degenerate (e.g. all-None legs); the badge's
+  // HoldoutChip renders "—" via the null-safe fmt helpers in that case.
+  test_return: number | null;
+  test_sharpe: number | null;
+  benchmark_test_return: number | null;
   falsified: boolean;
   in_sample: false;
   caveat: string;

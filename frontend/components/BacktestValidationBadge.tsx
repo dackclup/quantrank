@@ -41,15 +41,24 @@ const NEUTRAL_DOT  = 'bg-slate-500 dark:bg-slate-400';
 // Small helpers
 // ---------------------------------------------------------------------------
 
-function fmt4(v: number): string {
-  return v.toFixed(4);
+function fmtPhi(v: number): string {
+  // A probability < 1 must NEVER display as "1.0000" — on a credibility surface
+  // a skeptic reads a perfect 1.0 as impossible (or as a hidden value).
+  // Widen precision (then cap) so a sub-1 Φ keeps meaningful resolution:
+  // 0.99998458 → "0.99998"; an extreme 0.9999997 → ">0.9999" rather than "1.0000".
+  if (v >= 1) return '1.0000';
+  const four = v.toFixed(4);
+  if (four !== '1.0000') return four;
+  const five = v.toFixed(5);
+  return five === '1.00000' ? '>0.9999' : five;
 }
 
-function fmt2(v: number): string {
-  return v.toFixed(2);
+function fmt2(v: number | null | undefined): string {
+  return v == null ? '—' : v.toFixed(2);
 }
 
-function fmtPct(v: number): string {
+function fmtPct(v: number | null | undefined): string {
+  if (v == null) return '—';
   const abs = Math.abs(v);
   const sign = v >= 0 ? '+' : '−';
   return `${sign}${(abs * 100).toFixed(1)}%`;
@@ -72,14 +81,14 @@ function DsrChip({ v }: { v: BacktestValidation }) {
   ].join(' · ');
 
   const phiStr = phi != null
-    ? `Φ=${fmt4(phi)}`
+    ? `Φ=${fmtPhi(phi)}`
     : 'Φ=—';
 
   const tone  = pass ? PASS_CHIP : fail ? FAIL_CHIP : NEUTRAL_CHIP;
   const dot   = pass ? PASS_DOT  : fail ? FAIL_DOT  : NEUTRAL_DOT;
   const title = [
     `Bailey-López de Prado 2014 Deflated Sharpe Ratio.`,
-    phi != null ? `Φ(DSR)=${fmt4(phi)}.` : '',
+    phi != null ? `Φ(DSR)=${fmtPhi(phi)}.` : '',
     v.dsr != null ? `DSR=${fmt2(v.dsr)}.` : '',
     v.annualized_sharpe != null ? `Annualized Sharpe=${fmt2(v.annualized_sharpe)}.` : '',
     v.n_observations != null ? `N obs=${v.n_observations}.` : '',
