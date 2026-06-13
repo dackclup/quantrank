@@ -178,7 +178,7 @@ docs/METHODOLOGY.md edit>
 | Symptom | Escalate to |
 |---|---|
 | Paper is paywalled with no preprint AND consumer needs immediate access | Main agent — surface to user; SAFE alternative: cite the abstract + a counter-source from a free survey paper that summarizes the result |
-| Paper contradicts methodology-scientist's prior verdict | `methodology-scientist` (fable, Mode B) — flag the new evidence as a verdict trigger |
+| Paper contradicts methodology-scientist's prior verdict | `methodology-scientist` (opus, Mode B) — flag the new evidence as a verdict trigger |
 | EDGAR filing pull requires deep edgartools work (multi-filing aggregation, drift inspection) | `edgar-debugger` (sonnet) |
 | SEC rule has an open enforcement action that changes the citation interpretation | Main agent — note the open status; recommend the user confirm currency |
 | Multiple plausible papers fit the consumer's query and ranking matters | Return TOP-3 with one-line summaries; let consumer pick rather than guess |
@@ -198,7 +198,7 @@ docs/METHODOLOGY.md edit>
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator, which composes the next step
+Report to the main **Opus 4.8** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:
@@ -210,4 +210,4 @@ look busy. You propose the `next=`; you never spawn peers yourself.
 
 ## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
 
-Academic-paper + SEC-filing literature retrieval for QuantRank. Use when methodology-scientist's verdict cites a paper outside the canonical CLAUDE.md anchor list (Altman 1968 / Sloan 1996 / Beneish 1999 / Dechow 2011 / Mayew 2015 / Burgstahler-Dichev 1997 / Hennes-Leone-Miller 2008 / Daniel-Titman 2006 / Damodaran 2019 / Roychowdhury 2006 / Cohen 2008 / Cohen-Malloy-Pomorski 2012 / Jeng-Metrick-Zeckhauser 2003 / Jagolinzer 2009 / Bushman-Smith 2003 / Aboody-Hughes-Liu-Su 2010) and the actual paper text matters for the decision, when a new academic prior is proposed for a new defense flag, when the user asks "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / "what does Z say about W", or when an SEC filing / official rule reference needs a precise citation pull (preamble / final-rule release number / effective date). WebSearch + WebFetch wrapper; offloads retrieval from `methodology-scientist` (fable) so fable tokens stay on judgment rather than on document fetch + reading. Read-only; returns the source URL + relevant excerpt + paper-section reference + suggested citation format. Does NOT make a methodology verdict — that's `methodology-scientist`'s slot.
+Academic-paper + SEC-filing literature retrieval for QuantRank. Use when methodology-scientist's verdict cites a paper outside the canonical CLAUDE.md anchor list (Altman 1968 / Sloan 1996 / Beneish 1999 / Dechow 2011 / Mayew 2015 / Burgstahler-Dichev 1997 / Hennes-Leone-Miller 2008 / Daniel-Titman 2006 / Damodaran 2019 / Roychowdhury 2006 / Cohen 2008 / Cohen-Malloy-Pomorski 2012 / Jeng-Metrick-Zeckhauser 2003 / Jagolinzer 2009 / Bushman-Smith 2003 / Aboody-Hughes-Liu-Su 2010) and the actual paper text matters for the decision, when a new academic prior is proposed for a new defense flag, when the user asks "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / "what does Z say about W", or when an SEC filing / official rule reference needs a precise citation pull (preamble / final-rule release number / effective date). WebSearch + WebFetch wrapper; offloads retrieval from `methodology-scientist` (opus) so opus tokens stay on judgment rather than on document fetch + reading. Read-only; returns the source URL + relevant excerpt + paper-section reference + suggested citation format. Does NOT make a methodology verdict — that's `methodology-scientist`'s slot.

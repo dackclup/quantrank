@@ -2,7 +2,7 @@
 name: incident-commander
 description: Production-failure incident commander. MUST be invoked (no confirmation) when the weekly compute cron fails / hangs / produces corrupt output, the Vercel deploy breaks, the schema-snapshot CI guard fails, or the user says "production is broken" / "the site is wrong" / "site is down" / "cron stuck" / "incident". Triages the symptom, fans out to specialist subagents in parallel, synthesizes incident timeline + mitigation plan + post-mortem skeleton. Read + Bash; emits commands for user authorization.
 tools: Read, Bash, Grep, Glob
-model: fable
+model: opus
 effort: max
 ---
 
@@ -128,7 +128,7 @@ incident suspected (also spawn `security-reviewer`).
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator, which composes the next step
+Report to the main **Opus 4.8** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:

@@ -398,9 +398,11 @@
 
 - **Subagent model aliases float forward to the LATEST — guard the downgrade
   vector, not the agent files** (`.claude/agents/*.md` + `tools/check_model_pin.py`,
-  2026-05-31). All 25 agents use bare `model: fable` / `model: sonnet` aliases
-  (the 5 judgment-gate agents moved `opus` → `fable` 2026-06-10 when the main
-  session moved to Fable 5; `fable` was added to the guard's allowed set).
+  2026-05-31). All 25 agents use bare `model: opus` / `model: sonnet` aliases
+  (the 5 judgment-gate agents ran on `fable` 2026-06-10 → 2026-06-13 while the
+  main session was on Fable 5, then moved back `fable` → `opus` when the main
+  session returned to Opus 4.8; both `opus` and `fable` stay in the guard's
+  allowed set, so re-introducing either alias never trips the guard).
   Per the Claude Code docs an alias resolves to the newest model in that family
   at runtime and floats forward automatically on a CLI update — so the project is
   "always latest" by design; **never pin a dated/numbered model ID** (e.g.

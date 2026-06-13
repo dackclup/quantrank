@@ -2,7 +2,7 @@
 """Guard against a silent subagent model downgrade.
 
 The 25 subagents in ``.claude/agents/*.md`` use bare model aliases
-(``model: fable`` / ``model: sonnet``). Per the Claude Code docs an alias
+(``model: opus`` / ``model: sonnet``). Per the Claude Code docs an alias
 resolves to the LATEST model in that family at runtime and floats forward on a
 CLI update — which is exactly what we want (no self-inflicted downgrade, always
 newest). The risk is NOT in the agent files: it's the *environment*. A
@@ -122,7 +122,7 @@ def main() -> int:
         for p in problems:
             print(f"  ✗ {p}")
         print(
-            "\nWhy this matters: bare `model: fable` / `model: sonnet` aliases "
+            "\nWhy this matters: bare `model: opus` / `model: sonnet` aliases "
             "float forward to the newest model automatically. A committed env "
             "override or a pinned model ID defeats that and can silently run an "
             "OLDER model. See CLAUDE.md §Gotchas 'subagent model aliases float "
