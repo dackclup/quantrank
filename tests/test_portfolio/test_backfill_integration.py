@@ -107,7 +107,29 @@ def _mock_list_known_events_default():
     same attribute, shadowing the fixture's patch for the duration of the ``with``
     block.
     """
-    with mock.patch.object(bf, "list_known_events", return_value=()):
+    def _sector_from_universe(ticker, _as_of):
+        # Mirror the pre-parquet behavior: in the graceful-degradation (parquet
+        # absent) path the sector equals today's universe sector. Look it up from
+        # the test-mocked get_sp500_constituents (deferred to call time so the
+        # per-test mock is active). Without this, _pit_sector would call the real
+        # sector_at, which reads the committed data/historical_sector.parquet and
+        # returns "Unknown" for the synthetic AAA/BBB/CCC tickers.
+        members = bf.get_sp500_constituents()
+        match = members[members["ticker"] == ticker]
+        return str(match.iloc[0]["sector"]) if len(match) else "Unknown"
+
+    with (
+        mock.patch.object(bf, "list_known_events", return_value=()),
+        # Isolate from the committed data/*.parquet PIT artifacts so these
+        # synthetic-universe tests run the deterministic parquet-absent path
+        # whether or not the real parquets exist in the tree. The parquet-PRESENT
+        # path is covered by a dedicated test that overrides these patches.
+        mock.patch.object(bf, "item402_parquet_row_count", return_value=0),
+        mock.patch.object(
+            bf, "historical_sector_parquet_stats", return_value={"parquet_present": False}
+        ),
+        mock.patch.object(bf, "sector_at", side_effect=_sector_from_universe),
+    ):
         yield
 
 

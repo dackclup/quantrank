@@ -1,4 +1,5 @@
-"""Tests for ``compute.ingest.historical_sector``.
+"""Tests for ``compute.ingest.historical_sector`` and
+``scripts.backfill_historical_sector``.
 
 All tests are offline — no network calls, no real parquet on disk.
 The parquet is mocked in-memory using ``unittest.mock.patch``.
@@ -7,7 +8,8 @@ The parquet is mocked in-memory using ``unittest.mock.patch``.
 from __future__ import annotations
 
 from datetime import date
-from unittest.mock import patch
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
@@ -269,3 +271,106 @@ def test_parse_sector_table_deduplicates_tickers() -> None:
     df = _parse_sector_table(html)
     assert df is not None
     assert len(df[df["ticker"] == "AAPL"]) == 1
+
+
+# ---------------------------------------------------------------------------
+# backfill_historical_sector.run() — revision-absent path (no crash contract)
+# ---------------------------------------------------------------------------
+#
+# Requirement from the PIT-backfill task (2026-06-13): when the MediaWiki
+# API returns an empty revisions list for a given rebalance date, run() must
+# skip that date gracefully — no crash, no partial rows, no parquet written.
+# This pins the graceful-degradation contract at the run() level.
+#
+# Mock boundary: _fetch_revision_before (replaces the network call).
+# ---------------------------------------------------------------------------
+
+def _make_wiki_session_mock() -> MagicMock:
+    """Return a MagicMock that stands in for a requests.Session."""
+    return MagicMock()
+
+
+def test_run_empty_revisions_no_crash_no_parquet(tmp_path: Path) -> None:
+    """When _fetch_revision_before returns None (empty revisions), run() must
+    not crash and must produce no parquet output for that date.
+
+    This tests the path: _fetch_revision_before → None → date skipped.
+    The None return is what _fetch_revision_before emits when the MediaWiki
+    API revisions list is empty (see the ``if not revisions`` guard in
+    backfill_historical_sector.py).
+    """
+    from scripts.backfill_historical_sector import run
+
+    out = tmp_path / "sector.parquet"
+    # Single rebalance date — one call to _fetch_revision_before → None.
+    start = date(2024, 5, 14)   # 2024-Q1-end + 45 days
+    end = date(2024, 5, 14)
+
+    with patch("scripts.backfill_historical_sector._fetch_revision_before", return_value=None):
+        # Must not raise
+        run(start=start, end=end, out=out)
+
+    # No rows collected → parquet must NOT exist
+    assert not out.exists(), (
+        "parquet must not be written when all rebalance dates return empty revisions"
+    )
+
+
+def test_run_revision_absent_multiple_dates_all_skipped(tmp_path: Path) -> None:
+    """All rebalance dates returning None → run() skips every date, no parquet.
+
+    Ensures the no-op path is stable with more than one date in the window.
+    """
+    from scripts.backfill_historical_sector import run
+
+    out = tmp_path / "sector.parquet"
+    # Two-quarter window that generates at least 2 rebalance dates
+    start = date(2024, 2, 13)   # 2023-Q4-end (2023-12-31) + 45d = 2024-02-14
+    end = date(2024, 5, 15)     # 2024-Q1-end (2024-03-31) + 45d = 2024-05-15
+
+    with patch("scripts.backfill_historical_sector._fetch_revision_before", return_value=None):
+        run(start=start, end=end, out=out)
+
+    assert not out.exists(), (
+        "parquet must not be written when all rebalance dates have no revision"
+    )
+
+
+def test_run_partial_revision_absent_only_good_date_written(tmp_path: Path) -> None:
+    """When one date fails (None) and one succeeds, only the successful date is written.
+
+    This pins the per-date skip contract — a single bad date must not prevent
+    data from good dates from being written.
+    """
+    from scripts.backfill_historical_sector import run
+
+    good_html = """
+    <table class="wikitable">
+      <tr><th>Symbol</th><th>Security</th><th>GICS Sector</th></tr>
+      <tr><td>AAPL</td><td>Apple Inc.</td><td>Information Technology</td></tr>
+    </table>
+    """
+    out = tmp_path / "sector.parquet"
+    # Two rebalance dates in a two-quarter window
+    start = date(2024, 2, 13)
+    end = date(2024, 5, 15)
+
+    # First call → None (empty revisions); second call → (wikitext, timestamp).
+    def _fake_fetch(session, as_of_date):  # noqa: ARG001
+        if as_of_date.month < 5:
+            return None  # first date: no revision
+        return ("fake wikitext", "2024-05-14T00:00:00Z")
+
+    with (
+        patch("scripts.backfill_historical_sector._fetch_revision_before", side_effect=_fake_fetch),
+        patch(
+            "scripts.backfill_historical_sector._wikitext_to_html",
+            return_value=good_html,
+        ),
+    ):
+        run(start=start, end=end, out=out)
+
+    assert out.exists(), "parquet must be written for the one date that returned a revision"
+    df = pd.read_parquet(out)
+    assert len(df) >= 1, f"expected at least 1 row, got {len(df)}"
+    assert "AAPL" in df["ticker"].values

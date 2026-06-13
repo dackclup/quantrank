@@ -117,10 +117,20 @@ def _fetch_efts_page(
             time.sleep(_INTER_REQUEST_SLEEP)
             return r.json()
         except requests.exceptions.HTTPError:
-            if r.status_code == 429:
-                wait = 2 ** (attempt + 2)
-                logger.warning("EFTS 429 — sleeping %ds", wait)
-                time.sleep(wait)
+            status = getattr(r, "status_code", None)
+            # EFTS returns sporadic 429 (rate limit) AND 5xx (flaky backend —
+            # the same query often succeeds on retry). Back off + retry both;
+            # only the final attempt re-raises.
+            if status == 429 or (status is not None and 500 <= status < 600):
+                if attempt < max_retries - 1:
+                    wait = 2 ** (attempt + 2)
+                    logger.warning(
+                        "EFTS %s — sleeping %ds (attempt %d/%d)",
+                        status, wait, attempt + 1, max_retries,
+                    )
+                    time.sleep(wait)
+                else:
+                    raise
             else:
                 raise
         except Exception:  # noqa: BLE001
@@ -255,34 +265,46 @@ def run(
     rows: list[dict] = []
     for hit in _iter_efts_hits(session, start, end):
         src = hit.get("_source") or {}
-        entity_id = str(src.get("entity_id") or "").zfill(10)
-        # EFTS hit structure: entity_id = CIK (zero-padded); accession may be
-        # under different keys depending on the EFTS version.  Try common keys.
-        accession = (
-            src.get("file_num")
-            or src.get("accession_no")
-            or hit.get("_id", "")
-        )
-        # Normalize accession to dashes form: XXXXXXXXXX-YY-ZZZZZZ
-        accession = str(accession).strip()
-        if len(accession) == 18 and accession.count("-") == 0:
-            accession = f"{accession[:10]}-{accession[10:12]}-{accession[12:]}"
+        # EFTS _source carries `ciks` (list of 10-digit zero-padded CIK strings),
+        # `adsh` (the accession number, dashed), `items` (the 8-K item codes the
+        # filing actually contains), and `file_date`. There is NO `entity_id` or
+        # `file_num`-as-accession field — reading those silently drops EVERY hit
+        # (verified against a live EFTS response 2026-06-13: 68 hits -> 0 rows).
+        ciks = src.get("ciks") or []
+        ticker = None
+        matched_cik = ""
+        for c in ciks:
+            c10 = str(c).strip().zfill(10)
+            if c10 in cik_map:
+                ticker = cik_map[c10]
+                matched_cik = c10
+                break
+        if ticker is None:
+            logger.debug("No S&P-500 CIK among %s — skipping", ciks)
+            continue
+
+        # Accession: prefer `adsh`; fall back to the `_id` prefix
+        # ("<accession>:<filename>").
+        accession = str(src.get("adsh") or hit.get("_id", "").split(":")[0]).strip()
+        if not accession or len(accession) < 10:
+            logger.debug("Skipping %s — unparseable accession '%s'", ticker, accession)
+            continue
 
         filing_date = str(src.get("file_date") or src.get("period_of_report") or "")[:10]
         if not filing_date or len(filing_date) < 10:
             logger.debug("Skipping hit with no filing_date: %s", hit.get("_id"))
             continue
 
-        ticker = cik_map.get(entity_id)
-        if ticker is None:
-            logger.debug("CIK %s not in current universe — skipping", entity_id)
+        # Item-4.02 confirmation. EFTS indexes the filing's actual item codes in
+        # `items`; this is authoritative and avoids an HTML fetch per hit. The
+        # q="Item 4.02" query matches full TEXT, so a hit may merely MENTION 4.02
+        # — the items field distinguishes a real Item 4.02 SECTION from a body
+        # mention. Fall back to the HTML verifier only when items is absent.
+        items = [str(it).strip() for it in (src.get("items") or [])]
+        if items and not any(it in ("4.02", "4.2") for it in items):
+            logger.debug("%s / %s — items=%s lacks 4.02, skipping", ticker, accession, items)
             continue
-
-        if not accession or len(accession) < 10:
-            logger.debug("Skipping %s — unparseable accession '%s'", ticker, accession)
-            continue
-
-        if html_verify and not _verify_filing_html(session, accession, entity_id):
+        if not items and html_verify and not _verify_filing_html(session, accession, matched_cik):
             logger.debug(
                 "HTML verify rejected %s / %s — Item 4.02 not found in text",
                 ticker, accession,
@@ -292,7 +314,7 @@ def run(
         rows.append(
             {
                 "ticker": ticker,
-                "cik": entity_id,
+                "cik": matched_cik,
                 "accession_number": accession,
                 "filing_date": filing_date,
             }
