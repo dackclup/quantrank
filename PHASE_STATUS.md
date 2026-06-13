@@ -52,8 +52,10 @@
    (license #115); gate = OSAP 4h.1 (#113) + the 4j.2 Qlib blend decision on
    ≥ 1 real cron of `Metadata.alpha158_*` IC evidence (PBO ≤ 0.5 + DSR > 0);
    4k.1 IPCA (#122) additive, non-blocking.
-4. **Phase 5 — ML meta-learner** (~10-12w; unblocks IC-decay writer #75) —
-   GATED on item 1 + the 7.0c composite-signal follow-through + a Supabase
+4. **Phase 5 — ML meta-learner** (~10-12w; the #75 IC-decay writer now ships
+   observability-first — Phase 5's walk-forward monthly-IC panel makes its
+   `alert` meaningful) — GATED on item 1 + the 7.0c composite-signal
+   follow-through + a Supabase
    client-wiring pre-PR (CLAUDE.md §Connectors). Entry gates: WORKFLOW.md
    §Phase 5.
 5. **Stock-attribute data — Dividend + Security-type tiles** (display-only,
@@ -101,7 +103,7 @@ Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = 7.1 (gated on the 7.0c
 baseline + a longer fit window) · Phase 8 = staged S&P 900 pilot (#249
 off-cycle pre-cache prerequisite) — detail in WORKFLOW.md.
 
-**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) · #261 (multi-class overcount) · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer, Phase-5-blocked). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) · #208 / #218 / #377 / #378 (test + verify-helper gaps) · #249 (cron rebaseline / off-cycle pre-cache — now a Phase 8 hard prerequisite) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
+**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) · #261 (multi-class overcount) · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer — CLOSED, wired 2026-06-13 §3). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) · #208 / #218 / #377 / #378 (test + verify-helper gaps) · #249 (cron rebaseline / off-cycle pre-cache — now a Phase 8 hard prerequisite) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
 
 ---
 

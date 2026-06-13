@@ -487,11 +487,10 @@ def build_decay_report(
     elif any(r.alert for r in non_preliminary):
         status = "alert"
     else:
-        # Check if any non-preliminary pillar has at least duration_months observations.
-        if any(r.n_observations >= duration_months for r in non_preliminary):
-            status = "monitoring"
-        else:
-            status = "insufficient_history"
+        # Any non-preliminary pillar already cleared the preliminary gate
+        # (n_observations >= MIN_HISTORY_MONTHS = 12 >= duration_months), so a
+        # non-preliminary, non-alerting pillar is a live, healthy monitor.
+        status = "monitoring"
 
     logger.info(
         "IC-decay status=%s, n_dates_with_ic=%d, alerted_pillars=%s",
