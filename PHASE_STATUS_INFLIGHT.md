@@ -3716,4 +3716,48 @@ schema triple untouched. **Honest caveat**: de-sync is only fully
 observable over ~2 cold-rebuild cycles (~1 week of crons) — single-cron
 confirmation can't prove it; watch `tier2_wall_clock_seconds` for the
 spike's disappearance across consecutive weeks.
+## 2026-06-13 — fix(ingest): filing-date precheck to skip wasteful companyfacts refetch (#471, closes parent #15)
+
+**Branch**: `claude/sweet-turing-d46aw2`
+**Type**: fix(ingest) + perf — COMPUTE-ONLY; no schema change, no frontend change,
+no workflow change; no schema bump.
+
+**Problem**: stale-but-cached tickers (latest SEC filing >45d old — e.g. big filers
+in the quiet period between 10-Qs) triggered a full `Company.get_facts()` companyfacts
+pull on EVERY cron run even when the data was unchanged. Observed on the 2026-06-12
+cron: `fundamentals_latency_p95 = 19.27s`, 84/502 tickers >= 15s, p50 = 0.0s — a
+bimodal histogram dominated by this wasteful refetch loop.
+
+**Fix — Design B (filing-date precheck)**: a new `_latest_filing_date(cik)` helper
+(reuses `Company.get_filings("10-K"/"10-Q")`, cheap) is called BEFORE the heavy
+`_build_snapshot`. If SEC shows no new filing since the cached snapshot date, the
+cache is served directly and `get_facts()` is skipped. Falls through to the live build
+on ANY uncertainty (helper returns `None`, or a newer filing exists), so a genuine new
+filing is always captured and the precheck can never produce stale output.
+
+**Why Design B over Design C (parquet-mtime gate)**: the cron's FAST cache uses an
+exact quarter key (`cache-v8-fast-<quarter>`) — `actions/cache` skips the post-job
+save on an exact-key hit, making the fast cache FROZEN-IMMUTABLE within a quarter.
+Parquet mtimes and fetch-recency signals are therefore NO-OPs across cron runs. Design
+C would serve stale output. Design B re-verifies filing date against SEC each run —
+no staleness, less SEC load (skips only the heavy companyfacts blob).
+
+**Invariant recorded** (new §Gotchas entry): frozen-fast-cache-immutability + the
+filing-precheck as the only safe skip path — see CLAUDE.md §Gotchas +
+docs/GOTCHAS.md.
+
+**Diagnostic**: log-only thread-safe counter `fundamentals_filing_precheck_skip_count`
+(reset in `main.py` before the fetch loop, logged after the histogram). No schema
+change; the counter is internal only.
+
+**Tests**: 17 new offline tests in `tests/test_ingest/test_filing_precheck.py`.
+CI-validated; edgartools/pandas-2.2 absent in the authoring sandbox so the full suite
+ran in CI only (noted in PR body per CLAUDE.md §Conventions verification ladder).
+
+**Files**: `compute/ingest/fundamentals.py` · `compute/config.py` (doc-comment only) ·
+`compute/main.py` (import + reset + diagnostic log) ·
+`tests/test_ingest/test_filing_precheck.py` (new, 17 tests) ·
+`CLAUDE.md` (§Gotchas index) · `docs/GOTCHAS.md` (detail) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
 ---
