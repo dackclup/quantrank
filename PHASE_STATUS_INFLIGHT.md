@@ -3674,3 +3674,74 @@ input for Phase-8 S&P-400 warming — separate PR on the pilot's timeline.
 This workflow is also the **Phase 8 prerequisite** (#249 listed as the
 hard gate before the S&P 900 pilot).
 ---
+
+## 2026-06-13 — feat(backtest): backtest-honesty hardening — prove the AI-pick +789% is real, fair, and not overfit
+
+Triggered by "prove the home-page +789.1% is real / fair / no cheat /
+no calc error". A multi-agent audit (data-scientist + data-pipeline-
+engineer + methodology-scientist) verified the number is arithmetically
+exact, total-return-fair vs SPY, and PIT-clean — and surfaced the real
+residual risks, each now closed:
+
+1. **Overfitting (the #1 risk).** The adaptive thresholds (composite_min
+   65 / hold_band 55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on
+   the same 40-leg window shown as the track record. New
+   `compute/validation/basket_rule_validation.py` runs the ratified OOS
+   protocol on the produced NAV: **Deflated Sharpe** (Bailey-López de
+   Prado 2014, `n_trials=15` = the 12-config grid + uncap + 2 hold-band
+   sweeps) is the primary gate — it CLEARS (DSR≈3.98, Φ(DSR)≈0.9999
+   quarterly / 0.969 daily ≥ 0.95), so the adaptive number stays as the
+   hero with a credibility badge. Confirmatory layers: a **score-once
+   12-config grid** ({55,60,65,70}×{1,3,5}, emitted from ONE scoring
+   pass — the `by_count` ladder generalized to 2-D, <2 min added) feeds
+   **PBO** (CSCV, n_partitions=16, config-correlation caveated) and a
+   **purged-embargo holdout** (train[0,30)/purge{30}/test[31,40), the
+   ONE `in_sample=false` block, falsification-only). All land in
+   `meta.validation` via Rule-18 try/except (null on failure). DSR +
+   walk-forward stay `in_sample=true`; never relabel.
+2. **Survivorship (scoring universe).** Membership was PIT-correct but
+   the pre-fetch only loaded today's 502 names, so ~213 ledger-REMOVE
+   tickers were silently dropped at scoring. `run_backfill` now
+   pre-fetches the `current ∪ ledger-REMOVE-since-start` union with
+   real-CIK resolution (guards the `Company("")` gotcha) + graceful
+   degradation + Rule-18 counters.
+3. **`sector_from_today` PIT gap.** NEW `scripts/backfill_historical_
+   sector.py` → `data/historical_sector.parquet` (19,661 rows, 39
+   dates, 726 tickers) from Wikipedia revision history (CC BY-SA /
+   Feist; sector NAMES only). Captures the 2018 Communication-Services
+   reclassification (GOOGL/NFLX IT→Comm-Svcs). `sector_at()` PIT lookup
+   wired into the backfill; `meta.sector_from_today` now dynamic.
+4. **8-K Item 4.02 veto not replayed.** NEW `scripts/backfill_item402_
+   history.py` (SEC EFTS) → `data/pit_item402_history.parquet` (17
+   real S&P-500 non-reliance events 2016-2026). `item402_filings_for()`
+   PIT slice feeds `check_non_reliance`; the 7th veto now replays when
+   the parquet is present; `meta.vetoes_replayed/not_replayed` dynamic.
+   (Fixed an EFTS-parser silent-drop along the way: the `_source` keys
+   are `ciks`/`adsh`/`items`, NOT `entity_id`/`file_num`; retry on 5xx.)
+5. **Minor refinements (disclosure-only).** Restatement-canary
+   period-map gate (tightens the over-counted `restatement_contamination_
+   pct`); ticker-rename micro-leakage assessed → documented (impact ~0:
+   merger-renamed names have no pre-merger 10-K → null-fundamentals PIT
+   → never clear the gate) + meta note, follow-up issue to file.
+6. **Frontend.** `BacktestValidationBadge` (data-driven, graceful-
+   absent) surfaces the DSR / PBO / holdout verdict + the +127.7pp
+   (~16%) selection-footprint caveat on the AI-pick home card.
+
+Both parquets are committed (whitelisted past the global `*.parquet`
+gitignore, tracked alongside `data/sp500_membership_historical.csv`).
+GRACEFUL DEGRADATION is the load-bearing invariant: with both parquets
+absent the backtest output is byte-identical, so the new code is inert
+until the data is present + the rerun runs. Full offline suite 1773
+passed; ruff + tsc + next build + schema_check clean.
+
+**Gate to merge:** a `backfill-portfolio.yml` `workflow_dispatch` on this
+branch (warm cache; survivorship cold-fetches ~213 removed tickers) to
+MANIFEST `meta.validation` + the survivorship/sector/8-K deltas + the
+real PBO/holdout numbers into `backtest_pit.json`, then post-rerun
+verify (`defense-layer-auditor` Section A-L + `expert-user-explorer`
+Playwright on the now-visible badge) + a fable `quantrank-reviewer`
+pass. The displayed +789% WILL move (survivorship + PIT sector + 8-K
+veto change the historical books) — that movement is the proof the
+closures are live, not a regression.
+
+---
