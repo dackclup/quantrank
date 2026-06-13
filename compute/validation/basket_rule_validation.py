@@ -559,12 +559,25 @@ def compute_holdout(
     # FOOTGUN guard: exact boundaries pinned here and in tests.
     # train_legs = [train[0], train[1])  e.g. [0, 30) = legs 0..29
     # purged_leg = purge  e.g. 30
-    # embargo_legs = [purge+1, purge+embargo]  e.g. [31, 31] = leg 31
+    # embargo_leg_indices = [purge+1, test[0])  e.g. [] for default (purge=30, test=(31,40))
     # test_legs = [test[0], test[1])  e.g. [31, 40) = legs 31..39
+    #
+    # embargo_leg_indices derivation note:
+    # A separate embargo band protects against test→train leakage, which CANNOT
+    # occur in a chronological train-before-test split because no train data
+    # follows the test set.  The 1-leg purge gap (leg 30) handles the only real
+    # concern: a holding that spans the train/test boundary.  Consequently, for
+    # the ratified default (purge=30, test=(31,40)), embargo_leg_indices=[] —
+    # zero separate embargo legs is correct for this split geometry.  When test
+    # starts later (e.g. test=(32,40)) the gap legs [purge+1, test[0]) = [31]
+    # are reported as embargo legs.  The derivation from test[0] (not from
+    # purge+embargo) guarantees embargo_leg_indices NEVER overlaps test_legs.
     train_legs = list(range(train[0], train[1]))
     test_legs = list(range(test[0], test[1]))
     purged_leg = purge
-    embargo_leg_indices = list(range(purge + 1, purge + embargo + 1))
+    # Derive from actual gap between purge leg and test start so the set is
+    # structurally disjoint from test_legs by construction.
+    embargo_leg_indices = list(range(purge + 1, test[0]))
 
     # Validate that test_legs start at or after the embargo boundary.
     # The embargo discipline: train ends at purge-1 (inclusive), purge is excluded,
@@ -647,8 +660,15 @@ def compute_holdout(
         "caveat": (
             f"Purged-embargo holdout: winner selected on legs {train[0]}..{train[1]-1} "
             f"(train Sharpe), evaluated on legs {test[0]}..{test[1]-1} ({len(test_legs)} legs). "
-            f"Leg {purged_leg} purged; leg(s) {embargo_leg_indices} embargoed. "
-            f"WEAK FLOOR: {len(test_legs)} test legs is a minimal sample — a collapse "
+            + (
+                f"Leg {purged_leg} purged; no separate embargo band required for a "
+                f"chronological train-before-test split (no train data follows the test set)."
+                if not embargo_leg_indices
+                else
+                f"Leg {purged_leg} purged; leg(s) {embargo_leg_indices} embargoed "
+                f"(gap between purge and test start)."
+            )
+            + f" WEAK FLOOR: {len(test_legs)} test legs is a minimal sample — a collapse "
             f"(test_sharpe < 0 or trailing benchmark) FALSIFIES the config's forward edge; "
             f"a positive read is encouraging but NOT proof. CPCV (full combinatorial "
             f"purged cross-validation) is deferred pending longer OOS window. "

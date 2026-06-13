@@ -492,33 +492,56 @@ def test_compute_holdout_train_test_leg_counts() -> None:
     assert result["test_legs"] == list(range(31, 40))
     assert result["purged_leg"] == 30
     assert result["embargo_quarters"] == 1
-    assert result["embargo_leg_indices"] == [31]
+    # Default split: purge=30, test=(31,40) → gap=[31,31) = [] (no separate embargo band).
+    assert result["embargo_leg_indices"] == []
 
 
 def test_compute_holdout_embargo_off_by_one_pin() -> None:
-    """Pin the exact embargo arithmetic: train=[0,30), purge=30, embargo=1, test=[31,40).
+    """Pin the exact embargo arithmetic for the ratified default and a non-default split.
 
-    FOOTGUN guard: if the embargo shifts by 1, test_legs start at 32 (off-by-one).
-    This test verifies the exact boundary used by the design.
+    Core invariant: embargo_leg_indices NEVER overlaps test_legs (disjoint by construction).
 
+    Default split (purge=30, embargo=1, test=(31,40)):
     - train legs: 0..29 (30 legs)
-    - purged leg: 30 (1 leg — excluded from both train and test)
-    - embargo legs: 31 (1 quarter after purge boundary)
-    - test legs: 31..39 BUT embargo=1 means leg 31 is EMBARGOED
+    - purged leg: 30 (only gap between train and test)
+    - embargo_leg_indices: [] — no separate embargo band needed; this is a chronological
+      train-before-test split so test→train leakage is structurally impossible, and the
+      1-leg purge gap (leg 30) covers the only real concern (a holding spanning the boundary).
+    - test legs: 31..39 (9 legs, correctly disjoint from purge+embargo_legs)
+
+    Non-default split (purge=30, embargo=1, test=(32,40)):
+    - embargo_leg_indices: [31] — leg 31 is the gap between purge and test start
+    - Still disjoint from test_legs [32..39]
     """
-    # When embargo=1 and test=(31,40): leg 31 is in test_legs AND in embargo_leg_indices.
-    # The design says: embargo legs [purge+1, purge+embargo] = [31, 31].
-    # Test leg range [31,40) includes 31..39 (9 legs).
-    # The embargo NOTE is in the caveat but the test legs include 31 (post-embargo test start).
-    # Verify exact defaults:
     grid = _make_grid_navs(n_months=120)
-    result = compute_holdout(grid, [], train=(0, 30), purge=30, embargo=1, test=(31, 40))
-    assert len(result["train_legs"]) == 30
-    assert len(result["test_legs"]) == 9
-    assert result["purged_leg"] == 30
-    assert result["embargo_leg_indices"] == [31]
-    # Verify the caveat mentions the embargo.
-    assert "embargoed" in result["caveat"].lower() or "embargo" in result["caveat"].lower()
+
+    # --- (a) Default split: embargo_leg_indices == [] ---
+    result_default = compute_holdout(grid, [], train=(0, 30), purge=30, embargo=1, test=(31, 40))
+    assert len(result_default["train_legs"]) == 30
+    assert len(result_default["test_legs"]) == 9
+    assert result_default["purged_leg"] == 30
+    assert result_default["embargo_leg_indices"] == [], (
+        "Default split has no gap between purge and test start — embargo_leg_indices must be []"
+    )
+
+    # --- (b) Core invariant: embargo never overlaps test (always disjoint) ---
+    assert set(result_default["embargo_leg_indices"]).isdisjoint(set(result_default["test_legs"])), (
+        "embargo_leg_indices must be disjoint from test_legs"
+    )
+    # Verify the caveat mentions the purge and the chronological split logic.
+    caveat = result_default["caveat"].lower()
+    assert "purged" in caveat or "purge" in caveat
+
+    # --- (c) Non-default split: test=(32,40) → embargo_leg_indices == [31] ---
+    result_nondefault = compute_holdout(
+        grid, [], train=(0, 30), purge=30, embargo=1, test=(32, 40)
+    )
+    assert result_nondefault["embargo_leg_indices"] == [31], (
+        "When test starts at 32, leg 31 is in the gap [purge+1, test[0]) = [31, 32) = [31]"
+    )
+    assert set(result_nondefault["embargo_leg_indices"]).isdisjoint(
+        set(result_nondefault["test_legs"])
+    ), "embargo_leg_indices must be disjoint from test_legs for non-default split too"
 
 
 def test_compute_holdout_falsified_flag_on_negative_sharpe() -> None:
