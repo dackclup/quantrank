@@ -300,9 +300,14 @@ def test_run_backfill_skips_sigma_empty_rebalance(tmp_path, _universe) -> None:
 
 
 def test_run_backfill_restatement_canary_flags_post_asof_amendment(tmp_path, _universe) -> None:
-    """A picked name with a 10-K/A filed AFTER its selection date raises the re-sourced
-    canary — restatement_contamination_pct > 0 (vs the old companyfacts scan's 0.0)."""
-    post_asof = [{"form": "10-K/A", "filing_date": "2099-01-01", "accession": "x", "filing_url": ""}]
+    """A picked name with a 10-K/A filed AFTER its selection date AND within the
+    2-year fiscal-year window raises the canary — restatement_contamination_pct > 0.
+
+    The synthetic data's most-recent PIT fiscal year at rebalance 2022-06-01 is 2021
+    (10-K filed 2022-02-15). The FIX 1 ceiling is {2021+2}-12-31 = 2023-12-31.
+    Filing date "2023-06-01" is post-as-of AND within the ceiling → canary fires.
+    """
+    post_asof = [{"form": "10-K/A", "filing_date": "2023-06-01", "accession": "x", "filing_url": ""}]
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
@@ -346,13 +351,85 @@ def test_run_backfill_restatement_canary_unresolved_on_fetch_failure(tmp_path, _
 
 
 def test_restatement_at_risk_filings_index_semantics() -> None:
-    """The re-sourced canary: ANY amendment filed after as_of fires; before/empty/None don't."""
+    """Legacy mode (pit_fiscal_year=None): ANY amendment filed after as_of fires.
+
+    When no pit_fiscal_year is provided the function falls back to the original
+    conservative behaviour — any post-as-of amendment counts regardless of FY.
+    """
     amends = [{"form": "10-K/A", "filing_date": "2023-03-15"}]
     assert bf._restatement_at_risk(amends, "2022-06-01") is True    # filed after as_of
     assert bf._restatement_at_risk(amends, "2024-01-01") is False   # filed before as_of
     assert bf._restatement_at_risk([{"form": "10-Q/A", "filing_date": "2023-01-01"}], "2022-01-01") is True
     assert bf._restatement_at_risk([], "2022-06-01") is False       # no amendments
     assert bf._restatement_at_risk(None, "2022-06-01") is False     # unresolved -> not at-risk
+
+
+def test_restatement_at_risk_period_map_gate() -> None:
+    """FIX 1 — period-map gate: amendments beyond pit_fiscal_year+2 years are excluded.
+
+    With pit_fiscal_year=2021, the ceiling is 2023-12-31.
+    - "2023-06-01" is post-as-of AND within ceiling → fires.
+    - "2099-01-01" is post-as-of BUT beyond ceiling (clearly a different FY) → no fire.
+    - "2019-01-01" is pre-as-of → no fire regardless of ceiling.
+    When pit_fiscal_year=None, the ceiling is lifted → "2099-01-01" fires (legacy).
+    """
+    as_of = "2022-06-01"
+    # Within 2-year window: fires.
+    assert bf._restatement_at_risk(
+        [{"filing_date": "2023-06-01"}], as_of, pit_fiscal_year=2021
+    ) is True
+    # Beyond 2-year window: suppressed.
+    assert bf._restatement_at_risk(
+        [{"filing_date": "2099-01-01"}], as_of, pit_fiscal_year=2021
+    ) is False
+    # Pre-as-of: never fires.
+    assert bf._restatement_at_risk(
+        [{"filing_date": "2019-01-01"}], as_of, pit_fiscal_year=2021
+    ) is False
+    # Exactly at ceiling (2023-12-31): fires (inclusive boundary).
+    assert bf._restatement_at_risk(
+        [{"filing_date": "2023-12-31"}], as_of, pit_fiscal_year=2021
+    ) is True
+    # One day past ceiling: suppressed.
+    assert bf._restatement_at_risk(
+        [{"filing_date": "2024-01-01"}], as_of, pit_fiscal_year=2021
+    ) is False
+    # Legacy mode (pit_fiscal_year=None): ceiling lifted, any post-as-of fires.
+    assert bf._restatement_at_risk(
+        [{"filing_date": "2099-01-01"}], as_of, pit_fiscal_year=None
+    ) is True
+
+
+def test_pit_fiscal_year_at_returns_latest_eligible_fy() -> None:
+    """FIX 1 helper: _pit_fiscal_year_at returns the most-recent 10-K FY at as_of."""
+    rows = [
+        {"form_type": "10-K", "fiscal_year": 2020, "filing_date": "2021-02-15", "value": 1.0, "metric": "revenue"},
+        {"form_type": "10-K", "fiscal_year": 2021, "filing_date": "2022-02-15", "value": 1.0, "metric": "revenue"},
+        {"form_type": "10-K/A", "fiscal_year": 2021, "filing_date": "2022-06-01", "value": 1.0, "metric": "revenue"},
+    ]
+    # As of 2022-06-01: latest eligible 10-K is FY2021 (filed 2022-02-15 <= 2022-06-01)
+    # 10-K/A rows are excluded by form_type gate (only "10-K" is eligible)
+    assert bf._pit_fiscal_year_at(rows, "2022-06-01") == 2021
+    # As of 2021-12-31: only FY2020 is filed before this date
+    assert bf._pit_fiscal_year_at(rows, "2021-12-31") == 2020
+    # As of 2020-12-31: no 10-K filed before this date
+    assert bf._pit_fiscal_year_at(rows, "2020-12-31") is None
+    # Empty rows: None
+    assert bf._pit_fiscal_year_at([], "2022-06-01") is None
+
+
+def test_artifact_carries_period_map_gated_flag(tmp_path, _universe) -> None:
+    """FIX 1: meta.restatement_canary_period_map_gated is True in the artifact."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+    meta = json.loads(out.read_text())["meta"]
+    assert meta["restatement_canary_period_map_gated"] is True
 
 
 def test_insample_lag_clause_states_actual_result_vs_spy() -> None:

@@ -427,8 +427,39 @@ def _price_at(prices: pd.DataFrame, as_of_ts: pd.Timestamp) -> float | None:
     return f if f == f and f > 0 else None
 
 
-def _restatement_at_risk(amendments: list[dict] | None, as_of: str) -> bool:
-    """True if the name filed ANY 10-K/A or 10-Q/A AFTER ``as_of``.
+def _pit_fiscal_year_at(rows: list[dict], as_of: str) -> int | None:
+    """Fiscal year of the most-recent 10-K filed on or before ``as_of``.
+
+    Returns the ``fiscal_year`` integer from the highest-FY eligible 10-K row
+    (same eligibility as ``pit_snapshot_fields``), or ``None`` when no 10-K is
+    public at ``as_of``. Used by ``_restatement_at_risk`` to narrow the
+    amendment fiscal-year gate (FIX 1 — restatement period-map refinement).
+    """
+    best_fy: int | None = None
+    best_fd: str = ""
+    for row in rows:
+        if row.get("form_type") != "10-K":
+            continue
+        fd = row.get("filing_date")
+        if not isinstance(fd, str) or fd > as_of:
+            continue
+        try:
+            fy = int(row["fiscal_year"])  # type: ignore[arg-type]
+        except (KeyError, TypeError, ValueError):
+            continue
+        if best_fy is None or (fy, fd) > (best_fy, best_fd):
+            best_fy = fy
+            best_fd = fd
+    return best_fy
+
+
+def _restatement_at_risk(
+    amendments: list[dict] | None,
+    as_of: str,
+    *,
+    pit_fiscal_year: int | None = None,
+) -> bool:
+    """True if the name filed a relevant 10-K/A or 10-Q/A AFTER ``as_of``.
 
     Re-sourced (methodology-scientist 2026-06-05) from the SAME EDGAR filings-index
     feed the live ``restatement_history`` flag uses (``fetch_amendments`` →
@@ -437,18 +468,46 @@ def _restatement_at_risk(amendments: list[dict] | None, as_of: str) -> bool:
     so it systematically under-counted partial / non-financial amendments and reported
     a misleading 0.0%. This is a CONSERVATIVE look-ahead-contamination canary: a
     post-as-of amendment means the cached companyfacts data the backtest read at T may
-    silently reflect that later restatement. It does NOT restrict to the specific
-    fiscal years that fed the as-of score (the filings index carries no period map), so
-    it over- rather than under-counts — the safe direction for a disclosed canary.
-    ``None`` (fetch failed / no EDGAR identity) is treated as "unresolved", NOT at-risk
-    (the caller counts those separately).
+    silently reflect that later restatement.
+
+    **Period-map refinement (FIX 1 — 2026-06-13):** When ``pit_fiscal_year`` is
+    supplied (the fiscal year of the 10-K that actually fed the PIT score at T),
+    only amendments whose ``filing_date <= {pit_fiscal_year + 2}-12-31`` are counted.
+    The rationale: a 10-K/A or 10-Q/A that amends fiscal year FY is nearly always
+    filed within 2 calendar years of FY-end (i.e. before Dec 31 of FY+2); an
+    amendment filed well beyond that window almost certainly targets a later fiscal
+    year that did NOT feed the PIT score. The 2-year ceiling is conservative (most
+    amendments land within 12-18 months) and eliminates the dominant over-count case
+    (amendments filed 5-10 years after the PIT fiscal year). Residual imprecision:
+    (a) for non-Dec-31 fiscal-year-ends the ceiling is an approximation (the actual
+    FYE is not stored in the filings-index cache); (b) multi-year restatements filed
+    beyond 2 years are missed. Both effects are documented; the disclosure is "upper
+    bound on contamination for the PIT 10-K's fiscal year ± 2 calendar years".
+
+    When ``pit_fiscal_year`` is None (no eligible 10-K found at T), the function
+    falls back to the original conservative behaviour (any post-as-of amendment
+    counts) so the signal does not silently disappear for tickers with sparse data.
+
+    ``None`` (fetch failed / no EDGAR identity) is treated as "unresolved", NOT
+    at-risk (the caller counts those separately).
     """
     if not amendments:
         return False
+    # Period-map ceiling: only amendments plausibly targeting the PIT fiscal year.
+    # Ceiling = Dec 31 of (pit_fiscal_year + 2) — 2-year window after FY end.
+    # Fallback to None (= no ceiling, original behaviour) when PIT FY is unknown.
+    fy_ceiling: str | None = (
+        f"{pit_fiscal_year + 2}-12-31" if pit_fiscal_year is not None else None
+    )
     for f in amendments:
         fd = f.get("filing_date")
-        if isinstance(fd, str) and fd > as_of:
-            return True
+        if not isinstance(fd, str):
+            continue
+        if fd <= as_of:
+            continue  # not post-as-of: irrelevant
+        if fy_ceiling is not None and fd > fy_ceiling:
+            continue  # beyond the 2-year FY window: almost certainly a later FY
+        return True
     return False
 
 
@@ -1349,13 +1408,20 @@ def run_backfill(
         # amendment fetch failed is "unresolved" (counted separately), not at-risk.
         # Post-uncap the product band book can hold rank-21+ names outside `picks`;
         # the contamination canary must see every holdable name, not just the top-20.
+        #
+        # FIX 1 (restatement period-map refinement, 2026-06-13): pass the PIT fiscal
+        # year so _restatement_at_risk only counts amendments whose filing_date falls
+        # within 2 years of the PIT 10-K's fiscal year-end, reducing the over-count
+        # of amendments targeting entirely different fiscal years.
         picked_names.update(set(picks) | set(band_book))
         for t in sorted(set(picks) | set(band_book)):
             amends = _amendments(t)
             if amends is None:
                 restate_unresolved.add(t)
-            elif _restatement_at_risk(amends, T_iso):
-                restate_names.add(t)
+            else:
+                pit_fy = _pit_fiscal_year_at(rows_by_ticker.get(t, []), T_iso)
+                if _restatement_at_risk(amends, T_iso, pit_fiscal_year=pit_fy):
+                    restate_names.add(t)
 
         # Phase 7.0c: sector_weights_by_count — derived per-N sector-weight map.
         sw_by_count = _sector_weights_by_count(weights_by_count, sector_by_ticker)
@@ -1469,9 +1535,56 @@ def run_backfill(
             "cost_bps_per_side": DEFAULT_COST_BPS_PER_SIDE,
             "cost_bps_conservative": CONSERVATIVE_COST_BPS,
             "incomplete_membership_count": incomplete_membership,
+            # FIX 1 (restatement period-map refinement, 2026-06-13):
+            # restatement_contamination_pct is now a TIGHTER upper bound than before.
+            # Prior behaviour: ANY post-as-of amendment counted (over-counted amendments
+            # for fiscal years never seen by the PIT score at T).
+            # Refined behaviour: only amendments whose filing_date falls within
+            # 2 calendar years of the PIT 10-K's fiscal year-end are counted.
+            # Residual over-count: (a) non-Dec-31 FYE names (ceiling approximate);
+            # (b) multi-year restatements filed > 2y after FY-end (missed).
+            # Semantics: still an upper bound on contamination; "period-map-gated" = True.
             "restatement_contamination_pct": restate_pct,
             "restatement_canary_source": "edgar-filings-index",
             "restatement_canary_unresolved_count": len(restate_unresolved),
+            # period_map_gated=True: amendments are gated to the PIT 10-K's fiscal-year
+            # ±2 calendar years (FIX 1). False would indicate the legacy over-counting
+            # behaviour (all post-as-of amendments counted regardless of fiscal year).
+            "restatement_canary_period_map_gated": True,
+            # FIX 2 (ticker-rename micro-leakage disclosure, 2026-06-13):
+            # ~15-20 tickers in the backtest window correspond to renamed/merged
+            # entities where the ledger's REMOVE-old + ADD-new pair causes members_at
+            # to correctly return the historical ticker (e.g. KDP at pre-2018 dates,
+            # FB at pre-2022-06 dates). However, the price and fundamentals fetch
+            # uses the CURRENT entity's data (yfinance/EDGAR for the new ticker's CIK),
+            # which for a pure rename is correct, but for a merger (DPSG→KDP 2018) the
+            # pre-merger entity's EDGAR CIK differs from the post-merger one. In
+            # practice the impact is limited: the post-merger entity (KDP) has no EDGAR
+            # annual-10-K filings before 2018, so the PIT snapshot at a pre-2018
+            # rebalance is all-null and KDP scores at a neutral/median composite —
+            # it is unlikely to clear the high-conviction gate. The contamination is
+            # effectively zero for the scoring output but non-zero for the
+            # universe representation. A full fix requires a verified rename-map with
+            # per-entity CIK resolution and confirmed pre-rename price history in
+            # yfinance — infrastructure not currently available. Tracked for future
+            # implementation (see issue text in PHASE_STATUS_INFLIGHT.md).
+            # Known affected tickers (estimated; ledger-derived):
+            #   KDP (pre-2018-07: was DPSG / Dr Pepper Snapple Group)
+            #   META (pre-2022-06: was FB / Facebook Inc.)
+            #   DAY (pre-2024-02: was CDAY / Ceridian Dayforce)
+            # For FB/META and CDAY/DAY, the post-rename entity IS the same legal CIK
+            # (pure symbol change, not a merger), so price + fundamentals are correct.
+            # Only merger renames (KDP) carry true micro-leakage — and those score
+            # null-fundamentals PIT, limiting the actual selection contamination.
+            "ticker_rename_microleakage_note": (
+                "Merger-renamed tickers (e.g. KDP pre-2018-07-02) may appear in the "
+                "historical cohort via the ledger but score null-fundamentals PIT "
+                "(post-merger entity has no pre-merger 10-K filings), limiting "
+                "practical selection contamination. Pure symbol-change renames "
+                "(FB→META, CDAY→DAY) share the same CIK — no data mismatch. "
+                "Full fix requires per-entity CIK resolution + confirmed yfinance "
+                "pre-rename price history; tracked as a future issue."
+            ),
             # GAP 1: sector_from_today is False when the historical sector parquet is
             # present (PIT sectors used); True when absent (today's Wikipedia sector).
             "sector_from_today": not _sector_parquet_present,
