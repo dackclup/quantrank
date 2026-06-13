@@ -67,6 +67,7 @@ References
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -92,6 +93,24 @@ _ITEM_4_01_PATTERN = re.compile(r"\bItem\s+4\.\s*01\b", re.IGNORECASE)
 # (_extract_items_from_text in current_report.py:51) — proven-correct
 # regex extraction that bypasses hybrid_section_detector.
 _ITEMS_PATTERN = re.compile(r"\bItem\s+(\d+\.\s*\d+)\b", re.IGNORECASE)
+
+
+def _ttl_jitter_seconds(ticker: str) -> int:
+    """Return a deterministic per-ticker jitter in [0, EDGAR_8K_CACHE_TTL_JITTER_SECONDS).
+
+    Uses SHA-256 (not builtin ``hash()``, which is PYTHONHASHSEED-salted and
+    varies per process) so the jitter value is stable across runs for a given
+    ticker.  This de-synchronizes the 502-ticker cohort's 8-K cache expiry,
+    spreading it across a 24-hour window (issue #469).
+
+    The function is intentionally pure and side-effect-free for unit testing.
+    """
+    jitter_window = config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS
+    if jitter_window <= 0:
+        return 0
+    digest = hashlib.sha256(ticker.encode()).digest()
+    offset = int.from_bytes(digest[:8], "big") % jitter_window
+    return offset
 
 
 @dataclass(frozen=True)
@@ -190,7 +209,8 @@ def _cache_read(ticker: str, lookback_days: int) -> list[dict] | None:
     except ValueError:
         return None
     age = datetime.now(UTC) - fetched_at
-    if age > timedelta(seconds=config.EDGAR_8K_CACHE_TTL_SECONDS):
+    effective_ttl = config.EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)
+    if age > timedelta(seconds=effective_ttl):
         return None
     # Cache hit must cover at least the requested lookback window.
     cached_lookback = payload.get("lookback_days", 0)
@@ -550,6 +570,7 @@ def check_auditor_change(
 
 __all__ = [
     "ItemFlag",
+    "_ttl_jitter_seconds",
     "check_auditor_change",
     "check_non_reliance",
     "fetch_recent_8k_filings",

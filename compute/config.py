@@ -340,6 +340,17 @@ EDGAR_8K_CACHE_DIR: Path = CACHE_DIR / "edgar_8k"
 # run-to-run (edgar-debugger 2026-06-06, secondary to the tier2 cache-split fix).
 EDGAR_8K_CACHE_TTL_SECONDS: int = 6 * 86400  # 6 days
 
+# Issue #469 — de-synchronize the cold-burst cohort expiry.
+# All 502 tickers are written in one cold-rebuild burst, so without jitter
+# they ALL cross the 6-day TTL cliff simultaneously ~6 days later, producing
+# an ~80-minute tier2 refetch spike on that run.  Adding a per-ticker
+# deterministic jitter in [0, 24h) spreads expiry across a full day so
+# refreshes trickle in across daily cron runs instead of all-at-once.
+# Side-effect: a brand-new 8-K's visibility is delayed by at most 24h for
+# the highest-jitter tickers — negligible given the 730-day lookback, the
+# daily cron cadence, and the rarity of 4.01/4.02 items.
+EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 24 * 3600  # 24 hours
+
 # Cap how much of an Item body we keep in the cache + surface in the
 # UI excerpt. 500 chars is enough for the human reviewer to gauge
 # context without pulling the whole 8-K.

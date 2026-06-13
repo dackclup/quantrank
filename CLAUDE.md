@@ -330,6 +330,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
 - **Dual-class `shares_outstanding` = SEC company-TOTAL across classes (ASC 260 / RATIFY-B #374); the per-class count lives in `shares_outstanding_listed_class` (display-only)**
 - **edgartools `Company("")` resolves to an ARBITRARY company (no raise) — resolve a real CIK (`snap.cik` → `Company(ticker).cik`) before any history fetch; empty-CIK `fetch_fundamentals` calls also bypass the snapshot parquet cache BOTH ways**
+- **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-24h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
 
 ## Phase status
 
@@ -357,21 +358,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(precache) — Issue #249 Options B+C: Saturday EDGAR pre-cache
-  workflow + cache-restore canary (this PR, 2026-06-12)** — durable fix
-  for the 2026-05-25 P1 (full-cold 5-loop run blew the cron's
-  150-min ceiling). NEW `precache-edgar.yml`: Sat 08:00 UTC +
-  `workflow_dispatch`, no trading-day gate, runs the REAL `compute.main`
-  with ALL loops (no skip vars), discards outputs; restores BOTH bundles
-  with the cron's EXACT keys — fast `cache-v8-fast-<quarter>`
-  exact-hit-skips-save (warm Sat ~free; post-eviction Sat eats the cold
-  rebuild + SAVES so Monday restores warm), slow-text run-id key always
-  saves fresh. Canary (both workflows): post-restore per-layer size /
-  count / age table + `::warning` on empty Form-4 / 10-K-text — warning
-  NOT fail-fast (a cold dispatch is usually an intentional rebuild).
-  Shared `edgar-cache-writers` concurrency group (queue-not-cancel).
-  Guard test now quad-file + slow-text family lockstep pin. Also the
-  Phase-8 prerequisite (S&P 900 pilot warms via this path). Detail:
+- **fix(scoring+ci) — Issue #469: de-sync the 8-K cache cohort + canary
+  TTL-proximity warning (this PR, 2026-06-13)** — root-caused from the
+  2026-06-12 manual cron: the 502-ticker 8-K cache, written in one
+  cold-rebuild burst, crosses its flat 144h (6-day) TTL *simultaneously*
+  → one ~80-min `tier2_wall_clock_seconds` refetch spike (~11s → ~4826s)
+  recomputing identical `gc/nr/ac` flags, recurring every ~6 days. Fix
+  Part 1 (compute): `_cache_read` effective TTL =
+  `EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)` where the
+  jitter ∈ [0, `EDGAR_8K_CACHE_TTL_JITTER_SECONDS`=24h) is a
+  SHA-256-stable per-ticker offset (NOT salted `hash()`), spreading the
+  expiry across a day so refreshes trickle (≤24h added visibility delay,
+  negligible vs the 730d lookback + daily cron). Part 2 (observability,
+  both workflows byte-identical): the post-restore canary now echoes the
+  restored slow-text key + emits `::warning` when the `edgar_8k` layer is
+  within 24h of its TTL, predicting the long pass. 6 jitter unit tests +
+  2 canary guard tests; full scoring+workflow suite 654 passed. De-sync
+  is only fully observable over ~2 cold-rebuild cycles (~1 wk of crons) —
+  watch `tier2_wall_clock_seconds` for the spike's disappearance. Detail:
   PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
