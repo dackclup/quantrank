@@ -302,10 +302,18 @@ def test_B2_cache_hit_within_ttl_returns_cached(isolated_cache, monkeypatch):
 
 
 def test_B3_cache_hit_past_ttl_refetches(isolated_cache, monkeypatch):
-    """An entry older than 7 days is treated as a miss."""
+    """An entry older than base_TTL + full_jitter_window is treated as a miss.
+
+    Uses base_TTL + JITTER_WINDOW + 100s so the entry is past the MAXIMUM
+    possible effective TTL for any ticker (jitter is in [0, JITTER_WINDOW)),
+    making the test ticker-agnostic after issue #469 per-ticker jitter landed.
+    """
     cache_path = isolated_cache / "AAPL.json"
     cache_path.parent.mkdir(parents=True, exist_ok=True)
-    expired = datetime.now(UTC) - timedelta(seconds=config.EDGAR_8K_CACHE_TTL_SECONDS + 100)
+    max_effective_ttl = (
+        config.EDGAR_8K_CACHE_TTL_SECONDS + config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS
+    )
+    expired = datetime.now(UTC) - timedelta(seconds=max_effective_ttl + 100)
     payload = {
         "fetched_at": expired.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "lookback_days": 365,

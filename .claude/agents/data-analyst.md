@@ -92,7 +92,7 @@ VERDICT: <ANALYZED | NEEDS-DATA:<what> | FLAG:<routed-agent>:<why>>
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator. End with the parseable
+Report to the main **Opus 4.8** orchestrator. End with the parseable
 handoff line (contract in `.claude/agents/README.md` §Dynamic workflow):
 
 `HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`

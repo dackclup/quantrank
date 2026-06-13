@@ -3743,5 +3743,125 @@ Playwright on the now-visible badge) + a fable `quantrank-reviewer`
 pass. The displayed +789% WILL move (survivorship + PIT sector + 8-K
 veto change the historical books) — that movement is the proof the
 closures are live, not a regression.
+## 2026-06-13 — fix(scoring+ci): Issue #469 — de-sync the 8-K cache cohort + canary TTL-proximity warning
+
+Root-caused from the 2026-06-12 manual cron dispatch (forensics, run
+27413437138): `tier2_wall_clock_seconds = 4826` (~80 min) vs the ~11s
+warm baseline. The 502-ticker 8-K cache, written in ONE cold-rebuild
+burst (~June 6), crosses its flat 144h (6-day) TTL *simultaneously* — so
+one tier2 pass straddling the cliff refetches all 502 tickers live,
+recomputing byte-identical `gc=5/nr=1/ac=9` flags. Recurs every ~6 days
+(next ~June 18). No infra fault — the #468 canary actually reported the
+143h cache age that closed the case.
+
+**Part 1 (compute)** — `compute/scoring/eight_k_events.py` `_cache_read`
+effective TTL = `EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`;
+new pure helper `_ttl_jitter_seconds(ticker) -> int` returns a
+SHA-256-stable offset in `[0, EDGAR_8K_CACHE_TTL_JITTER_SECONDS)` (new
+config constant = 24h). MUST be SHA-256, not builtin `hash()`
+(PYTHONHASHSEED-salted → would re-randomize per process and defeat the
+de-sync). Only the TTL comparison line changes; event-detection,
+730-day lookback, warm-hit no-restamp, and cache write are untouched —
+zero scoring-output change. 6 unit tests (determinism, [0,24h) bounds,
+≥10-distinct-bucket non-degenerate spread, effective-TTL widening both
+sides of the cliff, zero-window guard); pre-existing `test_B3` margin
+widened from `+100s` to `+JITTER_WINDOW+100s` (ticker-agnostic).
+
+**Part 2 (observability, both workflows byte-identical)** — the
+post-restore canary in `compute-rankings.yml` + `precache-edgar.yml` now
+(a) echoes the restored slow-text key via a new `id: restore-slow-text`
+on the slow-text restore step (identical in both files →
+`steps.restore-slow-text.outputs.cache-matched-key`), and (b) emits
+`::warning::edgar_8k cache within 24h of its 144h TTL ... (~80 min); see
+#469` when the `edgar_8k` newest-file age > 120h (pure shell, warning
+only, can't fail the job). 2 new guard tests
+(`test_canary_emits_edgar_8k_ttl_warning` +
+`test_canary_echoes_restored_slow_text_key`); the existing canary
+byte-equality test stays green (28→ tests pass).
+
+**Verify**: ruff whole-repo PASS · scoring + workflow suites 654 passed ·
+schema triple untouched. **Honest caveat**: de-sync is only fully
+observable over ~2 cold-rebuild cycles (~1 week of crons) — single-cron
+confirmation can't prove it; watch `tier2_wall_clock_seconds` for the
+spike's disappearance across consecutive weeks.
+## 2026-06-13 — fix(ingest): filing-date precheck to skip wasteful companyfacts refetch (#471, closes parent #15)
+
+**Branch**: `claude/sweet-turing-d46aw2`
+**Type**: fix(ingest) + perf — COMPUTE-ONLY; no schema change, no frontend change,
+no workflow change; no schema bump.
+
+**Problem**: stale-but-cached tickers (latest SEC filing >45d old — e.g. big filers
+in the quiet period between 10-Qs) triggered a full `Company.get_facts()` companyfacts
+pull on EVERY cron run even when the data was unchanged. Observed on the 2026-06-12
+cron: `fundamentals_latency_p95 = 19.27s`, 84/502 tickers >= 15s, p50 = 0.0s — a
+bimodal histogram dominated by this wasteful refetch loop.
+
+**Fix — Design B (filing-date precheck)**: a new `_latest_filing_date(cik)` helper
+(reuses `Company.get_filings("10-K"/"10-Q")`, cheap) is called BEFORE the heavy
+`_build_snapshot`. If SEC shows no new filing since the cached snapshot date, the
+cache is served directly and `get_facts()` is skipped. Falls through to the live build
+on ANY uncertainty (helper returns `None`, or a newer filing exists), so a genuine new
+filing is always captured and the precheck can never produce stale output.
+
+**Why Design B over Design C (parquet-mtime gate)**: the cron's FAST cache uses an
+exact quarter key (`cache-v8-fast-<quarter>`) — `actions/cache` skips the post-job
+save on an exact-key hit, making the fast cache FROZEN-IMMUTABLE within a quarter.
+Parquet mtimes and fetch-recency signals are therefore NO-OPs across cron runs. Design
+C would serve stale output. Design B re-verifies filing date against SEC each run —
+no staleness, less SEC load (skips only the heavy companyfacts blob).
+
+**Invariant recorded** (new §Gotchas entry): frozen-fast-cache-immutability + the
+filing-precheck as the only safe skip path — see CLAUDE.md §Gotchas +
+docs/GOTCHAS.md.
+
+**Diagnostic**: log-only thread-safe counter `fundamentals_filing_precheck_skip_count`
+(reset in `main.py` before the fetch loop, logged after the histogram). No schema
+change; the counter is internal only.
+
+**Tests**: 17 new offline tests in `tests/test_ingest/test_filing_precheck.py`.
+CI-validated; edgartools/pandas-2.2 absent in the authoring sandbox so the full suite
+ran in CI only (noted in PR body per CLAUDE.md §Conventions verification ladder).
+
+**Files**: `compute/ingest/fundamentals.py` · `compute/config.py` (doc-comment only) ·
+`compute/main.py` (import + reset + diagnostic log) ·
+`tests/test_ingest/test_filing_precheck.py` (new, 17 tests) ·
+`CLAUDE.md` (§Gotchas index) · `docs/GOTCHAS.md` (detail) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## chore(agents) — revert 5 judgment-gate subagents `fable` → `opus` (in flight, 2026-06-13)
+
+Branch `claude/festive-cerf-zlc94q`. Reverts PR #446 (2026-06-10): the main
+session is back on **Opus 4.8**, so the 5 judgment-gate agents —
+`quantrank-reviewer` · `methodology-scientist` · `release-captain` ·
+`incident-commander` · `financial-engineer` — move `model: fable` →
+**`model: opus`** in frontmatter. Per the standing model-alias gotcha this is
+the bare FLOATING alias (resolves to Opus 4.8 today, floats forward on CLI
+updates), NOT a pinned `claude-opus-4-8` ID — pinned numbered IDs are the
+documented future-dated-downgrade footgun and are rejected by CI.
+
+Guard `tools/check_model_pin.py` is functionally unchanged: `opus` was already
+in `_ALLOWED_MODEL_VALUES`, and `fable` + `ANTHROPIC_DEFAULT_FABLE_MODEL` are
+**intentionally KEPT** as harmless defensive entries (re-introducing either
+alias later never trips CI). Only the docstring / failure-message examples flip
+`fable` → `opus` for accuracy.
+
+Docs lockstep — every current-state "fable" reference flips to opus: CLAUDE.md
+(routing intro · cue table ×5 · §Spawn discipline "5-opus / 20-sonnet"),
+`.claude/agents/README.md` (tier-table Model column ×5 · flow diagrams ×3 ·
+§Dynamic workflow "Opus 4.8 orchestrator" · model-split + authoring §3), the 25
+agent files' handoff lines ("the main **Opus 4.8** orchestrator") + cross-ref
+model tags (ci-triage-engineer · literature-searcher · vercel-preview-auditor ·
+compute-builder · data-scientist) + the 2 self-descriptions (quantrank-reviewer ·
+release-captain), AGENTS.md (layout roster · alias mention · main-session
+framing · "Opus agents" rare-fire note), CONTEXT.md (roster row), WORKFLOW.md
+(phase 5/6 rows · cadence invariant), PHASE_STATUS.md (current-state inventory
+row), docs/GOTCHAS.md (alias gotcha updated — the fable run is preserved as
+history and the `claude-opus-4-8` BAD-pin example is intentionally kept as the
+illustration). Historical entries in PHASE_STATUS*/archive intentionally
+untouched (incl. the PR #446 `opus` → `fable` log line). No production code or
+schema change; `ruff check .` + `python tools/check_model_pin.py` pass locally
+(guard OK: 5 opus + 20 sonnet, all floating aliases).
 
 ---

@@ -70,6 +70,21 @@ EDGAR_MAX_WORKERS: int = 8
 UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
 PRICES_CACHE_MAX_AGE_HOURS: int = 24
 FUNDAMENTALS_REFETCH_DAYS: int = 45
+# Issue #471 / #15 — Design B filing-date precheck (replaces Design C mtime gate).
+# Design C used the parquet's st_mtime to decide whether to skip _build_snapshot —
+# but the cron's fast cache uses an EXACT quarter key
+# (cache-v8-fast-<quarter>-<os>), so on a cache hit actions/cache SKIPS the
+# post-job save (immutability).  The fast cache is FROZEN within a quarter, so a
+# restored parquet's mtime is the last reseed time (often weeks old) and the
+# mtime gate never fired for the stale tickers it was meant to help.  Under the
+# frozen cache the "wasteful" refetch is also load-bearing for output freshness —
+# a plain serve-cache design causes real staleness.
+# Design B avoids all of this: for a stale-but-cached ticker, a CHEAP
+# get_filings("10-K"/"10-Q") call re-verifies the latest SEC filing date each run
+# and skips _build_snapshot only when no new filing exists.  This reuses the
+# Company construction the refetch path already pays and skips only the heavy
+# get_facts() pull.  No day constant needed: the precheck queries SEC directly.
+# See compute/ingest/fundamentals._latest_filing_date + fetch_fundamentals.
 MIN_VALID_TICKERS: int = 100
 MIN_FUNDAMENTALS_COVERAGE: float = 0.5
 
@@ -339,6 +354,17 @@ EDGAR_8K_CACHE_DIR: Path = CACHE_DIR / "edgar_8k"
 # drift / DST shift. 6 days adds a 24h buffer so a warm 8-K cache reliably hits
 # run-to-run (edgar-debugger 2026-06-06, secondary to the tier2 cache-split fix).
 EDGAR_8K_CACHE_TTL_SECONDS: int = 6 * 86400  # 6 days
+
+# Issue #469 — de-synchronize the cold-burst cohort expiry.
+# All 502 tickers are written in one cold-rebuild burst, so without jitter
+# they ALL cross the 6-day TTL cliff simultaneously ~6 days later, producing
+# an ~80-minute tier2 refetch spike on that run.  Adding a per-ticker
+# deterministic jitter in [0, 24h) spreads expiry across a full day so
+# refreshes trickle in across daily cron runs instead of all-at-once.
+# Side-effect: a brand-new 8-K's visibility is delayed by at most 24h for
+# the highest-jitter tickers — negligible given the 730-day lookback, the
+# daily cron cadence, and the rarity of 4.01/4.02 items.
+EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 24 * 3600  # 24 hours
 
 # Cap how much of an Item body we keep in the cache + surface in the
 # UI excerpt. 500 chars is enough for the human reviewer to gauge

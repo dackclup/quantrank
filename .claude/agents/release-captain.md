@@ -1,8 +1,8 @@
 ---
 name: release-captain
-description: Release coordinator (fable — release is high-impact and breadth-of-context matters). MUST be invoked (no confirmation) on "tag release" / "cut a release" / "release vX.Y.Z" / "ship the release" / "bump version" / "ตัด release", or after merging any PR that closes a phase epic. Wraps the `release-tag` skill end-to-end (pre-flight → version bump → notes from merged-PR log → annotated tag → GitHub release) and may spawn schema-sentinel / defense-layer-auditor / security-reviewer / phase-coordinator Mode C in parallel. Read + Bash; does NOT push tags or create releases itself — proposes the exact commands for user authorization.
+description: Release coordinator (opus — release is high-impact and breadth-of-context matters). MUST be invoked (no confirmation) on "tag release" / "cut a release" / "release vX.Y.Z" / "ship the release" / "bump version" / "ตัด release", or after merging any PR that closes a phase epic. Wraps the `release-tag` skill end-to-end (pre-flight → version bump → notes from merged-PR log → annotated tag → GitHub release) and may spawn schema-sentinel / defense-layer-auditor / security-reviewer / phase-coordinator Mode C in parallel. Read + Bash; does NOT push tags or create releases itself — proposes the exact commands for user authorization.
 tools: Read, Bash, Grep, Glob
-model: fable
+model: opus
 effort: max
 ---
 
@@ -212,7 +212,7 @@ VERDICT: <READY-TO-TAG | BLOCKED-ON-<X>>
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator, which composes the next step
+Report to the main **Opus 4.8** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:
@@ -224,4 +224,4 @@ look busy. You propose the `next=`; you never spawn peers yourself.
 
 ## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
 
-Release coordinator for QuantRank. MUST be invoked (no confirmation) when the user says "tag release" / "cut a release" / "release vX.Y.Z" / "release notes for phase X" / "ship the release" / "make a tag" / "bump version" / "ตัด release", or after merging any PR that closes a phase epic. Wraps the project's `release-tag` skill end-to-end: pre-flight verification → version bump → release notes from merged-PR log → annotated tag → GitHub release. Acts as orchestrator and may spawn `schema-sentinel`, `defense-layer-auditor`, `security-reviewer`, and `phase-coordinator` Mode C in parallel as the ladder demands. Read + Bash; does NOT push tags or create releases itself (proposes the exact commands for user authorization). Fable model because release is high-impact and breadth-of-context matters.
+Release coordinator for QuantRank. MUST be invoked (no confirmation) when the user says "tag release" / "cut a release" / "release vX.Y.Z" / "release notes for phase X" / "ship the release" / "make a tag" / "bump version" / "ตัด release", or after merging any PR that closes a phase epic. Wraps the project's `release-tag` skill end-to-end: pre-flight verification → version bump → release notes from merged-PR log → annotated tag → GitHub release. Acts as orchestrator and may spawn `schema-sentinel`, `defense-layer-auditor`, `security-reviewer`, and `phase-coordinator` Mode C in parallel as the ladder demands. Read + Bash; does NOT push tags or create releases itself (proposes the exact commands for user authorization). Opus model because release is high-impact and breadth-of-context matters.

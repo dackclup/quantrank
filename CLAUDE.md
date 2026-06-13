@@ -190,7 +190,7 @@ report. Otherwise STOP and spawn first.
 
 One row per fire-pattern; user-ask cues and event cues share a row.
 Sonnet agents (the unmarked default) fire on edits / signals in their
-domain; the five **fable** agents (`quantrank-reviewer` ·
+domain; the five **opus** agents (`quantrank-reviewer` ·
 `methodology-scientist` · `release-captain` · `incident-commander` ·
 `financial-engineer`) are gate / signal-only. **Non-trivial edit** =
 > 5 added lines OR non-comment code OR a public-symbol change (pure
@@ -201,7 +201,7 @@ command needs user authorization. Pattern not in the table → walk the
 
 | Trigger (user ask OR event) | Spawn |
 |---|---|
-| "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" — OR explicit "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | `quantrank-reviewer` (fable) + `phase-coordinator` Mode B, plus conditional sonnet re-batch (`schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer`, dedup-skipped). **The fable review fires at this gate only — NOT on every push / edit set** (narrowed 2026-06-11, token economy) |
+| "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" — OR explicit "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | `quantrank-reviewer` (opus) + `phase-coordinator` Mode B, plus conditional sonnet re-batch (`schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer`, dedup-skipped). **The opus review fires at this gate only — NOT on every push / edit set** (narrowed 2026-06-11, token economy) |
 | "ตรวจ data หุ้น" / "check ticker X" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` — deterministic prefilter, then thorough verdict per flagged ticker |
 | Non-trivial edit to `schemas.py` / `types.ts` / `schema-snapshot.json` OR "schema in sync?" OR CI schema-drift | `schema-sentinel` |
 | Non-trivial edit to `compute/scoring/*` / `compute/valuation/*` OR "audit defenses" / defense count diff | `defense-layer-auditor` |
@@ -212,18 +212,18 @@ command needs user authorization. Pattern not in the table → walk the
 | Non-trivial edit to CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md OR "ตรวจ doc" | `docs-reviewer` — substance check (file-touch lockstep = `phase-coordinator` Mode B at the gate) |
 | `tests/test_ingest/` failure OR live-run hang OR SEC 429/403 OR edgartools drift | `edgar-debugger` |
 | "ทำไม cron ช้า" OR warm-cache > 10 min OR p95 > 20s | `performance-engineer` |
-| Cron fails / hangs / corrupt output OR Vercel deploy breaks OR schema CI fails OR "production is broken" / "site is down" / "incident" | `incident-commander` (fable, P1) — immediate |
+| Cron fails / hangs / corrupt output OR Vercel deploy breaks OR schema CI fails OR "production is broken" / "site is down" / "incident" | `incident-commander` (opus, P1) — immediate |
 | CI check fails on an open PR (webhook) OR "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` — proposes the one-line fix |
 | Pre-Mark-Ready on a UI-touching PR OR Vercel preview URL posted OR "ดู preview" / "is deploy green?" | `vercel-preview-auditor` — Vercel MCP chain before Playwright |
 | Post-cron green OR pre-release OR vercel GO on a UI PR OR "ลองใช้ app (จริง)" / "expert user feedback" / "UX จริง" / "is the app actually usable?" | `expert-user-explorer` — serves the export, drives Playwright persona missions; NOT per-edit |
-| Methodology cite outside the CLAUDE.md anchor list (paper text matters) OR "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" OR new defense-flag prior | `literature-searcher` — keeps fable tokens on judgment |
+| Methodology cite outside the CLAUDE.md anchor list (paper text matters) OR "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" OR new defense-flag prior | `literature-searcher` — keeps opus tokens on judgment |
 | `workflow_dispatch` on `compute-rankings.yml` lands green | Post-cron parallel batch: `defense-layer-auditor` (Section A-L + I) + `stock-detail-auditor` + `data-pipeline-engineer` + `data-analyst` + `expert-user-explorer` |
 | Edit under `compute/ingest/**` OR `data/sp500_membership_historical.csv` edit OR `Metadata.*_coverage_pct` drop OR "ตรวจ data pipeline" / "is the data pipeline healthy?" | `data-pipeline-engineer` |
 | "วิเคราะห์ data" / "analyze the rankings" / "score / sector distribution" / "what changed this week" | `data-analyst` |
 | "is this signal real?" / "IC เท่าไหร่" / "overfit ไหม" / "วิเคราะห์เชิงสถิติ" OR PBO-DSR / leakage probe OR Phase-5 ML scoping | `data-scientist` — empirical seat (financial-engineer designs → data-scientist evaluates → methodology-scientist ratifies) |
-| New defense flag proposed OR threshold / weight change in `manipulation_index.py` / `earnings_quality.py` OR "validate against literature" OR quarterly cohort audit (next 2026-08-19) | `methodology-scientist` (fable) — new flags also get `test-engineer`; the quarterly audit pairs `defense-layer-auditor` |
-| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" (construct doesn't exist yet) | `financial-engineer` (fable) → `methodology-scientist` ratifies the prior |
-| "tag release" / "cut a release" / "ตัด release" OR phase-epic PR merged | `release-captain` (fable) — owns the release ladder |
+| New defense flag proposed OR threshold / weight change in `manipulation_index.py` / `earnings_quality.py` OR "validate against literature" OR quarterly cohort audit (next 2026-08-19) | `methodology-scientist` (opus) — new flags also get `test-engineer`; the quarterly audit pairs `defense-layer-auditor` |
+| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" (construct doesn't exist yet) | `financial-engineer` (opus) → `methodology-scientist` ratifies the prior |
+| "tag release" / "cut a release" / "ตัด release" OR phase-epic PR merged | `release-captain` (opus) — owns the release ladder |
 | New `claude/*` branch from a handoff · phase / sub-PR complete | `phase-coordinator` Mode A · Mode C (Mode B rides the push gate) |
 | "implement X in compute/" / "build the Y component / route" / cross-layer feature build | `compute-builder` / `frontend-builder` (**write**, disjoint layers) — or propose a **Feature Squad** team ([`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)) |
 
@@ -237,7 +237,7 @@ command needs user authorization. Pattern not in the table → walk the
   examples, not an exhaustive script.
 - **Don't gatekeep sub-agent effort** — no word caps / "≤ N items";
   sonnet tokens drain the under-utilized Sonnet-only pool. Keep the
-  5-fable / 20-sonnet model split and the effort policy (23 of 25 at
+  5-opus / 20-sonnet model split and the effort policy (23 of 25 at
   `effort: max`; the two deterministic script-runners `schema-sentinel`
   + `vercel-preview-auditor` at `high`; a new agent gets `max` unless
   it's a pure mechanical lookup). Rationale + authoring conventions:
@@ -330,6 +330,8 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
 - **Dual-class `shares_outstanding` = SEC company-TOTAL across classes (ASC 260 / RATIFY-B #374); the per-class count lives in `shares_outstanding_listed_class` (display-only)**
 - **edgartools `Company("")` resolves to an ARBITRARY company (no raise) — resolve a real CIK (`snap.cik` → `Company(ticker).cik`) before any history fetch; empty-CIK `fetch_fundamentals` calls also bypass the snapshot parquet cache BOTH ways**
+- **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-24h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
+- **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency signals are NO-OPs; the only safe skip path for stale-but-cached tickers is a filing-date precheck against SEC each run (`_latest_filing_date` in `compute/ingest/fundamentals.py`, #471)**
 - **Backtest PIT data is parquet-gated + graceful — `data/{historical_sector,pit_item402_history}.parquet` (whitelisted past `*.parquet`; regen via `scripts/backfill_{historical_sector,item402_history}.py`) drive `meta.sector_from_today` + `vetoes_replayed`/`not_replayed` DYNAMICALLY; both absent → byte-identical backtest. `meta.validation` = DSR (primary, `n_trials=15`, Φ≥0.95) + PBO (CSCV) + purged-embargo holdout (the ONE `in_sample=false` block). EFTS `_source` keys = `ciks`/`adsh`/`items`, NOT `entity_id`/`file_num`**
 
 ## Phase status
@@ -358,21 +360,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(precache) — Issue #249 Options B+C: Saturday EDGAR pre-cache
-  workflow + cache-restore canary (this PR, 2026-06-12)** — durable fix
-  for the 2026-05-25 P1 (full-cold 5-loop run blew the cron's
-  150-min ceiling). NEW `precache-edgar.yml`: Sat 08:00 UTC +
-  `workflow_dispatch`, no trading-day gate, runs the REAL `compute.main`
-  with ALL loops (no skip vars), discards outputs; restores BOTH bundles
-  with the cron's EXACT keys — fast `cache-v8-fast-<quarter>`
-  exact-hit-skips-save (warm Sat ~free; post-eviction Sat eats the cold
-  rebuild + SAVES so Monday restores warm), slow-text run-id key always
-  saves fresh. Canary (both workflows): post-restore per-layer size /
-  count / age table + `::warning` on empty Form-4 / 10-K-text — warning
-  NOT fail-fast (a cold dispatch is usually an intentional rebuild).
-  Shared `edgar-cache-writers` concurrency group (queue-not-cancel).
-  Guard test now quad-file + slow-text family lockstep pin. Also the
-  Phase-8 prerequisite (S&P 900 pilot warms via this path). Detail:
+- **fix(scoring+ci) — Issue #469: de-sync the 8-K cache cohort + canary
+  TTL-proximity warning (this PR, 2026-06-13)** — root-caused from the
+  2026-06-12 manual cron: the 502-ticker 8-K cache, written in one
+  cold-rebuild burst, crosses its flat 144h (6-day) TTL *simultaneously*
+  → one ~80-min `tier2_wall_clock_seconds` refetch spike (~11s → ~4826s)
+  recomputing identical `gc/nr/ac` flags, recurring every ~6 days. Fix
+  Part 1 (compute): `_cache_read` effective TTL =
+  `EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)` where the
+  jitter ∈ [0, `EDGAR_8K_CACHE_TTL_JITTER_SECONDS`=24h) is a
+  SHA-256-stable per-ticker offset (NOT salted `hash()`), spreading the
+  expiry across a day so refreshes trickle (≤24h added visibility delay,
+  negligible vs the 730d lookback + daily cron). Part 2 (observability,
+  both workflows byte-identical): the post-restore canary now echoes the
+  restored slow-text key + emits `::warning` when the `edgar_8k` layer is
+  within 24h of its TTL, predicting the long pass. 6 jitter unit tests +
+  2 canary guard tests; full scoring+workflow suite 654 passed. De-sync
+  is only fully observable over ~2 cold-rebuild cycles (~1 wk of crons) —
+  watch `tier2_wall_clock_seconds` for the spike's disappearance. Detail:
   PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;

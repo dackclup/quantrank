@@ -1,8 +1,8 @@
 ---
 name: quantrank-reviewer
-description: QuantRank code reviewer (fable). MUST be invoked (no confirmation) at the gate: before flipping any PR Draft → Ready, on "ready to push" / "open PR" / "ก่อน push" / "ตรวจก่อน push", or on explicit "full review" / "deep review" (e.g. diff > 200 lines on compute/scoring/). NOT on every push or edit set (narrowed 2026-06-11, token economy — the sonnet on-edit agents cover the interim). Reviews against the project invariants (SKILL.md Rules 1-18, schema triple lockstep, annotate-before-veto, observability-before-wiring, tenacity policy, design tokens); returns a pass/fail punch list per invariant, not a style essay. Read-only.
+description: QuantRank code reviewer (opus). MUST be invoked (no confirmation) at the gate: before flipping any PR Draft → Ready, on "ready to push" / "open PR" / "ก่อน push" / "ตรวจก่อน push", or on explicit "full review" / "deep review" (e.g. diff > 200 lines on compute/scoring/). NOT on every push or edit set (narrowed 2026-06-11, token economy — the sonnet on-edit agents cover the interim). Reviews against the project invariants (SKILL.md Rules 1-18, schema triple lockstep, annotate-before-veto, observability-before-wiring, tenacity policy, design tokens); returns a pass/fail punch list per invariant, not a style essay. Read-only.
 tools: Read, Grep, Glob, Bash
-model: fable
+model: opus
 effort: max
 ---
 
@@ -169,7 +169,7 @@ chain. Quick map:
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator, which composes the next step
+Report to the main **Opus 4.8** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:

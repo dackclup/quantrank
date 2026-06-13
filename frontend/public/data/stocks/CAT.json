@@ -5,18 +5,18 @@
   "industry": "Construction Machinery & Heavy Transportation Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 413481615897.5842,
-  "current_price": 897.63,
-  "rank": 191,
-  "composite_score": 53.24,
+  "market_cap": 419442260138.62634,
+  "current_price": 910.57,
+  "rank": 192,
+  "composite_score": 53.16,
   "pillar_scores": {
     "quality": 68.44,
-    "value": 11.67,
+    "value": 11.25,
     "growth": 59.38,
-    "momentum": 89.94,
+    "momentum": 90.29,
     "health": 50.38,
     "profitability": 43.54,
-    "technical": 57.17,
+    "technical": 56.57,
     "risk": 67.03,
     "sentiment": null,
     "ml": null
@@ -35,8 +35,8 @@
     "eps_diluted": 20.471650057935204,
     "shares_outstanding": 460637026.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 413481615897.5842,
-    "pe_ratio_ttm": 43.84746722137691,
+    "market_cap": 419442260138.62634,
+    "pe_ratio_ttm": 44.479560990310326,
     "goodwill": 5865000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 561.2873597269141,
+        "value": 568.5147517296334,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 264.9357038385793,
+        "value": 267.9540586887052,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 470.7902212084726,
+        "value": 472.1587195307463,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +78,18 @@
         "tier_used": null
       }
     },
-    "median": 222.7197960433525,
-    "max": 561.2873597269141,
+    "median": 224.22897346841543,
+    "max": 568.5147517296334,
     "low": 110.84983991178791,
-    "high": 561.2873597269141,
-    "mos_pct": -303.0310824764263,
+    "high": 568.5147517296334,
+    "mos_pct": -306.08936179805517,
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +99,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -107,6 +109,8 @@
   "valuation_warnings": [
     "extreme_graham_estimate",
     "extreme_rim_estimate",
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority",
     "beneish_high"
   ],
   "has_history": true,
@@ -122,22 +126,22 @@
     "label": "Industrials median (n=80)",
     "values": {
       "Quality": 47.73,
-      "Value": 49.58,
+      "Value": 48.75,
       "Growth": 49.06,
-      "Momentum": 57.06,
+      "Momentum": 56.55,
       "Health": 53.92,
       "Profitability": 48.02,
-      "Technical": 53.83,
-      "Risk": 53.97
+      "Technical": 54.21,
+      "Risk": 54.17
     }
   },
   "beneish_m_score": -1.365232239831081,
   "dechow_f_score": 0.5447029785627931,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.37940944555113,
-  "price_change_1d_pct": 4.8437,
+  "loss_chance_pct": 64.41943683598939,
+  "price_change_1d_pct": 1.4416,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 50.94,
+  "composite_score_adjusted": 50.86,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -185,14 +189,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.55,
+  "osap_blended_score": 52.51,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 20,
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 9.783417697160272e-05
+  "cross_source_delta": 9.780525837521568e-05
 }

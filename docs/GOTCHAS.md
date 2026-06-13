@@ -398,9 +398,11 @@
 
 - **Subagent model aliases float forward to the LATEST — guard the downgrade
   vector, not the agent files** (`.claude/agents/*.md` + `tools/check_model_pin.py`,
-  2026-05-31). All 25 agents use bare `model: fable` / `model: sonnet` aliases
-  (the 5 judgment-gate agents moved `opus` → `fable` 2026-06-10 when the main
-  session moved to Fable 5; `fable` was added to the guard's allowed set).
+  2026-05-31). All 25 agents use bare `model: opus` / `model: sonnet` aliases
+  (the 5 judgment-gate agents ran on `fable` 2026-06-10 → 2026-06-13 while the
+  main session was on Fable 5, then moved back `fable` → `opus` when the main
+  session returned to Opus 4.8; both `opus` and `fable` stay in the guard's
+  allowed set, so re-introducing either alias never trips the guard).
   Per the Claude Code docs an alias resolves to the newest model in that family
   at runtime and floats forward automatically on a CLI update — so the project is
   "always latest" by design; **never pin a dated/numbered model ID** (e.g.
@@ -1469,3 +1471,54 @@ backtest CAGR as the live product's track record.
     12 thresholds fork from one scoring pass — <2 min added, not a 12×
     rebuild). PBO carries a `config_correlation_note` (the 12 columns
     share thresholds → correlated → a low PBO must not be over-read).
+- **8-K event cache TTL is JITTERED per-ticker — don't flatten it back to a
+  bare constant** (added 2026-06-13, issue #469). `compute/scoring/eight_k_events.py`
+  `_cache_read` compares entry age against
+  `config.EDGAR_8K_CACHE_TTL_SECONDS (144h) + _ttl_jitter_seconds(ticker)`,
+  where `_ttl_jitter_seconds` is a deterministic SHA-256-derived offset in
+  `[0, config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS)` (= 24h). WHY: the 502-ticker
+  8-K cache is written in ONE cold-rebuild burst, so a flat TTL makes the whole
+  cohort expire at the same instant ~6 days later → a single ~80-minute tier2
+  refetch (`tier2_wall_clock_seconds` ~11s → ~4826s) that recomputes byte-identical
+  `gc/nr/ac` flags, recurring every ~6 days. The per-ticker jitter spreads the
+  expiry across a 24h window so refreshes trickle across daily crons. MUST use a
+  process-stable hash (SHA-256) — builtin `hash()` is PYTHONHASHSEED-salted and
+  would re-randomize every run, defeating the de-sync. Trade-off: a brand-new 8-K
+  filing can be seen up to 24h later than a flat TTL would, negligible vs the
+  730-day lookback + daily cadence + rarity of 4.01/4.02 items. The
+  `precache-edgar.yml` + `compute-rankings.yml` canary echoes the restored
+  slow-text key and warns (`::warning`) when the `edgar_8k` layer is within 24h
+  of the TTL, so the long pass is predicted not surprising. Validation note:
+  de-sync is only fully visible on the SECOND cold-rebuild cycle (~1 week of
+  crons) — the first post-deploy cold build still bursts, but its *expiry* is
+  now spread.
+- **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency
+  signals are NO-OPs; the only safe skip path for stale-but-cached tickers is filing-date
+  precheck against SEC each run** (`compute/ingest/fundamentals.py`, PR #471, 2026-06-13).
+  The cron's FAST cache (`compute/cache/fundamentals/*`) uses an EXACT quarter key
+  (`cache-v8-fast-<quarter>`) — `actions/cache` **skips the post-job save** on an
+  exact-key hit (that is the point of a stable quarter key: no churn). Consequence:
+  the fast cache is frozen at whatever was saved at the start of the quarter (the
+  preceding Saturday pre-cache run or the first cold cron of the quarter). Within the
+  quarter, the fast cache is NEVER updated by a normal cron run. Two things follow:
+  (1) **Parquet mtimes are meaningless across cron runs.** A fundamentals parquet
+  written by the pre-cache on Saturday reads the SAME mtime on Monday, Wednesday,
+  and Friday — `os.path.getmtime()`-type freshness checks are NO-OPs as a per-run
+  refetch signal. A Design-C "skip if mtime is recent" gate would silently serve a
+  quarter-old snapshot to any ticker whose filing date moved while the quarter was frozen.
+  (2) **The per-run live refetch of stale-but-cached tickers is LOAD-BEARING for
+  output freshness.** A plain "serve cache if file exists" optimization emits stale
+  output. The ONLY correct way to skip the heavy `Company.get_facts()` companyfacts
+  pull is to re-verify the latest filing date against SEC EACH RUN — which is exactly
+  what `_latest_filing_date(cik)` does (cheap `Company.get_filings("10-K"/"10-Q")`
+  call, reuses the `Company` already built, much lighter than a full companyfacts
+  fetch). If the helper returns `None` OR if a newer filing has appeared since the
+  cached snapshot date, the precheck falls through to the live `_build_snapshot` path
+  — it can never suppress a genuine filing update.
+  **Relevant code**: `compute/ingest/fundamentals.py` `_latest_filing_date()` +
+  `fetch_fundamentals()` "Design B" middle path; `compute/main.py`
+  `fundamentals_filing_precheck_skip_count` reset + log (log-only, no schema field).
+  Performance context: on the 2026-06-12 cron, 84/502 tickers had
+  `fundamentals_latency >= 15s` (p95 = 19.27s, p50 = 0.0s) — the bimodal histogram
+  was the stale-but-cached refetch loop. Design B addresses that tail while keeping
+  the "any uncertainty → live build" invariant.
