@@ -3865,3 +3865,36 @@ schema change; `ruff check .` + `python tools/check_model_pin.py` pass locally
 (guard OK: 5 opus + 20 sonnet, all floating aliases).
 
 ---
+
+## 2026-06-13 — fix(scoring+ci): #469 follow-up — widen 8-K jitter 24h→72h + canary housekeeping
+
+The #469 jitter shipped at 24h; the same-day performance-engineer
+sufficiency analysis proved that insufficient on TWO independent axes:
+(1) **weekday cliff** — the next cohort cliff lands Thu 2026-06-19 22:00
+UTC; the binding cron gap on a weekday is 24h, so W=24h lets ~471/502
+tickers refetch in that single Thursday run = the original ~75-min tier2
+spike, essentially unmitigated (the 24h jitter rescues only ~6%);
+(2) **re-bunching** — per-cycle spread grows as k·W, but the cron cadence
+has a 62h Sat-08:00→Mon-22:00 gap, so any W≤62h lets Monday re-absorb the
+whole cohort (W=24h re-bunches through cycle 2; doesn't escape until
+cycle 3+, slow descent). Fix: `EDGAR_8K_CACHE_TTL_JITTER_SECONDS`
+24h→**72h** (config.py). 72h > the 62h gap → never re-bunches from cycle
+1; the 2026-06-19 cliff → ~157 tickers/+25min instead of 471/+75min; max
+new-8-K visibility delay 72h, negligible vs the 365/730-day 4.01/4.02
+lookback + weekly ranking cadence. Companion: canary TTL-proximity
+threshold 120h→72h (= 144−72) in BOTH byte-identical workflows + warning
+message "within 24h"→"within 72h". Also removed the broken
+`restored slow-text key` canary echo — it referenced
+`steps.restore-slow-text.outputs.cache-matched-key`, an output
+`actions/cache@v5` does NOT expose (only `actions/cache/restore` does) →
+rendered blank in the #249 verification run; the native "Cache restored
+from key:" log line already carries it, so the echo + its
+`test_canary_echoes_restored_slow_text_key` guard + the now-unused
+`id: restore-slow-text` were dropped. Folded in post-merge doc
+housekeeping (Mode C): CLAUDE.md §In-flight rotated off the merged #469
+entry, §Next-deliverables + WORKFLOW.md §Phase-8 checkbox + PHASE_STATUS.md
+mark #249 DONE (#468). Cache family NOT bumped (read-TTL param change,
+existing entries stay valid). **TIME-SENSITIVE: must merge before the Thu
+2026-06-19 22:00 UTC cron** or the spike recurs that night. Verify: ruff
+PASS, scoring+workflow suites green, canary byte-identical.
+---

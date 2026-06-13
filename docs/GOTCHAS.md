@@ -1472,25 +1472,32 @@ backtest CAGR as the live product's track record.
     rebuild). PBO carries a `config_correlation_note` (the 12 columns
     share thresholds → correlated → a low PBO must not be over-read).
 - **8-K event cache TTL is JITTERED per-ticker — don't flatten it back to a
-  bare constant** (added 2026-06-13, issue #469). `compute/scoring/eight_k_events.py`
+  bare constant** (added 2026-06-13, issue #469; window widened 24h→72h same
+  day after the sufficiency analysis). `compute/scoring/eight_k_events.py`
   `_cache_read` compares entry age against
   `config.EDGAR_8K_CACHE_TTL_SECONDS (144h) + _ttl_jitter_seconds(ticker)`,
   where `_ttl_jitter_seconds` is a deterministic SHA-256-derived offset in
-  `[0, config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS)` (= 24h). WHY: the 502-ticker
+  `[0, config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS)` (= **72h**). WHY: the 502-ticker
   8-K cache is written in ONE cold-rebuild burst, so a flat TTL makes the whole
   cohort expire at the same instant ~6 days later → a single ~80-minute tier2
   refetch (`tier2_wall_clock_seconds` ~11s → ~4826s) that recomputes byte-identical
   `gc/nr/ac` flags, recurring every ~6 days. The per-ticker jitter spreads the
-  expiry across a 24h window so refreshes trickle across daily crons. MUST use a
+  expiry across the window so refreshes trickle across daily crons. MUST use a
   process-stable hash (SHA-256) — builtin `hash()` is PYTHONHASHSEED-salted and
-  would re-randomize every run, defeating the de-sync. Trade-off: a brand-new 8-K
-  filing can be seen up to 24h later than a flat TTL would, negligible vs the
-  730-day lookback + daily cadence + rarity of 4.01/4.02 items. The
-  `precache-edgar.yml` + `compute-rankings.yml` canary echoes the restored
-  slow-text key and warns (`::warning`) when the `edgar_8k` layer is within 24h
-  of the TTL, so the long pass is predicted not surprising. Validation note:
-  de-sync is only fully visible on the SECOND cold-rebuild cycle (~1 week of
-  crons) — the first post-deploy cold build still bursts, but its *expiry* is
+  would re-randomize every run, defeating the de-sync. **WHY 72h not 24h** (the
+  original ship): the cron cadence has a 62h Sat-08:00→Mon-22:00 gap, and the
+  per-cycle spread grows as k·W — so any W≤62h lets the Monday run re-absorb the
+  whole cohort (W=24h re-bunches through cycle 2+). Worse, a cliff that lands on a
+  WEEKDAY (binding gap 24h) means W=24h refetches ~all 502 in one run = the
+  original spike, unmitigated (the 2026-06-19 cliff was exactly this). W=72h > the
+  62h gap → never re-bunches from cycle 1; worst weekday run ≈ 24/72×502 ≈ 167
+  tickers (+25min). Trade-off: a brand-new 8-K filing can be seen up to 72h later
+  than a flat TTL, negligible vs the 365/730-day 4.01/4.02 lookback + weekly
+  ranking cadence. The `precache-edgar.yml` + `compute-rankings.yml` canary warns
+  (`::warning`) when the `edgar_8k` layer is within W (now 72h, threshold
+  144−72=72h) of the TTL, so the long pass is predicted not surprising. Validation
+  note: the de-sync is fully visible only on the SECOND cold-rebuild cycle (~1 week
+  of crons) — the first post-deploy cold build still bursts, but its *expiry* is
   now spread.
 - **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency
   signals are NO-OPs; the only safe skip path for stale-but-cached tickers is filing-date
