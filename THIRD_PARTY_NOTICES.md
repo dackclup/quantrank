@@ -391,6 +391,60 @@ network surface. `scripts/live-copy-edit-agent.mjs` also lazily `require()`s
 project's `node_modules`, so that one syntax-validation path degrades gracefully
 to a warning rather than failing (dependency-auditor 2026-06-01).
 
+---
+
+## Wikipedia revision-history data (historical GICS sector provenance)
+
+- **Source**: MediaWiki API revision-history endpoint for the article
+  "List of S&P 500 companies" on English Wikipedia
+  (`https://en.wikipedia.org/w/api.php?action=query&prop=revisions&…`)
+- **Data type**: GICS sector **names only** (e.g. "Information Technology",
+  "Communication Services") — NEVER the proprietary 4-tier MSCI/S&P GICS
+  numeric codes (sector 10, industry group 1010, industry 101010,
+  sub-industry 10101010). The GICS taxonomy numeric codes are licensed
+  separately from MSCI/S&P and are NOT reproduced here; only the freely-
+  observable factual enumeration of classification outcomes is stored.
+- **License**: **CC BY-SA 4.0** — Wikipedia content is published under the
+  Creative Commons Attribution-ShareAlike 4.0 International License.
+  Revision-history API content is CC BY-SA 4.0 by the same license that
+  governs the rendered page content (Wikimedia Terms of Use §7(c)).
+- **Feist basis**: Sector names are factual enumerations of GICS
+  classification decisions — they name which of the 11 standard GICS
+  sectors a company belongs to. Such bare classification outcomes are not
+  protectable expression under *Feist Publications, Inc. v. Rural Telephone
+  Service Co.*, 499 U.S. 340 (1991). The same Feist-1991 legal basis
+  covers the existing ``data/sp500_membership_historical.csv`` (Wikipedia
+  constituent membership — see ``compute/ingest/historical_universe.py``).
+- **Usage**: ``scripts/backfill_historical_sector.py`` fetches one revision
+  per quarterly rebalance date (nearest-prior revision on or before each
+  rebalance date), parses the GICS Sector column via BeautifulSoup/lxml,
+  and writes ``data/historical_sector.parquet``. Only sector and sub-industry
+  **names** are persisted; no Wikipedia prose or company descriptions are
+  stored.
+- **Attribution**: Content is from Wikipedia contributors under CC BY-SA 4.0.
+  Revision timestamps and MediaWiki revision IDs are stored in the parquet
+  for attribution and audit traceability.
+- **Rate limit compliance**: Script enforces ≥ 1 req/s (Wikimedia API
+  etiquette). A descriptive User-Agent is sent with every request per
+  Wikimedia's bot policy.
+- **Consumer**: ``compute/ingest/historical_sector.py`` reads the parquet;
+  ``scripts/backfill_portfolio_pit.py`` uses it to assign PIT GICS sectors
+  at each historical rebalance date rather than assuming today's sector for
+  all rebalances.
+
+### CC BY-SA 4.0 summary
+
+The data is used in accordance with CC BY-SA 4.0: attribution is provided
+(Wikipedia contributors, revision API); the parquet is internal to the
+QuantRank repo (not separately redistributed); if QuantRank ever distributes
+the parquet externally it must do so under CC BY-SA 4.0 or a compatible
+license. The sector names constitute factual data, not creative expression,
+so the Feist-1991 basis and CC BY-SA 4.0 are both satisfied.
+
+Full license text: <https://creativecommons.org/licenses/by-sa/4.0/legalcode>
+
+---
+
 ### Security posture (audited 2026-06-01)
 
 `security-reviewer` verdict **COMMIT-WITH-MITIGATIONS**; `dependency-auditor`
