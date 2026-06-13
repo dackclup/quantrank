@@ -69,6 +69,7 @@ PBO_VETO_THRESHOLD: float = 0.5
 DSR_VETO_THRESHOLD: float = 0.0
 DEFAULT_N_PARTITIONS: int = 16
 ANNUALIZATION_FACTOR_MONTHLY: float = 12.0
+ANNUALIZATION_FACTOR_QUARTERLY: float = 4.0  # quarterly-rebalanced basket (AI-pick backtest)
 ANNUALIZATION_FACTOR_DAILY: float = 252.0
 
 # Beasley-Springer-Moro coefficients (1990) for inverse normal CDF.
@@ -525,6 +526,7 @@ def today_utc_date() -> _date:
 __all__ = [
     "ANNUALIZATION_FACTOR_DAILY",
     "ANNUALIZATION_FACTOR_MONTHLY",
+    "ANNUALIZATION_FACTOR_QUARTERLY",
     "DEFAULT_N_PARTITIONS",
     "DSR_VETO_THRESHOLD",
     "DSRResult",

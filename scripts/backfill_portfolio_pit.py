@@ -67,12 +67,7 @@ from compute.ingest.fundamentals import FundamentalsSnapshot, fetch_fundamentals
 from compute.ingest.historical_universe import _ACTION_REMOVE, list_known_events, members_at
 from compute.ingest.prices import fetch_prices
 from compute.ingest.universe import get_sp500_constituents
-
-# Reuse the LIVE cross-sectional valuation-input builders (private, but pure) so the
-# PIT proxy's MoS/recommendation match the forward rule exactly. Importing them keeps
-# compute/main.py untouched for PR-1 (methodology-scientist: no live main.py change
-# until PR-3); a future refactor could extract them to a shared module.
-from compute.main import (
+from compute.main import (  # noqa: E402 — live cross-section builders reused; see PR-1 note
     _build_historical_metrics,
     _build_peer_groupings,
     _build_universe_metrics,
@@ -104,6 +99,10 @@ from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.restatement_filings import fetch_amendments
 from compute.scoring.risk_overlay import compute_risk_flags
+from compute.validation.basket_rule_validation import (
+    BASKET_RULE_N_TRIALS,
+    compute_basket_rule_validation,
+)
 from compute.valuation.ensemble import compute_fair_price_ensemble
 
 logger = logging.getLogger(__name__)
@@ -321,8 +320,7 @@ DISCLAIMER_BASE = (
     "available in the loaded PIT data — so a name that filed an Item 4.02 in the "
     "trailing year at a historical rebalance will appear in this backtest un-vetoed. "
     "Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but "
-    "are gross of additional market-impact slippage; per McLean-Pontiff (2016) "
-    "published-factor edges decay ~32% post-publication. "
+    "are gross of additional market-impact slippage. "
     "The adaptive AI-pick book sizes itself each rebalance: it holds ALL "
     "high-conviction picks with composite score >= 65 (no ceiling), with a floor of "
     "5 names, so holding count varies by quarter (uncap ratified 2026-06-11 — "
@@ -332,7 +330,17 @@ DISCLAIMER_BASE = (
     "rebalance triggers reopening, registered #130; forward acceptance gates "
     "pre-registered). Incumbents are retained while scoring "
     ">= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is "
-    "a turnover/implementation-cost device — no performance claims)."
+    "a turnover/implementation-cost device — no performance claims). "
+    "SELECTION FOOTPRINT: the adaptive rule's thresholds (composite_min=65 / "
+    "hold_band=55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on the same 40-leg "
+    "window shown as the track record; the adaptive book's lead over the best fixed-N "
+    "basket is approximately +127.7pp (~16% of total return) and is a tuning artifact "
+    "until confirmed on a fresh out-of-sample window. "
+    "McLean-Pontiff (2016) is cited for decay of PUBLISHED factors; this rule was "
+    "never published, so the relevant haircut is the out-of-sample decay term plus the "
+    "in-sample-selection penalty above, not the ~32% post-publication figure. "
+    "The Deflated Sharpe Ratio (n_trials=15, quarterly) is the primary inferential "
+    "gate; the DSR result is stored in meta.validation on the next artifact rerun."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -476,31 +484,53 @@ def _resolve_cik_for_removed_ticker(ticker: str) -> str | None:
 def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
     """Result-dependent honesty sentence appended to the disclaimer.
 
-    States how the DEFAULT-count NET line actually did vs SPY in-sample, computed from
-    the produced NAV so the disclaimer can never claim a win the chart contradicts
-    (methodology-scientist 2026-06-05). Falls back to a generic caveat if either series
-    is unavailable.
+    States how the ADAPTIVE NET line (the actual headline series) actually did vs SPY
+    in-sample, computed from the produced NAV so the disclaimer can never claim a win
+    the chart contradicts (methodology-scientist 2026-06-05). Falls back to the
+    default-count line when the adaptive series is unavailable, then to a generic
+    caveat. The clause MUST describe the SAME series as the headline number — the
+    adaptive series IS the home-page hero, so the honesty sentence must match it.
     """
-    series = nav.get("by_count", {}).get(str(DEFAULT_COUNT), {})
-    net = series.get("net") or []
+    # Primary: describe the ADAPTIVE series (the home-page headline).
+    adaptive_net: list = nav.get("adaptive", {}).get("net") or []
     spy = nav.get("benchmark", {}).get("spy") or []
-    p = next((v for v in reversed(net) if v is not None), None)
+    p_adp = next((v for v in reversed(adaptive_net) if v is not None), None)
     s = next((v for v in reversed(spy) if v is not None), None)
-    if p is None or s is None:
+
+    if p_adp is not None and s is not None:
+        verb = "underperformed" if p_adp < s - 0.5 else "outperformed" if p_adp > s + 0.5 else "tracked"
         return (
-            " Past performance, even favorable, does not predict future results; read the"
-            " full holding-count ladder, not any single line."
+            f" In this {start.year}-{end.year} sample the adaptive AI-pick net"
+            f" line {verb} the S&P 500 ({p_adp:.0f} vs {s:.0f}, both rebased to 100 at"
+            f" the start). The adaptive rule's thresholds were selected IN-SAMPLE on this"
+            f" same window — the out-of-sample edge is unknown until confirmed on a fresh"
+            f" window not used during threshold selection. A factor-tilted,"
+            f" sector-CONCENTRATED book (no per-sector cap) carries higher single-sector"
+            f" risk and can diverge from a cap-weighted index, in either direction, for"
+            f" long stretches. Any in-sample edge is concentration- and regime-driven —"
+            f" past performance, even favorable, does not predict future results."
         )
-    verb = "underperformed" if p < s - 0.5 else "outperformed" if p > s + 0.5 else "tracked"
+
+    # Fallback: use the default-count line when adaptive is unavailable.
+    series = nav.get("by_count", {}).get(str(DEFAULT_COUNT), {})
+    net_fallback: list = series.get("net") or []
+    p_fallback = next((v for v in reversed(net_fallback) if v is not None), None)
+    if p_fallback is not None and s is not None:
+        verb = "underperformed" if p_fallback < s - 0.5 else "outperformed" if p_fallback > s + 0.5 else "tracked"
+        return (
+            f" In this {start.year}-{end.year} sample the default {DEFAULT_COUNT}-holding net"
+            f" line {verb} the S&P 500 ({p_fallback:.0f} vs {s:.0f}, both rebased to 100 at the start):"
+            f" a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many"
+            f" names in one sector) carries higher single-sector risk and can diverge from a"
+            f" cap-weighted index, in either direction, for long stretches. Any in-sample edge"
+            f" is concentration- and regime-driven —"
+            f" past performance, even favorable, does not predict future results; read the full"
+            f" 1-{MAX_PICKS} holding-count ladder, not any single line."
+        )
+
     return (
-        f" In this {start.year}-{end.year} sample the default {DEFAULT_COUNT}-holding net"
-        f" line {verb} the S&P 500 ({p:.0f} vs {s:.0f}, both rebased to 100 at the start):"
-        f" a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many"
-        f" names in one sector) carries higher single-sector risk and can diverge from a"
-        f" cap-weighted index, in either direction, for long stretches. Any in-sample edge"
-        f" is concentration- and regime-driven, not a free lunch (McLean-Pontiff 2016) —"
-        f" past performance, even favorable, does not predict future results; read the full"
-        f" 1-{MAX_PICKS} holding-count ladder, not any single line."
+        " Past performance, even favorable, does not predict future results; read the"
+        " full holding-count ladder, not any single line."
     )
 
 
@@ -1326,10 +1356,34 @@ def run_backfill(
         "rebalances": rebalances_out,
         "nav": nav,
     }
+
+    # Phase-A OOS-validation: compute DSR + walk-forward stability on the PRODUCED
+    # artifact (no network calls, no artifact regeneration). Emit as meta.validation
+    # so future artifact consumers see the inferential gate result inline.
+    # Graceful-degradation: a failure here (e.g. degenerate NAV) logs a warning and
+    # leaves meta.validation = None rather than killing the backfill (Rule 18).
+    validation_block: dict | None = None
+    try:
+        validation_block = compute_basket_rule_validation(
+            payload, n_trials=BASKET_RULE_N_TRIALS
+        )
+    except Exception as _val_exc:  # noqa: BLE001 — validation failure never kills the backfill
+        logger.warning(
+            "backfill: compute_basket_rule_validation failed: %s — meta.validation will be null",
+            _val_exc,
+        )
+    payload["meta"]["validation"] = validation_block
+
     out = write_backtest_pit_json(payload, data_dir)
     logger.info(
-        "backfill wrote %s — %d rebalances, %d incomplete-membership legs, restatement %.1f%%",
-        out, len(rebalances_out), incomplete_membership, restate_pct or 0.0,
+        "backfill wrote %s — %d rebalances, %d incomplete-membership legs, restatement %.1f%%, "
+        "validation dsr=%.4f phi=%.6f",
+        out,
+        len(rebalances_out),
+        incomplete_membership,
+        restate_pct or 0.0,
+        validation_block.get("dsr", float("nan")) if validation_block else float("nan"),
+        validation_block.get("dsr_confidence_phi", float("nan")) if validation_block else float("nan"),
     )
     return out
 
