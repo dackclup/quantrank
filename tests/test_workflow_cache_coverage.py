@@ -387,6 +387,63 @@ def test_canary_step_identical_in_both_workflows() -> None:
     )
 
 
+def test_canary_emits_edgar_8k_ttl_warning() -> None:
+    """The canary step emits the Issue #469 edgar_8k TTL-proximity warning in
+    BOTH workflows.
+
+    WHY: the byte-equality test above only guarantees the two canary steps
+    AGREE — it would stay green if a future refactor dropped the TTL warning
+    from BOTH files simultaneously.  This positive teeth-check asserts the
+    warning is actually PRESENT, so the #469 observability can't silently
+    regress on both sides at once.
+
+    Pinned surface: the ``::warning::edgar_8k cache within 24h of its 144h
+    TTL`` literal (the predicted-long-tier2 signal) lives inside the canary
+    step of each cache-warming workflow.
+    """
+    warning_literal = "::warning::edgar_8k cache within 24h of its 144h TTL"
+    for workflow in _CACHE_WARMING_WORKFLOWS:
+        canary = _extract_canary_block(_workflow_text(workflow))
+        assert warning_literal in canary, (
+            f"{workflow} canary step is missing the Issue #469 edgar_8k "
+            f"TTL-proximity warning. Expected the literal "
+            f"{warning_literal!r} inside the canary block (it warns when the "
+            f"edgar_8k layer's newest file is within 24h of its 144h TTL so the "
+            f"~80-min tier2 refetch is predicted, not surprising)."
+        )
+
+
+def test_canary_echoes_restored_slow_text_key() -> None:
+    """The slow-text restore step carries the ``restore-slow-text`` id and the
+    canary echoes its matched key — wired identically in BOTH workflows
+    (Issue #469).
+
+    WHY: the restored-key echo (``cache-matched-key``) only resolves if the
+    referenced step ``id:`` exists.  Asserting BOTH the ``id: restore-slow-text``
+    on the slow-text cache step AND the ``${{ steps.restore-slow-text.outputs
+    .cache-matched-key }}`` reference in the canary keeps the two halves of the
+    wiring from drifting apart (e.g. someone renaming the id but not the
+    reference, which would silently echo an empty string).  The byte-identical
+    canary guard covers the echo line itself; this test covers the OUT-of-canary
+    half (the step id) that the byte-equality test does not see.
+    """
+    id_decl = "id: restore-slow-text"
+    key_ref = "${{ steps.restore-slow-text.outputs.cache-matched-key }}"
+    for workflow in _CACHE_WARMING_WORKFLOWS:
+        text = _workflow_text(workflow)
+        assert id_decl in text, (
+            f"{workflow} is missing ``{id_decl}`` on the slow-text restore step "
+            f"— the canary's restored-key echo references this id, so without it "
+            f"``cache-matched-key`` resolves to empty. Keep the id IDENTICAL in "
+            f"both cache-warming workflows."
+        )
+        assert key_ref in text, (
+            f"{workflow} is missing the restored-key echo reference "
+            f"``{key_ref}`` — it must reference the slow-text restore step id "
+            f"identically in both workflows."
+        )
+
+
 def _first_diff(a: str, b: str) -> str:
     """Return a short diagnostic string showing the first differing line."""
     a_lines = a.splitlines()

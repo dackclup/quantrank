@@ -3674,3 +3674,46 @@ input for Phase-8 S&P-400 warming — separate PR on the pilot's timeline.
 This workflow is also the **Phase 8 prerequisite** (#249 listed as the
 hard gate before the S&P 900 pilot).
 ---
+
+## 2026-06-13 — fix(scoring+ci): Issue #469 — de-sync the 8-K cache cohort + canary TTL-proximity warning
+
+Root-caused from the 2026-06-12 manual cron dispatch (forensics, run
+27413437138): `tier2_wall_clock_seconds = 4826` (~80 min) vs the ~11s
+warm baseline. The 502-ticker 8-K cache, written in ONE cold-rebuild
+burst (~June 6), crosses its flat 144h (6-day) TTL *simultaneously* — so
+one tier2 pass straddling the cliff refetches all 502 tickers live,
+recomputing byte-identical `gc=5/nr=1/ac=9` flags. Recurs every ~6 days
+(next ~June 18). No infra fault — the #468 canary actually reported the
+143h cache age that closed the case.
+
+**Part 1 (compute)** — `compute/scoring/eight_k_events.py` `_cache_read`
+effective TTL = `EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`;
+new pure helper `_ttl_jitter_seconds(ticker) -> int` returns a
+SHA-256-stable offset in `[0, EDGAR_8K_CACHE_TTL_JITTER_SECONDS)` (new
+config constant = 24h). MUST be SHA-256, not builtin `hash()`
+(PYTHONHASHSEED-salted → would re-randomize per process and defeat the
+de-sync). Only the TTL comparison line changes; event-detection,
+730-day lookback, warm-hit no-restamp, and cache write are untouched —
+zero scoring-output change. 6 unit tests (determinism, [0,24h) bounds,
+≥10-distinct-bucket non-degenerate spread, effective-TTL widening both
+sides of the cliff, zero-window guard); pre-existing `test_B3` margin
+widened from `+100s` to `+JITTER_WINDOW+100s` (ticker-agnostic).
+
+**Part 2 (observability, both workflows byte-identical)** — the
+post-restore canary in `compute-rankings.yml` + `precache-edgar.yml` now
+(a) echoes the restored slow-text key via a new `id: restore-slow-text`
+on the slow-text restore step (identical in both files →
+`steps.restore-slow-text.outputs.cache-matched-key`), and (b) emits
+`::warning::edgar_8k cache within 24h of its 144h TTL ... (~80 min); see
+#469` when the `edgar_8k` newest-file age > 120h (pure shell, warning
+only, can't fail the job). 2 new guard tests
+(`test_canary_emits_edgar_8k_ttl_warning` +
+`test_canary_echoes_restored_slow_text_key`); the existing canary
+byte-equality test stays green (28→ tests pass).
+
+**Verify**: ruff whole-repo PASS · scoring + workflow suites 654 passed ·
+schema triple untouched. **Honest caveat**: de-sync is only fully
+observable over ~2 cold-rebuild cycles (~1 week of crons) — single-cron
+confirmation can't prove it; watch `tier2_wall_clock_seconds` for the
+spike's disappearance across consecutive weeks.
+---

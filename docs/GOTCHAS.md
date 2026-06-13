@@ -1418,3 +1418,25 @@ backtest CAGR as the live product's track record.
   production path is unaffected (universe.py supplies real CIKs). Guard
   idea for the Phase-8 pilot PR: assert non-empty CIK at the
   `_build_annual_history` boundary.
+
+- **8-K event cache TTL is JITTERED per-ticker — don't flatten it back to a
+  bare constant** (added 2026-06-13, issue #469). `compute/scoring/eight_k_events.py`
+  `_cache_read` compares entry age against
+  `config.EDGAR_8K_CACHE_TTL_SECONDS (144h) + _ttl_jitter_seconds(ticker)`,
+  where `_ttl_jitter_seconds` is a deterministic SHA-256-derived offset in
+  `[0, config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS)` (= 24h). WHY: the 502-ticker
+  8-K cache is written in ONE cold-rebuild burst, so a flat TTL makes the whole
+  cohort expire at the same instant ~6 days later → a single ~80-minute tier2
+  refetch (`tier2_wall_clock_seconds` ~11s → ~4826s) that recomputes byte-identical
+  `gc/nr/ac` flags, recurring every ~6 days. The per-ticker jitter spreads the
+  expiry across a 24h window so refreshes trickle across daily crons. MUST use a
+  process-stable hash (SHA-256) — builtin `hash()` is PYTHONHASHSEED-salted and
+  would re-randomize every run, defeating the de-sync. Trade-off: a brand-new 8-K
+  filing can be seen up to 24h later than a flat TTL would, negligible vs the
+  730-day lookback + daily cadence + rarity of 4.01/4.02 items. The
+  `precache-edgar.yml` + `compute-rankings.yml` canary echoes the restored
+  slow-text key and warns (`::warning`) when the `edgar_8k` layer is within 24h
+  of the TTL, so the long pass is predicted not surprising. Validation note:
+  de-sync is only fully visible on the SECOND cold-rebuild cycle (~1 week of
+  crons) — the first post-deploy cold build still bursts, but its *expiry* is
+  now spread.

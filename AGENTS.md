@@ -79,6 +79,9 @@ compute/                          # Python compute pipeline (read/write OK)
 │   ├── pillars.py · composite.py · risk_overlay.py
 │   ├── tier2.py                  # Tier-2 events orchestrator
 │   └── eight_k_events.py · going_concern.py · beneish.py · dechow_f.py
+│                                 #   (8-K cache TTL is per-ticker JITTERED
+│                                 #   to de-sync the cohort cliff — see
+│                                 #   CLAUDE.md §Gotchas + docs/GOTCHAS.md #469)
 ├── features/                     # Factor signals (OSAP / Qlib / IPCA …)
 ├── valuation/                    # 6-method fair-price ensemble + Tier-1 defenses
 │   ├── ensemble.py · dcf.py · rim.py · graham.py · multiples.py · tangible_book.py
