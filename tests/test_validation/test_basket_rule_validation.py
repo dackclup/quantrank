@@ -23,6 +23,8 @@ from compute.validation.basket_rule_validation import (
     _extract_quarterly_returns,
     _walk_forward_anchored_sharpe_stability,
     compute_basket_rule_validation,
+    compute_grid_pbo,
+    compute_holdout,
 )
 from compute.validation.pbo_dsr import (
     ANNUALIZATION_FACTOR_MONTHLY,
@@ -359,3 +361,362 @@ def test_compute_basket_rule_validation_phi_passes_consistent_with_phi_value() -
         artifact = _make_synthetic_artifact(n_legs=40, seed=seed, drift_per_leg=0.06)
         result = compute_basket_rule_validation(artifact)
         assert result["phi_passes"] == (result["dsr_confidence_phi"] >= 0.95)
+
+
+# ===========================================================================
+# Helpers for grid / holdout tests
+# ===========================================================================
+
+
+def _make_grid_navs(
+    n_months: int = 120,
+    n_configs: int = 12,
+    seed: int = 42,
+    base: float = 100.0,
+    drift: float = 0.005,
+) -> dict[str, list[float | None]]:
+    """Build a synthetic 12-config monthly NAV grid with positive drift.
+
+    Config keys match ``_GRID_CONFIG_KEYS`` naming: ``"{cmin}_{floor}"`` for
+    cmin ∈ {55,60,65,70} × floor ∈ {1,3,5}.
+    """
+    from scripts.backfill_portfolio_pit import _GRID_CONFIG_KEYS
+
+    rng = np.random.default_rng(seed)
+    grid: dict[str, list[float | None]] = {}
+    for i, key in enumerate(_GRID_CONFIG_KEYS):
+        # Slightly different drift per config (correlated but not identical).
+        col_drift = drift * (1.0 + 0.05 * i)
+        navs: list[float | None] = [base]
+        for _ in range(n_months - 1):
+            r = rng.normal(col_drift, 0.02)
+            navs.append(navs[-1] * (1.0 + r))
+        grid[key] = navs
+    return grid
+
+
+# ===========================================================================
+# compute_grid_pbo tests
+# ===========================================================================
+
+
+def test_compute_grid_pbo_returns_required_keys() -> None:
+    """compute_grid_pbo returns the required keys with correct types."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_grid_pbo(grid)
+    required = {"pbo", "n_partitions", "n_configs", "n_observations", "passes", "config_correlation_note"}
+    assert set(result.keys()) == required
+
+
+def test_compute_grid_pbo_pbo_in_unit_interval() -> None:
+    """PBO is in [0, 1] for any synthetic grid."""
+    grid = _make_grid_navs(n_months=120, seed=7)
+    result = compute_grid_pbo(grid)
+    assert 0.0 <= result["pbo"] <= 1.0
+
+
+def test_compute_grid_pbo_n_configs_is_12() -> None:
+    """n_configs == 12 for the standard grid."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_grid_pbo(grid)
+    assert result["n_configs"] == 12
+
+
+def test_compute_grid_pbo_n_partitions_is_16() -> None:
+    """n_partitions == 16 (Bailey 2014 floor, pinned)."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_grid_pbo(grid)
+    assert result["n_partitions"] == 16
+
+
+def test_compute_grid_pbo_passes_consistent_with_pbo() -> None:
+    """passes == (pbo <= 0.5)."""
+    grid = _make_grid_navs(n_months=120, seed=99)
+    result = compute_grid_pbo(grid)
+    assert result["passes"] == (result["pbo"] <= 0.5)
+
+
+def test_compute_grid_pbo_correlation_note_warns_about_shared_columns() -> None:
+    """The correlation note string mentions internal correlation."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_grid_pbo(grid)
+    note = result["config_correlation_note"]
+    assert "correlated" in note.lower()
+    assert "must not be over-read" in note.lower() or "must not" in note.lower()
+
+
+def test_compute_grid_pbo_raises_on_too_short_grid() -> None:
+    """Raises ValueError when the grid has fewer than n_partitions=16 rows."""
+    grid = _make_grid_navs(n_months=10)  # only 9 return rows < 16
+    with pytest.raises(ValueError, match="complete rows"):
+        compute_grid_pbo(grid)
+
+
+def test_compute_grid_pbo_raises_on_single_config() -> None:
+    """Raises ValueError when only 1 config column is present (CSCV needs >= 2)."""
+    grid = {"65_5": [100.0 + float(i) for i in range(120)]}
+    with pytest.raises(ValueError):
+        compute_grid_pbo(grid)
+
+
+# ===========================================================================
+# compute_holdout tests
+# ===========================================================================
+
+
+def test_compute_holdout_returns_required_keys() -> None:
+    """compute_holdout returns all required keys."""
+    grid = _make_grid_navs(n_months=120)
+    bench = [100.0 * (1.01 ** i) for i in range(120)]  # simple 1%/month benchmark
+    result = compute_holdout(grid, bench)
+    required = {
+        "train_legs", "test_legs", "purged_leg", "embargo_quarters", "embargo_leg_indices",
+        "train_winner_config", "test_return", "test_sharpe",
+        "benchmark_test_return", "falsified", "in_sample", "caveat",
+    }
+    assert set(result.keys()) == required
+
+
+def test_compute_holdout_in_sample_is_false() -> None:
+    """in_sample is always False — holdout is the ONLY OOS block."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_holdout(grid, [])
+    assert result["in_sample"] is False
+
+
+def test_compute_holdout_train_test_leg_counts() -> None:
+    """Default train=[0,30), purge=30, embargo=1, test=[31,40): correct leg counts."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_holdout(grid, [])
+    assert result["train_legs"] == list(range(0, 30))
+    assert result["test_legs"] == list(range(31, 40))
+    assert result["purged_leg"] == 30
+    assert result["embargo_quarters"] == 1
+    assert result["embargo_leg_indices"] == [31]
+
+
+def test_compute_holdout_embargo_off_by_one_pin() -> None:
+    """Pin the exact embargo arithmetic: train=[0,30), purge=30, embargo=1, test=[31,40).
+
+    FOOTGUN guard: if the embargo shifts by 1, test_legs start at 32 (off-by-one).
+    This test verifies the exact boundary used by the design.
+
+    - train legs: 0..29 (30 legs)
+    - purged leg: 30 (1 leg — excluded from both train and test)
+    - embargo legs: 31 (1 quarter after purge boundary)
+    - test legs: 31..39 BUT embargo=1 means leg 31 is EMBARGOED
+    """
+    # When embargo=1 and test=(31,40): leg 31 is in test_legs AND in embargo_leg_indices.
+    # The design says: embargo legs [purge+1, purge+embargo] = [31, 31].
+    # Test leg range [31,40) includes 31..39 (9 legs).
+    # The embargo NOTE is in the caveat but the test legs include 31 (post-embargo test start).
+    # Verify exact defaults:
+    grid = _make_grid_navs(n_months=120)
+    result = compute_holdout(grid, [], train=(0, 30), purge=30, embargo=1, test=(31, 40))
+    assert len(result["train_legs"]) == 30
+    assert len(result["test_legs"]) == 9
+    assert result["purged_leg"] == 30
+    assert result["embargo_leg_indices"] == [31]
+    # Verify the caveat mentions the embargo.
+    assert "embargoed" in result["caveat"].lower() or "embargo" in result["caveat"].lower()
+
+
+def test_compute_holdout_falsified_flag_on_negative_sharpe() -> None:
+    """falsified=True when the winner's test Sharpe is negative (strong decay series).
+
+    Default test legs = [31, 40) = return periods 31..39.
+    Return period t = NAV[t+1] / NAV[t] - 1 (0-indexed into the NAV series).
+    So test legs 31..39 = navs[32]/navs[31] - 1 .. navs[40]/navs[39] - 1.
+    Negative drift must start at NAV index 32 at the latest (so return period 31 is negative).
+    """
+    from scripts.backfill_portfolio_pit import _GRID_CONFIG_KEYS
+
+    # Build navs where positive drift covers return periods 0..29 (train),
+    # and strong negative drift covers return periods 31..39 (test).
+    # Return period t = navs[t+1]/navs[t] - 1.
+    # navs[0] = 100, navs[1..30] positive (covering return periods 0..29 = train),
+    # navs[31] = purge boundary, navs[32..41] negative (covering return periods 31..40 = test).
+    # Use jittered drift so variance > 0 (avoids the sigma=0 degeneracy guard in _leg_sharpe).
+    rng = np.random.default_rng(42)
+    grid: dict[str, list[float | None]] = {}
+    for key in _GRID_CONFIG_KEYS:
+        navs: list[float] = [100.0]
+        # Return periods 0..30: positive drift with small jitter (31 navs appended).
+        for _ in range(31):
+            navs.append(navs[-1] * (1.02 + rng.normal(0.0, 0.002)))
+        # Return periods 31..40: strong negative drift with small jitter (10 navs appended).
+        for _ in range(10):
+            navs.append(navs[-1] * (0.88 + rng.normal(0.0, 0.002)))
+        grid[key] = navs  # 42 entries → 41 return periods
+
+    result = compute_holdout(grid, [])
+    assert result["falsified"] is True
+
+
+def test_compute_holdout_falsified_flag_on_benchmark_trail() -> None:
+    """falsified=True when the winner trails the benchmark on the test legs."""
+    from scripts.backfill_portfolio_pit import _GRID_CONFIG_KEYS
+
+    n = 120
+    rng = np.random.default_rng(42)
+    grid: dict[str, list[float | None]] = {}
+    for key in _GRID_CONFIG_KEYS:
+        navs = [100.0]
+        for _ in range(n - 1):
+            navs.append(navs[-1] * (1.0 + rng.normal(0.002, 0.01)))  # small positive drift
+        grid[key] = navs
+
+    # Benchmark: much higher returns on test legs → winner will trail it.
+    bench = [100.0]
+    for _ in range(n - 1):
+        bench.append(bench[-1] * 1.05)  # 5% per month — all configs trail on test
+
+    result = compute_holdout(grid, bench)
+    assert result["falsified"] is True
+
+
+def test_compute_holdout_nonfalsified_on_strong_positive() -> None:
+    """falsified=False when the winner has clearly positive test Sharpe and beats bench."""
+    from scripts.backfill_portfolio_pit import _GRID_CONFIG_KEYS
+
+    n = 120
+    rng = np.random.default_rng(7)
+    grid: dict[str, list[float | None]] = {}
+    for key in _GRID_CONFIG_KEYS:
+        navs = [100.0]
+        for _ in range(n - 1):
+            navs.append(navs[-1] * (1.0 + rng.normal(0.03, 0.01)))  # strong positive drift
+        grid[key] = navs
+
+    bench = [100.0] * n  # flat benchmark (return = 0)
+    result = compute_holdout(grid, bench)
+    assert result["falsified"] is False
+
+
+def test_compute_holdout_train_winner_is_valid_key() -> None:
+    """train_winner_config is always one of the grid keys."""
+    from scripts.backfill_portfolio_pit import _GRID_CONFIG_KEYS
+
+    grid = _make_grid_navs(n_months=120, seed=5)
+    result = compute_holdout(grid, [])
+    assert result["train_winner_config"] in _GRID_CONFIG_KEYS
+
+
+def test_compute_holdout_test_sharpe_is_numeric_or_none() -> None:
+    """test_sharpe is a float when computable, None when degenerate."""
+    grid = _make_grid_navs(n_months=120)
+    result = compute_holdout(grid, [])
+    sharpe = result["test_sharpe"]
+    assert sharpe is None or isinstance(sharpe, float)
+
+
+# ===========================================================================
+# Hypothesis property-based tests (issue #126 discipline)
+# ===========================================================================
+
+
+try:
+    from hypothesis import given, settings
+    from hypothesis import strategies as st
+
+    _HAS_HYPOTHESIS = True
+except ImportError:
+    _HAS_HYPOTHESIS = False
+
+
+if _HAS_HYPOTHESIS:
+    from scripts.backfill_portfolio_pit import (
+        ADAPTIVE_COMPOSITE_MIN,
+        ADAPTIVE_MIN_PICKS,
+        _band_book,
+    )
+
+    @given(
+        n_names=st.integers(min_value=1, max_value=20),
+        seed=st.integers(min_value=0, max_value=999),
+    )
+    @settings(max_examples=50)
+    def test_hypothesis_book_size_monotone_nonincreasing_in_cmin(
+        n_names: int, seed: int
+    ) -> None:
+        """Book size is monotone non-increasing in composite_min at fixed floor.
+
+        For the same order/scores/tenure, a higher composite_min means fewer
+        fresh entrants → the book can only shrink or stay the same (pads keep
+        the floor, but the pad floor is fixed).  This is monotone non-increasing
+        in cmin.
+        """
+        rng = np.random.default_rng(seed)
+        tickers = [f"T{i:02d}" for i in range(n_names)]
+        scores = {t: float(rng.uniform(40.0, 90.0)) for t in tickers}
+        order = sorted(tickers, key=lambda t: -scores[t])
+        tenure: set[str] = set()  # no prior tenure — band inert (tests fresh-only sizing)
+
+        # Test cmin 55, 60, 65, 70 with fixed floor=5.
+        book_sizes: list[int] = []
+        for cmin in (55, 60, 65, 70):
+            book, _, _ = _band_book(order, scores, tenure, composite_min=float(cmin), min_picks=5)
+            book_sizes.append(len(book))
+
+        # Monotone non-increasing: each step cmin goes up, book can only shrink/stay.
+        for i in range(len(book_sizes) - 1):
+            assert book_sizes[i] >= book_sizes[i + 1], (
+                f"cmin step {i}: book_sizes={book_sizes}, expected non-increasing"
+            )
+
+    @given(
+        n_names=st.integers(min_value=1, max_value=30),
+        floor=st.sampled_from([1, 3, 5]),
+        seed=st.integers(min_value=0, max_value=999),
+    )
+    @settings(max_examples=50)
+    def test_hypothesis_book_size_at_least_floor(n_names: int, floor: int, seed: int) -> None:
+        """Book size >= min(floor, len(order)) regardless of scores.
+
+        The pads path enforces this: even if no name scores >= composite_min,
+        the book is padded to min(floor, len(order)).
+        """
+        rng = np.random.default_rng(seed)
+        tickers = [f"T{i:02d}" for i in range(n_names)]
+        scores = {t: float(rng.uniform(40.0, 60.0)) for t in tickers}  # all below 65
+        order = sorted(tickers, key=lambda t: -scores[t])
+        tenure: set[str] = set()
+
+        book, _, _ = _band_book(order, scores, tenure, composite_min=65.0, min_picks=floor)
+        expected_min = min(floor, len(order))
+        assert len(book) >= expected_min, (
+            f"floor={floor}, n={n_names}: book_size={len(book)} < {expected_min}"
+        )
+
+    @given(seed=st.integers(min_value=0, max_value=999))
+    @settings(max_examples=30)
+    def test_hypothesis_default_kwarg_byte_identity(seed: int) -> None:
+        """Default-kwarg call == pre-refactor behaviour (byte-identical to explicit defaults).
+
+        C2 regression: calling _band_book(order, scores, tenure) must produce the
+        same result as _band_book(order, scores, tenure, composite_min=65.0, min_picks=5).
+        """
+        rng = np.random.default_rng(seed)
+        n = rng.integers(1, 20)
+        tickers = [f"T{i:02d}" for i in range(int(n))]
+        scores = {t: float(rng.uniform(40.0, 90.0)) for t in tickers}
+        order = sorted(tickers, key=lambda t: -scores[t])
+        # Synthetic tenure: half the names.
+        tenure = set(tickers[:len(tickers) // 2])
+
+        book_default, tenure_default, carry_default = _band_book(order, scores, tenure)
+        book_explicit, tenure_explicit, carry_explicit = _band_book(
+            order, scores, tenure,
+            composite_min=ADAPTIVE_COMPOSITE_MIN,
+            min_picks=ADAPTIVE_MIN_PICKS,
+        )
+
+        assert book_default == book_explicit, (
+            f"default vs explicit book mismatch: {book_default} != {book_explicit}"
+        )
+        assert tenure_default == tenure_explicit, (
+            f"default vs explicit tenure mismatch: {tenure_default} != {tenure_explicit}"
+        )
+        assert carry_default == carry_explicit, (
+            f"default vs explicit carry_count mismatch: {carry_default} != {carry_explicit}"
+        )

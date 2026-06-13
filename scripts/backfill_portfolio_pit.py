@@ -102,6 +102,8 @@ from compute.scoring.risk_overlay import compute_risk_flags
 from compute.validation.basket_rule_validation import (
     BASKET_RULE_N_TRIALS,
     compute_basket_rule_validation,
+    compute_grid_pbo,
+    compute_holdout,
 )
 from compute.valuation.ensemble import compute_fair_price_ensemble
 
@@ -257,6 +259,19 @@ ADAPTIVE_HOLD_BAND_MIN: float = 55.0
 # Prior artifacts (veto_layer_replayed=False) carry the plain "phase3-effective-weights"
 # version so callers can distinguish the two datasets unambiguously.
 RULE_VERSION = "phase3-effective-weights+veto-replay+hold-band-55+uncapped"
+
+# 12-config grid for the score-once-apply-many validation.
+#
+# Design (ratified): at each rebalance T the composite cross-section is computed ONCE
+# (config-independent). The 12 configs ONLY differ in how ``_band_book`` selects from
+# that cross-section (composite_min threshold + min_picks floor). Threading separate
+# tenure sets per config prevents the FOOTGUN of leaking carry-state across configs:
+# a name tenured under cmin=55 MUST NOT pollute cmin=70's tenure (they are independent
+# hysteresis rules with different entry thresholds). Each config key is ``f"{cmin}_{floor}"``.
+_GRID_CONFIGS: list[tuple[int, int]] = [
+    (cmin, floor) for cmin in (55, 60, 65, 70) for floor in (1, 3, 5)
+]
+_GRID_CONFIG_KEYS: list[str] = [f"{cmin}_{floor}" for cmin, floor in _GRID_CONFIGS]
 
 # methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
 # ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
@@ -590,17 +605,22 @@ def _sector_weights_by_count(
     return out
 
 
-def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[int, int]:
+def _adaptive_count(
+    scores: list[float],
+    available_counts: list[int],
+    composite_min: float = ADAPTIVE_COMPOSITE_MIN,
+    min_picks: int = ADAPTIVE_MIN_PICKS,
+) -> tuple[int, int]:
     """``(raw, final)`` adaptive-book counts for one rebalance.
 
-    ``raw`` = #{score >= ADAPTIVE_COMPOSITE_MIN} in the FULL deduped eligible pool
+    ``raw`` = #{score >= composite_min} in the FULL deduped eligible pool
     (all scores passed in, INCLUSIVE boundary — a pick scoring exactly 65.0 is in
-    the book). Post-uncap (2026-06-11), ``scores`` covers the full ``full_order``
-    list (not just ``picks[:MAX_PICKS]``), so ``raw`` is the uncensored pool size.
-    The A1/A2/A2-S acceptance gates read this raw count.
+    the book at the default threshold). Post-uncap (2026-06-11), ``scores`` covers
+    the full ``full_order`` list (not just ``picks[:MAX_PICKS]``), so ``raw`` is the
+    uncensored pool size. The A1/A2/A2-S acceptance gates read this raw count.
 
     ``final`` (LEGACY / analytics only) = raw floored at
-    ``min(ADAPTIVE_MIN_PICKS, len(scores))``, then clamped to the largest available
+    ``min(min_picks, len(scores))``, then clamped to the largest available
     weights count <= it — falling back to the smallest available when none is (the
     sigma-coverage degradation path; gate A1 monitors the final count for exactly
     this reason). ``final`` keys into ``weights_by_count`` for the per-count ladder
@@ -608,9 +628,13 @@ def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[i
     it is NOT the authoritative book size. ``band_held_count`` is the authoritative
     band-book size (uncapped). C2 test pin:
     tests/test_portfolio/test_backfill_integration.py.
+
+    Default values (``composite_min=ADAPTIVE_COMPOSITE_MIN``,
+    ``min_picks=ADAPTIVE_MIN_PICKS``) make every existing call site byte-identical
+    to the pre-refactor behaviour — the 12-config grid passes explicit overrides.
     """
-    raw = sum(1 for s in scores if s >= ADAPTIVE_COMPOSITE_MIN)
-    final = max(raw, min(ADAPTIVE_MIN_PICKS, len(scores)))
+    raw = sum(1 for s in scores if s >= composite_min)
+    final = max(raw, min(min_picks, len(scores)))
     avail = sorted(available_counts)
     if avail:
         final = max((c for c in avail if c <= final), default=avail[0])
@@ -621,6 +645,8 @@ def _band_book(
     order: list[str],
     scores: dict[str, float],
     tenure: set[str],
+    composite_min: float = ADAPTIVE_COMPOSITE_MIN,
+    min_picks: int = ADAPTIVE_MIN_PICKS,
 ) -> tuple[list[str], set[str], int]:
     """Pure hysteresis-hold-band book builder (C2 unit-testability gate).
 
@@ -629,34 +655,39 @@ def _band_book(
     the uncapped ``select_picks(count=None)`` call), and the band book may grow
     beyond MAX_PICKS when many incumbents score >= 65 or there are many fresh
     entrants. Cap removed per the 2026-06-11 uncap ratification; floor logic
-    unchanged: pads to ``min(ADAPTIVE_MIN_PICKS, len(order))``.
+    unchanged: pads to ``min(min_picks, len(order))``.
 
-    ``order``   — HC-eligible tickers sorted composite-desc (output of
-                  ``select_picks(count=None)``; the caller's HC gate is the sole
-                  eligibility filter — ``_band_book`` does not re-check veto flags).
-    ``scores``  — composite score for each ticker (at minimum covers every ticker
-                  in ``order``; extra keys are silently ignored).
-    ``tenure``  — set of tickers that entered the book via >= ``ADAPTIVE_COMPOSITE_MIN``
-                  in a prior rebalance; empty on the first rebalance (band inert).
+    ``order``        — HC-eligible tickers sorted composite-desc (output of
+                       ``select_picks(count=None)``; the caller's HC gate is the sole
+                       eligibility filter — ``_band_book`` does not re-check veto flags).
+    ``scores``       — composite score for each ticker (at minimum covers every ticker
+                       in ``order``; extra keys are silently ignored).
+    ``tenure``       — set of tickers that entered the book via >= ``composite_min``
+                       in a prior rebalance; empty on the first rebalance (band inert).
+    ``composite_min`` — entry threshold (default ADAPTIVE_COMPOSITE_MIN = 65.0). The
+                       12-config grid passes explicit overrides; existing callers that
+                       omit this argument are BYTE-IDENTICAL to the pre-refactor behaviour.
+    ``min_picks``    — floor on book size (default ADAPTIVE_MIN_PICKS = 5). Same
+                       byte-identity guarantee for existing callers.
 
     Returns ``(book, next_tenure, carry_count)`` where:
       ``book``        — ordered list of selected tickers (composite-desc, alpha-asc tiebreak);
       ``next_tenure`` — tenure set to carry forward (= set(core), pads excluded — C0);
-      ``carry_count`` — # tenured names retained via the band (score in [55, 65));
+      ``carry_count`` — # tenured names retained via the band (score in [55, composite_min));
                         first rebalance always returns 0.
 
     Semantics (C0 strict tenure):
       carries  = tenured ∩ eligible with composite >= ``ADAPTIVE_HOLD_BAND_MIN``
-                 (55 <= score; the >= 65 entry requirement was met in a prior rebalance).
-      fresh    = eligible with composite >= ``ADAPTIVE_COMPOSITE_MIN`` (>= 65)
+                 (55 <= score; the >= composite_min entry requirement was met in a prior rebalance).
+      fresh    = eligible with composite >= ``composite_min``
                  that are NOT already counted as carries.
       core     = sorted(carries ∪ fresh) by (-composite, ticker).
                  (NO MAX_PICKS cap — uncapped per 2026-06-11 ratification.)
       pads     = top non-core eligible names to reach
-                 ``min(ADAPTIVE_MIN_PICKS, len(order))``; pads get NO tenure.
+                 ``min(min_picks, len(order))``; pads get NO tenure.
       book     = sorted(core + pads) by (-composite, ticker).
       next_tenure = set(core) (not pads — C0).
-      carry_count = #{t in core : t in tenure AND score < ADAPTIVE_COMPOSITE_MIN}
+      carry_count = #{t in core : t in tenure AND score < composite_min}
                     i.e. names held via the band (not fresh entrants).
     """
     eligible_set = set(order)  # HC-eligible this rebalance (already filtered by caller)
@@ -671,7 +702,7 @@ def _band_book(
     carry_set = set(carries)
     fresh: list[str] = [
         t for t in order
-        if t not in carry_set and scores.get(t, 0.0) >= ADAPTIVE_COMPOSITE_MIN
+        if t not in carry_set and scores.get(t, 0.0) >= composite_min
     ]
 
     # Core: union of carries + fresh, sorted by (-score, ticker).
@@ -683,8 +714,8 @@ def _band_book(
     )
     core_set = set(core)
 
-    # Pads: top non-core eligible names to reach ADAPTIVE_MIN_PICKS (or available count).
-    target = min(ADAPTIVE_MIN_PICKS, len(order))
+    # Pads: top non-core eligible names to reach min_picks (or available count).
+    target = min(min_picks, len(order))
     pads: list[str] = []
     if len(core) < target:
         for t in order:
@@ -703,10 +734,10 @@ def _band_book(
     next_tenure: set[str] = core_set
 
     # Carry count: core names that are tenured AND score < entry threshold (the band is
-    # the reason they are in the book — fresh entrants >= 65 are NOT carry-band names).
+    # the reason they are in the book — fresh entrants >= composite_min are NOT carry-band names).
     carry_count: int = sum(
         1 for t in core
-        if t in tenure and scores.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
+        if t in tenure and scores.get(t, 0.0) < composite_min
     )
 
     return book, next_tenure, carry_count
@@ -844,6 +875,15 @@ def run_backfill(
     # C0 tenure set: names that entered the book via composite >= ADAPTIVE_COMPOSITE_MIN;
     # carries forward across rebalances; empty = band inert on first rebalance.
     band_tenure: set[str] = set()
+
+    # 12-config grid: per-config band legs (for monthly NAV assembly) and tenure state.
+    # FOOTGUN GUARD: each config needs its OWN tenure set — sharing would couple
+    # hysteresis across configs with different composite_min thresholds (e.g. a name
+    # tenured at cmin=55 silently leaking into cmin=70's carry set).  NEVER alias.
+    # Initialised as dict-of-list (band legs) + dict-of-set (tenure per config).
+    grid_legs: dict[str, list[tuple[str, dict[str, float]]]] = {k: [] for k in _GRID_CONFIG_KEYS}
+    grid_tenure: dict[str, set[str]] = {k: set() for k in _GRID_CONFIG_KEYS}
+
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
@@ -1179,6 +1219,47 @@ def run_backfill(
         if band_weights_map:
             band_legs_for_nav.append((T_iso, band_weights_map))
 
+        # 12-config grid fork: each config calls _band_book with its own (cmin, floor)
+        # and its OWN tenure set — NEVER share tenure across configs.
+        # scores_this and full_order are already computed; sigmas coverage from the
+        # product band_book pass above is REUSED (no price re-walk per config).
+        for g_key, (g_cmin, g_floor) in zip(_GRID_CONFIG_KEYS, _GRID_CONFIGS, strict=True):
+            g_prior_tenure = grid_tenure[g_key]
+            g_book, g_next_tenure, _ = _band_book(
+                full_order, scores_this, g_prior_tenure,
+                composite_min=float(g_cmin), min_picks=g_floor,
+            )
+            grid_tenure[g_key] = g_next_tenure  # thread tenure forward (per-config isolation)
+            # Sigma coverage for grid members: reuse sigmas dict (already covers full_order
+            # + product band_book); extend for any grid-only members the product missed.
+            for t in g_book:
+                if t in sigmas or t not in prices_by_ticker:
+                    continue
+                closes_t = prices_by_ticker[t].loc[:T_ts]
+                col_t = "Adj Close" if "Adj Close" in closes_t.columns else "Close"
+                sig_t = trailing_return_sigma(closes_t[col_t].tolist())
+                if sig_t is not None:
+                    sigmas[t] = sig_t
+            g_sigmas = {t: sigmas[t] for t in g_book if t in sigmas}
+            g_weights = inverse_vol_weights(g_sigmas) if g_sigmas else {}
+            if g_weights:
+                grid_legs[g_key].append((T_iso, g_weights))
+                logger.debug(
+                    "backfill: grid config %s emitted %d/%d legs (T=%s, book_size=%d)",
+                    g_key,
+                    len(grid_legs[g_key]),
+                    # expected_leg_count is only known at assembly; log partial count here
+                    len(rebalance_picks),
+                    T_iso,
+                    len(g_book),
+                )
+            else:
+                logger.info(
+                    "backfill: grid config %s leg %s — no usable sigmas, leg dropped"
+                    " (book_size=%d, all uncomputable)",
+                    g_key, T_iso, len(g_book),
+                )
+
         # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
         # these names can surface once the user slides the count up. A name whose
         # amendment fetch failed is "unresolved" (counted separately), not at-risk.
@@ -1268,7 +1349,9 @@ def run_backfill(
             }
         )
 
-    nav = _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav)
+    nav, _grid_monthly_by_config, _grid_month_labels, _grid_aligned_net, _grid_diagnostics = (
+        _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav, grid_legs)
+    )
 
     restate_pct = (
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
@@ -1372,6 +1455,55 @@ def run_backfill(
             "backfill: compute_basket_rule_validation failed: %s — meta.validation will be null",
             _val_exc,
         )
+
+    # 12-config grid diagnostics, PBO, and purged-embargo holdout.
+    # These are DIAGNOSTIC / ANNOTATE-ONLY blocks — they do NOT change selection, ranking,
+    # or nav.adaptive. Graceful-degradation: each sub-block fails independently and leaves
+    # its key = None rather than killing the backfill (Rule 18 / SKILL.md Rule 16).
+    grid_block: dict | None = None
+    grid_pbo_block: dict | None = None
+    grid_holdout_block: dict | None = None
+
+    if _grid_month_labels and _grid_aligned_net:
+        try:
+            # Compact grid artifact: one shared month-label list + per-config net arrays.
+            # ~10 KB for ~118 months × 12 configs; daily series discarded.
+            grid_block = {
+                "configs": _GRID_CONFIG_KEYS,
+                "freq": "monthly",
+                "dates": _grid_month_labels,
+                "net": {k: _grid_aligned_net[k] for k in _GRID_CONFIG_KEYS if k in _grid_aligned_net},
+            }
+        except Exception as _ge:  # noqa: BLE001
+            logger.warning("backfill: grid block assembly failed: %s", _ge)
+
+        try:
+            grid_pbo_block = compute_grid_pbo(_grid_aligned_net)
+        except Exception as _pbo_exc:  # noqa: BLE001
+            logger.warning("backfill: compute_grid_pbo failed: %s — pbo block will be null", _pbo_exc)
+
+        try:
+            # Extract the benchmark monthly series for the holdout (use SPY if available).
+            _bench_series = nav.get("benchmark", {}).get("spy", [])
+            _bench_dates = nav.get("dates", [])
+            _bench_monthly: list[float | None] = []
+            if _bench_series and _bench_dates:
+                _, _bench_monthly_vals = _snap_monthly_nav(_bench_series, _bench_dates)
+                _bench_monthly = _bench_monthly_vals
+            grid_holdout_block = compute_holdout(
+                _grid_aligned_net,
+                _bench_monthly,
+            )
+        except Exception as _ho_exc:  # noqa: BLE001
+            logger.warning(
+                "backfill: compute_holdout failed: %s — holdout block will be null", _ho_exc
+            )
+
+    if validation_block is not None:
+        validation_block["grid"] = grid_block
+        validation_block["pbo"] = grid_pbo_block
+        validation_block["holdout"] = grid_holdout_block
+        validation_block["grid_diagnostics"] = _grid_diagnostics if _grid_diagnostics else None
     payload["meta"]["validation"] = validation_block
 
     out = write_backtest_pit_json(payload, data_dir)
@@ -1398,45 +1530,38 @@ def _snap_to_trading_day(date_iso: str, dates: list[str]) -> str | None:
     return dates[i] if i < len(dates) else dates[-1]
 
 
-def _assemble_nav(
+def _build_price_panel(
     rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]],
     prices_by_ticker: dict[str, pd.DataFrame],
-    data_dir: Path,
-    band_legs: list[tuple[str, dict[str, float]]] | None = None,
-) -> dict:
-    """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
+    extra_leg_sets: list[list[tuple[str, dict[str, float]]]] | None = None,
+) -> tuple[dict[str, dict[str, float]], list[str], list[str]]:
+    """Build the shared price panel used by both the product NAV path and the grid path.
 
-    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
-    For each count N the matching per-rebalance weight maps become one daily NAV series
-    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are
-    shared across all counts (same trading calendar, same rebased index lines).
+    Extracts adjusted-close time series from ``prices_by_ticker`` for every ticker
+    that appears in ``rebalance_picks`` OR any of ``extra_leg_sets`` (e.g. the 12
+    grid leg lists), starting from the first rebalance date. Returns:
 
-    ``band_legs`` is ``[(as_of_date, {ticker: weight})]`` — the V55 hysteresis band book
-    weights for each rebalance. When provided, the ``"adaptive"`` NAV entry is built from
-    these band legs (the ratified product adaptive series); otherwise falls back to the
-    old prefix-based ``weights_by_count[n_adaptive]`` path (backward-compatible for tests
-    that omit the argument). Same inner shape as a by_count entry; left-padded with None
-    when a leg is missing — same contract as by_count.
+    ``(closes, dates, axis)``
+      closes — ``{ticker: {date_iso: close}}`` sparse dict
+      dates  — sorted list of all trading-day ISO strings in the panel
+      axis   — dates from the first snapped rebalance onward (the NAV time axis)
+
+    Computing the panel ONCE and passing it to both ``_assemble_nav`` and
+    ``_assemble_grid_navs`` avoids re-walking the (potentially large) price
+    DataFrames 12 additional times per call.
     """
-    empty = {
-        "dates": [],
-        "benchmark": {},
-        "by_count": {},
-        "adaptive": {},
-        "default_count": DEFAULT_COUNT,
+    all_held: set[str] = {
+        t for _, wbc, _ in rebalance_picks for wmap in wbc.values() for t in wmap
     }
-    if not rebalance_picks:
-        return empty
+    for leg_list in (extra_leg_sets or []):
+        for _, wmap in leg_list:
+            all_held.update(wmap)
 
-    # Collect all tickers from both prefix-count legs AND band legs so their price
-    # series are loaded once; band tickers may not be in the prefix-count universe
-    # when the band book diverges from the simple prefix.
-    held = sorted(
-        {t for _, wbc, _ in rebalance_picks for wmap in wbc.values() for t in wmap}
-        | {t for _, wmap in (band_legs or []) for t in wmap}
-    )
+    held = sorted(all_held)
+    if not held or not rebalance_picks:
+        return {}, [], []
+
     start_ts = pd.Timestamp(rebalance_picks[0][0])
-
     closes: dict[str, dict[str, float]] = {}
     all_dates: set[str] = set()
     for t in held:
@@ -1456,16 +1581,212 @@ def _assemble_nav(
 
     dates = sorted(all_dates)
     if not dates:
-        return empty
+        return {}, [], []
 
-    # Snap each calendar rebalance (quarter-end + 45d — may land on a weekend) to the
-    # first trading day on/after it, so every leg fires on a real price date. The axis
-    # = every trading day from the earliest snapped rebalance; each count's NAV is a
-    # suffix of it, so a count first selectable at a LATER rebalance is left-padded with
-    # None (the same gap contract the benchmark line uses). In a full-universe run every
-    # count is present from the first rebalance and no padding occurs.
     global_start = _snap_to_trading_day(rebalance_picks[0][0], dates)
     axis = [d for d in dates if d >= global_start]
+    return closes, dates, axis
+
+
+def _snap_monthly_nav(
+    daily_net: list[float | None],
+    daily_dates: list[str],
+) -> tuple[list[str], list[float | None]]:
+    """Resample a daily NAV series to month-end (last trading day <= calendar month-end).
+
+    Uses an on-or-before discipline (mirrors ``basket_rule_validation._snap_to_trading_day``
+    and ``_extract_quarterly_returns`` boundary semantics) — NO look-ahead.
+
+    Parameters
+    ----------
+    daily_net:
+        Daily net NAV values aligned to ``daily_dates``.  May contain leading ``None``
+        (padding from the left-pad contract in ``by_count`` / ``adaptive``).
+    daily_dates:
+        ISO ``YYYY-MM-DD`` strings, sorted ascending.
+
+    Returns
+    -------
+    (month_labels, month_values)
+        ``month_labels`` — one ISO label per month-end (e.g. ``"2016-08"``)
+        ``month_values`` — last non-None NAV on or before that calendar month-end
+    """
+    if not daily_dates or not daily_net:
+        return [], []
+
+    # Build (year, month) -> last valid (date, value) mapping.
+    month_map: dict[tuple[int, int], tuple[str, float]] = {}
+    for d_iso, v in zip(daily_dates, daily_net, strict=False):
+        if v is None:
+            continue
+        year, month = int(d_iso[:4]), int(d_iso[5:7])
+        # Keep the latest date within the month (dates are sorted so this is always
+        # an overwrite in forward order — the final overwrite wins).
+        month_map[(year, month)] = (d_iso, float(v))
+
+    if not month_map:
+        return [], []
+
+    month_labels: list[str] = []
+    month_values: list[float | None] = []
+    for (yr, mo), (_d, val) in sorted(month_map.items()):
+        month_labels.append(f"{yr:04d}-{mo:02d}")
+        month_values.append(val)
+
+    return month_labels, month_values
+
+
+def _assemble_grid_navs(
+    grid_legs: dict[str, list[tuple[str, dict[str, float]]]],
+    closes: dict[str, dict[str, float]],
+    dates: list[str],
+    axis: list[str],
+    expected_leg_count: int,
+) -> tuple[dict[str, dict], dict[str, list[str]], dict[str, list[float | None]], dict]:
+    """Build monthly net NAV for each of the 12 grid configs from the shared price panel.
+
+    The daily series is computed via ``build_portfolio_nav`` over the shared panel
+    (no price re-walk), then resampled to MONTHLY via ``_snap_monthly_nav`` (last
+    trading day <= calendar month-end, no look-ahead). The daily series is DISCARDED;
+    only monthly data is persisted in the output.
+
+    Returns
+    -------
+    (monthly_by_config, all_month_labels, monthly_net_by_config, grid_diagnostics)
+      monthly_by_config     — ``{key: {net: [...], gross: [...]}}`` (monthly, compact)
+      all_month_labels      — union of all month labels (typically ~118 months)
+      monthly_net_by_config — ``{key: [float|None]}`` aligned to all_month_labels
+      grid_diagnostics      — observability block (per-config leg counts, etc.)
+    """
+    per_config_leg_counts: dict[str, int] = {}
+    configs_with_dropped_legs: list[str] = []
+    monthly_by_config: dict[str, dict] = {}
+    monthly_net_only: dict[str, list[float | None]] = {}
+    all_month_label_set: set[str] = set()
+
+    for g_key, legs in grid_legs.items():
+        n_legs = len(legs)
+        per_config_leg_counts[g_key] = n_legs
+        if n_legs < expected_leg_count:
+            configs_with_dropped_legs.append(g_key)
+
+        if not legs or not dates:
+            monthly_by_config[g_key] = {"net": [], "gross": []}
+            monthly_net_only[g_key] = []
+            continue
+
+        # Build daily NAV over the shared panel (no re-walk of prices_by_ticker).
+        snapped_legs = [
+            (snapped, wmap)
+            for d, wmap in legs
+            if (snapped := _snap_to_trading_day(d, dates)) is not None
+        ]
+        if not snapped_legs:
+            monthly_by_config[g_key] = {"net": [], "gross": []}
+            monthly_net_only[g_key] = []
+            continue
+
+        gn = build_portfolio_nav(dates, closes, snapped_legs)
+
+        # Resample to monthly — discard daily, persist only month-end values.
+        # The NAV from build_portfolio_nav starts at the first snapped leg date,
+        # but the axis may have a prefix of None-padded dates if other configs start
+        # later. Align to axis before resampling.
+        pad_n = len(axis) - len(gn["dates"])
+        padded_net: list[float | None] = [None] * pad_n + gn["net"]
+        padded_gross: list[float | None] = [None] * pad_n + gn["gross"]
+
+        m_labels_net, m_vals_net = _snap_monthly_nav(padded_net, axis)
+        m_labels_gross, m_vals_gross = _snap_monthly_nav(padded_gross, axis)
+
+        all_month_label_set.update(m_labels_net)
+        monthly_by_config[g_key] = {
+            "net": m_vals_net,
+            "gross": m_vals_gross,
+            "month_labels": m_labels_net,
+        }
+        monthly_net_only[g_key] = m_vals_net
+
+    # Align all configs to the UNION of month labels (some configs may start later
+    # if their first leg was dropped; None-pad the prefix for those).
+    all_month_labels: list[str] = sorted(all_month_label_set)
+
+    aligned_net: dict[str, list[float | None]] = {}
+    for g_key, m_net in monthly_net_only.items():
+        cfg_labels = monthly_by_config[g_key].get("month_labels", [])
+        if not cfg_labels or not all_month_labels:
+            aligned_net[g_key] = [None] * len(all_month_labels)
+            continue
+        label_to_val: dict[str, float | None] = dict(zip(cfg_labels, m_net, strict=False))
+        aligned_net[g_key] = [label_to_val.get(lbl) for lbl in all_month_labels]
+
+    grid_diagnostics: dict = {
+        "per_config_leg_counts": per_config_leg_counts,
+        "configs_with_dropped_legs": configs_with_dropped_legs,
+        "min_leg_count": min(per_config_leg_counts.values()) if per_config_leg_counts else 0,
+        "expected_leg_count": expected_leg_count,
+    }
+
+    return monthly_by_config, all_month_labels, aligned_net, grid_diagnostics
+
+
+def _assemble_nav(
+    rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]],
+    prices_by_ticker: dict[str, pd.DataFrame],
+    data_dir: Path,
+    band_legs: list[tuple[str, dict[str, float]]] | None = None,
+    grid_legs: dict[str, list[tuple[str, dict[str, float]]]] | None = None,
+) -> tuple[dict, dict[str, dict], list[str], dict[str, list[float | None]], dict]:
+    """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
+    Also computes monthly grid NAVs for the 12-config grid if ``grid_legs`` is provided.
+
+    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
+    For each count N the matching per-rebalance weight maps become one daily NAV series
+    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are
+    shared across all counts (same trading calendar, same rebased index lines).
+
+    ``band_legs`` is ``[(as_of_date, {ticker: weight})]`` — the V55 hysteresis band book
+    weights for each rebalance. When provided, the ``"adaptive"`` NAV entry is built from
+    these band legs (the ratified product adaptive series); otherwise falls back to the
+    old prefix-based ``weights_by_count[n_adaptive]`` path (backward-compatible for tests
+    that omit the argument). Same inner shape as a by_count entry; left-padded with None
+    when a leg is missing — same contract as by_count.
+
+    ``grid_legs`` is the 12-config band legs dict from the backfill loop. When provided,
+    ``_assemble_grid_navs`` is called on the SHARED price panel (no re-walk).
+
+    Returns
+    -------
+    (nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics)
+        nav               — the product NAV dict (``dates``, ``by_count``, ``adaptive``,
+                           ``benchmark``, ``default_count``)
+        monthly_by_config — ``{key: {net, gross, month_labels}}`` for each grid config
+        all_month_labels  — union of month label strings (~118 entries)
+        aligned_net       — ``{key: [float|None]}`` aligned to ``all_month_labels``
+        grid_diagnostics  — observability block from ``_assemble_grid_navs``
+
+    Backward-compat note: callers that do not use the grid return value (``_assemble_nav``
+    called without ``grid_legs``) receive empty dicts/lists for the grid outputs.
+    """
+    empty_nav = {
+        "dates": [],
+        "benchmark": {},
+        "by_count": {},
+        "adaptive": {},
+        "default_count": DEFAULT_COUNT,
+    }
+    empty_grid: tuple = ({}, [], {}, {})
+    if not rebalance_picks:
+        return empty_nav, *empty_grid
+
+    # Build the shared price panel ONCE — used for both product NAV and grid NAVs.
+    closes, dates, axis = _build_price_panel(
+        rebalance_picks,
+        prices_by_ticker,
+        extra_leg_sets=list(grid_legs.values()) if grid_legs else None,
+    )
+    if not dates:
+        return empty_nav, *empty_grid
 
     by_count: dict[str, dict] = {}
     for n in range(1, MAX_PICKS + 1):
@@ -1519,13 +1840,26 @@ def _assemble_nav(
             "turnover_by_rebalance": gn_adp["turnover_by_rebalance"],
         }
 
-    return {
+    nav = {
         "dates": axis,
         "benchmark": _benchmark_navs(axis, data_dir),
         "by_count": by_count,
         "adaptive": adaptive,
         "default_count": DEFAULT_COUNT,
     }
+
+    # 12-config grid NAVs — computed over the SHARED panel (no re-walk).
+    monthly_by_config: dict[str, dict] = {}
+    all_month_labels: list[str] = []
+    aligned_net: dict[str, list[float | None]] = {}
+    grid_diagnostics: dict = {}
+    if grid_legs:
+        expected_legs = len(rebalance_picks)
+        monthly_by_config, all_month_labels, aligned_net, grid_diagnostics = _assemble_grid_navs(
+            grid_legs, closes, dates, axis, expected_leg_count=expected_legs
+        )
+
+    return nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics
 
 
 def _benchmark_navs(portfolio_dates: list[str], data_dir: Path) -> dict[str, list]:

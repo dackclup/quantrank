@@ -56,7 +56,11 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pandas as pd
 
-from compute.validation.pbo_dsr import ANNUALIZATION_FACTOR_QUARTERLY, compute_deflated_sharpe
+from compute.validation.pbo_dsr import (
+    ANNUALIZATION_FACTOR_QUARTERLY,
+    compute_deflated_sharpe,
+    compute_pbo,
+)
 
 if TYPE_CHECKING:
     pass
@@ -385,7 +389,278 @@ def compute_basket_rule_validation(
     }
 
 
+def compute_grid_pbo(monthly_grid: dict[str, list[float | None]]) -> dict:
+    """Compute PBO over the 12-config monthly net-NAV grid.
+
+    Builds the T × 12 returns matrix from the aligned monthly NAV columns, then
+    calls :func:`compute.validation.pbo_dsr.compute_pbo` AS-IS with
+    ``n_partitions=16`` (Bailey 2014 floor for stable estimates).
+
+    Parameters
+    ----------
+    monthly_grid:
+        ``{config_key: [float|None]}`` — 12 aligned monthly net-NAV columns (all
+        the same length, None where a config had no valid leg that month).
+
+    Returns
+    -------
+    dict with keys:
+        ``pbo`` — probability of backtest overfitting in [0, 1].
+        ``n_partitions`` — always 16.
+        ``n_configs`` — number of strategy columns (should be 12).
+        ``n_observations`` — usable row count after truncation.
+        ``passes`` — True when pbo <= 0.5 (Bailey 2014 veto threshold).
+        ``config_correlation_note`` — caveat string about column correlation.
+
+    Raises
+    ------
+    ValueError
+        When the matrix is too small (< n_partitions rows or < 2 columns) or all
+        columns are None-only. The caller in ``run_backfill`` catches this and
+        leaves the block as None (Rule 18 graceful-degradation).
+    """
+    n_partitions = 16
+
+    # Build returns matrix: T×12, dropping rows with ANY None (need complete rows for PBO).
+    keys = list(monthly_grid.keys())
+    if len(keys) < 2:
+        raise ValueError(f"compute_grid_pbo: need >= 2 config columns, got {len(keys)}")
+
+    # Collect all columns as a 2-D list (rows = month index, cols = configs).
+    # Convert NAV series to returns: r[t] = nav[t] / nav[t-1] - 1.
+    nav_cols: list[list[float | None]] = [monthly_grid[k] for k in keys]
+    n_months = max(len(col) for col in nav_cols)
+    if n_months < 2:
+        raise ValueError(f"compute_grid_pbo: need >= 2 monthly observations, got {n_months}")
+
+    # Convert NAV → returns (monthly). A None in any column → row excluded.
+    # Return matrix rows = month t=1..T-1, returns[t] = nav[t] / nav[t-1] - 1.
+    returns_rows: list[list[float]] = []
+    for t in range(1, n_months):
+        row: list[float] = []
+        complete = True
+        for col in nav_cols:
+            prev = col[t - 1] if t - 1 < len(col) else None
+            curr = col[t] if t < len(col) else None
+            if prev is None or curr is None or prev <= 0:
+                complete = False
+                break
+            row.append(curr / prev - 1.0)
+        if complete:
+            returns_rows.append(row)
+
+    if len(returns_rows) < n_partitions:
+        raise ValueError(
+            f"compute_grid_pbo: need >= {n_partitions} complete rows, "
+            f"got {len(returns_rows)} (monthly_grid has {n_months} months, "
+            f"{n_months - len(returns_rows)} rows excluded due to None values)"
+        )
+
+    matrix = pd.DataFrame(returns_rows, columns=keys)
+    pbo_result = compute_pbo(matrix, n_partitions=n_partitions)
+
+    return {
+        "pbo": round(float(pbo_result.pbo), 8),
+        "n_partitions": n_partitions,
+        "n_configs": len(keys),
+        "n_observations": int(pbo_result.n_observations),
+        "passes": bool(pbo_result.passes()),
+        "config_correlation_note": (
+            "The 12 configs share composite_min ∈ {55,60,65,70} × floor ∈ {1,3,5}. "
+            "Columns are INTERNALLY CORRELATED: configs with similar thresholds "
+            "(e.g. 65_1, 65_3, 65_5) select overlapping books and will have correlated "
+            "return series. The CSCV PBO assumes independent strategies — a low PBO "
+            "from near-duplicate columns over-states independence and MUST NOT be "
+            "over-read as strong evidence. Treat the PBO as a structural-correlation "
+            "diagnostic, not a standalone inferential gate."
+        ),
+    }
+
+
+def compute_holdout(
+    grid: dict[str, list[float | None]],
+    benchmark: list[float | None],
+    *,
+    train: tuple[int, int] = (0, 30),
+    purge: int = 30,
+    embargo: int = 1,
+    test: tuple[int, int] = (31, 40),
+) -> dict:
+    """Purged-embargo holdout: train-sweep Sharpe → pick winner → evaluate on test legs.
+
+    Parameters
+    ----------
+    grid:
+        ``{config_key: [float|None]}`` aligned monthly NAV columns (same length).
+        Returns are derived as (nav[t] / nav[t-1]) - 1.
+    benchmark:
+        Monthly benchmark NAV column (SPY), same length as grid columns. None-safe.
+    train:
+        ``(start_leg, end_leg)`` — EXCLUSIVE end; uses legs ``[start_leg, end_leg)``.
+        Default = (0, 30): first 30 legs.
+    purge:
+        Index of the leg to purge (excluded from both train and test). Default = 30.
+    embargo:
+        Number of legs after the purge boundary to exclude from the test set.
+        Default = 1: leg 31 is the embargo leg, excluded from test.
+        FOOTGUN guard: train ends at leg ``purge - 1`` (inclusive), purge leg is
+        excluded, embargo legs ``[purge+1, purge+embargo]`` are excluded, test
+        starts at ``purge + embargo + 1`` = leg 31.
+    test:
+        ``(start_leg, end_leg)`` — EXCLUSIVE end; uses legs ``[start_leg, end_leg)``.
+        Default = (31, 40): last 9 legs.
+
+    Returns
+    -------
+    dict with keys:
+        ``train_legs`` — indices used for training (list of ints).
+        ``test_legs`` — indices used for testing (list of ints).
+        ``purged_leg`` — the purged leg index.
+        ``embargo_quarters`` — number of embargo legs.
+        ``train_winner_config`` — config key with highest train-set Sharpe.
+        ``test_return`` — cumulative return on test set for the winner config.
+        ``test_sharpe`` — annualized Sharpe (ANNUALIZATION_FACTOR_QUARTERLY) on test legs.
+        ``benchmark_test_return`` — cumulative return for the benchmark on the test legs.
+        ``falsified`` — True when test_sharpe < 0 OR test_return < benchmark_test_return.
+        ``in_sample`` — always False (this IS the only OOS block).
+        ``caveat`` — honest interpretation string.
+
+    Raises
+    ------
+    ValueError
+        When the grid does not have enough legs to satisfy the train/test split,
+        or when no config has a valid train Sharpe.
+    """
+    # Build monthly returns from aligned NAV columns.
+    keys = list(grid.keys())
+    if not keys:
+        raise ValueError("compute_holdout: grid is empty")
+
+    max_len = max(len(col) for col in grid.values())
+
+    def _nav_to_returns(col: list[float | None], n: int) -> list[float | None]:
+        out: list[float | None] = []
+        for t in range(1, n):
+            prev = col[t - 1] if t - 1 < len(col) else None
+            curr = col[t] if t < len(col) else None
+            if prev is None or curr is None or prev <= 0:
+                out.append(None)
+            else:
+                out.append(curr / prev - 1.0)
+        return out  # length = n - 1
+
+    returns_by_key: dict[str, list[float | None]] = {
+        k: _nav_to_returns(grid[k], max_len) for k in keys
+    }
+    bench_returns: list[float | None] = _nav_to_returns(benchmark or [], max_len)
+
+    # Index arithmetic: train / purge / embargo / test are in RETURN-PERIOD indices
+    # (0-based; return period t corresponds to nav[t] / nav[t-1] - 1).
+    # FOOTGUN guard: exact boundaries pinned here and in tests.
+    # train_legs = [train[0], train[1])  e.g. [0, 30) = legs 0..29
+    # purged_leg = purge  e.g. 30
+    # embargo_legs = [purge+1, purge+embargo]  e.g. [31, 31] = leg 31
+    # test_legs = [test[0], test[1])  e.g. [31, 40) = legs 31..39
+    train_legs = list(range(train[0], train[1]))
+    test_legs = list(range(test[0], test[1]))
+    purged_leg = purge
+    embargo_leg_indices = list(range(purge + 1, purge + embargo + 1))
+
+    # Validate that test_legs start at or after the embargo boundary.
+    # The embargo discipline: train ends at purge-1 (inclusive), purge is excluded,
+    # embargo_legs = [purge+1, purge+embargo], and test STARTS at purge+embargo
+    # (i.e. test[0] == purge + embargo is valid per the design spec).
+    # Violation only if test starts BEFORE the embargo window ends.
+    if test[0] < purge + embargo:
+        raise ValueError(
+            f"compute_holdout: test start ({test[0]}) must be >= purge + embargo "
+            f"({purge + embargo}). Embargo off-by-one guard: train=[{train[0]},{train[1]}), "
+            f"purge={purge}, embargo={embargo}, test=[{test[0]},{test[1]})."
+        )
+    if not train_legs or not test_legs:
+        raise ValueError(
+            f"compute_holdout: empty train ({train}) or test ({test}) leg set"
+        )
+
+    def _leg_sharpe(rets: list[float | None], legs: list[int]) -> float | None:
+        vals = [rets[i] for i in legs if i < len(rets) and rets[i] is not None]
+        if len(vals) < 2:
+            return None
+        import math
+        mu = sum(vals) / len(vals)
+        var = sum((r - mu) ** 2 for r in vals) / len(vals)
+        if var <= 1e-24:
+            return None
+        return (mu / var ** 0.5) * math.sqrt(ANNUALIZATION_FACTOR_QUARTERLY)
+
+    def _leg_cum_return(rets: list[float | None], legs: list[int]) -> float | None:
+        vals = [rets[i] for i in legs if i < len(rets) and rets[i] is not None]
+        if not vals:
+            return None
+        cum = 1.0
+        for r in vals:
+            cum *= 1.0 + r
+        return cum - 1.0
+
+    # Train: pick the config with the highest Sharpe on train_legs.
+    train_sharpes: dict[str, float] = {}
+    for k in keys:
+        sr = _leg_sharpe(returns_by_key[k], train_legs)
+        if sr is not None:
+            train_sharpes[k] = sr
+
+    if not train_sharpes:
+        raise ValueError("compute_holdout: no config has a valid train Sharpe")
+
+    train_winner = max(train_sharpes, key=lambda k: train_sharpes[k])
+
+    # Test: evaluate the winner on UNTOUCHED test legs.
+    winner_rets = returns_by_key[train_winner]
+    test_sharpe = _leg_sharpe(winner_rets, test_legs)
+    test_return = _leg_cum_return(winner_rets, test_legs)
+
+    # Benchmark test return.
+    bench_test_return = _leg_cum_return(bench_returns, test_legs)
+
+    # Falsified: test_sharpe < 0 OR (benchmark available AND test_return < bench_test_return).
+    falsified = False
+    if test_sharpe is not None and test_sharpe < 0:
+        falsified = True
+    if test_return is not None and bench_test_return is not None:
+        if test_return < bench_test_return:
+            falsified = True
+
+    return {
+        "train_legs": train_legs,
+        "test_legs": test_legs,
+        "purged_leg": purged_leg,
+        "embargo_quarters": embargo,
+        "embargo_leg_indices": embargo_leg_indices,
+        "train_winner_config": train_winner,
+        "test_return": round(float(test_return), 6) if test_return is not None else None,
+        "test_sharpe": round(float(test_sharpe), 6) if test_sharpe is not None else None,
+        "benchmark_test_return": (
+            round(float(bench_test_return), 6) if bench_test_return is not None else None
+        ),
+        "falsified": bool(falsified),
+        "in_sample": False,  # this IS the only OOS block — never copy this flag onto DSR/walk_forward
+        "caveat": (
+            f"Purged-embargo holdout: winner selected on legs {train[0]}..{train[1]-1} "
+            f"(train Sharpe), evaluated on legs {test[0]}..{test[1]-1} ({len(test_legs)} legs). "
+            f"Leg {purged_leg} purged; leg(s) {embargo_leg_indices} embargoed. "
+            f"WEAK FLOOR: {len(test_legs)} test legs is a minimal sample — a collapse "
+            f"(test_sharpe < 0 or trailing benchmark) FALSIFIES the config's forward edge; "
+            f"a positive read is encouraging but NOT proof. CPCV (full combinatorial "
+            f"purged cross-validation) is deferred pending longer OOS window. "
+            f"The holdout test set was NOT used during threshold selection "
+            f"(in_sample=False)."
+        ),
+    }
+
+
 __all__ = [
     "BASKET_RULE_N_TRIALS",
     "compute_basket_rule_validation",
+    "compute_grid_pbo",
+    "compute_holdout",
 ]
