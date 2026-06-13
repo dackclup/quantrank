@@ -332,6 +332,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **edgartools `Company("")` resolves to an ARBITRARY company (no raise) — resolve a real CIK (`snap.cik` → `Company(ticker).cik`) before any history fetch; empty-CIK `fetch_fundamentals` calls also bypass the snapshot parquet cache BOTH ways**
 - **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-24h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
 - **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency signals are NO-OPs; the only safe skip path for stale-but-cached tickers is a filing-date precheck against SEC each run (`_latest_filing_date` in `compute/ingest/fundamentals.py`, #471)**
+- **The IC-decay monitor (`decay_report.json`, #75 §3) is a MONITOR — NEVER vetoes / changes scores; `alert` stays suppressed until ≥12 monthly IC points/pillar (`preliminary`); the JSON is dataclass-emitted, NOT in the schema triple (only `Metadata.decay_report_url` is); cron-wired in `compute/main.py` under `QR_SKIP_DECAY_MONITOR`**
 
 ## Phase status
 
@@ -359,25 +360,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **fix(scoring+ci) — Issue #469: de-sync the 8-K cache cohort + canary
-  TTL-proximity warning (this PR, 2026-06-13)** — root-caused from the
-  2026-06-12 manual cron: the 502-ticker 8-K cache, written in one
-  cold-rebuild burst, crosses its flat 144h (6-day) TTL *simultaneously*
-  → one ~80-min `tier2_wall_clock_seconds` refetch spike (~11s → ~4826s)
-  recomputing identical `gc/nr/ac` flags, recurring every ~6 days. Fix
-  Part 1 (compute): `_cache_read` effective TTL =
-  `EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)` where the
-  jitter ∈ [0, `EDGAR_8K_CACHE_TTL_JITTER_SECONDS`=24h) is a
-  SHA-256-stable per-ticker offset (NOT salted `hash()`), spreading the
-  expiry across a day so refreshes trickle (≤24h added visibility delay,
-  negligible vs the 730d lookback + daily cron). Part 2 (observability,
-  both workflows byte-identical): the post-restore canary now echoes the
-  restored slow-text key + emits `::warning` when the `edgar_8k` layer is
-  within 24h of its TTL, predicting the long pass. 6 jitter unit tests +
-  2 canary guard tests; full scoring+workflow suite 654 passed. De-sync
-  is only fully observable over ~2 cold-rebuild cycles (~1 wk of crons) —
-  watch `tier2_wall_clock_seconds` for the spike's disappearance. Detail:
-  PHASE_STATUS_INFLIGHT.md.
+- **feat — Issue #75 §3: wire the IC-decay monitor into the cron +
+  `/analysis` transparency surface (this PR, 2026-06-13)** — closes the
+  last 2 of 8 acceptance criteria on #75 (PR 4b defense-infra) under
+  observability-before-wiring (Rule 18). The IC-decay library (PR #60)
+  is now production-wired: `build_decay_report` walks `historical_ic`
+  (bounded 39-mo) → calendar-month IC panel → `check_all_pillars` →
+  `emit_decay_report` → `frontend/public/data/decay_report.json` every
+  cron (try/except graceful-degrade, skip-safe `QR_SKIP_DECAY_MONITOR`),
+  plus a schema-triple-additive `Metadata.decay_report_url`. `/analysis`
+  renders a 3-state honest surface; the current real state is
+  `status="insufficient_history"` (≈1 wk of git history) — the monitor
+  self-densifies cron-over-cron and the `alert` is SUPPRESSED until ≥12
+  monthly IC points/pillar (`preliminary`), so it never shows a
+  fabricated "0 decaying" badge. The monitor NEVER vetoes / changes
+  scores (McLean-Pontiff 2016, informational only). Also corrects the §2
+  PBO "Bailey Table-1 golden-fixture" doc claim (the tests are
+  property/behavioral anchors). 16 new `ic_decay` tests (27 total).
+  Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
@@ -394,10 +394,11 @@ PHASE_STATUS.md):
   4j.2 Qlib blend decision on ≥ 1 real cron of `Metadata.alpha158_*` IC
   evidence (PBO ≤ 0.5 + DSR > 0); 4k.1 IPCA (#122) additive,
   non-blocking; JKP 4i.1 dropped from the hard gate (license #115).
-- **4 · Phase 5 — ML meta-learner** (~10-12w; unblocks IC-decay writer
-  #75) — gated on item 1 + the 7.0c composite-signal follow-through + a
-  Supabase client-wiring pre-PR (§Connectors). Entry gates: WORKFLOW.md
-  §Phase 5.
+- **4 · Phase 5 — ML meta-learner** (~10-12w; the #75 IC-decay writer
+  now ships observability-first (this PR) — Phase 5's walk-forward
+  monthly-IC panel is what makes its `alert` meaningful) — gated on item
+  1 + the 7.0c composite-signal follow-through + a Supabase
+  client-wiring pre-PR (§Connectors). Entry gates: WORKFLOW.md §Phase 5.
 - **5 · Stock-attribute tiles (Dividend + Security-type)** —
   display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on

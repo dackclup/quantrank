@@ -1472,3 +1472,34 @@ backtest CAGR as the live product's track record.
   `fundamentals_latency >= 15s` (p95 = 19.27s, p50 = 0.0s) — the bimodal histogram
   was the stale-but-cached refetch loop. Design B addresses that tail while keeping
   the "any uncertainty → live build" invariant.
+
+- **The IC-decay monitor (`decay_report.json`) is a MONITOR, not a defense flag** (#75 §3,
+  2026-06-13). Wired into the cron by `compute/main.py` (just before the `Metadata(...)`
+  build): it walks `compute/validation/historical_ic.compute_historical_ic_report` (bounded
+  39-mo), resamples the per-commit IC to a calendar-month panel
+  (`ic_decay.pillar_entries_to_monthly_panel`), runs `check_all_pillars`, and writes
+  `frontend/public/data/decay_report.json` via `emit_decay_report`. Three invariants future
+  editors must not violate:
+  1. **It NEVER vetoes or changes scores.** Unlike the risk-overlay flags, this is a
+     McLean-Pontiff (2016) *transparency* surface — informational only. Do NOT route it into
+     `risk_overlay.py` or the composite. The `/analysis` card carries an explicit "monitor
+     only — never changes scores or rankings" disclaimer; keep it.
+  2. **`alert` is suppressed until ≥ `MIN_HISTORY_MONTHS` (12) monthly IC points per pillar.**
+     `check_pillar_decay` sets `preliminary=True` and forces `alert=False` below that bar;
+     `build_decay_report` then sets the top-level `status` to `insufficient_history` when no
+     pillar has enough history. This is the honesty guard — the monitor needs a regular
+     monthly cadence to mean anything, and the git-archived `rankings.json` corpus only
+     densifies cron-over-cron (it was ≈1 week at wiring time). Never emit a non-preliminary
+     `alert` on thin history, and never let the frontend render a "0 pillars decaying"
+     all-clear in the `insufficient_history` state (it shows "accumulating baseline" instead).
+  3. **`decay_report.json` is dataclass-emitted and is NOT part of the schema-snapshot
+     triple.** Only `Metadata.decay_report_url` is in the Pydantic↔TS↔snapshot triple. Do NOT
+     add the report payload to `schema-snapshot.json`; the frontend `DecayReport`/`PillarDecay`
+     interfaces (`frontend/lib/types.ts`) are hand-written for this non-Pydantic artifact and
+     are intentionally separate from the schema-mirrored types.
+  Skip-safe via `QR_SKIP_DECAY_MONITOR=1`; the whole step is try/except graceful-degrade
+  (failure → `decay_report_url=None`, the cron never blocks). Phase 5's walk-forward harness
+  is what makes the `alert` meaningful, but the plumbing self-populates without it.
+  **Relevant code**: `compute/validation/ic_decay.py` (`build_decay_report`,
+  `pillar_entries_to_monthly_panel`, `check_pillar_decay`, `emit_decay_report`) +
+  `compute/main.py` decay-monitor block + `frontend/components/DecayMonitorCard.tsx`.

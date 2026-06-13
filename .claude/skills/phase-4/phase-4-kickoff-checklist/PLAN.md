@@ -136,7 +136,7 @@ Consolidating defense gates scattered across `WORKFLOW.md`, `SKILL.md` Rule 13, 
 | Beneish M-score (Phase 3e) | Annotate-only | `beneish_high` valuation_warning | ⚠️ warns, no veto |
 | Dechow F-score (Phase 3e) | Annotate-only | `dechow_high` valuation_warning | ⚠️ warns, no veto |
 | Cross-source disagreement (Phase 4b) | Annotate-only | 5% market-cap delta | ⚠️ warns, no veto |
-| IC-decay alert (Phase 4b) | Monitor + manual review | 6-month threshold breach | ❌ no production veto; surface in `decay_report.json` |
+| IC-decay alert (Phase 4b) | Monitor + manual review | 6-month threshold breach (live 2026-06-13, #75 §3) | ❌ no production veto; `decay_report.json` + `/analysis` surface; `alert` suppressed until ≥12 monthly IC pts/pillar |
 | PBO + DSR (Phase 4b) | Pre-integration gate | PBO ≤ 0.5 AND DSR > 0 per factor | ✅ veto factor from being added to composite |
 
 **Promotion path**: a Phase 4+ Annotate flag may promote to Active Veto when:

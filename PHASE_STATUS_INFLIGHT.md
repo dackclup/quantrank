@@ -3797,3 +3797,51 @@ schema change; `ruff check .` + `python tools/check_model_pin.py` pass locally
 (guard OK: 5 opus + 20 sonnet, all floating aliases).
 
 ---
+
+## Issue #75 §3 — wire the IC-decay monitor into the cron + /analysis transparency surface (in flight, 2026-06-13)
+
+Closes the last 2 of 8 acceptance criteria on issue #75 (PR 4b
+defense-infrastructure) under the observability-before-wiring convention
+(Rule 18). §1 (cross-source) + §2 (PBO/DSR) shipped + production-wired in PR
+#60; the §3 IC-decay *library* shipped there too but was left uncalled
+(logged as a Phase-5 tracker because the decay `alert` needs a regular
+monthly IC panel). This PR production-wires the plumbing now, honestly
+labeled, self-densifying cron-over-cron:
+
+- **compute** — `compute/validation/ic_decay.py` gains
+  `pillar_entries_to_monthly_panel` (per-commit `historical_ic` IC →
+  calendar-month panel), `build_decay_report` (bounded 39-mo walk → panel →
+  `check_all_pillars` → honest top-level `status`), a per-pillar
+  `preliminary` flag that FORCE-suppresses `alert` until ≥
+  `MIN_HISTORY_MONTHS` (12) monthly points, and additive `emit_decay_report`
+  fields (`status`, `horizon_months`, `min_history_months`,
+  `n_dates_with_ic`). `compute/main.py` calls it before the `Metadata(...)`
+  build, try/except graceful-degrade (never blocks the cron), skip-safe via
+  `QR_SKIP_DECAY_MONITOR`, and sets the new `Metadata.decay_report_url`. The
+  artifact emits every cron even when empty.
+- **schema triple** — additive `Metadata.decay_report_url: str | None`
+  (schemas.py + types.ts mirror + regenerated snapshot; schema_check
+  in-sync). `decay_report.json` itself is dataclass-emitted and deliberately
+  NOT in the snapshot guard (the frontend `DecayReport`/`PillarDecay`
+  interfaces are hand-written, separate from the schema-mirrored types).
+- **frontend** — `/analysis` renders `DecayMonitorCard` (3 honest states),
+  gated on `Metadata.decay_report_url`. The current real state is
+  `status="insufficient_history"` (≈1 wk of git history): a quiet
+  "accumulating baseline" panel + 10 pending pillars — NO fabricated zeros,
+  NO false "0 decaying" badge — plus the "monitor only — never changes
+  scores/ranks" disclaimer and the McLean-Pontiff (2016) citation.
+  `monitoring`/`alert` render the per-pillar 12m-IC-vs-historical-mean table.
+- **honesty** — informational ONLY; never vetoes or changes the composite.
+  The `alert` becomes meaningful only as the panel densifies (≥12 monthly IC
+  points/pillar); Phase 5's walk-forward harness accelerates that but is not
+  a hard blocker for the plumbing.
+- **docs** — also corrected an inaccurate PHASE_STATUS.md §2 claim (the PBO
+  tests are property/behavioral anchors, NOT a "Bailey 2014 Table-1 golden
+  fixture within 5%").
+
+Verification: `ruff` clean · 945 passed / 6 skipped offline (27 ic_decay
+tests, 16 new) · `schema_check` in-sync · `tsc --noEmit` + `next build`
+(510/510 static pages) green. Design-reviewer honesty audit PASS; its one
+FAIL (neutral-chip dark camouflage) + 3 WARN fixed.
+
+---
