@@ -2358,6 +2358,59 @@ def run_weekly_compute() -> int:
             exchange_coverage_pct,
         )
 
+    # Issue #75 §3 — IC-decay monitor (Rule 18 observability-before-wiring).
+    # Reads git-committed prior rankings (the current run is NOT committed
+    # yet — correct; this is a backward-looking monitor). Always emits the
+    # artifact even when status="insufficient_history" so the static
+    # frontend build always has the file. Wrapped in try/except so any
+    # git/network/data failure NEVER blocks the cron; degrades to
+    # decay_report_url=None. Skip-safe via QR_SKIP_DECAY_MONITOR=1.
+    decay_report_url: str | None = None
+    _decay_report_path = config.DATA_DIR / "decay_report.json"
+    if os.environ.get("QR_SKIP_DECAY_MONITOR", "").lower() in ("1", "true", "yes"):
+        logger.info(
+            "IC-decay monitor SKIPPED via QR_SKIP_DECAY_MONITOR. "
+            "decay_report_url will be None."
+        )
+    else:
+        try:
+            from compute.validation.ic_decay import (
+                IC_DECAY_DURATION_MONTHS,
+                IC_DECAY_THRESHOLD,
+                IC_HORIZON_MONTHS,
+                MIN_HISTORY_MONTHS,
+                build_decay_report,
+                emit_decay_report,
+            )
+
+            _decay_reports, _decay_status, _decay_n_dates = build_decay_report()
+            emit_decay_report(
+                _decay_reports,
+                _decay_report_path,
+                threshold=IC_DECAY_THRESHOLD,
+                duration_months=IC_DECAY_DURATION_MONTHS,
+                horizon_months=IC_HORIZON_MONTHS,
+                min_history_months=MIN_HISTORY_MONTHS,
+                status=_decay_status,
+                n_dates_with_ic=_decay_n_dates,
+            )
+            decay_report_url = "/data/decay_report.json"
+            logger.info(
+                "IC-decay monitor: status=%s, n_dates_with_ic=%d, "
+                "alerted=%s, written to %s",
+                _decay_status,
+                _decay_n_dates,
+                [r.pillar for r in _decay_reports if r.alert],
+                _decay_report_path,
+            )
+        except Exception as _decay_exc:  # noqa: BLE001
+            logger.warning(
+                "IC-decay monitor failed (non-fatal — cron continues); "
+                "decay_report_url → None. Error: %s",
+                _decay_exc,
+            )
+            decay_report_url = None
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -2528,6 +2581,8 @@ def run_weekly_compute() -> int:
         # Gates Q3 2026-08-19 cohort-acceptance check for INSIDER_SELL_CLUSTER_WEIGHT
         # 5.0 → 7.0 promotion alongside form4_rule10b5_one_excluded_count.
         form4_negation_guard_downgrade_count=form4_negation_guard_downgrade_count,
+        # Issue #75 §3 — IC-decay monitor artifact URL (Rule 18).
+        decay_report_url=decay_report_url,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

@@ -337,6 +337,16 @@ export type Metadata = {
   // `form4_rule10b5_one_excluded_count`. Null on legacy pre-0.10.11
   // snapshots.
   form4_negation_guard_downgrade_count?: number | null;
+  // Issue #75 §3 (Rule 18 observability-before-wiring) — URL of the
+  // IC-decay monitor artifact (`/data/decay_report.json`,
+  // McLean-Pontiff 2016). The report is a transparency surface
+  // (monitor + manual review; NEVER vetoes / changes scores). Null
+  // when the monitor is skipped (`QR_SKIP_DECAY_MONITOR`), degrades, or
+  // on legacy outputs from before this field was added. The report
+  // self-densifies cron-over-cron; until ≥ MIN_HISTORY_MONTHS of
+  // out-of-sample IC history exist per pillar it stays
+  // `status="insufficient_history"` with every pillar `preliminary`.
+  decay_report_url?: string | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -540,6 +550,47 @@ export type StockDetail = {
   // BELOW the 5% tolerance threshold too — so post-hoc threshold sweeps
   // are possible without re-running the validator.
   cross_source_delta?: number | null;
+};
+
+// ---------------------------------------------------------------------------
+// Issue #75 §3 — IC-decay monitor artifact (frontend/public/data/decay_report.json).
+// DISPLAY-ONLY transparency surface. This artifact is emitted by a dataclass (NOT
+// a Pydantic schema), so it is NOT part of the schema-snapshot triple and is NOT
+// guarded by the schema-snapshot CI check. Types here are plain TS interfaces that
+// mirror the JSON contract exactly. Do NOT touch Metadata or the snapshot for this.
+// ---------------------------------------------------------------------------
+
+// One pillar's rolling IC decay row. `preliminary: true` means ≥ min_history_months
+// of out-of-sample IC history have NOT yet accumulated (every numeric field = 0.0
+// / 0 in that state — do NOT display those zeros as real metrics).
+export type PillarDecay = {
+  pillar: string;
+  rolling_12m_ic: number;
+  rolling_36m_ic: number;
+  historical_mean_ic: number;
+  decay_ratio: number;
+  months_below_threshold: number;
+  alert: boolean;
+  n_observations: number;
+  preliminary: boolean;
+};
+
+// Top-level decay monitor report emitted to decay_report.json each cron run.
+// `status` drives the three UX states:
+//   - "insufficient_history" — ≥ min_history_months of IC data not yet accrued;
+//     ALL pillars are preliminary, every numeric is 0 — render pending state.
+//   - "monitoring" — baseline established; per-pillar table shows real IC metrics.
+//   - "alert" — ≥ 1 pillar in anomalies_alerted; highlight decayed pillars.
+export type DecayReport = {
+  generated_at: string;
+  horizon_months: number;
+  threshold: number;
+  duration_months: number;
+  min_history_months: number;
+  status: 'insufficient_history' | 'monitoring' | 'alert';
+  n_dates_with_ic: number;
+  pillars: PillarDecay[];
+  anomalies_alerted: string[];
 };
 
 // ---------------------------------------------------------------------------

@@ -504,6 +504,15 @@ class Metadata(BaseModel):
     # cron (absolute << 1%; most 10b5-1 disclosures are affirmative).
     # Nullable on legacy snapshots (pre-0.10.11).
     form4_negation_guard_downgrade_count: int | None = None
+    # Issue #75 §3 (decay monitor, Rule 18 observability-before-wiring) —
+    # URL of the IC-decay report artifact relative to the static site root.
+    # Set to "/data/decay_report.json" when the decay monitor ran and the
+    # file was written; ``None`` when the step was skipped via
+    # ``QR_SKIP_DECAY_MONITOR=1`` or when the step failed catastrophically
+    # (the failure is logged; the cron continues without blocking). The
+    # file always exists on disk when non-None — the frontend can safely
+    # fetch it at this URL. Nullable on legacy snapshots (pre-0.10.19).
+    decay_report_url: str | None = None
 
 
 class RawMetrics(BaseModel):
