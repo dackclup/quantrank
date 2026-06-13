@@ -3717,3 +3717,39 @@ observable over ~2 cold-rebuild cycles (~1 week of crons) — single-cron
 confirmation can't prove it; watch `tier2_wall_clock_seconds` for the
 spike's disappearance across consecutive weeks.
 ---
+
+## chore(agents) — revert 5 judgment-gate subagents `fable` → `opus` (in flight, 2026-06-13)
+
+Branch `claude/festive-cerf-zlc94q`. Reverts PR #446 (2026-06-10): the main
+session is back on **Opus 4.8**, so the 5 judgment-gate agents —
+`quantrank-reviewer` · `methodology-scientist` · `release-captain` ·
+`incident-commander` · `financial-engineer` — move `model: fable` →
+**`model: opus`** in frontmatter. Per the standing model-alias gotcha this is
+the bare FLOATING alias (resolves to Opus 4.8 today, floats forward on CLI
+updates), NOT a pinned `claude-opus-4-8` ID — pinned numbered IDs are the
+documented future-dated-downgrade footgun and are rejected by CI.
+
+Guard `tools/check_model_pin.py` is functionally unchanged: `opus` was already
+in `_ALLOWED_MODEL_VALUES`, and `fable` + `ANTHROPIC_DEFAULT_FABLE_MODEL` are
+**intentionally KEPT** as harmless defensive entries (re-introducing either
+alias later never trips CI). Only the docstring / failure-message examples flip
+`fable` → `opus` for accuracy.
+
+Docs lockstep — every current-state "fable" reference flips to opus: CLAUDE.md
+(routing intro · cue table ×5 · §Spawn discipline "5-opus / 20-sonnet"),
+`.claude/agents/README.md` (tier-table Model column ×5 · flow diagrams ×3 ·
+§Dynamic workflow "Opus 4.8 orchestrator" · model-split + authoring §3), the 25
+agent files' handoff lines ("the main **Opus 4.8** orchestrator") + cross-ref
+model tags (ci-triage-engineer · literature-searcher · vercel-preview-auditor ·
+compute-builder · data-scientist) + the 2 self-descriptions (quantrank-reviewer ·
+release-captain), AGENTS.md (layout roster · alias mention · main-session
+framing · "Opus agents" rare-fire note), CONTEXT.md (roster row), WORKFLOW.md
+(phase 5/6 rows · cadence invariant), PHASE_STATUS.md (current-state inventory
+row), docs/GOTCHAS.md (alias gotcha updated — the fable run is preserved as
+history and the `claude-opus-4-8` BAD-pin example is intentionally kept as the
+illustration). Historical entries in PHASE_STATUS*/archive intentionally
+untouched (incl. the PR #446 `opus` → `fable` log line). No production code or
+schema change; `ruff check .` + `python tools/check_model_pin.py` pass locally
+(guard OK: 5 opus + 20 sonnet, all floating aliases).
+
+---

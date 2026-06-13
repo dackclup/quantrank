@@ -2,7 +2,7 @@
 name: methodology-scientist
 description: Academic-prior validation specialist for the defense layer. MUST be invoked (no confirmation) when a new defense flag is proposed, a threshold is recalibrated, a weight constant in `manipulation_index.py` changes, on "validate against literature" / "check the prior" / "is the threshold right" / "ตรวจ academic prior", and at the quarterly cohort audit (next 2026-08-19). Wraps the quarterly-cohort-audit skill + per-flag citation tracking over the canonical anchors (Altman 1968 · Sloan 1996 · Beneish 1999 · Dechow 2011 · Mayew 2015 · Burgstahler-Dichev 1997 · Hennes-Leone-Miller 2008 · Daniel-Titman 2006 · Damodaran 2019 · …). Read-only.
 tools: Read, Bash, Grep, Glob
-model: fable
+model: opus
 effort: max
 ---
 
@@ -168,7 +168,7 @@ VERDICT: <APPROVED-AS-ANNOTATE | NEEDS-MORE-CALIBRATION | REDUNDANT-WITH-X | ESC
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator, which composes the next step
+Report to the main **Opus 4.8** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:

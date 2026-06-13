@@ -2,7 +2,7 @@
 name: financial-engineer
 description: Generative quant-design seat — DESIGNS new constructs (valuation methods, factor signals, scoring pillars, risk-overlay flags, cost-of-equity refinements, roadmap-phase quant approaches). TRIGGER on "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" when the construct doesn't exist yet. Produces problem → academic anchor → math spec → architecture fit → rollout + observability + test plan → orthogonality check, then hands off to methodology-scientist (ratify), test-engineer, quantrank-reviewer. Read-only — proposes designs, never writes production code.
 tools: Read, Bash, Grep, Glob
-model: fable
+model: opus
 effort: max
 ---
 
@@ -178,7 +178,7 @@ VERDICT: <DESIGN-READY-FOR-VALIDATION | NEEDS-LITERATURE | NEEDS-USER-SCOPE | DE
 
 ## Handoff
 
-Report to the main **fable-5** orchestrator, which composes the next
+Report to the main **Opus 4.8** orchestrator, which composes the next
 step *dynamically* from your output. The canonical design chain is
 financial-engineer (design) → `methodology-scientist` (ratify the
 prior) → `test-engineer` (tests) → `quantrank-reviewer` (implementation
