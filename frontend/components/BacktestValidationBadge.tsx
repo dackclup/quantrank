@@ -99,13 +99,23 @@ function DsrChip({ v }: { v: BacktestValidation }) {
         : 'Gate result unknown.',
   ].filter(Boolean).join(' ');
 
+  // Build aria-label with the same rich detail the title tooltip provides,
+  // so screen-reader users get the raw DSR + Sharpe numbers that mouse-hover
+  // users see in the title. Null-guard mirrors the title construction above.
+  const ariaLabel = [
+    `${label} ${phiStr}.`,
+    v.dsr != null ? `DSR ${fmt2(v.dsr)}.` : '',
+    v.annualized_sharpe != null ? `Annualized Sharpe ${fmt2(v.annualized_sharpe)}.` : '',
+    pass ? 'Passed.' : fail ? 'Failed.' : 'Unknown.',
+  ].filter(Boolean).join(' ');
+
   return (
     <Chip
       tone={tone}
       dot={dot}
       size="sm"
       title={title}
-      aria-label={`${label} ${phiStr}. ${pass ? 'Passed' : fail ? 'Failed' : 'Unknown'}.`}
+      aria-label={ariaLabel}
     >
       <span className="tabular-nums">
         {label} — <span className="font-mono tabular-nums">{phiStr}</span>
@@ -168,13 +178,19 @@ function HoldoutChip({ holdout }: { holdout: NonNullable<BacktestValidation['hol
       dot={dot}
       size="sm"
       title={title}
-      aria-label={`${label}. Test return ${fmtPct(holdout.test_return)}, Sharpe ${fmt2(holdout.test_sharpe)}. ${holdout.caveat}`}
+      aria-label={`${label}. Test return ${fmtPct(holdout.test_return)}, benchmark ${fmtPct(holdout.benchmark_test_return)}, Sharpe ${fmt2(holdout.test_sharpe)}. ${holdout.caveat}`}
     >
       <span className="font-mono tabular-nums">
         {label} — test{' '}
         <span className={passed ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}>
           {fmtPct(holdout.test_return)}
         </span>
+        {holdout.benchmark_test_return != null && (
+          <>
+            {' '}vs bmark{' '}
+            <span className="tabular-nums">{fmtPct(holdout.benchmark_test_return)}</span>
+          </>
+        )}
         {' '}/ Sharpe{' '}
         <span className="tabular-nums">{fmt2(holdout.test_sharpe)}</span>
       </span>
@@ -293,22 +309,58 @@ export function BacktestValidationBadge({
         </div>
       )}
 
-      {/* Holdout caveat — the 9-leg weak-floor note, accessible below the chip */}
-      {holdout?.caveat != null && (
-        <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-          <span className="font-medium text-slate-600 dark:text-slate-300">OOS caveat:</span>{' '}
-          {holdout.caveat}
-        </p>
-      )}
+      {/* Methodology caveats — progressive disclosure for the two verbose
+          paragraphs that caused a 925px mobile height on a 375px viewport.
+          The summary clearly names the caveats so collapsing is progressive
+          disclosure, NOT hiding. The chips above already carry pass/fail +
+          key numbers. The selection-footprint caveat stays always-visible
+          (see the block above — it is the single most important honesty line).
+          Native <details>/<summary> — no JS, stays a pure Server Component. */}
+      {(holdout?.caveat != null || pbo?.config_correlation_note != null) && (
+        <details className="mt-3 group">
+          <summary
+            className={[
+              'flex cursor-pointer list-none items-center gap-1',
+              'text-xs font-medium text-slate-500 dark:text-slate-400',
+              'hover:text-slate-700 dark:hover:text-slate-200',
+              'focus-visible:outline-none focus-visible:ring-2',
+              'focus-visible:ring-emerald-500 focus-visible:ring-offset-1',
+              'rounded-sm',
+            ].join(' ')}
+          >
+            {/* Disclosure triangle — CSS-only, no JS */}
+            <span
+              className="inline-block transition-transform group-open:rotate-90"
+              aria-hidden="true"
+            >
+              ▶
+            </span>
+            Methodology caveats —{' '}
+            {holdout?.caveat != null && 'weak-floor holdout'}
+            {holdout?.caveat != null && pbo?.config_correlation_note != null && ' + '}
+            {pbo?.config_correlation_note != null && 'PBO correlation'}
+          </summary>
 
-      {/* PBO config_correlation_note — surfaces why a low PBO shouldn't be
-          over-read (e.g., high correlation between configs means the test has
-          less discriminating power than the raw PBO number suggests). */}
-      {pbo?.config_correlation_note != null && (
-        <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-          <span className="font-medium text-slate-600 dark:text-slate-300">PBO note:</span>{' '}
-          {pbo.config_correlation_note}
-        </p>
+          <div className="mt-2 space-y-1.5">
+            {/* Holdout caveat — the 9-leg weak-floor note */}
+            {holdout?.caveat != null && (
+              <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                <span className="font-medium text-slate-600 dark:text-slate-300">OOS caveat:</span>{' '}
+                {holdout.caveat}
+              </p>
+            )}
+
+            {/* PBO config_correlation_note — surfaces why a low PBO shouldn't be
+                over-read (e.g., high correlation between configs means the test has
+                less discriminating power than the raw PBO number suggests). */}
+            {pbo?.config_correlation_note != null && (
+              <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                <span className="font-medium text-slate-600 dark:text-slate-300">PBO note:</span>{' '}
+                {pbo.config_correlation_note}
+              </p>
+            )}
+          </div>
+        </details>
       )}
     </section>
   );
