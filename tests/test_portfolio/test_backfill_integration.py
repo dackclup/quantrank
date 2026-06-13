@@ -2393,3 +2393,138 @@ def test_assemble_grid_navs_shares_price_panel(tmp_path) -> None:
     assert grid_diagnostics["expected_leg_count"] == len(rebalance_picks)
     # Config 70_3 only has 1 leg (less than expected=2) → should appear in dropped.
     assert "70_3" in grid_diagnostics["configs_with_dropped_legs"]
+
+
+# ---------------------------------------------------------------------------
+# Parquet-PRESENT path (GAP 1 + GAP 2 observability, Rule 18)
+# ---------------------------------------------------------------------------
+# The autouse fixture `_mock_list_known_events_default` forces the parquet-ABSENT
+# path (item402_parquet_row_count→0, historical_sector_parquet_stats→absent,
+# sector_at→universe fallback).  The test below OVERRIDES those patches inside
+# the test body so the inner mock.patch.object shadows the fixture's patch for
+# the duration of the `with` block — exercising the PRESENT path for the first
+# time with the real `check_non_reliance` call stack (not mocked) and confirming
+# that `meta.sector_from_today`, `vetoes_replayed`, `vetoes_not_replayed`,
+# `item402_pit_rows`, and `historical_sector_coverage_pct` all reflect the
+# parquet-present state.
+# ---------------------------------------------------------------------------
+
+
+def test_run_backfill_parquet_present_flips_meta_and_replays_7th_veto(
+    tmp_path, _universe
+) -> None:
+    """GAP 1 + GAP 2: when both PIT parquets are present, run_backfill promotes
+    non_reliance_filing to vetoes_replayed and uses PIT sectors.
+
+    Test arrangement:
+    - item402_parquet_row_count returns 17 (non-zero → _item402_parquet_present=True).
+    - item402_filings_for returns a real Item 4.02 filing for AAA at every
+      call (filing date "2022-07-01" is within the 365-day veto lookback for all
+      four synthetic rebalances in the 2022-06-01..2023-06-01 window); BBB and CCC
+      return [] (no Item 4.02 filings).
+    - check_non_reliance runs against the REAL implementation (not mocked) so the
+      veto path is genuinely exercised end-to-end.
+    - historical_sector_parquet_stats returns {parquet_present: True, ...}.
+    - sector_at returns distinct PIT sectors per ticker so _pit_sector exercises
+      the parquet-present branch.
+
+    Asserts (meta only — NAV is not over-pinned):
+    - meta["sector_from_today"] is False   (PIT sectors used, not today's Wikipedia)
+    - "non_reliance_filing" in meta["vetoes_replayed"]  (7th veto promoted)
+    - meta["vetoes_not_replayed"] == []    (empty when parquet present)
+    - meta["item402_pit_rows"] > 0         (row count forwarded from the mock)
+    - meta.get("historical_sector_coverage_pct") is not None  (counter populated)
+    """
+    # Item 4.02 filing dict in the format _check_item expects:
+    # filing_date within the 365-day lookback at each rebalance in the window,
+    # and strictly before the rebalance date (before_date=T filter applied by
+    # the production code before passing to check_non_reliance).
+    _AAA_FILING = {
+        "filing_date": "2022-07-01",      # within 365d of all 4 rebalances (Aug/Nov 2022, Feb/May 2023)
+        "filing_url": "https://example.com/aaa-8k",
+        "items": ["Item 4.02"],            # matches _ITEM_4_02_PATTERN
+        "item_text_excerpts": {},
+    }
+
+    def _item402_filings_side_effect(ticker: str, *, before_date) -> list[dict]:
+        # Return a real Item 4.02 filing for AAA (triggers non_reliance_filing veto);
+        # BBB and CCC have no Item 4.02 history.
+        if ticker == "AAA":
+            # Honour the before_date PIT filter: the filing must pre-date the rebalance.
+            if _AAA_FILING["filing_date"] < before_date.isoformat():
+                return [_AAA_FILING]
+        return []
+
+    def _sector_at_side_effect(ticker: str, as_of) -> str:
+        return {
+            "AAA": "Information Technology",
+            "BBB": "Health Care",
+            "CCC": "Financials",
+        }.get(ticker, "Unknown")
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(
+            bf,
+            "fetch_fundamentals_history",
+            side_effect=lambda cik: _annual_history({"1": 1.0, "2": 1.4, "3": 0.7}.get(cik, 1.0)),
+        ),
+        mock.patch.object(
+            bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)
+        ),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        # Wiring-only isolation: synthetic revenue=100 fires data_quality_input_corruption
+        # on every ticker (Pattern 2: revenue < $50M), which would empty the pick set.
+        # Mock _compute_pit_risk_flags so picks are produced; crucially the mock ACCEPTS
+        # the new non_reliance_by_ticker kwarg (via **kwargs) so it does not raise
+        # TypeError when the production code passes it in the parquet-present branch.
+        mock.patch.object(
+            bf,
+            "_compute_pit_risk_flags",
+            side_effect=lambda *args, **kwargs: {},  # noqa: ARG005 — accepts non_reliance_by_ticker kwarg
+        ),
+        # Override the autouse fixture's ABSENT-state mocks with PRESENT-state mocks.
+        # The inner patch shadows the fixture's patch for the duration of this `with` block.
+        mock.patch.object(bf, "item402_parquet_row_count", return_value=17),
+        mock.patch.object(
+            bf,
+            "item402_filings_for",
+            side_effect=_item402_filings_side_effect,
+        ),
+        mock.patch.object(
+            bf,
+            "historical_sector_parquet_stats",
+            return_value={"parquet_present": True, "row_count": 42, "path": "/fake/path"},
+        ),
+        mock.patch.object(bf, "sector_at", side_effect=_sector_at_side_effect),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    assert out.exists()
+    payload = json.loads(out.read_text())
+    meta = payload["meta"]
+
+    # GAP 1: PIT sectors are used when the sector parquet is present.
+    assert meta["sector_from_today"] is False, (
+        "Expected sector_from_today=False when sector parquet is present; "
+        f"got {meta['sector_from_today']!r}"
+    )
+    assert meta.get("historical_sector_coverage_pct") is not None, (
+        "Expected historical_sector_coverage_pct to be populated when sector parquet is present"
+    )
+
+    # GAP 2: non_reliance_filing is promoted to vetoes_replayed when item402 parquet is present.
+    assert "non_reliance_filing" in meta["vetoes_replayed"], (
+        f"Expected 'non_reliance_filing' in vetoes_replayed; got {meta['vetoes_replayed']!r}"
+    )
+    assert meta["vetoes_not_replayed"] == [], (
+        f"Expected vetoes_not_replayed=[] when item402 parquet present; "
+        f"got {meta['vetoes_not_replayed']!r}"
+    )
+
+    # GAP 2: item402_pit_rows forwards the mocked row count.
+    assert meta["item402_pit_rows"] > 0, (
+        f"Expected item402_pit_rows > 0; got {meta['item402_pit_rows']!r}"
+    )
