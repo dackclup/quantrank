@@ -108,12 +108,6 @@ jobs:
             cache-v8-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap)
-        # `id:` consumed by the canary step's restored-key echo (Issue #469).
-        # Keep this id IDENTICAL to its sibling in compute-rankings.yml — both the
-        # restore step here and the `${{ steps.<id>.outputs.cache-matched-key }}`
-        # reference in the canary must match, or the byte-identical-canary guard
-        # (tests/test_workflow_cache_coverage.py) fails.
-        id: restore-slow-text
         uses: actions/cache@v5
         with:
           path: |
@@ -211,27 +205,21 @@ jobs:
               echo "> **WARNING — cache cold**: the Form-4 and/or 10-K-text layer is empty; expect a long run (see #249)."
             } >> "$GITHUB_STEP_SUMMARY"
           fi
-          # Restored slow-text cache key (Issue #469): which prior save the
-          # run-id-keyed slow-text bundle prefix-matched (or empty on a cold
-          # miss). The `restore-slow-text` step id is wired identically in both
-          # workflows; this echo references it identically so the byte-identical
-          # canary guard stays green.
-          echo "restored slow-text key: ${{ steps.restore-slow-text.outputs.cache-matched-key }}"
           # TTL-proximity warning (Issue #469): the edgar_8k event cache has a
           # 144h (6-day) TTL — config.EDGAR_8K_CACHE_TTL_SECONDS = 6 * 86400. All
           # 502 tickers are written in one cold-rebuild burst, so when the layer's
           # NEWEST file nears 144h the next tier2 pass refetches all of them live
           # (~80 min). Recompute that newest-file age the same way emit() does
-          # (find -printf '%T@' | sort | tail -1) and warn at > 120h
-          # (= 144h TTL - 24h, the config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS window)
+          # (find -printf '%T@' | sort | tail -1) and warn at > 72h
+          # (= 144h TTL - 72h, the config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS window)
           # so the long pass is PREDICTED here, not a surprise next run. Warning
           # only — the guarded awk/echo can never fail the job.
           k8_newest=$(find compute/cache/edgar_8k -type f -printf '%T@\n' 2>/dev/null | sort -n | tail -1)
           if [ -n "$k8_newest" ]; then
             k8_age=$(awk -v now="$now" -v ts="${k8_newest%.*}" 'BEGIN { printf "%.1f", (now - ts) / 3600 }')
-            # 120 = 144 (EDGAR_8K_CACHE_TTL_SECONDS, hours) - 24 (EDGAR_8K_CACHE_TTL_JITTER_SECONDS, hours)
-            if awk -v a="$k8_age" 'BEGIN { exit !(a > 120) }'; then
-              echo "::warning::edgar_8k cache within 24h of its 144h TTL (newest age ${k8_age}h) — next tier2 pass will refetch ~502 tickers live (~80 min); see #469"
+            # 72 = 144 (EDGAR_8K_CACHE_TTL_SECONDS, hours) - 72 (EDGAR_8K_CACHE_TTL_JITTER_SECONDS, hours)
+            if awk -v a="$k8_age" 'BEGIN { exit !(a > 72) }'; then
+              echo "::warning::edgar_8k cache within 72h of its 144h TTL (newest age ${k8_age}h) — next tier2 pass will refetch ~502 tickers live (~80 min); see #469"
               {
                 echo ""
                 echo "> **WARNING — edgar_8k near TTL**: newest file is ${k8_age}h old (144h TTL); the next tier2 pass will refetch ~502 tickers live (~80 min). See #469."

@@ -330,7 +330,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
 - **Dual-class `shares_outstanding` = SEC company-TOTAL across classes (ASC 260 / RATIFY-B #374); the per-class count lives in `shares_outstanding_listed_class` (display-only)**
 - **edgartools `Company("")` resolves to an ARBITRARY company (no raise) — resolve a real CIK (`snap.cik` → `Company(ticker).cik`) before any history fetch; empty-CIK `fetch_fundamentals` calls also bypass the snapshot parquet cache BOTH ways**
-- **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-24h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
+- **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-72h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
 - **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency signals are NO-OPs; the only safe skip path for stale-but-cached tickers is a filing-date precheck against SEC each run (`_latest_filing_date` in `compute/ingest/fundamentals.py`, #471)**
 
 ## Phase status
@@ -359,25 +359,23 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **fix(scoring+ci) — Issue #469: de-sync the 8-K cache cohort + canary
-  TTL-proximity warning (this PR, 2026-06-13)** — root-caused from the
-  2026-06-12 manual cron: the 502-ticker 8-K cache, written in one
-  cold-rebuild burst, crosses its flat 144h (6-day) TTL *simultaneously*
-  → one ~80-min `tier2_wall_clock_seconds` refetch spike (~11s → ~4826s)
-  recomputing identical `gc/nr/ac` flags, recurring every ~6 days. Fix
-  Part 1 (compute): `_cache_read` effective TTL =
-  `EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)` where the
-  jitter ∈ [0, `EDGAR_8K_CACHE_TTL_JITTER_SECONDS`=24h) is a
-  SHA-256-stable per-ticker offset (NOT salted `hash()`), spreading the
-  expiry across a day so refreshes trickle (≤24h added visibility delay,
-  negligible vs the 730d lookback + daily cron). Part 2 (observability,
-  both workflows byte-identical): the post-restore canary now echoes the
-  restored slow-text key + emits `::warning` when the `edgar_8k` layer is
-  within 24h of its TTL, predicting the long pass. 6 jitter unit tests +
-  2 canary guard tests; full scoring+workflow suite 654 passed. De-sync
-  is only fully observable over ~2 cold-rebuild cycles (~1 wk of crons) —
-  watch `tier2_wall_clock_seconds` for the spike's disappearance. Detail:
-  PHASE_STATUS_INFLIGHT.md.
+- **fix(scoring+ci) — #469 follow-up: widen the 8-K jitter 24h→72h +
+  canary housekeeping (this PR, 2026-06-13)** — the sufficiency analysis
+  showed the shipped 24h jitter is structurally insufficient: the next
+  cohort cliff lands on a WEEKDAY (Thu 2026-06-19 22:00 UTC) where the
+  binding cron gap is 24h, so W=24h lets ~471/502 tickers refetch in one
+  run (the original ~75-min tier2 spike, unmitigated); and the per-cycle
+  spread k·W only escapes the 62h Sat→Mon re-bunching gap at W>62h.
+  `EDGAR_8K_CACHE_TTL_JITTER_SECONDS` 24h→**72h** (>62h gap → never
+  re-bunches from cycle 1; the 2026-06-19 cliff → ~157 tickers/+25min;
+  max staleness 72h ≪ the 365/730-day 8-K lookback). Canary
+  TTL-proximity threshold 120h→72h (= 144−72) in both byte-identical
+  workflows; the broken `restored slow-text key` echo (referenced
+  `cache-matched-key`, not exposed by `actions/cache@v5` → rendered
+  blank) removed (the native "Cache restored from key:" log already
+  carries it). Folds in post-merge doc housekeeping (stale §In-flight
+  rotation, #249 marked DONE). MUST merge before the Thu 2026-06-19
+  cliff. Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
@@ -402,7 +400,8 @@ PHASE_STATUS.md):
   display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
-  pilot (#249 off-cycle pre-cache prerequisite) — detail in WORKFLOW.md.
+  pilot (#249 pre-cache DONE — #468 merged 2026-06-12; #467 scout done) —
+  detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
