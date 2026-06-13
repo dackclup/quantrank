@@ -64,7 +64,7 @@ const STATUS_CHIP: Record<
   { tone: string; dot: string; label: string }
 > = {
   insufficient_history: {
-    tone: 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700',
+    tone: 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700',
     dot: 'bg-slate-400 dark:bg-slate-500',
     label: 'Accumulating baseline',
   },
@@ -99,7 +99,7 @@ function decayRatioChipTone(decayRatio: number, alerted: boolean): string {
     return 'bg-amber-50 text-amber-900 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
   }
   // Healthy — neutral slate tone (no false-positive green).
-  return 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700';
+  return 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
 }
 
 function decayRatioDot(decayRatio: number, alerted: boolean): string {
@@ -144,6 +144,7 @@ function PillarRow({
             tone={decayRatioChipTone(p.decay_ratio, alerted)}
             dot={decayRatioDot(p.decay_ratio, alerted)}
             size="xs"
+            className="tabular-nums"
             title={`Decay ratio: ${fmtRatio(p.decay_ratio, p.preliminary)} — rolling 12m IC / historical mean IC`}
           >
             {fmtRatio(p.decay_ratio, p.preliminary)}
@@ -211,7 +212,7 @@ export function DecayMonitorCard({ report }: DecayMonitorCardProps) {
         )}
         {status === 'monitoring' && monitoredCount > 0 && (
           <Chip
-            tone="bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700"
+            tone="bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
             dot="bg-slate-400 dark:bg-slate-500"
             size="sm"
             aria-label={`${monitoredCount} pillars monitored`}
@@ -232,9 +233,15 @@ export function DecayMonitorCard({ report }: DecayMonitorCardProps) {
           <p className="text-sm text-slate-700 dark:text-slate-300">
             Out-of-sample IC-decay monitoring begins once ≥{min_history_months} months of
             post-publication IC history accrue
-            {n_dates_with_ic > 0
-              ? ` (${n_dates_with_ic} month${n_dates_with_ic !== 1 ? 's' : ''} recorded so far — currently accumulating).`
-              : ' (currently accumulating).'}
+            {n_dates_with_ic > 0 ? (
+              <>
+                {' ('}
+                <span className="font-mono tabular-nums">{n_dates_with_ic}</span>
+                {` month${n_dates_with_ic !== 1 ? 's' : ''} recorded so far — currently accumulating).`}
+              </>
+            ) : (
+              ' (currently accumulating).'
+            )}
           </p>
           <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
             Until the baseline is established, no per-pillar IC metrics are available.
@@ -245,7 +252,7 @@ export function DecayMonitorCard({ report }: DecayMonitorCardProps) {
             {pillars.map((p) => (
               <li key={p.pillar}>
                 <Chip
-                  tone="bg-slate-100 text-slate-500 ring-slate-200 dark:bg-slate-800/60 dark:text-slate-400 dark:ring-slate-700"
+                  tone="bg-slate-100 text-slate-500 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700"
                   size="sm"
                   aria-label={`${pillarLabel(p.pillar)} — pending`}
                 >
@@ -263,16 +270,16 @@ export function DecayMonitorCard({ report }: DecayMonitorCardProps) {
           <table className="w-full min-w-[440px] text-left" aria-label="Per-pillar IC decay metrics">
             <thead>
               <tr>
-                <th className="py-2 pl-2 pr-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
+                <th scope="col" className="py-2 pl-2 pr-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
                   Pillar
                 </th>
-                <th className="py-2 px-3 text-right text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
+                <th scope="col" className="py-2 px-3 text-right text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
                   12m IC
                 </th>
-                <th className="py-2 px-3 text-right text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
+                <th scope="col" className="py-2 px-3 text-right text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
                   Hist. mean IC
                 </th>
-                <th className="py-2 pl-3 pr-2 text-right text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
+                <th scope="col" className="py-2 pl-3 pr-2 text-right text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
                   Decay ratio
                 </th>
               </tr>
