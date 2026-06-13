@@ -67,7 +67,13 @@ from compute.ingest.fundamentals import (
     get_fallback_stats as get_shares_fallback_stats,
 )
 from compute.ingest.fundamentals import (
+    get_filing_precheck_skip_count as get_fundamentals_filing_precheck_skip_count,
+)
+from compute.ingest.fundamentals import (
     reset_fallback_stats as reset_shares_fallback_stats,
+)
+from compute.ingest.fundamentals import (
+    reset_filing_precheck_skip_count as reset_fundamentals_filing_precheck_skip_count,
 )
 from compute.ingest.prices import fetch_benchmarks, fetch_prices, fetch_spy_benchmark
 from compute.ingest.universe import get_sp500_constituents
@@ -820,6 +826,9 @@ def run_weekly_compute() -> int:
     # counters before the fetch loop so this run's counts start at 0.
     # Read back via ``get_shares_fallback_stats()`` after the loop.
     reset_shares_fallback_stats()
+    # Issue #471 — reset the filing-precheck skip counter (Design B, filing-date gate).
+    # Read back via ``get_fundamentals_filing_precheck_skip_count()`` after the histogram log.
+    reset_fundamentals_filing_precheck_skip_count()
     with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
         futures = {
             ex.submit(_fundamentals_one, r["ticker"], str(r.get("cik") or "")): r["ticker"]
@@ -877,6 +886,18 @@ def run_weekly_compute() -> int:
             "fundamentals_slow_tickers (>=15s, top 20): %s",
             [(t, round(e, 2)) for t, e in slow_tickers],
         )
+    # Issue #471 — Design B filing-precheck diagnostic.  Tickers served from the
+    # filing-precheck middle path instead of a live _build_snapshot are excluded from
+    # the elapsed_values above (their fetch returns immediately via the precheck),
+    # so the histogram above already reflects the reduced tail.  This line surfaces
+    # the aggregate skip count alongside it for at-a-glance confirmation of the fix.
+    filing_precheck_skip_count = get_fundamentals_filing_precheck_skip_count()
+    logger.info(
+        "fundamentals_filing_precheck_skip_count=%d "
+        "(tickers served from filing-precheck cache, no new SEC filing, "
+        "skipping companyfacts pull; #471)",
+        filing_precheck_skip_count,
+    )
     if coverage < config.MIN_FUNDAMENTALS_COVERAGE:
         logger.error(
             "Fundamentals coverage %.1f%% below threshold %.1f%%. Aborting.",
