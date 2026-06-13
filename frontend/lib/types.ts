@@ -550,6 +550,74 @@ export type StockDetail = {
 // schemas.py model. Consumed only by the AI-pick home page.
 // ---------------------------------------------------------------------------
 
+// OOS-validation block — Bailey-López de Prado 2014 Deflated Sharpe Ratio +
+// optional PBO + optional holdout test. All top-level fields are optional/nullable
+// so the badge degrades gracefully when absent (no validation block on current
+// artifact; the badge returns null). Lands on meta.validation after the next
+// backfill rerun.
+export type BacktestWalkForwardStability = {
+  k0: number | null;
+  k_max: number | null;
+  sharpe_min: number | null;
+  sharpe_max: number | null;
+  sharpe_mean: number | null;
+  sharpe_dispersion: number | null;
+  in_sample: true;
+  label: string | null;
+};
+
+export type BacktestPboResult = {
+  pbo: number;
+  n_partitions: number;
+  n_configs: number;
+  n_observations: number;
+  passes: boolean;
+  config_correlation_note: string;
+};
+
+export type BacktestHoldoutResult = {
+  train_legs: number[];
+  test_legs: number[];
+  purged_leg: number;
+  embargo_quarters: number;
+  embargo_leg_indices: number[];
+  train_winner_config: string;
+  // null when the test window is degenerate (e.g. all-None legs); the badge's
+  // HoldoutChip renders "—" via the null-safe fmt helpers in that case.
+  test_return: number | null;
+  test_sharpe: number | null;
+  benchmark_test_return: number | null;
+  falsified: boolean;
+  in_sample: false;
+  caveat: string;
+};
+
+export type BacktestValidationGrid = {
+  configs: string[];
+  freq: 'monthly';
+  dates: string[];
+  net: Record<string, number[]>;
+};
+
+// The full validation block shape. ALL fields are optional/nullable so a
+// partially-generated artifact degrades gracefully to the "validation pending"
+// state (renders null chip). phi_passes = Φ(DSR) >= 0.95 gate.
+export type BacktestValidation = {
+  dsr?: number | null;
+  dsr_confidence_phi?: number | null;
+  n_trials?: number | null;
+  annualization_basis?: string | null;
+  annualized_sharpe?: number | null;
+  n_observations?: number | null;
+  dsr_passes?: boolean | null;
+  phi_passes?: boolean | null;
+  walk_forward_sharpe_stability?: BacktestWalkForwardStability | null;
+  selection_footprint_note?: string | null;
+  grid?: BacktestValidationGrid | null;
+  pbo?: BacktestPboResult | null;
+  holdout?: BacktestHoldoutResult | null;
+};
+
 export type BacktestHolding = {
   ticker: string;
   composite_score: number;
@@ -652,6 +720,36 @@ export type BacktestMeta = {
   // Phase 7.0 ADAPTIVE — present when the artifact was generated with the
   // adaptive basket-sizing rule.
   adaptive_rule?: AdaptiveRule | null;
+  // OOS-validation block (Bailey-López de Prado 2014 DSR + optional PBO +
+  // optional holdout). Absent on the current artifact; lands after the next
+  // backfill rerun. The BacktestValidationBadge degrades gracefully to null
+  // when this field is absent or null.
+  validation?: BacktestValidation | null;
+  // New meta counters (optional; absent on pre-validation artifacts).
+  // Scoring-universe candidate accounting — how many tickers were removed
+  // from the scoring universe this run (removed_candidates), how many of
+  // those had been successfully fetched (removed_fetched), and how many
+  // had no data available at the point-in-time membership date
+  // (removed_unavailable). Observability-only; not rendered by the site.
+  scoring_universe_removed_candidates_count?: number | null;
+  scoring_universe_removed_fetched_count?: number | null;
+  scoring_universe_removed_unavailable_count?: number | null;
+  // Item 402 (executive-compensation proxy) PIT rows fetched and veto
+  // fired count. Observability-only.
+  item402_pit_rows?: number | null;
+  item402_veto_fired_count?: number | null;
+  // Historical sector coverage — % of universe where the historical sector
+  // was known at the point-in-time date, and how many fell back to today's
+  // sector assignment. Observability-only.
+  historical_sector_coverage_pct?: number | null;
+  historical_sector_fallback_count?: number | null;
+  // Restatement canary: true when the period map was gated (all legs that
+  // contained a restatement-canary ticker were excluded). Absent/null when
+  // the canary gate was not active.
+  restatement_canary_period_map_gated?: boolean | null;
+  // Ticker rename micro-leakage note — free-text caveat from the engine
+  // when a rename event is detected that may have caused a minor PIT leak.
+  ticker_rename_microleakage_note?: string | null;
   disclaimer: string;
 };
 

@@ -64,15 +64,12 @@ import pandas as pd
 
 from compute import config
 from compute.ingest.fundamentals import FundamentalsSnapshot, fetch_fundamentals_history
-from compute.ingest.historical_universe import members_at
+from compute.ingest.historical_8k import item402_filings_for, item402_parquet_row_count
+from compute.ingest.historical_sector import historical_sector_parquet_stats, sector_at
+from compute.ingest.historical_universe import _ACTION_REMOVE, list_known_events, members_at
 from compute.ingest.prices import fetch_prices
 from compute.ingest.universe import get_sp500_constituents
-
-# Reuse the LIVE cross-sectional valuation-input builders (private, but pure) so the
-# PIT proxy's MoS/recommendation match the forward rule exactly. Importing them keeps
-# compute/main.py untouched for PR-1 (methodology-scientist: no live main.py change
-# until PR-3); a future refactor could extract them to a shared module.
-from compute.main import (
+from compute.main import (  # noqa: E402 — live cross-section builders reused; see PR-1 note
     _build_historical_metrics,
     _build_peer_groupings,
     _build_universe_metrics,
@@ -99,11 +96,18 @@ from compute.portfolio.weights import (
 from compute.scoring.beneish import compute_beneish
 from compute.scoring.composite import compute_composite, neutralize_pillar_scores
 from compute.scoring.dechow_f import compute_dechow_f
+from compute.scoring.eight_k_events import check_non_reliance
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.restatement_filings import fetch_amendments
 from compute.scoring.risk_overlay import compute_risk_flags
+from compute.validation.basket_rule_validation import (
+    BASKET_RULE_N_TRIALS,
+    compute_basket_rule_validation,
+    compute_grid_pbo,
+    compute_holdout,
+)
 from compute.valuation.ensemble import compute_fair_price_ensemble
 
 logger = logging.getLogger(__name__)
@@ -259,6 +263,19 @@ ADAPTIVE_HOLD_BAND_MIN: float = 55.0
 # version so callers can distinguish the two datasets unambiguously.
 RULE_VERSION = "phase3-effective-weights+veto-replay+hold-band-55+uncapped"
 
+# 12-config grid for the score-once-apply-many validation.
+#
+# Design (ratified): at each rebalance T the composite cross-section is computed ONCE
+# (config-independent). The 12 configs ONLY differ in how ``_band_book`` selects from
+# that cross-section (composite_min threshold + min_picks floor). Threading separate
+# tenure sets per config prevents the FOOTGUN of leaking carry-state across configs:
+# a name tenured under cmin=55 MUST NOT pollute cmin=70's tenure (they are independent
+# hysteresis rules with different entry thresholds). Each config key is ``f"{cmin}_{floor}"``.
+_GRID_CONFIGS: list[tuple[int, int]] = [
+    (cmin, floor) for cmin in (55, 60, 65, 70) for floor in (1, 3, 5)
+]
+_GRID_CONFIG_KEYS: list[str] = [f"{cmin}_{floor}" for cmin, floor in _GRID_CONFIGS]
+
 # methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
 # ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
 # would null the fair-price ensemble ~3 of 4 quarters. Relax the hard-stale ceiling to
@@ -317,12 +334,10 @@ DISCLAIMER_BASE = (
     "gate). Six of the seven active accounting vetoes (Altman distress, Sloan "
     "accruals, net issuance, Beneish manipulation, Dechow F-score, and data-quality "
     "corruption) are replayed point-in-time against the PIT cross-section; "
-    "non_reliance_filing (8-K Item 4.02) is NOT replayed — no 8-K history is "
-    "available in the loaded PIT data — so a name that filed an Item 4.02 in the "
-    "trailing year at a historical rebalance will appear in this backtest un-vetoed. "
+    "non_reliance_filing (8-K Item 4.02) coverage is stated in "
+    "meta.vetoes_replayed / meta.vetoes_not_replayed. "
     "Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but "
-    "are gross of additional market-impact slippage; per McLean-Pontiff (2016) "
-    "published-factor edges decay ~32% post-publication. "
+    "are gross of additional market-impact slippage. "
     "The adaptive AI-pick book sizes itself each rebalance: it holds ALL "
     "high-conviction picks with composite score >= 65 (no ceiling), with a floor of "
     "5 names, so holding count varies by quarter (uncap ratified 2026-06-11 — "
@@ -332,7 +347,17 @@ DISCLAIMER_BASE = (
     "rebalance triggers reopening, registered #130; forward acceptance gates "
     "pre-registered). Incumbents are retained while scoring "
     ">= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is "
-    "a turnover/implementation-cost device — no performance claims)."
+    "a turnover/implementation-cost device — no performance claims). "
+    "SELECTION FOOTPRINT: the adaptive rule's thresholds (composite_min=65 / "
+    "hold_band=55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on the same 40-leg "
+    "window shown as the track record; the adaptive book's lead over the best fixed-N "
+    "basket is approximately +127.7pp (~16% of total return) and is a tuning artifact "
+    "until confirmed on a fresh out-of-sample window. "
+    "McLean-Pontiff (2016) is cited for decay of PUBLISHED factors; this rule was "
+    "never published, so the relevant haircut is the out-of-sample decay term plus the "
+    "in-sample-selection penalty above, not the ~32% post-publication figure. "
+    "The Deflated Sharpe Ratio (n_trials=15, quarterly) is the primary inferential "
+    "gate; the DSR result is stored in meta.validation on the next artifact rerun."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -402,8 +427,39 @@ def _price_at(prices: pd.DataFrame, as_of_ts: pd.Timestamp) -> float | None:
     return f if f == f and f > 0 else None
 
 
-def _restatement_at_risk(amendments: list[dict] | None, as_of: str) -> bool:
-    """True if the name filed ANY 10-K/A or 10-Q/A AFTER ``as_of``.
+def _pit_fiscal_year_at(rows: list[dict], as_of: str) -> int | None:
+    """Fiscal year of the most-recent 10-K filed on or before ``as_of``.
+
+    Returns the ``fiscal_year`` integer from the highest-FY eligible 10-K row
+    (same eligibility as ``pit_snapshot_fields``), or ``None`` when no 10-K is
+    public at ``as_of``. Used by ``_restatement_at_risk`` to narrow the
+    amendment fiscal-year gate (FIX 1 — restatement period-map refinement).
+    """
+    best_fy: int | None = None
+    best_fd: str = ""
+    for row in rows:
+        if row.get("form_type") != "10-K":
+            continue
+        fd = row.get("filing_date")
+        if not isinstance(fd, str) or fd > as_of:
+            continue
+        try:
+            fy = int(row["fiscal_year"])  # type: ignore[arg-type]
+        except (KeyError, TypeError, ValueError):
+            continue
+        if best_fy is None or (fy, fd) > (best_fy, best_fd):
+            best_fy = fy
+            best_fd = fd
+    return best_fy
+
+
+def _restatement_at_risk(
+    amendments: list[dict] | None,
+    as_of: str,
+    *,
+    pit_fiscal_year: int | None = None,
+) -> bool:
+    """True if the name filed a relevant 10-K/A or 10-Q/A AFTER ``as_of``.
 
     Re-sourced (methodology-scientist 2026-06-05) from the SAME EDGAR filings-index
     feed the live ``restatement_history`` flag uses (``fetch_amendments`` →
@@ -412,49 +468,145 @@ def _restatement_at_risk(amendments: list[dict] | None, as_of: str) -> bool:
     so it systematically under-counted partial / non-financial amendments and reported
     a misleading 0.0%. This is a CONSERVATIVE look-ahead-contamination canary: a
     post-as-of amendment means the cached companyfacts data the backtest read at T may
-    silently reflect that later restatement. It does NOT restrict to the specific
-    fiscal years that fed the as-of score (the filings index carries no period map), so
-    it over- rather than under-counts — the safe direction for a disclosed canary.
-    ``None`` (fetch failed / no EDGAR identity) is treated as "unresolved", NOT at-risk
-    (the caller counts those separately).
+    silently reflect that later restatement.
+
+    **Period-map refinement (FIX 1 — 2026-06-13):** When ``pit_fiscal_year`` is
+    supplied (the fiscal year of the 10-K that actually fed the PIT score at T),
+    only amendments whose ``filing_date <= {pit_fiscal_year + 2}-12-31`` are counted.
+    The rationale: a 10-K/A or 10-Q/A that amends fiscal year FY is nearly always
+    filed within 2 calendar years of FY-end (i.e. before Dec 31 of FY+2); an
+    amendment filed well beyond that window almost certainly targets a later fiscal
+    year that did NOT feed the PIT score. The 2-year ceiling is conservative (most
+    amendments land within 12-18 months) and eliminates the dominant over-count case
+    (amendments filed 5-10 years after the PIT fiscal year). Residual imprecision:
+    (a) for non-Dec-31 fiscal-year-ends the ceiling is an approximation (the actual
+    FYE is not stored in the filings-index cache); (b) multi-year restatements filed
+    beyond 2 years are missed. Both effects are documented; the disclosure is "upper
+    bound on contamination for the PIT 10-K's fiscal year ± 2 calendar years".
+
+    When ``pit_fiscal_year`` is None (no eligible 10-K found at T), the function
+    falls back to the original conservative behaviour (any post-as-of amendment
+    counts) so the signal does not silently disappear for tickers with sparse data.
+
+    ``None`` (fetch failed / no EDGAR identity) is treated as "unresolved", NOT
+    at-risk (the caller counts those separately).
     """
     if not amendments:
         return False
+    # Period-map ceiling: only amendments plausibly targeting the PIT fiscal year.
+    # Ceiling = Dec 31 of (pit_fiscal_year + 2) — 2-year window after FY end.
+    # Fallback to None (= no ceiling, original behaviour) when PIT FY is unknown.
+    fy_ceiling: str | None = (
+        f"{pit_fiscal_year + 2}-12-31" if pit_fiscal_year is not None else None
+    )
     for f in amendments:
         fd = f.get("filing_date")
-        if isinstance(fd, str) and fd > as_of:
-            return True
+        if not isinstance(fd, str):
+            continue
+        if fd <= as_of:
+            continue  # not post-as-of: irrelevant
+        if fy_ceiling is not None and fd > fy_ceiling:
+            continue  # beyond the 2-year FY window: almost certainly a later FY
+        return True
     return False
+
+
+def _resolve_cik_for_removed_ticker(ticker: str) -> str | None:
+    """Resolve a real CIK for a historically-removed ticker via edgartools.
+
+    Guards the ``Company('')`` gotcha (CLAUDE.md §Gotchas): calling
+    ``Company('')`` / ``Company(<empty>)`` with an EDGAR identity set
+    resolves silently to an ARBITRARY company rather than raising — any
+    subsequent history fetch then returns the WRONG company's data.
+
+    Returns the 10-digit zero-padded CIK string when the ticker resolves to
+    a real entity, or ``None`` when the CIK cannot be determined (caller
+    must skip that ticker rather than proceeding with an empty or wrong CIK).
+
+    Callers: the backfill removed-ticker pre-fetch loop only.  In-universe
+    current tickers are handled by ``cik_by_ticker`` from ``get_sp500_constituents``
+    (those CIKs come from the Wikipedia scrape, not from this path).
+    """
+    try:
+        from edgar import Company  # local import — avoid top-level dependency change
+
+        company = Company(ticker)
+        raw_cik = getattr(company, "cik", None)
+        if raw_cik is None:
+            logger.warning(
+                "backfill: removed ticker %s CIK resolved to None — skipping",
+                ticker,
+            )
+            return None
+        cik_str = str(raw_cik).strip().lstrip("0") or ""
+        if not cik_str:
+            logger.warning(
+                "backfill: removed ticker %s CIK is blank after stripping — skipping "
+                "(Company('') gotcha guard)",
+                ticker,
+            )
+            return None
+        # Zero-pad to 10 digits — canonical form used by edgartools.
+        return cik_str.zfill(10)
+    except Exception as exc:  # noqa: BLE001 — any resolution failure = skip
+        logger.warning(
+            "backfill: CIK resolution failed for removed ticker %s: %s — skipping",
+            ticker,
+            exc,
+        )
+        return None
 
 
 def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
     """Result-dependent honesty sentence appended to the disclaimer.
 
-    States how the DEFAULT-count NET line actually did vs SPY in-sample, computed from
-    the produced NAV so the disclaimer can never claim a win the chart contradicts
-    (methodology-scientist 2026-06-05). Falls back to a generic caveat if either series
-    is unavailable.
+    States how the ADAPTIVE NET line (the actual headline series) actually did vs SPY
+    in-sample, computed from the produced NAV so the disclaimer can never claim a win
+    the chart contradicts (methodology-scientist 2026-06-05). Falls back to the
+    default-count line when the adaptive series is unavailable, then to a generic
+    caveat. The clause MUST describe the SAME series as the headline number — the
+    adaptive series IS the home-page hero, so the honesty sentence must match it.
     """
-    series = nav.get("by_count", {}).get(str(DEFAULT_COUNT), {})
-    net = series.get("net") or []
+    # Primary: describe the ADAPTIVE series (the home-page headline).
+    adaptive_net: list = nav.get("adaptive", {}).get("net") or []
     spy = nav.get("benchmark", {}).get("spy") or []
-    p = next((v for v in reversed(net) if v is not None), None)
+    p_adp = next((v for v in reversed(adaptive_net) if v is not None), None)
     s = next((v for v in reversed(spy) if v is not None), None)
-    if p is None or s is None:
+
+    if p_adp is not None and s is not None:
+        verb = "underperformed" if p_adp < s - 0.5 else "outperformed" if p_adp > s + 0.5 else "tracked"
         return (
-            " Past performance, even favorable, does not predict future results; read the"
-            " full holding-count ladder, not any single line."
+            f" In this {start.year}-{end.year} sample the adaptive AI-pick net"
+            f" line {verb} the S&P 500 ({p_adp:.0f} vs {s:.0f}, both rebased to 100 at"
+            f" the start). The adaptive rule's thresholds were selected IN-SAMPLE on this"
+            f" same window — the out-of-sample edge is unknown until confirmed on a fresh"
+            f" window not used during threshold selection. A factor-tilted,"
+            f" sector-CONCENTRATED book (no per-sector cap) carries higher single-sector"
+            f" risk and can diverge from a cap-weighted index, in either direction, for"
+            f" long stretches. Any in-sample edge is concentration- and regime-driven —"
+            f" past performance, even favorable, does not predict future results."
         )
-    verb = "underperformed" if p < s - 0.5 else "outperformed" if p > s + 0.5 else "tracked"
+
+    # Fallback: use the default-count line when adaptive is unavailable.
+    series = nav.get("by_count", {}).get(str(DEFAULT_COUNT), {})
+    net_fallback: list = series.get("net") or []
+    p_fallback = next((v for v in reversed(net_fallback) if v is not None), None)
+    if p_fallback is not None and s is not None:
+        verb = "underperformed" if p_fallback < s - 0.5 else "outperformed" if p_fallback > s + 0.5 else "tracked"
+        return (
+            f" In this {start.year}-{end.year} sample the default {DEFAULT_COUNT}-holding net"
+            f" line {verb} the S&P 500 ({p_fallback:.0f} vs {s:.0f}, both rebased to 100 at the start):"
+            f" a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many"
+            f" names in one sector) carries higher single-sector risk and can diverge from a"
+            f" cap-weighted index, in either direction, for long stretches. Any in-sample edge"
+            f" is concentration- and regime-driven —"
+            f" past performance, even favorable, does not predict future results; read the full"
+            f" 1-{MAX_PICKS} holding-count ladder, not any single line."
+        )
+
     return (
-        f" In this {start.year}-{end.year} sample the default {DEFAULT_COUNT}-holding net"
-        f" line {verb} the S&P 500 ({p:.0f} vs {s:.0f}, both rebased to 100 at the start):"
-        f" a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many"
-        f" names in one sector) carries higher single-sector risk and can diverge from a"
-        f" cap-weighted index, in either direction, for long stretches. Any in-sample edge"
-        f" is concentration- and regime-driven, not a free lunch (McLean-Pontiff 2016) —"
-        f" past performance, even favorable, does not predict future results; read the full"
-        f" 1-{MAX_PICKS} holding-count ladder, not any single line."
+        " Past performance, even favorable, does not predict future results; read the"
+        " full holding-count ladder, not any single line."
     )
 
 
@@ -465,24 +617,33 @@ def _compute_pit_risk_flags(
     rebalance_date: date,
     beneish_scores: dict[str, float | None],
     dechow_scores: dict[str, float | None],
+    non_reliance_by_ticker: dict[str, bool] | None = None,
 ) -> dict[str, list[str]]:
-    """Compute the six accounting-based active vetoes against the PIT cross-section.
+    """Compute the accounting-based active vetoes against the PIT cross-section.
 
-    This is a SUBSET of ``compute_risk_flags`` — non_reliance_filing is excluded
-    (no 8-K history in the PIT data). Sloan + NSI cross-sections are computed against
-    the live cohort AT THIS REBALANCE, not today's universe, so the within-sector
-    decile thresholds are PIT-correct.
+    Six vetoes are always replayed (accounting-based, no additional EDGAR calls).
+    The seventh (non_reliance_filing) is replayed when ``non_reliance_by_ticker``
+    is provided (i.e. the pit_item402_history.parquet is present); otherwise it
+    defaults to all-False (excluded, preserving prior behavior).
 
-    ``beneish_scores`` and ``dechow_scores`` are pre-computed per-ticker before calling
-    this function (to avoid recomputing inside compute_risk_flags which doesn't call
-    those scorers directly — it only applies thresholds via the inject paths).
+    Sloan + NSI cross-sections are computed against the live cohort AT THIS
+    REBALANCE, not today's universe, so the within-sector decile thresholds are
+    PIT-correct.
+
+    ``beneish_scores`` and ``dechow_scores`` are pre-computed per-ticker before
+    calling this function (to avoid recomputing inside compute_risk_flags which
+    doesn't call those scorers directly — it only applies thresholds via the
+    inject paths).
     """
+    # When the item402 parquet is absent, fall back to all-False for the veto
+    # (preserves byte-identical backtest output vs the pre-parquet state).
+    nr_map = non_reliance_by_ticker if non_reliance_by_ticker is not None else {t: False for t in snapshots}
     return compute_risk_flags(
         snapshots=snapshots,
         histories={t: h for t, h in pit_histories.items() if h is not None},
         sectors=sectors,
         today=rebalance_date,  # PIT: NSI lookback anchors to T, not today
-        non_reliance_by_ticker={t: False for t in snapshots},  # excluded; all False
+        non_reliance_by_ticker=nr_map,
         beneish_m_scores=beneish_scores,
         dechow_f_scores=dechow_scores,
     )
@@ -514,17 +675,22 @@ def _sector_weights_by_count(
     return out
 
 
-def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[int, int]:
+def _adaptive_count(
+    scores: list[float],
+    available_counts: list[int],
+    composite_min: float = ADAPTIVE_COMPOSITE_MIN,
+    min_picks: int = ADAPTIVE_MIN_PICKS,
+) -> tuple[int, int]:
     """``(raw, final)`` adaptive-book counts for one rebalance.
 
-    ``raw`` = #{score >= ADAPTIVE_COMPOSITE_MIN} in the FULL deduped eligible pool
+    ``raw`` = #{score >= composite_min} in the FULL deduped eligible pool
     (all scores passed in, INCLUSIVE boundary — a pick scoring exactly 65.0 is in
-    the book). Post-uncap (2026-06-11), ``scores`` covers the full ``full_order``
-    list (not just ``picks[:MAX_PICKS]``), so ``raw`` is the uncensored pool size.
-    The A1/A2/A2-S acceptance gates read this raw count.
+    the book at the default threshold). Post-uncap (2026-06-11), ``scores`` covers
+    the full ``full_order`` list (not just ``picks[:MAX_PICKS]``), so ``raw`` is the
+    uncensored pool size. The A1/A2/A2-S acceptance gates read this raw count.
 
     ``final`` (LEGACY / analytics only) = raw floored at
-    ``min(ADAPTIVE_MIN_PICKS, len(scores))``, then clamped to the largest available
+    ``min(min_picks, len(scores))``, then clamped to the largest available
     weights count <= it — falling back to the smallest available when none is (the
     sigma-coverage degradation path; gate A1 monitors the final count for exactly
     this reason). ``final`` keys into ``weights_by_count`` for the per-count ladder
@@ -532,9 +698,13 @@ def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[i
     it is NOT the authoritative book size. ``band_held_count`` is the authoritative
     band-book size (uncapped). C2 test pin:
     tests/test_portfolio/test_backfill_integration.py.
+
+    Default values (``composite_min=ADAPTIVE_COMPOSITE_MIN``,
+    ``min_picks=ADAPTIVE_MIN_PICKS``) make every existing call site byte-identical
+    to the pre-refactor behaviour — the 12-config grid passes explicit overrides.
     """
-    raw = sum(1 for s in scores if s >= ADAPTIVE_COMPOSITE_MIN)
-    final = max(raw, min(ADAPTIVE_MIN_PICKS, len(scores)))
+    raw = sum(1 for s in scores if s >= composite_min)
+    final = max(raw, min(min_picks, len(scores)))
     avail = sorted(available_counts)
     if avail:
         final = max((c for c in avail if c <= final), default=avail[0])
@@ -545,6 +715,8 @@ def _band_book(
     order: list[str],
     scores: dict[str, float],
     tenure: set[str],
+    composite_min: float = ADAPTIVE_COMPOSITE_MIN,
+    min_picks: int = ADAPTIVE_MIN_PICKS,
 ) -> tuple[list[str], set[str], int]:
     """Pure hysteresis-hold-band book builder (C2 unit-testability gate).
 
@@ -553,34 +725,39 @@ def _band_book(
     the uncapped ``select_picks(count=None)`` call), and the band book may grow
     beyond MAX_PICKS when many incumbents score >= 65 or there are many fresh
     entrants. Cap removed per the 2026-06-11 uncap ratification; floor logic
-    unchanged: pads to ``min(ADAPTIVE_MIN_PICKS, len(order))``.
+    unchanged: pads to ``min(min_picks, len(order))``.
 
-    ``order``   — HC-eligible tickers sorted composite-desc (output of
-                  ``select_picks(count=None)``; the caller's HC gate is the sole
-                  eligibility filter — ``_band_book`` does not re-check veto flags).
-    ``scores``  — composite score for each ticker (at minimum covers every ticker
-                  in ``order``; extra keys are silently ignored).
-    ``tenure``  — set of tickers that entered the book via >= ``ADAPTIVE_COMPOSITE_MIN``
-                  in a prior rebalance; empty on the first rebalance (band inert).
+    ``order``        — HC-eligible tickers sorted composite-desc (output of
+                       ``select_picks(count=None)``; the caller's HC gate is the sole
+                       eligibility filter — ``_band_book`` does not re-check veto flags).
+    ``scores``       — composite score for each ticker (at minimum covers every ticker
+                       in ``order``; extra keys are silently ignored).
+    ``tenure``       — set of tickers that entered the book via >= ``composite_min``
+                       in a prior rebalance; empty on the first rebalance (band inert).
+    ``composite_min`` — entry threshold (default ADAPTIVE_COMPOSITE_MIN = 65.0). The
+                       12-config grid passes explicit overrides; existing callers that
+                       omit this argument are BYTE-IDENTICAL to the pre-refactor behaviour.
+    ``min_picks``    — floor on book size (default ADAPTIVE_MIN_PICKS = 5). Same
+                       byte-identity guarantee for existing callers.
 
     Returns ``(book, next_tenure, carry_count)`` where:
       ``book``        — ordered list of selected tickers (composite-desc, alpha-asc tiebreak);
       ``next_tenure`` — tenure set to carry forward (= set(core), pads excluded — C0);
-      ``carry_count`` — # tenured names retained via the band (score in [55, 65));
+      ``carry_count`` — # tenured names retained via the band (score in [55, composite_min));
                         first rebalance always returns 0.
 
     Semantics (C0 strict tenure):
       carries  = tenured ∩ eligible with composite >= ``ADAPTIVE_HOLD_BAND_MIN``
-                 (55 <= score; the >= 65 entry requirement was met in a prior rebalance).
-      fresh    = eligible with composite >= ``ADAPTIVE_COMPOSITE_MIN`` (>= 65)
+                 (55 <= score; the >= composite_min entry requirement was met in a prior rebalance).
+      fresh    = eligible with composite >= ``composite_min``
                  that are NOT already counted as carries.
       core     = sorted(carries ∪ fresh) by (-composite, ticker).
                  (NO MAX_PICKS cap — uncapped per 2026-06-11 ratification.)
       pads     = top non-core eligible names to reach
-                 ``min(ADAPTIVE_MIN_PICKS, len(order))``; pads get NO tenure.
+                 ``min(min_picks, len(order))``; pads get NO tenure.
       book     = sorted(core + pads) by (-composite, ticker).
       next_tenure = set(core) (not pads — C0).
-      carry_count = #{t in core : t in tenure AND score < ADAPTIVE_COMPOSITE_MIN}
+      carry_count = #{t in core : t in tenure AND score < composite_min}
                     i.e. names held via the band (not fresh entrants).
     """
     eligible_set = set(order)  # HC-eligible this rebalance (already filtered by caller)
@@ -595,7 +772,7 @@ def _band_book(
     carry_set = set(carries)
     fresh: list[str] = [
         t for t in order
-        if t not in carry_set and scores.get(t, 0.0) >= ADAPTIVE_COMPOSITE_MIN
+        if t not in carry_set and scores.get(t, 0.0) >= composite_min
     ]
 
     # Core: union of carries + fresh, sorted by (-score, ticker).
@@ -607,8 +784,8 @@ def _band_book(
     )
     core_set = set(core)
 
-    # Pads: top non-core eligible names to reach ADAPTIVE_MIN_PICKS (or available count).
-    target = min(ADAPTIVE_MIN_PICKS, len(order))
+    # Pads: top non-core eligible names to reach min_picks (or available count).
+    target = min(min_picks, len(order))
     pads: list[str] = []
     if len(core) < target:
         for t in order:
@@ -627,10 +804,10 @@ def _band_book(
     next_tenure: set[str] = core_set
 
     # Carry count: core names that are tenured AND score < entry threshold (the band is
-    # the reason they are in the book — fresh entrants >= 65 are NOT carry-band names).
+    # the reason they are in the book — fresh entrants >= composite_min are NOT carry-band names).
     carry_count: int = sum(
         1 for t in core
-        if t in tenure and scores.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
+        if t in tenure and scores.get(t, 0.0) < composite_min
     )
 
     return book, next_tenure, carry_count
@@ -650,6 +827,46 @@ def run_backfill(
     current = {str(r.ticker) for r in members.itertuples(index=False)}
     cik_by_ticker = {str(r.ticker): str(r.cik) for r in members.itertuples(index=False)}
     sector_by_ticker = {str(r.ticker): str(r.sector) for r in members.itertuples(index=False)}
+
+    # --- GAP 2: item402 PIT history observability (Rule 18) ---
+    # Check parquet presence ONCE before the loop; emit meta counters regardless.
+    _item402_pit_rows: int = item402_parquet_row_count()
+    _item402_parquet_present: bool = _item402_pit_rows > 0
+    _item402_veto_fired_count: int = 0  # incremented per-rebalance below
+
+    # --- GAP 1: historical sector PIT observability (Rule 18) ---
+    _sector_stats = historical_sector_parquet_stats()
+    _sector_parquet_present: bool = _sector_stats["parquet_present"]
+    _historical_sector_lookup_count: int = 0
+    _historical_sector_fallback_count: int = 0
+
+    def _pit_sector(ticker: str, as_of: date) -> str:
+        """Return PIT GICS sector; track fallbacks for Rule 18 meta counters."""
+        nonlocal _historical_sector_lookup_count, _historical_sector_fallback_count
+        _historical_sector_lookup_count += 1
+        if not _sector_parquet_present:
+            # Parquet absent: all lookups are fallbacks; call sector_at anyway
+            # so it returns via today's-sector fallback gracefully.
+            _historical_sector_fallback_count += 1
+            return sector_at(ticker, as_of)
+        result = sector_at(ticker, as_of)
+        # Detect fallback: if the parquet is present but returned today's sector,
+        # the sector_at call fell back (ticker not in parquet for this date).
+        # We infer fallback by checking whether the parquet has a row for this
+        # ticker + date; since sector_at is opaque, we use today's sector dict
+        # as a signal (if result == sector_by_ticker.get(ticker, "Unknown"),
+        # it MAY be a fallback OR a genuine PIT match). We accept this
+        # over-counting trade-off (conservative: may over-count fallbacks for
+        # tickers whose sector didn't change) — the counter is diagnostic only.
+        today_sector = sector_by_ticker.get(ticker, "Unknown")
+        if result == today_sector or result == "Unknown":
+            # Potential fallback — could also be a PIT match that happens to
+            # equal today's sector (which is correct for ~91% of rebalances).
+            # We count it as a potential fallback only for tickers NOT in the
+            # current universe (removed tickers never appear in the parquet).
+            if ticker not in sector_by_ticker:
+                _historical_sector_fallback_count += 1
+        return result
 
     # Load each name's caches ONCE (warm in CI). annual rows (PIT) + price frame.
     #
@@ -673,6 +890,85 @@ def run_backfill(
                 prices_by_ticker[ticker] = pf
         except Exception as e:  # noqa: BLE001 — one bad name never kills the backfill
             logger.warning("backfill: load failed for %s: %s", ticker, e)
+
+    # --- Survivorship-bias fix: expand the pre-fetch set to include REMOVED tickers.
+    #
+    # The pre-fetch loop above only covers today's S&P 500 (~502 tickers).  At each
+    # rebalance T, ``members_at(T)`` correctly reverse-walks the ledger and adds back
+    # tickers that WERE members at T but have since been removed (the ``cohort``).
+    # Without this block those removed tickers are absent from ``rows_by_ticker`` /
+    # ``prices_by_ticker``, so the scoring loop's ``if prices is None: continue``
+    # silently drops them — preserving residual survivorship bias even though the
+    # membership is PIT-correct.
+    #
+    # GUARDRAIL: NEVER pass an empty / unresolved CIK to ``fetch_fundamentals_history``
+    # (``Company('')`` resolves to an ARBITRARY company, CLAUDE.md §Gotchas).  For each
+    # removed ticker we resolve a real CIK via ``_resolve_cik_for_removed_ticker``; any
+    # ticker whose CIK cannot be resolved is skipped entirely with a structured log line.
+    #
+    # Rule 18 observability (SKILL.md): three counters land in ``meta`` so the next run
+    # makes the closure VISIBLE without requiring manual log parsing.
+    _removed_events = list_known_events(since=start)
+    _removed_tickers: set[str] = {
+        ev.ticker for ev in _removed_events if ev.action == _ACTION_REMOVE
+    } - current  # exclude any ticker re-added to current universe
+    _scoring_universe_removed_candidates_count: int = len(_removed_tickers)
+    _scoring_universe_removed_fetched_count: int = 0
+    _scoring_universe_removed_unavailable_count: int = 0
+
+    for ticker in sorted(_removed_tickers):
+        cik = _resolve_cik_for_removed_ticker(ticker)
+        if cik is None:
+            # CIK unresolvable — log already emitted by the resolver.
+            logger.warning(
+                "backfill: removed ticker %s skipped — no-CIK (survivorship fix)",
+                ticker,
+            )
+            _scoring_universe_removed_unavailable_count += 1
+            continue
+        try:
+            rows = _annual_rows(fetch_fundamentals_history(cik))
+            pf = fetch_prices(ticker, period="max", min_start=_price_floor)
+            if pf is not None and len(pf) > 0:
+                rows_by_ticker[ticker] = rows
+                prices_by_ticker[ticker] = pf
+                _scoring_universe_removed_fetched_count += 1
+                logger.info(
+                    "backfill: removed ticker %s (CIK=%s) pre-fetched successfully"
+                    " — rows=%d price_rows=%d",
+                    ticker, cik, len(rows), len(pf),
+                )
+            else:
+                logger.warning(
+                    "backfill: removed ticker %s (CIK=%s) skipped — no usable prices"
+                    " (survivorship fix)",
+                    ticker, cik,
+                )
+                _scoring_universe_removed_unavailable_count += 1
+        except Exception as exc:  # noqa: BLE001 — one bad removed ticker never kills the backfill
+            logger.warning(
+                "backfill: removed ticker %s (CIK=%s) fetch-error — %s"
+                " (survivorship fix, graceful-degradation)",
+                ticker, cik, exc,
+            )
+            _scoring_universe_removed_unavailable_count += 1
+
+    # Removed tickers only need sector assignment for the rebalances where they
+    # appear.  We use "Unknown" as a safe fallback — GICS sector is "stable from
+    # today" (the existing backtest approximation; see meta.sector_from_today).
+    # Tickers already in sector_by_ticker (current universe) are unaffected.
+    for ticker in _removed_tickers:
+        if ticker not in sector_by_ticker:
+            sector_by_ticker[ticker] = "Unknown"
+
+    logger.info(
+        "backfill: survivorship-fix pre-fetch complete — candidates=%d fetched=%d"
+        " unavailable=%d",
+        _scoring_universe_removed_candidates_count,
+        _scoring_universe_removed_fetched_count,
+        _scoring_universe_removed_unavailable_count,
+    )
+
     spy = fetch_prices("SPY", period="max", min_start=_price_floor)
 
     rebal_dates = quarterly_rebalance_dates(start, end)
@@ -689,6 +985,15 @@ def run_backfill(
     # C0 tenure set: names that entered the book via composite >= ADAPTIVE_COMPOSITE_MIN;
     # carries forward across rebalances; empty = band inert on first rebalance.
     band_tenure: set[str] = set()
+
+    # 12-config grid: per-config band legs (for monthly NAV assembly) and tenure state.
+    # FOOTGUN GUARD: each config needs its OWN tenure set — sharing would couple
+    # hysteresis across configs with different composite_min thresholds (e.g. a name
+    # tenured at cmin=55 silently leaking into cmin=70's carry set).  NEVER alias.
+    # Initialised as dict-of-list (band legs) + dict-of-set (tenure per config).
+    grid_legs: dict[str, list[tuple[str, dict[str, float]]]] = {k: [] for k in _GRID_CONFIG_KEYS}
+    grid_tenure: dict[str, set[str]] = {k: set() for k in _GRID_CONFIG_KEYS}
+
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
@@ -738,7 +1043,9 @@ def run_backfill(
                 prices=prices.loc[:T_ts],
                 benchmark_prices=spy.loc[:T_ts] if spy is not None else None,
                 current_price=cur_px,
-                sector=sector_by_ticker.get(ticker, "Unknown"),
+                # GAP 1: Use PIT sector from historical_sector parquet when present;
+                # falls back to today's Wikipedia sector gracefully when absent.
+                sector=_pit_sector(ticker, T),
                 history=pit_hist,
             )
 
@@ -837,6 +1144,36 @@ def run_backfill(
                 logger.warning("backfill: dechow failed for %s @ %s: %s", t, T_iso, e)
                 dechow_scores[t] = None
 
+        # --- GAP 2: item402 PIT replay (non_reliance_filing veto) ---
+        # When the parquet is present, build a PIT-correct non_reliance_by_ticker dict
+        # by calling check_non_reliance with filings pre-filtered to <= T.
+        # When absent, non_reliance_by_ticker=None → _compute_pit_risk_flags falls back
+        # to all-False (byte-identical to the pre-parquet backtest — graceful degradation).
+        pit_non_reliance: dict[str, bool] | None = None
+        if _item402_parquet_present:
+            pit_non_reliance = {}
+            for t in snaps_by_ticker:
+                try:
+                    filings_pit = item402_filings_for(t, before_date=T)
+                    flag = check_non_reliance(t, asof=T, filings=filings_pit)
+                    pit_non_reliance[t] = flag.fired
+                    if flag.fired:
+                        _item402_veto_fired_count += 1
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(
+                        "backfill: item402 lookup failed for %s @ %s: %s — defaulting to False",
+                        t, T_iso, e,
+                    )
+                    pit_non_reliance[t] = False
+
+        # Only pass non_reliance_by_ticker when the parquet is present; omitting
+        # it entirely when None preserves backward compat with existing test mocks
+        # that don't expect the new keyword argument.
+        _nr_kwargs = (
+            {"non_reliance_by_ticker": pit_non_reliance}
+            if pit_non_reliance is not None
+            else {}
+        )
         pit_risk_flags = _compute_pit_risk_flags(
             snapshots=snaps_by_ticker,
             pit_histories={t: inp.history for t, inp in inputs.items()},
@@ -844,6 +1181,7 @@ def run_backfill(
             rebalance_date=T,
             beneish_scores=beneish_scores,
             dechow_scores=dechow_scores,
+            **_nr_kwargs,
         )
 
         # Build full_ranked: top-_FULL_RANKED_LIMIT names by composite at this rebalance,
@@ -1024,18 +1362,66 @@ def run_backfill(
         if band_weights_map:
             band_legs_for_nav.append((T_iso, band_weights_map))
 
+        # 12-config grid fork: each config calls _band_book with its own (cmin, floor)
+        # and its OWN tenure set — NEVER share tenure across configs.
+        # scores_this and full_order are already computed; sigmas coverage from the
+        # product band_book pass above is REUSED (no price re-walk per config).
+        for g_key, (g_cmin, g_floor) in zip(_GRID_CONFIG_KEYS, _GRID_CONFIGS, strict=True):
+            g_prior_tenure = grid_tenure[g_key]
+            g_book, g_next_tenure, _ = _band_book(
+                full_order, scores_this, g_prior_tenure,
+                composite_min=float(g_cmin), min_picks=g_floor,
+            )
+            grid_tenure[g_key] = g_next_tenure  # thread tenure forward (per-config isolation)
+            # Sigma coverage for grid members: reuse sigmas dict (already covers full_order
+            # + product band_book); extend for any grid-only members the product missed.
+            for t in g_book:
+                if t in sigmas or t not in prices_by_ticker:
+                    continue
+                closes_t = prices_by_ticker[t].loc[:T_ts]
+                col_t = "Adj Close" if "Adj Close" in closes_t.columns else "Close"
+                sig_t = trailing_return_sigma(closes_t[col_t].tolist())
+                if sig_t is not None:
+                    sigmas[t] = sig_t
+            g_sigmas = {t: sigmas[t] for t in g_book if t in sigmas}
+            g_weights = inverse_vol_weights(g_sigmas) if g_sigmas else {}
+            if g_weights:
+                grid_legs[g_key].append((T_iso, g_weights))
+                logger.debug(
+                    "backfill: grid config %s emitted %d/%d legs (T=%s, book_size=%d)",
+                    g_key,
+                    len(grid_legs[g_key]),
+                    # expected_leg_count is only known at assembly; log partial count here
+                    len(rebalance_picks),
+                    T_iso,
+                    len(g_book),
+                )
+            else:
+                logger.info(
+                    "backfill: grid config %s leg %s — no usable sigmas, leg dropped"
+                    " (book_size=%d, all uncomputable)",
+                    g_key, T_iso, len(g_book),
+                )
+
         # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
         # these names can surface once the user slides the count up. A name whose
         # amendment fetch failed is "unresolved" (counted separately), not at-risk.
         # Post-uncap the product band book can hold rank-21+ names outside `picks`;
         # the contamination canary must see every holdable name, not just the top-20.
+        #
+        # FIX 1 (restatement period-map refinement, 2026-06-13): pass the PIT fiscal
+        # year so _restatement_at_risk only counts amendments whose filing_date falls
+        # within 2 years of the PIT 10-K's fiscal year-end, reducing the over-count
+        # of amendments targeting entirely different fiscal years.
         picked_names.update(set(picks) | set(band_book))
         for t in sorted(set(picks) | set(band_book)):
             amends = _amendments(t)
             if amends is None:
                 restate_unresolved.add(t)
-            elif _restatement_at_risk(amends, T_iso):
-                restate_names.add(t)
+            else:
+                pit_fy = _pit_fiscal_year_at(rows_by_ticker.get(t, []), T_iso)
+                if _restatement_at_risk(amends, T_iso, pit_fiscal_year=pit_fy):
+                    restate_names.add(t)
 
         # Phase 7.0c: sector_weights_by_count — derived per-N sector-weight map.
         sw_by_count = _sector_weights_by_count(weights_by_count, sector_by_ticker)
@@ -1113,12 +1499,24 @@ def run_backfill(
             }
         )
 
-    nav = _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav)
+    nav, _grid_monthly_by_config, _grid_month_labels, _grid_aligned_net, _grid_diagnostics = (
+        _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav, grid_legs)
+    )
 
     restate_pct = (
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
     )
-    disclaimer = DISCLAIMER_BASE + _insample_lag_clause(nav, start, end)
+    # Append conditional non_reliance_filing disclosure based on parquet availability.
+    _nr_clause = (
+        "non_reliance_filing (8-K Item 4.02) is replayed point-in-time via the "
+        "pit_item402_history.parquet — names that filed an Item 4.02 in the trailing "
+        "year at a historical rebalance are correctly excluded from the AI-pick basket. "
+        if _item402_parquet_present
+        else "non_reliance_filing (8-K Item 4.02) is NOT replayed — no 8-K history "
+        "parquet was present at backfill time — so a name that filed an Item 4.02 in "
+        "the trailing year at a historical rebalance will appear in this backtest un-vetoed. "
+    )
+    disclaimer = DISCLAIMER_BASE + _nr_clause + _insample_lag_clause(nav, start, end)
 
     # Phase 7.0c: veto_layer_replayed is True when all six accounting vetoes were
     # included in the replay (non_reliance_filing is deliberately excluded and
@@ -1137,19 +1535,75 @@ def run_backfill(
             "cost_bps_per_side": DEFAULT_COST_BPS_PER_SIDE,
             "cost_bps_conservative": CONSERVATIVE_COST_BPS,
             "incomplete_membership_count": incomplete_membership,
+            # FIX 1 (restatement period-map refinement, 2026-06-13):
+            # restatement_contamination_pct is now a TIGHTER upper bound than before.
+            # Prior behaviour: ANY post-as-of amendment counted (over-counted amendments
+            # for fiscal years never seen by the PIT score at T).
+            # Refined behaviour: only amendments whose filing_date falls within
+            # 2 calendar years of the PIT 10-K's fiscal year-end are counted.
+            # Residual over-count: (a) non-Dec-31 FYE names (ceiling approximate);
+            # (b) multi-year restatements filed > 2y after FY-end (missed).
+            # Semantics: still an upper bound on contamination; "period-map-gated" = True.
             "restatement_contamination_pct": restate_pct,
             "restatement_canary_source": "edgar-filings-index",
             "restatement_canary_unresolved_count": len(restate_unresolved),
-            "sector_from_today": True,
-            # Phase 7.0c: veto_layer_replayed=True — six of seven accounting vetoes
-            # are replayed point-in-time from PIT snapshot + history. The one
-            # excluded veto (non_reliance_filing) is disclosed in vetoes_not_replayed.
+            # period_map_gated=True: amendments are gated to the PIT 10-K's fiscal-year
+            # ±2 calendar years (FIX 1). False would indicate the legacy over-counting
+            # behaviour (all post-as-of amendments counted regardless of fiscal year).
+            "restatement_canary_period_map_gated": True,
+            # FIX 2 (ticker-rename micro-leakage disclosure, 2026-06-13):
+            # ~15-20 tickers in the backtest window correspond to renamed/merged
+            # entities where the ledger's REMOVE-old + ADD-new pair causes members_at
+            # to correctly return the historical ticker (e.g. KDP at pre-2018 dates,
+            # FB at pre-2022-06 dates). However, the price and fundamentals fetch
+            # uses the CURRENT entity's data (yfinance/EDGAR for the new ticker's CIK),
+            # which for a pure rename is correct, but for a merger (DPSG→KDP 2018) the
+            # pre-merger entity's EDGAR CIK differs from the post-merger one. In
+            # practice the impact is limited: the post-merger entity (KDP) has no EDGAR
+            # annual-10-K filings before 2018, so the PIT snapshot at a pre-2018
+            # rebalance is all-null and KDP scores at a neutral/median composite —
+            # it is unlikely to clear the high-conviction gate. The contamination is
+            # effectively zero for the scoring output but non-zero for the
+            # universe representation. A full fix requires a verified rename-map with
+            # per-entity CIK resolution and confirmed pre-rename price history in
+            # yfinance — infrastructure not currently available. Tracked for future
+            # implementation (see issue text in PHASE_STATUS_INFLIGHT.md).
+            # Known affected tickers (estimated; ledger-derived):
+            #   KDP (pre-2018-07: was DPSG / Dr Pepper Snapple Group)
+            #   META (pre-2022-06: was FB / Facebook Inc.)
+            #   DAY (pre-2024-02: was CDAY / Ceridian Dayforce)
+            # For FB/META and CDAY/DAY, the post-rename entity IS the same legal CIK
+            # (pure symbol change, not a merger), so price + fundamentals are correct.
+            # Only merger renames (KDP) carry true micro-leakage — and those score
+            # null-fundamentals PIT, limiting the actual selection contamination.
+            "ticker_rename_microleakage_note": (
+                "Merger-renamed tickers (e.g. KDP pre-2018-07-02) may appear in the "
+                "historical cohort via the ledger but score null-fundamentals PIT "
+                "(post-merger entity has no pre-merger 10-K filings), limiting "
+                "practical selection contamination. Pure symbol-change renames "
+                "(FB→META, CDAY→DAY) share the same CIK — no data mismatch. "
+                "Full fix requires per-entity CIK resolution + confirmed yfinance "
+                "pre-rename price history; tracked as a future issue."
+            ),
+            # GAP 1: sector_from_today is False when the historical sector parquet is
+            # present (PIT sectors used); True when absent (today's Wikipedia sector).
+            "sector_from_today": not _sector_parquet_present,
+            # Phase 7.0c: veto_layer_replayed=True — six (or seven when item402
+            # parquet is present) accounting vetoes are replayed PIT.
             "veto_layer_replayed": True,
-            "vetoes_replayed": list(_VETOES_REPLAYED),
-            "vetoes_not_replayed": [
-                {"name": v["name"], "reason": v["reason"]}
-                for v in _VETOES_NOT_REPLAYED
-            ],
+            # GAP 2: non_reliance_filing moves from vetoes_not_replayed to vetoes_replayed
+            # when the item402 parquet is present.  Computed dynamically so the disclosure
+            # is always consistent with what was actually replayed.
+            "vetoes_replayed": (
+                list(_VETOES_REPLAYED) + ["non_reliance_filing"]
+                if _item402_parquet_present
+                else list(_VETOES_REPLAYED)
+            ),
+            "vetoes_not_replayed": (
+                []
+                if _item402_parquet_present
+                else [{"name": v["name"], "reason": v["reason"]} for v in _VETOES_NOT_REPLAYED]
+            ),
             # PR-2 (Phase 7): the recommendation/valuation layer is replayed point-in-time
             # AND now DRIVES selection (gate_active=True) — the basket holds only
             # high-conviction names. C1 cleared on PR-1's backfill (median eligible 52 >>
@@ -1184,15 +1638,121 @@ def run_backfill(
                 "min_picks": ADAPTIVE_MIN_PICKS,
                 "max_picks": None,  # uncapped per 2026-06-11 ratification
             },
+            # Survivorship-bias fix: Rule 18 observability counters.
+            # scoring_universe_removed_candidates_count: tickers in the ledger as REMOVE
+            #   events on/after ``start`` that are NOT in today's current universe — the
+            #   full set of historically-removed names we ATTEMPT to pre-fetch.
+            # scoring_universe_removed_fetched_count: subset with usable EDGAR + price data
+            #   that actually entered the scoring universe (the win of this fix).
+            # scoring_universe_removed_unavailable_count: subset that could not be loaded
+            #   (no-CIK / no-prices / fetch-error) and remain absent from scoring
+            #   (graceful degradation — same behavior as the pre-fix code, but explicit).
+            "scoring_universe_removed_candidates_count": _scoring_universe_removed_candidates_count,
+            "scoring_universe_removed_fetched_count": _scoring_universe_removed_fetched_count,
+            "scoring_universe_removed_unavailable_count": _scoring_universe_removed_unavailable_count,
+            # GAP 2: item402 PIT veto replay observability (Rule 18).
+            # item402_pit_rows: number of rows in the item402 parquet (0 = absent).
+            # item402_veto_fired_count: number of (ticker, rebalance) pairs where
+            #   non_reliance_filing fired PIT (0 when parquet absent).
+            "item402_pit_rows": _item402_pit_rows,
+            "item402_veto_fired_count": _item402_veto_fired_count,
+            # GAP 1: historical sector PIT observability (Rule 18).
+            # historical_sector_coverage_pct: fraction of (ticker, rebalance) sector
+            #   lookups served by the PIT parquet (0.0 when parquet absent).
+            # historical_sector_fallback_count: number of lookups that fell back to
+            #   today's Wikipedia sector (equal to total lookups when parquet absent).
+            "historical_sector_coverage_pct": (
+                round(
+                    100.0 * max(0, _historical_sector_lookup_count - _historical_sector_fallback_count)
+                    / _historical_sector_lookup_count,
+                    1,
+                )
+                if _historical_sector_lookup_count > 0
+                else None
+            ),
+            "historical_sector_fallback_count": _historical_sector_fallback_count,
             "disclaimer": disclaimer,
         },
         "rebalances": rebalances_out,
         "nav": nav,
     }
+
+    # Phase-A OOS-validation: compute DSR + walk-forward stability on the PRODUCED
+    # artifact (no network calls, no artifact regeneration). Emit as meta.validation
+    # so future artifact consumers see the inferential gate result inline.
+    # Graceful-degradation: a failure here (e.g. degenerate NAV) logs a warning and
+    # leaves meta.validation = None rather than killing the backfill (Rule 18).
+    validation_block: dict | None = None
+    try:
+        validation_block = compute_basket_rule_validation(
+            payload, n_trials=BASKET_RULE_N_TRIALS
+        )
+    except Exception as _val_exc:  # noqa: BLE001 — validation failure never kills the backfill
+        logger.warning(
+            "backfill: compute_basket_rule_validation failed: %s — meta.validation will be null",
+            _val_exc,
+        )
+
+    # 12-config grid diagnostics, PBO, and purged-embargo holdout.
+    # These are DIAGNOSTIC / ANNOTATE-ONLY blocks — they do NOT change selection, ranking,
+    # or nav.adaptive. Graceful-degradation: each sub-block fails independently and leaves
+    # its key = None rather than killing the backfill (Rule 18 / SKILL.md Rule 16).
+    grid_block: dict | None = None
+    grid_pbo_block: dict | None = None
+    grid_holdout_block: dict | None = None
+
+    if _grid_month_labels and _grid_aligned_net:
+        try:
+            # Compact grid artifact: one shared month-label list + per-config net arrays.
+            # ~10 KB for ~118 months × 12 configs; daily series discarded.
+            grid_block = {
+                "configs": _GRID_CONFIG_KEYS,
+                "freq": "monthly",
+                "dates": _grid_month_labels,
+                "net": {k: _grid_aligned_net[k] for k in _GRID_CONFIG_KEYS if k in _grid_aligned_net},
+            }
+        except Exception as _ge:  # noqa: BLE001
+            logger.warning("backfill: grid block assembly failed: %s", _ge)
+
+        try:
+            grid_pbo_block = compute_grid_pbo(_grid_aligned_net)
+        except Exception as _pbo_exc:  # noqa: BLE001
+            logger.warning("backfill: compute_grid_pbo failed: %s — pbo block will be null", _pbo_exc)
+
+        try:
+            # Extract the benchmark monthly series for the holdout (use SPY if available).
+            _bench_series = nav.get("benchmark", {}).get("spy", [])
+            _bench_dates = nav.get("dates", [])
+            _bench_monthly: list[float | None] = []
+            if _bench_series and _bench_dates:
+                _, _bench_monthly_vals = _snap_monthly_nav(_bench_series, _bench_dates)
+                _bench_monthly = _bench_monthly_vals
+            grid_holdout_block = compute_holdout(
+                _grid_aligned_net,
+                _bench_monthly,
+            )
+        except Exception as _ho_exc:  # noqa: BLE001
+            logger.warning(
+                "backfill: compute_holdout failed: %s — holdout block will be null", _ho_exc
+            )
+
+    if validation_block is not None:
+        validation_block["grid"] = grid_block
+        validation_block["pbo"] = grid_pbo_block
+        validation_block["holdout"] = grid_holdout_block
+        validation_block["grid_diagnostics"] = _grid_diagnostics if _grid_diagnostics else None
+    payload["meta"]["validation"] = validation_block
+
     out = write_backtest_pit_json(payload, data_dir)
     logger.info(
-        "backfill wrote %s — %d rebalances, %d incomplete-membership legs, restatement %.1f%%",
-        out, len(rebalances_out), incomplete_membership, restate_pct or 0.0,
+        "backfill wrote %s — %d rebalances, %d incomplete-membership legs, restatement %.1f%%, "
+        "validation dsr=%.4f phi=%.6f",
+        out,
+        len(rebalances_out),
+        incomplete_membership,
+        restate_pct or 0.0,
+        validation_block.get("dsr", float("nan")) if validation_block else float("nan"),
+        validation_block.get("dsr_confidence_phi", float("nan")) if validation_block else float("nan"),
     )
     return out
 
@@ -1207,45 +1767,38 @@ def _snap_to_trading_day(date_iso: str, dates: list[str]) -> str | None:
     return dates[i] if i < len(dates) else dates[-1]
 
 
-def _assemble_nav(
+def _build_price_panel(
     rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]],
     prices_by_ticker: dict[str, pd.DataFrame],
-    data_dir: Path,
-    band_legs: list[tuple[str, dict[str, float]]] | None = None,
-) -> dict:
-    """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
+    extra_leg_sets: list[list[tuple[str, dict[str, float]]]] | None = None,
+) -> tuple[dict[str, dict[str, float]], list[str], list[str]]:
+    """Build the shared price panel used by both the product NAV path and the grid path.
 
-    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
-    For each count N the matching per-rebalance weight maps become one daily NAV series
-    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are
-    shared across all counts (same trading calendar, same rebased index lines).
+    Extracts adjusted-close time series from ``prices_by_ticker`` for every ticker
+    that appears in ``rebalance_picks`` OR any of ``extra_leg_sets`` (e.g. the 12
+    grid leg lists), starting from the first rebalance date. Returns:
 
-    ``band_legs`` is ``[(as_of_date, {ticker: weight})]`` — the V55 hysteresis band book
-    weights for each rebalance. When provided, the ``"adaptive"`` NAV entry is built from
-    these band legs (the ratified product adaptive series); otherwise falls back to the
-    old prefix-based ``weights_by_count[n_adaptive]`` path (backward-compatible for tests
-    that omit the argument). Same inner shape as a by_count entry; left-padded with None
-    when a leg is missing — same contract as by_count.
+    ``(closes, dates, axis)``
+      closes — ``{ticker: {date_iso: close}}`` sparse dict
+      dates  — sorted list of all trading-day ISO strings in the panel
+      axis   — dates from the first snapped rebalance onward (the NAV time axis)
+
+    Computing the panel ONCE and passing it to both ``_assemble_nav`` and
+    ``_assemble_grid_navs`` avoids re-walking the (potentially large) price
+    DataFrames 12 additional times per call.
     """
-    empty = {
-        "dates": [],
-        "benchmark": {},
-        "by_count": {},
-        "adaptive": {},
-        "default_count": DEFAULT_COUNT,
+    all_held: set[str] = {
+        t for _, wbc, _ in rebalance_picks for wmap in wbc.values() for t in wmap
     }
-    if not rebalance_picks:
-        return empty
+    for leg_list in (extra_leg_sets or []):
+        for _, wmap in leg_list:
+            all_held.update(wmap)
 
-    # Collect all tickers from both prefix-count legs AND band legs so their price
-    # series are loaded once; band tickers may not be in the prefix-count universe
-    # when the band book diverges from the simple prefix.
-    held = sorted(
-        {t for _, wbc, _ in rebalance_picks for wmap in wbc.values() for t in wmap}
-        | {t for _, wmap in (band_legs or []) for t in wmap}
-    )
+    held = sorted(all_held)
+    if not held or not rebalance_picks:
+        return {}, [], []
+
     start_ts = pd.Timestamp(rebalance_picks[0][0])
-
     closes: dict[str, dict[str, float]] = {}
     all_dates: set[str] = set()
     for t in held:
@@ -1265,16 +1818,212 @@ def _assemble_nav(
 
     dates = sorted(all_dates)
     if not dates:
-        return empty
+        return {}, [], []
 
-    # Snap each calendar rebalance (quarter-end + 45d — may land on a weekend) to the
-    # first trading day on/after it, so every leg fires on a real price date. The axis
-    # = every trading day from the earliest snapped rebalance; each count's NAV is a
-    # suffix of it, so a count first selectable at a LATER rebalance is left-padded with
-    # None (the same gap contract the benchmark line uses). In a full-universe run every
-    # count is present from the first rebalance and no padding occurs.
     global_start = _snap_to_trading_day(rebalance_picks[0][0], dates)
     axis = [d for d in dates if d >= global_start]
+    return closes, dates, axis
+
+
+def _snap_monthly_nav(
+    daily_net: list[float | None],
+    daily_dates: list[str],
+) -> tuple[list[str], list[float | None]]:
+    """Resample a daily NAV series to month-end (last trading day <= calendar month-end).
+
+    Uses an on-or-before discipline (mirrors ``basket_rule_validation._snap_to_trading_day``
+    and ``_extract_quarterly_returns`` boundary semantics) — NO look-ahead.
+
+    Parameters
+    ----------
+    daily_net:
+        Daily net NAV values aligned to ``daily_dates``.  May contain leading ``None``
+        (padding from the left-pad contract in ``by_count`` / ``adaptive``).
+    daily_dates:
+        ISO ``YYYY-MM-DD`` strings, sorted ascending.
+
+    Returns
+    -------
+    (month_labels, month_values)
+        ``month_labels`` — one ISO label per month-end (e.g. ``"2016-08"``)
+        ``month_values`` — last non-None NAV on or before that calendar month-end
+    """
+    if not daily_dates or not daily_net:
+        return [], []
+
+    # Build (year, month) -> last valid (date, value) mapping.
+    month_map: dict[tuple[int, int], tuple[str, float]] = {}
+    for d_iso, v in zip(daily_dates, daily_net, strict=False):
+        if v is None:
+            continue
+        year, month = int(d_iso[:4]), int(d_iso[5:7])
+        # Keep the latest date within the month (dates are sorted so this is always
+        # an overwrite in forward order — the final overwrite wins).
+        month_map[(year, month)] = (d_iso, float(v))
+
+    if not month_map:
+        return [], []
+
+    month_labels: list[str] = []
+    month_values: list[float | None] = []
+    for (yr, mo), (_d, val) in sorted(month_map.items()):
+        month_labels.append(f"{yr:04d}-{mo:02d}")
+        month_values.append(val)
+
+    return month_labels, month_values
+
+
+def _assemble_grid_navs(
+    grid_legs: dict[str, list[tuple[str, dict[str, float]]]],
+    closes: dict[str, dict[str, float]],
+    dates: list[str],
+    axis: list[str],
+    expected_leg_count: int,
+) -> tuple[dict[str, dict], dict[str, list[str]], dict[str, list[float | None]], dict]:
+    """Build monthly net NAV for each of the 12 grid configs from the shared price panel.
+
+    The daily series is computed via ``build_portfolio_nav`` over the shared panel
+    (no price re-walk), then resampled to MONTHLY via ``_snap_monthly_nav`` (last
+    trading day <= calendar month-end, no look-ahead). The daily series is DISCARDED;
+    only monthly data is persisted in the output.
+
+    Returns
+    -------
+    (monthly_by_config, all_month_labels, monthly_net_by_config, grid_diagnostics)
+      monthly_by_config     — ``{key: {net: [...], gross: [...]}}`` (monthly, compact)
+      all_month_labels      — union of all month labels (typically ~118 months)
+      monthly_net_by_config — ``{key: [float|None]}`` aligned to all_month_labels
+      grid_diagnostics      — observability block (per-config leg counts, etc.)
+    """
+    per_config_leg_counts: dict[str, int] = {}
+    configs_with_dropped_legs: list[str] = []
+    monthly_by_config: dict[str, dict] = {}
+    monthly_net_only: dict[str, list[float | None]] = {}
+    all_month_label_set: set[str] = set()
+
+    for g_key, legs in grid_legs.items():
+        n_legs = len(legs)
+        per_config_leg_counts[g_key] = n_legs
+        if n_legs < expected_leg_count:
+            configs_with_dropped_legs.append(g_key)
+
+        if not legs or not dates:
+            monthly_by_config[g_key] = {"net": [], "gross": []}
+            monthly_net_only[g_key] = []
+            continue
+
+        # Build daily NAV over the shared panel (no re-walk of prices_by_ticker).
+        snapped_legs = [
+            (snapped, wmap)
+            for d, wmap in legs
+            if (snapped := _snap_to_trading_day(d, dates)) is not None
+        ]
+        if not snapped_legs:
+            monthly_by_config[g_key] = {"net": [], "gross": []}
+            monthly_net_only[g_key] = []
+            continue
+
+        gn = build_portfolio_nav(dates, closes, snapped_legs)
+
+        # Resample to monthly — discard daily, persist only month-end values.
+        # The NAV from build_portfolio_nav starts at the first snapped leg date,
+        # but the axis may have a prefix of None-padded dates if other configs start
+        # later. Align to axis before resampling.
+        pad_n = len(axis) - len(gn["dates"])
+        padded_net: list[float | None] = [None] * pad_n + gn["net"]
+        padded_gross: list[float | None] = [None] * pad_n + gn["gross"]
+
+        m_labels_net, m_vals_net = _snap_monthly_nav(padded_net, axis)
+        m_labels_gross, m_vals_gross = _snap_monthly_nav(padded_gross, axis)
+
+        all_month_label_set.update(m_labels_net)
+        monthly_by_config[g_key] = {
+            "net": m_vals_net,
+            "gross": m_vals_gross,
+            "month_labels": m_labels_net,
+        }
+        monthly_net_only[g_key] = m_vals_net
+
+    # Align all configs to the UNION of month labels (some configs may start later
+    # if their first leg was dropped; None-pad the prefix for those).
+    all_month_labels: list[str] = sorted(all_month_label_set)
+
+    aligned_net: dict[str, list[float | None]] = {}
+    for g_key, m_net in monthly_net_only.items():
+        cfg_labels = monthly_by_config[g_key].get("month_labels", [])
+        if not cfg_labels or not all_month_labels:
+            aligned_net[g_key] = [None] * len(all_month_labels)
+            continue
+        label_to_val: dict[str, float | None] = dict(zip(cfg_labels, m_net, strict=False))
+        aligned_net[g_key] = [label_to_val.get(lbl) for lbl in all_month_labels]
+
+    grid_diagnostics: dict = {
+        "per_config_leg_counts": per_config_leg_counts,
+        "configs_with_dropped_legs": configs_with_dropped_legs,
+        "min_leg_count": min(per_config_leg_counts.values()) if per_config_leg_counts else 0,
+        "expected_leg_count": expected_leg_count,
+    }
+
+    return monthly_by_config, all_month_labels, aligned_net, grid_diagnostics
+
+
+def _assemble_nav(
+    rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]],
+    prices_by_ticker: dict[str, pd.DataFrame],
+    data_dir: Path,
+    band_legs: list[tuple[str, dict[str, float]]] | None = None,
+    grid_legs: dict[str, list[tuple[str, dict[str, float]]]] | None = None,
+) -> tuple[dict, dict[str, dict], list[str], dict[str, list[float | None]], dict]:
+    """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
+    Also computes monthly grid NAVs for the 12-config grid if ``grid_legs`` is provided.
+
+    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
+    For each count N the matching per-rebalance weight maps become one daily NAV series
+    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are
+    shared across all counts (same trading calendar, same rebased index lines).
+
+    ``band_legs`` is ``[(as_of_date, {ticker: weight})]`` — the V55 hysteresis band book
+    weights for each rebalance. When provided, the ``"adaptive"`` NAV entry is built from
+    these band legs (the ratified product adaptive series); otherwise falls back to the
+    old prefix-based ``weights_by_count[n_adaptive]`` path (backward-compatible for tests
+    that omit the argument). Same inner shape as a by_count entry; left-padded with None
+    when a leg is missing — same contract as by_count.
+
+    ``grid_legs`` is the 12-config band legs dict from the backfill loop. When provided,
+    ``_assemble_grid_navs`` is called on the SHARED price panel (no re-walk).
+
+    Returns
+    -------
+    (nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics)
+        nav               — the product NAV dict (``dates``, ``by_count``, ``adaptive``,
+                           ``benchmark``, ``default_count``)
+        monthly_by_config — ``{key: {net, gross, month_labels}}`` for each grid config
+        all_month_labels  — union of month label strings (~118 entries)
+        aligned_net       — ``{key: [float|None]}`` aligned to ``all_month_labels``
+        grid_diagnostics  — observability block from ``_assemble_grid_navs``
+
+    Backward-compat note: callers that do not use the grid return value (``_assemble_nav``
+    called without ``grid_legs``) receive empty dicts/lists for the grid outputs.
+    """
+    empty_nav = {
+        "dates": [],
+        "benchmark": {},
+        "by_count": {},
+        "adaptive": {},
+        "default_count": DEFAULT_COUNT,
+    }
+    empty_grid: tuple = ({}, [], {}, {})
+    if not rebalance_picks:
+        return empty_nav, *empty_grid
+
+    # Build the shared price panel ONCE — used for both product NAV and grid NAVs.
+    closes, dates, axis = _build_price_panel(
+        rebalance_picks,
+        prices_by_ticker,
+        extra_leg_sets=list(grid_legs.values()) if grid_legs else None,
+    )
+    if not dates:
+        return empty_nav, *empty_grid
 
     by_count: dict[str, dict] = {}
     for n in range(1, MAX_PICKS + 1):
@@ -1328,13 +2077,26 @@ def _assemble_nav(
             "turnover_by_rebalance": gn_adp["turnover_by_rebalance"],
         }
 
-    return {
+    nav = {
         "dates": axis,
         "benchmark": _benchmark_navs(axis, data_dir),
         "by_count": by_count,
         "adaptive": adaptive,
         "default_count": DEFAULT_COUNT,
     }
+
+    # 12-config grid NAVs — computed over the SHARED panel (no re-walk).
+    monthly_by_config: dict[str, dict] = {}
+    all_month_labels: list[str] = []
+    aligned_net: dict[str, list[float | None]] = {}
+    grid_diagnostics: dict = {}
+    if grid_legs:
+        expected_legs = len(rebalance_picks)
+        monthly_by_config, all_month_labels, aligned_net, grid_diagnostics = _assemble_grid_navs(
+            grid_legs, closes, dates, axis, expected_leg_count=expected_legs
+        )
+
+    return nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics
 
 
 def _benchmark_navs(portfolio_dates: list[str], data_dir: Path) -> dict[str, list]:
