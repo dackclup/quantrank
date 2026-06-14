@@ -261,6 +261,21 @@ def _resolve_cik_for_midcap(ticker: str) -> str | None:
 
     GOTCHA (docs/GOTCHAS.md): ``Company("")`` resolves to an arbitrary
     company — always pass the actual ticker string.
+
+    Rate-limit note: NO tenacity retry or inter-call sleep is needed here.
+    ``Company(ticker).__init__`` resolves the ticker to a CIK via
+    ``find_cik()`` → ``get_company_cik_lookup()``, which is an in-memory
+    dict built once from edgartools' BUNDLED ``company_tickers.parquet``
+    (shipped with the package, ~10 k rows).  The dict is populated by
+    ``_get_company_tickers_raw()`` decorated with ``@lru_cache(maxsize=1)``;
+    every subsequent call — including all ~400 calls in the resolution loop
+    in ``get_sp900_constituents`` — hits the cache with ZERO per-call HTTP.
+    Verified empirically: intercepting httpx.Client.send during 400 back-to-
+    back ``Company(ticker).cik`` lookups records 0 network requests.
+    The ``co.cik`` attribute is set eagerly in ``__init__`` (``self._cik =
+    cik``), so it never triggers the lazy ``data`` property that DOES make
+    an HTTP call (``get_entity_submissions``).  Therefore ``midcap_cik_
+    resolution_pct`` is trustworthy on the first sp900 run; no burst risk.
     """
     try:
         from edgar import Company as _Company  # noqa: PLC0415
