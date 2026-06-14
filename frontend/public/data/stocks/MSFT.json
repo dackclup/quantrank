@@ -91,14 +91,12 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 45,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "insider_sell_cluster"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 39.50011162405447,
   "tier2_events": {
@@ -126,8 +124,8 @@
   "recommendation": "lean_bullish",
   "loss_chance_pct": 44.541398716456186,
   "price_change_1d_pct": 0.1025,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 56.01,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 56.51,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,7 +141,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {

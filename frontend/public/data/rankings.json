@@ -34,7 +34,7 @@
     "manipulation_index": 20.0,
     "composite_score_adjusted": 72.77,
     "entered_top5": false,
-    "exited_top5": false
+    "exited_top5": true
   },
   {
     "rank": 2,
@@ -214,7 +214,7 @@
     "manipulation_index": 20.0,
     "composite_score_adjusted": 67.17,
     "entered_top5": false,
-    "exited_top5": true
+    "exited_top5": false
   },
   {
     "rank": 7,
@@ -4305,14 +4305,12 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "insider_sell_cluster"
-    ],
+    "valuation_warnings": [],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 44.541398716456186,
     "price_change_1d_pct": 0.1025,
-    "manipulation_index": 5.0,
-    "composite_score_adjusted": 56.01,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 56.51,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -7019,14 +7017,13 @@
     "valuation_warnings": [
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "insider_sell_cluster",
-      "c_suite_unusual_sell"
+      "insider_sell_cluster"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 60.774036665836654,
     "price_change_1d_pct": 0.0761,
-    "manipulation_index": 8.0,
-    "composite_score_adjusted": 51.65,
+    "manipulation_index": 5.0,
+    "composite_score_adjusted": 51.95,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -8039,14 +8036,12 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [
-      "insider_sell_cluster"
-    ],
+    "valuation_warnings": [],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 42.97919704861536,
     "price_change_1d_pct": 1.1593,
-    "manipulation_index": 25.0,
-    "composite_score_adjusted": 48.64,
+    "manipulation_index": 20.0,
+    "composite_score_adjusted": 49.14,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -8791,14 +8786,13 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate",
-      "c_suite_unusual_sell"
+      "extreme_rim_estimate"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 62.88573088597989,
     "price_change_1d_pct": 1.3855,
-    "manipulation_index": 3.0,
-    "composite_score_adjusted": 49.93,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 50.23,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -8937,15 +8931,13 @@
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "extreme_estimate_majority",
-      "insider_sell_cluster",
-      "c_suite_unusual_sell"
+      "extreme_estimate_majority"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 62.95844918935369,
     "price_change_1d_pct": 1.3531,
-    "manipulation_index": 8.0,
-    "composite_score_adjusted": 49.28,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 50.08,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -10689,14 +10681,12 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "c_suite_unusual_sell"
-    ],
+    "valuation_warnings": [],
     "recommendation": "neutral",
     "loss_chance_pct": 60.940136675520144,
     "price_change_1d_pct": -0.0224,
-    "manipulation_index": 3.0,
-    "composite_score_adjusted": 47.82,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 48.12,
     "entered_top5": false,
     "exited_top5": false
   },

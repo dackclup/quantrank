@@ -98,7 +98,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-24"
   },
@@ -107,9 +107,7 @@
     "extreme_graham_estimate",
     "extreme_rim_estimate",
     "extreme_dcf_estimate",
-    "extreme_estimate_majority",
-    "insider_sell_cluster",
-    "c_suite_unusual_sell"
+    "extreme_estimate_majority"
   ],
   "has_history": true,
   "tangible_book_value": 11.587829399694696,
@@ -138,8 +136,8 @@
   "recommendation": "cautious",
   "loss_chance_pct": 62.95844918935369,
   "price_change_1d_pct": 1.3531,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 49.28,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 50.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,8 +153,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
-    "c_suite_unusual_sell": true
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,

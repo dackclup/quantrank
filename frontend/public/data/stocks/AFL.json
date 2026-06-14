@@ -108,16 +108,14 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 38,
+    "filing_lag_days": 39,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [
-    "insider_sell_cluster"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 58.35340059515793,
   "tier2_events": {
@@ -145,8 +143,8 @@
   "recommendation": "lean_bullish",
   "loss_chance_pct": 42.97919704861536,
   "price_change_1d_pct": 1.1593,
-  "manipulation_index": 25.0,
-  "composite_score_adjusted": 48.64,
+  "manipulation_index": 20.0,
+  "composite_score_adjusted": 49.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -162,7 +160,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
