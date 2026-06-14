@@ -52,8 +52,10 @@
    (license #115); gate = OSAP 4h.1 (#113) + the 4j.2 Qlib blend decision on
    ≥ 1 real cron of `Metadata.alpha158_*` IC evidence (PBO ≤ 0.5 + DSR > 0);
    4k.1 IPCA (#122) additive, non-blocking.
-4. **Phase 5 — ML meta-learner** (~10-12w; unblocks IC-decay writer #75) —
-   GATED on item 1 + the 7.0c composite-signal follow-through + a Supabase
+4. **Phase 5 — ML meta-learner** (~10-12w; the #75 IC-decay writer now ships
+   observability-first — Phase 5's walk-forward monthly-IC panel makes its
+   `alert` meaningful) — GATED on item 1 + the 7.0c composite-signal
+   follow-through + a Supabase
    client-wiring pre-PR (CLAUDE.md §Connectors). Entry gates: WORKFLOW.md
    §Phase 5.
 5. **Stock-attribute data — Dividend + Security-type tiles** (display-only,
@@ -101,7 +103,7 @@ Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = 7.1 (gated on the 7.0c
 baseline + a longer fit window) · Phase 8 = staged S&P 900 pilot (#249
 pre-cache DONE — #468) — detail in WORKFLOW.md.
 
-**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) · #261 (multi-class overcount) · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer, Phase-5-blocked). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) · #208 / #218 / #377 / #378 (test + verify-helper gaps) · #249 DONE (#468, 2026-06-12 — precache-edgar.yml operational; first Saturday run verified 2026-06-13) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
+**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) · #261 (multi-class overcount) · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer — CLOSED, wired 2026-06-13 §3). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) · #208 / #218 / #377 / #378 (test + verify-helper gaps) · #249 DONE (#468, 2026-06-12 — precache-edgar.yml operational; first Saturday run verified 2026-06-13) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
 
 ---
 
@@ -439,18 +441,19 @@ matrix. See `CLAUDE.md` §Connectors for the registered table.
 ### PR 4b status (mostly shipped — issue #75 partially closed)
 
 **The bulk of PR 4b landed in PR #60 (2026-05-14, pre-v1.0 — tag
-target was `v1.0.2-defense`).** Issue #75 remains open because 2
-of 8 acceptance criteria are still pending — they form the
-"PR 4b §3 polish" next deliverable below.
+target was `v1.0.2-defense`); the §3 IC-decay production wiring + the
+`/analysis` transparency surface landed 2026-06-13 (observability-first,
+issue #75 §3).** All 8 acceptance criteria on issue #75 are now
+satisfied — the issue is closed by that PR.
 
 | Sub-section | Status | Module | Notes |
 |---|---|---|---|
 | **§1 Cross-source validator** | ✅ **DONE** (PR #60) | `compute/ingest/cross_source.py` | SEC-derived market cap vs yfinance `.info` with 5% tolerance per `config.CROSS_SOURCE_MARKET_CAP_TOLERANCE`. Wired into `compute/main.py` per-ticker loop after Beneish + Dechow. **Production verification (run #45, 2026-05-16)**: 23/502 tickers flagging `cross_source_disagreement` = 4.6%, within the < 5% sanity bound. Cache at `compute/cache/yfinance_info/` with 24h TTL. |
-| **§2 PBO + DSR library** | ✅ **DONE** (PR #60) | `compute/validation/pbo_dsr.py` | Bailey-Borwein-Lopez de Prado-Zhu 2014 CSCV (S=8 or 16) + Bailey-LdP DSR. Pure-numpy reimpl (avoids `mlfinlab` commercial license + 50MB scipy install). Beasley-Springer-Moro 1990 inverse normal CDF + hand-rolled sample skew/kurtosis. Golden-fixture tests against Bailey 2014 paper Table 1 within 5%. Entry point `factor_passes_gates()` ready for 4h/4i/4j/4k to call at signal-acceptance time. |
-| **§3 IC-decay monitor** | 🟡 **DEFERRED to Phase 5** | `compute/validation/ic_decay.py` | Module exists with rolling 12m + 36m IC per pillar + 50%-drop / 6-month sustained-alert logic. McLean-Pontiff 2016 anchor. **The 2 unchecked acceptance criteria on issue #75 (`decay_report.json` writer + UI transparency surface) need a per-pillar monthly IC time series as input — and that time series only accumulates from the Phase 5 walk-forward backtest harness.** PR #60 + `ic_decay.py:51` always intended this sequencing ("until then, this module ships as a callable library"). Issue #75 stays open as a Phase-5 tracker; no work to do until Phase 5 backtest infra lands. |
+| **§2 PBO + DSR library** | ✅ **DONE** (PR #60) | `compute/validation/pbo_dsr.py` | Bailey-Borwein-Lopez de Prado-Zhu 2014 CSCV (S=8 or 16) + Bailey-LdP DSR. Pure-numpy reimpl (avoids `mlfinlab` commercial license + 50MB scipy install). Beasley-Springer-Moro 1990 inverse normal CDF + hand-rolled sample skew/kurtosis. Property/behavioral tests anchor the numerics per PLAN §2's acceptance gate: pure-noise returns → PBO ∈ (0.30, 0.70) (Bailey-Borwein-LdP-Zhu 2014 §3.3), strong-signal returns → PBO < 0.45, and the BSM inverse-normal-CDF verified against a reference within 1e-3 — **not** a Bailey-2014 Table-1 golden fixture (Table 1 reports CSCV distributions, not a single reproducible PBO scalar; the earlier "Table 1 within 5%" claim here was inaccurate, corrected in this PR). Entry point `factor_passes_gates()` ready for 4h/4i/4j/4k to call at signal-acceptance time. |
+| **§3 IC-decay monitor** | ✅ **DONE** (wired 2026-06-13, observability-first) | `compute/validation/ic_decay.py` | Rolling 12m + 36m IC per pillar + 50%-drop / 6-month sustained-alert logic (McLean-Pontiff 2016). Now production-wired: `build_decay_report` walks `historical_ic` (bounded 39-mo) → calendar-month panel → `check_all_pillars` → `emit_decay_report` → `frontend/public/data/decay_report.json` every cron (skip-safe `QR_SKIP_DECAY_MONITOR`, try/except graceful-degrade), surfaced via schema-additive `Metadata.decay_report_url` on the `/analysis` page (honest 3-state UI). `alert` SUPPRESSED until ≥12 monthly IC points/pillar (`preliminary`), so the current `status="insufficient_history"` shows "accumulating baseline", not a fake all-clear. Monitor-only — NEVER vetoes / changes scores. NOTE: the cron checks out shallow (`fetch-depth: 1`), so the git-walk sees only the tip commit and the report stays `insufficient_history` until the checkout is deepened (follow-up #478); Phase 5's walk-forward panel is the longer-term densification source. |
 
-**Next deliverable**: With PR 4b §1+§2 ✅ and §3 Phase-5-blocked,
-the two unblocked tracks are:
+**Next deliverable**: With PR 4b §1+§2+§3 all ✅ (issue #75 closed),
+the live tracks are:
 
 1. **4h / 4i / 4j / 4k factor integrations** (OSAP / JKP / Qlib /
    IPCA) — each gated by the now-complete `pbo_dsr.factor_passes_

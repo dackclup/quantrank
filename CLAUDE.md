@@ -334,6 +334,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-72h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
 - **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency signals are NO-OPs; the only safe skip path for stale-but-cached tickers is a filing-date precheck against SEC each run (`_latest_filing_date` in `compute/ingest/fundamentals.py`, #471)**
 - **Backtest PIT data is parquet-gated + graceful — `data/{historical_sector,pit_item402_history}.parquet` (whitelisted past `*.parquet`; regen via `scripts/backfill_{historical_sector,item402_history}.py`) drive `meta.sector_from_today` + `vetoes_replayed`/`not_replayed` DYNAMICALLY; both absent → byte-identical backtest. `meta.validation` = DSR (primary, `n_trials=15`, Φ≥0.95) + PBO (CSCV) + purged-embargo holdout (the ONE `in_sample=false` block). EFTS `_source` keys = `ciks`/`adsh`/`items`, NOT `entity_id`/`file_num`**
+- **The IC-decay monitor (`decay_report.json`, #75 §3) is a MONITOR — NEVER vetoes / changes scores; `alert` stays suppressed until ≥12 monthly IC points/pillar (`preliminary`); the JSON is dataclass-emitted, NOT in the schema triple (only `Metadata.decay_report_url` is); cron-wired in `compute/main.py` under `QR_SKIP_DECAY_MONITOR`**
 
 ## Phase status
 
@@ -361,24 +362,27 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(workflow) — S&P 900 pilot PR 2: `universe` workflow_dispatch input
-  → enable the sp900 diagnostic run (this PR, 2026-06-14)** — PR 1 (#479,
-  merged) shipped `QR_UNIVERSE` (default sp500) + a midcap coverage probe
-  that only fires on sp900, but there was no way to SET sp900 in CI. This
-  adds a `workflow_dispatch.inputs.universe` choice (sp500/sp900, default
-  sp500) to `compute-rankings.yml`, wired to `QR_UNIVERSE` via an
-  env-block `${{ github.event.inputs.universe || 'sp500' }}`
-  (injection-safe; the scheduled cron has null inputs → resolves sp500 →
-  byte-identical). An operator dispatches `universe: sp900` (Actions →
-  Compute Rankings → Run workflow) to run the midcap probe and capture
-  the `midcap_*` coverage Metadata in the committed metadata.json — the
-  empirical gate for PR 3 (ranking midcaps). First sp900 dispatch
-  cold-probes ~400 midcaps sequentially (~40-167m) on top of warm-500 —
-  fits the 240-min budget if the 500 caches are warm. Guard test pins the
-  input + the sp500 fallback. Next: dispatch the diagnostic → read
-  coverage → PR 3 (rank midcaps + cohort marker + R6 verifier
-  cohort-filter + backfill 500-only guard + forward-only flags). Detail:
-  PHASE_STATUS_INFLIGHT.md.
+- **feat — Issue #75 §3: wire the IC-decay monitor into the cron +
+  `/analysis` transparency surface (this PR, 2026-06-13)** — closes the
+  last 2 of 8 acceptance criteria on #75 (PR 4b defense-infra) under
+  observability-before-wiring (Rule 18). The IC-decay library (PR #60)
+  is now production-wired: `build_decay_report` walks `historical_ic`
+  (bounded 39-mo) → calendar-month IC panel → `check_all_pillars` →
+  `emit_decay_report` → `frontend/public/data/decay_report.json` every
+  cron (try/except graceful-degrade, skip-safe `QR_SKIP_DECAY_MONITOR`),
+  plus a schema-triple-additive `Metadata.decay_report_url` (schema
+  `0.10.19-phase8pilot` → `0.10.20-phase4.6`, layered on #479). `/analysis`
+  renders a 3-state honest surface; the current real state is
+  `status="insufficient_history"` (≈1 wk of git history) — the `alert`
+  is SUPPRESSED until ≥12 monthly IC points/pillar (`preliminary`), so it
+  never shows a fabricated "0 decaying" badge. The cron's shallow
+  `fetch-depth: 1` checkout keeps the git-walk at the tip commit, so it
+  stays `insufficient_history` until the checkout is deepened (follow-up
+  #478). The monitor NEVER vetoes / changes
+  scores (McLean-Pontiff 2016, informational only). Also corrects the §2
+  PBO "Bailey Table-1 golden-fixture" doc claim (the tests are
+  property/behavioral anchors). 16 new `ic_decay` tests (27 total).
+  Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
@@ -395,10 +399,11 @@ PHASE_STATUS.md):
   4j.2 Qlib blend decision on ≥ 1 real cron of `Metadata.alpha158_*` IC
   evidence (PBO ≤ 0.5 + DSR > 0); 4k.1 IPCA (#122) additive,
   non-blocking; JKP 4i.1 dropped from the hard gate (license #115).
-- **4 · Phase 5 — ML meta-learner** (~10-12w; unblocks IC-decay writer
-  #75) — gated on item 1 + the 7.0c composite-signal follow-through + a
-  Supabase client-wiring pre-PR (§Connectors). Entry gates: WORKFLOW.md
-  §Phase 5.
+- **4 · Phase 5 — ML meta-learner** (~10-12w; the #75 IC-decay writer
+  now ships observability-first (this PR) — Phase 5's walk-forward
+  monthly-IC panel is what makes its `alert` meaningful) — gated on item
+  1 + the 7.0c composite-signal follow-through + a Supabase
+  client-wiring pre-PR (§Connectors). Entry gates: WORKFLOW.md §Phase 5.
 - **5 · Stock-attribute tiles (Dividend + Security-type)** —
   display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on

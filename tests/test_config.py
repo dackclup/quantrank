@@ -80,8 +80,14 @@ def test_schema_version_is_phase4_6():
     ``midcap_null_rate_pct``, ``midcap_cik_resolution_pct``. All None on
     the default sp500 path; populated only when QR_UNIVERSE=sp900.
     Ranked output (rankings.json + stocks/*.json) is byte-identical to a
-    500 run — the probe is a separate loop that does NOT feed the writer."""
-    assert config.SCHEMA_VERSION == "0.10.19-phase8pilot"
+    500 run — the probe is a separate loop that does NOT feed the writer.
+
+    Issue #75 §3 (0.10.20-phase4.6) — IC-decay monitor production wiring.
+    Additive ``Metadata.decay_report_url: str | None`` (URL of the
+    ``/data/decay_report.json`` IC-decay artifact), layered on top of
+    #479's 0.10.19-phase8pilot. PATCH bump per the additive-optional-field
+    convention."""
+    assert config.SCHEMA_VERSION == "0.10.20-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

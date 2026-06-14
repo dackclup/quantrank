@@ -3,12 +3,14 @@ import path from 'path';
 
 import rankingsJson from '@/public/data/rankings.json';
 import metadataJson from '@/public/data/metadata.json';
+import decayReportJson from '@/public/data/decay_report.json';
 
 import type {
   AiPickAdaptive,
   AiPickData,
   AiPickFinals,
   BacktestPIT,
+  DecayReport,
   Metadata,
   StockDetail,
   StockSummary,
@@ -22,6 +24,15 @@ export function getRankings(): StockSummary[] {
 
 export function getMetadata(): Metadata {
   return metadataJson as Metadata;
+}
+
+// IC-decay monitor artifact — always emitted by the cron (or a safe stub when
+// QR_SKIP_DECAY_MONITOR is set); a static import is appropriate because the file
+// is small (10 pillars, fixed shape) and always present at build time. The cast
+// is safe: DecayReport is a plain TS interface mirroring the dataclass output,
+// NOT a Pydantic schema — this function is NOT part of the schema-snapshot triple.
+export function getDecayReport(): DecayReport {
+  return decayReportJson as DecayReport;
 }
 
 const BACKTEST_PATH = path.join(process.cwd(), 'public', 'data', 'portfolio', 'backtest_pit.json');

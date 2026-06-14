@@ -380,7 +380,7 @@ If fallback triggered → log in PHASE_STATUS.md, continue Phase 5 on Option B.
 - [ ] Compute time stays <60 min weekly
 - [x] **Cross-source validator running weekly; <5% of universe flagged** — ✅ shipped PR #60 (2026-05-14); run #45 verification: 23/502 = 4.6% flagging `cross_source_disagreement` (within bound)
 - [x] **PBO + DSR library callable; PBO ≤ 0.5 AND DSR > 0 thresholds locked** — ✅ shipped PR #60. `factor_passes_gates()` entry point ready for 4h/4i/4j/4k. Gate validation per factor happens at 4h/4i/4j/4k integration time.
-- [ ] **IC decay report published; baseline IC documented per pillar** — 🟡 **DEFERRED to Phase 5** (PR #60 library ships, output writer Phase-5-blocked). Module `compute/validation/ic_decay.py` exists with rolling 12m + 36m + 50%/6-month alert. The output writer + UI surface need a per-pillar monthly IC time series as input — that time series only accumulates from the Phase 5 walk-forward backtest harness. PR #60 + `ic_decay.py:51` always intended this sequencing ("until then, this module ships as a callable library"). Issue #75 stays open as a Phase-5 tracker.
+- [x] **IC decay report published; baseline IC documented per pillar** — ✅ **DONE** (production-wired 2026-06-13, issue #75 §3, observability-first). `compute/main.py` runs `ic_decay.build_decay_report` each cron → `frontend/public/data/decay_report.json` (skip-safe `QR_SKIP_DECAY_MONITOR`, try/except graceful-degrade), surfaced on `/analysis` via `Metadata.decay_report_url`. Monitor-only — NEVER vetoes / changes scores; `alert` suppressed until ≥12 monthly IC points/pillar (`preliminary`), so the current `status="insufficient_history"` reports an honest "accumulating baseline". The per-pillar monthly IC panel accrues from the git-archived `rankings.json` walk (its activation depends on the cron checkout depth — see the §3 follow-up note).
 - [x] **Going-concern FP rate ≤ 5% at PR 4g (8-K Tier-2 re-enable gate)** — ✅ satisfied at 1.0% FP rate (PR 4f production verification, commit `17323346`); 4g shipped via PR #79 on 2026-05-15
 - [ ] Tag `v1.1.0-phase4` (per `v1-to-v1-1-migration/PLAN.md` sequencing — `v1.0.1-perf` → `v1.0.2-defense` → `v1.0.3-fix` → `v1.1.0-rc1..8` → `v1.1.0-phase4`)
 
@@ -398,7 +398,7 @@ Per `phase-4-kickoff-checklist/PLAN.md` §8 — consolidates defense gates scatt
 | Beneish M-score (Phase 3e) | Annotate-only | `beneish_high` valuation_warning | ⚠️ warns, no veto |
 | Dechow F-score (Phase 3e) | Annotate-only | `dechow_high` valuation_warning | ⚠️ warns, no veto |
 | Cross-source disagreement (PR 4b) | Annotate-only | 5% market-cap delta | ⚠️ warns, no veto |
-| IC-decay alert (PR 4b) | Monitor + manual review | 6-month threshold breach | ❌ no production veto; surface in `decay_report.json` |
+| IC-decay alert (PR 4b) | Monitor + manual review | 6-month threshold breach (live 2026-06-13, #75 §3) | ❌ no production veto; `decay_report.json` + `/analysis` surface; `alert` suppressed until ≥12 monthly IC pts/pillar |
 | PBO + DSR (PR 4b) | Pre-integration gate | PBO ≤ 0.5 AND DSR > 0 per factor | ✅ veto factor from being added to composite |
 
 Promotion path (Annotate → Active Veto): FP rate ≤ 5% + academic citation + sector-specific exclusions documented + schema minor bump.
