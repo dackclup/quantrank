@@ -361,8 +361,8 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(ingest+schema) — S&P 900 pilot PR 1: 900-universe ingest +
-  per-cohort diagnostic Metadata (this PR, 2026-06-14)** — Phase 8
+- **feat(ingest+schema) — #479: S&P 900 pilot PR 1 — 900-universe ingest +
+  per-cohort diagnostic Metadata (2026-06-14)** — Phase 8
   observability-first slice (Rule 18). Promotes the scout's
   `fetch_sp400_constituents` to production (`compute/ingest/universe.py`)
   + `get_sp900_constituents` (500+400, dedup sp500-wins, graceful CIK
