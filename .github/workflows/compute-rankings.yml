@@ -6,10 +6,27 @@ on:
     # so EOD prices have settled. Weekends skipped (no new trading data).
     - cron: "0 22 * * 1-5"
   workflow_dispatch:
+    inputs:
+      universe:
+        description: "Universe to ingest. sp900 = DIAGNOSTIC-ONLY (rankings.json stays 500, byte-identical); it runs the midcap coverage probe and populates the midcap_* Metadata fields. First sp900 run cold-probes ~400 midcaps (sequential) — keep the 500 caches warm (recent cron/precache) so it fits the 240-min budget."
+        type: choice
+        options:
+          - sp500
+          - sp900
+        default: sp500
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+  # S&P 900 pilot (Phase 8): the workflow_dispatch `universe` input picks the
+  # ingest universe. Default — AND the scheduled cron, where
+  # `github.event.inputs` is null — resolves to `sp500` via the `|| 'sp500'`
+  # fallback → byte-identical to today. A manual `universe: sp900` dispatch
+  # runs the midcap coverage probe (compute/main.py) and populates the
+  # midcap_* diagnostic Metadata; the RANKED output stays 500 (PR 1 invariant).
+  # This is an `env:`-block assignment, NOT a `run:`-line `${{ }}` interpolation,
+  # so it carries no shell script-injection surface (AGENTS.md §Security).
+  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}
   # Form-4 bulk fetch RUNS on the cron (observability-only —
   # form4_enabled=False → ZERO scoring impact; it accumulates the
   # form4_* Metadata surface toward the 2026-08-19 Q3 cohort audit).

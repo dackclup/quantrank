@@ -4055,3 +4055,33 @@ PR 3. Follow-ups (NOT this PR): `universe=sp900` precache dispatch input
 (PR 5); `config.UNIVERSE` string + ranked midcap output (PR 3);
 `verify_membership_ledger.py` cohort-filter (PR 2, the required R6 fix).
 ---
+
+## 2026-06-14 — ci(workflow): S&P 900 pilot PR 2 — `universe` workflow_dispatch input (enable the sp900 diagnostic run)
+
+PR 1 (#479, merged) added `config.QR_UNIVERSE` (env, default `"sp500"`) +
+a midcap coverage probe that fires only on `sp900`, but nothing could SET
+`QR_UNIVERSE=sp900` in CI → the diagnostic couldn't run, so PR 3 (ranking
+midcaps) had no empirical coverage gate. This PR closes that: adds a
+`workflow_dispatch.inputs.universe` choice input (`sp500` | `sp900`,
+default `sp500`) to `compute-rankings.yml`, wired to the top-level `env:`
+as `QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}`. The
+`|| 'sp500'` fallback is load-bearing: the SCHEDULED cron trigger has
+`github.event.inputs == null`, so it resolves to `sp500` → byte-identical
+to today. The assignment is an `env:`-block expression, NOT a `run:`-line
+`${{ }}` interpolation, so it carries no shell script-injection surface
+(AGENTS.md §Security; mirrors backfill-portfolio.yml's env-proxy
+discipline). Operator flow: Actions → Compute Rankings → Run workflow →
+`universe: sp900` → the run executes the midcap probe and the writer
+commits rankings.json (500, byte-identical) + metadata.json WITH the 4
+`midcap_*` coverage fields populated — that committed metadata.json is the
+diagnostic artifact gating PR 3. Budget: the first sp900 dispatch
+cold-probes ~400 midcaps sequentially (~40-167m) on top of warm-500
+compute (~16m) + backtest (~40m); fits the 240-min ceiling if the 500
+caches are warm (recent cron/precache). Guard test
+(`test_compute_rankings_has_universe_dispatch_input`) pins the input,
+both choices, `default: sp500`, the `QR_UNIVERSE` fallback wiring, and the
+no-run-line-interpolation invariant. Verify: ruff PASS, workflow guard
+suite 30 passed, 3 workflow YAMLs parse. Out of scope (follow-ups):
+precache `universe=sp900` warming (PR 5); ranking midcaps + R6 verifier
+cohort-filter + backfill guard + forward-only Metadata flags (PR 3).
+---
