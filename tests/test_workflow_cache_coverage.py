@@ -360,6 +360,77 @@ def test_precache_slow_text_family_matches_cron() -> None:
         )
 
 
+def _job_timeout_minutes(text: str) -> int:
+    """Return the first ``timeout-minutes: <N>`` value in a workflow file.
+
+    Plain regex (no PyYAML, per this module's convention). Both the cron and
+    the sim declare exactly one timeout-bearing job, so the first match is the
+    job budget.
+    """
+    m = re.search(r"^\s*timeout-minutes:\s*(\d+)\s*$", text, re.MULTILINE)
+    assert m, "no `timeout-minutes:` found in workflow text"
+    return int(m.group(1))
+
+
+def test_sim_timeout_at_least_cron_timeout() -> None:
+    """The pre-merge sim's job timeout must be >= the weekly cron's.
+
+    WHY (2026-06-13): the sim restores the cron's cache but CANNOT save (it is
+    restore-only on a PR branch), so on any cache MISS — which a PR-context run
+    can hit even when `main` has a fresh save, because GitHub scopes caches per
+    branch — every QR_SKIP_* escape hatch falls through to a cold live EDGAR
+    fetch and the sim runs as long as a cold cron. The cron was bumped to 240
+    min (the #249 era + the Phase 7.0 folded backtest) but the sim was left at
+    90, so sim run #98 was CANCELLED at the 90-min cap mid per-stock write
+    (`Cache not found for input keys: cache-v8-fast-2026Q2-Linux, ...`). The
+    sim runs FEWER loops than the cron (5 skip vars, no committed output, no
+    PIT backtest), so it never NEEDS more than the cron — but it must not be
+    LESS, or a legitimately-cold sim (and the S&P 900 pilot's first cold run)
+    re-introduces the silent cancellation. This guard fails loudly if a future
+    cron timeout bump leaves the sim stranded again.
+    """
+    sim_timeout = _job_timeout_minutes(_workflow_text("pre-merge-prod-sim.yml"))
+    cron_timeout = _job_timeout_minutes(_workflow_text("compute-rankings.yml"))
+    assert sim_timeout >= cron_timeout, (
+        f"pre-merge-prod-sim.yml timeout-minutes ({sim_timeout}) is below the "
+        f"weekly cron's ({cron_timeout}). The sim is restore-only, so a "
+        f"cache-MISS run goes fully cold and needs the cron's headroom; a "
+        f"shorter budget re-introduces the run #98 90-min cancellation. Raise "
+        f"the sim's timeout to >= the cron's (they may be equal)."
+    )
+
+
+def test_sim_restores_both_cron_cache_families() -> None:
+    """The pre-merge sim must restore BOTH cron cache bundles by their families.
+
+    WHY (2026-06-13): the cron writes its cache as TWO bundles under DIFFERENT
+    keys — the fast bundle (`cache-v8-fast-`) and the slow-text bundle
+    (`cache-v5-text-<os>-<run_id>`). The sim originally listed every path under
+    the single fast key, so the 5 slow-text paths (edgar_10k_text / edgar_8k /
+    osap / amendments / late_filings) were NEVER restored — they live in a
+    cache the sim never requested. OSAP therefore cold-downloaded on EVERY sim
+    even with QR_SKIP_OSAP=1 (the skip falls through to a live fetch when the
+    parquet is absent). The sim must request the slow-text family by prefix
+    (it can't exact-hit the cron's run-id key, and it never saves) so both
+    bundles restore warm. This guard fails if the slow-text restore is dropped.
+    """
+    sim_text = _workflow_text("pre-merge-prod-sim.yml")
+    # Fast family (already pinned by the v8 test; re-checked here for symmetry).
+    assert "cache-v8-fast-" in sim_text, (
+        "pre-merge-prod-sim.yml must restore the cron's fast cache family "
+        "(`cache-v8-fast-`)."
+    )
+    # Slow-text family — the bundle the old single-key restore silently dropped.
+    assert re.search(r"cache-v\d+-text-\$\{\{ runner\.os \}\}-", sim_text), (
+        "pre-merge-prod-sim.yml must ALSO restore the cron's slow-text cache "
+        "family (`cache-vN-text-<os>-` prefix) — without it edgar_10k_text / "
+        "edgar_8k / osap restore cold every sim and OSAP live-downloads even "
+        "under QR_SKIP_OSAP=1 (the run #98 cold-cascade contributor). The sim "
+        "restores this family by restore-keys prefix (the cron's save key is "
+        "run-id-unique, so there is no stable key to exact-hit)."
+    )
+
+
 def test_canary_step_identical_in_both_workflows() -> None:
     """The cache-restore canary step body is byte-identical in both workflows.
 

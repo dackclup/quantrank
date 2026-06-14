@@ -148,6 +148,29 @@
   expected steady-state with all five skips active on a warm-cache
   restore: 8-15 min (vs the pre-fix 45-min cap breach across PRs
   #230 / #238 / #241).
+- **pre-merge-prod-sim must mirror the cron's TWO cache bundles AND its
+  `timeout-minutes` — the 5 QR_SKIP_* skips only help on a cache HIT**
+  (2026-06-13). The five escape-hatch vars above all share the documented
+  design "no cache → fall through to a live fetch", so they SAVE time ONLY
+  when the restore actually hits. Two ways the sim restore silently went
+  cold, both fixed in the cold-cancel PR: (1) the sim originally listed all
+  11 cache paths under the SINGLE fast key `cache-v8-fast-`, but the cron
+  saves the 5 slow-text paths (`edgar_10k_text` / `edgar_8k` / `osap` /
+  `edgar_amendments` / `edgar_late_filings`) under a SEPARATE key
+  (`cache-v5-text-<os>-<run_id>`) — so those paths were NEVER restored and
+  OSAP cold-downloaded on EVERY sim even with `QR_SKIP_OSAP=1`. The sim now
+  has TWO `actions/cache/restore@v5` steps mirroring the cron's two bundles
+  (restore-only; slow-text by `cache-v5-text-<os>-` restore-keys prefix).
+  (2) The sim's `timeout-minutes` lagged the cron's twice (90 vs 150, then
+  90 vs 240) — a PR-context cache MISS is INHERENT (GitHub scopes caches per
+  branch; a fresh `main` save isn't always visible to a PR run), so a cold
+  sim runs as long as a cold cron and the 90-min cap CANCELLED PR #475's run
+  #98 mid per-stock write. The sim's timeout must be ≥ the cron's (they may
+  be equal); the S&P 900 pilot's first cold run needs the 240 headroom too.
+  Both invariants are guarded by `test_sim_timeout_at_least_cron_timeout` +
+  `test_sim_restores_both_cron_cache_families` in
+  `tests/test_workflow_cache_coverage.py` — keep the sim's two restore steps
+  + timeout in lockstep with `compute-rankings.yml` when either moves.
 - **The cron cache is split into TWO `actions/cache` steps (don't
   re-merge): fast (quarter-key) + slow-text (run-id key)** (2026-06-06,
   edgar-debugger root-cause). The original SINGLE 11-path bundle

@@ -3898,3 +3898,61 @@ existing entries stay valid). **TIME-SENSITIVE: must merge before the Thu
 2026-06-19 22:00 UTC cron** or the spike recurs that night. Verify: ruff
 PASS, scoring+workflow suites green, canary byte-identical.
 ---
+
+## 2026-06-13 — fix(ci): pre-merge-prod-sim cold-cancel — restore both cache bundles + timeout 90→240
+
+The pre-merge-prod-sim `simulate` job was CANCELLED at its 90-min
+`timeout-minutes` cap on PR #475's run #98 (run 27471644445 / job
+81203525304), killed mid per-stock write
+(`Wrote .../stocks/history/DOW.json` → `##[error]The operation was
+canceled`). DIAGNOSIS from the job log (downloaded the run-logs zip for
+the restore-step head the job-log API tail couldn't reach): the
+cache-restore step MISSED — the step log reads verbatim
+`Cache not found for input keys: cache-v8-fast-2026Q2-Linux,
+cache-v8-fast-2026Q2-, cache-v8-fast-` (restored in 1s = nothing
+downloaded). With an empty cache, all 5 QR_SKIP_* escape hatches fell
+through their documented "no cache → live fetch" paths: 502/502 tickers
+cold-fetched fundamentals (`QR_SKIP_FUNDAMENTALS set but no cached parquet
+for A … YUM — falling through to live EDGAR fetch`, ~20 min 15:58→16:18)
++ cold `fundamentals_history` (2 live EDGAR round-trips per stock through
+the writer phase, ~1400 `edgar.core: Identity … set` calls @ ~5.9s/stock,
+~50 min) + a cold OSAP download (`Cached 1226794 rows`, ~10 min). This is
+cause (a) cache-restore MISS, not a genuinely-heavy warm run. Two
+contributing root causes, two fixes:
+
+1. **Structural restore bug (the high-value fix).** The cron
+   (`compute-rankings.yml`) saves its cache as TWO bundles under DIFFERENT
+   keys — fast (`cache-v8-fast-<q>-<os>`) + slow-text
+   (`cache-v5-text-<os>-<run_id>`). The sim listed all 11 paths under the
+   single fast key, so the 5 slow-text paths (edgar_10k_text / edgar_8k /
+   osap / amendments / late_filings) were NEVER restored — they live in a
+   cache the sim never requested. That is why OSAP cold-downloaded on EVERY
+   sim even with `QR_SKIP_OSAP=1` (the skip falls through to a live fetch
+   when the parquet is absent). Split the sim's one restore step into TWO
+   `actions/cache/restore@v5` steps mirroring the cron's two bundles
+   (restore-only on both — the sim must never SAVE); the slow-text step
+   uses restore-keys prefix `cache-v5-text-<os>-` since the cron's save key
+   is run-id-unique. A warm restore is now ~15-25 min.
+2. **Timeout safety net (must-have regardless of cache).** A PR-context
+   cache MISS is INHERENT — GitHub scopes caches per branch, so a fresh
+   `main` save is not always visible to a PR run (run #100's main cron
+   saved cache-v8-fast-2026Q2-Linux at 15:50 yet this PR run missed it 8
+   min later). And the upcoming S&P 900 pilot's first cold run can't finish
+   in 90 min by construction. Bumped `timeout-minutes` 90→**240** to match
+   the weekly cron (raised in the #249 era + Phase 7.0 folded backtest);
+   the sim runs FEWER loops than the cron (5 skip vars, no committed output,
+   no PIT backtest) so 240 is an upper bound it never approaches warm, but
+   it must not be LESS or the silent cancellation recurs.
+
+Regression guard: added two tests to
+`tests/test_workflow_cache_coverage.py` —
+`test_sim_timeout_at_least_cron_timeout` (sim timeout must be ≥ the
+cron's, so a future cron bump can't strand the sim again) and
+`test_sim_restores_both_cron_cache_families` (sim must request BOTH the
+fast and the `cache-vN-text-<os>-` slow-text families). Both fail on the
+pre-fix sim (positive-control verified). No production code / schema
+change; cache family NOT bumped (restore-key plumbing only). Verify:
+`ruff check .` PASS, `tests/test_workflow_cache_coverage.py` 29 passed,
+all 3 workflow YAMLs parse.
+
+---

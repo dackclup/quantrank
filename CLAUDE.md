@@ -275,6 +275,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`loss_avoidance_pattern` thresholds rescaled**
 - **Hypothesis property-based tests**
 - **CI escape-hatch env-var combo for simulate**
+- **pre-merge-prod-sim must mirror the cron's TWO cache bundles AND its `timeout-minutes` — the 5 QR_SKIP_* skips only help on a cache HIT**
 - **The cron cache is split into TWO `actions/cache` steps (don't re-merge): fast (quarter-key) + slow-text (run-id key)**
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
 - **`IMPECCABLE_NO_UPDATE_CHECK` + `IMPECCABLE_UPDATE_HOST`**
@@ -360,23 +361,23 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **fix(scoring+ci) — #469 follow-up: widen the 8-K jitter 24h→72h +
-  canary housekeeping (this PR, 2026-06-13)** — the sufficiency analysis
-  showed the shipped 24h jitter is structurally insufficient: the next
-  cohort cliff lands on a WEEKDAY (Thu 2026-06-19 22:00 UTC) where the
-  binding cron gap is 24h, so W=24h lets ~471/502 tickers refetch in one
-  run (the original ~75-min tier2 spike, unmitigated); and the per-cycle
-  spread k·W only escapes the 62h Sat→Mon re-bunching gap at W>62h.
-  `EDGAR_8K_CACHE_TTL_JITTER_SECONDS` 24h→**72h** (>62h gap → never
-  re-bunches from cycle 1; the 2026-06-19 cliff → ~157 tickers/+25min;
-  max staleness 72h ≪ the 365/730-day 8-K lookback). Canary
-  TTL-proximity threshold 120h→72h (= 144−72) in both byte-identical
-  workflows; the broken `restored slow-text key` echo (referenced
-  `cache-matched-key`, not exposed by `actions/cache@v5` → rendered
-  blank) removed (the native "Cache restored from key:" log already
-  carries it). Folds in post-merge doc housekeeping (stale §In-flight
-  rotation, #249 marked DONE). MUST merge before the Thu 2026-06-19
-  cliff. Detail: PHASE_STATUS_INFLIGHT.md.
+- **ci(sim) — #476: pre-merge-prod-sim cold-cancel fix — split cache
+  restore (fast+slow-text) + timeout 90→240 (2026-06-13)** — the
+  simulate job was silently cancelled at the 90-min cap on PR #475's run
+  (cold cache: the sim listed all 11 paths under the fast key only, so
+  the 5 slow-text paths — edgar_10k_text/edgar_8k/osap — were never
+  restored; OSAP cold-downloaded on every sim even with the QR_SKIP_*
+  hatches set, because those only short-circuit on a cache HIT). Fix:
+  split into TWO `actions/cache/restore@v5` steps mirroring the cron's
+  two SAVE bundles (fast `cache-v8-fast-<q>-<os>` + slow-text
+  `cache-v5-text-<os>-` prefix), restore-only; + bump `timeout-minutes`
+  90→240 to match the cron (the PR-context cross-branch cache MISS is
+  inherent, so the timeout is the must-have net + covers the S&P 900
+  pilot's first cold run). Regression-guarded by
+  `test_sim_timeout_at_least_cron_timeout` +
+  `test_sim_restores_both_cron_cache_families` (positive-control FAIL
+  pre-fix). Precursor for the S&P 900 pilot (a 900-ticker compute PR
+  would always cancel at 90 min). Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
