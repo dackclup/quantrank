@@ -28,7 +28,14 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.10.18-phase4.6"
+# Phase 8 pilot — universe selector (default "sp500" so the cron and all
+# existing CI paths are unchanged). When set to "sp900", main.py runs a
+# diagnostic-only coverage probe over the 400 midcaps; ranked output
+# (rankings.json + stocks/*.json) stays 500-only in PR 1.
+# PR 5 will add the precache dispatch input + cron integration.
+QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
+
+SCHEMA_VERSION: str = "0.10.19-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -68,6 +75,9 @@ MAX_PARALLEL_FETCHES: int = 10
 # and should drop back to 5 or 6.
 EDGAR_MAX_WORKERS: int = 8
 UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
+# SP400 universe re-fetch cadence. 7 days matches the SP500 cache so both
+# constituent lists refresh on the same weekly schedule.
+SP400_CACHE_MAX_AGE_DAYS: int = 7
 PRICES_CACHE_MAX_AGE_HOURS: int = 24
 FUNDAMENTALS_REFETCH_DAYS: int = 45
 # Issue #471 / #15 — Design B filing-date precheck (replaces Design C mtime gate).
@@ -97,6 +107,15 @@ MIN_FUNDAMENTALS_COVERAGE: float = 0.5
 PILLAR_BASELINE_MIN_PEERS: int = 10
 
 WIKIPEDIA_SP500_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+# Phase 8 pilot — S&P 400 Wikipedia URL + on-disk parquet cache. The
+# cache sits next to the SP500 universe cache under compute/cache/;
+# filename suffix `-v1` follows the universe-v2 bump convention (bump if
+# column set or normalization changes). ADRs are NOT in the S&P 400
+# (domestic mid-cap index) so no 20-F/6-K handling needed.
+WIKIPEDIA_SP400_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies"
+SP400_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp400-v1.parquet"
+# SP900 = SP500 ∪ SP400 combined universe cache (de-duped, cohort column).
+SP900_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp900-v1.parquet"
 HTTP_USER_AGENT: str = "QuantRank/0.3 (+https://github.com/dackclup/quantrank)"
 
 # --- Phase 3c: fair price ensemble + Tier-1 defense constants ---

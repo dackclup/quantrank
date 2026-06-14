@@ -71,8 +71,17 @@ def test_schema_version_is_phase4_6():
     listed line's own per-class count); ``shares_outstanding`` reverts to
     the SEC companyfacts company-total aggregate (ASC 260, class-invariant,
     so the CIK-keyed parquet cache can no longer corrupt it). PATCH bump
-    per the additive-optional-field convention."""
-    assert config.SCHEMA_VERSION == "0.10.18-phase4.6"
+    per the additive-optional-field convention.
+
+    Phase 8 pilot PR 1 (0.10.19-phase8pilot) — S&P 900 universe expansion
+    observability slice (Rule 18). Adds four additive nullable Metadata
+    fields for the diagnostic coverage probe over the 400 mid-cap cohort:
+    ``universe_cohort_sizes``, ``midcap_fundamentals_coverage_pct``,
+    ``midcap_null_rate_pct``, ``midcap_cik_resolution_pct``. All None on
+    the default sp500 path; populated only when QR_UNIVERSE=sp900.
+    Ranked output (rankings.json + stocks/*.json) is byte-identical to a
+    500 run — the probe is a separate loop that does NOT feed the writer."""
+    assert config.SCHEMA_VERSION == "0.10.19-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

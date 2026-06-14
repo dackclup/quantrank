@@ -337,6 +337,27 @@ export type Metadata = {
   // `form4_rule10b5_one_excluded_count`. Null on legacy pre-0.10.11
   // snapshots.
   form4_negation_guard_downgrade_count?: number | null;
+  // Phase 8 pilot PR 1 (0.10.19-phase8pilot, Rule 18) —
+  // observability-before-wiring diagnostics for the S&P 900 universe
+  // expansion pilot. All four fields are null on the default sp500 path
+  // (QR_UNIVERSE=sp500, unchanged cron); populated only when
+  // QR_UNIVERSE=sp900 and the diagnostic probe ran successfully.
+  // Ranked output (rankings.json + stocks/*.json) is byte-identical
+  // to a 500 run — the probe loop does NOT feed the writer. PR 3 will
+  // wire the ranked output once coverage is verified.
+  //
+  // `universe_cohort_sizes` — count per cohort after de-dup:
+  //   keys "sp500" (≤502) and "sp400" (≤400; sp500 wins on overlap).
+  universe_cohort_sizes?: Record<string, number> | null;
+  // `midcap_fundamentals_coverage_pct` — % of sp400 tickers with a
+  // non-null FundamentalsSnapshot from the diagnostic probe.
+  midcap_fundamentals_coverage_pct?: number | null;
+  // `midcap_null_rate_pct` — % of sp400 tickers returning null.
+  // Complement of midcap_fundamentals_coverage_pct (sums ≈ 100%).
+  midcap_null_rate_pct?: number | null;
+  // `midcap_cik_resolution_pct` — % of sp400 tickers whose CIK
+  // resolved (Wikipedia page or Company(ticker).cik lookup).
+  midcap_cik_resolution_pct?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

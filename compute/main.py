@@ -76,7 +76,7 @@ from compute.ingest.fundamentals import (
     reset_filing_precheck_skip_count as reset_fundamentals_filing_precheck_skip_count,
 )
 from compute.ingest.prices import fetch_benchmarks, fetch_prices, fetch_spy_benchmark
-from compute.ingest.universe import get_sp500_constituents
+from compute.ingest.universe import get_sp500_constituents, get_sp900_constituents
 from compute.output.schemas import (
     DataQuality,
     Metadata,
@@ -734,6 +734,92 @@ def _acquire_alpha158_inputs(asof_date: date, tickers: list[str]) -> tuple:
     )
 
 
+def _run_midcap_coverage_probe(
+    sp900_df: pd.DataFrame,
+) -> tuple[float | None, float | None, float | None, dict[str, int]]:
+    """Diagnostic-only coverage probe over the S&P 400 mid-cap cohort.
+
+    Phase 8 pilot PR 1 (Rule 18 observability-before-wiring). This probe:
+      - iterates only over the ``sp400`` rows of ``sp900_df``
+      - calls ``fetch_fundamentals`` on each ticker (reusing the production
+        tenacity / cache layer — no new retry policy needed)
+      - counts non-null snapshots (= GAAP coverage) vs nulls
+      - does NOT feed ``summaries``, the writer, or any scoring path
+      - returns (coverage_pct, null_rate_pct, cik_resolution_pct, cohort_sizes)
+
+    The ranked output (rankings.json + stocks/*.json) is BYTE-IDENTICAL
+    whether or not this probe ran. The probe runs in the main thread
+    (sequential) to avoid blowing through the EDGAR 10 req/s ceiling on
+    top of the 500 fundamentals fetch that already ran.
+
+    Returns (None, None, None, {}) on any unexpected failure so the outer
+    Metadata population still proceeds cleanly.
+    """
+    try:
+        cohort_sizes: dict[str, int] = {}
+        for cohort_label in ("sp500", "sp400"):
+            mask = sp900_df["cohort"] == cohort_label
+            cohort_sizes[cohort_label] = int(mask.sum())
+
+        midcap_mask = sp900_df["cohort"] == "sp400"
+        midcap_df = sp900_df[midcap_mask].reset_index(drop=True)
+        total_midcap = len(midcap_df)
+
+        if total_midcap == 0:
+            logger.warning("[sp900-probe] No sp400 tickers found in sp900 DataFrame — probe skipped")
+            return None, None, None, cohort_sizes
+
+        logger.info(
+            "[sp900-probe] Starting midcap coverage probe: %d sp400 tickers (sequential, cache-safe)",
+            total_midcap,
+        )
+
+        # CIK resolution bookkeeping
+        cik_resolved = 0
+        for _, row in midcap_df.iterrows():
+            if row.get("cik") and str(row["cik"]).strip() not in ("", "None", "nan"):
+                cik_resolved += 1
+        cik_resolution_pct = round(100.0 * cik_resolved / total_midcap, 2)
+        logger.info(
+            "[sp900-probe] CIK resolution: %d / %d (%.1f%%)",
+            cik_resolved,
+            total_midcap,
+            cik_resolution_pct,
+        )
+
+        n_ok = 0
+        n_null = 0
+        for _, row in midcap_df.iterrows():
+            ticker = str(row["ticker"])
+            cik_raw = row.get("cik")
+            cik = str(cik_raw).strip() if cik_raw and str(cik_raw).strip() not in ("", "None", "nan") else ""
+            try:
+                snap = fetch_fundamentals(ticker, cik)
+                if snap is not None:
+                    n_ok += 1
+                else:
+                    n_null += 1
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("[sp900-probe] fetch_fundamentals failed for %s: %s", ticker, exc)
+                n_null += 1
+
+        coverage_pct = round(100.0 * n_ok / total_midcap, 2)
+        null_rate_pct = round(100.0 * n_null / total_midcap, 2)
+        logger.info(
+            "[sp900-probe] Midcap GAAP coverage: %d / %d = %.1f%% (null: %d = %.1f%%)",
+            n_ok,
+            total_midcap,
+            coverage_pct,
+            n_null,
+            null_rate_pct,
+        )
+        return coverage_pct, null_rate_pct, cik_resolution_pct, cohort_sizes
+
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[sp900-probe] Diagnostic probe failed unexpectedly: %s", exc)
+        return None, None, None, {}
+
+
 def run_weekly_compute() -> int:
     """Run the full weekly compute. Returns the count of successfully scored tickers."""
     logging.basicConfig(
@@ -755,9 +841,41 @@ def run_weekly_compute() -> int:
         # Already logged at error level by the helper; bail immediately.
         return 0
 
-    logger.info("Loading S&P 500 universe…")
+    # Phase 8 pilot PR 1 — universe selector seam.
+    # QR_UNIVERSE=sp500 (default): behaviour is byte-identical to pre-PR-1.
+    # QR_UNIVERSE=sp900: loads the combined SP900 universe for the diagnostic
+    # probe, but ``universe`` (the scored set) stays 500-only.
+    logger.info("Loading S&P 500 universe… (QR_UNIVERSE=%s)", config.QR_UNIVERSE)
     universe = get_sp500_constituents()
     logger.info("Universe size: %d", len(universe))
+
+    # Phase 8 pilot PR 1 — diagnostic-only midcap coverage probe (Rule 18).
+    # Runs ONLY when QR_UNIVERSE=sp900. Populates new Metadata fields.
+    # CRITICAL: sp900_df is NEVER passed into summaries, the writer, or any
+    # scoring loop — ranked output is byte-identical to the sp500 path.
+    _pilot_cohort_sizes: dict[str, int] | None = None
+    _pilot_midcap_coverage_pct: float | None = None
+    _pilot_midcap_null_rate_pct: float | None = None
+    _pilot_midcap_cik_resolution_pct: float | None = None
+    if config.QR_UNIVERSE == "sp900":
+        logger.info("[sp900-probe] QR_UNIVERSE=sp900 — running midcap diagnostic probe…")
+        try:
+            sp900_df = get_sp900_constituents()
+            (
+                _pilot_midcap_coverage_pct,
+                _pilot_midcap_null_rate_pct,
+                _pilot_midcap_cik_resolution_pct,
+                _pilot_cohort_sizes,
+            ) = _run_midcap_coverage_probe(sp900_df)
+            logger.info(
+                "[sp900-probe] Complete: cohorts=%s coverage=%.1f%% null_rate=%.1f%% cik_resolution=%.1f%%",
+                _pilot_cohort_sizes,
+                _pilot_midcap_coverage_pct or 0.0,
+                _pilot_midcap_null_rate_pct or 0.0,
+                _pilot_midcap_cik_resolution_pct or 0.0,
+            )
+        except Exception as _sp900_exc:  # noqa: BLE001
+            logger.error("[sp900-probe] Outer probe block failed (non-fatal): %s", _sp900_exc)
 
     logger.info("Fetching SPY benchmark for beta…")
     benchmark = fetch_spy_benchmark()
@@ -2528,6 +2646,12 @@ def run_weekly_compute() -> int:
         # Gates Q3 2026-08-19 cohort-acceptance check for INSIDER_SELL_CLUSTER_WEIGHT
         # 5.0 → 7.0 promotion alongside form4_rule10b5_one_excluded_count.
         form4_negation_guard_downgrade_count=form4_negation_guard_downgrade_count,
+        # Phase 8 pilot PR 1 — midcap coverage probe diagnostics (Rule 18).
+        # None on the default sp500 path; populated only when QR_UNIVERSE=sp900.
+        universe_cohort_sizes=_pilot_cohort_sizes or None,
+        midcap_fundamentals_coverage_pct=_pilot_midcap_coverage_pct,
+        midcap_null_rate_pct=_pilot_midcap_null_rate_pct,
+        midcap_cik_resolution_pct=_pilot_midcap_cik_resolution_pct,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

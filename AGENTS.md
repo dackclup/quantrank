@@ -81,7 +81,7 @@ compute/                          # Python compute pipeline (read/write OK)
 │   │                             #   graceful-absent → []; see CLAUDE.md §Gotchas)
 │   ├── historical_sector.py      # PIT GICS sector reader (data/historical_sector.parquet;
 │   │                             #   graceful-absent → today's sector)
-│   └── universe.py               # S&P 500 constituents
+│   └── universe.py               # S&P 500 / 400 / 900 (combined) constituents (QR_UNIVERSE)
 ├── scoring/                      # 8-pillar composite + risk overlay
 │   ├── pillars.py · composite.py · risk_overlay.py
 │   ├── tier2.py                  # Tier-2 events orchestrator

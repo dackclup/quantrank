@@ -3956,3 +3956,51 @@ change; cache family NOT bumped (restore-key plumbing only). Verify:
 all 3 workflow YAMLs parse.
 
 ---
+
+## 2026-06-14 — feat(ingest+schema): S&P 900 pilot PR 1 — 900-universe ingest + per-cohort diagnostic Metadata
+
+Phase 8 pilot, first slice — **observability-first (Rule 18)**: ship the
+900-universe ingest + a per-cohort diagnostic `Metadata` surface with the
+ranked output BYTE-IDENTICAL to a 500 run (midcaps NOT ranked — that is
+PR 3, gated on ≥ 1 cron confirming midcap coverage). Mirrors the project's
+own discipline for every new data cohort (Form-4 PR 2, Alpha158 4j.1).
+
+**Build:** `compute/ingest/universe.py` — promoted the scout's
+`fetch_sp400_constituents` (Wikipedia S&P 400, cached parquet) +
+`_parse_sp400_html` + `_resolve_cik_for_midcap` (`Company(ticker).cik`
+zfill(10), graceful — log+skip on failure, never crash) +
+`get_sp900_constituents` (concat 500+400, `drop_duplicates(keep="first")`
+with sp500 tagged first → sp500 wins transient overlap, `cohort` column
+"sp500"/"sp400"). `compute/config.py` — `QR_UNIVERSE` env constant
+(default `"sp500"`), `WIKIPEDIA_SP400_URL`, `SP400_UNIVERSE_CACHE`,
+`SP900_UNIVERSE_CACHE`, `SP400_CACHE_MAX_AGE_DAYS`; SCHEMA_VERSION
+`0.10.18-phase4.6` → `0.10.19-phase8pilot`. `compute/main.py` —
+`_run_midcap_coverage_probe()` (iterates ONLY `cohort=="sp400"`, calls
+`fetch_fundamentals`, counts non-null GAAP coverage + null-rate + CIK
+resolution pct; exception-in-fetch counted as null), guarded by
+`if config.QR_UNIVERSE == "sp900"`; the 4 `_pilot_*` vars init to `None`
+BEFORE the guard so the `sp500` path is byte-identical. Schema triple:
+4 additive nullable `Metadata` fields (`universe_cohort_sizes`,
+`midcap_fundamentals_coverage_pct`, `midcap_null_rate_pct`,
+`midcap_cik_resolution_pct`) mirrored in `types.ts` + `schema-snapshot.json`
+regenerated; `schema_check` green.
+
+**Byte-identical proof:** the probe never touches `summaries`,
+`write_rankings_json`, `write_stock_detail`, or any scoring function — it
+is a pure read-side coverage probe over the midcap cohort. On `sp500` the
+4 fields serialize `null`. ADRs excluded at source (S&P 400 is domestic;
+20-F/6-K is the 1500 phase).
+
+**Verify:** ruff PASS · `schema_check` PASS · full offline suite **1830
+passed / 12 skipped** (OSAP modules need `[factors]`) · 30 new tests
+(`tests/test_ingest/test_universe_sp900.py`: sp400 parse, sp900
+dedup/cohort/CIK, probe arithmetic, byte-identical-500 guard).
+
+**Decisions in effect (issue #130 / pilot):** eligibility — midcaps in
+rankings day-1, AI-pick-eligible after 2 green crons; Bonferroni +
+liquidity-backstop deferred to the 1500 cutover; defense set FROZEN;
+thresholds held at 500-calibration; methodology-scientist ratifies before
+PR 3. Follow-ups (NOT this PR): `universe=sp900` precache dispatch input
+(PR 5); `config.UNIVERSE` string + ranked midcap output (PR 3);
+`verify_membership_ledger.py` cohort-filter (PR 2, the required R6 fix).
+---
