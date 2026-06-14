@@ -3806,7 +3806,7 @@ defense-infrastructure) under the observability-before-wiring convention
 #60; the §3 IC-decay *library* shipped there too but was left uncalled
 (logged as a Phase-5 tracker because the decay `alert` needs a regular
 monthly IC panel). This PR production-wires the plumbing now, honestly
-labeled, self-densifying cron-over-cron:
+labeled (schema 0.10.18 → 0.10.19-phase4.6):
 
 - **compute** — `compute/validation/ic_decay.py` gains
   `pillar_entries_to_monthly_panel` (per-commit `historical_ic` IC →
@@ -3832,9 +3832,13 @@ labeled, self-densifying cron-over-cron:
   scores/ranks" disclaimer and the McLean-Pontiff (2016) citation.
   `monitoring`/`alert` render the per-pillar 12m-IC-vs-historical-mean table.
 - **honesty** — informational ONLY; never vetoes or changes the composite.
-  The `alert` becomes meaningful only as the panel densifies (≥12 monthly IC
-  points/pillar); Phase 5's walk-forward harness accelerates that but is not
-  a hard blocker for the plumbing.
+  The `alert` becomes meaningful only once the panel densifies (≥12 monthly
+  IC points/pillar). NOTE: the cron currently checks out shallow
+  (`fetch-depth: 1`), so the git-walk sees only the tip commit and the report
+  stays `insufficient_history` until the checkout is deepened — tracked as
+  follow-up #478 (Phase 5's walk-forward harness is the longer-term
+  densification source). The honest `/analysis` "accumulating baseline" state
+  is correct under this constraint.
 - **docs** — also corrected an inaccurate PHASE_STATUS.md §2 claim (the PBO
   tests are property/behavioral anchors, NOT a "Bailey 2014 Table-1 golden
   fixture within 5%").

@@ -1488,8 +1488,10 @@ backtest CAGR as the live product's track record.
      `check_pillar_decay` sets `preliminary=True` and forces `alert=False` below that bar;
      `build_decay_report` then sets the top-level `status` to `insufficient_history` when no
      pillar has enough history. This is the honesty guard — the monitor needs a regular
-     monthly cadence to mean anything, and the git-archived `rankings.json` corpus only
-     densifies cron-over-cron (it was ≈1 week at wiring time). Never emit a non-preliminary
+     monthly cadence to mean anything, and the git-archived `rankings.json` corpus is only as
+     deep as the cron checkout exposes — the cron is shallow (`fetch-depth: 1`), so the git-walk
+     currently sees only the tip commit and the report stays `insufficient_history` until the
+     checkout is deepened (follow-up #478). Never emit a non-preliminary
      `alert` on thin history, and never let the frontend render a "0 pillars decaying"
      all-clear in the `insufficient_history` state (it shows "accumulating baseline" instead).
   3. **`decay_report.json` is dataclass-emitted and is NOT part of the schema-snapshot
@@ -1499,7 +1501,8 @@ backtest CAGR as the live product's track record.
      are intentionally separate from the schema-mirrored types.
   Skip-safe via `QR_SKIP_DECAY_MONITOR=1`; the whole step is try/except graceful-degrade
   (failure → `decay_report_url=None`, the cron never blocks). Phase 5's walk-forward harness
-  is what makes the `alert` meaningful, but the plumbing self-populates without it.
+  is the longer-term source of the meaningful monthly-IC panel; the git-walk plumbing accrues
+  history only once the cron checkout is deepened (currently shallow `fetch-depth: 1`, #478).
   **Relevant code**: `compute/validation/ic_decay.py` (`build_decay_report`,
   `pillar_entries_to_monthly_panel`, `check_pillar_decay`, `emit_decay_report`) +
   `compute/main.py` decay-monitor block + `frontend/components/DecayMonitorCard.tsx`.

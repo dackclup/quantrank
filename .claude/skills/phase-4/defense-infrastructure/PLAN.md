@@ -4,7 +4,7 @@
 
 - §1 Cross-source validator: production-wired in `compute/main.py` (annotate-only via `valuation_warnings`)
 - §2 PBO + DSR: library at `compute/validation/pbo_dsr.py`; ready to be called by PR 4h (OSAP) / 4i (JKP) / 4j (Qlib) / 4k (IPCA) when their factor returns are available
-- §3 IC-decay monitor: **production-wired 2026-06-13** (issue #75 §3) — `compute/main.py` runs `ic_decay.build_decay_report` each cron → `frontend/public/data/decay_report.json`, surfaced on `/analysis` via `Metadata.decay_report_url`. Monitor-only (never vetoes); `alert` suppressed until ≥12 monthly IC points/pillar; self-densifies cron-over-cron (Phase 5's walk-forward panel makes the alert meaningful but isn't a plumbing blocker)
+- §3 IC-decay monitor: **production-wired 2026-06-13** (issue #75 §3) — `compute/main.py` runs `ic_decay.build_decay_report` each cron → `frontend/public/data/decay_report.json`, surfaced on `/analysis` via `Metadata.decay_report_url`. Monitor-only (never vetoes); `alert` suppressed until ≥12 monthly IC points/pillar; stays `insufficient_history` until the cron checkout is deepened (currently shallow `fetch-depth: 1` — follow-up #478; Phase 5's walk-forward panel is the longer-term densification source)
 
 No new third-party deps (pure numpy implementation of CSCV + DSR replaces `scipy` + `pypbo`).
 

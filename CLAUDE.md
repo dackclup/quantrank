@@ -368,12 +368,15 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   (bounded 39-mo) → calendar-month IC panel → `check_all_pillars` →
   `emit_decay_report` → `frontend/public/data/decay_report.json` every
   cron (try/except graceful-degrade, skip-safe `QR_SKIP_DECAY_MONITOR`),
-  plus a schema-triple-additive `Metadata.decay_report_url`. `/analysis`
+  plus a schema-triple-additive `Metadata.decay_report_url` (schema
+  0.10.18 → 0.10.19-phase4.6). `/analysis`
   renders a 3-state honest surface; the current real state is
-  `status="insufficient_history"` (≈1 wk of git history) — the monitor
-  self-densifies cron-over-cron and the `alert` is SUPPRESSED until ≥12
-  monthly IC points/pillar (`preliminary`), so it never shows a
-  fabricated "0 decaying" badge. The monitor NEVER vetoes / changes
+  `status="insufficient_history"` (≈1 wk of git history) — the `alert`
+  is SUPPRESSED until ≥12 monthly IC points/pillar (`preliminary`), so it
+  never shows a fabricated "0 decaying" badge. The cron's shallow
+  `fetch-depth: 1` checkout keeps the git-walk at the tip commit, so it
+  stays `insufficient_history` until the checkout is deepened (follow-up
+  #478). The monitor NEVER vetoes / changes
   scores (McLean-Pontiff 2016, informational only). Also corrects the §2
   PBO "Bailey Table-1 golden-fixture" doc claim (the tests are
   property/behavioral anchors). 16 new `ic_decay` tests (27 total).
