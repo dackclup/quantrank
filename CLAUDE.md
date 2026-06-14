@@ -361,24 +361,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(ingest+schema) — #479: S&P 900 pilot PR 1 — 900-universe ingest +
-  per-cohort diagnostic Metadata (2026-06-14)** — Phase 8
-  observability-first slice (Rule 18). Promotes the scout's
-  `fetch_sp400_constituents` to production (`compute/ingest/universe.py`)
-  + `get_sp900_constituents` (500+400, dedup sp500-wins, graceful CIK
-  resolution, `cohort` column); a `QR_UNIVERSE` env selector (default
-  `sp500` → the weekly cron is byte-identical). When `QR_UNIVERSE=sp900`,
-  a diagnostic coverage probe over the 400 midcaps populates 4 new
-  nullable `Metadata` fields (cohort sizes, midcap fundamentals coverage
-  / null-rate / CIK-resolution pct) — **`rankings.json` + `stocks/*.json`
-  stay byte-identical** (the probe never feeds the writer). Schema
-  `0.10.18-phase4.6` → `0.10.19-phase8pilot` (additive PATCH). 30 new
-  tests; full offline suite 1830 passed. Midcaps are NOT ranked yet —
-  PR 3 wires that after ≥ 1 cron confirms coverage (eligibility decided:
-  in rankings day-1, AI-pick-eligible after 2 green crons). Next pilot
-  PRs: 2 (ledger forward-only guard + verifier cohort-filter) · 3 (rank
-  midcaps) · 4 (frontend badge) · 5 (`universe=sp900` precache) · 6
-  (acceptance ladder). Detail: PHASE_STATUS_INFLIGHT.md.
+- **ci(workflow) — S&P 900 pilot PR 2: `universe` workflow_dispatch input
+  → enable the sp900 diagnostic run (this PR, 2026-06-14)** — PR 1 (#479,
+  merged) shipped `QR_UNIVERSE` (default sp500) + a midcap coverage probe
+  that only fires on sp900, but there was no way to SET sp900 in CI. This
+  adds a `workflow_dispatch.inputs.universe` choice (sp500/sp900, default
+  sp500) to `compute-rankings.yml`, wired to `QR_UNIVERSE` via an
+  env-block `${{ github.event.inputs.universe || 'sp500' }}`
+  (injection-safe; the scheduled cron has null inputs → resolves sp500 →
+  byte-identical). An operator dispatches `universe: sp900` (Actions →
+  Compute Rankings → Run workflow) to run the midcap probe and capture
+  the `midcap_*` coverage Metadata in the committed metadata.json — the
+  empirical gate for PR 3 (ranking midcaps). First sp900 dispatch
+  cold-probes ~400 midcaps sequentially (~40-167m) on top of warm-500 —
+  fits the 240-min budget if the 500 caches are warm. Guard test pins the
+  input + the sp500 fallback. Next: dispatch the diagnostic → read
+  coverage → PR 3 (rank midcaps + cohort marker + R6 verifier
+  cohort-filter + backfill 500-only guard + forward-only flags). Detail:
+  PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see

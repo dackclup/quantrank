@@ -500,3 +500,35 @@ def _first_diff(a: str, b: str) -> str:
             f"precache-edgar.yml has {len(b_lines)} lines"
         )
     return "  (no difference found — strings are equal)"
+
+
+def test_compute_rankings_has_universe_dispatch_input() -> None:
+    """compute-rankings.yml exposes the S&P 900 pilot `universe` dispatch input
+    (PR 2) wired to QR_UNIVERSE with a sp500 fallback so the SCHEDULED cron stays
+    byte-identical.
+
+    WHY: PR 1 added `config.QR_UNIVERSE` (default sp500) + a midcap coverage probe
+    that only fires on sp900, but there was no way to SET sp900 in CI. This input
+    lets an operator dispatch a diagnostic sp900 run (Actions → Compute Rankings →
+    Run workflow → universe: sp900) to capture midcap coverage in metadata.json —
+    the empirical gate for PR 3 (ranking midcaps). The `|| 'sp500'` fallback is
+    load-bearing: on the schedule trigger `github.event.inputs` is null, so the
+    cron must still resolve to sp500 (byte-identical). The env-block assignment
+    (not a run-line ${{ }}) keeps it injection-safe.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    assert "universe:" in text, "compute-rankings.yml missing the `universe` dispatch input"
+    # choices present
+    for choice in ("- sp500", "- sp900"):
+        assert choice in text, f"`universe` input missing choice {choice!r}"
+    # default sp500 (cron byte-identical)
+    assert "default: sp500" in text, "`universe` input must default to sp500"
+    # QR_UNIVERSE wired with the sp500 fallback (schedule trigger has null inputs)
+    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}" in text, (
+        "compute-rankings.yml must wire QR_UNIVERSE from the universe input with a "
+        "`|| 'sp500'` fallback so the scheduled cron (null inputs) stays sp500"
+    )
+    # injection-safety: the universe input must NOT be interpolated into a run: line
+    assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
+        "${{ github.event.inputs.universe }}"
+    )[0][-200:], "universe input must not feed a run: shell line (script-injection)"
