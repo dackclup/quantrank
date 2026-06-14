@@ -1272,7 +1272,7 @@ modeling needed for any actionable signal).
 positives without proportional true positives.
 
 ## Phase 8 Acceptance Criteria
-- [ ] **Off-cycle pre-cache workflow operational (#249) BEFORE the pilot**
+- [x] **Off-cycle pre-cache workflow operational (#249) — DONE (PR #468 merged 2026-06-12; first Saturday precache run verified green 2026-06-13, ~20 min warm, tier2 11s)**
 - [ ] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover**
 - [ ] S&P 1500 ranked weekly
 - [ ] Compute time <90 min

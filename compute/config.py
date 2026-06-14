@@ -28,7 +28,17 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.10.19-phase4.6"
+# Phase 8 pilot — universe selector (default "sp500" so the cron and all
+# existing CI paths are unchanged). When set to "sp900", main.py runs a
+# diagnostic-only coverage probe over the 400 midcaps; ranked output
+# (rankings.json + stocks/*.json) stays 500-only in PR 1.
+# PR 5 will add the precache dispatch input + cron integration.
+QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
+
+# 0.10.20-phase4.6 (issue #75 §3) layers the additive
+# ``Metadata.decay_report_url`` on top of 0.10.19-phase8pilot (#479's S&P 900
+# cohort diagnostics) — the next monotonic patch after #479 took 0.10.19.
+SCHEMA_VERSION: str = "0.10.20-phase4.6"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -68,6 +78,9 @@ MAX_PARALLEL_FETCHES: int = 10
 # and should drop back to 5 or 6.
 EDGAR_MAX_WORKERS: int = 8
 UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
+# SP400 universe re-fetch cadence. 7 days matches the SP500 cache so both
+# constituent lists refresh on the same weekly schedule.
+SP400_CACHE_MAX_AGE_DAYS: int = 7
 PRICES_CACHE_MAX_AGE_HOURS: int = 24
 FUNDAMENTALS_REFETCH_DAYS: int = 45
 # Issue #471 / #15 — Design B filing-date precheck (replaces Design C mtime gate).
@@ -97,6 +110,15 @@ MIN_FUNDAMENTALS_COVERAGE: float = 0.5
 PILLAR_BASELINE_MIN_PEERS: int = 10
 
 WIKIPEDIA_SP500_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+# Phase 8 pilot — S&P 400 Wikipedia URL + on-disk parquet cache. The
+# cache sits next to the SP500 universe cache under compute/cache/;
+# filename suffix `-v1` follows the universe-v2 bump convention (bump if
+# column set or normalization changes). ADRs are NOT in the S&P 400
+# (domestic mid-cap index) so no 20-F/6-K handling needed.
+WIKIPEDIA_SP400_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies"
+SP400_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp400-v1.parquet"
+# SP900 = SP500 ∪ SP400 combined universe cache (de-duped, cohort column).
+SP900_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp900-v1.parquet"
 HTTP_USER_AGENT: str = "QuantRank/0.3 (+https://github.com/dackclup/quantrank)"
 
 # --- Phase 3c: fair price ensemble + Tier-1 defense constants ---
@@ -359,12 +381,28 @@ EDGAR_8K_CACHE_TTL_SECONDS: int = 6 * 86400  # 6 days
 # All 502 tickers are written in one cold-rebuild burst, so without jitter
 # they ALL cross the 6-day TTL cliff simultaneously ~6 days later, producing
 # an ~80-minute tier2 refetch spike on that run.  Adding a per-ticker
-# deterministic jitter in [0, 24h) spreads expiry across a full day so
+# deterministic jitter in [0, W) spreads expiry across the window so
 # refreshes trickle in across daily cron runs instead of all-at-once.
-# Side-effect: a brand-new 8-K's visibility is delayed by at most 24h for
-# the highest-jitter tickers — negligible given the 730-day lookback, the
-# daily cron cadence, and the rarity of 4.01/4.02 items.
-EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 24 * 3600  # 24 hours
+#
+# 2026-06-13 sufficiency analysis (performance-engineer): the original 24h
+# window (W=24h) is structurally insufficient.  Two failure modes:
+#   1. Weekday-cliff: the June 18-19 cohort expires on Thu 2026-06-19
+#      22:00 UTC — a WEEKDAY where the binding cron gap is 24h, not 144h.
+#      With W=24h the jitter spread equals one cron interval, leaving
+#      ~471/502 tickers expiring in the SAME Thursday run (~75-min tier2
+#      spike, reproducing the original problem).
+#   2. Sat→Mon re-bunching: the Sat precache writes a fresh cold cohort at
+#      08:00 UTC.  The Sat→Mon gap is 62h.  Re-bunching from cycle 1 is
+#      only prevented when W > 62h.  At W=24h the cohort re-syncs on the
+#      first Monday run.
+# Fix: W=72h (3 days).  72h > 62h escapes both failure modes:
+#   - The June-19 weekday cliff now spreads ~157 tickers/+25 min (vs ~471).
+#   - The Sat→Mon 62h gap is fully covered: jitter 0..72h spreads the
+#     first post-precache expiry across three daily cron runs instead of
+#     one.
+# Max staleness = 72h — negligible vs the 730-day 8-K lookback and the
+# daily cron cadence; the 4.01/4.02 item rarity is unchanged.
+EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 72 * 3600  # 72 hours
 
 # Cap how much of an Item body we keep in the cache + surface in the
 # UI excerpt. 500 chars is enough for the human reviewer to gauge

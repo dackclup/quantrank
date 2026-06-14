@@ -70,8 +70,12 @@ def test_D2_jitter_bounded_within_jitter_window():
 
 def test_D3_cohort_populates_multiple_hour_buckets():
     """De-sync is only effective if jitter values are spread across the
-    24-hour window.  We bucket by hour (integer division of seconds by 3600)
-    and assert >= 10 distinct buckets are populated by 50 tickers."""
+    72-hour window (EDGAR_8K_CACHE_TTL_JITTER_SECONDS = 72h as of
+    2026-06-13 sufficiency analysis — widened from 24h to defeat the
+    weekday-cliff and Sat→Mon re-bunching failure modes).  We bucket by
+    hour (integer division of seconds by 3600) and assert >= 10 distinct
+    buckets are populated by 50 tickers.  The 72h window gives up to 72
+    possible buckets, so 10 is a conservative floor."""
     hour_buckets: set[int] = set()
     for ticker in _SP500_SAMPLE:
         seconds = _ttl_jitter_seconds(ticker)

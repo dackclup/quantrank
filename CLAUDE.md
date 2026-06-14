@@ -275,6 +275,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`loss_avoidance_pattern` thresholds rescaled**
 - **Hypothesis property-based tests**
 - **CI escape-hatch env-var combo for simulate**
+- **pre-merge-prod-sim must mirror the cron's TWO cache bundles AND its `timeout-minutes` — the 5 QR_SKIP_* skips only help on a cache HIT**
 - **The cron cache is split into TWO `actions/cache` steps (don't re-merge): fast (quarter-key) + slow-text (run-id key)**
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
 - **`IMPECCABLE_NO_UPDATE_CHECK` + `IMPECCABLE_UPDATE_HOST`**
@@ -330,8 +331,9 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
 - **Dual-class `shares_outstanding` = SEC company-TOTAL across classes (ASC 260 / RATIFY-B #374); the per-class count lives in `shares_outstanding_listed_class` (display-only)**
 - **edgartools `Company("")` resolves to an ARBITRARY company (no raise) — resolve a real CIK (`snap.cik` → `Company(ticker).cik`) before any history fetch; empty-CIK `fetch_fundamentals` calls also bypass the snapshot parquet cache BOTH ways**
-- **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-24h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
+- **8-K event cache TTL is JITTERED per-ticker (`EDGAR_8K_CACHE_TTL_SECONDS + _ttl_jitter_seconds(ticker)`, 0-72h SHA-256-stable) — do NOT flatten back to a bare TTL; the jitter de-syncs the 502-cohort cold-burst expiry that caused the ~80-min tier2 spike every ~6 days (#469)**
 - **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency signals are NO-OPs; the only safe skip path for stale-but-cached tickers is a filing-date precheck against SEC each run (`_latest_filing_date` in `compute/ingest/fundamentals.py`, #471)**
+- **Backtest PIT data is parquet-gated + graceful — `data/{historical_sector,pit_item402_history}.parquet` (whitelisted past `*.parquet`; regen via `scripts/backfill_{historical_sector,item402_history}.py`) drive `meta.sector_from_today` + `vetoes_replayed`/`not_replayed` DYNAMICALLY; both absent → byte-identical backtest. `meta.validation` = DSR (primary, `n_trials=15`, Φ≥0.95) + PBO (CSCV) + purged-embargo holdout (the ONE `in_sample=false` block). EFTS `_source` keys = `ciks`/`adsh`/`items`, NOT `entity_id`/`file_num`**
 - **The IC-decay monitor (`decay_report.json`, #75 §3) is a MONITOR — NEVER vetoes / changes scores; `alert` stays suppressed until ≥12 monthly IC points/pillar (`preliminary`); the JSON is dataclass-emitted, NOT in the schema triple (only `Metadata.decay_report_url` is); cron-wired in `compute/main.py` under `QR_SKIP_DECAY_MONITOR`**
 
 ## Phase status
@@ -369,7 +371,7 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   `emit_decay_report` → `frontend/public/data/decay_report.json` every
   cron (try/except graceful-degrade, skip-safe `QR_SKIP_DECAY_MONITOR`),
   plus a schema-triple-additive `Metadata.decay_report_url` (schema
-  0.10.18 → 0.10.19-phase4.6). `/analysis`
+  `0.10.19-phase8pilot` → `0.10.20-phase4.6`, layered on #479). `/analysis`
   renders a 3-state honest surface; the current real state is
   `status="insufficient_history"` (≈1 wk of git history) — the `alert`
   is SUPPRESSED until ≥12 monthly IC points/pillar (`preliminary`), so it
@@ -406,7 +408,8 @@ PHASE_STATUS.md):
   display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
-  pilot (#249 off-cycle pre-cache prerequisite) — detail in WORKFLOW.md.
+  pilot (#249 pre-cache DONE — #468 merged 2026-06-12; #467 scout done) —
+  detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.

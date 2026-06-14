@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { AiPickPortfolio } from '@/components/AiPickPortfolio';
+import { BacktestValidationBadge } from '@/components/BacktestValidationBadge';
 import { getAiPickData, getMetadata } from '@/lib/data';
 
 // Build-time metadata — branches on isAdaptive so the SEO description matches
@@ -80,6 +81,13 @@ export default function HomePage() {
           </span>
         </div>
       </header>
+
+      {/* OOS-validation credibility panel — data-driven from meta.validation.
+          Renders null gracefully when absent (current artifact pre-dates the
+          validation block; invisible until the next backfill rerun). */}
+      {aiPick && (
+        <BacktestValidationBadge validation={aiPick.meta.validation} />
+      )}
 
       {aiPick ? (
         <AiPickPortfolio data={aiPick} />

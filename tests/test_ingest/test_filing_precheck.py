@@ -468,6 +468,13 @@ def test_skip_counter_is_thread_safe():
 
     Verifies that the threading.Lock around ``_FILING_PRECHECK_SKIP_COUNT``
     prevents lost increments under concurrent access.
+
+    Patches are applied ONCE at the test-body level (single-threaded
+    __enter__/__exit__) so they are visible to all threads without racing.
+    unittest.mock.patch is not thread-safe — placing patch context managers
+    inside per-thread workers causes concurrent __enter__/__exit__ on the same
+    module attributes, which leaks MagicMocks into sibling tests (PR #471 flaky
+    root cause, reproduced ~30% of runs on main).
     """
     from compute.ingest.fundamentals import (
         fetch_fundamentals,
@@ -480,21 +487,23 @@ def test_skip_counter_is_thread_safe():
     cached = _make_snapshot(latest_filed_date=_STALE_FILED_DATE)
 
     def run_one(_n: int) -> None:
-        with (
-            patch("compute.ingest.fundamentals._require_identity"),
-            patch("compute.ingest.fundamentals._load_cached", return_value=cached),
-            patch(
-                "compute.ingest.fundamentals._latest_filing_date",
-                return_value=_STALE_FILED_DATE,
-            ),
-            patch("compute.ingest.fundamentals._build_snapshot"),
-        ):
-            fetch_fundamentals(_TICKER, _CIK, today=_TODAY)
+        # No patch machinery here — patches are already active at the test-body
+        # level, so all threads share the same (already-applied) stubs.
+        fetch_fundamentals(_TICKER, _CIK, today=_TODAY)
 
-    with ThreadPoolExecutor(max_workers=N_THREADS) as pool:
-        futures = [pool.submit(run_one, i) for i in range(N_THREADS)]
-        for f in as_completed(futures):
-            f.result()  # re-raise any thread exception immediately
+    with (
+        patch("compute.ingest.fundamentals._require_identity"),
+        patch("compute.ingest.fundamentals._load_cached", return_value=cached),
+        patch(
+            "compute.ingest.fundamentals._latest_filing_date",
+            return_value=_STALE_FILED_DATE,
+        ),
+        patch("compute.ingest.fundamentals._build_snapshot"),
+    ):
+        with ThreadPoolExecutor(max_workers=N_THREADS) as pool:
+            futures = [pool.submit(run_one, i) for i in range(N_THREADS)]
+            for f in as_completed(futures):
+                f.result()  # re-raise any thread exception immediately
 
     assert get_filing_precheck_skip_count() == N_THREADS
 

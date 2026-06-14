@@ -3675,6 +3675,74 @@ This workflow is also the **Phase 8 prerequisite** (#249 listed as the
 hard gate before the S&P 900 pilot).
 ---
 
+## 2026-06-13 — feat(backtest): backtest-honesty hardening — prove the AI-pick +789% is real, fair, and not overfit
+
+Triggered by "prove the home-page +789.1% is real / fair / no cheat /
+no calc error". A multi-agent audit (data-scientist + data-pipeline-
+engineer + methodology-scientist) verified the number is arithmetically
+exact, total-return-fair vs SPY, and PIT-clean — and surfaced the real
+residual risks, each now closed:
+
+1. **Overfitting (the #1 risk).** The adaptive thresholds (composite_min
+   65 / hold_band 55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on
+   the same 40-leg window shown as the track record. New
+   `compute/validation/basket_rule_validation.py` runs the ratified OOS
+   protocol on the produced NAV: **Deflated Sharpe** (Bailey-López de
+   Prado 2014, `n_trials=15` = the 12-config grid + uncap + 2 hold-band
+   sweeps) is the primary gate — it CLEARS (DSR≈3.98, Φ(DSR)≈0.9999
+   quarterly / 0.969 daily ≥ 0.95), so the adaptive number stays as the
+   hero with a credibility badge. Confirmatory layers: a **score-once
+   12-config grid** ({55,60,65,70}×{1,3,5}, emitted from ONE scoring
+   pass — the `by_count` ladder generalized to 2-D, <2 min added) feeds
+   **PBO** (CSCV, n_partitions=16, config-correlation caveated) and a
+   **purged-embargo holdout** (train[0,30)/purge{30}/test[31,40), the
+   ONE `in_sample=false` block, falsification-only). All land in
+   `meta.validation` via Rule-18 try/except (null on failure). DSR +
+   walk-forward stay `in_sample=true`; never relabel.
+2. **Survivorship (scoring universe).** Membership was PIT-correct but
+   the pre-fetch only loaded today's 502 names, so ~213 ledger-REMOVE
+   tickers were silently dropped at scoring. `run_backfill` now
+   pre-fetches the `current ∪ ledger-REMOVE-since-start` union with
+   real-CIK resolution (guards the `Company("")` gotcha) + graceful
+   degradation + Rule-18 counters.
+3. **`sector_from_today` PIT gap.** NEW `scripts/backfill_historical_
+   sector.py` → `data/historical_sector.parquet` (19,661 rows, 39
+   dates, 726 tickers) from Wikipedia revision history (CC BY-SA /
+   Feist; sector NAMES only). Captures the 2018 Communication-Services
+   reclassification (GOOGL/NFLX IT→Comm-Svcs). `sector_at()` PIT lookup
+   wired into the backfill; `meta.sector_from_today` now dynamic.
+4. **8-K Item 4.02 veto not replayed.** NEW `scripts/backfill_item402_
+   history.py` (SEC EFTS) → `data/pit_item402_history.parquet` (17
+   real S&P-500 non-reliance events 2016-2026). `item402_filings_for()`
+   PIT slice feeds `check_non_reliance`; the 7th veto now replays when
+   the parquet is present; `meta.vetoes_replayed/not_replayed` dynamic.
+   (Fixed an EFTS-parser silent-drop along the way: the `_source` keys
+   are `ciks`/`adsh`/`items`, NOT `entity_id`/`file_num`; retry on 5xx.)
+5. **Minor refinements (disclosure-only).** Restatement-canary
+   period-map gate (tightens the over-counted `restatement_contamination_
+   pct`); ticker-rename micro-leakage assessed → documented (impact ~0:
+   merger-renamed names have no pre-merger 10-K → null-fundamentals PIT
+   → never clear the gate) + meta note, follow-up issue to file.
+6. **Frontend.** `BacktestValidationBadge` (data-driven, graceful-
+   absent) surfaces the DSR / PBO / holdout verdict + the +127.7pp
+   (~16%) selection-footprint caveat on the AI-pick home card.
+
+Both parquets are committed (whitelisted past the global `*.parquet`
+gitignore, tracked alongside `data/sp500_membership_historical.csv`).
+GRACEFUL DEGRADATION is the load-bearing invariant: with both parquets
+absent the backtest output is byte-identical, so the new code is inert
+until the data is present + the rerun runs. Full offline suite 1773
+passed; ruff + tsc + next build + schema_check clean.
+
+**Gate to merge:** a `backfill-portfolio.yml` `workflow_dispatch` on this
+branch (warm cache; survivorship cold-fetches ~213 removed tickers) to
+MANIFEST `meta.validation` + the survivorship/sector/8-K deltas + the
+real PBO/holdout numbers into `backtest_pit.json`, then post-rerun
+verify (`defense-layer-auditor` Section A-L + `expert-user-explorer`
+Playwright on the now-visible badge) + a fable `quantrank-reviewer`
+pass. The displayed +789% WILL move (survivorship + PIT sector + 8-K
+veto change the historical books) — that movement is the proof the
+closures are live, not a regression.
 ## 2026-06-13 — fix(scoring+ci): Issue #469 — de-sync the 8-K cache cohort + canary TTL-proximity warning
 
 Root-caused from the 2026-06-12 manual cron dispatch (forensics, run
@@ -3848,4 +3916,142 @@ tests, 16 new) · `schema_check` in-sync · `tsc --noEmit` + `next build`
 (510/510 static pages) green. Design-reviewer honesty audit PASS; its one
 FAIL (neutral-chip dark camouflage) + 3 WARN fixed.
 
+---
+## 2026-06-13 — fix(scoring+ci): #469 follow-up — widen 8-K jitter 24h→72h + canary housekeeping
+
+The #469 jitter shipped at 24h; the same-day performance-engineer
+sufficiency analysis proved that insufficient on TWO independent axes:
+(1) **weekday cliff** — the next cohort cliff lands Thu 2026-06-19 22:00
+UTC; the binding cron gap on a weekday is 24h, so W=24h lets ~471/502
+tickers refetch in that single Thursday run = the original ~75-min tier2
+spike, essentially unmitigated (the 24h jitter rescues only ~6%);
+(2) **re-bunching** — per-cycle spread grows as k·W, but the cron cadence
+has a 62h Sat-08:00→Mon-22:00 gap, so any W≤62h lets Monday re-absorb the
+whole cohort (W=24h re-bunches through cycle 2; doesn't escape until
+cycle 3+, slow descent). Fix: `EDGAR_8K_CACHE_TTL_JITTER_SECONDS`
+24h→**72h** (config.py). 72h > the 62h gap → never re-bunches from cycle
+1; the 2026-06-19 cliff → ~157 tickers/+25min instead of 471/+75min; max
+new-8-K visibility delay 72h, negligible vs the 365/730-day 4.01/4.02
+lookback + weekly ranking cadence. Companion: canary TTL-proximity
+threshold 120h→72h (= 144−72) in BOTH byte-identical workflows + warning
+message "within 24h"→"within 72h". Also removed the broken
+`restored slow-text key` canary echo — it referenced
+`steps.restore-slow-text.outputs.cache-matched-key`, an output
+`actions/cache@v5` does NOT expose (only `actions/cache/restore` does) →
+rendered blank in the #249 verification run; the native "Cache restored
+from key:" log line already carries it, so the echo + its
+`test_canary_echoes_restored_slow_text_key` guard + the now-unused
+`id: restore-slow-text` were dropped. Folded in post-merge doc
+housekeeping (Mode C): CLAUDE.md §In-flight rotated off the merged #469
+entry, §Next-deliverables + WORKFLOW.md §Phase-8 checkbox + PHASE_STATUS.md
+mark #249 DONE (#468). Cache family NOT bumped (read-TTL param change,
+existing entries stay valid). **TIME-SENSITIVE: must merge before the Thu
+2026-06-19 22:00 UTC cron** or the spike recurs that night. Verify: ruff
+PASS, scoring+workflow suites green, canary byte-identical.
+---
+
+## 2026-06-13 — fix(ci): pre-merge-prod-sim cold-cancel — restore both cache bundles + timeout 90→240
+
+The pre-merge-prod-sim `simulate` job was CANCELLED at its 90-min
+`timeout-minutes` cap on PR #475's run #98 (run 27471644445 / job
+81203525304), killed mid per-stock write
+(`Wrote .../stocks/history/DOW.json` → `##[error]The operation was
+canceled`). DIAGNOSIS from the job log (downloaded the run-logs zip for
+the restore-step head the job-log API tail couldn't reach): the
+cache-restore step MISSED — the step log reads verbatim
+`Cache not found for input keys: cache-v8-fast-2026Q2-Linux,
+cache-v8-fast-2026Q2-, cache-v8-fast-` (restored in 1s = nothing
+downloaded). With an empty cache, all 5 QR_SKIP_* escape hatches fell
+through their documented "no cache → live fetch" paths: 502/502 tickers
+cold-fetched fundamentals (`QR_SKIP_FUNDAMENTALS set but no cached parquet
+for A … YUM — falling through to live EDGAR fetch`, ~20 min 15:58→16:18)
++ cold `fundamentals_history` (2 live EDGAR round-trips per stock through
+the writer phase, ~1400 `edgar.core: Identity … set` calls @ ~5.9s/stock,
+~50 min) + a cold OSAP download (`Cached 1226794 rows`, ~10 min). This is
+cause (a) cache-restore MISS, not a genuinely-heavy warm run. Two
+contributing root causes, two fixes:
+
+1. **Structural restore bug (the high-value fix).** The cron
+   (`compute-rankings.yml`) saves its cache as TWO bundles under DIFFERENT
+   keys — fast (`cache-v8-fast-<q>-<os>`) + slow-text
+   (`cache-v5-text-<os>-<run_id>`). The sim listed all 11 paths under the
+   single fast key, so the 5 slow-text paths (edgar_10k_text / edgar_8k /
+   osap / amendments / late_filings) were NEVER restored — they live in a
+   cache the sim never requested. That is why OSAP cold-downloaded on EVERY
+   sim even with `QR_SKIP_OSAP=1` (the skip falls through to a live fetch
+   when the parquet is absent). Split the sim's one restore step into TWO
+   `actions/cache/restore@v5` steps mirroring the cron's two bundles
+   (restore-only on both — the sim must never SAVE); the slow-text step
+   uses restore-keys prefix `cache-v5-text-<os>-` since the cron's save key
+   is run-id-unique. A warm restore is now ~15-25 min.
+2. **Timeout safety net (must-have regardless of cache).** A PR-context
+   cache MISS is INHERENT — GitHub scopes caches per branch, so a fresh
+   `main` save is not always visible to a PR run (run #100's main cron
+   saved cache-v8-fast-2026Q2-Linux at 15:50 yet this PR run missed it 8
+   min later). And the upcoming S&P 900 pilot's first cold run can't finish
+   in 90 min by construction. Bumped `timeout-minutes` 90→**240** to match
+   the weekly cron (raised in the #249 era + Phase 7.0 folded backtest);
+   the sim runs FEWER loops than the cron (5 skip vars, no committed output,
+   no PIT backtest) so 240 is an upper bound it never approaches warm, but
+   it must not be LESS or the silent cancellation recurs.
+
+Regression guard: added two tests to
+`tests/test_workflow_cache_coverage.py` —
+`test_sim_timeout_at_least_cron_timeout` (sim timeout must be ≥ the
+cron's, so a future cron bump can't strand the sim again) and
+`test_sim_restores_both_cron_cache_families` (sim must request BOTH the
+fast and the `cache-vN-text-<os>-` slow-text families). Both fail on the
+pre-fix sim (positive-control verified). No production code / schema
+change; cache family NOT bumped (restore-key plumbing only). Verify:
+`ruff check .` PASS, `tests/test_workflow_cache_coverage.py` 29 passed,
+all 3 workflow YAMLs parse.
+
+---
+
+## 2026-06-14 — feat(ingest+schema): S&P 900 pilot PR 1 — 900-universe ingest + per-cohort diagnostic Metadata
+
+Phase 8 pilot, first slice — **observability-first (Rule 18)**: ship the
+900-universe ingest + a per-cohort diagnostic `Metadata` surface with the
+ranked output BYTE-IDENTICAL to a 500 run (midcaps NOT ranked — that is
+PR 3, gated on ≥ 1 cron confirming midcap coverage). Mirrors the project's
+own discipline for every new data cohort (Form-4 PR 2, Alpha158 4j.1).
+
+**Build:** `compute/ingest/universe.py` — promoted the scout's
+`fetch_sp400_constituents` (Wikipedia S&P 400, cached parquet) +
+`_parse_sp400_html` + `_resolve_cik_for_midcap` (`Company(ticker).cik`
+zfill(10), graceful — log+skip on failure, never crash) +
+`get_sp900_constituents` (concat 500+400, `drop_duplicates(keep="first")`
+with sp500 tagged first → sp500 wins transient overlap, `cohort` column
+"sp500"/"sp400"). `compute/config.py` — `QR_UNIVERSE` env constant
+(default `"sp500"`), `WIKIPEDIA_SP400_URL`, `SP400_UNIVERSE_CACHE`,
+`SP900_UNIVERSE_CACHE`, `SP400_CACHE_MAX_AGE_DAYS`; SCHEMA_VERSION
+`0.10.18-phase4.6` → `0.10.19-phase8pilot`. `compute/main.py` —
+`_run_midcap_coverage_probe()` (iterates ONLY `cohort=="sp400"`, calls
+`fetch_fundamentals`, counts non-null GAAP coverage + null-rate + CIK
+resolution pct; exception-in-fetch counted as null), guarded by
+`if config.QR_UNIVERSE == "sp900"`; the 4 `_pilot_*` vars init to `None`
+BEFORE the guard so the `sp500` path is byte-identical. Schema triple:
+4 additive nullable `Metadata` fields (`universe_cohort_sizes`,
+`midcap_fundamentals_coverage_pct`, `midcap_null_rate_pct`,
+`midcap_cik_resolution_pct`) mirrored in `types.ts` + `schema-snapshot.json`
+regenerated; `schema_check` green.
+
+**Byte-identical proof:** the probe never touches `summaries`,
+`write_rankings_json`, `write_stock_detail`, or any scoring function — it
+is a pure read-side coverage probe over the midcap cohort. On `sp500` the
+4 fields serialize `null`. ADRs excluded at source (S&P 400 is domestic;
+20-F/6-K is the 1500 phase).
+
+**Verify:** ruff PASS · `schema_check` PASS · full offline suite **1830
+passed / 12 skipped** (OSAP modules need `[factors]`) · 30 new tests
+(`tests/test_ingest/test_universe_sp900.py`: sp400 parse, sp900
+dedup/cohort/CIK, probe arithmetic, byte-identical-500 guard).
+
+**Decisions in effect (issue #130 / pilot):** eligibility — midcaps in
+rankings day-1, AI-pick-eligible after 2 green crons; Bonferroni +
+liquidity-backstop deferred to the 1500 cutover; defense set FROZEN;
+thresholds held at 500-calibration; methodology-scientist ratifies before
+PR 3. Follow-ups (NOT this PR): `universe=sp900` precache dispatch input
+(PR 5); `config.UNIVERSE` string + ranked midcap output (PR 3);
+`verify_membership_ledger.py` cohort-filter (PR 2, the required R6 fix).
 ---

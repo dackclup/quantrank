@@ -207,6 +207,21 @@
       "required": false,
       "default": null
     },
+    "midcap_cik_resolution_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "midcap_fundamentals_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "midcap_null_rate_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "mos_trailing_ic_smoke": {
       "type": "float | None",
       "required": false,
@@ -326,6 +341,11 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "universe_cohort_sizes": {
+      "type": "dict[str, int] | None",
+      "required": false,
+      "default": null
     },
     "universe_membership_as_of": {
       "type": "str | None",

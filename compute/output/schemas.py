@@ -511,8 +511,34 @@ class Metadata(BaseModel):
     # ``QR_SKIP_DECAY_MONITOR=1`` or when the step failed catastrophically
     # (the failure is logged; the cron continues without blocking). The
     # file always exists on disk when non-None — the frontend can safely
-    # fetch it at this URL. Nullable on legacy snapshots (pre-0.10.19).
+    # fetch it at this URL. Nullable on legacy snapshots (pre-0.10.20).
     decay_report_url: str | None = None
+    # Phase 8 pilot PR 1 (0.10.19-phase8pilot, Rule 18) — observability-before-
+    # wiring diagnostics for the S&P 900 universe expansion. These fields are
+    # populated ONLY when QR_UNIVERSE=sp900; on the default sp500 path they are
+    # None. Ranked output (rankings.json + stocks/*.json) is BYTE-IDENTICAL to a
+    # 500 run — the probe is a SEPARATE loop that does NOT feed summaries / the
+    # writer. PR 3 will wire the ranked output once the coverage picture is clear.
+    #
+    # ``universe_cohort_sizes`` — count of tickers per cohort after de-dup:
+    #   keys "sp500" and "sp400" (sp500 wins on transient overlap).
+    #   None on the default sp500 path.
+    universe_cohort_sizes: dict[str, int] | None = None
+    # ``midcap_fundamentals_coverage_pct`` — % of sp400 midcap tickers for which
+    # ``fetch_fundamentals`` returned a non-null FundamentalsSnapshot during the
+    # diagnostic probe. Measures EDGAR / fundamentals-ingest readiness for the 400
+    # before we commit to ranking them. None on the default sp500 path.
+    midcap_fundamentals_coverage_pct: float | None = None
+    # ``midcap_null_rate_pct`` — % of sp400 tickers whose FundamentalsSnapshot
+    # returned None (failed, skipped due to null CIK, or timed out). Complement
+    # of ``midcap_fundamentals_coverage_pct``:
+    #   null_rate + coverage_pct ~= 100% (slight float rounding expected).
+    # None on the default sp500 path.
+    midcap_null_rate_pct: float | None = None
+    # ``midcap_cik_resolution_pct`` — % of sp400 tickers whose CIK was successfully
+    # resolved (either from the Wikipedia page or via Company(ticker).cik). A low
+    # value here blocks EDGAR fetches for those tickers. None when probe didn't run.
+    midcap_cik_resolution_pct: float | None = None
 
 
 class RawMetrics(BaseModel):

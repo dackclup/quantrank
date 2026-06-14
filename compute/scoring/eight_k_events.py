@@ -101,7 +101,9 @@ def _ttl_jitter_seconds(ticker: str) -> int:
     Uses SHA-256 (not builtin ``hash()``, which is PYTHONHASHSEED-salted and
     varies per process) so the jitter value is stable across runs for a given
     ticker.  This de-synchronizes the 502-ticker cohort's 8-K cache expiry,
-    spreading it across a 24-hour window (issue #469).
+    spreading it across the ``EDGAR_8K_CACHE_TTL_JITTER_SECONDS`` window
+    (issue #469; widened 24h -> 72h on 2026-06-13 — see the config constant
+    + docs/GOTCHAS.md for why a weekday cliff needs W > the 62h Sat->Mon gap).
 
     The function is intentionally pure and side-effect-free for unit testing.
     """

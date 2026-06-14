@@ -144,14 +144,34 @@ jobs:
     # QR_SKIP_TIER2 + QR_SKIP_FUNDAMENTALS + QR_SKIP_OSAP + QR_SKIP_CROSS_SOURCE)
     # to keep simulate under 45 min, but PRs #230 / #238 / #241 ALL still hit
     # the 45-min cap even after each round of skip-var additions. Bumped to
-    # 90 min 2026-05-24 as a pragmatic backstop — if the cache restore from
-    # the weekly cron is empty/partial (cache eviction OR cron didn't run OR
-    # the new path additions invalidated the key), the live fetch fallbacks
-    # need more headroom. Cron uses 150 min; simulate at 90 stays well below
-    # that. Simulate IS informational-only per the workflow comment at line
-    # 24, so the workflow can afford a wider budget without blocking PR
-    # merge.
-    timeout-minutes: 90
+    # 90 min 2026-05-24 as a pragmatic backstop.
+    #
+    # Bumped again 90 -> 240 min (2026-06-13). Run #98 on this PR's branch
+    # (job 81203525304, run 27471644445) was CANCELLED at the 90-min cap mid
+    # per-stock write (`Wrote .../stocks/history/DOW.json` then
+    # `##[error]The operation was canceled`). Root cause (NOT the timeout —
+    # the timeout was the SYMPTOM): the cache restore MISSED
+    # (`Cache not found for input keys: cache-v8-fast-2026Q2-Linux,
+    # cache-v8-fast-2026Q2-, cache-v8-fast-`), so all 5 QR_SKIP_* escape
+    # hatches fell through their documented "no cache -> live fetch" paths:
+    # 502/502 tickers cold-fetched fundamentals (~20 min) + cold
+    # fundamentals_history (2 live EDGAR round-trips per stock through the
+    # writer phase, ~50 min) + a cold OSAP download (~10 min). A cache-MISS
+    # 502-ticker run cannot finish in 90 min, and the S&P 900 pilot's first
+    # cold run definitely cannot. The companion cache-restore fix below
+    # (split into the cron's TWO bundles so the warm path actually restores)
+    # keeps a HIT run ~15-25 min, but a PR-context cross-branch cache MISS is
+    # inherent (GitHub scopes caches per branch; a fresh `main` save is not
+    # always visible to a PR run — run #100's main cron saved
+    # cache-v8-fast-2026Q2-Linux at 15:50 yet this PR run missed it 8 min
+    # later), so the timeout is the must-have safety net regardless of cache.
+    # Matches the weekly cron's `timeout-minutes: 240` (raised in the #249
+    # era + Phase 7.0 folded backtest); simulate runs FEWER loops than the
+    # cron (5 skip vars + no committed output + no PIT backtest), so 240 is
+    # an upper bound it should never approach on a warm restore. Simulate IS
+    # informational-only (workflow comment ~line 24) + restore-only, so the
+    # wider budget can never block a PR merge or poison the canonical cache.
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -169,12 +189,28 @@ jobs:
         id: quarter
         run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
 
-      - name: Restore compute caches (from weekly cron)
-        # `restore` only — never save. We're piggybacking on the cache the
-        # weekly cron writes from main; saving here would let a PR branch's
-        # potentially-broken cache overwrite the canonical one.
-        # Keys + paths mirror compute-rankings.yml; bump together if either
-        # changes.
+      # TWO restore steps mirroring the cron's TWO SAVE bundles (split
+      # 2026-06-13). The cron (compute-rankings.yml) writes the fast bundle
+      # under `cache-v8-fast-<q>-<os>` and the slow-text bundle under a
+      # SEPARATE key `cache-v5-text-<os>-<run_id>`. The old single restore
+      # here listed ALL 11 paths but keyed ONLY on `cache-v8-fast-...`, so
+      # the 5 slow-text paths (edgar_10k_text / edgar_8k / edgar_amendments /
+      # edgar_late_filings / osap) were NEVER restored — they live in a cache
+      # this step never requested. That is why OSAP cold-downloaded on EVERY
+      # sim even with QR_SKIP_OSAP=1 (its skip falls through to a live fetch
+      # when the parquet is absent), and contributed to the run #98 90-min
+      # cancellation. Splitting into the cron's two real keys lets BOTH
+      # bundles restore warm. Paths + key families mirror compute-rankings.yml
+      # EXACTLY — bump together (tests/test_workflow_cache_coverage.py guards
+      # the fast key family via `sim_text`).
+      #
+      # `restore` only on BOTH — never save. We piggyback on the cache the
+      # weekly cron writes from main; saving here would let a PR branch's
+      # potentially-broken cache overwrite the canonical one. (That is also
+      # why the slow-text restore uses restore-keys ONLY: the cron's save key
+      # is run-id-unique, so the sim grabs the latest prior text snapshot by
+      # the `cache-v5-text-<os>-` prefix, exactly as the cron itself does.)
+      - name: Restore fast caches (fundamentals / prices / form4 — from weekly cron)
         uses: actions/cache/restore@v5
         with:
           path: |
@@ -182,17 +218,29 @@ jobs:
             compute/cache/fundamentals_history
             compute/cache/prices
             compute/cache/universe-v2.parquet
-            compute/cache/edgar_8k
-            compute/cache/edgar_10k_text
             compute/cache/yfinance_info
-            compute/cache/edgar_amendments
-            compute/cache/edgar_late_filings
             compute/cache/edgar_form4
-            compute/cache/osap
           key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v8-fast-${{ steps.quarter.outputs.q }}-
             cache-v8-fast-
+
+      - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap — from weekly cron)
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            compute/cache/edgar_10k_text
+            compute/cache/edgar_8k
+            compute/cache/edgar_amendments
+            compute/cache/edgar_late_filings
+            compute/cache/osap
+          # The cron SAVES this bundle under a run-id-unique key
+          # (`cache-v5-text-<os>-<run_id>`); restore the most-recent prior
+          # save by prefix. No exact `key:` here on purpose — there is no
+          # stable key to exact-hit, and the sim never saves.
+          key: cache-v5-text-${{ runner.os }}-restore-only
+          restore-keys: |
+            cache-v5-text-${{ runner.os }}-
 
       - name: Run PR-branch compute
         id: compute
