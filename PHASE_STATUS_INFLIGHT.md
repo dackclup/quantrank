@@ -3874,7 +3874,7 @@ defense-infrastructure) under the observability-before-wiring convention
 #60; the §3 IC-decay *library* shipped there too but was left uncalled
 (logged as a Phase-5 tracker because the decay `alert` needs a regular
 monthly IC panel). This PR production-wires the plumbing now, honestly
-labeled (schema 0.10.18 → 0.10.19-phase4.6):
+labeled (schema 0.10.19-phase8pilot → 0.10.20-phase4.6, layered on #479):
 
 - **compute** — `compute/validation/ic_decay.py` gains
   `pillar_entries_to_monthly_panel` (per-commit `historical_ic` IC →
