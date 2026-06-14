@@ -361,23 +361,24 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(sim) — #476: pre-merge-prod-sim cold-cancel fix — split cache
-  restore (fast+slow-text) + timeout 90→240 (2026-06-13)** — the
-  simulate job was silently cancelled at the 90-min cap on PR #475's run
-  (cold cache: the sim listed all 11 paths under the fast key only, so
-  the 5 slow-text paths — edgar_10k_text/edgar_8k/osap — were never
-  restored; OSAP cold-downloaded on every sim even with the QR_SKIP_*
-  hatches set, because those only short-circuit on a cache HIT). Fix:
-  split into TWO `actions/cache/restore@v5` steps mirroring the cron's
-  two SAVE bundles (fast `cache-v8-fast-<q>-<os>` + slow-text
-  `cache-v5-text-<os>-` prefix), restore-only; + bump `timeout-minutes`
-  90→240 to match the cron (the PR-context cross-branch cache MISS is
-  inherent, so the timeout is the must-have net + covers the S&P 900
-  pilot's first cold run). Regression-guarded by
-  `test_sim_timeout_at_least_cron_timeout` +
-  `test_sim_restores_both_cron_cache_families` (positive-control FAIL
-  pre-fix). Precursor for the S&P 900 pilot (a 900-ticker compute PR
-  would always cancel at 90 min). Detail: PHASE_STATUS_INFLIGHT.md.
+- **feat(ingest+schema) — S&P 900 pilot PR 1: 900-universe ingest +
+  per-cohort diagnostic Metadata (this PR, 2026-06-14)** — Phase 8
+  observability-first slice (Rule 18). Promotes the scout's
+  `fetch_sp400_constituents` to production (`compute/ingest/universe.py`)
+  + `get_sp900_constituents` (500+400, dedup sp500-wins, graceful CIK
+  resolution, `cohort` column); a `QR_UNIVERSE` env selector (default
+  `sp500` → the weekly cron is byte-identical). When `QR_UNIVERSE=sp900`,
+  a diagnostic coverage probe over the 400 midcaps populates 4 new
+  nullable `Metadata` fields (cohort sizes, midcap fundamentals coverage
+  / null-rate / CIK-resolution pct) — **`rankings.json` + `stocks/*.json`
+  stay byte-identical** (the probe never feeds the writer). Schema
+  `0.10.18-phase4.6` → `0.10.19-phase8pilot` (additive PATCH). 30 new
+  tests; full offline suite 1830 passed. Midcaps are NOT ranked yet —
+  PR 3 wires that after ≥ 1 cron confirms coverage (eligibility decided:
+  in rankings day-1, AI-pick-eligible after 2 green crons). Next pilot
+  PRs: 2 (ledger forward-only guard + verifier cohort-filter) · 3 (rank
+  midcaps) · 4 (frontend badge) · 5 (`universe=sp900` precache) · 6
+  (acceptance ladder). Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
