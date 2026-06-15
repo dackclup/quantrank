@@ -19,8 +19,8 @@ This file pins two invariants:
 from __future__ import annotations
 
 from compute.scoring.recommendation import (
-    LEAN_BULLISH_COMPOSITE_MIN,
     _CAUTIOUS_FORCING_RISK,
+    LEAN_BULLISH_COMPOSITE_MIN,
     derive_recommendation,
 )
 

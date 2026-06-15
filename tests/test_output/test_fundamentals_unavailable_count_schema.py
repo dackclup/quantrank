@@ -23,7 +23,6 @@ from __future__ import annotations
 
 from compute.output.schemas import Metadata
 
-
 # ---------------------------------------------------------------------------
 # Canonical minimal payload (7 required Metadata fields only).
 # No ``fundamentals_unavailable_count`` present by default — tests layer
