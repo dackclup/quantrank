@@ -617,6 +617,11 @@
       "required": false,
       "default": false
     },
+    "index_membership": {
+      "type": "str",
+      "required": false,
+      "default": "sp500"
+    },
     "industry": {
       "type": "str | None",
       "required": false,
@@ -763,6 +768,11 @@
       "type": "float | None",
       "required": false,
       "default": null
+    },
+    "index_membership": {
+      "type": "str",
+      "required": false,
+      "default": "sp500"
     },
     "loss_chance_pct": {
       "type": "float | None",

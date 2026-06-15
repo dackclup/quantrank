@@ -10,7 +10,7 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4_6():
+def test_schema_version_pinned():
     """Phase 4.5e PR 6 (0.10.11-phase4.6, 2026-05-28) — PATCH bump for
     the new ``Metadata.form4_negation_guard_downgrade_count: int | None``
     field. Tracks the universe-wide count of True → False downgrades
@@ -86,8 +86,15 @@ def test_schema_version_is_phase4_6():
     Additive ``Metadata.decay_report_url: str | None`` (URL of the
     ``/data/decay_report.json`` IC-decay artifact), layered on top of
     #479's 0.10.19-phase8pilot. PATCH bump per the additive-optional-field
+    convention.
+
+    Phase 8 pilot PR 3a (0.10.21-phase8pilot) — S&P 900 integration seam.
+    Adds additive ``index_membership: str = "sp500"`` to ``StockSummary`` +
+    ``StockDetail`` (default "sp500" so legacy sp500 JSONs deserialise under
+    ``extra="forbid"`` unchanged). Restores the ``-phase8pilot`` label
+    (reverted by #479's 0.10.20 bump). PATCH bump per the additive-field
     convention."""
-    assert config.SCHEMA_VERSION == "0.10.20-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.21-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

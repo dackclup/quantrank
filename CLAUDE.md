@@ -362,26 +362,33 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat — Issue #75 §3: wire the IC-decay monitor into the cron +
-  `/analysis` transparency surface (this PR, 2026-06-13)** — closes the
-  last 2 of 8 acceptance criteria on #75 (PR 4b defense-infra) under
-  observability-before-wiring (Rule 18). The IC-decay library (PR #60)
-  is now production-wired: `build_decay_report` walks `historical_ic`
-  (bounded 39-mo) → calendar-month IC panel → `check_all_pillars` →
-  `emit_decay_report` → `frontend/public/data/decay_report.json` every
-  cron (try/except graceful-degrade, skip-safe `QR_SKIP_DECAY_MONITOR`),
-  plus a schema-triple-additive `Metadata.decay_report_url` (schema
-  `0.10.19-phase8pilot` → `0.10.20-phase4.6`, layered on #479). `/analysis`
-  renders a 3-state honest surface; the current real state is
-  `status="insufficient_history"` (≈1 wk of git history) — the `alert`
-  is SUPPRESSED until ≥12 monthly IC points/pillar (`preliminary`), so it
-  never shows a fabricated "0 decaying" badge. The cron's shallow
-  `fetch-depth: 1` checkout keeps the git-walk at the tip commit, so it
-  stays `insufficient_history` until the checkout is deepened (follow-up
-  #478). The monitor NEVER vetoes / changes
-  scores (McLean-Pontiff 2016, informational only). Also corrects the §2
-  PBO "Bailey Table-1 golden-fixture" doc claim (the tests are
-  property/behavioral anchors). 16 new `ic_decay` tests (27 total).
+- **feat(ingest+schema) — S&P 900 pilot PR 3a: rank midcaps (gated) +
+  `index_membership` marker (this PR, 2026-06-15)** — the integration
+  slice that makes the 400 midcaps ENTER the ranked output when running
+  `QR_UNIVERSE=sp900`, but **the scheduled cron default stays `sp500`
+  (owner chose gated-validate-first)** — `compute-rankings.yml` UNTOUCHED;
+  3a's 900-rank path activates only on a manual `universe: sp900`
+  dispatch. `compute/main.py` universe-load seam branches to
+  `get_sp900_constituents()` (feeds all ~903 to the writer) on sp900,
+  else `get_sp500_constituents()` + a `cohort="sp500"` column;
+  `cohort` propagates via `_fetch_prices_one` → `index_membership` on
+  `StockSummary`/`StockDetail` (schema triple, SCHEMA_VERSION
+  `0.10.20-phase4.6` → `0.10.21-phase8pilot`). R6:
+  `verify_membership_ledger.py` filters to the sp500 cohort (else 900
+  rows false-fail BAND 498-506). Backfill 500-only contract assertion —
+  the mechanism that KEEPS "AI-pick after 2 crons" true (the home-page
+  book is sourced solely from the 500-PIT `backtest_pit.json`, so midcaps
+  structurally cannot reach Current Picks; no `first_seen` ledger needed
+  — PR 3b dropped). 19 new tests; full offline suite 1866 passed.
+  **methodology-scientist RATIFY** (defense freeze at 500-cal is
+  literature-sound for 900; Sloan/NSI within-sector deciles self-adjust;
+  Bonferroni/liquidity deferred to 1500; floors hold; no #130-frozen item
+  moves). Pre-registered validation bands (for the gated sp900 dispatch
+  after merge): Sloan 8-12% / NSI 5-10% universe-wide, sp400 cohort tilt
+  1.0-1.4× (alarm 1.6-1.7×), Beneish modestly hotter on midcaps
+  (documented size effect). GATED sequence to live: 3a merge → dispatch
+  `universe: sp900` validation (check firing vs bands + 240m budget) →
+  precache-900 PR + frontend PR 4 → one-line cron flip → midcaps live.
   Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;

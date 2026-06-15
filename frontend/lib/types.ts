@@ -51,6 +51,11 @@ export type StockSummary = {
   composite_score_adjusted: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
+  // Phase 8 pilot PR 3a (0.10.21-phase8pilot) — which index this stock
+  // belongs to: "sp500" or "sp400". Default "sp500" so legacy outputs and
+  // sp500-path runs deserialize cleanly without schema-breaking changes.
+  // Annotate-only — does not affect composite rank or vetoes.
+  index_membership: string;
 };
 
 export type Metadata = {
@@ -551,6 +556,11 @@ export type StockDetail = {
   osap_blended_score: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
+  // Phase 8 pilot PR 3a (0.10.21-phase8pilot) — which index this stock
+  // belongs to: "sp500" or "sp400". Mirrors StockSummary.index_membership.
+  // Default "sp500" on all legacy / sp500-path outputs; "sp400" for
+  // mid-cap members when QR_UNIVERSE=sp900 is active. Annotate-only.
+  index_membership: string;
   // Epic #150 Phase 2.1 (issue #150) — positive-framed count of
   // valuation methods that produced a non-outlier applicable estimate.
   // Mirrors `fair_price.valuation_methods_applicable` at the top

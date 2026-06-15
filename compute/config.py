@@ -38,7 +38,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # 0.10.20-phase4.6 (issue #75 §3) layers the additive
 # ``Metadata.decay_report_url`` on top of 0.10.19-phase8pilot (#479's S&P 900
 # cohort diagnostics) — the next monotonic patch after #479 took 0.10.19.
-SCHEMA_VERSION: str = "0.10.20-phase4.6"
+SCHEMA_VERSION: str = "0.10.21-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI

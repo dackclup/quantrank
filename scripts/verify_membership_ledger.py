@@ -43,7 +43,13 @@ BAND = (498, 506)                # S&P 500: ~500 companies, ~502-503 stocks
 
 def current_universe() -> frozenset[str]:
     data = json.loads(RANKINGS.read_text())
-    return frozenset(r["ticker"] for r in data)
+    # Phase 8 pilot PR 3a — filter to the sp500 cohort so a 900-row
+    # rankings.json (from a QR_UNIVERSE=sp900 manual dispatch) does not
+    # false-fail the BAND=(498,506) invariant.  The `.get(..., "sp500")`
+    # default keeps this working on pre-PR-3a sp500-only rankings.json.
+    return frozenset(
+        r["ticker"] for r in data if r.get("index_membership", "sp500") == "sp500"
+    )
 
 
 def month_starts(start: date, end: date):

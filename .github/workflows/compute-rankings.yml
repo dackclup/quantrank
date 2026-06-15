@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to ingest. sp900 = DIAGNOSTIC-ONLY (rankings.json stays 500, byte-identical); it runs the midcap coverage probe and populates the midcap_* Metadata fields. First sp900 run cold-probes ~400 midcaps (sequential) — keep the 500 caches warm (recent cron/precache) so it fits the 240-min budget."
+        description: "Universe to ingest. As of PR 3a, sp900 RANKS all ~903 names (midcaps in rankings.json + stocks/*.json carry index_membership='sp400') and also populates the midcap_* coverage Metadata. The SCHEDULED cron stays sp500 (this input only affects manual dispatches; the cron-default flip is a separate PR after validation). First sp900 run cold-probes ~400 midcaps (sequential) — keep the 500 caches warm (recent cron/precache) so it fits the 240-min budget."
         type: choice
         options:
           - sp500

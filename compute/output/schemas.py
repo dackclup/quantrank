@@ -75,6 +75,13 @@ class StockSummary(BaseModel):
     composite_score_adjusted: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
+    # Phase 8 pilot PR 3a — S&P 900 integration seam (0.10.21-phase8pilot).
+    # "sp500" on all historical / sp500-path outputs (default so extra="forbid"
+    # deserializes legacy JSONs cleanly). "sp400" for mid-cap members of the
+    # S&P 400 when QR_UNIVERSE=sp900 is active. Annotate-only; does NOT affect
+    # composite rank or vetoes. Source: universe DataFrame cohort column
+    # (set unconditionally so the column exists on both the sp500 and sp900 paths).
+    index_membership: str = "sp500"
 
 
 class OsapGateDiagnostic(BaseModel):
@@ -628,6 +635,10 @@ class StockDetail(BaseModel):
     osap_blended_score: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
+    # Phase 8 pilot PR 3a — S&P 900 integration seam (0.10.21-phase8pilot).
+    # Mirrors StockSummary.index_membership. Default "sp500" so legacy /
+    # sp500-path per-stock JSONs deserialize under extra="forbid" unchanged.
+    index_membership: str = "sp500"
     # Epic #150 Phase 2.1 (issue #150) — positive-framed count of
     # valuation methods that produced a non-outlier applicable estimate
     # for this ticker. Inverse of the count of ``extreme_*_estimate``
