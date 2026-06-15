@@ -198,9 +198,16 @@ def test_sloan_sector_relative_floor_constant():
 
 
 def test_compute_risk_flags_handles_none_snapshot():
-    # A None snapshot must not crash and must produce no flags.
+    # A None snapshot (complete EDGAR ingest failure) must not crash and
+    # must produce exactly the ``fundamentals_unavailable`` direct veto.
+    # Locking the partition: DQIC must NOT fire (``_data_quality_input_corruption(None)``
+    # → False by contract, issue #18 / test_D3 — that invariant is unchanged).
     flags = compute_risk_flags({"NULL": None})
-    assert flags["NULL"] == []
+    assert "fundamentals_unavailable" in flags["NULL"]
+    # Partition lock: DQIC must NOT co-fire on a None snapshot.
+    assert "data_quality_input_corruption" not in flags["NULL"]
+    # No other flags: snap is None short-circuits all downstream checks.
+    assert flags["NULL"] == ["fundamentals_unavailable"]
 
 
 def test_beneish_veto_fires_above_strict_threshold():

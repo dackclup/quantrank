@@ -4256,4 +4256,42 @@ non-passes are the 30 pre-existing sandbox dep-import failures/errors
 run in CI under `[dev,factors]`), confirmed by a before/after diff to be
 unchanged by this batch. **Out of scope (follow-ups):** APA capex
 network-probe; #261 Q3 docstring/annotate relabel.
+
+---
+
+## 2026-06-15 — fix(ingest+scoring+schema): fundamentals_unavailable veto + PBF EDGAR-identity fix (OZK/PBF sp900 flip-blocker)
+
+The sp900 dispatch #103 exposed 2 sp400 midcaps (OZK, PBF) with COMPLETE EDGAR ingest
+failures (`snapshot is None`, all 34 fundamentals null) ranked `recommendation=lean_bullish`
+on a price-only composite (~51-53 from the neutral-50 fundamental-pillar imputation) with NO
+warning — DQIC did not fire (`_data_quality_input_corruption(None)` returns False per issue
+#18, which needs some field present). Flip-blocker for the sp900 live flip. edgar-debugger
+root-caused; methodology-scientist **RATIFY-AS-VETO**.
+
+**Part A — PBF ingest fix** (`compute/ingest/universe.py`): set the EDGAR identity before the
+midcap CIK lookup in `_resolve_cik_for_midcap`, so the live SEC ticker→CIK fallback succeeds
+for sp400 names absent from the bundled `company_tickers.parquet` (the identity-ordering race —
+`_resolve_cik_for_midcap` is the only sp900 path that calls `Company(ticker)` before
+`fundamentals.py::_require_identity` runs).
+
+**Part B — `fundamentals_unavailable` defense flag (DIRECT veto):**
+- `risk_overlay.py::compute_risk_flags` emits `"fundamentals_unavailable"` when `snap is None`
+  → `cautious` + Top-5 suppression. **Direct-veto, no annotate-first staging**: the FP rate is
+  structurally zero (fires on input-absence, not a calibrated threshold); DQIC (issue #18) is
+  the governing direct-veto precedent; annotate-before-veto (Rule 16) does not bind (a null
+  snapshot has zero usable fundamentals → no legitimate stock it can wrongly suppress). Does
+  NOT touch the `_data_quality_input_corruption(None)→False` contract (`test_D3` stays green;
+  the new flag locks the DQIC/`fundamentals_unavailable` null-domain partition).
+- `recommendation.py`: `"fundamentals_unavailable"` added to `_CAUTIOUS_FORCING_RISK`.
+- **Rule-18 counter**: `Metadata.fundamentals_unavailable_count` (schema triple: `schemas.py` +
+  `types.ts` + `schema-snapshot.json` regenerated); `SCHEMA_VERSION` `0.10.21-phase8pilot` →
+  **`0.10.22-phase8pilot`**; `main.py` counts None snapshots.
+- Defense layer **33 → 34** declared boolean flags (additive; academic flags + pre-registered
+  sp900 bands UNAFFECTED — a null snapshot makes every academic computation NaN, so φ ≈ 0 with
+  all of them by construction).
+
+methodology RATIFY-AS-VETO; compute-builder BUILT-CLEAN (ruff + schema_check in-sync + 201
+tests + tsc; `test_D3` green). On-merge: Mode C bumps the CLAUDE.md current-schema line →
+0.10.22 + the defense-layer count 33→34 + a §Gotchas one-liner for the direct-veto invariant.
+
 ---

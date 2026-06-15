@@ -12,6 +12,7 @@ Re-fetched after the respective ``*_CACHE_MAX_AGE_DAYS`` unless
 from __future__ import annotations
 
 import logging
+import os
 import time
 from io import StringIO
 from typing import Any
@@ -279,6 +280,16 @@ def _resolve_cik_for_midcap(ticker: str) -> str | None:
     """
     try:
         from edgar import Company as _Company  # noqa: PLC0415
+        # Identity-ordering race: _resolve_cik_for_midcap is the ONLY sp900
+        # path that calls Company(ticker) before fundamentals.py::_require_identity
+        # runs. Without this guard, PBF Energy and other sp400 names absent from
+        # edgartools' bundled company_tickers.parquet fail the live SEC ticker→CIK
+        # fallback because the identity has not been set yet. Mirror the pattern
+        # used in fundamentals.py::_require_identity.
+        _ua = os.environ.get("EDGAR_USER_AGENT")
+        if _ua:
+            from edgar import set_identity as _set_identity  # noqa: PLC0415
+            _set_identity(_ua)
         co = _Company(ticker)
         raw_cik = getattr(co, "cik", None)
         if raw_cik is None:

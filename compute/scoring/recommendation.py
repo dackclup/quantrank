@@ -61,7 +61,7 @@ _BULLISH_DISQUALIFYING_RISK: frozenset[str] = frozenset(
     {"sloan_accruals_top_decile", "net_issuance_top_decile"}
 )
 _CAUTIOUS_FORCING_RISK: frozenset[str] = frozenset(
-    {"data_quality_input_corruption", "altman_distress"}
+    {"data_quality_input_corruption", "altman_distress", "fundamentals_unavailable"}
 )
 _BULLISH_DISQUALIFYING_WARNING: frozenset[str] = frozenset(
     {"beneish_high", "dechow_high"}

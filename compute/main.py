@@ -1803,6 +1803,13 @@ def run_weekly_compute() -> int:
     # is visible at-a-glance from the next cron without grepping
     # per-stock JSONs.
     share_count_extraction_missing_count: int = 0
+    # OZK/PBF flip-blocker (0.10.22-phase8pilot) — Rule 18 observability
+    # surface for the new ``fundamentals_unavailable`` direct veto. Counter
+    # increments when ``snap is None`` (complete EDGAR ingest failure) inside
+    # the per-ticker loop. Written to Metadata.fundamentals_unavailable_count
+    # so a non-zero value on a production sp500 cron is immediately visible
+    # as a data-pipeline health signal without grepping per-stock JSONs.
+    fundamentals_unavailable_count: int = 0
     # Issue #177 — same Rule 18 observability surface for the new
     # ``extreme_estimate_majority`` annotate. The flag itself is
     # appended by ``compute.valuation.ensemble`` when ≥
@@ -1921,6 +1928,15 @@ def run_weekly_compute() -> int:
             else None
         )
         pillar_row = pillar_df.loc[ticker] if ticker in pillar_df.index else pd.Series(dtype=float)
+
+        # OZK/PBF flip-blocker (0.10.22-phase8pilot) — Rule 18 counter for
+        # the new ``fundamentals_unavailable`` direct veto. Counted here (at
+        # the start of the per-ticker loop, before any snap-dependent code)
+        # so the Metadata counter is independent of whether the risk_flags
+        # dict is later augmented. Mirrors the snap-is-None guard in
+        # compute_risk_flags which appends the flag and short-circuits.
+        if snap is None:
+            fundamentals_unavailable_count += 1
 
         # Fair-price ensemble (skipped when snapshot is missing — without
         # fundamentals there's no input to any of the 6 methods).
@@ -2621,6 +2637,7 @@ def run_weekly_compute() -> int:
         share_count_extraction_missing_count=(
             share_count_extraction_missing_count
         ),
+        fundamentals_unavailable_count=fundamentals_unavailable_count,
         extreme_estimate_majority_count=(
             extreme_estimate_majority_count
         ),
