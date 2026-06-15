@@ -218,7 +218,7 @@ jobs:
       #   v7-fast (Issue #374 RATIFY-B): flush per-class/contaminated parquets
       #     so shares_outstanding repopulates as the company-total aggregate
       #   v8-fast (fixed-floor PR): PRICES_FETCH_START=2015-11-29 replaces period=10y — period-blind parquets from v7 are shallow and must be discarded.
-      - name: Restore fast caches (fundamentals / prices / form4)
+      - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@v5
         with:
           path: |
@@ -227,7 +227,6 @@ jobs:
             compute/cache/prices
             compute/cache/universe-v2.parquet
             compute/cache/yfinance_info
-            compute/cache/edgar_form4
           key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v8-fast-${{ steps.quarter.outputs.q }}-
@@ -242,7 +241,7 @@ jobs:
       # cliff (frozen 10-K cache aging past its TTL with no re-save) and the
       # quarter-rollover cold run. Smaller bundle (no fundamentals weight) also
       # saves more reliably. Bump to text-v6 on a cache-schema change.
-      - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap)
+      - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
         uses: actions/cache@v5
         with:
           path: |
@@ -250,6 +249,7 @@ jobs:
             compute/cache/edgar_8k
             compute/cache/edgar_amendments
             compute/cache/edgar_late_filings
+            compute/cache/edgar_form4
             compute/cache/osap
           key: cache-v5-text-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |

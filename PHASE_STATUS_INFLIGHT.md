@@ -4150,3 +4150,38 @@ left two stale doc lines on main (§In-flight described merged #477;
 §In-flight rotated here; the current-schema line is a pre-existing drift for
 Mode C to correct post-merge.
 ---
+
+## 2026-06-15 — ci(precache): S&P 900 pilot precache-900 Phase A — edgar_form4 fast→slow + universe dispatch input
+
+precache-900 prerequisite for the eventual sp900 cron-default flip. Two parts:
+
+1. **Move `edgar_form4` from the FAST cache bundle to the SLOW-TEXT bundle** in BOTH
+   `compute-rankings.yml` + `precache-edgar.yml` (lockstep). The fast bundle's exact
+   quarter-key (`cache-v8-fast-${quarter}`) makes `actions/cache` SKIP the post-job save on a
+   warm hit, so an sp900 precache could never persist midcap Form-4 (the sp500 cron already
+   populated the quarter key). The slow-text bundle's run-id key
+   (`cache-v5-text-${os}-${run_id}`) is unique per run → the save is never skipped → midcap
+   Form-4 now persists. data-pipeline-engineer DATA-HEALTHY (Form-4's 7-day TTL fits the
+   weekly run-id cadence; the original fast-bundle placement was accidental, not principled).
+   One-time transition cost: ~7-10 min cold Form-4 on the first post-merge cron.
+2. **Add a `universe` workflow_dispatch input** (sp500/sp900, default sp500) +
+   `QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}` env to `precache-edgar.yml`,
+   mirroring #480. Lets a manual Saturday `universe: sp900` precache warm the 400 midcap
+   caches off-cycle.
+
+NO v8→v9 cache-key bump — that is **Phase B**, deferred to the flip PR (where the v9 bump is
+semantically justified as universe-expansion cache invalidation: the fast bundle's exact-key
+save-skip means sp400 fundamentals/prices ALSO won't persist via a warm-key precache, so the
+v9 cold-seed is what makes the full sp900 fast bundle warm). New test
+`test_precache_has_universe_dispatch_input`; the canary step stays byte-identical
+(`test_canary_step_identical_in_both_workflows` green); 31 cache-coverage tests pass; ruff
+clean. compute-builder BUILT-CLEAN.
+
+Validation context: lands after the gated sp900 dispatch #103 (902 rows) PASSED the
+pre-registered bands (Sloan 10.4% / NSI 7.9% universe-wide; sp400 tilts in-band except NSI
+1.46× < the 1.6× alarm) — methodology pre-ratified at #482; stock-detail-auditor GREEN on
+data-integrity (extreme midcap MoS = real outliers, not #248-V corruption) with 2 flip-blockers
+routed separately (OZK/PBF null-fundamentals ingest failures). Warm sp900 cron estimate
+post-precache: ~60 min (Phase A) → ~25 min (Phase B), both within the 240-min budget.
+
+---

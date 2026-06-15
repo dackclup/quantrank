@@ -669,11 +669,13 @@ export function FairPriceCard(props) {  // no types
   (2026-06-06, edgar-debugger root-cause of tier2-cold-every-run): the old
   single 11-path bundle (~250-500 MB) was too big to save reliably post-job, so
   `edgar_10k_text`/`edgar_8k` never persisted → tier2 ran cold ~80m every run.
-  Now: **fast** (fundamentals/prices/form4, `cache-v8-fast-<quarter>-<os>`;
+  Now: **fast** (fundamentals/prices, `cache-v8-fast-<quarter>-<os>`;
   family bumped v5→…→v8 — current pin lives in
   tests/test_workflow_cache_coverage.py) + **slow-text**
-  (edgar_10k_text/edgar_8k/osap, `cache-v5-text-<os>-<run_id>` + prefix
-  restore-keys so each run persists fresh text + restores last-good).
+  (edgar_10k_text/edgar_8k/edgar_form4/osap, `cache-v5-text-<os>-<run_id>` +
+  prefix restore-keys so each run persists fresh text + restores last-good;
+  `edgar_form4` moved fast→slow in precache-900 Phase A so a sp900 precache
+  can persist midcap Form-4 — the fast bundle's exact-key save-skip discards it).
   Saturday `precache-edgar.yml` (#249) is a SECOND writer on the SAME keys
   (shared `edgar-cache-writers` concurrency group, queue-not-cancel): warm
   Saturdays exact-hit and skip the save (~free); post-eviction Saturdays eat
