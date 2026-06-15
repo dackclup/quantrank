@@ -4261,6 +4261,8 @@ network-probe; #261 Q3 docstring/annotate relabel.
 
 ## 2026-06-15 — fix(ingest+scoring+schema): fundamentals_unavailable veto + PBF EDGAR-identity fix (OZK/PBF sp900 flip-blocker)
 
+> **MERGED 2026-06-15** — squash `a0000f42` (#487); rebased onto #485. Schema `0.10.22-phase8pilot` + defense layer 34 now on `main`.
+
 The sp900 dispatch #103 exposed 2 sp400 midcaps (OZK, PBF) with COMPLETE EDGAR ingest
 failures (`snapshot is None`, all 34 fundamentals null) ranked `recommendation=lean_bullish`
 on a price-only composite (~51-53 from the neutral-50 fundamental-pillar imputation) with NO

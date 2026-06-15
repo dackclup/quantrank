@@ -17,8 +17,8 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.21-phase8pilot`** (#482 S&P 900 pilot 3a, merged 2026-06-15 — additive `index_membership` on `StockSummary`/`StockDetail` + the universe-load seam; cron default still `sp500` so weekly output stays byte-identical. Lineage: 0.10.18 #456 RATIFY-B dual-class → 0.10.19 #479 / 0.10.21 #482 phase-8 pilot → 0.10.20 #477 IC-decay. Full table: SKILL.md §schema-version) |
-| Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
+| Schema | **`0.10.22-phase8pilot`** (#487 OZK/PBF flip-blocker, merged 2026-06-15 — `fundamentals_unavailable` direct veto + `Metadata.fundamentals_unavailable_count` Rule-18 counter + PBF EDGAR-identity ingest fix; prior #482 3a added `index_membership`. Cron default still `sp500`. Lineage: 0.10.18 #456 RATIFY-B → 0.10.21 #482 3a → 0.10.22 #487. Full table: SKILL.md §schema-version) |
+| Defense layer | **34 declared boolean flags** (8 active vetoes incl. `fundamentals_unavailable` #487 + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
 | Post-tag production patches | PR #292 → #302 cluster (2026-05-28/29) — list relocated to §Chronological history |

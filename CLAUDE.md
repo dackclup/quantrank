@@ -335,12 +335,16 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Fast-cache is FROZEN-IMMUTABLE within a quarter — parquet mtimes / fetch-recency signals are NO-OPs; the only safe skip path for stale-but-cached tickers is a filing-date precheck against SEC each run (`_latest_filing_date` in `compute/ingest/fundamentals.py`, #471)**
 - **Backtest PIT data is parquet-gated + graceful — `data/{historical_sector,pit_item402_history}.parquet` (whitelisted past `*.parquet`; regen via `scripts/backfill_{historical_sector,item402_history}.py`) drive `meta.sector_from_today` + `vetoes_replayed`/`not_replayed` DYNAMICALLY; both absent → byte-identical backtest. `meta.validation` = DSR (primary, `n_trials=15`, Φ≥0.95) + PBO (CSCV) + purged-embargo holdout (the ONE `in_sample=false` block). EFTS `_source` keys = `ciks`/`adsh`/`items`, NOT `entity_id`/`file_num`**
 - **The IC-decay monitor (`decay_report.json`, #75 §3) is a MONITOR — NEVER vetoes / changes scores; `alert` stays suppressed until ≥12 monthly IC points/pillar (`preliminary`); the JSON is dataclass-emitted, NOT in the schema triple (only `Metadata.decay_report_url` is); cron-wired in `compute/main.py` under `QR_SKIP_DECAY_MONITOR`**
-- **`edgar_form4` cache is in the SLOW-TEXT bundle (run-id key, always saves), NOT the fast bundle — precache-900 Phase A move (both workflows, lockstep) so midcap Form-4 persists; the fast bundle's exact quarter-key skips the save on a warm hit (Phase B v9 bump at the flip handles sp400 fundamentals/prices)**
+- **`edgar_form4` cache is in the SLOW-TEXT bundle (run-id key, always saves), NOT the fast bundle — precache-900 Phase A move (both workflows, lockstep) so midcap Form-4 persists; the fast bundle's exact quarter-key skips the save on a warm hit (Phase B v9→v10 bump at the flip — #485 took v9 — handles sp400 fundamentals/prices)**
+- **`fundamentals_unavailable` is a DIRECT veto despite being new (#487) — fires on `snap is None` (complete EDGAR ingest failure) → cautious + Top-5 suppress; FP rate is structurally zero (input-absence, not a calibrated threshold) so annotate-before-veto does NOT bind (DQIC issue #18 is the governing direct-veto precedent); don't "fix" it to annotate-first. Distinct from `data_quality_input_corruption` (which needs a field present) — the two partition null vs field-present, `test_D3` locks it**
 
 ## Phase status
 
-Current schema **`0.10.21-phase8pilot`** on `main` (#482, 2026-06-15 —
-S&P 900 pilot 3a: additive `index_membership: str = "sp500"` on
+Current schema **`0.10.22-phase8pilot`** on `main` (#487, 2026-06-15 —
+OZK/PBF flip-blocker: `fundamentals_unavailable` direct veto (`snap is
+None` → cautious + Top-5 suppress) + `Metadata.fundamentals_unavailable_count`
+Rule-18 counter + PBF EDGAR-identity ingest fix; defense layer 33→34.
+Prior #482 — S&P 900 pilot 3a: additive `index_membership: str = "sp500"` on
 `StockSummary`/`StockDetail` + a `compute/main.py` universe-load seam
 that ranks all ~903 names on `QR_UNIVERSE=sp900`. **The scheduled cron
 default stays `sp500`** (gated-validate-first; `compute-rankings.yml`
@@ -352,9 +356,9 @@ dispatch. Lineage: 0.10.18 #456 RATIFY-B dual-class → 0.10.19/0.10.21
 A1/A2/A2-S/B/C tracked on issue #130). The technical
 pillar is an honest 4-metric mean after the #441 MAD close-out
 (`0.10.17`, RATIFY-REMOVE) — **no 5th technical input without a fresh
-pre-registration**. Defense layer **33 declared boolean flags** (7
-active vetoes + 26 annotates + reserved; ~27 emit; `USE_SECTOR_COE =
-True`) + 5 numerical guards + `manipulation_index` rollup. Gate (a)
+pre-registration**. Defense layer **34 declared boolean flags** (8
+active vetoes incl. `fundamentals_unavailable` #487 + 26 annotates +
+reserved; ~27 emit; `USE_SECTOR_COE = True`) + 5 numerical guards + `manipulation_index` rollup. Gate (a)
 verdict (#453): **the veto layer does NOT rescue returns**
 (drawdown-year protection only; bite is 97% `sloan_accruals_top_decile`
 on structural compounders — disposition routed to issue #454 for the Q3
