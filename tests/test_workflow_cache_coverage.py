@@ -545,3 +545,7 @@ def test_precache_has_universe_dispatch_input() -> None:
         assert choice in text
     assert "default: sp500" in text
     assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}" in text
+    # injection-safety: the universe input must NOT be interpolated into a run: line
+    assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
+        "${{ github.event.inputs.universe }}"
+    )[0][-200:], "universe input must not feed a run: shell line (script-injection)"
