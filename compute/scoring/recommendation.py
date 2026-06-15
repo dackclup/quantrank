@@ -87,8 +87,9 @@ def derive_recommendation(
     Decision order (first match wins):
 
     1. **Cautious** if any of:
-       - ``data_quality_input_corruption`` or ``altman_distress`` in
-         ``risk_flags`` (broken inputs / distress veto)
+       - ``data_quality_input_corruption``, ``fundamentals_unavailable``,
+         or ``altman_distress`` in ``risk_flags`` (broken / absent inputs /
+         distress veto)
        - ``composite_score`` strictly below ``CAUTIOUS_COMPOSITE_MAX``
          (default 35)
        - ``mos_pct`` strictly below ``CAUTIOUS_MOS_MAX_PCT`` (default −30%)
