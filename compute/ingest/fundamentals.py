@@ -308,6 +308,11 @@ _ANNUAL_TAGS: dict[str, list[str]] = {
         "us-gaap:RegulatedAndUnregulatedOperatingRevenue",
         "us-gaap:RevenuesNetOfInterestExpense",
         "us-gaap:SalesRevenueNet",
+        # E&P / oil-and-gas filers (APA, COP, OXY, etc.) use this sector-
+        # specific concept.  LAST in the chain so the `break` on first-non-
+        # null (line ~1522) ensures standard filers never reach this tag.
+        # (Issue #385 — mirrors _TTM_REVENUE_TAGS addition)
+        "us-gaap:OilAndGasRevenue",
     ],
     "net_income": [
         # BKNG and similar filers tag NI under the longer concept name
@@ -590,6 +595,15 @@ _TTM_REVENUE_TAGS: list[str] = [
     # Without it, pure banks ship with revenue=None.
     "us-gaap:RevenuesNetOfInterestExpense",
     "us-gaap:SalesRevenueNet",
+    # E&P / oil-and-gas filers (APA, COP, OXY, etc.) tag consolidated
+    # revenue under this sector-specific concept rather than the generic
+    # `Revenues` concept.  The TTM selector is MAX-of-fresh (largest fresh
+    # value wins, ORDER-INDEPENDENT — position in this list is irrelevant):
+    # co-reporters keep their consolidated total (a segment line can't
+    # exceed it); pure-E&P filers lacking every standard tag resolve here.
+    # (Issue #385; co-report behavior pinned by
+    # tests/test_ingest/test_oil_gas_revenue.py::test_ttm_co_reporter_max_wins)
+    "us-gaap:OilAndGasRevenue",
 ]
 _TTM_NET_INCOME_TAGS: list[str] = [
     "us-gaap:NetIncomeLoss",

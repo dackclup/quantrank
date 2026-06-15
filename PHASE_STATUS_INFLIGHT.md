@@ -4185,3 +4185,75 @@ routed separately (OZK/PBF null-fundamentals ingest failures). Warm sp900 cron e
 post-precache: ~60 min (Phase A) → ~25 min (Phase B), both within the 240-min budget.
 
 ---
+
+## 2026-06-15 — fix+test: open-issue cleanup batch (#385 revenue extraction + #207 form4 retry + #377/#208/#378 test coverage)
+
+Cleanup batch landing five small, unblocked open issues found in a full
+open-issue triage (29 open → this PR `Closes` 5 on merge; the same triage
+separately confirmed 9 others already-fixed and closed them, and produced
+the #261 CLOSE-AS-CORRECT verdict — see below).
+
+**#385 (live bug — APA, rank #19, `revenue=None`):** APA and other E&P
+filers (COP, OXY) tag consolidated revenue under
+`us-gaap:OilAndGasRevenue`, absent from both revenue tag chains, so APA
+scored on a silently-missing revenue input (value / profitability
+pillars). Appended `"us-gaap:OilAndGasRevenue"` as a fallback to
+`_TTM_REVENUE_TAGS` + `_ANNUAL_TAGS["revenue"]`
+(`compute/ingest/fundamentals.py`). **Selection semantics (pinned by
+tests):** the TTM path is MAX-of-fresh (largest fresh value wins,
+ORDER-INDEPENDENT — a co-reporter's consolidated total always exceeds any
+segment line, so the right number wins; the production comment was
+corrected to say so, not "placed last"); the annual path is first-non-
+null `break`, so last placement keeps standard filers from reaching it.
+The fast-cache is frozen-immutable within a quarter (parquet mtimes are
+no-ops), so the new tag only takes effect on a cache-key bump:
+`cache-v8-fast → cache-v9-fast` in **ALL FOUR** cache-warming workflows
+(`compute-rankings.yml`, `precache-edgar.yml`, `backfill-portfolio.yml`
+incl. its `-bf-` save key, `pre-merge-prod-sim.yml`) per the
+`test_workflow_cache_coverage.py` 4-file lockstep guard, which was
+updated to pin v9 (+ a new bump-history entry). **Op cost:** the next
+cron after merge cold-rebuilds the fast cache. **Rebase note (on #486):**
+#486 moved `edgar_form4` fast→slow but stayed v8, reserving v9 for its
+Phase B; this PR takes v9 now for the #385 fundamentals invalidation, so
+the deferred Phase-B bump shifts to v10. **Scoped out:** APA
+`capex=None` needs a `--run-network` probe for the E&P capex concept →
+follow-up.
+
+**#207 (form4 retry):** `compute/scoring/form4_insider.py` had no retry on
+its SEC Form-4 fetch — a 429 throttle was indistinguishable from a parse
+error. Added `_fetch_form4_filings_with_retry` wrapping ONLY the SEC
+round-trip with the canonical project tenacity policy
+(`stop=(stop_after_delay(30) | stop_after_attempt(2))`,
+`wait=wait_exponential(min=2, max=8)`, `reraise=True`, mirroring
+`fundamentals.py`); graceful-degrade (return `None`) preserved; 429-vs-
+generic log split.
+
+**#377 / #208 / #378 (test coverage, +83 tests, all green):** #377 — 23
+tests over 10 previously-uncovered `manipulation_index` rollup flags; #208
+— form4 main-loop diagnostics (None/empty/exception never abort the cron)
++ verify-helper Section K accounting-equation tests; #378 — RE-SCOPED (the
+issue's `fetch_prices_one` no longer exists → now `_fetch_prices_one` in
+`compute/main.py`): split into a `fetch_prices` offline smoke file + a
+pure-math `price_change_1d_pct` file.
+
+**#261 (closed separately, not in this diff):** methodology-scientist
+verdict = CLOSE-AS-CORRECT. The substantive PE contamination was fixed by
+RATIFY-B (#456); the residual GOOG/GOOGL fair-price gap is an expected
+conservative-ensemble artifact (same pattern on single-class AAPL), and
+aggregate-share EPS is correct under ASC 260 — the listed-class count
+would REINTRODUCE the #456 bug. Two cosmetic items (stale
+`multi_class_shares.py` docstring premise + relabel the
+`multi_class_aggregate_shares_suspected` annotate corruption→informational)
+routed to a Q3 2026-08-19 cohort-audit follow-up issue.
+
+**Schema triple:** untouched (no field changes; APA revenue flows through
+existing `RawMetrics.revenue`). **Rule 16 / Rule 18:** n/a (extraction-
+chain + retry hardening, not a new scoring layer or external source).
+**Verify:** ruff PASS (whole repo) · +83 new tests green · cache-coverage
+guard 30 passed · `schema_check` in-sync · full offline suite — the only
+non-passes are the 30 pre-existing sandbox dep-import failures/errors
+(`edgar`/`yfinance`/`bs4`/`openassetpricing` not installed locally; they
+run in CI under `[dev,factors]`), confirmed by a before/after diff to be
+unchanged by this batch. **Out of scope (follow-ups):** APA capex
+network-probe; #261 Q3 docstring/annotate relabel.
+---

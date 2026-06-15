@@ -220,10 +220,10 @@ jobs:
             compute/cache/universe-v2.parquet
             compute/cache/yfinance_info
             compute/cache/edgar_form4
-          key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v8-fast-${{ steps.quarter.outputs.q }}-
-            cache-v8-fast-
+            cache-v9-fast-${{ steps.quarter.outputs.q }}-
+            cache-v9-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap — from weekly cron)
         uses: actions/cache/restore@v5
