@@ -4115,7 +4115,7 @@ snapshot regen); `SCHEMA_VERSION 0.10.20-phase4.6 → 0.10.21-phase8pilot`
 `r.get("index_membership","sp500")=="sp500"` (900 rows no longer false-fail
 BAND 498-506). Backfill: assertion `set(members["cohort"].unique()) <= {"sp500"}`
 + WHY comment (issue #130 forward-only honesty). cron default UNTOUCHED (gated).
-34 new tests (`test_universe_sp900_pr3a.py`) + test_config version pin. Verify:
+19 new tests (`test_universe_sp900_pr3a.py`) + test_config version pin. Verify:
 ruff PASS, offline suite 1866 passed/0 failed, schema_check PASS.
 
 **methodology-scientist RATIFY (APPROVED-AS-ANNOTATE)** — the defense set frozen

@@ -379,7 +379,7 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   the mechanism that KEEPS "AI-pick after 2 crons" true (the home-page
   book is sourced solely from the 500-PIT `backtest_pit.json`, so midcaps
   structurally cannot reach Current Picks; no `first_seen` ledger needed
-  — PR 3b dropped). 34 new tests; full offline suite 1866 passed.
+  — PR 3b dropped). 19 new tests; full offline suite 1866 passed.
   **methodology-scientist RATIFY** (defense freeze at 500-cal is
   literature-sound for 900; Sloan/NSI within-sector deciles self-adjust;
   Bonferroni/liquidity deferred to 1500; floors hold; no #130-frozen item
