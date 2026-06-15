@@ -1586,3 +1586,26 @@ backtest CAGR as the live product's track record.
   **Relevant code**: `compute/validation/ic_decay.py` (`build_decay_report`,
   `pillar_entries_to_monthly_panel`, `check_pillar_decay`, `emit_decay_report`) +
   `compute/main.py` decay-monitor block + `frontend/components/DecayMonitorCard.tsx`.
+
+## `edgar_form4` is in the SLOW-TEXT cache bundle, not the fast bundle (precache-900 Phase A)
+
+The `compute/cache/edgar_form4` path lives in the **slow-text** `actions/cache` step (key
+`cache-v5-text-${os}-${run_id}`, unique per run → the post-job save is NEVER skipped), NOT the
+fast bundle (key `cache-v8-fast-${quarter}-${os}`, exact-key → save SKIPPED on a warm hit). It
+was moved there in the S&P 900 pilot **precache-900 Phase A** PR (2026-06-15) so a
+`universe: sp900` precache can actually PERSIST the ~400 midcap Form-4 dirs — under the fast
+bundle, the sp500 cron's warm quarter-key hit would skip the save and throw the freshly-fetched
+midcap Form-4 away.
+
+- **Keep `edgar_form4` in the slow-text `path:` block of BOTH `compute-rankings.yml` AND
+  `precache-edgar.yml`** — the lockstep is asserted by `tests/test_workflow_cache_coverage.py`
+  (`test_workflow_restores_each_cache_dir`).
+- The canary step's `printf` enumeration still lists `edgar_form4` (it is path-block-agnostic —
+  it only checks the dir exists); the canary step must stay byte-identical between the two
+  workflows (`test_canary_step_identical_in_both_workflows`), so do NOT edit it.
+- Form-4's 7-day TTL fits the weekly run-id-keyed cadence; the original fast-bundle
+  (quarter-frozen) placement was accidental, not principled (data-pipeline-engineer).
+- **Phase B (deferred to the flip PR):** a `cache-v8 → v9` fast-key bump cold-seeds the full
+  sp900 fundamentals/prices under the new key — the fast bundle's exact-key save-skip means
+  sp400 fundamentals/prices ALSO won't persist via a warm-key precache, so only the v9 bump
+  (justified then as universe-expansion cache invalidation) makes the full sp900 fast bundle warm.

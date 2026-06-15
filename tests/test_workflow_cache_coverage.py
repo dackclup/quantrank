@@ -532,3 +532,16 @@ def test_compute_rankings_has_universe_dispatch_input() -> None:
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
         "${{ github.event.inputs.universe }}"
     )[0][-200:], "universe input must not feed a run: shell line (script-injection)"
+
+
+def test_precache_has_universe_dispatch_input() -> None:
+    """precache-edgar.yml exposes the `universe` dispatch input wired to
+    QR_UNIVERSE with a sp500 fallback, mirroring compute-rankings.yml (#480)
+    — the S&P 900 pilot precache-900 prerequisite. The `|| 'sp500'` fallback
+    keeps the scheduled Saturday run (null inputs) on sp500."""
+    text = _workflow_text("precache-edgar.yml")
+    assert "universe:" in text
+    for choice in ("- sp500", "- sp900"):
+        assert choice in text
+    assert "default: sp500" in text
+    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}" in text

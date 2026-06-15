@@ -44,10 +44,22 @@ on:
     # Sat 08:00 UTC — see the off-cycle rationale in the header comment.
     - cron: "0 8 * * 6"
   workflow_dispatch:
+    inputs:
+      universe:
+        description: "Universe to precache. sp500 = normal Saturday warm. sp900 = also warms the ~400 midcap Form-4 + tier-2 caches (cold, ~60-90 min). Default sp500 for the scheduled run."
+        type: choice
+        options:
+          - sp500
+          - sp900
+        default: sp500
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+  # S&P 900 pilot: a manual `universe: sp900` dispatch warms the 400 midcap
+  # caches. The `|| 'sp500'` fallback keeps the scheduled Saturday run (null
+  # inputs) on sp500 — env-block assignment is injection-safe (mirrors #480).
+  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}
 
 # Never pushes, never comments — read is all it needs (least-privilege per
 # the compute-rankings.yml precedent, security-reviewer 2026-05-23 W2).
@@ -92,7 +104,7 @@ jobs:
       # Saturdays, and must SAVE under that same key after an eviction so
       # the weekday cron restores warm. Lockstep guard:
       # tests/test_workflow_cache_coverage.py.
-      - name: Restore fast caches (fundamentals / prices / form4)
+      - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@v5
         with:
           path: |
@@ -101,13 +113,12 @@ jobs:
             compute/cache/prices
             compute/cache/universe-v2.parquet
             compute/cache/yfinance_info
-            compute/cache/edgar_form4
           key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v8-fast-${{ steps.quarter.outputs.q }}-
             cache-v8-fast-
 
-      - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap)
+      - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
         uses: actions/cache@v5
         with:
           path: |
@@ -115,6 +126,7 @@ jobs:
             compute/cache/edgar_8k
             compute/cache/edgar_amendments
             compute/cache/edgar_late_filings
+            compute/cache/edgar_form4
             compute/cache/osap
           key: cache-v5-text-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
