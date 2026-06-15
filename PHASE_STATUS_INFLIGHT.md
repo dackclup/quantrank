@@ -4088,6 +4088,8 @@ cohort-filter + backfill guard + forward-only Metadata flags (PR 3).
 
 ## 2026-06-15 — feat(ingest+schema): S&P 900 pilot PR 3a — rank midcaps (gated) + index_membership marker
 
+> **MERGED 2026-06-15** — squash `9ea26527` (#482). Schema `0.10.21-phase8pilot` now on `main`; cron default still `sp500` (gated). Next: a manual `universe: sp900` validation dispatch.
+
 The integration slice: midcaps ENTER the ranked output on `QR_UNIVERSE=sp900`,
 but the SCHEDULED cron default stays `sp500` (owner chose gated-validate-first;
 `compute-rankings.yml` UNTOUCHED). 3a's 900-rank path activates only on a

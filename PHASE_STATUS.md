@@ -11,13 +11,13 @@
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started — **GATED (re-scope 2026-06-10)** on (a) the Phase 7.0c PIT veto-replay verdict + (b) the data-integrity hardening sprint (§Next deliverables items 1 + 3) + (c) a Supabase client-wiring pre-PR |
 | 6 | Sentiment v2 (FinBERT + 8-K + Lazy Prices; **Whisper deferred → Phase 6.1**, re-scope 2026-06-10) | ⚪ not started — TEXT-ONLY scope locked, §6.0 priority order (Lazy Prices → 8-K → FinBERT); Whisper needs Modal paid infra + ~250m ≈ the 240m cron ceiling |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
-| 8 | Universe expansion (S&P 1500) | ⚪ not started — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first; off-cycle pre-cache (#249) is a hard prerequisite (EDGAR ~1 req/s sustained → cold 1500-ticker fundamentals ≈ 125m alone vs the 240m job ceiling) |
+| 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 + frontend PR 4 → one-line cron flip → midcaps live |
 
-## Current state (2026-06-11)
+## Current state (2026-06-15)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.18-phase4.6`** (#456 RATIFY-B dual-class company-total + additive `RawMetrics.shares_outstanding_listed_class`; manifested by the #458 cache-v7 bump — first post-bump cron 2026-06-11, verify `multi_class_per_class_override_count` = 2 + GOOG ≡ GOOGL ≈ 12.09B. Full lineage: SKILL.md §schema-version table + §Chronological history below) |
+| Schema | **`0.10.21-phase8pilot`** (#482 S&P 900 pilot 3a, merged 2026-06-15 — additive `index_membership` on `StockSummary`/`StockDetail` + the universe-load seam; cron default still `sp500` so weekly output stays byte-identical. Lineage: 0.10.18 #456 RATIFY-B dual-class → 0.10.19 #479 / 0.10.21 #482 phase-8 pilot → 0.10.20 #477 IC-decay. Full table: SKILL.md §schema-version) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
@@ -30,7 +30,7 @@
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
-- **#469 follow-up — widen 8-K jitter 24h→72h + canary housekeeping (2026-06-13, must merge before the Thu 2026-06-19 cliff).** Recent merges since 2026-06-11: #474 (opus revert) · #471 (filing-date precheck) · #470/#469 (8-K TTL jitter) · #468 (precache-edgar.yml #249 B+C) · #467 (Phase-8 scout) · #466 (backtest anchor fix) · #464 (adaptive cap removal) · #459 (token-economy).
+- **None currently open.** Next: the S&P 900 pilot is gated behind a manual `universe: sp900` validation dispatch → precache-900 + frontend PR 4 → one-line cron-default flip. Recent merges since 2026-06-11: #482 (S&P 900 pilot 3a — integration slice) · #480 (sp900 dispatch input) · #479 (sp900 pilot PR1 obs probe) · #477 (IC-decay monitor wiring) · #474 (opus revert) · #471 (filing-date precheck) · #470/#469 (8-K TTL jitter) · #468 (precache-edgar.yml #249 B+C) · #467 (Phase-8 scout) · #466 (backtest anchor fix) · #464 (adaptive cap removal) · #459 (token-economy).
 
 **Next deliverables** (re-scoped 2026-06-11; prior items 1-2 — 7.0c gate (a)
 + issue #441 — are DONE, closed entries relocated to §Chronological history):
