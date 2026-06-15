@@ -374,6 +374,13 @@ export type Metadata = {
   // `midcap_cik_resolution_pct` — % of sp400 tickers whose CIK
   // resolved (Wikipedia page or Company(ticker).cik lookup).
   midcap_cik_resolution_pct?: number | null;
+  // OZK/PBF flip-blocker (0.10.22-phase8pilot) — count of tickers whose
+  // FundamentalsSnapshot was None (complete EDGAR ingest failure) on this
+  // cron run. Rule-18 observability surface for the new
+  // `fundamentals_unavailable` direct veto. Optional + nullable: absent /
+  // null on legacy snapshots pre-0.10.22. A non-zero value on a production
+  // sp500 cron is a data-pipeline health signal requiring investigation.
+  fundamentals_unavailable_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

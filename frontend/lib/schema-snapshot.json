@@ -187,6 +187,11 @@
       "required": false,
       "default": null
     },
+    "fundamentals_unavailable_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "git_commit": {
       "type": "str",
       "required": true,

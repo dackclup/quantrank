@@ -546,6 +546,15 @@ class Metadata(BaseModel):
     # resolved (either from the Wikipedia page or via Company(ticker).cik). A low
     # value here blocks EDGAR fetches for those tickers. None when probe didn't run.
     midcap_cik_resolution_pct: float | None = None
+    # OZK/PBF flip-blocker (0.10.22-phase8pilot, Rule 18) — Rule-18 observability
+    # surface for the new ``fundamentals_unavailable`` direct veto. Counts tickers
+    # whose ``FundamentalsSnapshot`` was ``None`` (complete EDGAR ingest failure)
+    # on this cron run. Unlike ``share_count_extraction_missing_count`` (annotate)
+    # this fires on total input-absence: ``snap is None``. FP rate is structurally
+    # zero so the flag ships as a direct veto (DQIC precedent, issue #18). A
+    # non-zero value on a production sp500 cron is a data-pipeline health signal
+    # requiring investigation. Nullable on legacy snapshots (pre-0.10.22).
+    fundamentals_unavailable_count: int | None = None
 
 
 class RawMetrics(BaseModel):

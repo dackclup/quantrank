@@ -61,7 +61,7 @@ _BULLISH_DISQUALIFYING_RISK: frozenset[str] = frozenset(
     {"sloan_accruals_top_decile", "net_issuance_top_decile"}
 )
 _CAUTIOUS_FORCING_RISK: frozenset[str] = frozenset(
-    {"data_quality_input_corruption", "altman_distress"}
+    {"data_quality_input_corruption", "altman_distress", "fundamentals_unavailable"}
 )
 _BULLISH_DISQUALIFYING_WARNING: frozenset[str] = frozenset(
     {"beneish_high", "dechow_high"}
@@ -87,8 +87,9 @@ def derive_recommendation(
     Decision order (first match wins):
 
     1. **Cautious** if any of:
-       - ``data_quality_input_corruption`` or ``altman_distress`` in
-         ``risk_flags`` (broken inputs / distress veto)
+       - ``data_quality_input_corruption``, ``fundamentals_unavailable``,
+         or ``altman_distress`` in ``risk_flags`` (broken / absent inputs /
+         distress veto)
        - ``composite_score`` strictly below ``CAUTIOUS_COMPOSITE_MAX``
          (default 35)
        - ``mos_pct`` strictly below ``CAUTIOUS_MOS_MAX_PCT`` (default −30%)

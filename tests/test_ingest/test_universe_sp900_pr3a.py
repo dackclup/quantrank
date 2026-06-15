@@ -388,9 +388,23 @@ class TestSp500PathIndexMembership:
         assert cohort == "sp400"
 
     def test_schema_version_bumped_to_phase8pilot(self):
-        """SCHEMA_VERSION must be '0.10.21-phase8pilot' after the PR 3a bump."""
+        """SCHEMA_VERSION must carry the -phase8pilot suffix after the PR 3a bump.
+
+        PR 3a introduced 0.10.21-phase8pilot; the OZK/PBF flip-blocker PR
+        (fundamentals_unavailable veto + Rule-18 counter) bumped it to
+        0.10.22-phase8pilot. The canonical version pin lives in
+        tests/test_config.py::test_schema_version_pinned — this test
+        asserts only the -phase8pilot label presence so it stays stable
+        across subsequent PATCH bumps within the phase8pilot series.
+        """
         from compute import config
-        assert config.SCHEMA_VERSION == "0.10.21-phase8pilot", (
-            f"Expected 0.10.21-phase8pilot, got {config.SCHEMA_VERSION!r}. "
-            "PR 3a bumps the schema version from 0.10.20-phase4.6."
+        assert config.SCHEMA_VERSION.endswith("-phase8pilot"), (
+            f"Expected SCHEMA_VERSION to end with '-phase8pilot', got {config.SCHEMA_VERSION!r}. "
+            "PR 3a introduced the -phase8pilot label; subsequent patches carry it forward."
+        )
+        # Additional floor: must be at least 0.10.21 (the PR 3a introduction).
+        _ver_part = config.SCHEMA_VERSION.split("-")[0]  # e.g. "0.10.22"
+        _parts = [int(x) for x in _ver_part.split(".")]
+        assert _parts >= [0, 10, 21], (
+            f"SCHEMA_VERSION {config.SCHEMA_VERSION!r} is below the PR 3a floor of 0.10.21."
         )

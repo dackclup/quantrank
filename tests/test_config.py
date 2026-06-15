@@ -93,8 +93,14 @@ def test_schema_version_pinned():
     ``StockDetail`` (default "sp500" so legacy sp500 JSONs deserialise under
     ``extra="forbid"`` unchanged). Restores the ``-phase8pilot`` label
     (reverted by #479's 0.10.20 bump). PATCH bump per the additive-field
-    convention."""
-    assert config.SCHEMA_VERSION == "0.10.21-phase8pilot"
+    convention.
+
+    OZK/PBF flip-blocker (0.10.22-phase8pilot) — new ``fundamentals_unavailable``
+    direct veto in ``compute_risk_flags`` (fires when ``snap is None``;
+    FP rate structurally zero; DQIC issue #18 governing precedent) + its
+    Rule-18 counter ``Metadata.fundamentals_unavailable_count: int | None``.
+    Additive PATCH bump."""
+    assert config.SCHEMA_VERSION == "0.10.22-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

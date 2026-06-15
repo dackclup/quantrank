@@ -329,19 +329,34 @@ def compute_risk_flags(
 ) -> dict[str, list[str]]:
     """Compute the risk-flag list per ticker.
 
-    Five flag pathways:
+    Six flag pathways:
 
-    1. **Data-quality input corruption** — TBVPS > $10K/share. Snapshot-
+    1. **Fundamentals unavailable** — ``snap is None`` (complete EDGAR
+       ingest failure). Direct veto (no annotate-first staging) — unlike
+       ``check_share_count_extraction_missing``, the FP rate is
+       structurally zero (fires on input-absence ``snap is None``, not a
+       calibrated threshold), so Rule 16's staging-cron requirement does
+       not bind. ``data_quality_input_corruption`` (DQIC, issue #18) is
+       the governing direct-veto precedent. Distinct from DQIC, which
+       requires some field present to evaluate. OZK + PBF Energy were the
+       forcing cases: both had complete EDGAR ingest failures (``snapshot
+       is None``, all 34 fundamentals null) yet ranked
+       ``recommendation=lean_bullish`` (composite ~51-53 from the
+       neutral-50 fundamental-pillar imputation + real price/momentum
+       pillars) with NO warning on the sp900 dispatch #103.
+    2. **Data-quality input corruption** — TBVPS > $10K/share. Snapshot-
        only signal, mirrors the ensemble's post-hoc ceiling guard. Veto
-       per issue #18 (was annotate-only before).
-    2. **Altman Z″ < 1.1** — per-ticker, no cross-section.
-    3. **Sloan accruals top decile** — cross-sectional 90th percentile across
+       per issue #18 (was annotate-only before). ``_data_quality_input_corruption(None)``
+       returns ``False`` intentionally — the ``None`` snap case is handled
+       by ``fundamentals_unavailable`` above (issue #18, pinned by test_D3).
+    3. **Altman Z″ < 1.1** — per-ticker, no cross-section.
+    4. **Sloan accruals top decile** — cross-sectional 90th percentile across
        the universe (legacy from PR-3b; over-firing tracked in #7).
-    4. **NSI top decile within sector** — requires both ``histories`` and
+    5. **NSI top decile within sector** — requires both ``histories`` and
        ``sectors`` to be passed; if either is absent the NSI flag is
        suppressed entirely (rather than degrading to cross-sectional, which
        was the lesson learned from #7's Sloan over-firing on REITs/banks).
-    5. **Non-reliance filing (8-K Item 4.02)** — per-ticker. By default
+    6. **Non-reliance filing (8-K Item 4.02)** — per-ticker. By default
        calls :func:`compute.scoring.eight_k_events.check_non_reliance`
        which hits the on-disk EDGAR cache (or fetches if cache miss).
        ``non_reliance_by_ticker`` overrides this with a pre-computed
@@ -414,6 +429,21 @@ def compute_risk_flags(
     out: dict[str, list[str]] = {}
     for ticker, snap in snapshots.items():
         flags: list[str] = []
+
+        # fundamentals_unavailable — snap is None (complete EDGAR ingest
+        # failure). Direct veto; FP rate is structurally zero (fires on
+        # input-absence, not a threshold). Rule 16's annotate-before-veto
+        # staging-cron requirement does not bind. DQIC (issue #18) is the
+        # governing direct-veto precedent. Emitted first so a ticker with
+        # NO fundamentals is immediately recognisable; all subsequent
+        # checks are snap-dependent and will silently return False/NaN
+        # when snap is None, producing no additional flags for this ticker.
+        # NOTE: _data_quality_input_corruption(None) → False by contract
+        # (issue #18, pinned by test_D3) — do NOT change that behaviour.
+        if snap is None:
+            flags.append("fundamentals_unavailable")
+            out[ticker] = flags
+            continue
 
         # Issue #18: data-quality corruption is a veto, not a soft warning.
         # Emit first so a corrupted snapshot never relies on a coincidental
