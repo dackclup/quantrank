@@ -1,0 +1,197 @@
+{
+  "ticker": "ULS",
+  "name": "UL Solutions",
+  "sector": "Industrials",
+  "industry": null,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 19773720062.25586,
+  "current_price": 96.93,
+  "rank": 211,
+  "composite_score": 56.95,
+  "pillar_scores": {
+    "quality": 81.78,
+    "value": 14.76,
+    "growth": 55.35,
+    "momentum": 75.61,
+    "health": 55.39,
+    "profitability": 79.42,
+    "technical": 37.42,
+    "risk": 64.06,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3106000000.0,
+    "net_income": 371000000.0,
+    "total_assets": 2955000000.0,
+    "total_liabilities": 1619000000.0,
+    "stockholders_equity": 1319000000.0,
+    "cash": 258000000.0,
+    "operating_cash_flow": 665000000.0,
+    "capex": 215000000.0,
+    "free_cash_flow": 450000000.0,
+    "eps_basic": 1.8186274509803921,
+    "eps_diluted": 1.8186274509803921,
+    "shares_outstanding": 204000000.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 19773720062.25586,
+    "pe_ratio_ttm": 53.29843682548749,
+    "goodwill": 643000000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 50.6385626360294,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 34.22011290638718,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 59.46867684444061,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "insufficient_history_for_roe",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 20.720020492316852,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 42.42933777120829,
+    "max": 59.46867684444061,
+    "low": 20.720020492316852,
+    "high": 59.46867684444061,
+    "mos_pct": -128.45041991428528,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ],
+    "valuation_methods_applicable": 4
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "research_and_development",
+      "inventory"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 41,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-05"
+  },
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.0980392156862746,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Industrials median (n=166)",
+    "values": {
+      "Quality": 50.72,
+      "Value": 47.44,
+      "Growth": 50.26,
+      "Momentum": 55.03,
+      "Health": 57.51,
+      "Profitability": 48.74,
+      "Technical": 53.56,
+      "Risk": 53.42
+    }
+  },
+  "beneish_m_score": -2.6838771723683097,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 60.522722124640474,
+  "price_change_1d_pct": -1.5039,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 56.95,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.4,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-06-10",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.011945532429516549
+}

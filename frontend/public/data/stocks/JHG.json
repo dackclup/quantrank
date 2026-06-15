@@ -1,0 +1,200 @@
+{
+  "ticker": "JHG",
+  "name": "Janus Henderson",
+  "sector": "Financials",
+  "industry": "Asset Management & Custody Banks",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 7987279542.230072,
+  "current_price": 51.84,
+  "rank": 13,
+  "composite_score": 69.71,
+  "pillar_scores": {
+    "quality": 57.32,
+    "value": 72.68,
+    "growth": 79.46,
+    "momentum": 69.35,
+    "health": 91.02,
+    "profitability": 68.04,
+    "technical": 60.98,
+    "risk": 69.18,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3165900000.0,
+    "net_income": 898400000.0,
+    "total_assets": 7802500000.0,
+    "total_liabilities": 2077800000.0,
+    "stockholders_equity": 5177700000.0,
+    "cash": 1381000000.0,
+    "operating_cash_flow": 951500000.0,
+    "capex": 9900000.0,
+    "free_cash_flow": 941600000.0,
+    "eps_basic": 5.830903487332011,
+    "eps_diluted": 5.830903487332011,
+    "shares_outstanding": 154075608.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 7987279542.230072,
+    "pe_ratio_ttm": 8.890560487789484,
+    "goodwill": 1608400000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 22.807470605738114,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 92.22275470315545,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 95.13420914173736,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 7.709444603469354,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 57.51511265444678,
+    "max": 95.13420914173736,
+    "low": 7.709444603469354,
+    "high": 95.13420914173736,
+    "mos_pct": 9.8671674972719,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 3
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 38,
+    "latest_period_end": "2026-05-06",
+    "latest_filed_date": "2026-05-08"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 6.826518575217954,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=140)",
+    "values": {
+      "Quality": 50.36,
+      "Value": 52.17,
+      "Growth": 50.62,
+      "Momentum": 53.77,
+      "Health": 55.29,
+      "Profitability": 49.02,
+      "Technical": 54.44,
+      "Risk": 58.81
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "bullish",
+  "loss_chance_pct": 28.68919756458328,
+  "price_change_1d_pct": 0.0193,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 69.71,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 60.78,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 17,
+    "latest_filing_date": "2026-05-14",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 4.1286889514128973e-08
+}

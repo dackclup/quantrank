@@ -1,0 +1,198 @@
+{
+  "ticker": "UGI",
+  "name": "UGI Corp",
+  "sector": "Utilities",
+  "industry": "Gas Utilities",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 7510211469.648926,
+  "current_price": 35.03,
+  "rank": 399,
+  "composite_score": 51.79,
+  "pillar_scores": {
+    "quality": 60.33,
+    "value": 77.9,
+    "growth": 34.24,
+    "momentum": 29.05,
+    "health": 20.51,
+    "profitability": 50.36,
+    "technical": 52.83,
+    "risk": 51.27,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 7359000000.0,
+    "net_income": 641000000.0,
+    "total_assets": 16119000000.0,
+    "total_liabilities": 10691000000.0,
+    "stockholders_equity": 5419000000.0,
+    "cash": 494000000.0,
+    "operating_cash_flow": 1109000000.0,
+    "capex": 871000000.0,
+    "free_cash_flow": 238000000.0,
+    "eps_basic": 2.989826492672509,
+    "eps_diluted": 2.989826492672509,
+    "shares_outstanding": 214393712.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 7510211469.648926,
+    "pe_ratio_ttm": 11.716398548594269,
+    "goodwill": 2795000000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 61.38250188437826,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 53.698368622146276,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 76.18080472370352,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 61.38250188437826,
+    "max": 76.18080472370352,
+    "low": 53.698368622146276,
+    "high": 76.18080472370352,
+    "mos_pct": 42.93162105826131,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ],
+    "valuation_methods_applicable": 3
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 39,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-05-07"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": 10.830541522598386,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2024-10-29",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/884614/0001558370-24-013848-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Utilities median (n=46)",
+    "values": {
+      "Quality": 52.58,
+      "Value": 48.19,
+      "Growth": 50.82,
+      "Momentum": 54.85,
+      "Health": 16.94,
+      "Profitability": 51.81,
+      "Technical": 50.96,
+      "Risk": 73.82
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 27.07875002412636,
+  "price_change_1d_pct": 0.7478,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 51.29,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.82,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 14,
+    "latest_filing_date": "2026-04-14",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 1.5226079143160995e-08
+}

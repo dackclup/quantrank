@@ -1,0 +1,208 @@
+{
+  "ticker": "STAG",
+  "name": "STAG Industrial",
+  "sector": "Real Estate",
+  "industry": "Industrial REITs",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 7414931799.495392,
+  "current_price": 38.78,
+  "rank": 588,
+  "composite_score": 46.78,
+  "pillar_scores": {
+    "quality": 44.58,
+    "value": 46.53,
+    "growth": 58.33,
+    "momentum": 56.76,
+    "health": 24.88,
+    "profitability": 46.25,
+    "technical": 41.49,
+    "risk": 58.87,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 863817000.0,
+    "net_income": 249222000.0,
+    "total_assets": 7183566000.0,
+    "total_liabilities": 3519342000.0,
+    "stockholders_equity": 3585667000.0,
+    "cash": 8856000.0,
+    "operating_cash_flow": 477288000.0,
+    "capex": null,
+    "free_cash_flow": null,
+    "eps_basic": 1.3034278826990218,
+    "eps_diluted": 1.3034278826990218,
+    "shares_outstanding": 191205055.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 7414931799.495392,
+    "pe_ratio_ttm": 29.75231640663903,
+    "goodwill": 4900000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 36.46077369359618,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 44.33968651016086,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 40.40023010187852,
+    "max": 44.33968651016086,
+    "low": 36.46077369359618,
+    "high": 44.33968651016086,
+    "mos_pct": 4.010450728859359,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
+    "valuation_methods_applicable": 2
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "capex",
+      "free_cash_flow",
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "income_tax_expense",
+      "income_before_tax",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "short_term_debt",
+      "ebitda",
+      "property_plant_equipment"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 48,
+    "latest_period_end": "2026-04-27",
+    "latest_filed_date": "2026-04-28"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 16.722518136353663,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Real Estate median (n=60)",
+    "values": {
+      "Quality": 48.85,
+      "Value": 50.21,
+      "Growth": 50.0,
+      "Momentum": 61.36,
+      "Health": 26.19,
+      "Profitability": 51.87,
+      "Technical": 53.2,
+      "Risk": 57.54
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 42.20796341082679,
+  "price_change_1d_pct": 2.0526,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 46.78,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.31,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-04-17",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.020916606207377772
+}

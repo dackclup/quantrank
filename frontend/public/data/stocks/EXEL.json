@@ -1,0 +1,196 @@
+{
+  "ticker": "EXEL",
+  "name": "Exelixis",
+  "sector": "Health Care",
+  "industry": "Biotechnology",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 13354495828.266193,
+  "current_price": 53.13,
+  "rank": 1,
+  "composite_score": 79.99,
+  "pillar_scores": {
+    "quality": 92.93,
+    "value": 63.04,
+    "growth": 87.5,
+    "momentum": 77.08,
+    "health": 81.16,
+    "profitability": 94.75,
+    "technical": 69.35,
+    "risk": 57.78,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2375491000.0,
+    "net_income": 833421000.0,
+    "total_assets": 2593593000.0,
+    "total_liabilities": 657845000.0,
+    "stockholders_equity": 1935748000.0,
+    "cash": 226152000.0,
+    "operating_cash_flow": 924675000.0,
+    "capex": 6986000.0,
+    "free_cash_flow": 917689000.0,
+    "eps_basic": 3.3157117415445305,
+    "eps_diluted": 3.3157117415445305,
+    "shares_outstanding": 251355083.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 13354495828.266193,
+    "pe_ratio_ttm": 16.023709299701103,
+    "goodwill": 63684000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 17.026713187703404,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 79.0090878312072,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 33.275196929856726,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 75.39882032879275,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 12.660931915186904,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 17.457590960388547,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 25.36639394512264,
+    "max": 79.0090878312072,
+    "low": 12.660931915186904,
+    "high": 79.0090878312072,
+    "mos_pct": -109.4503506610205,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "interest_expense",
+      "income_before_tax",
+      "dividends_paid",
+      "accounts_receivable",
+      "intangibles_net"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 41,
+    "latest_period_end": "2026-04-27",
+    "latest_filed_date": "2026-05-05"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "insider_sell_cluster"
+  ],
+  "has_history": true,
+  "tangible_book_value": 7.447885985261735,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Health Care median (n=92)",
+    "values": {
+      "Quality": 52.45,
+      "Value": 48.41,
+      "Growth": 48.3,
+      "Momentum": 41.67,
+      "Health": 60.7,
+      "Profitability": 50.09,
+      "Technical": 54.13,
+      "Risk": 42.94
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 45.00687431713744,
+  "price_change_1d_pct": -0.6916,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 79.49,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 65.92,
+  "entered_top5": true,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 14,
+    "latest_filing_date": "2026-06-03",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 1.2859624864805063e-08
+}

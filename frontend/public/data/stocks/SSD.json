@@ -1,0 +1,196 @@
+{
+  "ticker": "SSD",
+  "name": "Simpson Manufacturing",
+  "sector": "Industrials",
+  "industry": "Building Products",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 7942576709.056091,
+  "current_price": 193.07,
+  "rank": 12,
+  "composite_score": 69.95,
+  "pillar_scores": {
+    "quality": 83.73,
+    "value": 71.18,
+    "growth": 45.33,
+    "momentum": 58.15,
+    "health": 81.67,
+    "profitability": 83.23,
+    "technical": 50.97,
+    "risk": 54.89,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2381877000.0,
+    "net_income": 1091949000.0,
+    "total_assets": 3043407000.0,
+    "total_liabilities": 978373000.0,
+    "stockholders_equity": 2058732000.0,
+    "cash": 341005000.0,
+    "operating_cash_flow": 486643000.0,
+    "capex": 128511000.0,
+    "free_cash_flow": 358132000.0,
+    "eps_basic": 26.543350999341854,
+    "eps_diluted": 26.543350999341854,
+    "shares_outstanding": 41138325.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 7942576709.056091,
+    "pe_ratio_ttm": 7.273761603386323,
+    "goodwill": 548283000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 70.6793349164072,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 617.316856660294,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 272.34941472935515,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 191.37167708186143,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 41.26784916997191,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 94.24505697912124,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 142.80836703049135,
+    "max": 617.316856660294,
+    "low": 41.26784916997191,
+    "high": 617.316856660294,
+    "mos_pct": -35.19516491845041,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development",
+      "interest_expense"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 39,
+    "latest_period_end": "2026-05-04",
+    "latest_filed_date": "2026-05-07"
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile",
+    "beneish_manipulation_veto"
+  ],
+  "valuation_warnings": [
+    "beneish_high",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": 27.637999359478055,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Industrials median (n=166)",
+    "values": {
+      "Quality": 50.72,
+      "Value": 47.44,
+      "Growth": 50.26,
+      "Momentum": 55.03,
+      "Health": 57.51,
+      "Profitability": 48.74,
+      "Technical": 53.56,
+      "Risk": 53.42
+    }
+  },
+  "beneish_m_score": -1.1734802914965743,
+  "dechow_f_score": 0.40380933270699265,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 48.34085731562144,
+  "price_change_1d_pct": -0.3201,
+  "manipulation_index": 48.0,
+  "composite_score_adjusted": 65.15,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": true,
+    "beneish_manipulation_veto": true,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": true,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 60.9,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-05-08",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 8.694419183872193e-09
+}

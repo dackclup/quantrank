@@ -1,0 +1,190 @@
+{
+  "ticker": "BRBR",
+  "name": "BellRing Brands",
+  "sector": "Consumer Staples",
+  "industry": "Packaged Foods & Meats",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 1024407907.2921276,
+  "current_price": 8.81,
+  "rank": 225,
+  "composite_score": 56.59,
+  "pillar_scores": {
+    "quality": 50.47,
+    "value": 83.65,
+    "growth": 72.17,
+    "momentum": 0.61,
+    "health": 68.49,
+    "profitability": 72.96,
+    "technical": 58.07,
+    "risk": 12.67,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2321000000.0,
+    "net_income": 183000000.0,
+    "total_assets": 1025400000.0,
+    "total_liabilities": 1523200000.0,
+    "stockholders_equity": -497800000.0,
+    "cash": 32600000.0,
+    "operating_cash_flow": 254500000.0,
+    "capex": 8800000.0,
+    "free_cash_flow": 245700000.0,
+    "eps_basic": 1.573816509335183,
+    "eps_diluted": 1.573816509335183,
+    "shares_outstanding": 116277850.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 1024407907.2921276,
+    "pe_ratio_ttm": 5.597857416896872,
+    "goodwill": 65900000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 22.900325123104597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 20.367572382955576,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "insufficient_history_for_roe",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 21.633948753030086,
+    "max": 22.900325123104597,
+    "low": 20.367572382955576,
+    "high": 22.900325123104597,
+    "mos_pct": 59.276965475927014,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 2
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development",
+      "dividends_paid"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 41,
+    "latest_period_end": "2026-04-28",
+    "latest_filed_date": "2026-05-05"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Consumer Staples median (n=53)",
+    "values": {
+      "Quality": 50.0,
+      "Value": 48.43,
+      "Growth": 50.0,
+      "Momentum": 36.67,
+      "Health": 36.7,
+      "Profitability": 51.57,
+      "Technical": 53.13,
+      "Risk": 49.91
+    }
+  },
+  "beneish_m_score": -2.9755600776802793,
+  "dechow_f_score": null,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 15.96048875755292,
+  "price_change_1d_pct": -1.1223,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 56.59,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.22,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 11,
+    "latest_filing_date": "2026-05-14",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 3.4451244819597795e-08
+}

@@ -1,0 +1,210 @@
+{
+  "ticker": "FHI",
+  "name": "Federated Hermes",
+  "sector": "Financials",
+  "industry": "Asset Management & Custody Banks",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 4231862500.0,
+  "current_price": 58.25,
+  "rank": 54,
+  "composite_score": 65.03,
+  "pillar_scores": {
+    "quality": 69.11,
+    "value": 56.49,
+    "growth": 55.71,
+    "momentum": 67.77,
+    "health": 83.31,
+    "profitability": 66.61,
+    "technical": 48.7,
+    "risk": 78.6,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 1856080000.0,
+    "net_income": 406165000.0,
+    "total_assets": 2143807000.0,
+    "total_liabilities": 880967000.0,
+    "stockholders_equity": 1204320000.0,
+    "cash": 513884000.0,
+    "operating_cash_flow": 311894000.0,
+    "capex": 8032000.0,
+    "free_cash_flow": 303862000.0,
+    "eps_basic": 5.59070887818307,
+    "eps_diluted": 5.59070887818307,
+    "shares_outstanding": 72650000.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 4231862500.0,
+    "pe_ratio_ttm": 10.419072298203933,
+    "goodwill": 848935000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 6.068499555473594,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 88.42378794462678,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 44.0323439015923,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 0.9627345294347245,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 25.050421728532946,
+    "max": 88.42378794462678,
+    "low": 0.9627345294347245,
+    "high": 88.42378794462678,
+    "mos_pct": -132.53101537069952,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 2
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "depreciation_and_amortization",
+      "interest_expense",
+      "inventory",
+      "accounts_payable",
+      "short_term_debt",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 45,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-01"
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "accruals_momentum_high",
+    "c_suite_unusual_sell"
+  ],
+  "has_history": true,
+  "tangible_book_value": 0.4175361321403992,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=140)",
+    "values": {
+      "Quality": 50.36,
+      "Value": 52.17,
+      "Growth": 50.62,
+      "Momentum": 53.77,
+      "Health": 55.29,
+      "Profitability": 49.02,
+      "Technical": 54.44,
+      "Risk": 58.81
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 58.486876880741214,
+  "price_change_1d_pct": 0.6566,
+  "manipulation_index": 28.0,
+  "composite_score_adjusted": 62.23,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": true,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": true
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 58.44,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 13,
+    "latest_filing_date": "2026-06-09",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.04490920109053638
+}

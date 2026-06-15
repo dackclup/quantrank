@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 1106995005282.5684,
   "current_price": 981.61,
-  "rank": 50,
-  "composite_score": 61.95,
+  "rank": 79,
+  "composite_score": 63.06,
   "pillar_scores": {
-    "quality": 70.83,
-    "value": 31.71,
-    "growth": 42.71,
-    "momentum": 88.77,
-    "health": 91.43,
-    "profitability": 74.31,
-    "technical": 62.2,
-    "risk": 53.35,
+    "quality": 75.0,
+    "value": 32.22,
+    "growth": 42.08,
+    "momentum": 88.65,
+    "health": 90.13,
+    "profitability": 74.86,
+    "technical": 62.22,
+    "risk": 54.38,
     "sentiment": null,
     "ml": null
   },
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 87,
+    "filing_lag_days": 88,
     "latest_period_end": "2026-03-11",
     "latest_filed_date": "2026-03-19"
   },
@@ -119,25 +119,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=72)",
+    "label": "Information Technology median (n=120)",
     "values": {
-      "Quality": 48.52,
-      "Value": 49.07,
-      "Growth": 52.6,
-      "Momentum": 68.43,
-      "Health": 68.44,
-      "Profitability": 49.42,
-      "Technical": 48.51,
-      "Risk": 47.01
+      "Quality": 49.38,
+      "Value": 48.61,
+      "Growth": 52.4,
+      "Momentum": 67.7,
+      "Health": 67.0,
+      "Profitability": 49.58,
+      "Technical": 49.7,
+      "Risk": 43.55
     }
   },
   "beneish_m_score": -2.0622747957834027,
   "dechow_f_score": 0.35476013036954457,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.02615233510403,
+  "loss_chance_pct": 60.470411046440006,
   "price_change_1d_pct": -1.4319,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 61.15,
+  "composite_score_adjusted": 62.26,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,9 +185,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.9,
+  "osap_blended_score": 57.46,
   "entered_top5": false,
   "exited_top5": false,
+  "index_membership": "sp500",
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 11,

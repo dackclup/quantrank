@@ -1,0 +1,199 @@
+{
+  "ticker": "WHR",
+  "name": "Whirlpool Corporation",
+  "sector": "Consumer Discretionary",
+  "industry": "Household Appliances",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 2780263620.125107,
+  "current_price": 42.89,
+  "rank": 896,
+  "composite_score": 29.8,
+  "pillar_scores": {
+    "quality": 17.13,
+    "value": 78.7,
+    "growth": 14.47,
+    "momentum": 1.48,
+    "health": 14.56,
+    "profitability": 14.97,
+    "technical": 52.05,
+    "risk": 10.47,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 15177000000.0,
+    "net_income": 181000000.0,
+    "total_assets": 16177000000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 3783000000.0,
+    "cash": 626000000.0,
+    "operating_cash_flow": 364000000.0,
+    "capex": 385000000.0,
+    "free_cash_flow": -21000000.0,
+    "eps_basic": 2.792213599218711,
+    "eps_diluted": 2.792213599218711,
+    "shares_outstanding": 64823121.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 2780263620.125107,
+    "pe_ratio_ttm": 15.360572486879043,
+    "goodwill": 3103000000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 56.82990623280972,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 276.9857153071351,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 103.09849129277332,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "dcf_negative_equity_post_debt",
+        "tier_used": null
+      }
+    },
+    "median": 103.09849129277332,
+    "max": 103.09849129277332,
+    "low": 56.82990623280972,
+    "high": 276.9857153071351,
+    "mos_pct": 58.399003853653085,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "value_trap_risk"
+    ],
+    "valuation_methods_applicable": 2
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "research_and_development"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 39,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-07"
+  },
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "value_trap_risk",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Consumer Discretionary median (n=108)",
+    "values": {
+      "Quality": 46.88,
+      "Value": 51.12,
+      "Growth": 49.42,
+      "Momentum": 42.39,
+      "Health": 43.97,
+      "Profitability": 49.38,
+      "Technical": 53.07,
+      "Risk": 39.91
+    }
+  },
+  "beneish_m_score": -2.5594930298464336,
+  "dechow_f_score": 1.3298521056271067,
+  "recommendation": "neutral",
+  "loss_chance_pct": 35.66080464236593,
+  "price_change_1d_pct": 1.1318,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 29.3,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 40.83,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 17,
+    "latest_filing_date": "2026-04-23",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 2.153568918971155e-08
+}
