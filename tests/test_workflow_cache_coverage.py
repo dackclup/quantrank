@@ -208,11 +208,11 @@ def test_workflow_restores_each_cache_dir(workflow: str, cache_path: Path) -> No
 
 
 def test_workflow_fast_cache_key_full_shape_pinned() -> None:
-    """FAST cache key has the full shape ``cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
+    """FAST cache key has the full shape ``cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
     in BOTH compute-rankings.yml and precache-edgar.yml.
 
     WHY (WARN 1): the predecessor test only asserted the prefix
-    ``key: cache-v8-fast-`` — it would pass if the suffix were reordered
+    ``key: cache-v9-fast-`` — it would pass if the suffix were reordered
     (e.g., ``-<os>-<quarter>``), breaking the exact-key parity that the
     Saturday precache depends on to no-op its save on warm Saturdays.
     The slow-text test already pins the full shape of that key; this test
@@ -224,25 +224,32 @@ def test_workflow_fast_cache_key_full_shape_pinned() -> None:
     # Full shape: version token + quarter expression + OS expression.
     # Regex-escape ${{ and }} so they match literally in the workflow text.
     full_shape_re = re.compile(
-        r"key: cache-v8-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
+        r"key: cache-v9-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
         r"-\$\{\{ runner\.os \}\}"
     )
     for workflow in ("compute-rankings.yml", "precache-edgar.yml"):
         text = _workflow_text(workflow)
         assert full_shape_re.search(text), (
             f"{workflow} fast-cache key is missing or has the wrong full shape. "
-            f"Expected: ``key: cache-v8-fast-"
+            f"Expected: ``key: cache-v9-fast-"
             f"${{{{ steps.quarter.outputs.q }}}}-${{{{ runner.os }}}}`` — "
             f"a suffix reorder (e.g., -<os>-<quarter>) would silently break "
             f"exact-key parity between the cron and the Saturday precache."
         )
 
 
-def test_workflow_fast_cache_key_is_v8() -> None:
-    """FAST cache key is `cache-v8-fast-` (fixed-floor PR).
+def test_workflow_fast_cache_key_is_v9() -> None:
+    """FAST cache key is `cache-v9-fast-` (Issue #385 bump).
 
     Bump history on the fundamentals/prices ("fast", quarter-keyed) bundle:
 
+    - v8 → v9-fast (Issue #385, 2026-06-15): `us-gaap:OilAndGasRevenue`
+      added to `_TTM_REVENUE_TAGS` + `_ANNUAL_TAGS["revenue"]` so E&P filers
+      (APA, COP, OXY) resolve revenue instead of shipping `revenue=None` — a
+      new `_TTM_`/`_ANNUAL_TAGS` metric that per-cache `_is_fresh()` filing-
+      date checks can't detect, so the quarter's frozen fast parquets must be
+      flushed to repopulate. Bumped in ALL FOUR files (cron / precache /
+      backfill / sim).
     - v4 → v5 (Issue #288 follow-up, 2026-05-28): PR #292 + PR #269
       introduced the GOOG/GOOGL per-class XBRL share-override in Branch 3
       of `_build_snapshot`. Branch 3 only executes on live EDGAR fetch —
@@ -280,7 +287,7 @@ def test_workflow_fast_cache_key_is_v8() -> None:
     - **Bump on *value-correctness* fix inside a live-fetch-only code path
       that cache replay short-circuits past** (Branch 3, both firings).
 
-    Bump again to v9-fast next time any of the three triggers fires —
+    Bump again to v10-fast next time any of the three triggers fires —
     in ALL FOUR files at once (compute-rankings / precache-edgar /
     backfill-portfolio / pre-merge-prod-sim; the tri-file pattern became
     quad-file when Issue #249 Option B added the Saturday precache).
@@ -289,30 +296,30 @@ def test_workflow_fast_cache_key_is_v8() -> None:
     workflow comment, and see the lockstep test below.
     """
     text = _workflow_text()
-    assert "key: cache-v8-fast-" in text, (
-        "compute-rankings.yml FAST cache key must be `cache-v8-fast-${{ ... }}` "
-        "(fixed-floor PR, 2026-06-11). Bump to v9-fast only when a cache "
+    assert "key: cache-v9-fast-" in text, (
+        "compute-rankings.yml FAST cache key must be `cache-v9-fast-${{ ... }}` "
+        "(Issue #385, 2026-06-15). Bump to v10-fast only when a cache "
         "directory's *schema* changes, a new metric is added to `_ANNUAL_TAGS` "
         "/ `_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness fix lands in a "
         "live-fetch-only path that cache replay would short-circuit past."
     )
     bf_text = _workflow_text("backfill-portfolio.yml")
-    assert "cache-v8-fast-" in bf_text, (
+    assert "cache-v9-fast-" in bf_text, (
         "backfill-portfolio.yml must share the v8-fast key family (aligned in "
         "the fixed-floor PR so both consumers see the same depth)"
     )
-    assert "cache-v8-bf-" in bf_text, (
+    assert "cache-v9-bf-" in bf_text, (
         "backfill-portfolio.yml must SAVE under its own -bf- key (its bundle is "
         "a subset of the cron's — an exact-key save would poison the quarter)"
     )
     sim_text = _workflow_text("pre-merge-prod-sim.yml")
-    assert "cache-v8-fast-" in sim_text and "cache-v7-" not in sim_text, (
+    assert "cache-v9-fast-" in sim_text and "cache-v7-" not in sim_text, (
         "pre-merge-prod-sim.yml mirrors the cron's key family (its own header "
         "comment commands bumping together) — a stale family goes silently cold "
         "after archive eviction"
     )
     pre_text = _workflow_text("precache-edgar.yml")
-    assert "key: cache-v8-fast-" in pre_text and "cache-v7-" not in pre_text, (
+    assert "key: cache-v9-fast-" in pre_text and "cache-v7-" not in pre_text, (
         "precache-edgar.yml (Issue #249 Option B) must SAVE under the cron's "
         "EXACT fast key family — exact-key parity is what makes the Saturday "
         "post-eviction save restorable by the weekday cron, and what no-ops "
@@ -382,7 +389,7 @@ def test_sim_timeout_at_least_cron_timeout() -> None:
     fetch and the sim runs as long as a cold cron. The cron was bumped to 240
     min (the #249 era + the Phase 7.0 folded backtest) but the sim was left at
     90, so sim run #98 was CANCELLED at the 90-min cap mid per-stock write
-    (`Cache not found for input keys: cache-v8-fast-2026Q2-Linux, ...`). The
+    (`Cache not found for input keys: cache-v9-fast-2026Q2-Linux, ...`). The
     sim runs FEWER loops than the cron (5 skip vars, no committed output, no
     PIT backtest), so it never NEEDS more than the cron — but it must not be
     LESS, or a legitimately-cold sim (and the S&P 900 pilot's first cold run)
@@ -404,7 +411,7 @@ def test_sim_restores_both_cron_cache_families() -> None:
     """The pre-merge sim must restore BOTH cron cache bundles by their families.
 
     WHY (2026-06-13): the cron writes its cache as TWO bundles under DIFFERENT
-    keys — the fast bundle (`cache-v8-fast-`) and the slow-text bundle
+    keys — the fast bundle (`cache-v9-fast-`) and the slow-text bundle
     (`cache-v5-text-<os>-<run_id>`). The sim originally listed every path under
     the single fast key, so the 5 slow-text paths (edgar_10k_text / edgar_8k /
     osap / amendments / late_filings) were NEVER restored — they live in a
@@ -416,9 +423,9 @@ def test_sim_restores_both_cron_cache_families() -> None:
     """
     sim_text = _workflow_text("pre-merge-prod-sim.yml")
     # Fast family (already pinned by the v8 test; re-checked here for symmetry).
-    assert "cache-v8-fast-" in sim_text, (
+    assert "cache-v9-fast-" in sim_text, (
         "pre-merge-prod-sim.yml must restore the cron's fast cache family "
-        "(`cache-v8-fast-`)."
+        "(`cache-v9-fast-`)."
     )
     # Slow-text family — the bundle the old single-key restore silently dropped.
     assert re.search(r"cache-v\d+-text-\$\{\{ runner\.os \}\}-", sim_text), (

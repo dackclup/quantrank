@@ -200,6 +200,8 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Final
 
+from tenacity import retry, stop_after_attempt, stop_after_delay, wait_exponential
+
 from compute import config
 
 logger = logging.getLogger(__name__)
@@ -929,6 +931,39 @@ def _form4_to_transactions(filing: object) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Internal SEC fetch — retry-wrapped (Issue #207)
+# ---------------------------------------------------------------------------
+
+# Retry policy mirrors compute/ingest/fundamentals.py _build_snapshot /
+# _build_annual_history: caps at the FIRST of 30s total wall-clock OR 2
+# attempts with exponential back-off (2-8s).  A 429 throttle or transient
+# network error surfaces as an exception from Company.get_filings; reraise=True
+# ensures the outer fetch_recent_form4 try/except sees a terminal failure and
+# returns None (graceful degradation — cron must not block).
+@retry(
+    stop=(stop_after_delay(30) | stop_after_attempt(2)),
+    wait=wait_exponential(min=2, max=8),
+    reraise=True,
+)
+def _fetch_form4_filings_with_retry(ticker: str, start: str, end: str) -> object:
+    """Call Company.get_filings for Form 4 with tenacity retry.
+
+    Separated from the outer function so the decorator fires only on the
+    live SEC round-trip (not on cache reads, identity checks, or the
+    iteration loop that follows).  429 throttles and transient network
+    blips raise here and are retried; a final failure re-raises so the
+    caller's try/except can degrade gracefully.
+    """
+    from edgar import Company  # noqa: PLC0415 — lazy import mirrors existing style
+
+    company = Company(ticker)
+    return company.get_filings(
+        form="4",
+        filing_date=(start, end),
+    )
+
+
+# ---------------------------------------------------------------------------
 # Fetch entry — production callers use this
 # ---------------------------------------------------------------------------
 
@@ -969,22 +1004,23 @@ def fetch_recent_form4(
     if not _ensure_edgar_identity():
         return None
 
+    end = date.today()
+    start = end - timedelta(days=lookback_days)
     try:
-        from edgar import Company
-    except ImportError as e:
-        logger.warning("edgartools not importable: %s", e)
-        return None
-
-    try:
-        company = Company(ticker)
-        end = date.today()
-        start = end - timedelta(days=lookback_days)
-        filings = company.get_filings(
-            form="4",
-            filing_date=(start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")),
+        filings = _fetch_form4_filings_with_retry(
+            ticker,
+            start.strftime("%Y-%m-%d"),
+            end.strftime("%Y-%m-%d"),
         )
     except Exception as e:  # noqa: BLE001
-        logger.warning("form4 top-level fetch failed for %s: %s", ticker, e)
+        # Distinguish throttle hint from generic error where cheap to do so.
+        err_str = str(e)
+        if "429" in err_str or "rate" in err_str.lower() or "throttl" in err_str.lower():
+            logger.warning(
+                "form4 SEC throttle (429) for %s after retries: %s", ticker, e
+            )
+        else:
+            logger.warning("form4 top-level fetch failed for %s: %s", ticker, e)
         return None
 
     rows: list[dict] = []

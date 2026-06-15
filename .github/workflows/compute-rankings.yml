@@ -227,10 +227,10 @@ jobs:
             compute/cache/prices
             compute/cache/universe-v2.parquet
             compute/cache/yfinance_info
-          key: cache-v8-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v8-fast-${{ steps.quarter.outputs.q }}-
-            cache-v8-fast-
+            cache-v9-fast-${{ steps.quarter.outputs.q }}-
+            cache-v9-fast-
 
       # SLOW-changing text bundle — RUN-ID key + prefix restore-keys (the textbook
       # "keep a cache fresh AND persistent" idiom). A unique key per run means the

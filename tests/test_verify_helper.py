@@ -331,3 +331,149 @@ def test_section_l_ignores_none_osap_signals(helper, capsys):
     out = capsys.readouterr().out
     assert "phase4h_proxy" in out
     assert "tickers with osap_signals: 10" in out
+
+
+# ---------------------------------------------------------------------------
+# Section K — Form-4 universe accounting equation (Issue #208)
+# ---------------------------------------------------------------------------
+#
+# section_k_form4_universe verifies:
+#   universe_size == ok_active + ok_zero_activity + failed + missing_diag
+# and cross-checks metadata.form4_tickers_with_recent_activity against
+# the per-stock ok_active ground truth.
+
+
+def _f4_stock(ticker: str, fetch_status: str | None, insider_count: int = 0) -> dict:
+    """Build a stock dict with a form4_diagnostics payload.
+
+    ``fetch_status=None`` simulates a ticker whose diagnostics are absent
+    (fetch was skipped entirely — the ``missing_diag`` bucket).
+    """
+    base = _stock(ticker)
+    if fetch_status is None:
+        base["form4_diagnostics"] = None
+    else:
+        base["form4_diagnostics"] = {
+            "fetch_status": fetch_status,
+            "insider_count": insider_count,
+            "latest_filing_date": "2026-04-12" if insider_count > 0 else None,
+        }
+    return base
+
+
+def _f4_metadata(
+    universe_size: int,
+    *,
+    form4_enabled: bool = True,
+    form4_coverage_pct: float = 99.0,
+    form4_tickers_with_recent_activity: int | None = None,
+) -> dict:
+    m = {
+        "universe_size": universe_size,
+        "form4_enabled": form4_enabled,
+        "form4_coverage_pct": form4_coverage_pct,
+    }
+    if form4_tickers_with_recent_activity is not None:
+        m["form4_tickers_with_recent_activity"] = form4_tickers_with_recent_activity
+    return m
+
+
+def test_section_k_pre_pr2_snapshot_skips(helper, capsys):
+    """A legacy snapshot (form4_enabled absent + form4_coverage_pct absent)
+    must skip cleanly: return (0, 0).
+    """
+    metadata = {"universe_size": 502}  # no form4_* fields
+    stocks = [_f4_stock(f"S{i}", "ok", 0) for i in range(5)]
+    w, f = helper.section_k_form4_universe(metadata, stocks)
+    assert (w, f) == (0, 0)
+    assert "skipped" in capsys.readouterr().out
+
+
+def test_section_k_accounting_equation_passes_on_balanced_universe(helper, capsys):
+    """Happy path: ok_active + ok_zero + failed + missing sums to universe_size.
+
+    Composition: 2 active, 2 zero-activity, 1 failed, 1 missing → universe=6.
+    """
+    stocks = [
+        _f4_stock("A", "ok", insider_count=3),   # ok_active
+        _f4_stock("B", "ok", insider_count=1),   # ok_active
+        _f4_stock("C", "ok", insider_count=0),   # ok_zero
+        _f4_stock("D", "ok", insider_count=0),   # ok_zero
+        _f4_stock("E", "failed", insider_count=0),  # failed
+        _f4_stock("F", None),                    # missing_diag
+    ]
+    metadata = _f4_metadata(
+        universe_size=6,
+        form4_tickers_with_recent_activity=2,  # matches ok_active
+    )
+    w, f = helper.section_k_form4_universe(metadata, stocks)
+    assert (w, f) == (0, 0)
+    out = capsys.readouterr().out
+    assert "2 active" in out
+    assert "accounting equation" in out
+
+
+def test_section_k_accounting_equation_fails_when_universe_size_mismatch(helper, capsys):
+    """When the per-stock counts don't sum to universe_size, the check must
+    emit a FAIL and return (0, 1).
+    """
+    stocks = [
+        _f4_stock("A", "ok", insider_count=3),
+        _f4_stock("B", "ok", insider_count=0),
+        # 2 stocks but universe_size=5 — 3 unaccounted
+    ]
+    metadata = _f4_metadata(universe_size=5)
+    w, f = helper.section_k_form4_universe(metadata, stocks)
+    assert f >= 1, "Accounting mismatch must produce at least 1 failure"
+    out = capsys.readouterr().out
+    assert "accounting equation" in out
+    assert "!=" in out
+
+
+def test_section_k_metadata_active_mismatch_warns(helper, capsys):
+    """When ``form4_tickers_with_recent_activity`` in metadata disagrees
+    with the per-stock ground truth ok_active count, the check must emit
+    a WARN (not a FAIL).
+    """
+    stocks = [
+        _f4_stock("A", "ok", insider_count=3),   # ok_active
+        _f4_stock("B", "ok", insider_count=0),   # ok_zero
+    ]
+    metadata = _f4_metadata(
+        universe_size=2,
+        form4_tickers_with_recent_activity=5,  # disagrees: per-stock truth = 1
+    )
+    w, f = helper.section_k_form4_universe(metadata, stocks)
+    assert w >= 1, "Metadata active-count mismatch must produce at least 1 warning"
+    assert f == 0, "Mismatch is a warning, not a failure"
+    out = capsys.readouterr().out
+    assert "form4_tickers_with_recent_activity" in out
+
+
+def test_section_k_all_failed_is_accounted(helper, capsys):
+    """A universe where every ticker failed is still accounted — the equation
+    holds (all in the failed bucket) and no accounting failure is emitted.
+    """
+    stocks = [_f4_stock(f"S{i}", "failed") for i in range(5)]
+    metadata = _f4_metadata(universe_size=5)
+    w, f = helper.section_k_form4_universe(metadata, stocks)
+    assert f == 0, "All-failed universe must satisfy the accounting equation"
+
+
+def test_section_k_all_missing_is_accounted(helper, capsys):
+    """A universe where every ticker has form4_diagnostics=None (fetch
+    entirely skipped) is still accounted — all in the missing_diag bucket.
+    """
+    stocks = [_f4_stock(f"S{i}", None) for i in range(10)]
+    metadata = _f4_metadata(universe_size=10)
+    w, f = helper.section_k_form4_universe(metadata, stocks)
+    assert f == 0, "All-missing-diag universe must satisfy the accounting equation"
+
+
+def test_section_k_zero_universe_size_with_no_stocks_passes(helper, capsys):
+    """Edge case: empty universe (universe_size=0) with no stocks → equation
+    0 == 0 holds; must pass cleanly.
+    """
+    metadata = _f4_metadata(universe_size=0)
+    w, f = helper.section_k_form4_universe(metadata, [])
+    assert f == 0
