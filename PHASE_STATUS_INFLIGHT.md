@@ -4085,3 +4085,66 @@ suite 30 passed, 3 workflow YAMLs parse. Out of scope (follow-ups):
 precache `universe=sp900` warming (PR 5); ranking midcaps + R6 verifier
 cohort-filter + backfill guard + forward-only Metadata flags (PR 3).
 ---
+
+## 2026-06-15 — feat(ingest+schema): S&P 900 pilot PR 3a — rank midcaps (gated) + index_membership marker
+
+The integration slice: midcaps ENTER the ranked output on `QR_UNIVERSE=sp900`,
+but the SCHEDULED cron default stays `sp500` (owner chose gated-validate-first;
+`compute-rankings.yml` UNTOUCHED). 3a's 900-rank path activates only on a
+manual `universe: sp900` dispatch. The empirical gate already passed (sp900
+diagnostic 2026-06-14: midcap coverage 99.5%, CIK resolution 99.75%).
+
+**Decisive reframe (from the PR-3 plan):** the home-page AI-pick book is
+sourced ONLY from `backtest_pit.json` (500-only via
+`scripts/backfill_portfolio_pit.py get_sp500_constituents()`); `compute/main.py`
+has NO live forward-pick. So "AI-pick-eligible after 2 green crons" is enforced
+STRUCTURALLY as long as the backfill stays 500-only → the Task-5 backfill
+assertion is what keeps it true; NO stateful first_seen ledger (PR 3b dropped).
+
+**Build:** `compute/main.py` universe-load seam — `QR_UNIVERSE=="sp900"` →
+`universe = get_sp900_constituents()` (all ~903 ranked, `cohort` column from
+the loader); else `get_sp500_constituents()` + `universe["cohort"]="sp500"`
+(unconditional column); probe reuses the loaded frame (dedupe). `cohort`
+propagates: `_fetch_prices_one` returns `"cohort"` → `df` → `cohort_by_ticker`
+dict → `index_membership=` on both `StockSummary`/`StockDetail`. `Metadata.universe`
+→ "SP900" on sp900; `universe_cohort_sizes` now populated on the scored path.
+Schema triple: `index_membership: str = "sp500"` (schemas.py + types.ts +
+snapshot regen); `SCHEMA_VERSION 0.10.20-phase4.6 → 0.10.21-phase8pilot`
+(restores the phase-8 label #477's bump reverted). R6:
+`verify_membership_ledger.current_universe()` filters
+`r.get("index_membership","sp500")=="sp500"` (900 rows no longer false-fail
+BAND 498-506). Backfill: assertion `set(members["cohort"].unique()) <= {"sp500"}`
++ WHY comment (issue #130 forward-only honesty). cron default UNTOUCHED (gated).
+34 new tests (`test_universe_sp900_pr3a.py`) + test_config version pin. Verify:
+ruff PASS, offline suite 1866 passed/0 failed, schema_check PASS.
+
+**methodology-scientist RATIFY (APPROVED-AS-ANNOTATE)** — the defense set frozen
+at 500-calibration is literature-sound for 900: only Sloan + NSI recompute
+(within-sector population-relative deciles, self-adjusting; Sloan 1996 /
+Pontiff-Woodgate 2008 documented on cohorts BROADER than the S&P 500 incl.
+midcaps); absolute thresholds (Altman/Beneish/Dechow) are population-invariant.
+Bonferroni + liquidity-backstop correctly deferred to 1500 (Bonferroni governs
+the absolute tests, population-invariant; the deciles don't multiple-compare).
+Floors (SLOAN_MIN_POPULATION_SECTOR=15 / NSI_MIN_POPULATION=10) stay — raising
+them would reintroduce the #7 over-firing. No #130-frozen item moves.
+**Pre-registered validation bands** (the gated sp900 dispatch is measured
+against these): `sloan_accruals_top_decile` 8-12% univ; `net_issuance_top_decile`
+5-10% univ; **sp400 cohort fired-share tilt 1.0-1.4×** of its 44.3% universe
+share (HARD ALARM at 1.6-1.7× → midcap distribution not sector-homogeneous →
+size-tercile grouping is the 1500-cutover fix, NOT a pilot threshold change);
+Beneish veto expected modestly hotter on the sp400 cohort (documented
+size-effect FP drift toward broad-market ~30%, NOT a recalibration trigger).
+φ-matrix re-run on the 900 cohort is a 1500-cutover prerequisite, not a 3a gate.
+
+**Gated sequence to "midcaps live":** 3a merge → dispatch `universe: sp900`
+validation → check actual firing vs the bands above + the 240m cron budget warm
+→ precache-900 PR (data-pipeline; warm the 400 before any flip) + frontend PR 4
+(copy + midcap badge) → one-line `compute-rankings.yml` cron-default flip →
+midcaps live. PR 3b (first_seen ledger) DROPPED — structurally enforced.
+
+Note: cross-session #477 (IC-decay) merged between #480 and this branch and
+left two stale doc lines on main (§In-flight described merged #477;
+§Phase-status "Current schema" still says 0.10.18 though main is 0.10.20) —
+§In-flight rotated here; the current-schema line is a pre-existing drift for
+Mode C to correct post-merge.
+---

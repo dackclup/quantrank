@@ -225,6 +225,10 @@ def _fetch_prices_one(row: pd.Series) -> dict | None:
         "sector": row["sector"],
         "industry": row.get("sub_industry"),
         "cik": row.get("cik"),
+        # Phase 8 pilot PR 3a — carry cohort so index_membership propagates
+        # into StockSummary / StockDetail without a second universe lookup.
+        # "sp500" default keeps the sp500 path byte-identical.
+        "cohort": row.get("cohort", "sp500"),
         "current_price": current,
         "price_change_1d_pct": price_change_1d_pct,
         "_prices": prices,
@@ -841,32 +845,33 @@ def run_weekly_compute() -> int:
         # Already logged at error level by the helper; bail immediately.
         return 0
 
-    # Phase 8 pilot PR 1 — universe selector seam.
-    # QR_UNIVERSE=sp500 (default): behaviour is byte-identical to pre-PR-1.
-    # QR_UNIVERSE=sp900: loads the combined SP900 universe for the diagnostic
-    # probe, but ``universe`` (the scored set) stays 500-only.
-    logger.info("Loading S&P 500 universe… (QR_UNIVERSE=%s)", config.QR_UNIVERSE)
-    universe = get_sp500_constituents()
-    logger.info("Universe size: %d", len(universe))
-
-    # Phase 8 pilot PR 1 — diagnostic-only midcap coverage probe (Rule 18).
-    # Runs ONLY when QR_UNIVERSE=sp900. Populates new Metadata fields.
-    # CRITICAL: sp900_df is NEVER passed into summaries, the writer, or any
-    # scoring loop — ranked output is byte-identical to the sp500 path.
+    # Phase 8 pilot PR 3a — universe selector seam (wires scored output).
+    # QR_UNIVERSE=sp500 (default): loads SP500 only; adds cohort="sp500" so
+    #   the column exists unconditionally for index_membership propagation.
+    # QR_UNIVERSE=sp900: loads the full SP900 frame (cohort column already
+    #   present from get_sp900_constituents); all ~903 tickers are ranked.
+    #   The diagnostic probe reuses this frame — no second fetch.
+    #
+    # CRON DEFAULT: QR_UNIVERSE is "sp500" (compute-rankings.yml unchanged).
+    # The sp900 path is active only via manual `workflow_dispatch universe: sp900`.
+    logger.info("Loading universe… (QR_UNIVERSE=%s)", config.QR_UNIVERSE)
     _pilot_cohort_sizes: dict[str, int] | None = None
     _pilot_midcap_coverage_pct: float | None = None
     _pilot_midcap_null_rate_pct: float | None = None
     _pilot_midcap_cik_resolution_pct: float | None = None
     if config.QR_UNIVERSE == "sp900":
-        logger.info("[sp900-probe] QR_UNIVERSE=sp900 — running midcap diagnostic probe…")
+        logger.info("[sp900] Loading SP900 universe (sp500 + sp400 de-duped)…")
+        universe = get_sp900_constituents()
+        logger.info("[sp900] Universe size: %d (sp500+sp400 combined)", len(universe))
+        # Diagnostic probe reuses the already-loaded frame — no second fetch.
+        logger.info("[sp900-probe] Running midcap diagnostic probe (Rule 18)…")
         try:
-            sp900_df = get_sp900_constituents()
             (
                 _pilot_midcap_coverage_pct,
                 _pilot_midcap_null_rate_pct,
                 _pilot_midcap_cik_resolution_pct,
                 _pilot_cohort_sizes,
-            ) = _run_midcap_coverage_probe(sp900_df)
+            ) = _run_midcap_coverage_probe(universe)
             logger.info(
                 "[sp900-probe] Complete: cohorts=%s coverage=%.1f%% null_rate=%.1f%% cik_resolution=%.1f%%",
                 _pilot_cohort_sizes,
@@ -876,6 +881,13 @@ def run_weekly_compute() -> int:
             )
         except Exception as _sp900_exc:  # noqa: BLE001
             logger.error("[sp900-probe] Outer probe block failed (non-fatal): %s", _sp900_exc)
+    else:
+        # Default sp500 path — byte-identical scoring to pre-PR-3a.
+        # Add cohort column so _fetch_prices_one.row.get("cohort") is always defined.
+        universe = get_sp500_constituents()
+        universe = universe.copy()
+        universe["cohort"] = "sp500"
+        logger.info("Universe size: %d", len(universe))
 
     logger.info("Fetching SPY benchmark for beta…")
     benchmark = fetch_spy_benchmark()
@@ -1888,6 +1900,15 @@ def run_weekly_compute() -> int:
         )
     )
     multi_class_aggregate_shares_suspected_count: int = 0
+    # Phase 8 pilot PR 3a — cohort-by-ticker lookup for index_membership.
+    # Built once from df (which carries "cohort" from _fetch_prices_one);
+    # defaults to "sp500" so any ticker absent from df (e.g. post-price-fail
+    # drop) stays safe. The column is unconditionally present on both the
+    # sp500 and sp900 paths (added in the universe-load seam above).
+    cohort_by_ticker: dict[str, str] = {
+        str(r["ticker"]): str(r.get("cohort", "sp500"))
+        for _, r in df.iterrows()
+    }
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -2341,6 +2362,8 @@ def run_weekly_compute() -> int:
                 composite_score_adjusted=composite_adj,
                 entered_top5=ticker in entered,
                 exited_top5=ticker in exited,
+                # Phase 8 pilot PR 3a — index membership from cohort column.
+                index_membership=cohort_by_ticker.get(ticker, "sp500"),
             )
         )
 
@@ -2394,6 +2417,8 @@ def run_weekly_compute() -> int:
             ),
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
+            # Phase 8 pilot PR 3a — index membership from cohort column.
+            index_membership=cohort_by_ticker.get(ticker, "sp500"),
             form4_diagnostics=form4_diagnostics.get(ticker),
             cross_source_delta=cross_source_delta_by_ticker.get(ticker),
         )
@@ -2533,7 +2558,9 @@ def run_weekly_compute() -> int:
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
-        universe=config.UNIVERSE,
+        # Phase 8 pilot PR 3a — universe label: "SP900" when ranked output
+        # covers the full S&P 900; "SP500" on the default cron path.
+        universe="SP900" if config.QR_UNIVERSE == "sp900" else config.UNIVERSE,
         universe_size=len(summaries),
         # Phase 7.0 PR-1 — benchmark index export coverage (Rule 18 observability).
         benchmark_coverage_pct=benchmark_coverage_pct,
@@ -2701,8 +2728,9 @@ def run_weekly_compute() -> int:
         form4_negation_guard_downgrade_count=form4_negation_guard_downgrade_count,
         # Issue #75 §3 — IC-decay monitor artifact URL (Rule 18).
         decay_report_url=decay_report_url,
-        # Phase 8 pilot PR 1 — midcap coverage probe diagnostics (Rule 18).
-        # None on the default sp500 path; populated only when QR_UNIVERSE=sp900.
+        # Phase 8 pilot PR 3a — cohort-size diagnostics (Rule 18).
+        # Populated on the scored sp900 path (probe reuses the live universe frame).
+        # None on the default sp500 path.
         universe_cohort_sizes=_pilot_cohort_sizes or None,
         midcap_fundamentals_coverage_pct=_pilot_midcap_coverage_pct,
         midcap_null_rate_pct=_pilot_midcap_null_rate_pct,

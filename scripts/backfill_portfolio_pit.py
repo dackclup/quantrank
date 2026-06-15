@@ -824,6 +824,22 @@ def run_backfill(
     synthetic data that need not clear the conviction gate."""
     data_dir = data_dir or config.DATA_DIR
     members = get_sp500_constituents()
+    # Phase 8 pilot PR 3a — SP500-only contract guard.
+    # The backfill computes a point-in-time portfolio back to 2016.  Admitting
+    # midcap (sp400) names into `members` would place a ticker with ZERO
+    # historical net-asset-value into the Current Picks display the moment the
+    # backfill JSON is committed — a direct violation of issue #130 gate A2-S
+    # (AI-pick forward-pick honesty: no name enters the home-page basket until
+    # ≥ 2 live weekly crons have ranked it).  The S&P 900 forward-pick basket
+    # is enforced STRUCTURALLY: the backfill source stays 500-only here, so the
+    # AI-pick home page never sees a midcap name until a separate backfill
+    # script (backfill_portfolio_pit_sp900.py, PR 3b) is written and reviewed.
+    # Do NOT remove or weaken this assertion without a methodology-scientist
+    # Mode B verdict and a new issue #130 gate entry.
+    assert "cohort" not in members.columns or set(members["cohort"].unique()) <= {"sp500"}, (
+        "backfill_portfolio_pit: members frame contains non-sp500 cohorts — "
+        "this script is SP500-only. For SP900 backfill see PR 3b."
+    )
     current = {str(r.ticker) for r in members.itertuples(index=False)}
     cik_by_ticker = {str(r.ticker): str(r.cik) for r in members.itertuples(index=False)}
     sector_by_ticker = {str(r.ticker): str(r.sector) for r in members.itertuples(index=False)}
