@@ -53,6 +53,13 @@ env:
   # is unaffected by skipping the fetch. Weekly cron (compute-
   # rankings.yml, default 360-min budget) still runs the full
   # fetch and populates the cache for future sims.
+  # precache-900 Phase B flip (2026-06-16): the weekday cron now defaults to
+  # sp900, so the sim must mirror it. Set explicitly here so the sim's universe
+  # is independent of the compute/config.py code default (which stays 'sp500'
+  # for local-dev safety) — GOTCHAS.md §pre-merge-prod-sim mirroring invariant.
+  # Sim cost: sp900 cold-cache ~131 min vs sp500 ~43 min; the 240-min timeout
+  # (already matching the cron) provides adequate headroom for a cold miss.
+  QR_UNIVERSE: sp900
   FORM4_FETCH_SKIP: "1"
   # 2026-05-24 — pre-merge-prod-sim skips the Tier-2 (10-K text + 8-K)
   # fetch loop too. The Tier-2 loop is 502 tickers × (10-K full-text
@@ -218,12 +225,14 @@ jobs:
             compute/cache/fundamentals_history
             compute/cache/prices
             compute/cache/universe-v2.parquet
+            compute/cache/universe_sp400-v1.parquet
+            compute/cache/universe_sp900-v1.parquet
             compute/cache/yfinance_info
             compute/cache/edgar_form4
-          key: cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v10-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v9-fast-${{ steps.quarter.outputs.q }}-
-            cache-v9-fast-
+            cache-v10-fast-${{ steps.quarter.outputs.q }}-
+            cache-v10-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap — from weekly cron)
         uses: actions/cache/restore@v5

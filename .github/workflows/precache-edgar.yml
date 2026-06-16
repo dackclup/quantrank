@@ -46,20 +46,21 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to precache. sp500 = normal Saturday warm. sp900 = also warms the ~400 midcap Form-4 + tier-2 caches (cold, ~60-90 min). Default sp500 for the scheduled run."
+        description: "Universe to precache. sp900 = warms the full S&P 500 + S&P 400 midcap caches (the weekday cron's default after the 2026-06-16 Phase B flip). sp500 = large-cap only (diagnostic / fallback). Default sp900 for the scheduled Saturday run so it warms the same universe as Monday's cron."
         type: choice
         options:
           - sp500
           - sp900
-        default: sp500
+        default: sp900
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
-  # S&P 900 pilot: a manual `universe: sp900` dispatch warms the 400 midcap
-  # caches. The `|| 'sp500'` fallback keeps the scheduled Saturday run (null
-  # inputs) on sp500 — env-block assignment is injection-safe (mirrors #480).
-  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}
+  # S&P 900 pilot (Phase B flip, 2026-06-16): the `|| 'sp900'` fallback makes
+  # the scheduled Saturday precache warm the same universe as the weekday cron
+  # (also sp900 after the flip). A manual `universe: sp500` dispatch is available
+  # for diagnostics. Env-block assignment is injection-safe (mirrors #480).
+  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}
 
 # Never pushes, never comments — read is all it needs (least-privilege per
 # the compute-rankings.yml precedent, security-reviewer 2026-05-23 W2).
@@ -112,11 +113,13 @@ jobs:
             compute/cache/fundamentals_history
             compute/cache/prices
             compute/cache/universe-v2.parquet
+            compute/cache/universe_sp400-v1.parquet
+            compute/cache/universe_sp900-v1.parquet
             compute/cache/yfinance_info
-          key: cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v10-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v9-fast-${{ steps.quarter.outputs.q }}-
-            cache-v9-fast-
+            cache-v10-fast-${{ steps.quarter.outputs.q }}-
+            cache-v10-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
         uses: actions/cache@v5

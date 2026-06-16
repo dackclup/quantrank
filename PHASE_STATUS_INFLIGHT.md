@@ -4386,3 +4386,80 @@ tests + 3 cohort-sum-invariant tests) · schema_check pass · test_D3 green. Gat
 Mode B. Lands before the sp900 cron-default flip PR.
 
 ---
+
+## 2026-06-16 — ci(phase8): S&P 900 cron-default flip — precache-900 Phase B
+
+Makes midcaps **permanently live** on the weekday compute cron. All gates cleared:
+- sp900 validation run #107 PASSED pre-registered defense bands (NSI fired-share **1.461× < 1.6×**
+  hard alarm; Sloan 10.42% univ / 1.032× tilt in-band; Section A-L 0 fail)
+- Methodology **RATIFIED PROCEED-WITH-DOC**
+- FDXF empty-snap blocker fixed + merged (#491, on main)
+
+**Changes:**
+
+1. **Cron-default flip** (`compute-rankings.yml` env:29): `|| 'sp500'` → `|| 'sp900'`. The weekday
+   writer now ranks the full S&P 900 universe by default. Dispatch input default also flipped
+   `sp500` → `sp900`; `sp500` stays as a manual dispatch option for diagnostics.
+
+2. **`precache-edgar.yml` default flip** (env:62): `|| 'sp500'` → `|| 'sp900'`. The Saturday off-cycle
+   precache now warms sp900 so it matches the weekday cron — Monday's cron restores warm. Consistent
+   with the cron by design; keeping precache at sp500 would force Monday cold-seed on the midcap paths
+   every week.
+
+3. **Pre-merge-prod-sim mirroring decision**: Added explicit `QR_UNIVERSE: sp900` to
+   `pre-merge-prod-sim.yml`'s `env:` block. The compute/config.py code default stays `'sp500'` for
+   local-dev safety (no change there) — the sim cannot rely on the code default since the flip is
+   workflow-only. Sim cost: sp900 cold-cache ~131 min vs sp500 ~43 min; the existing 240-min timeout
+   (already matching the cron's budget) provides adequate headroom. No timeout bump needed.
+
+4. **Fast bundle bump `cache-v9-fast` → `cache-v10-fast`** in all four workflows in lockstep:
+   `compute-rankings.yml`, `precache-edgar.yml`, `pre-merge-prod-sim.yml`, `backfill-portfolio.yml`
+   (including `cache-v9-bf-` → `cache-v10-bf-` in backfill). Rationale: the fast bundle's exact-key
+   save-skip means sp400 fundamentals/prices won't persist via a warm-key precache; v10 forces a
+   cold-seed of the full sp900 fast bundle on the first post-flip cron. Slow-text bundle
+   (`cache-v5-text-`) left **UNCHANGED** (per the gotcha: text key bumps only on text-cache schema
+   changes).
+
+5. **sp400/sp900 universe parquets added** to fast `path:` blocks in all four workflows:
+   - `compute/cache/universe_sp400-v1.parquet` (config.SP400_UNIVERSE_CACHE)
+   - `compute/cache/universe_sp900-v1.parquet` (config.SP900_UNIVERSE_CACHE)
+   Without these, the constituent-list parquets don't persist across runs and Wikipedia gets
+   re-scraped every cron.
+
+6. **`docs/GOTCHAS.md` Phase B reference updated**: stale `cache-v8 → v9` description in the
+   `edgar_form4` gotcha updated to reflect the actual `cache-v9 → v10` bump done in this PR, with
+   the sp400/sp900 parquet path additions noted.
+
+7. **Test updates** (`tests/test_workflow_cache_coverage.py`):
+   - `test_workflow_fast_cache_key_is_v9` → renamed `test_workflow_fast_cache_key_is_v10` + updated
+     all v9 → v10 assertions + added the universe-expansion trigger to the taxonomy comment.
+   - `test_workflow_fast_cache_key_full_shape_pinned`: updated v9 → v10 in the expected key shape.
+   - `test_sim_restores_both_cron_cache_families`: updated v9 → v10 assertion.
+   - `test_compute_rankings_has_universe_dispatch_input`: updated to assert `default: sp900` +
+     `|| 'sp900'` fallback (was sp500).
+   - `test_precache_has_universe_dispatch_input`: same update — sp500 → sp900 default.
+   - NEW `test_sp900_universe_parquets_in_fast_path_blocks`: asserts sp400/sp900 universe parquets
+     appear in fast-bundle `path:` blocks in compute-rankings, precache-edgar, pre-merge-prod-sim.
+   - NEW `test_sim_mirrors_cron_universe_default`: asserts `QR_UNIVERSE: sp900` is set explicitly
+     in pre-merge-prod-sim.yml's env block.
+   - Total: 31 → 33 tests; all green.
+
+**What was NOT changed:**
+- `compute/config.py` — code default `QR_UNIVERSE = "sp500"` stays (local-dev safety; the flip is
+  workflow-only).
+- Schema triple — no schema change; `Metadata` fields unchanged.
+- Slow-text bundle `cache-v5-text-` — unchanged (no text-cache schema change).
+- Canary step — intentionally NOT edited; remains byte-identical between the two cache-warming
+  workflows (`test_canary_step_identical_in_both_workflows` stays green).
+
+**Gate lineage:** sp900 run #107 PASS + methodology PROCEED-WITH-DOC + #491 FDXF fix on main.
+**Next cron after this lands:** first sp900 cron will cold-seed ~400 midcap fundamentals/prices
+under cache-v10-fast (expect ~240 min cold budget); subsequent runs warm (~15-25 min sp500 + ~25-40
+min additional for midcap incremental).
+
+Schema triple: **untouched**. compute-builder BUILT-CLEAN: ruff pass · pytest offline
+**33 passed** (workflow-cache tests; full suite verified) · schema_check not applicable (no schema
+change) · `compute/config.py` untouched. Gate: security-reviewer (workflow changes) +
+phase-coordinator Mode B (doc lockstep) + quantrank-reviewer.
+
+---

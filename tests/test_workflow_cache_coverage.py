@@ -208,11 +208,11 @@ def test_workflow_restores_each_cache_dir(workflow: str, cache_path: Path) -> No
 
 
 def test_workflow_fast_cache_key_full_shape_pinned() -> None:
-    """FAST cache key has the full shape ``cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
+    """FAST cache key has the full shape ``cache-v10-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
     in BOTH compute-rankings.yml and precache-edgar.yml.
 
     WHY (WARN 1): the predecessor test only asserted the prefix
-    ``key: cache-v9-fast-`` — it would pass if the suffix were reordered
+    ``key: cache-vN-fast-`` — it would pass if the suffix were reordered
     (e.g., ``-<os>-<quarter>``), breaking the exact-key parity that the
     Saturday precache depends on to no-op its save on warm Saturdays.
     The slow-text test already pins the full shape of that key; this test
@@ -224,22 +224,22 @@ def test_workflow_fast_cache_key_full_shape_pinned() -> None:
     # Full shape: version token + quarter expression + OS expression.
     # Regex-escape ${{ and }} so they match literally in the workflow text.
     full_shape_re = re.compile(
-        r"key: cache-v9-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
+        r"key: cache-v10-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
         r"-\$\{\{ runner\.os \}\}"
     )
     for workflow in ("compute-rankings.yml", "precache-edgar.yml"):
         text = _workflow_text(workflow)
         assert full_shape_re.search(text), (
             f"{workflow} fast-cache key is missing or has the wrong full shape. "
-            f"Expected: ``key: cache-v9-fast-"
+            f"Expected: ``key: cache-v10-fast-"
             f"${{{{ steps.quarter.outputs.q }}}}-${{{{ runner.os }}}}`` — "
             f"a suffix reorder (e.g., -<os>-<quarter>) would silently break "
             f"exact-key parity between the cron and the Saturday precache."
         )
 
 
-def test_workflow_fast_cache_key_is_v9() -> None:
-    """FAST cache key is `cache-v9-fast-` (Issue #385 bump).
+def test_workflow_fast_cache_key_is_v10() -> None:
+    """FAST cache key is `cache-v10-fast-` (precache-900 Phase B flip bump).
 
     Bump history on the fundamentals/prices ("fast", quarter-keyed) bundle:
 
@@ -250,6 +250,13 @@ def test_workflow_fast_cache_key_is_v9() -> None:
       date checks can't detect, so the quarter's frozen fast parquets must be
       flushed to repopulate. Bumped in ALL FOUR files (cron / precache /
       backfill / sim).
+    - v9 → v10-fast (precache-900 Phase B flip, 2026-06-16): cron-default
+      flip sp500 → sp900. The fast bundle's exact-key save-skip means sp400
+      fundamentals/prices won't persist via a warm-key precache (save skipped
+      on an exact-key hit). The v10 bump forces a cold-seed of the full sp900
+      fast bundle on the first post-flip cron so all ~903 tickers warm
+      correctly. Also adds universe_sp400-v1.parquet + universe_sp900-v1.parquet
+      to the path: blocks so the constituent lists persist across runs.
     - v4 → v5 (Issue #288 follow-up, 2026-05-28): PR #292 + PR #269
       introduced the GOOG/GOOGL per-class XBRL share-override in Branch 3
       of `_build_snapshot`. Branch 3 only executes on live EDGAR fetch —
@@ -286,8 +293,10 @@ def test_workflow_fast_cache_key_is_v9() -> None:
       OR
     - **Bump on *value-correctness* fix inside a live-fetch-only code path
       that cache replay short-circuits past** (Branch 3, both firings).
+    - **Bump on universe-expansion that a warm exact-key save-skip would
+      prevent from persisting** (sp400/sp500 → sp900 Phase B flip, this PR).
 
-    Bump again to v10-fast next time any of the three triggers fires —
+    Bump again to v11-fast next time any of the four triggers fires —
     in ALL FOUR files at once (compute-rankings / precache-edgar /
     backfill-portfolio / pre-merge-prod-sim; the tri-file pattern became
     quad-file when Issue #249 Option B added the Saturday precache).
@@ -296,30 +305,31 @@ def test_workflow_fast_cache_key_is_v9() -> None:
     workflow comment, and see the lockstep test below.
     """
     text = _workflow_text()
-    assert "key: cache-v9-fast-" in text, (
-        "compute-rankings.yml FAST cache key must be `cache-v9-fast-${{ ... }}` "
-        "(Issue #385, 2026-06-15). Bump to v10-fast only when a cache "
-        "directory's *schema* changes, a new metric is added to `_ANNUAL_TAGS` "
-        "/ `_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness fix lands in a "
-        "live-fetch-only path that cache replay would short-circuit past."
+    assert "key: cache-v10-fast-" in text, (
+        "compute-rankings.yml FAST cache key must be `cache-v10-fast-${{ ... }}` "
+        "(precache-900 Phase B flip, 2026-06-16). Bump to v11-fast only when a "
+        "cache directory's *schema* changes, a new metric is added to `_ANNUAL_TAGS` "
+        "/ `_TTM_*` / `_BALANCE_TAGS`, a value-correctness fix lands in a "
+        "live-fetch-only path that cache replay would short-circuit past, OR a "
+        "universe-expansion makes warm-key save-skip prevent full warming."
     )
     bf_text = _workflow_text("backfill-portfolio.yml")
-    assert "cache-v9-fast-" in bf_text, (
-        "backfill-portfolio.yml must share the v8-fast key family (aligned in "
-        "the fixed-floor PR so both consumers see the same depth)"
+    assert "cache-v10-fast-" in bf_text, (
+        "backfill-portfolio.yml must share the v10-fast key family (aligned in "
+        "the Phase B flip PR so both consumers see the same sp900 depth)"
     )
-    assert "cache-v9-bf-" in bf_text, (
+    assert "cache-v10-bf-" in bf_text, (
         "backfill-portfolio.yml must SAVE under its own -bf- key (its bundle is "
         "a subset of the cron's — an exact-key save would poison the quarter)"
     )
     sim_text = _workflow_text("pre-merge-prod-sim.yml")
-    assert "cache-v9-fast-" in sim_text and "cache-v7-" not in sim_text, (
+    assert "cache-v10-fast-" in sim_text and "cache-v9-" not in sim_text, (
         "pre-merge-prod-sim.yml mirrors the cron's key family (its own header "
         "comment commands bumping together) — a stale family goes silently cold "
         "after archive eviction"
     )
     pre_text = _workflow_text("precache-edgar.yml")
-    assert "key: cache-v9-fast-" in pre_text and "cache-v7-" not in pre_text, (
+    assert "key: cache-v10-fast-" in pre_text and "cache-v9-" not in pre_text, (
         "precache-edgar.yml (Issue #249 Option B) must SAVE under the cron's "
         "EXACT fast key family — exact-key parity is what makes the Saturday "
         "post-eviction save restorable by the weekday cron, and what no-ops "
@@ -422,10 +432,10 @@ def test_sim_restores_both_cron_cache_families() -> None:
     bundles restore warm. This guard fails if the slow-text restore is dropped.
     """
     sim_text = _workflow_text("pre-merge-prod-sim.yml")
-    # Fast family (already pinned by the v8 test; re-checked here for symmetry).
-    assert "cache-v9-fast-" in sim_text, (
+    # Fast family (already pinned by the v10 test; re-checked here for symmetry).
+    assert "cache-v10-fast-" in sim_text, (
         "pre-merge-prod-sim.yml must restore the cron's fast cache family "
-        "(`cache-v9-fast-`)."
+        "(`cache-v10-fast-`)."
     )
     # Slow-text family — the bundle the old single-key restore silently dropped.
     assert re.search(r"cache-v\d+-text-\$\{\{ runner\.os \}\}-", sim_text), (
@@ -494,6 +504,58 @@ def test_canary_emits_edgar_8k_ttl_warning() -> None:
         )
 
 
+def test_sp900_universe_parquets_in_fast_path_blocks() -> None:
+    """The sp400 + sp900 universe parquets are listed in the fast-bundle ``path:``
+    blocks in BOTH cache-warming workflows and in pre-merge-prod-sim.yml.
+
+    WHY (precache-900 Phase B flip, 2026-06-16): the sp500-only `universe-v2.parquet`
+    was already in the fast bundle. After the flip, the weekday cron also needs
+    `universe_sp400-v1.parquet` + `universe_sp900-v1.parquet` to persist across
+    runs — without them, the Saturday precache or next cron re-scrapes Wikipedia
+    for all ~903 constituent names on every run (the 7-day file-freshness check
+    in `compute/ingest/universe.py::get_sp500_constituents`).
+
+    Config paths: `config.SP400_UNIVERSE_CACHE` = `compute/cache/universe_sp400-v1.parquet`
+    and `config.SP900_UNIVERSE_CACHE` = `compute/cache/universe_sp900-v1.parquet`.
+    """
+    sp400_path = config.SP400_UNIVERSE_CACHE.relative_to(config.PROJECT_ROOT).as_posix()
+    sp900_path = config.SP900_UNIVERSE_CACHE.relative_to(config.PROJECT_ROOT).as_posix()
+
+    for workflow in ("compute-rankings.yml", "precache-edgar.yml", "pre-merge-prod-sim.yml"):
+        text = _workflow_text(workflow)
+        path_blocks = _extract_path_blocks(text)
+        for parquet_path in (sp400_path, sp900_path):
+            found = any(
+                parquet_path in {line.strip() for line in block.splitlines()}
+                for block in path_blocks
+            )
+            assert found, (
+                f"{workflow} is missing `{parquet_path}` inside a ``path: |`` block. "
+                f"Add it to the fast-bundle cache step so the sp400/sp900 universe "
+                f"parquets persist across runs (precache-900 Phase B flip, 2026-06-16)."
+            )
+
+
+def test_sim_mirrors_cron_universe_default() -> None:
+    """pre-merge-prod-sim.yml sets ``QR_UNIVERSE: sp900`` explicitly to mirror the
+    weekday cron's sp900 default after the precache-900 Phase B flip (2026-06-16).
+
+    WHY: the cron's QR_UNIVERSE resolves to sp900 via the ``|| 'sp900'`` fallback;
+    compute/config.py keeps its code default as 'sp500' for local-dev safety. The
+    sim must set ``QR_UNIVERSE`` explicitly in its ``env:`` block so the composite-
+    score diff it produces is against the same sp900 universe the cron uses — a
+    silent sp500/sp900 mismatch would compare apples to oranges (GOTCHAS.md
+    §pre-merge-prod-sim must mirror the cron).
+    """
+    text = _workflow_text("pre-merge-prod-sim.yml")
+    assert "QR_UNIVERSE: sp900" in text, (
+        "pre-merge-prod-sim.yml must set ``QR_UNIVERSE: sp900`` explicitly in its "
+        "``env:`` block to mirror the weekday cron's sp900 default after the "
+        "precache-900 Phase B flip (2026-06-16). The compute/config.py code default "
+        "is 'sp500' for local-dev safety, so the sim cannot rely on it."
+    )
+
+
 def _first_diff(a: str, b: str) -> str:
     """Return a short diagnostic string showing the first differing line."""
     a_lines = a.splitlines()
@@ -511,29 +573,31 @@ def _first_diff(a: str, b: str) -> str:
 
 def test_compute_rankings_has_universe_dispatch_input() -> None:
     """compute-rankings.yml exposes the S&P 900 pilot `universe` dispatch input
-    (PR 2) wired to QR_UNIVERSE with a sp500 fallback so the SCHEDULED cron stays
-    byte-identical.
+    wired to QR_UNIVERSE. After the precache-900 Phase B flip (2026-06-16) the
+    scheduled cron defaults to sp900; the `|| 'sp900'` fallback makes the cron
+    rank the full S&P 900 universe when the schedule trigger fires (null inputs).
 
-    WHY: PR 1 added `config.QR_UNIVERSE` (default sp500) + a midcap coverage probe
-    that only fires on sp900, but there was no way to SET sp900 in CI. This input
-    lets an operator dispatch a diagnostic sp900 run (Actions → Compute Rankings →
-    Run workflow → universe: sp900) to capture midcap coverage in metadata.json —
-    the empirical gate for PR 3 (ranking midcaps). The `|| 'sp500'` fallback is
-    load-bearing: on the schedule trigger `github.event.inputs` is null, so the
-    cron must still resolve to sp500 (byte-identical). The env-block assignment
-    (not a run-line ${{ }}) keeps it injection-safe.
+    WHY: PR 1 added `config.QR_UNIVERSE` (code default sp500) + a midcap coverage
+    probe that only fires on sp900. The Phase B flip moves the WORKFLOW default to
+    sp900 so the weekday cron permanently ranks midcaps. The env-block assignment
+    (not a run-line ${{ }}) keeps it injection-safe. sp500 remains available as a
+    manual dispatch option for diagnostics.
     """
     text = _workflow_text("compute-rankings.yml")
     assert "universe:" in text, "compute-rankings.yml missing the `universe` dispatch input"
-    # choices present
+    # choices present — both options must remain available
     for choice in ("- sp500", "- sp900"):
         assert choice in text, f"`universe` input missing choice {choice!r}"
-    # default sp500 (cron byte-identical)
-    assert "default: sp500" in text, "`universe` input must default to sp500"
-    # QR_UNIVERSE wired with the sp500 fallback (schedule trigger has null inputs)
-    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}" in text, (
+    # default sp900 (Phase B flip — cron now ranks the full S&P 900 universe)
+    assert "default: sp900" in text, (
+        "`universe` input must default to sp900 after the precache-900 Phase B flip "
+        "(2026-06-16). The scheduled cron now permanently ranks the full S&P 900 universe."
+    )
+    # QR_UNIVERSE wired with the sp900 fallback (schedule trigger has null inputs)
+    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}" in text, (
         "compute-rankings.yml must wire QR_UNIVERSE from the universe input with a "
-        "`|| 'sp500'` fallback so the scheduled cron (null inputs) stays sp500"
+        "`|| 'sp900'` fallback so the scheduled cron (null inputs) defaults to sp900 "
+        "(precache-900 Phase B flip, 2026-06-16)"
     )
     # injection-safety: the universe input must NOT be interpolated into a run: line
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
@@ -543,15 +607,25 @@ def test_compute_rankings_has_universe_dispatch_input() -> None:
 
 def test_precache_has_universe_dispatch_input() -> None:
     """precache-edgar.yml exposes the `universe` dispatch input wired to
-    QR_UNIVERSE with a sp500 fallback, mirroring compute-rankings.yml (#480)
-    — the S&P 900 pilot precache-900 prerequisite. The `|| 'sp500'` fallback
-    keeps the scheduled Saturday run (null inputs) on sp500."""
+    QR_UNIVERSE with a sp900 fallback after the precache-900 Phase B flip
+    (2026-06-16). The scheduled Saturday precache now warms sp900 by default
+    so it matches the weekday cron's universe and the Monday run restores warm.
+    The `|| 'sp900'` fallback keeps the Saturday run (null inputs) on sp900.
+    sp500 remains available as a manual dispatch for diagnostics."""
     text = _workflow_text("precache-edgar.yml")
     assert "universe:" in text
     for choice in ("- sp500", "- sp900"):
         assert choice in text
-    assert "default: sp500" in text
-    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}" in text
+    # default sp900 (Phase B flip — precache warms the same universe as the cron)
+    assert "default: sp900" in text, (
+        "precache-edgar.yml `universe` input must default to sp900 after the "
+        "Phase B flip (2026-06-16) so the Saturday precache warms the same "
+        "universe as the weekday cron"
+    )
+    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}" in text, (
+        "precache-edgar.yml must wire QR_UNIVERSE with a `|| 'sp900'` fallback "
+        "so the scheduled Saturday run (null inputs) defaults to sp900"
+    )
     # injection-safety: the universe input must NOT be interpolated into a run: line
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
         "${{ github.event.inputs.universe }}"
