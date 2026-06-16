@@ -1,3 +1,4 @@
+import { MidcapChip } from '@/components/MidcapChip';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
@@ -14,7 +15,18 @@ import type { StockSummary } from '@/lib/types';
 // name · score donut) over a 2-column quote block (price + daily change ·
 // loss-chance band).
 
-export function StockListCard({ row }: { row: StockSummary }) {
+export function StockListCard({
+  row,
+  showMidcapChip = true,
+}: {
+  row: StockSummary;
+  /**
+   * Show the "Mid-cap" chip beside the sector chip. Set to false in
+   * single-cohort tabs (SPX / MID) where the tab already communicates
+   * the cohort; true (default) in the "All stocks" mixed view.
+   */
+  showMidcapChip?: boolean;
+}) {
   const mos = formatMosPct(row.margin_of_safety_pct);
 
   return (
@@ -29,6 +41,7 @@ export function StockListCard({ row }: { row: StockSummary }) {
               #{row.rank}
             </span>
             <SectorChip sector={row.sector} size="xs" />
+            {showMidcapChip && <MidcapChip indexMembership={row.index_membership} />}
           </div>
           <div className="mt-1 flex items-center gap-2">
             <StockLogo ticker={row.ticker} size={32} />
