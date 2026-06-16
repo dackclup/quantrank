@@ -43,14 +43,24 @@ type TabConfig = {
   countLabel: string;
 };
 
+// Definitional sizes for indices that are PARTIAL overlaps with the S&P 900
+// ingested universe. Used to render an honesty note under the count line.
+// DJI = 30, NDX = 100. Any index whose full size equals our row count gets no note.
+const FULL_INDEX_SIZE: Partial<Record<IndexCode, number>> = {
+  DJI: 30,
+  NDX: 100,
+};
+
 function tabConfig(code: IndexCode, universeCode: string): TabConfig {
   switch (code) {
-    case 'SPX': return { h1: 'S&P 500 ranking',         countLabel: 'S&P 500 companies' };
-    case 'MID': return { h1: 'S&P MidCap 400 ranking',  countLabel: 'S&P 400 mid-caps' };
+    case 'SPX': return { h1: 'S&P 500 ranking',              countLabel: 'S&P 500 companies' };
+    case 'MID': return { h1: 'S&P MidCap 400 ranking',       countLabel: 'S&P 400 mid-caps' };
+    case 'DJI': return { h1: 'Dow 30 ranking',               countLabel: 'Dow 30 companies' };
+    case 'NDX': return { h1: 'NASDAQ 100 ranking',           countLabel: 'NASDAQ 100 companies' };
     case 'ALL': return { h1: `${universeLabel(universeCode)} ranking`, countLabel: 'companies' };
-    // For future tabs (SML / NDX / DJI / …) — should never be reachable as
+    // For future tabs (SML / RUI / …) — should never be reachable as
     // active while still SOON, but guard defensively.
-    default:    return { h1: 'Ranking',                  countLabel: 'companies' };
+    default:    return { h1: 'Ranking',                      countLabel: 'companies' };
   }
 }
 
@@ -65,8 +75,18 @@ function filterAndRerank(data: StockSummary[], code: IndexCode): StockSummary[] 
     filtered = data.filter((r) => r.index_membership === 'sp500');
   } else if (code === 'MID') {
     filtered = data.filter((r) => r.index_membership === 'sp400');
+  } else if (code === 'DJI') {
+    // Dow 30 overlap: all 30 Dow members are S&P 500 companies.
+    // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
+    filtered = data.filter((r) => r.index_memberships?.includes('dow30'));
+  } else if (code === 'NDX') {
+    // NASDAQ 100 overlap: of the 100 members, only those also in the S&P 900
+    // ingested universe are tagged 'ndx' (the exact count is data-driven and
+    // surfaced in the "N of 100" note below).
+    // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
+    filtered = data.filter((r) => r.index_memberships?.includes('ndx'));
   } else {
-    // Not yet wired (future: SML / NDX / DJI / RUI / RUT / RUA / COMP).
+    // Not yet wired (future: SML / RUI / RUT / RUA / COMP).
     filtered = [];
   }
 
@@ -80,6 +100,7 @@ function filterAndRerank(data: StockSummary[], code: IndexCode): StockSummary[] 
 // Compute which IndexCode values actually have data in the loaded dataset.
 // 'ALL' is available iff the dataset has more than one distinct membership
 // value (i.e. it is a mixed universe, not a pure sp500-only run).
+// DJI / NDX are available iff ≥1 row carries their code in index_memberships.
 function computeAvailableCodes(data: StockSummary[]): ReadonlySet<IndexCode> {
   const memberships = new Set(data.map((r) => r.index_membership));
   const available = new Set<IndexCode>();
@@ -87,7 +108,13 @@ function computeAvailableCodes(data: StockSummary[]): ReadonlySet<IndexCode> {
   if (memberships.has('sp500')) available.add('SPX');
   if (memberships.has('sp400')) available.add('MID');
   // 'ALL' is meaningful only when there is more than one cohort.
-  if (memberships.size > 1)    available.add('ALL');
+  if (memberships.size > 1) available.add('ALL');
+
+  // Multi-index overlaps: a tab lights up purely because the loaded data has
+  // rows carrying that code — no hardcoded membership here. Optional-chain so
+  // legacy/empty index_memberships ([]) produces false without crashing.
+  if (data.some((r) => r.index_memberships?.includes('dow30'))) available.add('DJI');
+  if (data.some((r) => r.index_memberships?.includes('ndx'))) available.add('NDX');
 
   return available;
 }
@@ -174,6 +201,25 @@ export function RankingView({
               large-cap. Re-numbered 1..{cohortRows.length} within this cohort.
             </span>
           )}
+          {safeTab === 'DJI' && (
+            <span>
+              {' '}All {FULL_INDEX_SIZE.DJI} Dow Jones Industrial Average members are
+              S&amp;P 500 companies — this tab shows the complete Dow 30 cohort.
+              Re-numbered 1..{cohortRows.length} within this cohort.
+            </span>
+          )}
+          {safeTab === 'NDX' && (() => {
+            const full = FULL_INDEX_SIZE.NDX ?? 100;
+            const isPartial = cohortRows.length < full;
+            return (
+              <span>
+                {isPartial
+                  ? ` ${cohortRows.length} of ${full} NASDAQ‑100 members — the rest aren’t in the S&P 900 ingested universe yet (partial overlap).`
+                  : ` All ${full} NASDAQ‑100 members are represented in the ingested universe.`}
+                {' '}Re-numbered 1..{cohortRows.length} within this cohort.
+              </span>
+            );
+          })()}
         </p>
       </header>
 
