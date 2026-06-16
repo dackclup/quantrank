@@ -368,22 +368,25 @@ on structural compounders — disposition routed to issue #454 for the Q3
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
-**In flight** (not yet merged on `main`): none currently open. The
-S&P 900 pilot 3a slice **merged 2026-06-15 (#482, schema
-`0.10.21-phase8pilot`)**; the next pilot PRs (precache-900 → frontend
-PR 4 → one-line cron-default flip) are **gated** behind a manual
-`universe: sp900` validation dispatch — check defense firing vs the
-pre-registered bands (Sloan 8-12% / NSI 5-10% universe-wide; sp400
-cohort tilt 1.0-1.4×, hard alarm 1.6-1.7×) + the 240m budget warm.
-Detail: PHASE_STATUS_INFLIGHT.md.
+**In flight** (not yet merged on `main`): none currently open. Merged
+since last Mode C: **#485** (fix+test: APA `OilAndGasRevenue` #385 +
+cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
+· **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
+`universe` dispatch input) · **#487** (`fundamentals_unavailable` veto,
+schema `0.10.22`, defense 34) · **#488** (Mode C bump). The next pilot
+PRs (precache-900 Phase B (cache-v10) → frontend PR 4 → one-line
+cron-default flip) are **gated** behind a manual `universe: sp900`
+validation dispatch — check defense firing vs the pre-registered bands
+(Sloan 8-12% / NSI 5-10% universe-wide; sp400 cohort tilt 1.0-1.4×, hard
+alarm 1.6-1.7×) + the 240m budget warm. Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
 PHASE_STATUS.md):
 - **1 · Data-integrity hardening sprint** (~1-2w) — the share-count /
   extraction corruption cluster (#248 V ~4× no-veto · #374 warm-cache
-  bypass · #376 · #379 · #375 · #385 · #261 · #247/#289 NVR) —
-  **Phase 5 entry gate (b)**.
+  bypass · #376 · #379 · #375 · #247/#289 NVR) — **Phase 5 entry gate
+  (b)**. Closed by #485: #385 · #261 (CLOSE-AS-CORRECT via #456).
 - **2 · Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** —
   UNBLOCKED (#287 PR B merged as #431); needs ≥ 1 cron's
   `form4_rule10b5_one_excluded_count` confirming the Aboody et al. 2010
@@ -401,9 +404,11 @@ PHASE_STATUS.md):
   display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
-  pilot — **3a integration slice merged 2026-06-15 (#482)**; #249
-  pre-cache DONE (#468), #467 scout done; cron still gated to `sp500`,
-  next = `universe: sp900` validation dispatch. Detail in WORKFLOW.md.
+  pilot — **3a integration slice merged 2026-06-15 (#482)** ·
+  **precache-900 Phase A merged (#486)**; #249 pre-cache DONE (#468),
+  #467 scout done; cron still gated to `sp500`, next = `universe: sp900`
+  validation dispatch → precache-900 Phase B (cache-v10). Detail in
+  WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
