@@ -1609,3 +1609,51 @@ midcap Form-4 away.
   sp900 fundamentals/prices under the new key — the fast bundle's exact-key save-skip means
   sp400 fundamentals/prices ALSO won't persist via a warm-key precache, so only the v9 bump
   (justified then as universe-expansion cache invalidation) makes the full sp900 fast bundle warm.
+
+## `fundamentals_unavailable` direct veto — domain and partition
+
+Introduced #487 (2026-06-15), widened by the FDXF-fix PR (2026-06-16).
+
+**What fires it.** `compute_risk_flags` in `compute/scoring/risk_overlay.py`
+appends `"fundamentals_unavailable"` and short-circuits (no further flag
+evaluation for this ticker) in two cases:
+
+- **Case A — `snap is None`** (original #487): complete EDGAR ingest failure.
+  The `fetch_fundamentals` call returned `None` — CIK unresolvable, network
+  error, or the bundled `company_tickers.parquet` did not cover the ticker
+  (OZK / PBF Energy pattern exposed by the sp900 dispatch run #103).
+
+- **Case B — empty snap** (FDXF widening): `snap` is NOT None but
+  `_snapshot_has_no_usable_fundamentals(snap)` is True — i.e.,
+  `len(snap.missing_fields()) == len(ALL_METRIC_KEYS)` (all 34 tracked
+  metrics null). EDGAR returned a Company object (CIK resolved) but the
+  filer has no financial history yet. Example: FDXF (FedEx Freight, spun
+  off 2025, sp500) — EDGAR returns an object but zero financial filings
+  are indexed yet, so without the guard the stock gets a `lean_bullish`
+  recommendation from neutral-50 pillar imputation with no warning.
+
+  Conservatism: a snapshot with even ONE non-None numeric field does NOT
+  fire this predicate (`missing_fields()` keys on `is None`, so an honest
+  reported `0.0` counts as present). Only total absence triggers it.
+
+**Why direct veto (no annotate-first staging).** FP rate is structurally
+zero: both cases are input-absence, not a calibrated threshold. Rule 16's
+annotate-before-veto staging requirement does not bind. DQIC (issue #18,
+`data_quality_input_corruption`) is the governing direct-veto precedent for
+input-absence flags. The `methodology-scientist` RATIFY-AS-VETO verdict from
+#487 extends to Case B (same FP-rate argument; ratified again at the FDXF PR
+as RATIFY-AS-VETO-WIDENING).
+
+**Partition from `data_quality_input_corruption`.** DQIC fires when a PRESENT
+field is INTERNALLY INCONSISTENT (e.g., TBVPS > $10K/share, |NI| > revenue).
+`_data_quality_input_corruption(None)` → False by contract, pinned by
+`test_D3`; DQIC also returns False on an all-null snapshot (no present field
+to evaluate). The two flags are mutually exclusive by construction:
+- `fundamentals_unavailable` = NO usable fundamentals (None OR all-null)
+- `data_quality_input_corruption` = fundamentals PRESENT but internally corrupt
+
+**Defense layer stays at 34.** This is a domain widening of an existing flag,
+not a new flag. `Metadata.fundamentals_unavailable_count` (introduced #487)
+counts both Case A and Case B; the Rule-18 increment in `compute/main.py` uses
+the same guard so the counter stays consistent with `compute_risk_flags`. On
+the sp900 dispatch run #107: OZK + FDXF = 2.
