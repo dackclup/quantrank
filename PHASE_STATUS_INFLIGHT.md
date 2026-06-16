@@ -4345,3 +4345,44 @@ on code invariants + phase-coordinator Mode B LOCKSTEP-SATISFIED + frontend-desi
 GO-WITH-NITS (tabindex nit applied). Lands before the sp900 flip PR.
 
 ---
+
+## 2026-06-16 — fix+test: FDXF empty-snap veto widening + post-scoring cohort-size counter (sp900 pre-flip data-integrity)
+
+Closes the one user-facing data-quality bug surfaced by the post-cron audit of the sp900
+validation run #107 (stock-detail-auditor). Owner chose **fix-first, then flip**: this PR
+lands before the cron-default flip PR. The #107 run itself PASSED the pre-registered defense
+bands (NSI fired-share **1.461× < 1.6× hard alarm** — identical to the passing run #103; Sloan
+10.42% univ / 1.032× tilt in-band; Section A-L 0 fail) and methodology RATIFIED **PROCEED-WITH-DOC**;
+the gate is clear once this fix lands.
+
+**Bug 1 (user-facing) — `fundamentals_unavailable` empty-snap widening.** FDXF (FedEx Freight,
+sp500, spun off 2025, rank 408) had ALL 34 fundamentals null / `market_cap=None` / `fair_price=None`
+yet showed `recommendation=lean_bullish` (neutral-50 pillar imputation) with NO veto. Root cause:
+the #487 `fundamentals_unavailable` direct veto fires only on `snap is None` (OZK/PBF case); FDXF
+got a NON-None snapshot that extracted ZERO fields ("empty snap") and slipped through. Fix:
+- NEW `risk_overlay.py::_snapshot_has_no_usable_fundamentals(snap)` — predicate
+  `len(snap.missing_fields()) == len(ALL_METRIC_KEYS)` (ALL 34 metrics null). Most-conservative:
+  one non-None field → does NOT fire (never catches partial data).
+- Guard widened `if snap is None:` → `if snap is None or _snapshot_has_no_usable_fundamentals(snap):`
+  — same flag, same action (cautious + Top-5 suppress). Unified semantic: "no usable fundamentals"
+  whether or not the snap object exists.
+- **Partition preserved** (test_D3 UNCHANGED): `fundamentals_unavailable` = ABSENCE (None OR all-null);
+  `data_quality_input_corruption` = a PRESENT field internally inconsistent. Mutually exclusive by
+  construction. FP rate for the empty-snap case is structurally zero (input-absence, not a threshold),
+  so annotate-before-veto does NOT bind — same #487 / DQIC direct-veto rationale. **Defense layer
+  stays 34** (domain widening, NOT a new flag). `Metadata.fundamentals_unavailable_count` counter
+  extended (OZK + FDXF = 2 on #107 data).
+
+**Bug 2 (minor surface) — `universe_cohort_sizes` post-scoring recompute.** Was computed pre-scoring
+in `_run_midcap_coverage_probe` (sp500=503, incl. one delisted name dropped before write) →
+`sum=903 ≠ universe_size=902`. Fix: `main.py` recomputes `_pilot_cohort_sizes` from the post-scoring
+`summaries` (sp900 path only; default sp500 path unchanged) so the per-cohort counts always sum to
+`universe_size`.
+
+Schema triple **untouched** (`fundamentals_unavailable_count` already exists). compute-builder
+BUILT-CLEAN: ruff pass · pytest offline **1950 passed / 12 skipped** (+12: 9 E-series partition
+tests + 3 cohort-sum-invariant tests) · schema_check pass · test_D3 green. Gate: quantrank-reviewer
+(opus) + methodology-scientist (ratify the veto-domain widening) + schema-sentinel + phase-coordinator
+Mode B. Lands before the sp900 cron-default flip PR.
+
+---

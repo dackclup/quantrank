@@ -147,6 +147,7 @@ from compute.scoring.restatement_filings import (
     get_amendment_filing_dates,
 )
 from compute.scoring.risk_overlay import (
+    _snapshot_has_no_usable_fundamentals,
     check_share_count_extraction_missing,
     compute_risk_flags,
 )
@@ -1930,12 +1931,16 @@ def run_weekly_compute() -> int:
         pillar_row = pillar_df.loc[ticker] if ticker in pillar_df.index else pd.Series(dtype=float)
 
         # OZK/PBF flip-blocker (0.10.22-phase8pilot) — Rule 18 counter for
-        # the new ``fundamentals_unavailable`` direct veto. Counted here (at
-        # the start of the per-ticker loop, before any snap-dependent code)
-        # so the Metadata counter is independent of whether the risk_flags
-        # dict is later augmented. Mirrors the snap-is-None guard in
-        # compute_risk_flags which appends the flag and short-circuits.
-        if snap is None:
+        # the ``fundamentals_unavailable`` direct veto.  Extended from the
+        # original snap-is-None-only check to also count the "empty-snap"
+        # case (FDXF fix): snap is NOT None but ALL 34 tracked metrics are
+        # null (EDGAR returned a Company object but the filer has no
+        # financial history yet).  Both cases fire the flag in
+        # compute_risk_flags; the counter must agree so
+        # Metadata.fundamentals_unavailable_count reflects the true
+        # universe-wide "no usable fundamentals" count (OZK + FDXF = 2 on
+        # the #107 sp900 run).
+        if snap is None or _snapshot_has_no_usable_fundamentals(snap):
             fundamentals_unavailable_count += 1
 
         # Fair-price ensemble (skipped when snapshot is missing — without
@@ -2462,6 +2467,33 @@ def run_weekly_compute() -> int:
         prices_by_ticker=prices_by_ticker,
     )
     logger.info("MoS trailing IC smoke: %s", mos_ic)
+
+    # Phase 8 pilot — post-scoring cohort-size recompute (sp900 path only).
+    # Bug fix: ``_pilot_cohort_sizes`` was previously populated from the
+    # PRE-scoring universe frame in ``_run_midcap_coverage_probe`` (lines
+    # ~763-766), which counted 503 sp500 tickers (including one recently-
+    # delisted name that later fails ``fetch_prices`` and is silently
+    # dropped before the write step).  That produced
+    # ``universe_cohort_sizes.sp500 = 503`` while ``rankings.json`` had
+    # 502 sp500 rows, making ``sum(universe_cohort_sizes.values()) = 903
+    # ≠ universe_size = 902`` — a contradictory metadata surface.
+    #
+    # Fix: recompute from the POST-scoring ``summaries`` list (the same
+    # rows that are written to ``rankings.json``) so the per-cohort counts
+    # always sum to ``universe_size``.  On the default sp500 path
+    # ``_pilot_cohort_sizes`` stays None (no change).
+    if config.QR_UNIVERSE == "sp900" and _pilot_cohort_sizes is not None:
+        post_scoring_cohort_sizes: dict[str, int] = {}
+        for s in summaries:
+            membership = s.index_membership  # "sp500" or "sp400"
+            post_scoring_cohort_sizes[membership] = (
+                post_scoring_cohort_sizes.get(membership, 0) + 1
+            )
+        _pilot_cohort_sizes = post_scoring_cohort_sizes
+        logger.info(
+            "[sp900] Post-scoring cohort sizes (replaces pre-scoring probe count): %s",
+            _pilot_cohort_sizes,
+        )
 
     # Issue #246 PR2a (0.10.3-phase4.5e) — read the universe-wide
     # shares-fallback counters that accumulated inside

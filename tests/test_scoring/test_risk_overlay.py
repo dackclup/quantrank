@@ -6,7 +6,7 @@ from datetime import date, timedelta
 
 import pandas as pd
 
-from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.ingest.fundamentals import ALL_METRIC_KEYS, FundamentalsSnapshot
 from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
 from compute.scoring.dechow_f import DECHOW_VETO_THRESHOLD
 from compute.scoring.risk_overlay import (
@@ -17,6 +17,7 @@ from compute.scoring.risk_overlay import (
     SLOAN_TOP_DECILE,
     _net_stock_issuance,
     _shares_at_lookback,
+    _snapshot_has_no_usable_fundamentals,
     check_share_count_extraction_missing,
     compute_risk_flags,
 )
@@ -794,3 +795,164 @@ def test_dechow_and_beneish_vetos_independent():
     )
     assert "beneish_manipulation_veto" in flags["AAA"]
     assert "dechow_manipulation_veto" in flags["AAA"]
+
+
+# ---------------------------------------------------------------------------
+# FDXF fix — empty-snap extension of ``fundamentals_unavailable`` veto.
+#
+# Three-way partition for the "no usable fundamentals" guard:
+#   (a) snap is None → fundamentals_unavailable (original #487 OZK/PBF case)
+#   (b) snap present but ALL core metrics None → fundamentals_unavailable (FDXF)
+#   (c) snap present with normal data → no flag
+#   (d) snap present with a corrupt present-field → data_quality_input_corruption
+#       NOT fundamentals_unavailable (DQIC partition stays unchanged, test_D3 lock)
+#
+# The discriminator: "are there ANY usable fundamental fields?" (no →
+# fundamentals_unavailable) vs "is a present field internally inconsistent?"
+# (→ DQIC). The two are mutually exclusive by construction: DQIC requires a
+# non-None numeric value; the empty-snap check requires ALL values to be None.
+# ---------------------------------------------------------------------------
+
+
+def _empty_snap() -> FundamentalsSnapshot:
+    """Snapshot shaped like FDXF: ticker/cik present, ALL 34 metric fields None.
+
+    Simulates a freshly spun-off company whose EDGAR CIK was resolved but
+    which has filed no financial statements yet.  Every field in ALL_METRIC_KEYS
+    remains at its default of None.
+    """
+    return FundamentalsSnapshot(ticker="FDXF", cik="0001234567")
+
+
+def test_E1_fundamentals_unavailable_fires_when_snap_is_none():
+    """Case (a): snap is None → fundamentals_unavailable, no DQIC.
+
+    Original #487 OZK/PBF case.  Unchanged behaviour; re-pinned here as
+    part of the 3-way partition lock so any future refactor can't regress
+    Case (a) while fixing Case (b).
+    """
+    flags = compute_risk_flags({"OZK": None})
+    assert "fundamentals_unavailable" in flags["OZK"]
+    assert "data_quality_input_corruption" not in flags["OZK"]
+    assert flags["OZK"] == ["fundamentals_unavailable"]
+
+
+def test_E2_fundamentals_unavailable_fires_when_snap_present_but_all_null():
+    """Case (b): snap is NOT None but every ALL_METRIC_KEYS field is None → fundamentals_unavailable.
+
+    FDXF scenario: EDGAR returned a Company object (CIK resolved) but the
+    freshly spun-off issuer has zero financial filings, so the snapshot
+    carries no numeric data.  Without this fix the stock bypassed the
+    ``snap is None`` guard and received a lean_bullish recommendation from
+    neutral-50 pillar imputation.
+
+    Assertions:
+    - ``fundamentals_unavailable`` fires.
+    - ``data_quality_input_corruption`` does NOT fire (DQIC requires a
+      PRESENT field to evaluate — partition lock).
+    - No other flags (the guard short-circuits the loop, same as Case a).
+    """
+    snap = _empty_snap()
+    # Confirm the fixture is actually all-null (guards against helper drift).
+    assert len(snap.missing_fields()) == len(ALL_METRIC_KEYS), (
+        "Test fixture must have ALL metric fields null to simulate the FDXF empty-snap case"
+    )
+    flags = compute_risk_flags({"FDXF": snap})
+    assert "fundamentals_unavailable" in flags["FDXF"], (
+        "Empty-snap should fire fundamentals_unavailable (FDXF fix)"
+    )
+    assert "data_quality_input_corruption" not in flags["FDXF"], (
+        "DQIC must NOT fire on an all-null snapshot (partition lock)"
+    )
+    assert flags["FDXF"] == ["fundamentals_unavailable"], (
+        "Only fundamentals_unavailable should fire; loop short-circuits after the guard"
+    )
+
+
+def test_E3_fundamentals_unavailable_silent_for_normal_snap():
+    """Case (c): snap present with normal data → fundamentals_unavailable does NOT fire.
+
+    Confirms the fix doesn't widen the veto to any snapshot with some null
+    fields — only a FULLY null snapshot triggers it.
+    """
+    flags = compute_risk_flags({"HEALTHY": _snap()})
+    assert "fundamentals_unavailable" not in flags["HEALTHY"]
+
+
+def test_E4_dqic_fires_not_fundamentals_unavailable_for_corrupt_present_field():
+    """Case (d): snap present + corrupt field → DQIC fires, NOT fundamentals_unavailable.
+
+    SPG-shape: $76B equity / 8K shares → TBVPS ≫ ceiling.  The snapshot
+    has shares_outstanding present (just wrong), so DQIC fires and
+    fundamentals_unavailable must NOT.  Partition is: field present but
+    inconsistent → DQIC; field absent → fundamentals_unavailable.
+    """
+    corrupt = _snap(
+        stockholders_equity=76_000_000_000.0,
+        shares_outstanding=8_000.0,  # present but wrong
+    )
+    flags = compute_risk_flags({"SPG": corrupt})
+    assert "data_quality_input_corruption" in flags["SPG"]
+    assert "fundamentals_unavailable" not in flags["SPG"]
+
+
+def test_E5_empty_snap_recommendation_is_cautious():
+    """Empty-snap stock must derive recommendation=cautious via the flag.
+
+    ``fundamentals_unavailable`` is in ``_CAUTIOUS_FORCING_RISK`` so
+    ``derive_recommendation`` must return ``"cautious"`` regardless of
+    composite (here set to the lean-bullish band to confirm the forcing
+    override fires — the FDXF symptom was lean_bullish on composite ~51).
+    """
+    from compute.scoring.recommendation import LEAN_BULLISH_COMPOSITE_MIN, derive_recommendation
+
+    rec = derive_recommendation(
+        composite_score=LEAN_BULLISH_COMPOSITE_MIN + 5.0,
+        risk_flags=["fundamentals_unavailable"],
+        valuation_warnings=[],
+        mos_pct=None,
+    )
+    assert rec == "cautious", (
+        "Empty-snap ticker must receive recommendation=cautious via "
+        "fundamentals_unavailable in _CAUTIOUS_FORCING_RISK"
+    )
+
+
+def test_E6_snapshot_has_no_usable_fundamentals_helper_true_for_empty():
+    """Unit-test the helper predicate on the FDXF-shape fixture."""
+    assert _snapshot_has_no_usable_fundamentals(_empty_snap()) is True
+
+
+def test_E7_snapshot_has_no_usable_fundamentals_helper_false_for_normal():
+    """Unit-test the helper predicate on a healthy snap (must not fire)."""
+    assert _snapshot_has_no_usable_fundamentals(_snap()) is False
+
+
+def test_E8_snapshot_has_no_usable_fundamentals_helper_false_for_partial():
+    """Partial-data snap (only revenue non-None) → helper returns False.
+
+    Conservatism invariant: ANY non-None field means the snapshot has at
+    least some usable data and must NOT fire fundamentals_unavailable.
+    """
+    partial = FundamentalsSnapshot(
+        ticker="PARTIAL", cik="0000000099", revenue=100_000_000.0
+    )
+    assert _snapshot_has_no_usable_fundamentals(partial) is False
+
+
+def test_E9_empty_snap_does_not_co_fire_with_dqic():
+    """Partition lock: an all-null snapshot can NEVER produce both
+    fundamentals_unavailable AND data_quality_input_corruption in the
+    same flag list.  They encode mutually exclusive input states.
+    """
+    snap = _empty_snap()
+    flags = compute_risk_flags({"FDXF": snap})
+    both_fire = (
+        "fundamentals_unavailable" in flags["FDXF"]
+        and "data_quality_input_corruption" in flags["FDXF"]
+    )
+    assert not both_fire, (
+        "fundamentals_unavailable and data_quality_input_corruption must never "
+        "co-fire on the same snapshot — they partition the input-absence vs "
+        "field-present-but-corrupt cases."
+    )

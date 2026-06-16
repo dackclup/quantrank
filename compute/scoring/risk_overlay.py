@@ -66,7 +66,7 @@ import pandas as pd
 
 from compute import config
 from compute.features import health
-from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.ingest.fundamentals import ALL_METRIC_KEYS, FundamentalsSnapshot
 from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
 from compute.scoring.dechow_f import DECHOW_VETO_THRESHOLD
 from compute.scoring.eight_k_events import check_non_reliance
@@ -163,6 +163,41 @@ def _data_quality_input_corruption(snap: FundamentalsSnapshot | None) -> bool:
     ):
         return True
     return False
+
+
+def _snapshot_has_no_usable_fundamentals(snap: FundamentalsSnapshot) -> bool:
+    """True iff a NON-None snapshot has no usable fundamental fields at all.
+
+    This is the "empty-snap" case: EDGAR returned an object (CIK resolved,
+    company found) but extracted ZERO numeric values from any of the 34
+    standard metrics in ``ALL_METRIC_KEYS``.  Example: FDXF (FedEx Freight,
+    freshly spun off 2025) — EDGAR returns a Company object for the new CIK
+    but has no financial filings yet, so every field on the snapshot stays
+    None.
+
+    Predicate: ``len(snap.missing_fields()) == len(ALL_METRIC_KEYS)``
+    — i.e. ALL 34 tracked metrics are null.  This is the most conservative
+    possible check: a snapshot with even ONE non-None numeric field (say,
+    a partial shares_outstanding from the DEI cover page) will NOT fire.
+    That conservatism is intentional — we only want to catch the genuine
+    total-absence case, never a stock with partial data.
+
+    Discriminator vs. related checks:
+    - ``snap is None`` (complete EDGAR ingest failure) → ``fundamentals_unavailable``
+      fires first in the caller; this helper is only reached for non-None snaps.
+    - ``_data_quality_input_corruption`` — requires a PRESENT field to be
+      internally inconsistent (e.g. TBVPS > $10K/share, |NI| > revenue).
+      Returns ``False`` when snap is None (contract pinned by test_D3).
+      Does NOT fire on an all-null snapshot (no present field to evaluate).
+    - This function — fires when snap is present but completely empty.
+      The two are mutually exclusive by construction: DQIC requires a
+      non-None numeric value to trigger; this requires ALL values to be None.
+
+    Caller: ``compute_risk_flags`` — appends ``"fundamentals_unavailable"``
+    (same flag as the ``snap is None`` path, widening its domain to
+    "no usable fundamentals" regardless of whether the snap object exists).
+    """
+    return len(snap.missing_fields()) == len(ALL_METRIC_KEYS)
 
 
 def check_share_count_extraction_missing(
@@ -430,17 +465,38 @@ def compute_risk_flags(
     for ticker, snap in snapshots.items():
         flags: list[str] = []
 
-        # fundamentals_unavailable — snap is None (complete EDGAR ingest
-        # failure). Direct veto; FP rate is structurally zero (fires on
-        # input-absence, not a threshold). Rule 16's annotate-before-veto
-        # staging-cron requirement does not bind. DQIC (issue #18) is the
-        # governing direct-veto precedent. Emitted first so a ticker with
-        # NO fundamentals is immediately recognisable; all subsequent
-        # checks are snap-dependent and will silently return False/NaN
-        # when snap is None, producing no additional flags for this ticker.
+        # fundamentals_unavailable — fires on TWO input-absence cases:
+        #
+        # Case A (original, #487): snap is None — complete EDGAR ingest failure
+        #   (OZK / PBF Energy pattern: CIK unresolvable or network failure).
+        #
+        # Case B (FDXF fix): snap is NOT None but carries ZERO usable fundamental
+        #   fields — EDGAR returned a Company object (CIK resolved) but the filer
+        #   has no financial history yet (e.g. freshly spun-off FDXF, spun off
+        #   2025, 0 of 34 tracked metrics extractable).  Without this guard the
+        #   stock receives a lean_bullish recommendation entirely from neutral-50
+        #   pillar imputation + real price/momentum pillars, with NO warning.
+        #
+        # Unified semantic: "no usable fundamentals" regardless of whether the
+        # snapshot OBJECT exists.  Same action: recommendation=cautious + Top-5
+        # suppression (via _CAUTIOUS_FORCING_RISK in recommendation.py).
+        #
+        # Discriminator from DQIC (issue #18, pinned by test_D3):
+        #   - DQIC fires on a PRESENT field that is INTERNALLY INCONSISTENT.
+        #   - fundamentals_unavailable fires on ABSENCE — either snap is None OR
+        #     snap is present but every ALL_METRIC_KEYS field is None.
+        #   - The two are mutually exclusive by construction.
+        #
+        # FP rate for Case B is structurally zero: an all-null snapshot means
+        # the XBRL extraction returned nothing — not a calibrated threshold.
+        # Rule 16's annotate-before-veto staging requirement does NOT bind
+        # (same rationale as #487 / DQIC direct-veto precedent: input-absence,
+        # not a statistical threshold).  Defense-layer count stays at 34
+        # (fundamentals_unavailable widens its domain, no new flag).
+        #
         # NOTE: _data_quality_input_corruption(None) → False by contract
-        # (issue #18, pinned by test_D3) — do NOT change that behaviour.
-        if snap is None:
+        # (issue #18, pinned by test_D3) — that invariant is UNCHANGED.
+        if snap is None or _snapshot_has_no_usable_fundamentals(snap):
             flags.append("fundamentals_unavailable")
             out[ticker] = flags
             continue
