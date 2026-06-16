@@ -1271,6 +1271,7 @@ positives without proportional true positives.
 ## Phase 8 Acceptance Criteria
 - [x] **Off-cycle pre-cache workflow operational (#249) — DONE (PR #468 merged 2026-06-12; first Saturday precache run verified green 2026-06-13, ~20 min warm, tier2 11s)**
 - [x] **precache-900 Phase A — `edgar_form4` moved fast→slow-text bundle + `universe` dispatch input on `precache-edgar.yml` — DONE (PR #486 merged 2026-06-15 `f51cf4d7`; Phase B cache-v10 deferred)**
+- [x] **precache-900 Phase B — cron-default flip sp500→sp900 — DONE (#492, 2026-06-16): cache-v10-fast bump across all 4 workflows + sim QR_UNIVERSE=sp900 + sp400/sp900 parquet paths; cron now defaults sp900**
 - [ ] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover**
 - [ ] S&P 1500 ranked weekly
 - [ ] Compute time <90 min

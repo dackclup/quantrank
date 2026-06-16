@@ -1591,7 +1591,7 @@ backtest CAGR as the live product's track record.
 
 The `compute/cache/edgar_form4` path lives in the **slow-text** `actions/cache` step (key
 `cache-v5-text-${os}-${run_id}`, unique per run → the post-job save is NEVER skipped), NOT the
-fast bundle (key `cache-v8-fast-${quarter}-${os}`, exact-key → save SKIPPED on a warm hit). It
+fast bundle (key `cache-v10-fast-${quarter}-${os}`, exact-key → save SKIPPED on a warm hit). It
 was moved there in the S&P 900 pilot **precache-900 Phase A** PR (2026-06-15) so a
 `universe: sp900` precache can actually PERSIST the ~400 midcap Form-4 dirs — under the fast
 bundle, the sp500 cron's warm quarter-key hit would skip the save and throw the freshly-fetched
@@ -1605,10 +1605,12 @@ midcap Form-4 away.
   workflows (`test_canary_step_identical_in_both_workflows`), so do NOT edit it.
 - Form-4's 7-day TTL fits the weekly run-id-keyed cadence; the original fast-bundle
   (quarter-frozen) placement was accidental, not principled (data-pipeline-engineer).
-- **Phase B (deferred to the flip PR):** a `cache-v8 → v9` fast-key bump cold-seeds the full
-  sp900 fundamentals/prices under the new key — the fast bundle's exact-key save-skip means
-  sp400 fundamentals/prices ALSO won't persist via a warm-key precache, so only the v9 bump
-  (justified then as universe-expansion cache invalidation) makes the full sp900 fast bundle warm.
+- **Phase B (completed in the flip PR, 2026-06-16):** the `cache-v9 → v10` fast-key bump
+  cold-seeds the full sp900 fundamentals/prices under the new key — the fast bundle's exact-key
+  save-skip means sp400 fundamentals/prices ALSO won't persist via a warm-key precache, so only
+  the v10 bump (universe-expansion cache invalidation) makes the full sp900 fast bundle warm.
+  The sp400/sp900 universe parquets (`universe_sp400-v1.parquet` + `universe_sp900-v1.parquet`)
+  are also added to the fast `path:` blocks in all four workflows.
 
 ## `fundamentals_unavailable` direct veto — domain and partition
 

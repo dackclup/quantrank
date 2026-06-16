@@ -8,25 +8,27 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to ingest. As of PR 3a, sp900 RANKS all ~903 names (midcaps in rankings.json + stocks/*.json carry index_membership='sp400') and also populates the midcap_* coverage Metadata. The SCHEDULED cron stays sp500 (this input only affects manual dispatches; the cron-default flip is a separate PR after validation). First sp900 run cold-probes ~400 midcaps (sequential) — keep the 500 caches warm (recent cron/precache) so it fits the 240-min budget."
+        description: "Universe to rank. sp900 = full S&P 500 + S&P 400 midcap universe (~903 names; midcaps carry index_membership='sp400'). sp500 = large-cap only (502 names). The SCHEDULED cron now defaults to sp900 (precache-900 Phase B flip, 2026-06-16). A manual sp500 dispatch is available for diagnostics. First sp900 cold-run probes ~400 midcaps — keep the sp500 caches warm (recent cron/precache) so it fits the 240-min budget."
         type: choice
         options:
           - sp500
           - sp900
-        default: sp500
+        default: sp900
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
   # S&P 900 pilot (Phase 8): the workflow_dispatch `universe` input picks the
   # ingest universe. Default — AND the scheduled cron, where
-  # `github.event.inputs` is null — resolves to `sp500` via the `|| 'sp500'`
-  # fallback → byte-identical to today. A manual `universe: sp900` dispatch
-  # runs the midcap coverage probe (compute/main.py) and populates the
-  # midcap_* diagnostic Metadata; the RANKED output stays 500 (PR 1 invariant).
+  # `github.event.inputs` is null — resolves to `sp900` via the `|| 'sp900'`
+  # fallback (precache-900 Phase B flip, 2026-06-16: all gates cleared —
+  # sp900 validation run #107 PASSED pre-registered defense bands, methodology
+  # RATIFIED PROCEED-WITH-DOC, FDXF empty-snap fix merged #491). The weekday
+  # cron NOW ranks the full S&P 900 universe by default. A manual
+  # `universe: sp500` dispatch still runs sp500-only if needed for diagnostics.
   # This is an `env:`-block assignment, NOT a `run:`-line `${{ }}` interpolation,
   # so it carries no shell script-injection surface (AGENTS.md §Security).
-  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp500' }}
+  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}
   # Form-4 bulk fetch RUNS on the cron (observability-only —
   # form4_enabled=False → ZERO scoring impact; it accumulates the
   # form4_* Metadata surface toward the 2026-08-19 Q3 cohort audit).
@@ -218,6 +220,16 @@ jobs:
       #   v7-fast (Issue #374 RATIFY-B): flush per-class/contaminated parquets
       #     so shares_outstanding repopulates as the company-total aggregate
       #   v8-fast (fixed-floor PR): PRICES_FETCH_START=2015-11-29 replaces period=10y — period-blind parquets from v7 are shallow and must be discarded.
+      #   v9-fast (Issue #385, 2026-06-15): us-gaap:OilAndGasRevenue added to
+      #     _TTM_REVENUE_TAGS + _ANNUAL_TAGS["revenue"] for E&P filers (APA, COP,
+      #     OXY); a new _ANNUAL_TAGS metric that _is_fresh() filing-date checks
+      #     can't detect, so the quarter's frozen fast parquets must be flushed.
+      #   v10-fast (precache-900 Phase B flip, 2026-06-16): cron-default flip
+      #     sp500 → sp900. The fast bundle's exact-key save-skip means sp400
+      #     fundamentals/prices won't persist via a warm-key precache; v10 forces
+      #     a cold-seed of the full sp900 fast bundle on the first post-flip cron
+      #     so all ~903 tickers warm correctly. Also adds sp400/sp900 universe
+      #     parquets to the path: block so they persist in the fast bundle.
       - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@v5
         with:
@@ -226,11 +238,13 @@ jobs:
             compute/cache/fundamentals_history
             compute/cache/prices
             compute/cache/universe-v2.parquet
+            compute/cache/universe_sp400-v1.parquet
+            compute/cache/universe_sp900-v1.parquet
             compute/cache/yfinance_info
-          key: cache-v9-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v10-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v9-fast-${{ steps.quarter.outputs.q }}-
-            cache-v9-fast-
+            cache-v10-fast-${{ steps.quarter.outputs.q }}-
+            cache-v10-fast-
 
       # SLOW-changing text bundle — RUN-ID key + prefix restore-keys (the textbook
       # "keep a cache fresh AND persistent" idiom). A unique key per run means the
