@@ -4297,3 +4297,15 @@ tests + tsc; `test_D3` green). On-merge: Mode C bumps the CLAUDE.md current-sche
 0.10.22 + the defense-layer count 33→34 + a §Gotchas one-liner for the direct-veto invariant.
 
 ---
+
+## 2026-06-15 — docs(Mode C): canonical-tracker reconciliation post-#485 + #486 (reworked onto 0.10.22)
+
+Mode C bump after #485 + #486 merged, reworked onto current main (#487
+schema 0.10.22 + #488's partial Mode C). Strikes #385/#261 (+ #207/#208/
+#377/#378) from the data-integrity sprint cluster + open-issues list
+(closed by #485); adds #485/#486 (+ #483/#487/#488) to PHASE_STATUS +
+CLAUDE recent-merges; Phase 8 row/tail + WORKFLOW AC tick #486
+precache-900 Phase A; WORKFLOW cadence pointer 0.10.17→0.10.22 + defense
+33→34. #486's deferred cache bump = Phase B v10 (since #485 took v9).
+SKILL.md + schema headers untouched (owned by #487/#488). Docs-only.
+---
