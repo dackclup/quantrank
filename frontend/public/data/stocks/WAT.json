@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 35126972443.64624,
   "current_price": 357.76,
-  "rank": 491,
-  "composite_score": 32.27,
+  "rank": 873,
+  "composite_score": 33.13,
   "pillar_scores": {
-    "quality": 16.1,
-    "value": 23.73,
-    "growth": 31.78,
-    "momentum": 44.57,
-    "health": 64.94,
-    "profitability": 36.72,
-    "technical": 54.93,
-    "risk": 37.85,
+    "quality": 19.78,
+    "value": 25.82,
+    "growth": 29.12,
+    "momentum": 44.12,
+    "health": 61.64,
+    "profitability": 37.73,
+    "technical": 53.66,
+    "risk": 40.45,
     "sentiment": null,
     "ml": null
   },
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 160.45340179618162,
+        "value": 189.80736256649988,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 479.1868809191456,
+        "value": 592.3878253062423,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 109.83094729645158,
+        "value": 168.8666634953543,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 160.45340179618162,
-    "max": 479.1868809191456,
-    "low": 109.83094729645158,
-    "high": 479.1868809191456,
-    "mos_pct": -122.96816755563407,
+    "median": 189.80736256649988,
+    "max": 592.3878253062423,
+    "low": 168.8666634953543,
+    "high": 592.3878253062423,
+    "mos_pct": -88.48584424130658,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -108,8 +108,7 @@
   "valuation_warnings": [
     "beneish_high",
     "dechow_high",
-    "manipulation_triple_flag",
-    "rem_suspect"
+    "manipulation_triple_flag"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -121,32 +120,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=59)",
+    "label": "Health Care median (n=91)",
     "values": {
-      "Quality": 52.97,
-      "Value": 52.26,
-      "Growth": 49.15,
-      "Momentum": 38.0,
-      "Health": 59.36,
-      "Profitability": 50.85,
-      "Technical": 56.32,
-      "Risk": 41.67
+      "Quality": 52.47,
+      "Value": 49.18,
+      "Growth": 48.35,
+      "Momentum": 39.52,
+      "Health": 60.2,
+      "Profitability": 48.9,
+      "Technical": 55.32,
+      "Risk": 43.12
     }
   },
   "beneish_m_score": -0.905248226553823,
   "dechow_f_score": 2.6461813606784474,
   "recommendation": "neutral",
-  "loss_chance_pct": 80.8670353895154,
+  "loss_chance_pct": 80.43626774648116,
   "price_change_1d_pct": 0.6272,
-  "manipulation_index": 64.0,
-  "composite_score_adjusted": 25.87,
+  "manipulation_index": 56.0,
+  "composite_score_adjusted": 27.53,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": true,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -187,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.06,
+  "osap_blended_score": 42.49,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",

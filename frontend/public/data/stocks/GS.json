@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 317478149221.7633,
   "current_price": 1076.17,
-  "rank": 214,
-  "composite_score": 51.75,
+  "rank": 359,
+  "composite_score": 52.6,
   "pillar_scores": {
-    "quality": 48.0,
-    "value": 40.67,
-    "growth": 53.0,
-    "momentum": 80.23,
-    "health": 42.47,
-    "profitability": 49.56,
-    "technical": 56.42,
-    "risk": 68.96,
+    "quality": 51.61,
+    "value": 37.08,
+    "growth": 55.62,
+    "momentum": 79.57,
+    "health": 45.88,
+    "profitability": 49.52,
+    "technical": 56.04,
+    "risk": 71.58,
     "sentiment": null,
     "ml": null
   },
@@ -48,16 +48,16 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 911.2999044358108,
+        "value": 1079.7857077119907,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 893.8490464695013,
+        "value": 2218.2549591875627,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 736.8337048629464,
-    "max": 911.2999044358108,
+    "median": 829.802035484191,
+    "max": 2218.2549591875627,
     "low": 436.06721850144214,
-    "high": 911.2999044358108,
-    "mos_pct": -46.05331390825611,
+    "high": 2218.2549591875627,
+    "mos_pct": -29.689973984863183,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -123,25 +123,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=75)",
+    "label": "Financials median (n=140)",
     "values": {
-      "Quality": 50.67,
-      "Value": 52.44,
-      "Growth": 51.5,
-      "Momentum": 53.34,
-      "Health": 50.76,
-      "Profitability": 49.11,
-      "Technical": 53.34,
-      "Risk": 56.84
+      "Quality": 50.36,
+      "Value": 51.99,
+      "Growth": 50.62,
+      "Momentum": 55.9,
+      "Health": 55.6,
+      "Profitability": 49.02,
+      "Technical": 54.69,
+      "Risk": 58.59
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 58.241164294627126,
+  "loss_chance_pct": 52.089127924846764,
   "price_change_1d_pct": 1.2628,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 49.25,
+  "composite_score_adjusted": 50.1,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.8,
+  "osap_blended_score": 52.23,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",

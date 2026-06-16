@@ -1,0 +1,194 @@
+{
+  "ticker": "ANF",
+  "name": "Abercrombie & Fitch",
+  "sector": "Consumer Discretionary",
+  "industry": "Apparel Retail",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 4047728713.202591,
+  "current_price": 91.1,
+  "rank": 12,
+  "composite_score": 69.85,
+  "pillar_scores": {
+    "quality": 84.61,
+    "value": 85.88,
+    "growth": 79.05,
+    "momentum": 15.24,
+    "health": 60.74,
+    "profitability": 79.86,
+    "technical": 63.53,
+    "risk": 32.87,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 5282802000.0,
+    "net_income": 501375000.0,
+    "total_assets": 3452964000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 1340090000.0,
+    "cash": 594080000.0,
+    "operating_cash_flow": 667398000.0,
+    "capex": 251351000.0,
+    "free_cash_flow": 416047000.0,
+    "eps_basic": 11.28417069700896,
+    "eps_diluted": 11.28417069700896,
+    "shares_outstanding": 44431710.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 4047728713.202591,
+    "pe_ratio_ttm": 8.07325597248086,
+    "goodwill": null
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 78.3165418905369,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 226.802523319726,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 143.23444316347414,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 244.43375686402416,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 88.6703105806682,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 134.882933457798,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 139.05868831063606,
+    "max": 244.43375686402416,
+    "low": 78.3165418905369,
+    "high": 244.43375686402416,
+    "mos_pct": 34.48809306282431,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "gross_profit",
+      "research_and_development",
+      "dividends_paid",
+      "accounts_receivable",
+      "goodwill"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 11,
+    "latest_period_end": "2026-05-29",
+    "latest_filed_date": "2026-06-05"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 29.879336176798056,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Consumer Discretionary median (n=108)",
+    "values": {
+      "Quality": 46.88,
+      "Value": 51.2,
+      "Growth": 49.42,
+      "Momentum": 41.19,
+      "Health": 44.0,
+      "Profitability": 49.38,
+      "Technical": 53.76,
+      "Risk": 39.7
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "bullish",
+  "loss_chance_pct": 18.003615542284308,
+  "price_change_1d_pct": 0.5852,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 69.85,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 60.85,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 14,
+    "latest_filing_date": "2026-06-05",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 4.516048925447541e-08
+}

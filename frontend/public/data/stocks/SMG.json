@@ -1,0 +1,195 @@
+{
+  "ticker": "SMG",
+  "name": "Scotts Miracle-Gro Company",
+  "sector": "Materials",
+  "industry": "Fertilizers & Agricultural Chemicals",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 3588079948.2556915,
+  "current_price": 61.67,
+  "rank": 352,
+  "composite_score": 52.7,
+  "pillar_scores": {
+    "quality": 47.12,
+    "value": 70.35,
+    "growth": 47.84,
+    "momentum": 36.89,
+    "health": 42.28,
+    "profitability": 87.5,
+    "technical": 50.08,
+    "risk": 29.82,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3389200000.0,
+    "net_income": 693800000.0,
+    "total_assets": 3412000000.0,
+    "total_liabilities": 3698500000.0,
+    "stockholders_equity": -286500000.0,
+    "cash": 6200000.0,
+    "operating_cash_flow": 478100000.0,
+    "capex": 98400000.0,
+    "free_cash_flow": 379700000.0,
+    "eps_basic": 11.924663147601978,
+    "eps_diluted": 11.924663147601978,
+    "shares_outstanding": 58181937.0,
+    "shares_outstanding_listed_class": null,
+    "market_cap": 3588079948.2556915,
+    "pe_ratio_ttm": 5.17163440221345,
+    "goodwill": 243900000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 259.2267377951346,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 65.06438570047625,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "insufficient_history_for_roe",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 38.230589438981944,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 65.06438570047625,
+    "max": 259.2267377951346,
+    "low": 38.230589438981944,
+    "high": 259.2267377951346,
+    "mos_pct": 5.216967001205535,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 41,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-06"
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile",
+    "beneish_manipulation_veto"
+  ],
+  "valuation_warnings": [
+    "beneish_high",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Materials median (n=52)",
+    "values": {
+      "Quality": 51.08,
+      "Value": 50.64,
+      "Growth": 47.72,
+      "Momentum": 47.74,
+      "Health": 54.22,
+      "Profitability": 54.97,
+      "Technical": 54.09,
+      "Risk": 45.19
+    }
+  },
+  "beneish_m_score": 0.5997270839206326,
+  "dechow_f_score": 0.7737503950331978,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 42.825790346695584,
+  "price_change_1d_pct": -0.3394,
+  "manipulation_index": 48.0,
+  "composite_score_adjusted": 47.9,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": true,
+    "beneish_manipulation_veto": true,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": true,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 52.27,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 17,
+    "latest_filing_date": "2026-06-09",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.02432300422590508
+}
