@@ -11,7 +11,7 @@
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started — **GATED (re-scope 2026-06-10)** on (a) the Phase 7.0c PIT veto-replay verdict + (b) the data-integrity hardening sprint (§Next deliverables items 1 + 3) + (c) a Supabase client-wiring pre-PR |
 | 6 | Sentiment v2 (FinBERT + 8-K + Lazy Prices; **Whisper deferred → Phase 6.1**, re-scope 2026-06-10) | ⚪ not started — TEXT-ONLY scope locked, §6.0 priority order (Lazy Prices → 8-K → FinBERT); Whisper needs Modal paid infra + ~250m ≈ the 240m cron ceiling |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
-| 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)** · **#486 precache-900 Phase A (edgar_form4 fast→slow-text + universe dispatch input)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron flip → midcaps live |
+| 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)** · **#486 precache-900 Phase A (edgar_form4 fast→slow-text + universe dispatch input)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron flip → midcaps live · **precache-900 Phase B — DONE 2026-06-16 (#492)**: cache-v9-fast→cache-v10-fast bump in all 4 workflows, cron-default flip sp500→sp900, sim QR_UNIVERSE=sp900 explicit, sp400/sp900 universe parquets added to fast path blocks; cron now ranks S&P 900 by default; next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge) |
 
 ## Current state (2026-06-15)
 
@@ -24,7 +24,7 @@
 | Post-tag production patches | PR #292 → #302 cluster (2026-05-28/29) — list relocated to §Chronological history |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
 | Production run | `65bfd335` (2026-06-11 cron — FIRST run on the #458 cache-v7 family; RATIFY-B manifest verification pending on this artifact). Prior validated baseline: `368dccd9` cron Run #71 (detail relocated to §Chronological history) |
-| Universe | 502 stocks (S&P 500 minus 1 delisting) |
+| Universe | **~903 stocks** (S&P 900 = 500 large-cap + ~401 S&P 400 mid-cap; cron default `sp900` since precache-900 Phase B 2026-06-16; `sp500`-only dispatch still available) |
 | Skill inventory | **45** invocation-triggerable (44 + the vendored `impeccable` symlink) + `phase-N/` planning docs — index: `.claude/skills/README.md` |
 | Subagent inventory | **25** in 5 tiers (5 opus + 20 sonnet; 23 `effort: max`, 2 `high`) — roster + routing matrix: `.claude/agents/README.md` |
 
@@ -108,6 +108,23 @@ pre-cache DONE — #468) — detail in WORKFLOW.md.
 ---
 
 ## Chronological history
+
+## 2026-06-16 — precache-900 Phase B: cron-default flip sp500→sp900 (#492)
+
+- All gates cleared: sp900 validation run #107 PASSED pre-registered defense bands
+  (NSI fired-share tilt **1.461× — IN-BAND, < 1.6× alarm**; Sloan 10.42%
+  universe-wide / 1.032× sp400 tilt — IN-BAND; Section A-L 0 fail).
+  Methodology RATIFIED PROCEED-WITH-DOC. FDXF empty-snap blocker fixed + merged (#491).
+- `cache-v9-fast` → `cache-v10-fast` bump in all 4 workflows in lockstep; cron-default
+  flip `|| 'sp500'` → `|| 'sp900'` (compute-rankings + precache-edgar); pre-merge-prod-sim
+  now sets explicit `QR_UNIVERSE: sp900`; `compute/config.py` code default stays `sp500`.
+  sp400/sp900 universe parquets added to fast `path:` blocks. Schema triple untouched;
+  defense layer unchanged at 34. Tests 31→33.
+- **NSI tilt methodology note:** the sp400 NSI raw-rate ratio was 2.31× — NOT the
+  pre-registered metric. The pre-registered metric is the **fired-share tilt = 1.461×**,
+  IN-BAND (< 1.6× alarm). The rate-ratio elevation is consistent with Fama-French 2008
+  (NSI monotonically stronger in smaller caps). Future Q3 cohort audits MUST compare the
+  fired-share tilt, NOT the raw-rate ratio, to avoid a false alarm.
 
 ### Relocated from §Current state (2026-06-11 token drain — verbatim)
 

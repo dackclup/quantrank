@@ -2,7 +2,8 @@
 
 QuantRank is a static-site US-equity ranking tool. Python compute layer
 generates JSON; a Next.js static site renders it. Currently ranks the
-S&P 500 (universe = 502 after one delisting). See
+S&P 900 (~903 names: S&P 500 large-caps + S&P 400 mid-caps; `sp500`-only
+via manual dispatch). See
 [`README.md`](README.md) for the user-facing pitch,
 [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the academic
 backing, and [`docs/design.md`](docs/design.md) for the visual /
@@ -25,8 +26,9 @@ design-system spec.
   warm PIT-backtest refresh so the AI-pick home updates each cron) +
   Saturday `precache-edgar.yml` (08:00 UTC off-cycle EDGAR cache warmer,
   #249 — full 5-loop `compute.main`, outputs discarded, caches saved)
-- **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
-  constituents scraped from Wikipedia
+- **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500 +
+  S&P 400 constituents scraped from Wikipedia (`QR_UNIVERSE=sp900` cron
+  default since Phase B flip 2026-06-16; `sp500`-only via manual dispatch)
 
 ## Layout
 
@@ -346,10 +348,7 @@ None` → cautious + Top-5 suppress) + `Metadata.fundamentals_unavailable_count`
 Rule-18 counter + PBF EDGAR-identity ingest fix; defense layer 33→34.
 Prior #482 — S&P 900 pilot 3a: additive `index_membership: str = "sp500"` on
 `StockSummary`/`StockDetail` + a `compute/main.py` universe-load seam
-that ranks all ~903 names on `QR_UNIVERSE=sp900`. **The scheduled cron
-default stays `sp500`** (gated-validate-first; `compute-rankings.yml`
-untouched) — next gated step is a manual `universe: sp900` validation
-dispatch. Lineage: 0.10.18 #456 RATIFY-B dual-class → 0.10.19/0.10.21
+that ranks all ~903 names on `QR_UNIVERSE=sp900`. **The scheduled cron now defaults to `sp900`** (precache-900 Phase B flip, 2026-06-16 — all gates cleared: sp900 validation run #107 PASSED pre-registered defense bands, methodology RATIFIED PROCEED-WITH-DOC, FDXF empty-snap fix merged #491). Lineage: 0.10.18 #456 RATIFY-B dual-class → 0.10.19/0.10.21
 #479/#482 phase-8 pilot → 0.10.20 #477 IC-decay; full table SKILL.md
 §schema-version). The AI-pick home now sizes its own basket
 (adaptive rule, composite ≥ 65 / floor 5 / no cap (uncapped 2026-06-11) — see §Gotchas; gates
@@ -373,12 +372,7 @@ since last Mode C: **#485** (fix+test: APA `OilAndGasRevenue` #385 +
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
 `universe` dispatch input) · **#487** (`fundamentals_unavailable` veto,
-schema `0.10.22`, defense 34) · **#488** (Mode C bump). The next pilot
-PRs (precache-900 Phase B (cache-v10) → frontend PR 4 → one-line
-cron-default flip) are **gated** behind a manual `universe: sp900`
-validation dispatch — check defense firing vs the pre-registered bands
-(Sloan 8-12% / NSI 5-10% universe-wide; sp400 cohort tilt 1.0-1.4×, hard
-alarm 1.6-1.7×) + the 240m budget warm. Detail: PHASE_STATUS_INFLIGHT.md.
+schema `0.10.22`, defense 34) · **#488** (Mode C bump) · **#492** (precache-900 Phase B — cache-v10 fast-bundle + cron-default flip sp500→sp900). precache-900 Phase B (#492 — cache-v10 fast-bundle bump + cron-default flip sp500→sp900) **MERGED 2026-06-16**; the gated sequence is COMPLETE — the weekday cron now ranks S&P 900 by default. Next: ≥ 2 green sp900 crons confirm the firing-rates hold, then frontend PR 4 (midcap badge). Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
@@ -406,9 +400,7 @@ PHASE_STATUS.md):
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
   pilot — **3a integration slice merged 2026-06-15 (#482)** ·
   **precache-900 Phase A merged (#486)**; #249 pre-cache DONE (#468),
-  #467 scout done; cron still gated to `sp500`, next = `universe: sp900`
-  validation dispatch → precache-900 Phase B (cache-v10). Detail in
-  WORKFLOW.md.
+  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge). Detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.

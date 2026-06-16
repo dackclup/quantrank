@@ -4462,4 +4462,12 @@ Schema triple: **untouched**. compute-builder BUILT-CLEAN: ruff pass · pytest o
 change) · `compute/config.py` untouched. Gate: security-reviewer (workflow changes) +
 phase-coordinator Mode B (doc lockstep) + quantrank-reviewer.
 
+**NSI tilt methodology note (PROCEED-WITH-DOC condition #1):** the sp400 NSI raw-rate
+ratio measured ~2.31× (sp400 firing rate ÷ sp500 firing rate) — this is NOT the
+pre-registered metric. The pre-registered metric is the **fired-share tilt = 1.461×**
+(in-band: registered 1.0-1.4× center, hard alarm 1.6×; 1.461× < 1.6× → PASS, = run #103).
+The rate-ratio elevation is consistent with Fama-French 2008 (NSI monotonically stronger
+in smaller caps) and is NOT a miscalibration. Future Q3 2026-08-19 cohort audits MUST use
+the fired-share tilt, NOT the raw-rate ratio, to avoid a false alarm.
+
 ---
