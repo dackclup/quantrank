@@ -201,13 +201,18 @@ export function RankingView({
               large-cap. Re-numbered 1..{cohortRows.length} within this cohort.
             </span>
           )}
-          {safeTab === 'DJI' && (
-            <span>
-              {' '}All {FULL_INDEX_SIZE.DJI} Dow Jones Industrial Average members are
-              S&amp;P 500 companies — this tab shows the complete Dow 30 cohort.
-              Re-numbered 1..{cohortRows.length} within this cohort.
-            </span>
-          )}
+          {safeTab === 'DJI' && (() => {
+            const full = FULL_INDEX_SIZE.DJI ?? 30;
+            const isPartial = cohortRows.length < full;
+            return (
+              <span>
+                {isPartial
+                  ? ` ${cohortRows.length} of ${full} Dow Jones Industrial Average members — the rest aren't in the ingested universe yet (partial overlap).`
+                  : ` All ${full} Dow Jones Industrial Average members are S&P 500 companies — the complete Dow 30 cohort.`}
+                {' '}Re-numbered 1..{cohortRows.length} within this cohort.
+              </span>
+            );
+          })()}
           {safeTab === 'NDX' && (() => {
             const full = FULL_INDEX_SIZE.NDX ?? 100;
             const isPartial = cohortRows.length < full;

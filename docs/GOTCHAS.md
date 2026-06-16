@@ -1659,3 +1659,18 @@ not a new flag. `Metadata.fundamentals_unavailable_count` (introduced #487)
 counts both Case A and Case B; the Rule-18 increment in `compute/main.py` uses
 the same guard so the counter stays consistent with `compute_risk_flags`. On
 the sp900 dispatch run #107: OZK + FDXF = 2.
+
+## `index_membership` (singular) vs `index_memberships` (plural) — never consolidate
+
+`index_membership: str` (singular) is the sp500/sp400 partition signal consumed by (a)
+`MidcapChip.tsx` (renders the "Mid-cap" badge), and (b) `scripts/verify_membership_ledger.py`
+(`current_universe()` filters `index_membership == "sp500"` → must return exactly the 502 sp500
+names; the survivorship band (498,506) depends on it). `index_memberships: list[str]`
+(0.10.23-phase8pilot) is a SEPARATE additive field carrying the primary cohort code PLUS every
+overlapping index ("dow30","ndx"). The two serve different consumers + carry different shapes
+(str vs list[str]). **Never remove/rename `index_membership` (singular)** — it breaks the ledger
+verifier + MidcapChip with NO compile-time error (both fields optional-with-default). The
+`test_ledger_unchanged` regression in `tests/test_ingest/test_index_memberships.py` locks it.
+Dynamic-derivation note: Dow/NDX membership is derived each run from Wikipedia sets (no
+ADD/REMOVE ledger) because it is display-only (no scoring/veto); `data/sp500_membership_historical.csv`
+is UNTOUCHED by the plural field.

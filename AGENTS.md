@@ -722,6 +722,7 @@ Cross-tool agents (Copilot / Cursor / Devin / Codex): READ those files; do NOT
 maintain a parallel phase log here. The former ~1,068-line mirror was collapsed
 2026-06-03 (token-economy drain — it duplicated CLAUDE.md verbatim; git history
 preserves it).
+Schema is currently **`0.10.23-phase8pilot`** (#493, 2026-06-16 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail`; see CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md).
 
 ## Claude-Code-specific tooling
 
