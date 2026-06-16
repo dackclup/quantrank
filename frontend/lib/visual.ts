@@ -218,6 +218,17 @@ export function mosVisualFraction(mos: number | null | undefined): number | null
   return (clamped + 100) / 200;
 }
 
+// Universe label — maps the compute-layer's universe code (Metadata.universe)
+// to a display string used in the "All stocks" tab heading and SEO description.
+// Per-index tab labels (S&P 500, S&P 400, …) come from IndexTabs, NOT from
+// this function (PR 4 rework, 2026-06-16). Falls back to the raw code for any
+// future code not yet listed here (forward-compatible).
+export function universeLabel(universe: string): string {
+  if (universe === 'SP500') return 'S&P 500';
+  if (universe === 'SP900') return 'All US stocks';
+  return universe;
+}
+
 export function filingLagBadgeClasses(days: number | null): string {
   if (days === null) return 'bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-500';
   if (days < 60) return 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800';

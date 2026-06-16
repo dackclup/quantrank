@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { SearchX } from 'lucide-react';
 
 import { LossChanceBadge } from '@/components/LossChanceBadge';
+import { MidcapChip } from '@/components/MidcapChip';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
@@ -30,7 +31,27 @@ function formatPrice(p: number): string {
   return p.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
 }
 
-export default function RankingTable({ data }: { data: StockSummary[] }) {
+export default function RankingTable({
+  data,
+  cohortSize,
+  showMidcapChip = true,
+}: {
+  data: StockSummary[];
+  /**
+   * Total number of stocks in the active cohort (before search filtering).
+   * Used for the "X / N stocks" denominator in the search toolbar.
+   * Defaults to `data.length` when omitted (whole-universe view).
+   */
+  cohortSize?: number;
+  /**
+   * Show the MidcapChip (S&P 400 badge) in table rows + mobile cards.
+   * Set to false in single-cohort tabs (SPX / MID) where the tab itself
+   * communicates the cohort — only needed in the "All stocks" mixed view.
+   * Defaults to true for backward compatibility.
+   */
+  showMidcapChip?: boolean;
+}) {
+  const _cohortSize = cohortSize ?? data.length;
   // Search-only view. The multi-dimension filter screener + the cross-stock
   // compare multi-select were removed; the table keeps free-text search, column
   // sort, and pagination.
@@ -202,7 +223,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
             {sorted.length.toLocaleString()}
           </span>
-          <span className="tabular-nums text-slate-500 dark:text-slate-400"> / {data.length.toLocaleString()} stocks</span>
+          <span className="tabular-nums text-slate-500 dark:text-slate-400"> / {_cohortSize.toLocaleString()} stocks</span>
         </div>
       </div>
 
@@ -247,7 +268,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     </Link>
                   </td>
                   <td className="px-3 py-2 text-slate-700 dark:text-slate-300">{row.name}</td>
-                  <td className="px-3 py-2"><SectorChip sector={row.sector} /></td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <SectorChip sector={row.sector} />
+                      {showMidcapChip && <MidcapChip indexMembership={row.index_membership} size="sm" />}
+                    </div>
+                  </td>
                   <td className="px-3 py-2 text-right">
                     <ScoreBadge score={row.composite_score} />
                   </td>
@@ -280,7 +306,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 href={`/stock/${row.ticker}/`}
                 className="press flex flex-col gap-1 p-3"
               >
-                <StockListCard row={row} />
+                <StockListCard row={row} showMidcapChip={showMidcapChip} />
               </Link>
             </li>
           );

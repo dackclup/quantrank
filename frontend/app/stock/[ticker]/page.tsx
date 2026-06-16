@@ -13,6 +13,7 @@ import { RiskSummaryCard } from '@/components/RiskSummaryCard';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { RecommendationBadge, RECOMMENDATION_LABELS } from '@/components/RecommendationBadge';
 import { ListingChips } from '@/components/ListingChips';
+import { MidcapChip } from '@/components/MidcapChip';
 import { StockLogo } from '@/components/StockLogo';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
 import { WatchlistButton } from '@/components/WatchlistButton';
@@ -175,6 +176,7 @@ export default function StockDetailPage({
                 #{detail.rank}
               </span>
               <ListingChips country={detail.country} exchange={detail.exchange} />
+              <MidcapChip indexMembership={detail.index_membership} size="sm" />
             </div>
             {/* aria-label gives the heading a clean accessible NAME
                 ("NVDA — Sell") instead of the ticker span + badge text

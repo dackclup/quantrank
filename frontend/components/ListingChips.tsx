@@ -33,7 +33,7 @@ const COUNTRY_NAME: Record<string, string> = {
 // LedgerCraft neutral-steel tone (mirrors SectorChip): slate-100 bg /
 // slate-600 fg / slate-200 ring, paired dark variants. Rendered through the
 // shared `Chip` primitive at the default `sm` size (2px radius, font-medium).
-const STEEL_TONE =
+export const STEEL_TONE =
   'bg-slate-100 text-slate-600 ring-slate-200 ' +
   'dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500';
 

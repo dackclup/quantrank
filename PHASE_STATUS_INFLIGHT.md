@@ -4309,3 +4309,39 @@ precache-900 Phase A; WORKFLOW cadence pointer 0.10.17→0.10.22 + defense
 33→34. #486's deferred cache bump = Phase B v10 (since #485 took v9).
 SKILL.md + schema headers untouched (owned by #487/#488). Docs-only.
 ---
+
+## 2026-06-15 — feat(frontend): S&P 900 pilot PR 4 — per-index tab cohort filter
+
+Makes the index tabs FUNCTIONALLY separate the universe by `index_membership` cohort, so the
+S&P 400 mid-caps get their OWN tab rather than being combined into the S&P 500 list (owner
+feedback on the first cut). Prepares the frontend for the eventual sp900 cron flip without
+breaking the current sp500 (502) display.
+
+- NEW `frontend/components/RankingView.tsx` (`'use client'`) — holds the active-tab state
+  (default `ALL` = All stocks, the leading landing tab; `safeTab` falls back to `SPX` on
+  single-cohort sp500 data where `ALL` is not in `availableCodes`), derives the cohort filter +
+  re-numbered display rank (1..N per tab) + per-tab h1/count, composes with the existing search.
+  Data passed as props from the Server-Component page (no `fs` in a client component).
+- `IndexTabs.tsx` — rewritten as an interactive `role="tablist"`; **data-driven availability**:
+  a tab is clickable iff `rankings.json` has rows for that cohort, else it keeps its "SOON"
+  marker. "All stocks" LEADS as the first/leftmost tab. So on the 502 sp500-cron data the
+  S&P 400 + All-stocks tabs read "SOON" (the page lands on S&P 500 via the fallback); on sp900
+  data they activate and the page opens on All stocks. Indices with no data (S&P 600 / Dow 30 /
+  NASDAQ / Russell) stay "SOON". The active tab carries `tabIndex={0}` for `role="tablist"`
+  keyboard reachability (full roving-tabindex deferred — matches the CountryTabs baseline).
+- Per-tab h1/count: "S&P 500 ranking" / 502 · "S&P MidCap 400 ranking" / 400 · "All US stocks
+  ranking" / 902. `lib/visual.ts::universeLabel` de-combined (SP900 → "All US stocks"; the old
+  "S&P 500 + 400 mid-caps" wording removed).
+- `RankingTable.tsx` + `StockListCard.tsx` — `cohortSize` (X / N denominator) + `showMidcapChip`
+  props; the Mid-cap chip shows ONLY in the "All stocks" mixed tab (redundant in single-cohort
+  tabs). `MidcapChip.tsx` stays for the stock-detail hero.
+- Composite SCORES stay 902-universe (cross-sectional — the pilot's point); the tabs separate
+  the DISPLAY + re-number ranks only. Per-index standalone re-scoring = a separate compute
+  change if wanted. Schema triple untouched.
+
+frontend-builder BUILT-CLEAN (tsc + next build + schema_check PASS). Supersedes the first cut
+(combined "S&P 500 + 400 mid-caps" list, owner-rejected). Gate: quantrank-reviewer (opus) PASS
+on code invariants + phase-coordinator Mode B LOCKSTEP-SATISFIED + frontend-design-reviewer
+GO-WITH-NITS (tabindex nit applied). Lands before the sp900 flip PR.
+
+---
