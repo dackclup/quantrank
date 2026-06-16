@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 86910553629.12292,
-  "current_price": 453.89,
-  "rank": 893,
-  "composite_score": 30.81,
+  "market_cap": 87004376628.45764,
+  "current_price": 454.38,
+  "rank": 498,
+  "composite_score": 30.18,
   "pillar_scores": {
-    "quality": 11.04,
-    "value": 34.17,
-    "growth": 38.12,
-    "momentum": 53.35,
-    "health": 48.58,
-    "profitability": 25.14,
-    "technical": 23.92,
-    "risk": 27.31,
+    "quality": 7.64,
+    "value": 36.11,
+    "growth": 37.15,
+    "momentum": 53.09,
+    "health": 50.88,
+    "profitability": 20.83,
+    "technical": 25.5,
+    "risk": 26.89,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 4.038389001005722,
     "shares_outstanding": 191479325.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 86910553629.12292,
-    "pe_ratio_ttm": 112.39383193035651,
+    "market_cap": 87004376628.45764,
+    "pe_ratio_ttm": 112.51516502487836,
     "goodwill": 26853807000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 141.8951345708165,
+        "value": 141.85393187540046,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 1190.5952173795238,
+        "value": 1133.579602936186,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 232.41451852116342,
+        "value": 202.68464402005395,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 187.15482654598998,
-    "max": 1190.5952173795238,
+    "median": 172.2692879477272,
+    "max": 1133.579602936186,
     "low": 54.62640872163698,
-    "high": 1190.5952173795238,
-    "mos_pct": -142.52113772598972,
+    "high": 1133.579602936186,
+    "mos_pct": -163.76146920668063,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
@@ -95,11 +95,13 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-05-22",
     "latest_filed_date": "2026-05-27"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "extreme_dcf_estimate"
   ],
@@ -113,25 +115,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=72)",
     "values": {
-      "Quality": 49.38,
-      "Value": 48.61,
-      "Growth": 52.4,
-      "Momentum": 67.7,
-      "Health": 67.0,
-      "Profitability": 49.58,
-      "Technical": 49.7,
-      "Risk": 43.55
+      "Quality": 48.52,
+      "Value": 50.23,
+      "Growth": 52.6,
+      "Momentum": 72.56,
+      "Health": 68.44,
+      "Profitability": 49.42,
+      "Technical": 48.51,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": -2.690213580358782,
   "dechow_f_score": 1.788312447704277,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.59593457440256,
-  "price_change_1d_pct": -0.526,
+  "loss_chance_pct": 73.91057644422311,
+  "price_change_1d_pct": 0.108,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 30.81,
+  "composite_score_adjusted": 30.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,15 +181,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.33,
+  "osap_blended_score": 41.02,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 14,
-    "latest_filing_date": "2026-06-02",
+    "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.268493737521162e-08
+  "cross_source_delta": 5.235992182154659e-08
 }

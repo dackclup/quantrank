@@ -5,19 +5,19 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 208766155784.77344,
-  "current_price": 931.04,
-  "rank": 180,
-  "composite_score": 58.09,
+  "market_cap": 228444494312.4297,
+  "current_price": 1018.8,
+  "rank": 93,
+  "composite_score": 58.24,
   "pillar_scores": {
-    "quality": 95.21,
-    "value": 13.12,
-    "growth": 27.08,
-    "momentum": 96.11,
-    "health": 37.54,
-    "profitability": 73.75,
-    "technical": 62.03,
-    "risk": 55.89,
+    "quality": 94.97,
+    "value": 11.34,
+    "growth": 27.78,
+    "momentum": 99.0,
+    "health": 39.16,
+    "profitability": 69.91,
+    "technical": 67.73,
+    "risk": 54.76,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 10.605229853595382,
     "shares_outstanding": 224228992.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 208766155784.77344,
-    "pe_ratio_ttm": 87.79064583043457,
+    "market_cap": 228444494312.4297,
+    "pe_ratio_ttm": 96.06580921464662,
     "goodwill": 1221000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 323.77535286113385,
+        "value": 350.8663736051039,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 37.83162106074576,
+        "value": 44.71120177006525,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 310.6869288497604,
+        "value": 292.62726853365734,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 187.3774178887041,
-    "max": 323.77535286113385,
-    "low": 37.83162106074576,
-    "high": 323.77535286113385,
-    "mos_pct": -396.8795004851387,
+    "median": 178.34758773065255,
+    "max": 350.8663736051039,
+    "low": 44.71120177006525,
+    "high": 350.8663736051039,
+    "mos_pct": -471.2440525585353,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate"
@@ -96,12 +96,13 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
     "altman_distress",
+    "net_issuance_top_decile",
     "beneish_manipulation_veto"
   ],
   "valuation_warnings": [
@@ -122,25 +123,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=72)",
     "values": {
-      "Quality": 49.38,
-      "Value": 48.61,
-      "Growth": 52.4,
-      "Momentum": 67.7,
-      "Health": 67.0,
-      "Profitability": 49.58,
-      "Technical": 49.7,
-      "Risk": 43.55
+      "Quality": 48.52,
+      "Value": 50.23,
+      "Growth": 52.6,
+      "Momentum": 72.56,
+      "Health": 68.44,
+      "Profitability": 49.42,
+      "Technical": 48.51,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": -1.578909954056504,
   "dechow_f_score": 1.1937282784037488,
   "recommendation": "cautious",
-  "loss_chance_pct": 72.95277277346638,
-  "price_change_1d_pct": 7.2515,
+  "loss_chance_pct": 75.87954144071861,
+  "price_change_1d_pct": 9.426,
   "manipulation_index": 36.0,
-  "composite_score_adjusted": 54.49,
+  "composite_score_adjusted": 54.64,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -188,15 +189,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.97,
+  "osap_blended_score": 55.05,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 11,
-    "latest_filing_date": "2026-06-11",
+    "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.862984417582721e-09
+  "cross_source_delta": 0.009022540577193351
 }

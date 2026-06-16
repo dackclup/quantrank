@@ -5,19 +5,19 @@
   "industry": "Semiconductors",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1817728701095.418,
-  "current_price": 382.07,
-  "rank": 226,
-  "composite_score": 56.5,
+  "market_cap": 1874201154815.3062,
+  "current_price": 393.94,
+  "rank": 134,
+  "composite_score": 56.22,
   "pillar_scores": {
-    "quality": 79.79,
-    "value": 17.71,
-    "growth": 63.54,
-    "momentum": 69.93,
-    "health": 57.83,
-    "profitability": 66.11,
-    "technical": 40.63,
-    "risk": 51.92,
+    "quality": 77.08,
+    "value": 15.97,
+    "growth": 63.19,
+    "momentum": 74.1,
+    "health": 58.8,
+    "profitability": 64.35,
+    "technical": 48.51,
+    "risk": 51.69,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 6.162166223140985,
     "shares_outstanding": 4757580198.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 1817728701095.418,
-    "pe_ratio_ttm": 62.00254804705182,
+    "market_cap": 1874201154815.3062,
+    "pe_ratio_ttm": 63.92881791504268,
     "goodwill": 97801000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 301.58814025151725,
+        "value": 320.49980460925707,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 42.07623640223381,
+        "value": 44.320538825182,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 224.8141270818222,
+        "value": 233.94041265581072,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 133.445181742028,
-    "max": 301.58814025151725,
+    "median": 139.13047574049637,
+    "max": 320.49980460925707,
     "low": 37.921447314284094,
-    "high": 301.58814025151725,
-    "mos_pct": -186.31232865554063,
+    "high": 320.49980460925707,
+    "mos_pct": -183.14429340137957,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate"
@@ -94,7 +94,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 6,
+    "filing_lag_days": 7,
     "latest_period_end": "2026-05-29",
     "latest_filed_date": "2026-06-09"
   },
@@ -113,25 +113,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=72)",
     "values": {
-      "Quality": 49.38,
-      "Value": 48.61,
-      "Growth": 52.4,
-      "Momentum": 67.7,
-      "Health": 67.0,
-      "Profitability": 49.58,
-      "Technical": 49.7,
-      "Risk": 43.55
+      "Quality": 48.52,
+      "Value": 50.23,
+      "Growth": 52.6,
+      "Momentum": 72.56,
+      "Health": 68.44,
+      "Profitability": 49.42,
+      "Technical": 48.51,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": -2.2934431036419083,
   "dechow_f_score": 0.5990614288399206,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.7479540065287,
-  "price_change_1d_pct": -0.9077,
+  "loss_chance_pct": 58.8899079607496,
+  "price_change_1d_pct": 3.1068,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.5,
+  "composite_score_adjusted": 56.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,15 +179,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.18,
+  "osap_blended_score": 54.04,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 12,
-    "latest_filing_date": "2026-04-23",
+    "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.244009680034229e-08
+  "cross_source_delta": 2.868051883616229e-09
 }

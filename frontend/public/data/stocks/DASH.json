@@ -5,19 +5,19 @@
   "industry": "Specialized Consumer Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 66605449889.923096,
-  "current_price": 150.58,
-  "rank": 894,
-  "composite_score": 30.72,
+  "market_cap": 74350575720.15381,
+  "current_price": 168.09,
+  "rank": 485,
+  "composite_score": 33.67,
   "pillar_scores": {
-    "quality": 33.68,
-    "value": 12.5,
-    "growth": 65.62,
-    "momentum": 12.31,
-    "health": 48.49,
-    "profitability": 37.81,
-    "technical": 16.95,
-    "risk": 22.41,
+    "quality": 35.68,
+    "value": 13.54,
+    "growth": 65.36,
+    "momentum": 17.13,
+    "health": 53.55,
+    "profitability": 31.25,
+    "technical": 47.11,
+    "risk": 22.38,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 2.0934785655828505,
     "shares_outstanding": 442326000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 66605449889.923096,
-    "pe_ratio_ttm": 71.9281316305865,
+    "market_cap": 74350575720.15381,
+    "pe_ratio_ttm": 80.29219840189397,
     "goodwill": 5499000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 41.879403930796535,
+        "value": 49.08832959711642,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 108.83712083000393,
+        "value": 139.8517331150568,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 54.47400395183483,
+        "value": 57.318827403625896,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 54.47400395183483,
-    "max": 108.83712083000393,
+    "median": 55.642582191956585,
+    "max": 139.8517331150568,
     "low": 6.6153587357176225,
-    "high": 108.83712083000393,
-    "mos_pct": -176.42543398167584,
+    "high": 139.8517331150568,
+    "mos_pct": -202.08877754452752,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -104,7 +104,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 40,
+    "filing_lag_days": 41,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -128,25 +128,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 46.88,
-      "Value": 51.12,
-      "Growth": 49.42,
-      "Momentum": 42.39,
-      "Health": 43.97,
-      "Profitability": 49.38,
-      "Technical": 53.07,
-      "Risk": 39.91
+      "Quality": 46.35,
+      "Value": 50.52,
+      "Growth": 52.08,
+      "Momentum": 36.4,
+      "Health": 43.51,
+      "Profitability": 52.43,
+      "Technical": 52.96,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 73.64189703607894,
-  "price_change_1d_pct": -2.594,
+  "recommendation": "cautious",
+  "loss_chance_pct": 72.16374605743692,
+  "price_change_1d_pct": 11.6284,
   "manipulation_index": 18.0,
-  "composite_score_adjusted": 28.92,
+  "composite_score_adjusted": 31.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,15 +194,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.28,
+  "osap_blended_score": 42.76,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-06-08",
+    "insider_count": 16,
+    "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.014937563991645976
+  "cross_source_delta": 0.014937532216751355
 }

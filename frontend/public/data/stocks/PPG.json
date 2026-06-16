@@ -5,19 +5,19 @@
   "industry": "Specialty Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 26600885183.71582,
-  "current_price": 119.34,
-  "rank": 51,
-  "composite_score": 65.1,
+  "market_cap": 27089036727.905273,
+  "current_price": 121.53,
+  "rank": 7,
+  "composite_score": 68.76,
   "pillar_scores": {
-    "quality": 80.77,
-    "value": 63.14,
-    "growth": 59.13,
-    "momentum": 51.03,
-    "health": 62.35,
-    "profitability": 75.64,
-    "technical": 49.06,
-    "risk": 39.84,
+    "quality": 83.65,
+    "value": 71.15,
+    "growth": 62.5,
+    "momentum": 50.55,
+    "health": 67.45,
+    "profitability": 76.92,
+    "technical": 51.89,
+    "risk": 39.04,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 7.173620457604307,
     "shares_outstanding": 222900000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 26600885183.71582,
-    "pe_ratio_ttm": 16.63595070901552,
+    "market_cap": 27089036727.905273,
+    "pe_ratio_ttm": 16.941236227583033,
     "goodwill": 6152000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 167.85433527128788,
+        "value": 203.18108078466892,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 90.95086852334282,
+        "value": 111.77306748770746,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 233.8239810059277,
+        "value": 203.57259080038506,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 129.40260189731535,
-    "max": 233.8239810059277,
+    "median": 157.4770741361882,
+    "max": 203.57259080038506,
     "low": 39.36892870453584,
-    "high": 233.8239810059277,
-    "mos_pct": 7.776200332826143,
+    "high": 203.57259080038506,
+    "mos_pct": 22.826862611000656,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -95,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -111,25 +111,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Materials median (n=52)",
+    "label": "Materials median (n=26)",
     "values": {
-      "Quality": 51.08,
-      "Value": 50.8,
-      "Growth": 47.72,
-      "Momentum": 51.48,
-      "Health": 54.17,
-      "Profitability": 54.97,
-      "Technical": 53.69,
-      "Risk": 44.17
+      "Quality": 51.68,
+      "Value": 51.44,
+      "Growth": 48.56,
+      "Momentum": 57.05,
+      "Health": 57.53,
+      "Profitability": 54.33,
+      "Technical": 55.9,
+      "Risk": 46.25
     }
   },
   "beneish_m_score": -2.458238303879437,
   "dechow_f_score": 0.4564417045160459,
   "recommendation": "bullish",
-  "loss_chance_pct": 29.7294969836871,
-  "price_change_1d_pct": 0.9303,
+  "loss_chance_pct": 22.632159915754436,
+  "price_change_1d_pct": 1.8351,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.1,
+  "composite_score_adjusted": 68.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,8 +177,8 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.47,
-  "entered_top5": false,
+  "osap_blended_score": 60.3,
+  "entered_top5": true,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 4,
@@ -187,5 +187,5 @@
     "latest_filing_date": "2026-04-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.607834151699607e-08
+  "cross_source_delta": 2.1562033837873813e-08
 }

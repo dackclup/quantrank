@@ -5,19 +5,19 @@
   "industry": "Distillers & Vintners",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 25573193388.25557,
-  "current_price": 148.51,
-  "rank": 536,
-  "composite_score": 47.97,
+  "market_cap": 25507759757.522827,
+  "current_price": 148.13,
+  "rank": 262,
+  "composite_score": 49.91,
   "pillar_scores": {
-    "quality": 52.36,
-    "value": 59.43,
-    "growth": 42.92,
-    "momentum": 33.4,
-    "health": 33.57,
-    "profitability": 58.49,
-    "technical": 45.09,
-    "risk": 37.16,
+    "quality": 50.0,
+    "value": 65.74,
+    "growth": 45.49,
+    "momentum": 36.9,
+    "health": 36.18,
+    "profitability": 58.33,
+    "technical": 50.55,
+    "risk": 34.2,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 9.795093007419165,
     "shares_outstanding": 172198467.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 25573193388.25557,
-    "pe_ratio_ttm": 15.161672726777477,
+    "market_cap": 25507759757.522827,
+    "pe_ratio_ttm": 15.122878850727947,
     "goodwill": 5233900000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 236.6841485906584,
+        "value": 239.41628833726594,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 154.1054526910534,
+        "value": 164.09939170363677,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 177.72650435604854,
+        "value": 212.80672529172614,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 154.1054526910534,
-    "max": 236.6841485906584,
+    "median": 164.09939170363677,
+    "max": 239.41628833726594,
     "low": 2.1629392495955497,
-    "high": 236.6841485906584,
-    "mos_pct": 3.630928099238045,
+    "high": 239.41628833726594,
+    "mos_pct": 9.731533222051764,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -98,7 +98,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 54,
+    "filing_lag_days": 55,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-22"
   },
@@ -118,25 +118,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Staples median (n=53)",
+    "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 50.0,
-      "Value": 48.43,
-      "Growth": 50.0,
-      "Momentum": 36.67,
-      "Health": 36.7,
-      "Profitability": 51.57,
-      "Technical": 53.13,
-      "Risk": 49.91
+      "Quality": 49.31,
+      "Value": 51.74,
+      "Growth": 49.48,
+      "Momentum": 42.95,
+      "Health": 39.56,
+      "Profitability": 53.7,
+      "Technical": 53.06,
+      "Risk": 51.58
     }
   },
   "beneish_m_score": -2.7684580405110166,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 41.7430097257821,
-  "price_change_1d_pct": 3.7661,
+  "loss_chance_pct": 38.6372866071203,
+  "price_change_1d_pct": -0.2559,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 47.47,
+  "composite_score_adjusted": 49.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.91,
+  "osap_blended_score": 50.88,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,5 +194,5 @@
     "latest_filing_date": "2026-05-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00015217261627629668
+  "cross_source_delta": 0.003947408572135837
 }

@@ -5,19 +5,19 @@
   "industry": "Life Sciences Tools & Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 34908016908.29422,
-  "current_price": 355.53,
-  "rank": 866,
-  "composite_score": 33.89,
+  "market_cap": 35126972443.64624,
+  "current_price": 357.76,
+  "rank": 491,
+  "composite_score": 32.27,
   "pillar_scores": {
-    "quality": 19.57,
-    "value": 26.18,
-    "growth": 29.21,
-    "momentum": 49.28,
-    "health": 61.55,
-    "profitability": 37.68,
-    "technical": 55.79,
-    "risk": 40.24,
+    "quality": 16.1,
+    "value": 23.73,
+    "growth": 31.78,
+    "momentum": 44.57,
+    "health": 64.94,
+    "profitability": 36.72,
+    "technical": 54.93,
+    "risk": 37.85,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 6.545026266767245,
     "shares_outstanding": 98185855.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 34908016908.29422,
-    "pe_ratio_ttm": 54.32063742578411,
+    "market_cap": 35126972443.64624,
+    "pe_ratio_ttm": 54.66135584240089,
     "goodwill": 9317000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 186.87286245563305,
+        "value": 160.45340179618162,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 577.2595275160502,
+        "value": 479.1868809191456,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 167.81301460116683,
+        "value": 109.83094729645158,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 186.87286245563305,
-    "max": 577.2595275160502,
-    "low": 167.81301460116683,
-    "high": 577.2595275160502,
-    "mos_pct": -90.25234274650555,
+    "median": 160.45340179618162,
+    "max": 479.1868809191456,
+    "low": 109.83094729645158,
+    "high": 479.1868809191456,
+    "mos_pct": -122.96816755563407,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -96,7 +96,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 34,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-12"
   },
@@ -108,7 +108,8 @@
   "valuation_warnings": [
     "beneish_high",
     "dechow_high",
-    "manipulation_triple_flag"
+    "manipulation_triple_flag",
+    "rem_suspect"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -120,32 +121,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=92)",
+    "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 52.45,
-      "Value": 48.41,
-      "Growth": 48.3,
-      "Momentum": 41.67,
-      "Health": 60.7,
-      "Profitability": 50.09,
-      "Technical": 54.13,
-      "Risk": 42.94
+      "Quality": 52.97,
+      "Value": 52.26,
+      "Growth": 49.15,
+      "Momentum": 38.0,
+      "Health": 59.36,
+      "Profitability": 50.85,
+      "Technical": 56.32,
+      "Risk": 41.67
     }
   },
   "beneish_m_score": -0.905248226553823,
   "dechow_f_score": 2.6461813606784474,
   "recommendation": "neutral",
-  "loss_chance_pct": 80.0545695053665,
-  "price_change_1d_pct": -1.1703,
-  "manipulation_index": 56.0,
-  "composite_score_adjusted": 28.29,
+  "loss_chance_pct": 80.8670353895154,
+  "price_change_1d_pct": 0.6272,
+  "manipulation_index": 64.0,
+  "composite_score_adjusted": 25.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": true,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -186,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.87,
+  "osap_blended_score": 42.06,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +197,5 @@
     "latest_filing_date": "2026-05-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.685747966592621e-09
+  "cross_source_delta": 7.870373764413519e-10
 }

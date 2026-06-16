@@ -5,19 +5,19 @@
   "industry": "Homebuilding",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 22072752145.965576,
-  "current_price": 90.3,
-  "rank": 651,
-  "composite_score": 44.82,
+  "market_cap": 21938310500.0,
+  "current_price": 89.75,
+  "rank": 365,
+  "composite_score": 45.2,
   "pillar_scores": {
-    "quality": 41.9,
-    "value": 70.06,
-    "growth": 35.88,
-    "momentum": 13.97,
-    "health": 44.9,
-    "profitability": 46.68,
-    "technical": 58.43,
-    "risk": 26.02,
+    "quality": 44.27,
+    "value": 75.0,
+    "growth": 35.42,
+    "momentum": 10.46,
+    "health": 43.23,
+    "profitability": 41.84,
+    "technical": 52.44,
+    "risk": 22.94,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 7.416800988389694,
     "shares_outstanding": 244438000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 22072752145.965576,
-    "pe_ratio_ttm": 12.175060810329683,
+    "market_cap": 21938310500.0,
+    "pe_ratio_ttm": 12.100904438516714,
     "goodwill": 3632058000.0
   },
   "fair_price": {
@@ -48,13 +48,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 150.95410495656046,
+        "value": 175.15974627188234,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 424.83195686253526,
+        "value": 554.6736366644487,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,13 +78,15 @@
         "tier_used": null
       }
     },
-    "median": 150.95410495656046,
-    "max": 424.83195686253526,
+    "median": 156.5252650497948,
+    "max": 175.15974627188234,
     "low": 84.63607099160531,
-    "high": 424.83195686253526,
-    "mos_pct": 40.18049189338499,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 5
+    "high": 554.6736366644487,
+    "mos_pct": 42.66101388076349,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -105,12 +107,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 67,
+    "filing_lag_days": 68,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-09"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
     "restatement_history"
   ],
   "has_history": true,
@@ -123,25 +126,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 46.88,
-      "Value": 51.12,
-      "Growth": 49.42,
-      "Momentum": 42.39,
-      "Health": 43.97,
-      "Profitability": 49.38,
-      "Technical": 53.07,
-      "Risk": 39.91
+      "Quality": 46.35,
+      "Value": 50.52,
+      "Growth": 52.08,
+      "Momentum": 36.4,
+      "Health": 43.51,
+      "Profitability": 52.43,
+      "Technical": 52.96,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 28.526076737222187,
-  "price_change_1d_pct": -4.8973,
+  "loss_chance_pct": 28.46670481277085,
+  "price_change_1d_pct": -0.6091,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 44.32,
+  "composite_score_adjusted": 44.7,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,15 +192,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.34,
+  "osap_blended_score": 48.53,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 12,
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.007610520560533177
+  "cross_source_delta": 0.007610514036621006
 }

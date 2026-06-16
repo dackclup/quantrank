@@ -5,19 +5,19 @@
   "industry": "Electronic Manufacturing Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 40599519770.76428,
-  "current_price": 384.82,
-  "rank": 234,
-  "composite_score": 56.21,
+  "market_cap": 40684976637.00952,
+  "current_price": 385.63,
+  "rank": 154,
+  "composite_score": 54.95,
   "pillar_scores": {
-    "quality": 62.08,
-    "value": 50.97,
-    "growth": 53.96,
-    "momentum": 93.96,
-    "health": 28.19,
-    "profitability": 26.39,
-    "technical": 47.98,
-    "risk": 61.68,
+    "quality": 56.6,
+    "value": 51.62,
+    "growth": 53.82,
+    "momentum": 94.65,
+    "health": 30.98,
+    "profitability": 22.69,
+    "technical": 48.85,
+    "risk": 60.09,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 7.668055870687271,
     "shares_outstanding": 105502622.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 40599519770.76428,
-    "pe_ratio_ttm": 50.18482048302136,
+    "market_cap": 40684976637.00952,
+    "pe_ratio_ttm": 50.2904531977868,
     "goodwill": 1229000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 300.2070945691427,
+        "value": 276.6154419067895,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 98.6889690180685,
+        "value": 116.6352982644196,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 535.9567214354146,
+        "value": 482.14217914712196,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 199.44803179360562,
-    "max": 535.9567214354146,
+    "median": 196.62537008560454,
+    "max": 482.14217914712196,
     "low": 62.820525618663595,
-    "high": 535.9567214354146,
-    "mos_pct": -92.94249427461946,
+    "high": 482.14217914712196,
+    "mos_pct": -96.12423601029778,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
@@ -95,13 +95,14 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 68,
+    "filing_lag_days": 69,
     "latest_period_end": "2026-04-01",
     "latest_filed_date": "2026-04-08"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "rem_suspect"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -113,32 +114,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=72)",
     "values": {
-      "Quality": 49.38,
-      "Value": 48.61,
-      "Growth": 52.4,
-      "Momentum": 67.7,
-      "Health": 67.0,
-      "Profitability": 49.58,
-      "Technical": 49.7,
-      "Risk": 43.55
+      "Quality": 48.52,
+      "Value": 50.23,
+      "Growth": 52.6,
+      "Momentum": 72.56,
+      "Health": 68.44,
+      "Profitability": 49.42,
+      "Technical": 48.51,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": -2.622127179363924,
   "dechow_f_score": 0.4008300485227992,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.894230028948016,
-  "price_change_1d_pct": 2.1041,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.21,
+  "loss_chance_pct": 58.525649715951005,
+  "price_change_1d_pct": 0.2105,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 54.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -179,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.03,
+  "osap_blended_score": 53.4,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -189,5 +190,5 @@
     "latest_filing_date": "2026-05-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3270213176623008e-08
+  "cross_source_delta": 3.782699673755413e-08
 }

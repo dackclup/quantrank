@@ -5,19 +5,19 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 31662619522.050034,
-  "current_price": 161.61,
-  "rank": 23,
-  "composite_score": 68.06,
+  "market_cap": 31703764022.100403,
+  "current_price": 161.82,
+  "rank": 8,
+  "composite_score": 68.5,
   "pillar_scores": {
-    "quality": 87.71,
-    "value": 61.39,
-    "growth": 65.42,
-    "momentum": 59.34,
-    "health": 53.26,
-    "profitability": 69.17,
-    "technical": 55.83,
-    "risk": 55.75,
+    "quality": 85.42,
+    "value": 64.35,
+    "growth": 63.89,
+    "momentum": 65.79,
+    "health": 55.1,
+    "profitability": 65.05,
+    "technical": 54.56,
+    "risk": 53.92,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 6.512864819513739,
     "shares_outstanding": 195919927.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 31662619522.050034,
-    "pe_ratio_ttm": 24.81396514267244,
+    "market_cap": 31703764022.100403,
+    "pe_ratio_ttm": 24.846210048668027,
     "goodwill": 2772000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 227.19603690788108,
+        "value": 228.3244832933541,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 53.42067054802173,
+        "value": 63.135078873030416,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 256.25068869835815,
+        "value": 231.61721419235172,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 156.67580680919252,
-    "max": 256.25068869835815,
-    "low": 53.42067054802173,
-    "high": 256.25068869835815,
-    "mos_pct": -3.149301670530501,
+    "median": 157.24003000192903,
+    "max": 231.61721419235172,
+    "low": 63.135078873030416,
+    "high": 231.61721419235172,
+    "mos_pct": -2.9127298705256757,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -91,7 +91,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-05-28",
     "latest_filed_date": "2026-06-05"
   },
@@ -107,25 +107,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=72)",
     "values": {
-      "Quality": 49.38,
-      "Value": 48.61,
-      "Growth": 52.4,
-      "Momentum": 67.7,
-      "Health": 67.0,
-      "Profitability": 49.58,
-      "Technical": 49.7,
-      "Risk": 43.55
+      "Quality": 48.52,
+      "Value": 50.23,
+      "Growth": 52.6,
+      "Momentum": 72.56,
+      "Health": 68.44,
+      "Profitability": 49.42,
+      "Technical": 48.51,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": -2.7303510866005514,
   "dechow_f_score": 0.426074547979281,
   "recommendation": "bullish",
-  "loss_chance_pct": 32.073263299024184,
-  "price_change_1d_pct": 0.7104,
+  "loss_chance_pct": 31.76779427532734,
+  "price_change_1d_pct": 0.1299,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 68.06,
+  "composite_score_adjusted": 68.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -173,15 +173,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.95,
-  "entered_top5": false,
+  "osap_blended_score": 60.18,
+  "entered_top5": true,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 8,
-    "latest_filing_date": "2026-06-05",
+    "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.836309967796343e-08
+  "cross_source_delta": 3.400543866275618e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Building Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8364931195.448639,
-  "current_price": 77.77,
-  "rank": 722,
-  "composite_score": 42.28,
+  "market_cap": 8369233688.9626465,
+  "current_price": 77.81,
+  "rank": 414,
+  "composite_score": 41.94,
   "pillar_scores": {
-    "quality": 37.5,
-    "value": 85.74,
-    "growth": 6.48,
-    "momentum": 6.18,
-    "health": 54.56,
-    "profitability": 37.65,
-    "technical": 56.49,
-    "risk": 12.21,
+    "quality": 34.06,
+    "value": 88.33,
+    "growth": 6.25,
+    "momentum": 4.98,
+    "health": 59.26,
+    "profitability": 33.33,
+    "technical": 57.72,
+    "risk": 10.72,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 2.709941763041824,
     "shares_outstanding": 107559876.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 8364931195.448639,
-    "pe_ratio_ttm": 28.69803244619251,
+    "market_cap": 8369233688.9626465,
+    "pe_ratio_ttm": 28.712793248831474,
     "goodwill": 4139898000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.18782593755181,
+        "value": 76.77105286326561,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 202.60066836877888,
+        "value": 253.60055380278902,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 160.16353236315985,
+        "value": 201.96068591001662,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 169.4627305584762,
-    "max": 202.60066836877888,
-    "low": 60.18782593755181,
-    "high": 202.60066836877888,
-    "mos_pct": 54.10790538617549,
+    "median": 190.36130733190458,
+    "max": 253.60055380278902,
+    "low": 76.77105286326561,
+    "high": 253.60055380278902,
+    "mos_pct": 59.125098136183695,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -95,7 +95,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 46,
+    "filing_lag_days": 47,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -113,25 +113,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=166)",
+    "label": "Industrials median (n=80)",
     "values": {
-      "Quality": 50.72,
-      "Value": 47.44,
-      "Growth": 50.26,
-      "Momentum": 55.03,
-      "Health": 57.51,
-      "Profitability": 48.74,
-      "Technical": 53.56,
-      "Risk": 53.42
+      "Quality": 47.73,
+      "Value": 49.38,
+      "Growth": 49.06,
+      "Momentum": 53.44,
+      "Health": 53.94,
+      "Profitability": 48.02,
+      "Technical": 55.4,
+      "Risk": 55.0
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.48552421375760196,
   "recommendation": "neutral",
-  "loss_chance_pct": 24.92330740089634,
-  "price_change_1d_pct": -1.0182,
+  "loss_chance_pct": 23.33437904044992,
+  "price_change_1d_pct": 0.0514,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 41.78,
+  "composite_score_adjusted": 41.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.06,
+  "osap_blended_score": 46.9,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -189,5 +189,5 @@
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.4757878580422043e-08
+  "cross_source_delta": 3.3570892739547803e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Life Sciences Tools & Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 127469494242.58908,
-  "current_price": 180.1,
-  "rank": 879,
-  "composite_score": 32.78,
+  "market_cap": 128177264869.58908,
+  "current_price": 181.1,
+  "rank": 493,
+  "composite_score": 32.0,
   "pillar_scores": {
-    "quality": 25.82,
-    "value": 33.15,
-    "growth": 11.96,
-    "momentum": 15.63,
-    "health": 79.27,
-    "profitability": 39.31,
-    "technical": 59.95,
-    "risk": 37.1,
+    "quality": 24.15,
+    "value": 30.51,
+    "growth": 13.56,
+    "momentum": 14.34,
+    "health": 81.83,
+    "profitability": 38.7,
+    "technical": 62.3,
+    "risk": 34.3,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 5.212140571072329,
     "shares_outstanding": 707770627.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 127469494242.58908,
-    "pe_ratio_ttm": 34.55394259761157,
+    "market_cap": 128177264869.58908,
+    "pe_ratio_ttm": 34.74580235011902,
     "goodwill": 42765000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 148.81645822920603,
+        "value": 127.77728479331537,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 277.28155044574356,
+        "value": 230.17321492511232,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 172.04794460273143,
+        "value": 109.50371828366144,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 160.43220141596873,
-    "max": 277.28155044574356,
+    "median": 118.64050153848841,
+    "max": 230.17321492511232,
     "low": 86.20426434201745,
-    "high": 277.28155044574356,
-    "mos_pct": -12.259262488427863,
+    "high": 230.17321492511232,
+    "mos_pct": -52.646022020367646,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -95,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 55,
+    "filing_lag_days": 56,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-21"
   },
@@ -113,25 +113,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=92)",
+    "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 52.45,
-      "Value": 48.41,
-      "Growth": 48.3,
-      "Momentum": 41.67,
-      "Health": 60.7,
-      "Profitability": 50.09,
-      "Technical": 54.13,
-      "Risk": 42.94
+      "Quality": 52.97,
+      "Value": 52.26,
+      "Growth": 49.15,
+      "Momentum": 38.0,
+      "Health": 59.36,
+      "Profitability": 50.85,
+      "Technical": 56.32,
+      "Risk": 41.67
     }
   },
   "beneish_m_score": -2.5991797541506214,
   "dechow_f_score": 0.5583483212429124,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.90092074077205,
-  "price_change_1d_pct": -0.3817,
+  "loss_chance_pct": 69.42745894061282,
+  "price_change_1d_pct": 0.5552,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 32.78,
+  "composite_score_adjusted": 32.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.32,
+  "osap_blended_score": 41.92,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -189,5 +189,5 @@
     "latest_filing_date": "2026-05-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.307290804298695e-10
+  "cross_source_delta": 1.4186688419662818e-08
 }

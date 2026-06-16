@@ -5,19 +5,19 @@
   "industry": "Restaurants",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 117434689043.42651,
-  "current_price": 103.04,
-  "rank": 834,
-  "composite_score": 37.16,
+  "market_cap": 115782118826.29395,
+  "current_price": 101.59,
+  "rank": 469,
+  "composite_score": 36.1,
   "pillar_scores": {
-    "quality": 37.62,
-    "value": 16.59,
-    "growth": 35.3,
-    "momentum": 68.32,
-    "health": 32.86,
-    "profitability": 43.36,
-    "technical": 46.09,
-    "risk": 48.91,
+    "quality": 31.51,
+    "value": 19.27,
+    "growth": 34.11,
+    "momentum": 71.02,
+    "health": 33.11,
+    "profitability": 37.85,
+    "technical": 51.0,
+    "risk": 46.08,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 1.3123629025182066,
     "shares_outstanding": 1139700000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 117434689043.42651,
-    "pe_ratio_ttm": 78.51486865242127,
+    "market_cap": 115782118826.29395,
+    "pe_ratio_ttm": 77.40998784936413,
     "goodwill": 1295100000.0
   },
   "fair_price": {
@@ -48,10 +48,10 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 34.12863404690757,
+        "value": 30.772563793556824,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
@@ -60,10 +60,10 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 53.75908457335862,
+        "value": 41.446541308015924,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 34.12863404690757,
-    "max": 53.75908457335862,
+    "median": 30.772563793556824,
+    "max": 41.446541308015924,
     "low": 25.437960915454585,
-    "high": 53.75908457335862,
-    "mos_pct": -201.9165688667927,
+    "high": 41.446541308015924,
+    "mos_pct": -230.13172714312998,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -95,7 +95,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-28"
   },
@@ -115,25 +115,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 46.88,
-      "Value": 51.12,
-      "Growth": 49.42,
-      "Momentum": 42.39,
-      "Health": 43.97,
-      "Profitability": 49.38,
-      "Technical": 53.07,
-      "Risk": 39.91
+      "Quality": 46.35,
+      "Value": 50.52,
+      "Growth": 52.08,
+      "Momentum": 36.4,
+      "Health": 43.51,
+      "Profitability": 52.43,
+      "Technical": 52.96,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.35169457697096607,
   "recommendation": "cautious",
-  "loss_chance_pct": 78.41767693876434,
-  "price_change_1d_pct": 0.7431,
+  "loss_chance_pct": 78.95164308045595,
+  "price_change_1d_pct": -1.4072,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 36.66,
+  "composite_score_adjusted": 35.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,15 +181,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.51,
+  "osap_blended_score": 43.97,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 14,
-    "latest_filing_date": "2026-06-09",
+    "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3245034549345886e-08
+  "cross_source_delta": 3.0214457817626695e-08
 }

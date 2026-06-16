@@ -5,19 +5,19 @@
   "industry": "Advertising",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 21854275196.25699,
-  "current_price": 76.68,
-  "rank": 843,
-  "composite_score": 35.9,
+  "market_cap": 21805824664.79892,
+  "current_price": 76.51,
+  "rank": 472,
+  "composite_score": 35.76,
   "pillar_scores": {
-    "quality": 15.74,
-    "value": 46.3,
-    "growth": 64.35,
-    "momentum": 43.74,
-    "health": 27.94,
-    "profitability": 15.43,
-    "technical": 42.6,
-    "risk": 46.91,
+    "quality": 18.48,
+    "value": 42.75,
+    "growth": 64.67,
+    "momentum": 37.55,
+    "health": 31.43,
+    "profitability": 17.39,
+    "technical": 47.01,
+    "risk": 45.22,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 0.557882608278453,
     "shares_outstanding": 285006196.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 21854275196.25699,
-    "pe_ratio_ttm": 137.44827167457225,
+    "market_cap": 21805824664.79892,
+    "pe_ratio_ttm": 137.1435513509366,
     "goodwill": 18733900000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.856379835087964,
+        "value": 10.815037396545936,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 121.26531393089822,
+        "value": 73.64841531369223,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 38.106560771936344,
+        "value": 35.488532088016605,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 41.705057933010174,
-    "max": 121.26531393089822,
-    "low": 11.856379835087964,
-    "high": 121.26531393089822,
-    "mos_pct": -83.8625915071141,
+    "median": 40.3960435910503,
+    "max": 73.64841531369223,
+    "low": 10.815037396545936,
+    "high": 73.64841531369223,
+    "mos_pct": -89.39974149642015,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate"
     ],
@@ -98,11 +98,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-29"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
     "beneish_high",
@@ -118,25 +120,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Communication Services median (n=27)",
+    "label": "Communication Services median (n=23)",
     "values": {
-      "Quality": 50.93,
-      "Value": 53.09,
-      "Growth": 55.09,
-      "Momentum": 43.74,
-      "Health": 42.97,
-      "Profitability": 52.47,
-      "Technical": 39.47,
-      "Risk": 51.05
+      "Quality": 52.17,
+      "Value": 52.17,
+      "Growth": 55.98,
+      "Momentum": 47.21,
+      "Health": 45.74,
+      "Profitability": 50.72,
+      "Technical": 44.22,
+      "Risk": 49.93
     }
   },
   "beneish_m_score": -1.9779656455653414,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 71.04802941337495,
-  "price_change_1d_pct": 1.442,
+  "loss_chance_pct": 74.1221256279231,
+  "price_change_1d_pct": -0.2217,
   "manipulation_index": 11.0,
-  "composite_score_adjusted": 34.8,
+  "composite_score_adjusted": 34.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.88,
+  "osap_blended_score": 43.8,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,5 +196,5 @@
     "latest_filing_date": "2026-05-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.7742204122194756e-08
+  "cross_source_delta": 6.343264249735821e-08
 }

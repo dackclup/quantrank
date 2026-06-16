@@ -5,19 +5,19 @@
   "industry": "Paper & Plastic Packaging Products & Materials",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 12181093811.25,
-  "current_price": 159.25,
-  "rank": 210,
-  "composite_score": 56.96,
+  "market_cap": 12224693890.932312,
+  "current_price": 159.82,
+  "rank": 102,
+  "composite_score": 57.73,
   "pillar_scores": {
-    "quality": 82.45,
-    "value": 53.53,
-    "growth": 46.15,
-    "momentum": 26.11,
-    "health": 36.65,
-    "profitability": 70.35,
-    "technical": 66.99,
-    "risk": 48.04,
+    "quality": 81.25,
+    "value": 57.69,
+    "growth": 47.12,
+    "momentum": 25.95,
+    "health": 39.36,
+    "profitability": 68.91,
+    "technical": 66.53,
+    "risk": 45.48,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 9.018126918827772,
     "shares_outstanding": 76490385.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 12181093811.25,
-    "pe_ratio_ttm": 17.65887766200348,
+    "market_cap": 12224693890.932312,
+    "pe_ratio_ttm": 17.72208450410599,
     "goodwill": 2263000000.0
   },
   "fair_price": {
@@ -48,13 +48,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 196.0424033160489,
+        "value": 255.42371315148444,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 86.35888670545613,
+        "value": 92.4619815780484,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 86.35888670545613,
-    "max": 196.0424033160489,
+    "median": 92.4619815780484,
+    "max": 255.42371315148444,
     "low": 74.00195008274991,
-    "high": 196.0424033160489,
-    "mos_pct": -84.40487838055772,
+    "high": 255.42371315148444,
+    "mos_pct": -72.84942913462497,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -95,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-05-02",
     "latest_filed_date": "2026-05-05"
   },
@@ -111,25 +111,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Materials median (n=52)",
+    "label": "Materials median (n=26)",
     "values": {
-      "Quality": 51.08,
-      "Value": 50.8,
-      "Growth": 47.72,
-      "Momentum": 51.48,
-      "Health": 54.17,
-      "Profitability": 54.97,
-      "Technical": 53.69,
-      "Risk": 44.17
+      "Quality": 51.68,
+      "Value": 51.44,
+      "Growth": 48.56,
+      "Momentum": 57.05,
+      "Health": 57.53,
+      "Profitability": 54.33,
+      "Technical": 55.9,
+      "Risk": 46.25
     }
   },
   "beneish_m_score": -2.549038036808497,
   "dechow_f_score": 0.5038953284880446,
-  "recommendation": "neutral",
-  "loss_chance_pct": 56.51818164051396,
-  "price_change_1d_pct": 0.315,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 56.13363213811421,
+  "price_change_1d_pct": 0.3579,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.96,
+  "composite_score_adjusted": 57.73,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.41,
+  "osap_blended_score": 54.79,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -187,5 +187,5 @@
     "latest_filing_date": "2026-05-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.57316023293425e-08
+  "cross_source_delta": 5.2592917069982004e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Exploration & Production",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 21238736922.192596,
-  "current_price": 88.78,
-  "rank": 106,
-  "composite_score": 61.16,
+  "market_cap": 21028216192.134254,
+  "current_price": 87.9,
+  "rank": 55,
+  "composite_score": 61.47,
   "pillar_scores": {
-    "quality": 64.8,
-    "value": 92.11,
-    "growth": 53.29,
-    "momentum": 18.9,
-    "health": 62.48,
-    "profitability": 68.42,
-    "technical": 25.21,
-    "risk": 48.24,
+    "quality": 63.1,
+    "value": 90.87,
+    "growth": 57.14,
+    "momentum": 20.97,
+    "health": 68.53,
+    "profitability": 66.67,
+    "technical": 23.88,
+    "risk": 45.22,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 13.489175797522648,
     "shares_outstanding": 239228849.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 21238736922.192596,
-    "pe_ratio_ttm": 6.581573263772109,
+    "market_cap": 21028216192.134254,
+    "pe_ratio_ttm": 6.516335975250776,
     "goodwill": 15000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 165.70519556189782,
+        "value": 165.84835334375373,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 117.9165287824123,
+        "value": 149.39432854164954,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 161.81729259450293,
+        "value": 346.4633138292644,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 117.9165287824123,
-    "max": 165.70519556189782,
+    "median": 149.39432854164954,
+    "max": 346.4633138292644,
     "low": 52.92005825341249,
-    "high": 165.70519556189782,
-    "mos_pct": 24.709453631288756,
+    "high": 346.4633138292644,
+    "mos_pct": 41.162424046523746,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -98,7 +98,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -116,25 +116,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Energy median (n=38)",
+    "label": "Energy median (n=21)",
     "values": {
-      "Quality": 51.64,
-      "Value": 50.55,
-      "Growth": 53.45,
-      "Momentum": 66.5,
-      "Health": 39.61,
-      "Profitability": 51.54,
-      "Technical": 35.24,
-      "Risk": 62.09
+      "Quality": 50.0,
+      "Value": 49.21,
+      "Growth": 55.95,
+      "Momentum": 68.33,
+      "Health": 55.3,
+      "Profitability": 54.76,
+      "Technical": 23.88,
+      "Risk": 62.18
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 27.770382514496482,
-  "price_change_1d_pct": 1.9522,
+  "loss_chance_pct": 21.85805625076279,
+  "price_change_1d_pct": -0.9912,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.16,
+  "composite_score_adjusted": 61.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,15 +182,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.51,
+  "osap_blended_score": 56.66,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 5,
   "form4_diagnostics": {
     "insider_count": 15,
-    "latest_filing_date": "2026-06-08",
+    "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.2332464275772414e-09
+  "cross_source_delta": 3.042891226236202e-08
 }

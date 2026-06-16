@@ -5,19 +5,19 @@
   "industry": "Biotechnology",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 112925642326.8836,
-  "current_price": 444.93,
-  "rank": 230,
-  "composite_score": 56.47,
+  "market_cap": 114329185973.07254,
+  "current_price": 450.46,
+  "rank": 95,
+  "composite_score": 58.04,
   "pillar_scores": {
-    "quality": 76.9,
-    "value": 25.36,
-    "growth": 48.64,
-    "momentum": 37.33,
-    "health": 93.34,
-    "profitability": 80.25,
-    "technical": 53.71,
-    "risk": 48.87,
+    "quality": 77.97,
+    "value": 24.01,
+    "growth": 58.9,
+    "momentum": 38.0,
+    "health": 94.32,
+    "profitability": 82.2,
+    "technical": 55.73,
+    "risk": 46.12,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 17.093015788547966,
     "shares_outstanding": 253805417.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 112925642326.8836,
-    "pe_ratio_ttm": 26.029929310302098,
+    "market_cap": 114329185973.07254,
+    "pe_ratio_ttm": 26.353453189745416,
     "goodwill": 1088000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 385.9574464947496,
+        "value": 419.0407216781147,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 329.6147008233,
+        "value": 231.78597752279924,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 395.10806874649654,
+        "value": 340.0724022678917,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": 78.10311543661,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 258.5794510830783,
-    "max": 395.10806874649654,
+    "median": 209.66508943282795,
+    "max": 419.0407216781147,
     "low": 78.10311543661,
-    "high": 395.10806874649654,
-    "mos_pct": -72.0670342566513,
+    "high": 419.0407216781147,
+    "mos_pct": -114.84739909425672,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ],
@@ -98,7 +98,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -118,25 +118,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=92)",
+    "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 52.45,
-      "Value": 48.41,
-      "Growth": 48.3,
-      "Momentum": 41.67,
-      "Health": 60.7,
-      "Profitability": 50.09,
-      "Technical": 54.13,
-      "Risk": 42.94
+      "Quality": 52.97,
+      "Value": 52.26,
+      "Growth": 49.15,
+      "Momentum": 38.0,
+      "Health": 59.36,
+      "Profitability": 50.85,
+      "Technical": 56.32,
+      "Risk": 41.67
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4141820168984568,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 60.76525946768855,
-  "price_change_1d_pct": -0.0247,
+  "recommendation": "neutral",
+  "loss_chance_pct": 59.97953524883517,
+  "price_change_1d_pct": 1.2429,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 54.47,
+  "composite_score_adjusted": 56.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.16,
+  "osap_blended_score": 54.95,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,5 +194,5 @@
     "latest_filing_date": "2026-06-09",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.1204176992356574e-05
+  "cross_source_delta": 3.8720886727554e-08
 }

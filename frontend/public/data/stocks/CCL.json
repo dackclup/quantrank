@@ -5,19 +5,19 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 36154026564.27286,
-  "current_price": 29.18,
-  "rank": 498,
-  "composite_score": 49.12,
+  "market_cap": 37318687425.25036,
+  "current_price": 30.12,
+  "rank": 316,
+  "composite_score": 47.76,
   "pillar_scores": {
-    "quality": 43.75,
-    "value": 68.83,
-    "growth": 65.97,
-    "momentum": 42.02,
-    "health": 13.08,
-    "profitability": 49.23,
-    "technical": 48.97,
-    "risk": 33.74,
+    "quality": 36.46,
+    "value": 76.39,
+    "growth": 57.81,
+    "momentum": 45.72,
+    "health": 10.4,
+    "profitability": 42.36,
+    "technical": 52.54,
+    "risk": 34.46,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 2.5431795487053557,
     "shares_outstanding": 1239000212.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 36154026564.27286,
-    "pe_ratio_ttm": 11.473826266033912,
+    "market_cap": 37318687425.25036,
+    "pe_ratio_ttm": 11.843442534195606,
     "goodwill": 579000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 55.18234001586183,
+        "value": 60.06129666582673,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 90.55316735323579,
+        "value": 65.17449557476144,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 53.564515869624785,
+        "value": 61.96677650373705,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": 10.892153718977854,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 53.564515869624785,
-    "max": 90.55316735323579,
+    "median": 60.06129666582673,
+    "max": 65.17449557476144,
     "low": 10.892153718977854,
-    "high": 90.55316735323579,
-    "mos_pct": 45.52363662503838,
+    "high": 65.17449557476144,
+    "mos_pct": 49.8512311400515,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -96,7 +96,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 80,
+    "filing_lag_days": 81,
     "latest_period_end": "2026-03-19",
     "latest_filed_date": "2026-03-27"
   },
@@ -114,25 +114,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 46.88,
-      "Value": 51.12,
-      "Growth": 49.42,
-      "Momentum": 42.39,
-      "Health": 43.97,
-      "Profitability": 49.38,
-      "Technical": 53.07,
-      "Risk": 39.91
+      "Quality": 46.35,
+      "Value": 50.52,
+      "Growth": 52.08,
+      "Momentum": 36.4,
+      "Health": 43.51,
+      "Profitability": 52.43,
+      "Technical": 52.96,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 24.509200269161898,
-  "price_change_1d_pct": 3.7696,
+  "loss_chance_pct": 23.671329904988173,
+  "price_change_1d_pct": 3.2214,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.12,
+  "composite_score_adjusted": 47.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.48,
+  "osap_blended_score": 49.81,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -190,5 +190,5 @@
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.11794943670094934
+  "cross_source_delta": 0.11794944823732936
 }

@@ -5,19 +5,19 @@
   "industry": "Health Care Distributors",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 94245984719.2154,
-  "current_price": 784.05,
-  "rank": 476,
-  "composite_score": 49.5,
+  "market_cap": 93732718410.38306,
+  "current_price": 779.78,
+  "rank": 238,
+  "composite_score": 50.83,
   "pillar_scores": {
-    "quality": 29.08,
-    "value": 75.27,
-    "growth": 65.9,
-    "momentum": 24.11,
-    "health": 57.02,
-    "profitability": 33.7,
-    "technical": 58.9,
-    "risk": 68.33,
+    "quality": 30.51,
+    "value": 74.72,
+    "growth": 71.61,
+    "momentum": 27.29,
+    "health": 56.97,
+    "profitability": 32.77,
+    "technical": 61.25,
+    "risk": 65.44,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 42.41953542813628,
     "shares_outstanding": 120204051.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 94245984719.2154,
-    "pe_ratio_ttm": 18.48322900945585,
+    "market_cap": 93732718410.38306,
+    "pe_ratio_ttm": 18.38256881945147,
     "goodwill": 11316000000.0
   },
   "fair_price": {
@@ -48,7 +48,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1086.1570757007732,
+        "value": 1085.9789562084864,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -60,7 +60,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 989.0498771216708,
+        "value": 962.6423373508651,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 989.0498771216708,
-    "max": 1086.1570757007732,
+    "median": 962.6423373508651,
+    "max": 1085.9789562084864,
     "low": 477.01237035808674,
-    "high": 1086.1570757007732,
-    "mos_pct": 20.726951599780985,
+    "high": 1085.9789562084864,
+    "mos_pct": 18.9958721904146,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -95,14 +95,12 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 38,
+    "filing_lag_days": 39,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "rem_suspect"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -113,32 +111,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=92)",
+    "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 52.45,
-      "Value": 48.41,
-      "Growth": 48.3,
-      "Momentum": 41.67,
-      "Health": 60.7,
-      "Profitability": 50.09,
-      "Technical": 54.13,
-      "Risk": 42.94
+      "Quality": 52.97,
+      "Value": 52.26,
+      "Growth": 49.15,
+      "Momentum": 38.0,
+      "Health": 59.36,
+      "Profitability": 50.85,
+      "Technical": 56.32,
+      "Risk": 41.67
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 32.996441355626644,
-  "price_change_1d_pct": -0.3989,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 48.7,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 32.93853774548715,
+  "price_change_1d_pct": -0.5446,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 50.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -179,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.68,
+  "osap_blended_score": 51.34,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -189,5 +187,5 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.681540716726661e-08
+  "cross_source_delta": 0.026008363053226145
 }

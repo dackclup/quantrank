@@ -5,19 +5,19 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 106145220555.61868,
-  "current_price": 402.54,
-  "rank": 625,
-  "composite_score": 45.54,
+  "market_cap": 105641574320.0321,
+  "current_price": 400.63,
+  "rank": 345,
+  "composite_score": 46.14,
   "pillar_scores": {
-    "quality": 30.32,
-    "value": 25.15,
-    "growth": 69.56,
-    "momentum": 78.69,
-    "health": 33.27,
-    "profitability": 58.02,
-    "technical": 64.16,
-    "risk": 76.05,
+    "quality": 32.81,
+    "value": 27.43,
+    "growth": 69.53,
+    "momentum": 81.13,
+    "health": 30.14,
+    "profitability": 50.0,
+    "technical": 64.84,
+    "risk": 72.97,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 9.799436815292559,
     "shares_outstanding": 263688623.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 106145220555.61868,
-    "pe_ratio_ttm": 41.07787173205057,
+    "market_cap": 105641574320.0321,
+    "pe_ratio_ttm": 40.882962198154836,
     "goodwill": 8873000000.0
   },
   "fair_price": {
@@ -48,10 +48,10 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 197.42379858287939,
+        "value": 229.77927367566386,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 147.09751706127292,
-    "max": 197.42379858287939,
+    "median": 163.27525460766518,
+    "max": 229.77927367566386,
     "low": 96.77123553966649,
-    "high": 197.42379858287939,
-    "mos_pct": -173.6552027436638,
+    "high": 229.77927367566386,
+    "mos_pct": -145.3709264428882,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 40,
+    "filing_lag_days": 41,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
@@ -115,25 +115,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 46.88,
-      "Value": 51.12,
-      "Growth": 49.42,
-      "Momentum": 42.39,
-      "Health": 43.97,
-      "Profitability": 49.38,
-      "Technical": 53.07,
-      "Risk": 39.91
+      "Quality": 46.35,
+      "Value": 50.52,
+      "Growth": 52.08,
+      "Momentum": 36.4,
+      "Health": 43.51,
+      "Profitability": 52.43,
+      "Technical": 52.96,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.22830716548958,
-  "price_change_1d_pct": 1.4236,
+  "loss_chance_pct": 61.927532059262944,
+  "price_change_1d_pct": -0.4745,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.54,
+  "composite_score_adjusted": 46.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,15 +181,15 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.7,
+  "osap_blended_score": 49.0,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 25,
-    "latest_filing_date": "2026-05-19",
+    "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.8800834106474444e-08
+  "cross_source_delta": 7.569737200768763e-10
 }

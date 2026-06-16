@@ -5,19 +5,19 @@
   "industry": "Electrical Components & Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 116335035226.38867,
-  "current_price": 302.87,
-  "rank": 206,
-  "composite_score": 57.07,
+  "market_cap": 119815060161.58301,
+  "current_price": 311.93,
+  "rank": 140,
+  "composite_score": 55.9,
   "pillar_scores": {
-    "quality": 82.98,
-    "value": 4.72,
-    "growth": 71.84,
-    "momentum": 80.16,
-    "health": 59.91,
-    "profitability": 70.08,
-    "technical": 38.66,
-    "risk": 50.37,
+    "quality": 78.44,
+    "value": 3.33,
+    "growth": 71.88,
+    "momentum": 81.13,
+    "health": 64.54,
+    "profitability": 60.83,
+    "technical": 47.16,
+    "risk": 49.2,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 4.057183628922488,
     "shares_outstanding": 384108816.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 116335035226.38867,
-    "pe_ratio_ttm": 74.65030494506459,
+    "market_cap": 119815060161.58301,
+    "pe_ratio_ttm": 76.88338049382892,
     "goodwill": 2023700000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 154.45830471209206,
+        "value": 114.93762083741758,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 63.81478539244065,
+        "value": 73.76553224942712,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 140.24355833799973,
+        "value": 106.13368154306755,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": 2.152620287242806,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 47.07026277123933,
-    "max": 154.45830471209206,
+    "median": 52.04563619973257,
+    "max": 114.93762083741758,
     "low": 2.152620287242806,
-    "high": 154.45830471209206,
-    "mos_pct": -543.4423291604096,
+    "high": 114.93762083741758,
+    "mos_pct": -499.339378768866,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -100,11 +100,13 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 54,
+    "filing_lag_days": 55,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-22"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
@@ -122,25 +124,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=166)",
+    "label": "Industrials median (n=80)",
     "values": {
-      "Quality": 50.72,
-      "Value": 47.44,
-      "Growth": 50.26,
-      "Momentum": 55.03,
-      "Health": 57.51,
-      "Profitability": 48.74,
-      "Technical": 53.56,
-      "Risk": 53.42
+      "Quality": 47.73,
+      "Value": 49.38,
+      "Growth": 49.06,
+      "Momentum": 53.44,
+      "Health": 53.94,
+      "Profitability": 48.02,
+      "Technical": 55.4,
+      "Risk": 55.0
     }
   },
   "beneish_m_score": -2.533000075251267,
   "dechow_f_score": 0.5421279360611256,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.46296995075647,
-  "price_change_1d_pct": 1.6752,
+  "loss_chance_pct": 64.04758569887119,
+  "price_change_1d_pct": 2.9914,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.07,
+  "composite_score_adjusted": 55.9,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.46,
+  "osap_blended_score": 53.88,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +200,5 @@
     "latest_filing_date": "2026-05-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.378591240416703e-09
+  "cross_source_delta": 5.716796368148652e-08
 }

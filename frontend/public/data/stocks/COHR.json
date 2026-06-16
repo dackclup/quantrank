@@ -5,19 +5,19 @@
   "industry": "Electronic Components",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 75327007525.81247,
-  "current_price": 385.03,
-  "rank": 561,
-  "composite_score": 47.28,
+  "market_cap": 80963375886.18741,
+  "current_price": 413.84,
+  "rank": 320,
+  "composite_score": 47.54,
   "pillar_scores": {
-    "quality": 25.1,
-    "value": 39.93,
-    "growth": 56.77,
-    "momentum": 87.06,
-    "health": 80.16,
-    "profitability": 21.88,
-    "technical": 42.27,
-    "risk": 51.03,
+    "quality": 22.05,
+    "value": 40.86,
+    "growth": 55.73,
+    "momentum": 93.43,
+    "health": 82.95,
+    "profitability": 19.1,
+    "technical": 45.32,
+    "risk": 50.2,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 2.3964967655965235,
     "shares_outstanding": 195639321.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 75327007525.81247,
-    "pe_ratio_ttm": 160.66368388503008,
+    "market_cap": 80963375886.18741,
+    "pe_ratio_ttm": 172.68539740126866,
     "goodwill": 4402403000.0
   },
   "fair_price": {
@@ -48,13 +48,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 93.82369446397864,
+        "value": 86.45059752078451,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 423.494270649485,
+        "value": 525.8302961950017,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 93.82369446397864,
-    "max": 423.494270649485,
+    "median": 86.45059752078451,
+    "max": 525.8302961950017,
     "low": 4.85112730244213,
-    "high": 423.494270649485,
-    "mos_pct": -310.37607928253124,
+    "high": 525.8302961950017,
+    "mos_pct": -378.70114054260284,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -99,17 +99,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 40,
+    "filing_lag_days": 41,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [
-    "sloan_accruals_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
     "value_trap_risk",
     "restatement_history",
+    "rem_suspect",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -122,32 +121,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=72)",
     "values": {
-      "Quality": 49.38,
-      "Value": 48.61,
-      "Growth": 52.4,
-      "Momentum": 67.7,
-      "Health": 67.0,
-      "Profitability": 49.58,
-      "Technical": 49.7,
-      "Risk": 43.55
+      "Quality": 48.52,
+      "Value": 50.23,
+      "Growth": 52.6,
+      "Momentum": 72.56,
+      "Health": 68.44,
+      "Profitability": 49.42,
+      "Technical": 48.51,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": -2.4064067301823924,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.36201669900221,
-  "price_change_1d_pct": 5.8997,
-  "manipulation_index": 30.0,
-  "composite_score_adjusted": 44.28,
+  "loss_chance_pct": 64.2313437223329,
+  "price_change_1d_pct": 7.4825,
+  "manipulation_index": 18.0,
+  "composite_score_adjusted": 45.74,
   "manipulation_components": {
-    "sloan_accruals_top_decile": true,
+    "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -188,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.56,
+  "osap_blended_score": 49.69,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +197,5 @@
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.086684717547461e-08
+  "cross_source_delta": 4.092977294092897e-08
 }

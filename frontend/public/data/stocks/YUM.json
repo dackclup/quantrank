@@ -5,19 +5,19 @@
   "industry": "Restaurants",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 42531107007.716675,
-  "current_price": 154.31,
-  "rank": 641,
-  "composite_score": 45.07,
+  "market_cap": 42630330808.662506,
+  "current_price": 154.67,
+  "rank": 342,
+  "composite_score": 46.35,
   "pillar_scores": {
-    "quality": 41.32,
-    "value": 34.65,
-    "growth": 62.15,
-    "momentum": 45.48,
-    "health": 24.18,
-    "profitability": 86.27,
-    "technical": 41.74,
-    "risk": 68.29,
+    "quality": 42.97,
+    "value": 40.45,
+    "growth": 60.16,
+    "momentum": 44.12,
+    "health": 24.36,
+    "profitability": 83.33,
+    "technical": 44.82,
+    "risk": 66.93,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 6.305755824981853,
     "shares_outstanding": 275621202.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 42531107007.716675,
-    "pe_ratio_ttm": 24.47129286980246,
+    "market_cap": 42630330808.662506,
+    "pe_ratio_ttm": 24.528383664362778,
     "goodwill": 971000000.0
   },
   "fair_price": {
@@ -48,10 +48,10 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 179.5443017731952,
+        "value": 147.85870053055282,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
@@ -60,10 +60,10 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 188.15657448631518,
+        "value": 132.06001221536494,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 179.5443017731952,
-    "max": 188.15657448631518,
+    "median": 132.06001221536494,
+    "max": 147.85870053055282,
     "low": 61.54370935849194,
-    "high": 188.15657448631518,
-    "mos_pct": 14.054639420680722,
+    "high": 147.85870053055282,
+    "mos_pct": -17.120993383453396,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -95,7 +95,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 40,
+    "filing_lag_days": 41,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -113,25 +113,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 46.88,
-      "Value": 51.12,
-      "Growth": 49.42,
-      "Momentum": 42.39,
-      "Health": 43.97,
-      "Profitability": 49.38,
-      "Technical": 53.07,
-      "Risk": 39.91
+      "Quality": 46.35,
+      "Value": 50.52,
+      "Growth": 52.08,
+      "Momentum": 36.4,
+      "Health": 43.51,
+      "Profitability": 52.43,
+      "Technical": 52.96,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 49.545916168817975,
-  "price_change_1d_pct": 0.6785,
+  "loss_chance_pct": 59.81808639602808,
+  "price_change_1d_pct": 0.2333,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.07,
+  "composite_score_adjusted": 46.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.46,
+  "osap_blended_score": 49.1,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -189,5 +189,5 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 9.179830011212582e-08
+  "cross_source_delta": 3.7704082126659746e-08
 }

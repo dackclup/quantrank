@@ -5,19 +5,19 @@
   "industry": "Data Center REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 64728997021.59378,
-  "current_price": 184.2,
-  "rank": 809,
+  "market_cap": 64974980198.18756,
+  "current_price": 184.9,
+  "rank": 456,
   "composite_score": 38.34,
   "pillar_scores": {
-    "quality": 30.62,
-    "value": 21.53,
-    "growth": 56.87,
-    "momentum": 64.69,
-    "health": 33.03,
-    "profitability": 37.78,
-    "technical": 42.74,
-    "risk": 55.28,
+    "quality": 30.65,
+    "value": 23.66,
+    "growth": 55.65,
+    "momentum": 62.2,
+    "health": 32.43,
+    "profitability": 37.1,
+    "technical": 45.72,
+    "risk": 53.52,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 3.9315598617861096,
     "shares_outstanding": 351406070.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 64728997021.59378,
-    "pe_ratio_ttm": 46.85163228433206,
+    "market_cap": 64974980198.18756,
+    "pe_ratio_ttm": 47.029677887820384,
     "goodwill": 9591250000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 109.97748037012835,
+        "value": 115.64443509811683,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 150.57309249305823,
+        "value": 168.80030145594384,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 130.92459253121118,
+        "value": 131.07095698415657,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 120.45103645066976,
-    "max": 150.57309249305823,
+    "median": 123.3576960411367,
+    "max": 168.80030145594384,
     "low": 45.89667521732087,
-    "high": 150.57309249305823,
-    "mos_pct": -52.925207101626356,
+    "high": 168.80030145594384,
+    "mos_pct": -49.889305515907864,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -107,11 +107,13 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 45,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],
@@ -125,23 +127,23 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Real Estate median (n=60)",
+    "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 48.85,
-      "Value": 50.21,
-      "Growth": 50.0,
-      "Momentum": 61.36,
-      "Health": 26.19,
-      "Profitability": 51.87,
-      "Technical": 53.2,
-      "Risk": 57.54
+      "Quality": 50.81,
+      "Value": 46.77,
+      "Growth": 49.19,
+      "Momentum": 58.86,
+      "Health": 26.33,
+      "Profitability": 52.15,
+      "Technical": 49.8,
+      "Risk": 52.62
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 66.35629353755247,
-  "price_change_1d_pct": 0.7438,
+  "loss_chance_pct": 68.29365716832639,
+  "price_change_1d_pct": 0.38,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 38.34,
   "manipulation_components": {
@@ -201,5 +203,5 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.017908093987915742
+  "cross_source_delta": 0.01790803423507463
 }

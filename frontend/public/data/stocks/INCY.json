@@ -5,19 +5,19 @@
   "industry": "Biotechnology",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 21682357038.2753,
-  "current_price": 108.53,
-  "rank": 49,
-  "composite_score": 65.24,
+  "market_cap": 20373784837.555428,
+  "current_price": 101.98,
+  "rank": 30,
+  "composite_score": 64.51,
   "pillar_scores": {
-    "quality": 67.93,
-    "value": 43.12,
-    "growth": 77.04,
-    "momentum": 69.26,
-    "health": 78.13,
-    "profitability": 88.95,
-    "technical": 55.52,
-    "risk": 64.47,
+    "quality": 66.53,
+    "value": 45.48,
+    "growth": 80.51,
+    "momentum": 59.56,
+    "health": 79.14,
+    "profitability": 88.7,
+    "technical": 56.32,
+    "risk": 58.73,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 7.166691139156047,
     "shares_outstanding": 199782155.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 21682357038.2753,
-    "pe_ratio_ttm": 15.143669047816315,
+    "market_cap": 20373784837.555428,
+    "pe_ratio_ttm": 14.229719319108652,
     "goodwill": 133000000.0
   },
   "fair_price": {
@@ -48,22 +48,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 170.77290603342695,
+        "value": 183.4738566610284,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 133.5039889744071,
+        "value": 85.51447737816783,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 87.55191522098548,
+        "value": 63.20876230961535,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": 28.70088093810259,
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 87.55191522098548,
-    "max": 170.77290603342695,
+    "median": 63.20876230961535,
+    "max": 183.4738566610284,
     "low": 28.70088093810259,
-    "high": 170.77290603342695,
-    "mos_pct": -23.960736330395115,
+    "high": 183.4738566610284,
+    "mos_pct": -61.338396182170364,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -95,11 +95,13 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "restatement_history",
     "accruals_momentum_high"
@@ -114,25 +116,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=92)",
+    "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 52.45,
-      "Value": 48.41,
-      "Growth": 48.3,
-      "Momentum": 41.67,
-      "Health": 60.7,
-      "Profitability": 50.09,
-      "Technical": 54.13,
-      "Risk": 42.94
+      "Quality": 52.97,
+      "Value": 52.26,
+      "Growth": 49.15,
+      "Momentum": 38.0,
+      "Health": 59.36,
+      "Profitability": 50.85,
+      "Technical": 56.32,
+      "Risk": 41.67
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 40.76823772584107,
-  "price_change_1d_pct": 0.6492,
+  "loss_chance_pct": 55.74343797127872,
+  "price_change_1d_pct": -6.0352,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 64.24,
+  "composite_score_adjusted": 63.51,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.54,
+  "osap_blended_score": 58.18,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -190,5 +192,5 @@
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.6899934760315605e-08
+  "cross_source_delta": 1.2837841846112897e-08
 }
