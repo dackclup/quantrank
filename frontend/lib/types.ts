@@ -56,6 +56,13 @@ export type StockSummary = {
   // sp500-path runs deserialize cleanly without schema-breaking changes.
   // Annotate-only — does not affect composite rank or vetoes.
   index_membership: string;
+  // Multi-index membership — Dow 30 / NDX 100 overlap tabs (0.10.23-phase8pilot).
+  // Contains the primary cohort code ("sp500" | "sp400") PLUS every overlapping
+  // index the stock is currently in ("dow30", "ndx"). Empty array [] on legacy
+  // outputs (pre-0.10.23) and on sp500-path runs before the first Dow/NDX fetch.
+  // `index_membership` (singular) is KEPT UNCHANGED — MidcapChip depends on it
+  // as the sp500/sp400 partition signal.
+  index_memberships: string[];
 };
 
 export type Metadata = {
@@ -568,6 +575,10 @@ export type StockDetail = {
   // Default "sp500" on all legacy / sp500-path outputs; "sp400" for
   // mid-cap members when QR_UNIVERSE=sp900 is active. Annotate-only.
   index_membership: string;
+  // Multi-index membership — Dow 30 / NDX 100 overlap tabs (0.10.23-phase8pilot).
+  // Mirrors StockSummary.index_memberships. Empty array [] on legacy outputs
+  // (pre-0.10.23). `index_membership` (singular) is KEPT UNCHANGED.
+  index_memberships: string[];
   // Epic #150 Phase 2.1 (issue #150) — positive-framed count of
   // valuation methods that produced a non-outlier applicable estimate.
   // Mirrors `fair_price.valuation_methods_applicable` at the top
