@@ -3,21 +3,21 @@
   "name": "Huntington Bancshares",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "exchange": "NASDAQ",
-  "country": "US",
-  "market_cap": 34886915546.37652,
-  "current_price": 17.21,
+  "exchange": null,
+  "country": null,
+  "market_cap": 35109901148.20884,
+  "current_price": 17.32,
   "rank": 812,
-  "composite_score": 38.28,
+  "composite_score": 38.34,
   "pillar_scores": {
     "quality": 31.96,
     "value": 37.62,
     "growth": 16.25,
-    "momentum": 42.9,
+    "momentum": 43.51,
     "health": 51.55,
     "profitability": 52.02,
-    "technical": 63.94,
-    "risk": 54.07,
+    "technical": 62.64,
+    "risk": 55.4,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 1.0976105901952926,
     "shares_outstanding": 2027130587.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 34886915546.37652,
-    "pe_ratio_ttm": 15.679512605113041,
+    "market_cap": 35109901148.20884,
+    "pe_ratio_ttm": 15.77973085312757,
     "goodwill": 9527000000.0
   },
   "fair_price": {
@@ -48,13 +48,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 13.652413123660871,
+        "value": 13.501523194555153,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 19.902919229053428,
+        "value": 20.06526392018622,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 15.531554890489083,
-    "max": 19.902919229053428,
+    "median": 15.456109925936225,
+    "max": 20.06526392018622,
     "low": 11.073418362302935,
-    "high": 19.902919229053428,
-    "mos_pct": -10.806672003016175,
+    "high": 20.06526392018622,
+    "mos_pct": -12.05924244728799,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -127,22 +127,22 @@
     "label": "Financials median (n=140)",
     "values": {
       "Quality": 50.36,
-      "Value": 51.99,
+      "Value": 52.05,
       "Growth": 50.62,
-      "Momentum": 55.9,
+      "Momentum": 56.93,
       "Health": 55.6,
       "Profitability": 49.02,
-      "Technical": 54.69,
-      "Risk": 58.59
+      "Technical": 56.86,
+      "Risk": 59.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.64233711479233,
-  "price_change_1d_pct": -1.7694,
+  "loss_chance_pct": 68.05024896540942,
+  "price_change_1d_pct": 0.6392,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.28,
+  "composite_score_adjusted": 38.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.07,
+  "osap_blended_score": 45.1,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,5 +200,5 @@
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.44583876524529e-08
+  "cross_source_delta": null
 }

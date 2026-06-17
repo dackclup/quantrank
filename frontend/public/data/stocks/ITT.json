@@ -3,21 +3,21 @@
   "name": "ITT Inc.",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "exchange": "NYSE",
-  "country": "US",
-  "market_cap": 17449091345.214844,
-  "current_price": 195.18,
-  "rank": 807,
-  "composite_score": 38.37,
+  "exchange": null,
+  "country": null,
+  "market_cap": 17351645672.60742,
+  "current_price": 194.09,
+  "rank": 813,
+  "composite_score": 38.19,
   "pillar_scores": {
     "quality": 13.4,
-    "value": 36.4,
+    "value": 36.8,
     "growth": 52.18,
-    "momentum": 61.45,
+    "momentum": 60.64,
     "health": 49.73,
     "profitability": 36.85,
-    "technical": 54.49,
-    "risk": 61.12,
+    "technical": 51.52,
+    "risk": 60.57,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 5.1644295302013425,
     "shares_outstanding": 89400000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 17449091345.214844,
-    "pe_ratio_ttm": 37.79313698335465,
+    "market_cap": 17351645672.60742,
+    "pe_ratio_ttm": 37.58207856315231,
     "goodwill": 3787900000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 145.9938771558052,
+        "value": 147.45506307771896,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 242.6806408879846,
+        "value": 244.62768478142763,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 136.62818372656116,
+        "value": 138.51375818607707,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 145.9938771558052,
-    "max": 242.6806408879846,
-    "low": 136.62818372656116,
-    "high": 242.6806408879846,
-    "mos_pct": -33.69053310878542,
+    "median": 147.45506307771896,
+    "max": 244.62768478142763,
+    "low": 138.51375818607707,
+    "high": 244.62768478142763,
+    "mos_pct": -31.626539154909754,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -95,7 +95,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-06"
   },
@@ -116,22 +116,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 47.97,
+      "Value": 47.82,
       "Growth": 50.26,
-      "Momentum": 52.72,
+      "Momentum": 53.59,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 53.37,
-      "Risk": 53.65
+      "Technical": 53.16,
+      "Risk": 53.37
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.60578708652101,
-  "price_change_1d_pct": 3.1989,
+  "loss_chance_pct": 59.972978435427066,
+  "price_change_1d_pct": -0.5585,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.37,
+  "composite_score_adjusted": 38.19,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.11,
+  "osap_blended_score": 45.02,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -189,5 +189,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.004919782989656833
+  "cross_source_delta": null
 }
