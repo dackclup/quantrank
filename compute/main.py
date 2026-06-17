@@ -1946,12 +1946,21 @@ def run_weekly_compute() -> int:
     # ONCE from the cohort_by_ticker dict + the pre-fetched Dow30/NDX sets.
     # Runs on both sp500 and sp900 paths (Dow/NDX are sp500 subsets; sp400
     # tickers simply won't appear in _dow30_tickers/_ndx_tickers).
+    #
+    # Russell 1000 proxy: market_cap_by_ticker is already built above
+    # (lines ~1916-1929, the CIK-collision pre-compute block) as
+    # price × shares_outstanding for every ticker with a non-None snapshot.
+    # We pass it here so derive_index_memberships can apply the Russell 1000
+    # proxy rule (cap present + positive → "russell1000" tag) without any
+    # additional fetch.  Tickers with None cap (missing snapshot /
+    # shares_outstanding) simply do not get the tag.
     memberships_by_ticker: dict[str, list[str]] = {
         ticker: derive_index_memberships(
             ticker,
             cohort=cohort,
             dow30=_dow30_tickers,
             ndx=_ndx_tickers,
+            market_cap=market_cap_by_ticker.get(ticker),
         )
         for ticker, cohort in cohort_by_ticker.items()
     }

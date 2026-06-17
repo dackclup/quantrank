@@ -4506,3 +4506,41 @@ frontend-design-reviewer + phase-coordinator Mode B/C. NOTE: the first compute P
 pre-merge-prod-sim runs sp900 (~131-240 min cold v10).
 
 ---
+
+## PR #494 — feat(compute+frontend): Russell 1000 (RUI) overlap tab via market-cap proxy (in flight, 2026-06-17)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: feat(compute+frontend); **NO schema bump** —
+`index_memberships: list[str]` already exists (#493); this only adds a new VALUE `"russell1000"`.
+SCHEMA_VERSION stays `0.10.23-phase8pilot`; defense layer UNCHANGED at 34.
+
+- **Reverses the #493 "Russell deferred" note** — owner chose the **market-cap proxy** (2026-06-17),
+  accepting that RUI over the sp900 universe is ~redundant with All-stocks (a labeled cohort view,
+  ~900 rows, NOT a distinct ranking). Composite scores remain the 902-universe cross-section; the tab
+  separates display only.
+- **`russell1000` market-cap proxy** — `derive_index_memberships` gains a keyword-only
+  `market_cap: float | None = None`; appends `"russell1000"` iff `market_cap is not None and market_cap > 0`.
+  Ordering: cohort → dow30 → ndx → russell1000. Rationale: the S&P MidCap 400 eligibility floor
+  (~$6-7B) sits ABOVE the Russell 1000 inclusion cutoff (~$3-4B), so **every S&P 900 constituent is a
+  Russell 1000 member by construction** — the cap-presence gate is the predicate; NO hardcoded dollar
+  floor (a moving FTSE target), NO external fetch, NO FTSE list. Pure proxy over data we already have.
+- **`compute/main.py`** — `market_cap=market_cap_by_ticker.get(ticker)` threaded into the
+  `memberships_by_ticker` comprehension. `market_cap_by_ticker` (price × shares, `None` on missing
+  snapshot) is already computed upstream in the CIK-collision pre-compute block → zero structural
+  change; the `.get()→None` miss leaves the tag off (correct).
+- **`index_membership` (singular) UNCHANGED** — still the sp500/sp400 partition from `cohort_by_ticker`.
+  **RUT/RUA stay SOON** (Russell 2000 needs small-cap / S&P 600 ingest we don't do; Russell 3000 redundant).
+- **`frontend/components/RankingView.tsx`** — RUI tab: `filterAndRerank` on
+  `index_memberships?.includes('russell1000')`; `computeAvailableCodes` lights RUI iff ≥1 row carries
+  the code; `tabConfig` ("Russell 1000 ranking"); `FULL_INDEX_SIZE={…,RUI:1000}`; honesty-note IIFE —
+  "N of 1000 … the entire S&P 900 universe falls within the Russell 1000 … (partial overlap)".
+  `IndexTabs` UNCHANGED (RUI already in `INDICES_US`; data-driven SOON→active).
+- **Schema triple UNTOUCHED** (no schema change → schema-sentinel N/A). **Tests**:
+  `test_index_memberships.py` +9 (`TestRussell1000Membership`: positive/None/zero/negative-cap gates,
+  cohort→dow30→ndx→russell1000 ordering contract, sp400 path, dow30/ndx regression guard,
+  additive-only semantics, main.py wiring contract) + Hypothesis `valid_codes` now includes
+  `"russell1000"` and the strategy exercises the `market_cap` branch. 54 → 63.
+
+Gate: quantrank-reviewer (opus) + frontend-design-reviewer + phase-coordinator Mode B. No
+schema-sentinel (schema untouched); no methodology-scientist (display-only tag — no defense/scoring change).
+
+---

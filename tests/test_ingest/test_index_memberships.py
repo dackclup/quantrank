@@ -134,6 +134,189 @@ class TestDeriveIndexMemberships:
 
 
 # ---------------------------------------------------------------------------
+# 1b. russell1000 proxy — new market_cap branch (0.10.23+ / russell1000 tag)
+# ---------------------------------------------------------------------------
+
+
+class TestRussell1000Membership:
+    """Tests for the russell1000 proxy tag added to derive_index_memberships.
+
+    Production rule: append "russell1000" iff market_cap is not None and > 0.
+    Ordering: cohort → dow30 → ndx → russell1000.
+    """
+
+    def test_sp900_ticker_with_positive_cap_gets_russell1000(self):
+        """Positive market_cap → 'russell1000' appended; exact order preserved."""
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "AAPL", cohort="sp500", dow30=set(), ndx=set(), market_cap=1_000_000_000
+        )
+        assert result == ["sp500", "russell1000"]
+        assert "russell1000" in result
+
+    def test_sp900_ticker_with_none_cap_no_russell1000(self):
+        """market_cap=None (missing snapshot) → 'russell1000' NOT in result."""
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "AAPL", cohort="sp500", dow30=set(), ndx=set(), market_cap=None
+        )
+        assert "russell1000" not in result
+
+    def test_sp900_ticker_with_zero_cap_no_russell1000(self):
+        """market_cap=0.0 (zero) → 'russell1000' NOT in result."""
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "AAPL", cohort="sp500", dow30=set(), ndx=set(), market_cap=0.0
+        )
+        assert "russell1000" not in result
+
+    def test_sp900_ticker_with_negative_cap_no_russell1000(self):
+        """market_cap=-1.0 (defensive boundary) → 'russell1000' NOT in result."""
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "AAPL", cohort="sp500", dow30=set(), ndx=set(), market_cap=-1.0
+        )
+        assert "russell1000" not in result
+
+    def test_all_memberships_ordering_contract(self):
+        """Ticker in dow30 AND ndx AND positive cap → exact ordering contract."""
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "AAPL",
+            cohort="sp500",
+            dow30={"AAPL"},
+            ndx={"AAPL"},
+            market_cap=3_000_000_000_000,
+        )
+        assert result == ["sp500", "dow30", "ndx", "russell1000"]
+
+    def test_sp400_ticker_with_positive_cap_gets_russell1000(self):
+        """sp400 midcap with positive market_cap → exact ['sp400', 'russell1000']."""
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "BRKR", cohort="sp400", dow30=set(), ndx=set(), market_cap=5_000_000_000
+        )
+        assert result == ["sp400", "russell1000"]
+
+    def test_dow30_and_ndx_unaffected_by_market_cap(self):
+        """dow30/ndx membership is unchanged whether market_cap is supplied or not."""
+        from compute.ingest.universe import derive_index_memberships
+
+        # Without market_cap — dow30 + ndx still both present
+        result_no_cap = derive_index_memberships(
+            "AAPL", cohort="sp500", dow30={"AAPL"}, ndx={"AAPL"}
+        )
+        # With market_cap — dow30 + ndx still both present (russell1000 also added)
+        result_with_cap = derive_index_memberships(
+            "AAPL", cohort="sp500", dow30={"AAPL"}, ndx={"AAPL"}, market_cap=1e12
+        )
+        # Both should carry dow30 and ndx regardless
+        assert "dow30" in result_no_cap
+        assert "ndx" in result_no_cap
+        assert "dow30" in result_with_cap
+        assert "ndx" in result_with_cap
+        # Only result_with_cap carries russell1000
+        assert "russell1000" not in result_no_cap
+        assert "russell1000" in result_with_cap
+
+    def test_singular_index_membership_semantics_unchanged(self):
+        """russell1000 is an ADDITIVE code; cohort is always memberships[0].
+
+        Documents that derive_index_memberships never conflates cohort codes
+        with russell1000: the first element is always the primary cohort, and
+        russell1000 can only appear as a trailing additive element — never in
+        position [0] where it could be confused with the singular
+        index_membership field (set from cohort_by_ticker, not this helper).
+        """
+        from compute.ingest.universe import derive_index_memberships
+
+        for cohort in ("sp500", "sp400"):
+            result = derive_index_memberships(
+                "XYZ", cohort=cohort, dow30=set(), ndx=set(), market_cap=1e9
+            )
+            # Primary cohort is always first
+            assert result[0] == cohort, (
+                f"Expected cohort {cohort!r} first, got {result!r}"
+            )
+            # russell1000 is additive — never in position 0
+            assert result.index("russell1000") > 0, (
+                f"russell1000 must not be at position 0 in {result!r}"
+            )
+
+    def test_main_memberships_by_ticker_russell1000_wiring(self):
+        """Integration smoke for the main.py memberships_by_ticker comprehension.
+
+        The comprehension is:
+            memberships_by_ticker = {
+                ticker: derive_index_memberships(
+                    ticker, cohort=cohort, dow30=..., ndx=...,
+                    market_cap=market_cap_by_ticker.get(ticker),
+                )
+                for ticker, cohort in cohort_by_ticker.items()
+            }
+
+        We replicate that comprehension exactly here — no full compute.main
+        invocation — to confirm:
+          - .get() miss (key absent) → None → no russell1000 tag
+          - .get() hit with None value → None → no russell1000 tag
+          - .get() hit with 0.0 → no russell1000 tag
+          - .get() hit with positive float → russell1000 tag present
+        """
+        from compute.ingest.universe import derive_index_memberships
+
+        # Mirrors market_cap_by_ticker as built in main.py lines ~1916-1929
+        market_cap_by_ticker: dict[str, float | None] = {
+            "AAPL": 3_000_000_000_000.0,  # positive → russell1000 expected
+            "BRKR": 5_000_000_000.0,       # positive sp400 → russell1000 expected
+            "OZK": None,                   # None (missing snapshot) → no tag
+            "GHOST": 0.0,                  # zero → no tag
+        }
+        # cohort_by_ticker as built in main.py lines ~1941-1944
+        cohort_by_ticker: dict[str, str] = {
+            "AAPL": "sp500",
+            "BRKR": "sp400",
+            "OZK": "sp500",
+            "GHOST": "sp500",
+        }
+
+        # Replicate the main.py comprehension (including the .get() miss path
+        # for a ticker that is in cohort_by_ticker but absent from
+        # market_cap_by_ticker — e.g. the "MISS" case)
+        cohort_by_ticker["MISS"] = "sp500"  # in cohort map, but not in cap map
+
+        memberships_by_ticker: dict[str, list[str]] = {
+            ticker: derive_index_memberships(
+                ticker,
+                cohort=cohort,
+                dow30=set(),
+                ndx=set(),
+                market_cap=market_cap_by_ticker.get(ticker),  # .get() → None on miss
+            )
+            for ticker, cohort in cohort_by_ticker.items()
+        }
+
+        # Positive cap → russell1000
+        assert "russell1000" in memberships_by_ticker["AAPL"]
+        assert "russell1000" in memberships_by_ticker["BRKR"]
+        # None cap (explicit None value) → no tag
+        assert "russell1000" not in memberships_by_ticker["OZK"]
+        # Zero cap → no tag
+        assert "russell1000" not in memberships_by_ticker["GHOST"]
+        # .get() miss (key absent from market_cap_by_ticker) → None → no tag
+        assert "russell1000" not in memberships_by_ticker["MISS"]
+
+        # Cohort always first regardless of cap
+        assert memberships_by_ticker["AAPL"][0] == "sp500"
+        assert memberships_by_ticker["BRKR"][0] == "sp400"
+
+
+# ---------------------------------------------------------------------------
 # 1b. Hypothesis property test — primary cohort always in memberships
 # ---------------------------------------------------------------------------
 
@@ -184,18 +367,29 @@ class TestDeriveIndexMembershipsProperties:
             st.text(min_size=1, max_size=6, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ-"),
             max_size=110,
         ),
+        # market_cap: None | float≤0 | float>0 — exercises all three branches
+        # of the russell1000 proxy gate.  st.none() | st.floats() covers the
+        # full domain including zero, negatives, and large positives.
+        market_cap=st.one_of(
+            st.none(),
+            st.floats(min_value=-1e15, max_value=1e15, allow_nan=False, allow_infinity=False),
+        ),
     )
     @settings(max_examples=200)
-    def test_only_valid_codes_in_result(self, ticker, cohort, dow30_tickers, ndx_tickers):
-        """Property: result contains only known index codes."""
+    def test_only_valid_codes_in_result(
+        self, ticker, cohort, dow30_tickers, ndx_tickers, market_cap
+    ):
+        """Property: result contains only known index codes (incl. russell1000)."""
         from compute.ingest.universe import derive_index_memberships
 
-        valid_codes = {"sp500", "sp400", "dow30", "ndx"}
+        # "russell1000" is now a valid output code (added by the market_cap branch)
+        valid_codes = {"sp500", "sp400", "dow30", "ndx", "russell1000"}
         result = derive_index_memberships(
             ticker,
             cohort=cohort,
             dow30=set(dow30_tickers),
             ndx=set(ndx_tickers),
+            market_cap=market_cap,
         )
         for code in result:
             assert code in valid_codes, f"Unknown code {code!r} in {result!r}"

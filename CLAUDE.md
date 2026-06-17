@@ -339,7 +339,8 @@ always-loaded context small while preserving discoverability of every invariant.
 - **The IC-decay monitor (`decay_report.json`, #75 §3) is a MONITOR — NEVER vetoes / changes scores; `alert` stays suppressed until ≥12 monthly IC points/pillar (`preliminary`); the JSON is dataclass-emitted, NOT in the schema triple (only `Metadata.decay_report_url` is); cron-wired in `compute/main.py` under `QR_SKIP_DECAY_MONITOR`**
 - **`edgar_form4` cache is in the SLOW-TEXT bundle (run-id key, always saves), NOT the fast bundle — precache-900 Phase A move (both workflows, lockstep) so midcap Form-4 persists; the fast bundle's exact quarter-key skips the save on a warm hit (Phase B v9→v10 bump at the flip — #485 took v9 — handles sp400 fundamentals/prices)**
 - **`fundamentals_unavailable` is a DIRECT veto (#487, widened 2026-06-16) — fires on NO-USABLE-FUNDAMENTALS: `snap is None` (complete EDGAR ingest failure, OZK/PBF) OR a non-None snap with ALL 34 metrics null (`_snapshot_has_no_usable_fundamentals`, FDXF empty-snap case) → cautious + Top-5 suppress; FP rate structurally zero (input-absence) so annotate-before-veto does NOT bind (DQIC issue #18 governing precedent); defense layer stays 34 (domain widening, no new flag). Distinct from `data_quality_input_corruption` (requires a PRESENT field internally inconsistent — never fires when all null) — partition is no-usable-fundamentals vs present-but-corrupt, `test_D3` locks it**
-- **`index_membership` (singular, sp500/sp400 partition — MidcapChip + survivorship-ledger verifier depend on it) vs `index_memberships` (plural list — all indices incl. dow30/ndx) — never consolidate the two; the ledger verifier reads the SINGULAR field**
+- **`index_membership` (singular, sp500/sp400 partition — MidcapChip + survivorship-ledger verifier depend on it) vs `index_memberships` (plural list — all indices incl. dow30/ndx/russell1000) — never consolidate the two; the ledger verifier reads the SINGULAR field**
+- **`russell1000` in `index_memberships` is a market-cap PROXY, NOT a fetched FTSE list — every S&P 900 constituent qualifies (sp400 floor > Russell cutoff), so the RUI tab ≈ All-stocks by design; RUT/RUA stay SOON (need small-cap ingest)**
 
 ## Phase status
 
@@ -368,12 +369,12 @@ on structural compounders — disposition routed to issue #454 for the Q3
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
-**In flight** (not yet merged on `main`): **#493** (multi-index membership `0.10.23` — Dow 30 / NDX 100 overlap tabs, `index_memberships: list[str]`, DJI/NDX frontend tabs; see PHASE_STATUS_INFLIGHT.md). Merged
+**In flight** (not yet merged on `main`): **#494** (Russell 1000 (RUI) overlap tab — market-cap proxy appends `"russell1000"` to `index_memberships`; NO schema bump, SCHEMA_VERSION stays `0.10.23-phase8pilot`; defense layer 34; see PHASE_STATUS_INFLIGHT.md). Merged
 since last Mode C: **#485** (fix+test: APA `OilAndGasRevenue` #385 +
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
 `universe` dispatch input) · **#487** (`fundamentals_unavailable` veto,
-schema `0.10.22`, defense 34) · **#488** (Mode C bump) · **#492** (precache-900 Phase B — cache-v10 fast-bundle + cron-default flip sp500→sp900). precache-900 Phase B (#492 — cache-v10 fast-bundle bump + cron-default flip sp500→sp900) **MERGED 2026-06-16**; the gated sequence is COMPLETE — the weekday cron now ranks S&P 900 by default. Next: ≥ 2 green sp900 crons confirm the firing-rates hold, then frontend PR 4 (midcap badge). Detail: PHASE_STATUS_INFLIGHT.md.
+schema `0.10.22`, defense 34) · **#488** (Mode C bump) · **#492** (precache-900 Phase B — cache-v10 fast-bundle + cron-default flip sp500→sp900) · **#493** (multi-index membership `0.10.23` — `index_memberships: list[str]`, Dow 30 / NDX 100 DJI/NDX tabs). precache-900 Phase B (#492) + multi-index membership (#493) **MERGED 2026-06-16/17**; the gated sequence is COMPLETE — the weekday cron now ranks S&P 900 by default. Next: ≥ 2 green sp900 crons confirm the firing-rates hold, then frontend PR 4 (midcap badge). Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see

@@ -45,10 +45,11 @@ type TabConfig = {
 
 // Definitional sizes for indices that are PARTIAL overlaps with the S&P 900
 // ingested universe. Used to render an honesty note under the count line.
-// DJI = 30, NDX = 100. Any index whose full size equals our row count gets no note.
+// DJI = 30, NDX = 100, RUI = 1000. Any index whose full size equals our row count gets no note.
 const FULL_INDEX_SIZE: Partial<Record<IndexCode, number>> = {
   DJI: 30,
   NDX: 100,
+  RUI: 1000,
 };
 
 function tabConfig(code: IndexCode, universeCode: string): TabConfig {
@@ -57,8 +58,9 @@ function tabConfig(code: IndexCode, universeCode: string): TabConfig {
     case 'MID': return { h1: 'S&P MidCap 400 ranking',       countLabel: 'S&P 400 mid-caps' };
     case 'DJI': return { h1: 'Dow 30 ranking',               countLabel: 'Dow 30 companies' };
     case 'NDX': return { h1: 'NASDAQ 100 ranking',           countLabel: 'NASDAQ 100 companies' };
+    case 'RUI': return { h1: 'Russell 1000 ranking',         countLabel: 'Russell 1000 companies' };
     case 'ALL': return { h1: `${universeLabel(universeCode)} ranking`, countLabel: 'companies' };
-    // For future tabs (SML / RUI / …) — should never be reachable as
+    // For future tabs (SML / RUT / RUA / COMP / …) — should never be reachable as
     // active while still SOON, but guard defensively.
     default:    return { h1: 'Ranking',                      countLabel: 'companies' };
   }
@@ -85,8 +87,16 @@ function filterAndRerank(data: StockSummary[], code: IndexCode): StockSummary[] 
     // surfaced in the "N of 100" note below).
     // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
     filtered = data.filter((r) => r.index_memberships?.includes('ndx'));
+  } else if (code === 'RUI') {
+    // Russell 1000 overlap: the entire S&P 900 universe falls within the
+    // Russell 1000 (the 1000 largest US companies by market cap). The
+    // remaining ~98-100 Russell 1000 members are companies below our S&P 900
+    // ingestion line that we don't ingest. The "N of 1000" honesty note
+    // below surfaces the partial-overlap count.
+    // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
+    filtered = data.filter((r) => r.index_memberships?.includes('russell1000'));
   } else {
-    // Not yet wired (future: SML / RUI / RUT / RUA / COMP).
+    // Not yet wired (future: SML / RUT / RUA / COMP).
     filtered = [];
   }
 
@@ -115,6 +125,7 @@ function computeAvailableCodes(data: StockSummary[]): ReadonlySet<IndexCode> {
   // legacy/empty index_memberships ([]) produces false without crashing.
   if (data.some((r) => r.index_memberships?.includes('dow30'))) available.add('DJI');
   if (data.some((r) => r.index_memberships?.includes('ndx'))) available.add('NDX');
+  if (data.some((r) => r.index_memberships?.includes('russell1000'))) available.add('RUI');
 
   return available;
 }
@@ -221,6 +232,18 @@ export function RankingView({
                 {isPartial
                   ? ` ${cohortRows.length} of ${full} NASDAQ‑100 members — the rest aren’t in the S&P 900 ingested universe yet (partial overlap).`
                   : ` All ${full} NASDAQ‑100 members are represented in the ingested universe.`}
+                {' '}Re-numbered 1..{cohortRows.length} within this cohort.
+              </span>
+            );
+          })()}
+          {safeTab === 'RUI' && (() => {
+            const full = FULL_INDEX_SIZE.RUI ?? 1000;
+            const isPartial = cohortRows.length < full;
+            return (
+              <span>
+                {isPartial
+                  ? ` ${cohortRows.length} of ${full} Russell 1000 members — the entire S&P 900 universe falls within the Russell 1000 (the 1000 largest US companies by market cap); the rest aren’t in our ingested universe (partial overlap).`
+                  : ` All ${full} Russell 1000 members are represented in the ingested universe.`}
                 {' '}Re-numbered 1..{cohortRows.length} within this cohort.
               </span>
             );
