@@ -3,8 +3,8 @@
   "name": "Kraft Heinz",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "exchange": null,
-  "country": null,
+  "exchange": "NASDAQ",
+  "country": "US",
   "market_cap": 28221506879.723457,
   "current_price": 23.8,
   "rank": 822,
@@ -185,11 +185,16 @@
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
+  "index_memberships": [
+    "sp500",
+    "ndx",
+    "russell1000"
+  ],
   "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 20,
     "latest_filing_date": "2026-05-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null
+  "cross_source_delta": 0.025210002384196892
 }

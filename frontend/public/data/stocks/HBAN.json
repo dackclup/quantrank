@@ -3,8 +3,8 @@
   "name": "Huntington Bancshares",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "exchange": null,
-  "country": null,
+  "exchange": "NASDAQ",
+  "country": "US",
   "market_cap": 35109901148.20884,
   "current_price": 17.32,
   "rank": 812,
@@ -194,11 +194,15 @@
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
+  "index_memberships": [
+    "sp500",
+    "russell1000"
+  ],
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 29,
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null
+  "cross_source_delta": 0.027136188398452516
 }

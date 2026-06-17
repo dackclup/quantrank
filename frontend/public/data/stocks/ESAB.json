@@ -3,8 +3,8 @@
   "name": "ESAB",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "exchange": null,
-  "country": null,
+  "exchange": "NYSE",
+  "country": "US",
   "market_cap": 6240375480.0,
   "current_price": 102.5,
   "rank": 817,
@@ -179,11 +179,15 @@
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 10,
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null
+  "cross_source_delta": 0.032292650441604516
 }

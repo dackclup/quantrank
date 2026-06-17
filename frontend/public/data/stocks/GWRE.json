@@ -3,8 +3,8 @@
   "name": "Guidewire Software",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "exchange": null,
-  "country": null,
+  "exchange": "NYSE",
+  "country": "US",
   "market_cap": 9779292439.216522,
   "current_price": 117.46,
   "rank": 816,
@@ -105,7 +105,8 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
-    "value_trap_risk"
+    "value_trap_risk",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 10.54942778908769,
@@ -187,11 +188,15 @@
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 5,
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null
+  "cross_source_delta": 0.05355009827873371
 }

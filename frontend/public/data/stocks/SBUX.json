@@ -3,8 +3,8 @@
   "name": "Starbucks",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "exchange": null,
-  "country": null,
+  "exchange": "NASDAQ",
+  "country": "US",
   "market_cap": 115884696347.80884,
   "current_price": 101.68,
   "rank": 818,
@@ -185,11 +185,16 @@
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
+  "index_memberships": [
+    "sp500",
+    "ndx",
+    "russell1000"
+  ],
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 14,
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null
+  "cross_source_delta": 0.018292705617025333
 }
