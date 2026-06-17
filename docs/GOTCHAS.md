@@ -1667,10 +1667,36 @@ the sp900 dispatch run #107: OZK + FDXF = 2.
 (`current_universe()` filters `index_membership == "sp500"` → must return exactly the 502 sp500
 names; the survivorship band (498,506) depends on it). `index_memberships: list[str]`
 (0.10.23-phase8pilot) is a SEPARATE additive field carrying the primary cohort code PLUS every
-overlapping index ("dow30","ndx"). The two serve different consumers + carry different shapes
+overlapping index ("dow30","ndx","russell1000"). The two serve different consumers + carry different shapes
 (str vs list[str]). **Never remove/rename `index_membership` (singular)** — it breaks the ledger
 verifier + MidcapChip with NO compile-time error (both fields optional-with-default). The
 `test_ledger_unchanged` regression in `tests/test_ingest/test_index_memberships.py` locks it.
 Dynamic-derivation note: Dow/NDX membership is derived each run from Wikipedia sets (no
 ADD/REMOVE ledger) because it is display-only (no scoring/veto); `data/sp500_membership_historical.csv`
 is UNTOUCHED by the plural field.
+
+## `russell1000` in `index_memberships` is a market-cap PROXY — RUI tab ≈ All-stocks by design
+
+`"russell1000"` is appended to a stock's `index_memberships` list iff `market_cap is not None and
+market_cap > 0` (see `derive_index_memberships` in `compute/ingest/universe.py`, #494). There is NO
+hardcoded dollar floor and NO external fetch from FTSE Russell — the S&P MidCap 400 eligibility floor
+(~$6-7B) sits above the Russell 1000 inclusion cutoff (~$3-4B) by construction, so every S&P 900
+constituent that has a non-None market_cap qualifies. The result: the RUI tab in `RankingView.tsx`
+shows ~900 rows (the full sp900 universe minus the rare no-market-cap ticker), NOT a distinct subset.
+The tab is intentionally labeled with an honesty note ("the entire S&P 900 universe falls within the
+Russell 1000 … partial overlap").
+
+**Implications**:
+- Do NOT add a dollar-floor constant against the Russell cutoff — the cutoff is a moving FTSE target
+  and we do not fetch it.
+- Do NOT try to fetch the FTSE Russell constituent list — it is not publicly available in
+  machine-readable form for automated use.
+- **RUT (Russell 2000) / RUA (Russell 3000)** stay **SOON** — they require small-cap ingest
+  (sub-S&P-400 names) the current pipeline does not do; Russell 3000 ≈ sp900 + small-caps → not
+  useful without the small-cap slice.
+- `index_membership` (singular) is UNCHANGED — still the sp500/sp400 partition from
+  `cohort_by_ticker`. The ledger verifier reads the SINGULAR field; the proxy logic in
+  `derive_index_memberships` only touches the PLURAL field.
+- `test_index_memberships.py` `TestRussell1000Membership` (9 tests, #494) locks the
+  positive/None/zero/negative-cap gate, the cohort→dow30→ndx→russell1000 ordering contract, and the
+  dow30/ndx regression guard.

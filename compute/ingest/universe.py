@@ -581,31 +581,79 @@ def derive_index_memberships(
     cohort: str,
     dow30: set[str],
     ndx: set[str],
+    market_cap: float | None = None,
 ) -> list[str]:
     """Derive the full list of index membership codes for a single ticker.
 
     Returns a list containing the primary cohort code (``"sp500"`` or
-    ``"sp400"``) PLUS ``"dow30"`` and/or ``"ndx"`` for each overlapping
-    index the ticker is currently in.
+    ``"sp400"``) PLUS ``"dow30"`` and/or ``"ndx"`` and/or ``"russell1000"``
+    for each overlapping index the ticker is currently in.
 
     This is a PURE function (no I/O, no side effects) — all inputs must
     be pre-fetched by the caller.  The primary cohort is always first so
     consumers can use ``memberships[0]`` as the partition key.
 
     Args:
-        ticker:  Normalised ticker symbol (uppercase, dot→dash).
-        cohort:  Primary index cohort — ``"sp500"`` | ``"sp400"``.
-        dow30:   Set of DOW 30 tickers (may be empty on fetch failure).
-        ndx:     Set of NDX 100 tickers (may be empty on fetch failure).
+        ticker:      Normalised ticker symbol (uppercase, dot→dash).
+        cohort:      Primary index cohort — ``"sp500"`` | ``"sp400"``.
+        dow30:       Set of DOW 30 tickers (may be empty on fetch failure).
+        ndx:         Set of NDX 100 tickers (may be empty on fetch failure).
+        market_cap:  Per-ticker market cap in dollars (price × shares).
+                     Used for the Russell 1000 proxy gate (see below).
+                     ``None`` means the cap is unknown; default ``None``.
 
     Returns:
-        e.g. ``["sp500", "dow30", "ndx"]`` for an AAPL-shaped ticker,
-        ``["sp400"]`` for a midcap-only name,
-        ``["sp500"]`` when dow30/ndx sets are both empty (degraded fetch).
+        e.g. ``["sp500", "dow30", "ndx", "russell1000"]`` for an
+        AAPL-shaped ticker with a known positive market cap,
+        ``["sp400", "russell1000"]`` for a midcap-only name with a known cap,
+        ``["sp500"]`` when dow30/ndx sets are both empty (degraded fetch)
+        and market_cap is None or zero.
+
+    Russell 1000 proxy rationale
+    ----------------------------
+    The Russell 1000 is defined by FTSE Russell as the ~1000 largest US
+    companies by market cap.  Our ingested universe is exactly S&P 500 +
+    S&P 400 (~902 names).  The S&P MidCap 400's own market-cap eligibility
+    floor (~$6-7B in recent years) sits ABOVE the Russell 1000 inclusion
+    cutoff (~$3-4B), so every S&P 900 constituent that FTSE Russell knows
+    about is a Russell 1000 member by construction.
+
+    Therefore the proxy rule is:
+
+        tag ``"russell1000"`` iff ``market_cap is not None and market_cap > 0``
+
+    Rationale for NOT hardcoding a dollar floor:
+      - The FTSE Russell cutoff is a moving target (reconstituted annually
+        every June); any hardcoded floor would be guesswork and would drift
+        stale across years.
+      - The S&P-900 ⊂ Russell-1000 structural argument is the honest,
+        non-fragile assertion: if a ticker is in the S&P 900 and we have a
+        measurable positive market cap, we can assert Russell 1000 membership
+        with high confidence.
+      - If we do NOT know the market cap (``None``, which happens when the
+        snapshot is missing or shares_outstanding is None), we do NOT assert
+        Russell membership — absence of evidence is the conservative choice.
+      - Zero or negative cap (should not occur on live data, but defensively
+        handled) also suppresses the tag.
+
+    This function requires NO new external fetch, no config URL, no cache
+    constant, and no Wikipedia source.  Contrast: dow30/ndx required
+    ``fetch_dow30_constituents`` / ``fetch_ndx_constituents``; russell1000
+    derives purely from data already in hand.  RUT (Russell 2000) and RUA
+    (Russell 3000) are NOT tagged — those require small-cap ingest we do not
+    perform and are reserved for a future phase.
+
+    Ordering: cohort → dow30 → ndx → russell1000 (deterministic; do not
+    reorder without updating all callers and test fixtures).
     """
     result: list[str] = [cohort]
     if ticker in dow30:
         result.append("dow30")
     if ticker in ndx:
         result.append("ndx")
+    # Russell 1000 proxy: every S&P 900 name with a known positive market cap
+    # qualifies by construction (see extended docstring above).  No hardcoded
+    # dollar floor — the cap-presence gate is the rule.
+    if market_cap is not None and market_cap > 0:
+        result.append("russell1000")
     return result
