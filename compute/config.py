@@ -38,7 +38,11 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # 0.10.20-phase4.6 (issue #75 §3) layers the additive
 # ``Metadata.decay_report_url`` on top of 0.10.19-phase8pilot (#479's S&P 900
 # cohort diagnostics) — the next monotonic patch after #479 took 0.10.19.
-SCHEMA_VERSION: str = "0.10.22-phase8pilot"
+# 0.10.23-phase8pilot — additive ``index_memberships: list[str]`` on
+# ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
+# ``index_membership`` (singular) is kept unchanged — MidcapChip + the
+# membership-ledger script depend on it as the sp500/sp400 partition.
+SCHEMA_VERSION: str = "0.10.23-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -119,6 +123,19 @@ WIKIPEDIA_SP400_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_400_comp
 SP400_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp400-v1.parquet"
 # SP900 = SP500 ∪ SP400 combined universe cache (de-duped, cohort column).
 SP900_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp900-v1.parquet"
+# Multi-index membership — Dow 30 + NASDAQ 100 overlap tabs (0.10.23-phase8pilot).
+# Wikipedia pages for Dow Jones Industrial Average + Nasdaq-100 components.
+# 7-day TTL matches the SP500/SP400 cache cadence.
+WIKIPEDIA_DOW_URL: str = "https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average"
+WIKIPEDIA_NDX_URL: str = "https://en.wikipedia.org/wiki/Nasdaq-100"
+DOW30_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_dow30-v1.json"
+NDX_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_ndx-v1.json"
+DOW30_CACHE_MAX_AGE_DAYS: int = 7
+NDX_CACHE_MAX_AGE_DAYS: int = 7
+# Sanity bands: reject obviously-broken scrapes.
+DOW30_EXPECTED_COUNT: int = 30  # Dow is always exactly 30 components
+NDX_MIN_COUNT: int = 95
+NDX_MAX_COUNT: int = 105
 HTTP_USER_AGENT: str = "QuantRank/0.3 (+https://github.com/dackclup/quantrank)"
 
 # --- Phase 3c: fair price ensemble + Tier-1 defense constants ---

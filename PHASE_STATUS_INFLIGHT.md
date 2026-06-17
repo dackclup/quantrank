@@ -4471,3 +4471,38 @@ in smaller caps) and is NOT a miscalibration. Future Q3 2026-08-19 cohort audits
 the fired-share tilt, NOT the raw-rate ratio, to avoid a false alarm.
 
 ---
+
+## PR #493 — feat(compute+frontend+schema): multi-index membership — Dow 30 / NASDAQ 100 overlap tabs (in flight, 2026-06-16)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: feat(compute+frontend+schema); schema bump
+`0.10.22-phase8pilot` → **`0.10.23-phase8pilot`**. Defense layer UNCHANGED at 34.
+
+- **`index_memberships: list[str]`** — additive field on `StockSummary` + `StockDetail`
+  (`default_factory=list` so pre-0.10.23 JSONs deserialize cleanly under `extra="forbid"`).
+  Contains the primary cohort ("sp500"|"sp400") PLUS every overlapping index the stock is
+  currently in ("dow30", "ndx").
+- **`index_membership` (singular) KEPT UNCHANGED** — `MidcapChip` + `verify_membership_ledger.py`
+  read it as the sp500/sp400 partition. The two fields are NOT consolidated; `test_ledger_unchanged`
+  regression locks it.
+- **Dow 30 + NASDAQ 100 Wikipedia sources** (`fetch_dow30_constituents` + `fetch_ndx_constituents`
+  in `compute/ingest/universe.py`, 7-day cache, graceful-degradation → empty set on failure,
+  sanity bands Dow==30 / NDX 95-105) + `derive_index_memberships` pure helper. `compute/main.py`
+  fetches both sets once per run (both sp500 + sp900 paths, non-fatal). `compute/config.py` adds the
+  URL/cache/band constants.
+- **Dynamic derivation**: membership re-derived each run from the Wikipedia sets (NOT a frozen
+  list / ledger) → a stock MOVING between indices (sp400→sp500, Dow/NDX reconstitution) reflects
+  automatically. Display-only (no scoring/veto), so no survivorship-ledger integrity needed; the
+  sp500/sp400 ledger (`data/sp500_membership_historical.csv`) is UNTOUCHED.
+- **`frontend/components/RankingView.tsx`** — DJI + NDX tabs: `filterAndRerank` on
+  `index_memberships?.includes('dow30'|'ndx')`; `computeAvailableCodes` lights a tab iff ≥1 row
+  carries the code; `FULL_INDEX_SIZE={DJI:30,NDX:100}` drives an "N of M (overlap)" honesty note.
+  `IndexTabs` unchanged (data-driven). **Russell deferred** (RUI/RUT/RUA/COMP stay SOON).
+- **Schema triple** in lockstep (schema-sentinel verified). **Tests**: `test_index_memberships.py`
+  (new — derivation units + Hypothesis, parser fixtures offline, graceful-degradation, sanity-band,
+  schema round-trip/legacy/forbid, ledger-unchanged regression); `test_config.py` pinned 0.10.23.
+
+Gate: quantrank-reviewer (opus) READY-TO-PUSH (code, no FAIL) + schema-sentinel SCHEMA-IN-SYNC +
+frontend-design-reviewer + phase-coordinator Mode B/C. NOTE: the first compute PR post-flip — its
+pre-merge-prod-sim runs sp900 (~131-240 min cold v10).
+
+---

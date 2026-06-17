@@ -17,7 +17,7 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.22-phase8pilot`** (#487 OZK/PBF flip-blocker, merged 2026-06-15 — `fundamentals_unavailable` direct veto + `Metadata.fundamentals_unavailable_count` Rule-18 counter + PBF EDGAR-identity ingest fix; prior #482 3a added `index_membership`. Cron default still `sp500`. Lineage: 0.10.18 #456 RATIFY-B → 0.10.21 #482 3a → 0.10.22 #487. Full table: SKILL.md §schema-version) |
+| Schema | **`0.10.23-phase8pilot`** (#493, 2026-06-16 — additive `index_memberships: list[str]`; Dow 30 / NDX 100 overlap tabs; `index_membership` singular UNCHANGED; ledger UNTOUCHED; defense 34. Prior #487 OZK/PBF flip-blocker, merged 2026-06-15 — `fundamentals_unavailable` direct veto + `Metadata.fundamentals_unavailable_count` Rule-18 counter + PBF EDGAR-identity ingest fix; prior #482 3a added `index_membership`. Cron default still `sp500`. Lineage: 0.10.18 #456 RATIFY-B → 0.10.21 #482 3a → 0.10.22 #487. Full table: SKILL.md §schema-version) |
 | Defense layer | **34 declared boolean flags** (8 active vetoes incl. `fundamentals_unavailable` #487 + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
@@ -30,7 +30,7 @@
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
-- **None currently open.** Next: the S&P 900 pilot is gated behind a manual `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron-default flip. Recent merges since 2026-06-11: #488 (Mode C bump post-#487) · #487 (fundamentals_unavailable veto — schema 0.10.22, defense 34) · #485 (fix+test: APA revenue #385, form4 retry #207, +83 tests; closed #377/#208/#378/#261) · #486 (precache-900 Phase A — edgar_form4 fast→slow-text + universe dispatch) · #483 (Mode C bump post-#482) · #482 (S&P 900 pilot 3a — integration slice) · #480 (sp900 dispatch input) · #479 (sp900 pilot PR1 obs probe) · #477 (IC-decay monitor wiring) · #474 (opus revert) · #471 (filing-date precheck) · #470/#469 (8-K TTL jitter) · #468 (precache-edgar.yml #249 B+C) · #467 (Phase-8 scout) · #466 (backtest anchor fix) · #464 (adaptive cap removal) · #459 (token-economy).
+- **PR #493** (multi-index membership `0.10.23-phase8pilot` — Dow 30 / NDX 100 overlap tabs; `index_memberships: list[str]` additive; DJI/NDX frontend tabs; 2026-06-16).
 
 **Next deliverables** (re-scoped 2026-06-11; prior items 1-2 — 7.0c gate (a)
 + issue #441 — are DONE, closed entries relocated to §Chronological history):

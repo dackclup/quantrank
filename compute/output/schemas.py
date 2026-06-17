@@ -82,6 +82,14 @@ class StockSummary(BaseModel):
     # composite rank or vetoes. Source: universe DataFrame cohort column
     # (set unconditionally so the column exists on both the sp500 and sp900 paths).
     index_membership: str = "sp500"
+    # Multi-index membership — Dow 30 / NDX 100 overlap tabs (0.10.23-phase8pilot).
+    # Contains the primary cohort code ("sp500" | "sp400") PLUS every overlapping
+    # index the stock is currently in ("dow30", "ndx"). Default empty list so
+    # legacy JSON (pre-0.10.23) deserializes cleanly under extra="forbid".
+    # ``index_membership`` (singular) is KEPT UNCHANGED — MidcapChip + the
+    # membership-ledger script depend on it as the sp500/sp400 partition.
+    # Source: derive_index_memberships() in compute/ingest/universe.py.
+    index_memberships: list[str] = Field(default_factory=list)
 
 
 class OsapGateDiagnostic(BaseModel):
@@ -648,6 +656,10 @@ class StockDetail(BaseModel):
     # Mirrors StockSummary.index_membership. Default "sp500" so legacy /
     # sp500-path per-stock JSONs deserialize under extra="forbid" unchanged.
     index_membership: str = "sp500"
+    # Multi-index membership — Dow 30 / NDX 100 overlap tabs (0.10.23-phase8pilot).
+    # Mirrors StockSummary.index_memberships. Default empty list so legacy
+    # per-stock JSONs (pre-0.10.23) deserialize cleanly under extra="forbid".
+    index_memberships: list[str] = Field(default_factory=list)
     # Epic #150 Phase 2.1 (issue #150) — positive-framed count of
     # valuation methods that produced a non-outlier applicable estimate
     # for this ticker. Inverse of the count of ``extreme_*_estimate``

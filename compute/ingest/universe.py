@@ -7,10 +7,15 @@ SP900 (combined, de-duped) cached to ``compute/cache/universe_sp900-v1.parquet``
 Re-fetched after the respective ``*_CACHE_MAX_AGE_DAYS`` unless
 ``force_refresh=True``. Phase 8 pilot adds the SP400 + SP900 paths
 (PR 1 — observability-first; ranked output stays SP500-only until PR 3).
+
+Multi-index membership (0.10.23-phase8pilot): adds ``fetch_dow30_constituents``
++ ``fetch_ndx_constituents`` (7-day cache, graceful-degradation) and
+``derive_index_memberships`` (pure derivation helper, unit-testable).
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import time
@@ -404,3 +409,203 @@ def get_sp900_constituents(force_refresh: bool = False) -> pd.DataFrame:
         cache,
     )
     return combined
+
+
+# ---------------------------------------------------------------------------
+# Multi-index membership — Dow 30 + NASDAQ 100 (0.10.23-phase8pilot)
+# ---------------------------------------------------------------------------
+
+def _parse_dow30_html(html: str) -> set[str]:
+    """Parse the Dow Jones Industrial Average Wikipedia page into a ticker set.
+
+    Looks for the components table (class=wikitable) and reads the "Symbol"
+    column.  Returns an empty set on any parse failure so the caller can
+    apply graceful degradation.
+    """
+    soup = BeautifulSoup(html, "lxml")
+    for table in soup.find_all("table", {"class": "wikitable"}):
+        try:
+            df = pd.read_html(StringIO(str(table)))[0]
+        except Exception:  # noqa: BLE001
+            continue
+        cols_lower = {str(c).lower().strip(): c for c in df.columns}
+        symbol_col = cols_lower.get("symbol") or cols_lower.get("ticker")
+        if symbol_col is None:
+            continue
+        tickers = {
+            _normalize_ticker(str(t))
+            for t in df[symbol_col].dropna()
+            if str(t).strip() not in ("", "nan")
+        }
+        if tickers:
+            return tickers
+    return set()
+
+
+def _parse_ndx_html(html: str) -> set[str]:
+    """Parse the Nasdaq-100 Wikipedia page into a ticker set.
+
+    Looks for any wikitable with a "Ticker" or "Symbol" column.
+    Returns an empty set on any parse failure.
+    """
+    soup = BeautifulSoup(html, "lxml")
+    for table in soup.find_all("table", {"class": "wikitable"}):
+        try:
+            df = pd.read_html(StringIO(str(table)))[0]
+        except Exception:  # noqa: BLE001
+            continue
+        cols_lower = {str(c).lower().strip(): c for c in df.columns}
+        symbol_col = (
+            cols_lower.get("ticker")
+            or cols_lower.get("symbol")
+        )
+        if symbol_col is None:
+            continue
+        tickers = {
+            _normalize_ticker(str(t))
+            for t in df[symbol_col].dropna()
+            if str(t).strip() not in ("", "nan")
+        }
+        if tickers:
+            return tickers
+    return set()
+
+
+def fetch_dow30_constituents(force_refresh: bool = False) -> set[str]:
+    """Return the current Dow Jones Industrial Average 30 components as a ticker set.
+
+    Cached to ``compute/cache/universe_dow30-v1.json`` for
+    ``DOW30_CACHE_MAX_AGE_DAYS`` (7 days).  On any fetch or parse failure
+    logs a WARNING and returns an empty set — the cron MUST NOT crash if
+    Wikipedia restructures this page.
+
+    Sanity band: the Dow must have exactly 30 components.  A scrape that
+    returns a set of the wrong size is treated as a broken scrape and the
+    result is discarded (returns empty set + WARNING log).
+    """
+    cache = config.DOW30_UNIVERSE_CACHE
+    if not force_refresh and cache.exists():
+        age_days = (time.time() - cache.stat().st_mtime) / 86400
+        if age_days < config.DOW30_CACHE_MAX_AGE_DAYS:
+            try:
+                data = json.loads(cache.read_text())
+                tickers: set[str] = set(data)
+                logger.info("DOW30 universe cache hit (%d tickers, age=%.1f days)", len(tickers), age_days)
+                return tickers
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("DOW30 cache read failed, re-fetching: %s", exc)
+
+    logger.info("Fetching Dow 30 constituents from Wikipedia (%s)", config.WIKIPEDIA_DOW_URL)
+    try:
+        html = _fetch_wikipedia_html(config.WIKIPEDIA_DOW_URL)
+        tickers = _parse_dow30_html(html)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("DOW30 Wikipedia fetch failed (graceful degradation — returning empty set): %s", exc)
+        return set()
+
+    if len(tickers) != config.DOW30_EXPECTED_COUNT:
+        logger.warning(
+            "DOW30 sanity-band violation: expected exactly %d tickers, got %d "
+            "(Wikipedia table may have changed shape — returning empty set)",
+            config.DOW30_EXPECTED_COUNT,
+            len(tickers),
+        )
+        return set()
+
+    try:
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps(sorted(tickers)))
+        logger.info("Cached %d DOW30 constituents to %s", len(tickers), cache)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("DOW30 cache write failed (non-fatal): %s", exc)
+
+    return tickers
+
+
+def fetch_ndx_constituents(force_refresh: bool = False) -> set[str]:
+    """Return the current Nasdaq-100 components as a ticker set.
+
+    Cached to ``compute/cache/universe_ndx-v1.json`` for
+    ``NDX_CACHE_MAX_AGE_DAYS`` (7 days).  On any fetch or parse failure
+    logs a WARNING and returns an empty set — the cron MUST NOT crash if
+    Wikipedia restructures this page.
+
+    Sanity band: the NDX must have between ``NDX_MIN_COUNT`` (95) and
+    ``NDX_MAX_COUNT`` (105) components.  Outside that band the scrape is
+    treated as broken (returns empty set + WARNING log).
+    """
+    cache = config.NDX_UNIVERSE_CACHE
+    if not force_refresh and cache.exists():
+        age_days = (time.time() - cache.stat().st_mtime) / 86400
+        if age_days < config.NDX_CACHE_MAX_AGE_DAYS:
+            try:
+                data = json.loads(cache.read_text())
+                tickers: set[str] = set(data)
+                logger.info("NDX universe cache hit (%d tickers, age=%.1f days)", len(tickers), age_days)
+                return tickers
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("NDX cache read failed, re-fetching: %s", exc)
+
+    logger.info("Fetching NDX constituents from Wikipedia (%s)", config.WIKIPEDIA_NDX_URL)
+    try:
+        html = _fetch_wikipedia_html(config.WIKIPEDIA_NDX_URL)
+        tickers = _parse_ndx_html(html)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("NDX Wikipedia fetch failed (graceful degradation — returning empty set): %s", exc)
+        return set()
+
+    n = len(tickers)
+    if not (config.NDX_MIN_COUNT <= n <= config.NDX_MAX_COUNT):
+        logger.warning(
+            "NDX sanity-band violation: expected %d–%d tickers, got %d "
+            "(Wikipedia table may have changed shape — returning empty set)",
+            config.NDX_MIN_COUNT,
+            config.NDX_MAX_COUNT,
+            n,
+        )
+        return set()
+
+    try:
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps(sorted(tickers)))
+        logger.info("Cached %d NDX constituents to %s", len(tickers), cache)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("NDX cache write failed (non-fatal): %s", exc)
+
+    return tickers
+
+
+def derive_index_memberships(
+    ticker: str,
+    *,
+    cohort: str,
+    dow30: set[str],
+    ndx: set[str],
+) -> list[str]:
+    """Derive the full list of index membership codes for a single ticker.
+
+    Returns a list containing the primary cohort code (``"sp500"`` or
+    ``"sp400"``) PLUS ``"dow30"`` and/or ``"ndx"`` for each overlapping
+    index the ticker is currently in.
+
+    This is a PURE function (no I/O, no side effects) — all inputs must
+    be pre-fetched by the caller.  The primary cohort is always first so
+    consumers can use ``memberships[0]`` as the partition key.
+
+    Args:
+        ticker:  Normalised ticker symbol (uppercase, dot→dash).
+        cohort:  Primary index cohort — ``"sp500"`` | ``"sp400"``.
+        dow30:   Set of DOW 30 tickers (may be empty on fetch failure).
+        ndx:     Set of NDX 100 tickers (may be empty on fetch failure).
+
+    Returns:
+        e.g. ``["sp500", "dow30", "ndx"]`` for an AAPL-shaped ticker,
+        ``["sp400"]`` for a midcap-only name,
+        ``["sp500"]`` when dow30/ndx sets are both empty (degraded fetch).
+    """
+    result: list[str] = [cohort]
+    if ticker in dow30:
+        result.append("dow30")
+    if ticker in ndx:
+        result.append("ndx")
+    return result

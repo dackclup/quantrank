@@ -627,6 +627,11 @@
       "required": false,
       "default": "sp500"
     },
+    "index_memberships": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    },
     "industry": {
       "type": "str | None",
       "required": false,
@@ -778,6 +783,11 @@
       "type": "str",
       "required": false,
       "default": "sp500"
+    },
+    "index_memberships": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
     },
     "loss_chance_pct": {
       "type": "float | None",

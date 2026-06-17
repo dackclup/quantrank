@@ -76,7 +76,13 @@ from compute.ingest.fundamentals import (
     reset_filing_precheck_skip_count as reset_fundamentals_filing_precheck_skip_count,
 )
 from compute.ingest.prices import fetch_benchmarks, fetch_prices, fetch_spy_benchmark
-from compute.ingest.universe import get_sp500_constituents, get_sp900_constituents
+from compute.ingest.universe import (
+    derive_index_memberships,
+    fetch_dow30_constituents,
+    fetch_ndx_constituents,
+    get_sp500_constituents,
+    get_sp900_constituents,
+)
 from compute.output.schemas import (
     DataQuality,
     Metadata,
@@ -889,6 +895,25 @@ def run_weekly_compute() -> int:
         universe = universe.copy()
         universe["cohort"] = "sp500"
         logger.info("Universe size: %d", len(universe))
+
+    # Multi-index membership — Dow 30 + NDX 100 (0.10.23-phase8pilot).
+    # Fetched ONCE per run on BOTH the sp500 and sp900 paths (Dow/NDX are
+    # sp500 subsets, so they populate on the normal weekday cron).
+    # Graceful degradation: fetch_dow30_constituents / fetch_ndx_constituents
+    # return empty sets on failure — the cron MUST NOT crash here.
+    logger.info("Fetching Dow 30 + NDX 100 overlap membership sets…")
+    _dow30_tickers: set[str] = set()
+    _ndx_tickers: set[str] = set()
+    try:
+        _dow30_tickers = fetch_dow30_constituents()
+        logger.info("DOW30: %d tickers loaded", len(_dow30_tickers))
+    except Exception as _dow_exc:  # noqa: BLE001
+        logger.warning("DOW30 fetch failed (non-fatal, membership will be empty): %s", _dow_exc)
+    try:
+        _ndx_tickers = fetch_ndx_constituents()
+        logger.info("NDX: %d tickers loaded", len(_ndx_tickers))
+    except Exception as _ndx_exc:  # noqa: BLE001
+        logger.warning("NDX fetch failed (non-fatal, membership will be empty): %s", _ndx_exc)
 
     logger.info("Fetching SPY benchmark for beta…")
     benchmark = fetch_spy_benchmark()
@@ -1917,6 +1942,19 @@ def run_weekly_compute() -> int:
         str(r["ticker"]): str(r.get("cohort", "sp500"))
         for _, r in df.iterrows()
     }
+    # Multi-index membership (0.10.23-phase8pilot) — build memberships_by_ticker
+    # ONCE from the cohort_by_ticker dict + the pre-fetched Dow30/NDX sets.
+    # Runs on both sp500 and sp900 paths (Dow/NDX are sp500 subsets; sp400
+    # tickers simply won't appear in _dow30_tickers/_ndx_tickers).
+    memberships_by_ticker: dict[str, list[str]] = {
+        ticker: derive_index_memberships(
+            ticker,
+            cohort=cohort,
+            dow30=_dow30_tickers,
+            ndx=_ndx_tickers,
+        )
+        for ticker, cohort in cohort_by_ticker.items()
+    }
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -2385,6 +2423,10 @@ def run_weekly_compute() -> int:
                 exited_top5=ticker in exited,
                 # Phase 8 pilot PR 3a — index membership from cohort column.
                 index_membership=cohort_by_ticker.get(ticker, "sp500"),
+                # Multi-index membership (0.10.23-phase8pilot) — cohort + Dow30/NDX overlap.
+                index_memberships=memberships_by_ticker.get(
+                    ticker, [cohort_by_ticker.get(ticker, "sp500")]
+                ),
             )
         )
 
@@ -2440,6 +2482,10 @@ def run_weekly_compute() -> int:
             exited_top5=ticker in exited,
             # Phase 8 pilot PR 3a — index membership from cohort column.
             index_membership=cohort_by_ticker.get(ticker, "sp500"),
+            # Multi-index membership (0.10.23-phase8pilot) — cohort + Dow30/NDX overlap.
+            index_memberships=memberships_by_ticker.get(
+                ticker, [cohort_by_ticker.get(ticker, "sp500")]
+            ),
             form4_diagnostics=form4_diagnostics.get(ticker),
             cross_source_delta=cross_source_delta_by_ticker.get(ticker),
         )

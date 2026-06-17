@@ -99,8 +99,17 @@ def test_schema_version_pinned():
     direct veto in ``compute_risk_flags`` (fires when ``snap is None``;
     FP rate structurally zero; DQIC issue #18 governing precedent) + its
     Rule-18 counter ``Metadata.fundamentals_unavailable_count: int | None``.
-    Additive PATCH bump."""
-    assert config.SCHEMA_VERSION == "0.10.22-phase8pilot"
+    Additive PATCH bump.
+
+    Multi-index membership (0.10.23-phase8pilot) — additive
+    ``index_memberships: list[str]`` on ``StockSummary`` + ``StockDetail``.
+    Contains the primary cohort code ("sp500" | "sp400") PLUS "dow30" /
+    "ndx" for Dow 30 / Nasdaq-100 overlap members.  Default
+    ``default_factory=list`` so legacy JSONs (pre-0.10.23) deserialize
+    cleanly under ``extra="forbid"``.  ``index_membership`` (singular)
+    is kept unchanged — MidcapChip + the membership-ledger script depend
+    on it as the sp500/sp400 partition.  Additive PATCH bump."""
+    assert config.SCHEMA_VERSION == "0.10.23-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():
