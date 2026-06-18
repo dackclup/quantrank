@@ -42,10 +42,10 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-10
-post-roadmap-re-scope (now 2026-06-15): schema `0.10.22-phase8pilot`
-(#487 — `fundamentals_unavailable` direct veto; prior #482 added
-`index_membership`). Full lineage: SKILL.md §schema-version. Defense
+schema PR; this prose stays stable). As of 2026-06-17: schema `0.10.23-phase8pilot` (#493 — additive
+`index_memberships: list[str]`, Dow 30 / NDX 100 overlap tabs; #494 appends
+the `"russell1000"` value, NO schema bump; prior #487 `fundamentals_unavailable`
+direct veto; prior #482 `index_membership` singular). Full lineage: SKILL.md §schema-version. Defense
 layer **34 declared** = 8 vetoes + 26 annotates; release tag
 [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
@@ -1272,6 +1272,8 @@ positives without proportional true positives.
 - [x] **Off-cycle pre-cache workflow operational (#249) — DONE (PR #468 merged 2026-06-12; first Saturday precache run verified green 2026-06-13, ~20 min warm, tier2 11s)**
 - [x] **precache-900 Phase A — `edgar_form4` moved fast→slow-text bundle + `universe` dispatch input on `precache-edgar.yml` — DONE (PR #486 merged 2026-06-15 `f51cf4d7`; Phase B cache-v10 deferred)**
 - [x] **precache-900 Phase B — cron-default flip sp500→sp900 — DONE (#492, 2026-06-16): cache-v10-fast bump across all 4 workflows + sim QR_UNIVERSE=sp900 + sp400/sp900 parquet paths; cron now defaults sp900**
+- [x] **Dow 30 / NASDAQ 100 overlap tabs (DJI/NDX) — DONE (#493, 2026-06-17): `index_memberships: list[str]`, data-driven tabs in `RankingView.tsx`; schema 0.10.23**
+- [x] **Russell 1000 (RUI) overlap tab via market-cap proxy — DONE (#494, 2026-06-17): no schema bump; every S&P 900 constituent qualifies by construction; RUT/RUA/SML/COMP remain SOON**
 - [ ] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover**
 - [ ] S&P 1500 ranked weekly
 - [ ] Compute time <90 min

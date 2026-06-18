@@ -11,15 +11,15 @@
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started — **GATED (re-scope 2026-06-10)** on (a) the Phase 7.0c PIT veto-replay verdict + (b) the data-integrity hardening sprint (§Next deliverables items 1 + 3) + (c) a Supabase client-wiring pre-PR |
 | 6 | Sentiment v2 (FinBERT + 8-K + Lazy Prices; **Whisper deferred → Phase 6.1**, re-scope 2026-06-10) | ⚪ not started — TEXT-ONLY scope locked, §6.0 priority order (Lazy Prices → 8-K → FinBERT); Whisper needs Modal paid infra + ~250m ≈ the 240m cron ceiling |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
-| 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)** · **#486 precache-900 Phase A (edgar_form4 fast→slow-text + universe dispatch input)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron flip → midcaps live · **precache-900 Phase B — DONE 2026-06-16 (#492)**: cache-v9-fast→cache-v10-fast bump in all 4 workflows, cron-default flip sp500→sp900, sim QR_UNIVERSE=sp900 explicit, sp400/sp900 universe parquets added to fast path blocks; cron now ranks S&P 900 by default; next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge) |
+| 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)** · **#486 precache-900 Phase A (edgar_form4 fast→slow-text + universe dispatch input)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron flip → midcaps live · **precache-900 Phase B — DONE 2026-06-16 (#492)**: cache-v9-fast→cache-v10-fast bump in all 4 workflows, cron-default flip sp500→sp900, sim QR_UNIVERSE=sp900 explicit, sp400/sp900 universe parquets added to fast path blocks; cron now ranks S&P 900 by default · **#493 multi-index membership (Dow 30 / NDX 100 overlap tabs, schema 0.10.23) — DONE 2026-06-17** · **#494 Russell 1000 (RUI) overlap tab via market-cap proxy, NO schema bump — DONE 2026-06-17**; overlap tabs data-active (first sp900 cron post-#494 `768c35f16` carries russell1000/dow30/ndx tags). Next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge); RUT/RUA/SML/COMP remain SOON pending new small-cap / broad ingest |
 
-## Current state (2026-06-15)
+## Current state (2026-06-17)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.23-phase8pilot`** (#493, 2026-06-16 — additive `index_memberships: list[str]`; Dow 30 / NDX 100 overlap tabs; `index_membership` singular UNCHANGED; ledger UNTOUCHED; defense 34. Prior #487 OZK/PBF flip-blocker, merged 2026-06-15 — `fundamentals_unavailable` direct veto + `Metadata.fundamentals_unavailable_count` Rule-18 counter + PBF EDGAR-identity ingest fix; prior #482 3a added `index_membership`. Cron default still `sp500`. Lineage: 0.10.18 #456 RATIFY-B → 0.10.21 #482 3a → 0.10.22 #487. Full table: SKILL.md §schema-version) |
+| Schema | **`0.10.23-phase8pilot`** (#493 + #494, 2026-06-17 — additive `index_memberships: list[str]`; Dow 30 / NDX 100 overlap tabs (#493); `index_membership` singular UNCHANGED; ledger UNTOUCHED; defense 34. **#494** appends `"russell1000"` to the existing list field via market-cap proxy — NO schema bump, SCHEMA_VERSION stays `0.10.23-phase8pilot`; RUT/RUA stay SOON. Prior #487 OZK/PBF flip-blocker, merged 2026-06-15 — `fundamentals_unavailable` direct veto + `Metadata.fundamentals_unavailable_count` Rule-18 counter + PBF EDGAR-identity ingest fix; prior #482 3a added `index_membership`. Cron default `sp900` (since #492 2026-06-16). Lineage: 0.10.18 #456 RATIFY-B → 0.10.21 #482 3a → 0.10.22 #487. Full table: SKILL.md §schema-version) |
 | Defense layer | **34 declared boolean flags** (8 active vetoes incl. `fundamentals_unavailable` #487 + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
-| Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
+| Active vetoes | **8** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` · `fundamentals_unavailable` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
 | Post-tag production patches | PR #292 → #302 cluster (2026-05-28/29) — list relocated to §Chronological history |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
@@ -30,7 +30,7 @@
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
-- **PR #493** (multi-index membership `0.10.23-phase8pilot` — Dow 30 / NDX 100 overlap tabs; `index_memberships: list[str]` additive; DJI/NDX frontend tabs; 2026-06-16).
+- _Nothing currently in flight._ (#493 multi-index membership + #494 Russell 1000 RUI both merged 2026-06-17.)
 
 **Next deliverables** (re-scoped 2026-06-11; prior items 1-2 — 7.0c gate (a)
 + issue #441 — are DONE, closed entries relocated to §Chronological history):
@@ -108,6 +108,13 @@ pre-cache DONE — #468) — detail in WORKFLOW.md.
 ---
 
 ## Chronological history
+
+## 2026-06-17 — multi-index membership: Dow 30 / NASDAQ 100 overlap tabs (#493) + Russell 1000 (RUI) proxy (#494)
+
+- **#493** (squash `1650b1e59`, branch `claude/confident-thompson-y58bhe`): additive `index_memberships: list[str]` on `StockSummary` + `StockDetail` (`default_factory=list`, backward-compat under `extra="forbid"`). Contains cohort ("sp500"|"sp400") PLUS "dow30"/"ndx" for overlap members. `universe.py` adds `fetch_dow30_constituents` / `fetch_ndx_constituents` (Wikipedia, 7-day cache, graceful-degradation, sanity bands Dow==30 / NDX 95-105) + `derive_index_memberships`. Frontend: `RankingView.tsx` DJI / NDX tabs (data-driven). `index_membership` (singular) UNCHANGED. Schema `0.10.22-phase8pilot` → **`0.10.23-phase8pilot`**. Defense layer 34 UNCHANGED.
+- **#494** (squash `f4da5a299`, same branch): Russell 1000 (RUI) overlap tab via market-cap proxy — `derive_index_memberships` appends `"russell1000"` iff `market_cap is not None and market_cap > 0`. **NO schema bump** (SCHEMA_VERSION stays `0.10.23-phase8pilot`); the list field already exists. Every S&P 900 constituent is a Russell 1000 member by construction (S&P 400 floor > Russell 1000 cutoff), so the RUI tab ≈ All-stocks by design. RUT/RUA stay SOON (need small-cap / S&P 600 ingest). Tests 54 → 63.
+- First production cron post-#494 (`768c35f16`, "update rankings 2026-06-17") — first sp900 cron carrying russell1000 / dow30 / ndx tags; overlap tabs now data-active. Validated counts: russell1000 **900 / 902** (2 no-market-cap names correctly excluded), dow30 30, ndx 88, 0 rows with empty `index_memberships`.
+- **Next**: ≥ 2 green sp900 crons → confirm firing rates hold → frontend PR 4 (midcap badge). RUT/RUA/SML/COMP remain SOON pending new small-cap / broad ingest.
 
 ## 2026-06-16 — precache-900 Phase B: cron-default flip sp500→sp900 (#492)
 

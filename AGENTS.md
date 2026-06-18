@@ -722,7 +722,7 @@ Cross-tool agents (Copilot / Cursor / Devin / Codex): READ those files; do NOT
 maintain a parallel phase log here. The former ~1,068-line mirror was collapsed
 2026-06-03 (token-economy drain — it duplicated CLAUDE.md verbatim; git history
 preserves it).
-Schema is currently **`0.10.23-phase8pilot`** (#493, 2026-06-16 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail`; #494 in flight adds the `"russell1000"` value only, NO schema bump; see CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md).
+Schema is currently **`0.10.23-phase8pilot`** (#493 + #494, both merged 2026-06-17 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail`; Dow 30 / NDX 100 overlap tabs (#493); `"russell1000"` value via market-cap proxy (#494, NO schema bump); overlap tabs data-active since the first post-merge cron 2026-06-17. Nothing currently in flight. See CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md).
 
 ## Claude-Code-specific tooling
 
