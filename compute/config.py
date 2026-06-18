@@ -42,7 +42,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.24-phase8pilot"
+SCHEMA_VERSION: str = "0.10.25-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -463,6 +463,24 @@ CROSS_SOURCE_MARKET_CAP_TOLERANCE: float = 0.05  # 5%
 # 24h per ticker — same cadence as `PRICES_CACHE_MAX_AGE_HOURS`.
 YFINANCE_INFO_CACHE_DIR: Path = CACHE_DIR / "yfinance_info"
 YFINANCE_INFO_CACHE_MAX_AGE_HOURS: int = 24
+
+# --- Post-split share-lag defense (defense layer 34 → 35) ---
+# Frozen pre-registration constants — methodology-scientist ruling 2026-06-18.
+# Citation: CRSP CFACSHR / Damodaran 2019 *Investment Valuation* 3rd ed. Ch. 16.
+#
+# ``POST_SPLIT_WINDOW_DAYS``: a split within this many calendar days of today
+# is "recent" (leg 1 of the 3-leg detection). At 100 days, one missed 10-Q/A
+# cycle (45-day EDGAR refetch cadence × 2 quarters + buffer) is covered.
+#
+# ``POST_SPLIT_MIN_RATIO``: only material splits (≥ 2:1) trigger the defense.
+# Prevents noise from tiny rounding-lot adjustments.
+#
+# ``POST_SPLIT_RATIO_TOLERANCE``: the yfinance-implied share count must match
+# the EDGAR-reported count × split_ratio to within 10% for Tier-1 (CORRECT).
+# If the ratio-match fails, the split is real but unreconcilable → Tier-2 (VETO).
+POST_SPLIT_WINDOW_DAYS: int = 100
+POST_SPLIT_MIN_RATIO: float = 2.0
+POST_SPLIT_RATIO_TOLERANCE: float = 0.10
 
 # PR 4.5b — disclosure-driven defenses. 10-K/A + 10-Q/A list (5y) +
 # Form 12b-25 (NT 10-K / NT 10-Q, 1y) per-ticker JSON caches.

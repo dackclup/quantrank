@@ -53,6 +53,8 @@ from compute.ingest.cross_source import (
     country_for_exchange,
     exchange_name,
     fetch_yfinance_exchange,
+    fetch_yfinance_market_cap,
+    fetch_yfinance_shares_outstanding,
 )
 from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
@@ -153,7 +155,9 @@ from compute.scoring.restatement_filings import (
     get_amendment_filing_dates,
 )
 from compute.scoring.risk_overlay import (
+    PostSplitResult,
     _snapshot_has_no_usable_fundamentals,
+    check_post_split_share_lag,
     check_share_count_extraction_missing,
     compute_risk_flags,
 )
@@ -343,7 +347,10 @@ def _iso(dt: datetime) -> str:
 
 
 def _build_raw_metrics(
-    snapshot: FundamentalsSnapshot | None, current_price: float
+    snapshot: FundamentalsSnapshot | None,
+    current_price: float,
+    *,
+    shares_outstanding_pre_split_raw: float | None = None,
 ) -> RawMetrics:
     if snapshot is None:
         return RawMetrics()
@@ -401,6 +408,9 @@ def _build_raw_metrics(
         # Issue #374 (RATIFY-B, 2026-06-11) — listed-class per-class share count;
         # None for non-MULTI_CLASS_OVERCOUNT tickers and on warm-cache crons.
         shares_outstanding_listed_class=snapshot.shares_outstanding_listed_class,
+        # Post-split share-lag defense (defense layer 35, 0.10.25-phase8pilot).
+        # Populated only on Tier-1 correction; None on all other tickers.
+        shares_outstanding_pre_split_raw=shares_outstanding_pre_split_raw,
         market_cap=market_cap,
         pe_ratio_ttm=pe_ttm,
         goodwill=snapshot.goodwill,
@@ -1265,6 +1275,111 @@ def run_weekly_compute() -> int:
             # (mirrors form4_wall_clock_seconds semantics).
             form4_negation_guard_downgrade_count = None
 
+    # Step 3b — post-split share-lag correction pass (defense layer 35,
+    # 2026-06-18 methodology-scientist ruling).
+    #
+    # This pass MUST run BEFORE Step 4 (TickerInputs + pillar scoring) so
+    # that EPS / market_cap / value-pillar / composite ALL derive from the
+    # corrected share count automatically.
+    #
+    # Correction strategy (chosen over alternatives):
+    #   - Correction at snapshot level (here) is the least-invasive option:
+    #     ``snap.shares_outstanding`` is mutated directly on the snapshot
+    #     dataclass object, so every downstream consumer (pillars, valuation,
+    #     DQIC, NSI) reads the corrected value without any code changes.
+    #   - An alternative "pre-scoring pass in main.py" that patches a
+    #     derived df column would need to touch each pillar separately.
+    #   - Correcting inside fundamentals.py would require yfinance split data
+    #     at ingest time, adding a cross-source dependency to a pure EDGAR
+    #     module (wrong layer boundary).
+    #
+    # Graceful-degradation: the entire pass is wrapped in try/except so a
+    # bug or fetch failure never blocks the cron.  On failure, snapshots
+    # are unchanged and `post_split_results` remains empty — the flag just
+    # doesn't fire.
+    #
+    # QR_SKIP_SPLITS=1 is the escape hatch for pre-merge-prod-sim (mirrors
+    # QR_SKIP_CROSS_SOURCE pattern; honored inside fetch_splits()).
+    post_split_results: dict[str, PostSplitResult] = {}
+    post_split_correction_applied_count: int = 0
+    post_split_veto_count: int = 0
+    try:
+        _price_by_ticker: dict[str, float | None] = {
+            str(r["ticker"]): float(r["current_price"]) if r.get("current_price") is not None else None
+            for _, r in df.iterrows()
+        }
+        for _ticker, _snap in snapshots.items():
+            if _snap is None:
+                continue
+            _current_price = _price_by_ticker.get(_ticker)
+            # Fetch yfinance market cap from the existing cache (24h TTL,
+            # same call site as Step 8's cross-source validation).  On a
+            # warm cache this is a cheap JSON read; on a cold cache it does
+            # a live yfinance.info call that also populates sharesOutstanding
+            # into the cache as a side-effect (_yf_info_fetch dual-field).
+            # The split pass only triggers when the 3-leg check passes, so
+            # cold-cache overhead is bounded to actual split candidates.
+            #
+            # After the market_cap fetch (which primes the cache), read the
+            # sharesOutstanding directly from the same cache file.  This
+            # avoids the cache-timing trap where yf_market_cap / current_price
+            # gives a wrong implied count when the market_cap and prices caches
+            # straddle the split date (yfinance retroactively split-adjusts
+            # price bars but not marketCap snapshots on the same cadence).
+            # When the override is unavailable (None) — cold cache,
+            # QR_SKIP_CROSS_SOURCE=1, or missing info field — leg 3 falls
+            # back gracefully to the existing market_cap / price path.
+            _yf_mc = fetch_yfinance_market_cap(_ticker)
+            _yf_shares = fetch_yfinance_shares_outstanding(_ticker)
+            _psr = check_post_split_share_lag(
+                _ticker,
+                _snap,
+                yf_market_cap=_yf_mc,
+                current_price=_current_price,
+                yf_shares_outstanding_override=_yf_shares,
+            )
+            if _psr.tier == 0:
+                continue
+            post_split_results[_ticker] = _psr
+            if _psr.tier == 1:
+                # Tier-1 CORRECT: mutate the snapshot's shares_outstanding
+                # in-place so all downstream scoring sees the corrected value.
+                # The raw value is preserved in RawMetrics.shares_outstanding_pre_split_raw
+                # (written in the Step 8 per-ticker loop below).
+                assert _psr.corrected_shares is not None  # invariant: tier==1 always has corrected_shares
+                _snap.shares_outstanding = _psr.corrected_shares
+                post_split_correction_applied_count += 1
+                logger.info(
+                    "[post_split] %s: in-place correction applied "
+                    "edgar_raw=%.2fM → corrected=%.2fM (%.0f:1 split %s)",
+                    _ticker,
+                    _psr.edgar_shares / 1e6,  # type: ignore[operator]
+                    _psr.corrected_shares / 1e6,
+                    _psr.split_event.ratio,  # type: ignore[union-attr]
+                    _psr.split_event.split_date.isoformat(),  # type: ignore[union-attr]
+                )
+            elif _psr.tier == 2:
+                post_split_veto_count += 1
+    except Exception as _split_exc:  # noqa: BLE001
+        logger.warning(
+            "Post-split share-lag correction pass failed (non-fatal — "
+            "snapshots unchanged, post_split_share_lag flag will not fire): %s",
+            _split_exc,
+        )
+        post_split_results = {}
+        post_split_correction_applied_count = 0
+        post_split_veto_count = 0
+
+    if post_split_results:
+        logger.info(
+            "[post_split] Pass complete: %d corrections applied, %d vetoes "
+            "(%d total flagged tickers out of %d universe)",
+            post_split_correction_applied_count,
+            post_split_veto_count,
+            len(post_split_results),
+            len(snapshots),
+        )
+
     # Step 4 — assemble TickerInputs and compute all pillars.
     inputs: dict[str, TickerInputs] = {}
     for _, r in df.iterrows():
@@ -1367,6 +1482,7 @@ def run_weekly_compute() -> int:
         non_reliance_by_ticker=non_reliance_by_ticker,
         beneish_m_scores=beneish_m_scores,
         dechow_f_scores=dechow_f_scores,
+        post_split_results=post_split_results if post_split_results else None,
     )
 
     # PR 4.5c — Roychowdhury 2006 Real Earnings Management. Three
@@ -2071,6 +2187,46 @@ def run_weekly_compute() -> int:
         ):
             valuation_warnings.append("valuation_output_anomalous")
 
+        # Post-split share-lag defense (defense layer 35).
+        #
+        # Tier-1 ANNOTATE (post_split_results tier==1, NOT in risk_flags):
+        #   shares were already corrected in Step 3b; add a transparency
+        #   valuation_warning so the UI surface shows the adjustment.
+        #   Tier-1 is routed through valuation_warnings ONLY — routing it
+        #   through risk_flags was a double-penalty bug (PR-2 fix 2026-06-18):
+        #   the Step-7 Top-5 rotation skips any ticker with non-empty
+        #   risk_flags, so a Tier-1-corrected stock (data IS correct) was
+        #   being silently excluded from entered_top5.  All other annotates
+        #   in the defense layer use valuation_warnings for the same reason.
+        #
+        # Tier-2 VETO (post_split_share_lag_unreconciled in risk_flags):
+        #   the fair-price ensemble is nulled — same contract as DQIC
+        #   (computed but untrustworthy because we couldn't determine the
+        #   correct share count).  Append valuation_output_anomalous for
+        #   UI parity (FairPriceCard.tsx renders the explanation chip).
+        _ticker_flags = set(risk_flags.get(ticker) or [])
+        _psr_for_ticker = post_split_results.get(ticker)
+        if _psr_for_ticker is not None and _psr_for_ticker.tier == 1:
+            # Emit the canonical flag key so flagLabel('post_split_share_lag')
+            # resolves to 'Post-split share count adjusted' on the FairPriceCard.
+            if "post_split_share_lag" not in valuation_warnings:
+                valuation_warnings.append("post_split_share_lag")
+            _split_ev = _psr_for_ticker.split_event
+            if _split_ev is not None:
+                _adj_warning = (
+                    f"share count adjusted for {int(_psr_for_ticker.split_event.ratio)}:1 "  # type: ignore[union-attr]
+                    f"split {_psr_for_ticker.split_event.split_date.isoformat()}, "  # type: ignore[union-attr]
+                    f"pending EDGAR refresh"
+                )
+                if _adj_warning not in valuation_warnings:
+                    valuation_warnings.append(_adj_warning)
+        if "post_split_share_lag_unreconciled" in _ticker_flags:
+            # Null the ensemble (unreconciled split → fair price untrustworthy).
+            ensemble = None
+            ensemble_dict = None
+            if "valuation_output_anomalous" not in valuation_warnings:
+                valuation_warnings.append("valuation_output_anomalous")
+
         # Beneish M-score (PR 3e.1 ANNOTATE at M > -2.22 + PR 4.5a.2
         # soft-veto promotion at M > -1.78). The active-veto path is
         # already wired into ``risk_flags`` above via
@@ -2449,7 +2605,16 @@ def run_weekly_compute() -> int:
             )
         )
 
-        raw_metrics = _build_raw_metrics(snap, current_price)
+        _psr_for_raw = post_split_results.get(ticker)
+        raw_metrics = _build_raw_metrics(
+            snap,
+            current_price,
+            shares_outstanding_pre_split_raw=(
+                _psr_for_raw.edgar_shares
+                if _psr_for_raw is not None and _psr_for_raw.tier == 1
+                else None
+            ),
+        )
         imputed = imputed_by_ticker.get(ticker, [])
         tier2_result = tier2_results.get(ticker)
         tier2_dict = tier2_events_dict(tier2_result) if tier2_result is not None else None
@@ -2900,6 +3065,16 @@ def run_weekly_compute() -> int:
         # follow-up PR that wires median_trimmed → mos_pct. None when the
         # computation failed or all tickers had null median_trimmed.
         median_trim_delta_count=median_trim_delta_count,
+        # Post-split share-lag defense (defense layer 35, 0.10.25-phase8pilot,
+        # Rule 18 observability). Populated from the Step 3b correction pass.
+        # Zero is a valid value (pass ran, no splits found); None semantics
+        # would mean the pass was entirely skipped (shouldn't happen in
+        # production since the try/except sets zeros on failure).
+        post_split_share_lag_count=(
+            post_split_correction_applied_count + post_split_veto_count
+        ),
+        post_split_correction_applied_count=post_split_correction_applied_count,
+        post_split_veto_count=post_split_veto_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

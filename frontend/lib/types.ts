@@ -396,6 +396,21 @@ export type Metadata = {
   // null on legacy snapshots pre-0.10.24. NOT currently rendered by the static
   // site (UI-bridge chip is a separate later task).
   median_trim_delta_count?: number | null;
+  // PR-2 post-split share-lag defense (0.10.25-phase8pilot) — Rule-18
+  // observability counters for the three stages of the defense:
+  //   `post_split_share_lag_count` = tickers where the raw EDGAR share count
+  //     was detected as pre-split (lag pattern fires; Tier-1 annotate
+  //     `post_split_share_lag` surfaces in `valuation_warnings`, NOT
+  //     `risk_flags`, so a corrected ticker stays Top-5-eligible).
+  //   `post_split_correction_applied_count` = subset where a corrected count
+  //     was successfully substituted (split ratio resolved, correction applied).
+  //   `post_split_veto_count` = subset where reconciliation FAILED and the
+  //     Tier-2 veto `post_split_share_lag_unreconciled` fired (cautious +
+  //     Top-5 suppress). All optional + nullable: absent / null on legacy
+  //     snapshots pre-0.10.25.
+  post_split_share_lag_count?: number | null;
+  post_split_correction_applied_count?: number | null;
+  post_split_veto_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -440,6 +455,12 @@ export type RawMetrics = {
   // company-total (all classes) lives in `shares_outstanding`. Checksum/
   // display only, no scoring consumer. May be null on warm-cache crons.
   shares_outstanding_listed_class: number | null;
+  // PR-2 post-split share-lag defense (0.10.25-phase8pilot) — the raw
+  // EDGAR share count BEFORE the post-split correction was applied. Null
+  // when no correction was needed, when the defense didn't fire, or on
+  // legacy outputs from before this field was added. Rule-9 audit trail:
+  // lets downstream consumers verify the magnitude of the correction.
+  shares_outstanding_pre_split_raw?: number | null;
   market_cap: number | null;
   pe_ratio_ttm: number | null;
   goodwill: number | null;

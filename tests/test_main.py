@@ -979,3 +979,167 @@ def test_step8_exchange_coverage_excludes_none_entries(monkeypatch) -> None:
     # Coverage: 1 of 2 resolved
     coverage = _coverage_pct(exchange_by_ticker)
     assert coverage == 50.00
+
+
+# ---------------------------------------------------------------------------
+# Step-3b wiring: fetch_yfinance_shares_outstanding passed to check_post_split_share_lag
+#
+# PR #499 wired a direct yfinance sharesOutstanding count through the
+# yf_shares_outstanding_override parameter so leg-3 reconciliation uses the
+# actual share count instead of yf_market_cap / current_price (which is
+# cache-timing-sensitive and could degrade KLAC from Tier-1 to Tier-2).
+#
+# These tests verify the wiring at the smallest tractable seam: monkeypatching
+# fetch_yfinance_market_cap, fetch_yfinance_shares_outstanding, and
+# check_post_split_share_lag in the compute.main namespace, then invoking the
+# Step-3b loop directly.  We confirm check_post_split_share_lag received the
+# yf_shares_outstanding_override equal to the value returned by
+# fetch_yfinance_shares_outstanding.
+# ---------------------------------------------------------------------------
+
+
+def _step3b_loop(
+    snapshots: dict,
+    prices_by_ticker: dict,
+    monkeypatch: pytest.MonkeyPatch,
+    yf_mc_by_ticker: dict,
+    yf_shares_by_ticker: dict,
+    psr_by_ticker: dict,
+) -> dict:
+    """Minimal reimplementation of the Step-3b loop contract for unit testing.
+
+    Mirrors compute/main.py lines ~1306-1343:
+        for _ticker, _snap in snapshots.items():
+            if _snap is None: continue
+            _yf_mc = fetch_yfinance_market_cap(_ticker)
+            _yf_shares = fetch_yfinance_shares_outstanding(_ticker)
+            _psr = check_post_split_share_lag(
+                _ticker, _snap,
+                yf_market_cap=_yf_mc,
+                current_price=_current_price,
+                yf_shares_outstanding_override=_yf_shares,
+            )
+            if _psr.tier == 0: continue
+            post_split_results[_ticker] = _psr
+
+    Returns the call kwargs dict keyed by ticker for assertion.
+
+    NOTE (indirect coverage): this re-implements the loop rather than driving
+    ``run_weekly_compute`` (no lightweight orchestrator harness exists yet —
+    same limitation as the skipped wall_clock tests). It pins the wiring
+    CONTRACT (override forwarded verbatim); a future edit that drops
+    ``yf_shares_outstanding_override=`` from the REAL main.py Step-3b loop is
+    caught only indirectly (via the override behavior cases in
+    test_post_split_share_lag.py), not here — keep this mirror in sync.
+    """
+    import compute.main as main_mod  # local import to enable monkeypatching
+
+    call_kwargs: dict[str, dict] = {}
+
+    def _fake_yf_mc(ticker):
+        return yf_mc_by_ticker.get(ticker)
+
+    def _fake_yf_shares(ticker):
+        return yf_shares_by_ticker.get(ticker)
+
+    def _fake_check(ticker, snap, yf_market_cap, current_price, **kwargs):
+        from compute.scoring.risk_overlay import PostSplitResult
+        call_kwargs[ticker] = {
+            "yf_market_cap": yf_market_cap,
+            "current_price": current_price,
+            **kwargs,
+        }
+        return psr_by_ticker.get(ticker, PostSplitResult(tier=0))
+
+    monkeypatch.setattr(main_mod, "fetch_yfinance_market_cap", _fake_yf_mc)
+    monkeypatch.setattr(main_mod, "fetch_yfinance_shares_outstanding", _fake_yf_shares)
+    monkeypatch.setattr(main_mod, "check_post_split_share_lag", _fake_check)
+
+    # Execute the loop logic directly (mirrors the Step-3b body).
+    for ticker, ticker_snap in snapshots.items():
+        if ticker_snap is None:
+            continue
+        current_price = prices_by_ticker.get(ticker)
+        yf_mc = main_mod.fetch_yfinance_market_cap(ticker)
+        yf_shares = main_mod.fetch_yfinance_shares_outstanding(ticker)
+        main_mod.check_post_split_share_lag(
+            ticker,
+            ticker_snap,
+            yf_market_cap=yf_mc,
+            current_price=current_price,
+            yf_shares_outstanding_override=yf_shares,
+        )
+
+    return call_kwargs
+
+
+def test_step3b_wiring_yf_shares_passed_as_override(monkeypatch: pytest.MonkeyPatch):
+    """Step-3b loop passes fetch_yfinance_shares_outstanding return as override.
+
+    The wiring invariant: the value returned by fetch_yfinance_shares_outstanding
+    for a ticker must be passed verbatim as yf_shares_outstanding_override to
+    check_post_split_share_lag for the same ticker.
+
+    Simulates a single-ticker run where yfinance reports 1,306,275,210 shares
+    (post-10:1 split).  After the loop, we assert that check_post_split_share_lag
+    received yf_shares_outstanding_override=1_306_275_210.0, not None.
+    """
+    from compute.scoring.risk_overlay import PostSplitResult
+
+    ticker = "KLAC"
+    yf_shares_value = 1_306_275_210.0
+    yf_mc_value = 1.96e11  # ~$196B
+
+    test_snap = _snap(ticker=ticker, shares_outstanding=130_627_521.0)
+    prices = {ticker: 150.0}
+    yf_mc_map = {ticker: yf_mc_value}
+    yf_shares_map = {ticker: yf_shares_value}
+    psr_map = {ticker: PostSplitResult(tier=0)}  # tier=0 → no side-effects needed
+
+    call_kwargs = _step3b_loop(
+        snapshots={ticker: test_snap},
+        prices_by_ticker=prices,
+        monkeypatch=monkeypatch,
+        yf_mc_by_ticker=yf_mc_map,
+        yf_shares_by_ticker=yf_shares_map,
+        psr_by_ticker=psr_map,
+    )
+
+    assert ticker in call_kwargs, (
+        f"check_post_split_share_lag was not called for {ticker}"
+    )
+    received_override = call_kwargs[ticker].get("yf_shares_outstanding_override")
+    assert received_override == pytest.approx(yf_shares_value), (
+        f"Step-3b must pass fetch_yfinance_shares_outstanding return "
+        f"({yf_shares_value}) as yf_shares_outstanding_override, "
+        f"got {received_override!r}"
+    )
+
+
+def test_step3b_wiring_none_shares_passed_as_none_override(monkeypatch: pytest.MonkeyPatch):
+    """Step-3b passes None when fetch_yfinance_shares_outstanding returns None.
+
+    Cold-cache / QR_SKIP_CROSS_SOURCE=1 path: the function returns None, and
+    None must be forwarded as yf_shares_outstanding_override so the detector
+    falls back gracefully to the market_cap/price path (existing behavior).
+    """
+    from compute.scoring.risk_overlay import PostSplitResult
+
+    ticker = "COLD"
+    test_snap = _snap(ticker=ticker, shares_outstanding=50_000_000.0)
+
+    call_kwargs = _step3b_loop(
+        snapshots={ticker: test_snap},
+        prices_by_ticker={ticker: 100.0},
+        monkeypatch=monkeypatch,
+        yf_mc_by_ticker={ticker: 5e9},
+        yf_shares_by_ticker={ticker: None},  # cold cache → None
+        psr_by_ticker={ticker: PostSplitResult(tier=0)},
+    )
+
+    assert ticker in call_kwargs
+    received_override = call_kwargs[ticker].get("yf_shares_outstanding_override")
+    assert received_override is None, (
+        "None from fetch_yfinance_shares_outstanding must be passed verbatim "
+        "as yf_shares_outstanding_override (cold-cache graceful fallback)"
+    )

@@ -722,7 +722,7 @@ Cross-tool agents (Copilot / Cursor / Devin / Codex): READ those files; do NOT
 maintain a parallel phase log here. The former ~1,068-line mirror was collapsed
 2026-06-03 (token-economy drain — it duplicated CLAUDE.md verbatim; git history
 preserves it).
-Schema is currently **`0.10.24-phase8pilot`** (#496/PR-A merged 2026-06-18; #497 in flight — docs(methodology) Path C amendment: #177 behavioral flip DEFERRED to Q3 2026-08-19, `BASKET_RULE_N_TRIALS` 15→16, NO schema change. Prior: #493 + #494 `0.10.23-phase8pilot` merged 2026-06-16/17. See CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md).
+Schema is currently **`0.10.24-phase8pilot`** on `main` (#496/PR-A merged 2026-06-18); **`0.10.25-phase8pilot`** in flight (#499 — `post_split_share_lag` HYBRID defense, new `compute/ingest/splits.py`, `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` counters, defense 34→35). #498 merged 2026-06-18 (prices.py last-bar-date recency guard). #497 merged 2026-06-18 (docs methodology Path C, NO schema change). See CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md.
 
 ## Claude-Code-specific tooling
 

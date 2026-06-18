@@ -302,6 +302,21 @@
       "required": false,
       "default": null
     },
+    "post_split_correction_applied_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "post_split_share_lag_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "post_split_veto_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "sector_coe_enabled": {
       "type": "bool",
       "required": false,
@@ -536,6 +551,11 @@
       "default": null
     },
     "shares_outstanding_listed_class": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "shares_outstanding_pre_split_raw": {
       "type": "float | None",
       "required": false,
       "default": null
