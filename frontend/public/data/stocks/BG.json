@@ -5,19 +5,19 @@
   "industry": "Agricultural Products & Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 22533263757.68074,
-  "current_price": 116.14,
-  "rank": 687,
-  "composite_score": 43.58,
+  "market_cap": 21741669493.22296,
+  "current_price": 112.06,
+  "rank": 693,
+  "composite_score": 43.19,
   "pillar_scores": {
     "quality": 28.3,
     "value": 60.38,
     "growth": 42.45,
-    "momentum": 64.61,
+    "momentum": 63.69,
     "health": 35.81,
     "profitability": 27.67,
-    "technical": 21.29,
-    "risk": 65.41,
+    "technical": 17.27,
+    "risk": 63.6,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 4.205792845683508,
     "shares_outstanding": 194018115.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 22533263757.68074,
-    "pe_ratio_ttm": 27.61429382068718,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 21741669493.22296,
+    "pe_ratio_ttm": 26.644202810322255,
     "goodwill": 3291000000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 94.53966889669003,
+        "value": 94.76270393755924,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 270.7987083445759,
+        "value": 280.9297536023971,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 94.53966889669003,
-    "max": 270.7987083445759,
+    "median": 94.76270393755924,
+    "max": 280.9297536023971,
     "low": 12.583137964492252,
-    "high": 270.7987083445759,
-    "mos_pct": -22.847901568771693,
+    "high": 280.9297536023971,
+    "mos_pct": -18.253271490049496,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 105.07306498884618,
+    "median_trimmed": 105.18458250928079,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -130,20 +131,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 36.95,
+      "Momentum": 38.94,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 48.03,
-      "Risk": 47.47
+      "Technical": 50.14,
+      "Risk": 47.1
     }
   },
   "beneish_m_score": -1.528541237857401,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.207761989544785,
-  "price_change_1d_pct": -2.7466,
+  "loss_chance_pct": 56.7912295994643,
+  "price_change_1d_pct": -3.513,
   "manipulation_index": 51.0,
-  "composite_score_adjusted": 38.48,
+  "composite_score_adjusted": 38.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -191,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.71,
+  "osap_blended_score": 47.52,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,5 +206,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.7648608059313686e-08
+  "cross_source_delta": 0.0014724349842139457
 }

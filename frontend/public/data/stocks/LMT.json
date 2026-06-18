@@ -5,19 +5,19 @@
   "industry": "Aerospace & Defense",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 122733621499.2583,
-  "current_price": 532.32,
-  "rank": 314,
-  "composite_score": 53.89,
+  "market_cap": 117249665238.62915,
+  "current_price": 508.535,
+  "rank": 333,
+  "composite_score": 53.34,
   "pillar_scores": {
     "quality": 69.28,
-    "value": 56.83,
+    "value": 60.34,
     "growth": 50.23,
-    "momentum": 38.14,
+    "momentum": 38.55,
     "health": 31.13,
     "profitability": 35.14,
-    "technical": 65.96,
-    "risk": 63.97,
+    "technical": 41.96,
+    "risk": 58.98,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 20.7881896088302,
     "shares_outstanding": 230563608.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 122733621499.2583,
-    "pe_ratio_ttm": 25.60684779871861,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 117249665238.62915,
+    "pe_ratio_ttm": 24.46268834521785,
     "goodwill": 11306000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 927.9370191116229,
+        "value": 926.632100420123,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 193.19982042062313,
+        "value": 191.16818366405732,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 1011.8861755115194,
+        "value": 1003.4175110983019,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 927.9370191116229,
-    "max": 1011.8861755115194,
-    "low": 193.19982042062313,
-    "high": 1011.8861755115194,
-    "mos_pct": 42.63403697011196,
+    "median": 926.632100420123,
+    "max": 1003.4175110983019,
+    "low": 191.16818366405732,
+    "high": 1003.4175110983019,
+    "mos_pct": 45.1200747921914,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 927.9370191116229,
+    "median_trimmed": 926.632100420123,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -116,22 +117,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 47.72,
+      "Value": 48.42,
       "Growth": 50.26,
-      "Momentum": 55.18,
+      "Momentum": 53.82,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.58,
-      "Risk": 53.27
+      "Technical": 53.94,
+      "Risk": 53.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 23.133486735658288,
-  "price_change_1d_pct": -0.6773,
+  "loss_chance_pct": 22.53565580899291,
+  "price_change_1d_pct": -4.4682,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.89,
+  "composite_score_adjusted": 53.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.87,
+  "osap_blended_score": 52.6,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -193,5 +194,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.132590444454525e-08
+  "cross_source_delta": 0.002880848083304931
 }

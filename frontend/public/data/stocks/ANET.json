@@ -5,19 +5,19 @@
   "industry": "Communications Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 207680274440.81476,
-  "current_price": 164.93,
-  "rank": 134,
-  "composite_score": 59.84,
+  "market_cap": 213352988270.72992,
+  "current_price": 169.435,
+  "rank": 146,
+  "composite_score": 59.35,
   "pillar_scores": {
     "quality": 64.58,
-    "value": 28.47,
+    "value": 28.89,
     "growth": 70.42,
-    "momentum": 74.06,
+    "momentum": 71.42,
     "health": 89.59,
     "profitability": 65.83,
-    "technical": 54.77,
-    "risk": 48.17,
+    "technical": 48.67,
+    "risk": 49.28,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 2.9546476640713206,
     "shares_outstanding": 1259202593.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 207680274440.81476,
-    "pe_ratio_ttm": 55.82052800451949,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 213352988270.72992,
+    "pe_ratio_ttm": 57.345246141843816,
     "goodwill": 416100000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 109.73366965981401,
+        "value": 112.43571508591506,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 78.06239233734958,
+        "value": 80.18359018193375,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 88.54450331918916,
+        "value": 89.72247182959083,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 53.99862358631337,
-    "max": 109.73366965981401,
+    "median": 55.05922250860546,
+    "max": 112.43571508591506,
     "low": 7.057301232435491,
-    "high": 109.73366965981401,
-    "mos_pct": -205.43369760555308,
+    "high": 112.43571508591506,
+    "mos_pct": -207.73227415645397,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -90,7 +91,7 @@
       "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 88.54450331918916,
+    "median_trimmed": 89.72247182959083,
     "methods_excluded_from_median": [
       "graham",
       "rim",
@@ -131,20 +132,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 71.97,
+      "Momentum": 71.56,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.03,
-      "Risk": 42.72
+      "Technical": 50.42,
+      "Risk": 42.91
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6518033895089196,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.07785938654841,
-  "price_change_1d_pct": -1.8332,
+  "loss_chance_pct": 58.32720112712491,
+  "price_change_1d_pct": 2.7315,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.84,
+  "composite_score_adjusted": 59.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.85,
+  "osap_blended_score": 55.6,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,5 +207,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.6349468332958123e-05
+  "cross_source_delta": 0.001472272074911514
 }

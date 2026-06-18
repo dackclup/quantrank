@@ -5,19 +5,19 @@
   "industry": "Internet Services & Infrastructure",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 18556994768.814636,
-  "current_price": 177.81,
-  "rank": 462,
-  "composite_score": 50.01,
+  "market_cap": 18346701007.798477,
+  "current_price": 175.795,
+  "rank": 463,
+  "composite_score": 50.06,
   "pillar_scores": {
     "quality": 47.71,
-    "value": 15.0,
+    "value": 16.94,
     "growth": 70.94,
-    "momentum": 97.13,
+    "momentum": 95.0,
     "health": 41.42,
     "profitability": 47.92,
-    "technical": 71.59,
-    "risk": 47.65,
+    "technical": 69.35,
+    "risk": 47.56,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 2.317902537844857,
     "shares_outstanding": 104364181.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 18556994768.814636,
-    "pe_ratio_ttm": 76.71159363064429,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 18346701007.798477,
+    "pe_ratio_ttm": 75.84227347729481,
     "goodwill": 350651000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 86.08537474178254,
+        "value": 88.2051124102332,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.96908701284057,
+        "value": 63.65297972822682,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 71.4925097705462,
+        "value": 72.53110110664116,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 61.96908701284057,
-    "max": 86.08537474178254,
+    "median": 63.65297972822682,
+    "max": 88.2051124102332,
     "low": 8.259799713113432,
-    "high": 86.08537474178254,
-    "mos_pct": -186.93338264246154,
+    "high": 88.2051124102332,
+    "mos_pct": -176.17717021185933,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 71.4925097705462,
+    "median_trimmed": 72.53110110664116,
     "methods_excluded_from_median": [
       "graham",
       "dcf"
@@ -133,20 +134,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 71.97,
+      "Momentum": 71.56,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.03,
-      "Risk": 42.72
+      "Technical": 50.42,
+      "Risk": 42.91
     }
   },
   "beneish_m_score": -2.030395529610366,
   "dechow_f_score": null,
-  "recommendation": "cautious",
-  "loss_chance_pct": 68.99667694475241,
-  "price_change_1d_pct": 2.0841,
+  "recommendation": "neutral",
+  "loss_chance_pct": 68.96916862989653,
+  "price_change_1d_pct": -1.1332,
   "manipulation_index": 13.0,
-  "composite_score_adjusted": 48.71,
+  "composite_score_adjusted": 48.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.93,
+  "osap_blended_score": 50.96,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -208,5 +209,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.39287381348765e-08
+  "cross_source_delta": 0.002389067319505893
 }

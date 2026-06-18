@@ -5,19 +5,19 @@
   "industry": "Personal Care Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 3701955886.720764,
-  "current_price": 62.28,
+  "market_cap": 3840452421.139618,
+  "current_price": 64.61,
   "rank": 879,
-  "composite_score": 32.62,
+  "composite_score": 32.4,
   "pillar_scores": {
     "quality": 32.55,
-    "value": 20.44,
+    "value": 20.13,
     "growth": 51.42,
-    "momentum": 3.82,
+    "momentum": 3.77,
     "health": 55.01,
     "profitability": 47.17,
-    "technical": 67.46,
-    "risk": 9.15,
+    "technical": 64.61,
+    "risk": 9.28,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 0.44276189615145733,
     "shares_outstanding": 59440526.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 3701955886.720764,
-    "pe_ratio_ttm": 140.6625080447133,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 3840452421.139618,
+    "pe_ratio_ttm": 145.92493430882354,
     "goodwill": 853475000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 9.952597428850957,
+        "value": 9.976077286567872,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.998737239458364,
+        "value": 63.014263723818885,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 23.27361257019148,
+        "value": 23.71485195543175,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,18 +79,20 @@
         "tier_used": null
       }
     },
-    "median": 17.885046790092233,
-    "max": 61.998737239458364,
-    "low": 9.952597428850957,
-    "high": 61.998737239458364,
-    "mos_pct": -248.22385152382202,
+    "median": 18.10566648271237,
+    "max": 63.014263723818885,
+    "low": 9.976077286567872,
+    "high": 63.014263723818885,
+    "mos_pct": -256.8496120926695,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
+      "extreme_multiples_pe_estimate",
+      "extreme_dcf_estimate"
     ],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 23.27361257019148,
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 43.36455783962532,
     "methods_excluded_from_median": [
-      "multiples_pe"
+      "multiples_pe",
+      "dcf"
     ]
   },
   "top5_factors": [],
@@ -109,6 +112,7 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
+    "extreme_dcf_estimate",
     "insider_sell_cluster",
     "c_suite_unusual_sell"
   ],
@@ -127,20 +131,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 36.95,
+      "Momentum": 38.94,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 48.03,
-      "Risk": 47.47
+      "Technical": 50.14,
+      "Risk": 47.1
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 1.7468001522483745,
   "recommendation": "cautious",
-  "loss_chance_pct": 69.69010558298122,
-  "price_change_1d_pct": -6.9476,
+  "loss_chance_pct": 70.79789147805715,
+  "price_change_1d_pct": 3.7412,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 31.82,
+  "composite_score_adjusted": 31.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.24,
+  "osap_blended_score": 42.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -196,11 +200,11 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 8,
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.653207175983552e-08
+  "cross_source_delta": 0.003559762590764062
 }

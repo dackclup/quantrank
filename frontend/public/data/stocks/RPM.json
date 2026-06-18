@@ -5,19 +5,19 @@
   "industry": "Specialty Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13658590491.106224,
-  "current_price": 107.02,
-  "rank": 122,
-  "composite_score": 60.26,
+  "market_cap": 13893423807.11705,
+  "current_price": 108.86,
+  "rank": 133,
+  "composite_score": 59.81,
   "pillar_scores": {
     "quality": 75.72,
-    "value": 48.08,
+    "value": 44.87,
     "growth": 69.47,
-    "momentum": 31.6,
+    "momentum": 34.67,
     "health": 63.39,
     "profitability": 78.37,
-    "technical": 57.87,
-    "risk": 49.35,
+    "technical": 54.79,
+    "risk": 50.42,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 5.225692617961782,
     "shares_outstanding": 127626527.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 13658590491.106224,
-    "pe_ratio_ttm": 20.47958126645579,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 13893423807.11705,
+    "pe_ratio_ttm": 20.83168846100464,
     "goodwill": 1680867000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 118.80697773311269,
+        "value": 120.68163920567811,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 61.635710528445024,
+        "value": 61.46501270576707,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 42.176509310672934,
-    "max": 118.80697773311269,
+    "median": 42.09116039933396,
+    "max": 120.68163920567811,
     "low": 8.510610633089083,
-    "high": 118.80697773311269,
-    "mos_pct": -153.74313425218565,
+    "high": 120.68163920567811,
+    "mos_pct": -158.62912682272864,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 61.635710528445024,
+    "median_trimmed": 61.46501270576707,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -125,22 +126,22 @@
     "label": "Materials median (n=52)",
     "values": {
       "Quality": 51.08,
-      "Value": 51.36,
+      "Value": 50.16,
       "Growth": 47.72,
-      "Momentum": 46.95,
+      "Momentum": 47.71,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.17,
-      "Risk": 47.08
+      "Technical": 53.33,
+      "Risk": 46.4
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.42607930499033336,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.87226169409858,
-  "price_change_1d_pct": -2.2559,
+  "loss_chance_pct": 57.09737575686509,
+  "price_change_1d_pct": 1.7193,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 60.26,
+  "composite_score_adjusted": 59.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.05,
+  "osap_blended_score": 55.83,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -202,5 +203,5 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0035192741831652084
+  "cross_source_delta": 0.0053168775320241324
 }

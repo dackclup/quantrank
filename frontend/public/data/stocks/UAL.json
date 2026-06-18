@@ -5,19 +5,19 @@
   "industry": "Passenger Airlines",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 37594912188.54492,
-  "current_price": 115.83,
-  "rank": 103,
-  "composite_score": 61.36,
+  "market_cap": 38628665979.81836,
+  "current_price": 119.015,
+  "rank": 112,
+  "composite_score": 61.04,
   "pillar_scores": {
     "quality": 53.39,
-    "value": 93.07,
+    "value": 92.67,
     "growth": 74.77,
-    "momentum": 55.07,
+    "momentum": 53.71,
     "health": 28.26,
     "profitability": 36.75,
-    "technical": 55.4,
-    "risk": 43.07,
+    "technical": 52.69,
+    "risk": 45.14,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 11.291872543332198,
     "shares_outstanding": 324569728.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 37594912188.54492,
-    "pe_ratio_ttm": 10.25782051529193,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 38628665979.81836,
+    "pe_ratio_ttm": 10.53988157703093,
     "goodwill": 4527000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 319.8178357727852,
+        "value": 328.8730546164155,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 261.73099622834286,
+        "value": 264.3008687612562,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 390.3337004476754,
+        "value": 392.23775934267945,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 261.73099622834286,
-    "max": 390.3337004476754,
+    "median": 264.3008687612562,
+    "max": 392.23775934267945,
     "low": 51.86184231111154,
-    "high": 390.3337004476754,
-    "mos_pct": 55.74463724197163,
+    "high": 392.23775934267945,
+    "mos_pct": 54.969879612028414,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 261.73099622834286,
+    "median_trimmed": 264.3008687612562,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -120,22 +121,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 47.72,
+      "Value": 48.42,
       "Growth": 50.26,
-      "Momentum": 55.18,
+      "Momentum": 53.82,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.58,
-      "Risk": 53.27
+      "Technical": 53.94,
+      "Risk": 53.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 14.808421992425043,
-  "price_change_1d_pct": -2.2614,
+  "loss_chance_pct": 15.238750701761255,
+  "price_change_1d_pct": 2.7497,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.36,
+  "composite_score_adjusted": 61.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.61,
+  "osap_blended_score": 56.45,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -197,5 +198,5 @@
     "latest_filing_date": "2026-05-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.9062331480121454e-08
+  "cross_source_delta": 0.0003360622442520514
 }

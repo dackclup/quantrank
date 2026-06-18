@@ -5,19 +5,19 @@
   "industry": "Transaction & Payment Processing Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2552173504.341614,
-  "current_price": 67.03,
-  "rank": 370,
-  "composite_score": 52.48,
+  "market_cap": 2514860074.8959656,
+  "current_price": 66.05,
+  "rank": 343,
+  "composite_score": 53.08,
   "pillar_scores": {
     "quality": 65.54,
-    "value": 67.56,
+    "value": 67.68,
     "growth": 56.96,
-    "momentum": 16.52,
+    "momentum": 23.5,
     "health": 44.59,
     "profitability": 39.82,
-    "technical": 47.34,
-    "risk": 20.2,
+    "technical": 40.41,
+    "risk": 21.32,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 8.191706631111666,
     "shares_outstanding": 38075094.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 2552173504.341614,
-    "pe_ratio_ttm": 8.182665932483532,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2514860074.8959656,
+    "pe_ratio_ttm": 8.063033263533073,
     "goodwill": 1031400000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 139.26417211460875,
+        "value": 138.8269402550784,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 86.7867018247282,
+        "value": 87.5915057323071,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 56.245112021418684,
-    "max": 139.26417211460875,
+    "median": 56.647513975208135,
+    "max": 138.8269402550784,
     "low": 9.012357290209806,
-    "high": 139.26417211460875,
-    "mos_pct": -19.174798254061972,
+    "high": 138.8269402550784,
+    "mos_pct": -16.598237798510787,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 86.7867018247282,
+    "median_trimmed": 87.5915057323071,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -128,22 +129,22 @@
     "label": "Financials median (n=140)",
     "values": {
       "Quality": 50.36,
-      "Value": 51.85,
+      "Value": 51.93,
       "Growth": 50.62,
-      "Momentum": 57.34,
+      "Momentum": 57.84,
       "Health": 55.6,
       "Profitability": 49.02,
-      "Technical": 59.98,
-      "Risk": 59.2
+      "Technical": 58.84,
+      "Risk": 59.29
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.44815224640767026,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 47.47081323830402,
-  "price_change_1d_pct": -0.7698,
+  "loss_chance_pct": 46.271186860299174,
+  "price_change_1d_pct": -1.462,
   "manipulation_index": 13.0,
-  "composite_score_adjusted": 51.18,
+  "composite_score_adjusted": 51.78,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.17,
+  "osap_blended_score": 52.46,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,5 +206,5 @@
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.4942812909144573e-08
+  "cross_source_delta": 0.0017410833897848399
 }

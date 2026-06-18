@@ -5,19 +5,19 @@
   "industry": "Wireless Telecommunication Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 196214534597.16864,
-  "current_price": 181.31,
-  "rank": 428,
-  "composite_score": 50.98,
+  "market_cap": 197123582596.2966,
+  "current_price": 182.15,
+  "rank": 403,
+  "composite_score": 51.67,
   "pillar_scores": {
     "quality": 58.48,
-    "value": 57.74,
+    "value": 57.14,
     "growth": 65.18,
-    "momentum": 21.59,
+    "momentum": 23.75,
     "health": 39.94,
     "profitability": 52.68,
-    "technical": 35.39,
-    "risk": 53.53,
+    "technical": 45.59,
+    "risk": 54.6,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 9.742149368214221,
     "shares_outstanding": 1082204717.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 196214534597.16864,
-    "pe_ratio_ttm": 18.610882537908434,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 197123582596.2966,
+    "pe_ratio_ttm": 18.69710543453444,
     "goodwill": 13664000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 218.51504109014707,
+        "value": 220.45041153814964,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 119.80186445863073,
+        "value": 116.91313497843518,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 477.22502854873676,
+        "value": 468.40716577650477,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 101.87065948169403,
-    "max": 477.22502854873676,
+    "median": 100.42629474159625,
+    "max": 468.40716577650477,
     "low": 27.702172897084193,
-    "high": 477.22502854873676,
-    "mos_pct": -77.98058683538297,
+    "high": 468.40716577650477,
+    "mos_pct": -81.3767941605023,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 119.80186445863073,
+    "median_trimmed": 116.91313497843518,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -124,22 +125,22 @@
     "label": "Communication Services median (n=28)",
     "values": {
       "Quality": 52.01,
-      "Value": 51.34,
+      "Value": 51.93,
       "Growth": 53.35,
-      "Momentum": 45.83,
+      "Momentum": 45.91,
       "Health": 39.18,
       "Profitability": 53.57,
-      "Technical": 34.48,
-      "Risk": 49.98
+      "Technical": 35.78,
+      "Risk": 49.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4850441971602485,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 60.5081317310738,
-  "price_change_1d_pct": -1.6544,
+  "recommendation": "neutral",
+  "loss_chance_pct": 60.16489646024707,
+  "price_change_1d_pct": 0.4633,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.98,
+  "composite_score_adjusted": 51.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.42,
+  "osap_blended_score": 51.76,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -202,5 +203,5 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.493488704236171e-08
+  "cross_source_delta": 0.0010705538978336546
 }

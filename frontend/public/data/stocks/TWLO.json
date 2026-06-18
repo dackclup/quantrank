@@ -5,19 +5,19 @@
   "industry": "Systems Software",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 28550180897.235413,
-  "current_price": 188.11,
-  "rank": 721,
-  "composite_score": 42.16,
+  "market_cap": 28020489292.1167,
+  "current_price": 184.62,
+  "rank": 726,
+  "composite_score": 42.03,
   "pillar_scores": {
     "quality": 19.17,
-    "value": 34.72,
+    "value": 35.97,
     "growth": 40.83,
-    "momentum": 77.16,
+    "momentum": 76.58,
     "health": 84.33,
     "profitability": 25.83,
-    "technical": 55.29,
-    "risk": 40.38,
+    "technical": 49.36,
+    "risk": 39.35,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 0.6849400812498279,
     "shares_outstanding": 151773860.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 28550180897.235413,
-    "pe_ratio_ttm": 274.63716281153,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 28020489292.1167,
+    "pe_ratio_ttm": 269.5418185782129,
     "goodwill": 5292457000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 30.700446606461295,
+        "value": 30.37012117284818,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 426.22571942665616,
+        "value": 427.66674982317875,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 104.39305031482093,
+        "value": 103.16775107694745,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 104.39305031482093,
-    "max": 426.22571942665616,
-    "low": 30.700446606461295,
-    "high": 426.22571942665616,
-    "mos_pct": -80.19398805098919,
+    "median": 103.16775107694745,
+    "max": 427.66674982317875,
+    "low": 30.37012117284818,
+    "high": 427.66674982317875,
+    "mos_pct": -78.95126450850815,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 265.30938487073854,
+    "median_trimmed": 265.4172504500631,
     "methods_excluded_from_median": [
       "multiples_pe"
     ]
@@ -130,20 +131,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 71.97,
+      "Momentum": 71.56,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.03,
-      "Risk": 42.72
+      "Technical": 50.42,
+      "Risk": 42.91
     }
   },
   "beneish_m_score": -2.651200126225633,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 67.92008499630451,
-  "price_change_1d_pct": -2.3718,
+  "loss_chance_pct": 67.98352041759054,
+  "price_change_1d_pct": -1.8553,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 41.66,
+  "composite_score_adjusted": 41.53,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.01,
+  "osap_blended_score": 46.94,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,5 +206,5 @@
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.1641051493608757e-09
+  "cross_source_delta": 0.0013540875567071365
 }

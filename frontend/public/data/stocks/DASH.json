@@ -5,19 +5,19 @@
   "industry": "Specialized Consumer Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 73275726779.84619,
-  "current_price": 165.66,
-  "rank": 882,
-  "composite_score": 32.29,
+  "market_cap": 76241523419.76929,
+  "current_price": 172.365,
+  "rank": 880,
+  "composite_score": 32.32,
   "pillar_scores": {
     "quality": 33.68,
-    "value": 11.11,
+    "value": 10.8,
     "growth": 65.62,
-    "momentum": 14.8,
+    "momentum": 16.49,
     "health": 48.58,
     "profitability": 37.81,
-    "technical": 47.53,
-    "risk": 23.26,
+    "technical": 44.82,
+    "risk": 24.09,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 2.0934785655828505,
     "shares_outstanding": 442326000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 73275726779.84619,
-    "pe_ratio_ttm": 79.13145440588143,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 76241523419.76929,
+    "pe_ratio_ttm": 82.33425855266663,
     "goodwill": 5499000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 39.62163145123023,
+        "value": 39.5472959012766,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 105.44087534485405,
+        "value": 106.10243730850537,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 52.305665282830475,
+        "value": 53.21290004603894,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 52.305665282830475,
-    "max": 105.44087534485405,
+    "median": 53.21290004603894,
+    "max": 106.10243730850537,
     "low": 6.6153587357176225,
-    "high": 105.44087534485405,
-    "mos_pct": -216.71522150868782,
+    "high": 106.10243730850537,
+    "mos_pct": -223.91582744792458,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 53.974123737393526,
+    "median_trimmed": 54.42774111899776,
     "methods_excluded_from_median": [
       "graham"
     ]
@@ -135,22 +136,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 72.85725180326298,
-  "price_change_1d_pct": -2.5701,
+  "loss_chance_pct": 72.83862036694862,
+  "price_change_1d_pct": 4.0474,
   "manipulation_index": 18.0,
-  "composite_score_adjusted": 30.49,
+  "composite_score_adjusted": 30.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -198,7 +199,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.07,
+  "osap_blended_score": 42.09,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -213,5 +214,5 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.014937617734379693
+  "cross_source_delta": 0.013080246865984054
 }

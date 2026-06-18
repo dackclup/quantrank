@@ -5,10 +5,10 @@
   "industry": "Life Sciences Tools & Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 171573915083.12897,
-  "current_price": 461.69,
-  "rank": 786,
-  "composite_score": 39.27,
+  "market_cap": 172249078067.6213,
+  "current_price": 463.5068,
+  "rank": 787,
+  "composite_score": 39.2,
   "pillar_scores": {
     "quality": 47.25,
     "value": 33.15,
@@ -16,8 +16,8 @@
     "momentum": 28.16,
     "health": 51.2,
     "profitability": 51.28,
-    "technical": 44.21,
-    "risk": 45.34,
+    "technical": 41.88,
+    "risk": 46.69,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 18.473098694662323,
     "shares_outstanding": 371621465.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 171573915083.12897,
-    "pe_ratio_ttm": 24.992558642844713,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 172249078067.6213,
+    "pe_ratio_ttm": 25.090907220338135,
     "goodwill": 55187000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 523.7951980514341,
+        "value": 529.5553118208203,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 497.2496414894254,
+        "value": 509.87322766994834,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 483.0957732258216,
+        "value": 484.3784136131403,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 490.1727073576235,
-    "max": 523.7951980514341,
+    "median": 497.12582064154435,
+    "max": 529.5553118208203,
     "low": 125.2803920096642,
-    "high": 523.7951980514341,
-    "mos_pct": 5.810748841925351,
+    "high": 529.5553118208203,
+    "mos_pct": 6.762677339559008,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 490.1727073576235,
+    "median_trimmed": 497.12582064154435,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -116,22 +117,22 @@
     "label": "Health Care median (n=91)",
     "values": {
       "Quality": 52.47,
-      "Value": 46.7,
+      "Value": 48.35,
       "Growth": 48.35,
-      "Momentum": 40.11,
+      "Momentum": 40.52,
       "Health": 60.2,
       "Profitability": 48.9,
-      "Technical": 53.69,
-      "Risk": 42.78
+      "Technical": 51.86,
+      "Risk": 43.18
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 43.33364438096431,
-  "price_change_1d_pct": -2.3147,
+  "loss_chance_pct": 43.0333823779677,
+  "price_change_1d_pct": 0.3935,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.27,
+  "composite_score_adjusted": 39.2,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.56,
+  "osap_blended_score": 45.53,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -193,5 +194,5 @@
     "latest_filing_date": "2026-05-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.716538251433275e-08
+  "cross_source_delta": 0.0009777763124663814
 }

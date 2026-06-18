@@ -5,19 +5,19 @@
   "industry": "Interactive Home Entertainment",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 50907567353.00592,
-  "current_price": 203.02,
-  "rank": 492,
-  "composite_score": 49.11,
+  "market_cap": 50977777462.4328,
+  "current_price": 203.3,
+  "rank": 522,
+  "composite_score": 48.46,
   "pillar_scores": {
     "quality": 61.61,
-    "value": 20.54,
+    "value": 21.13,
     "growth": 29.91,
-    "momentum": 65.52,
+    "momentum": 62.67,
     "health": 52.94,
     "profitability": 64.88,
-    "technical": 64.33,
-    "risk": 81.37,
+    "technical": 56.13,
+    "risk": 81.04,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 3.537366901485616,
     "shares_outstanding": 250751484.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 50907567353.00592,
-    "pe_ratio_ttm": 57.39297334048018,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 50977777462.4328,
+    "pe_ratio_ttm": 57.472127917060654,
     "goodwill": 5388000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 71.8698130569828,
+        "value": 72.48478054057023,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 62.58704700201615,
+        "value": 61.07791316198698,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 89.78418283246332,
+        "value": 89.99252666306045,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 62.58704700201615,
-    "max": 89.78418283246332,
+    "median": 61.07791316198698,
+    "max": 89.99252666306045,
     "low": 6.2488541101233555,
-    "high": 89.78418283246332,
-    "mos_pct": -224.38022561748429,
+    "high": 89.99252666306045,
+    "mos_pct": -232.85355135264433,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 71.8698130569828,
+    "median_trimmed": 72.48478054057023,
     "methods_excluded_from_median": [
       "graham",
       "rim"
@@ -129,22 +130,22 @@
     "label": "Communication Services median (n=28)",
     "values": {
       "Quality": 52.01,
-      "Value": 51.34,
+      "Value": 51.93,
       "Growth": 53.35,
-      "Momentum": 45.83,
+      "Momentum": 45.91,
       "Health": 39.18,
       "Profitability": 53.57,
-      "Technical": 34.48,
-      "Risk": 49.98
+      "Technical": 35.78,
+      "Risk": 49.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.40067677004594243,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.44583052871924,
-  "price_change_1d_pct": 0.0,
+  "loss_chance_pct": 63.768625112184566,
+  "price_change_1d_pct": 0.1379,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.11,
+  "composite_score_adjusted": 48.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.48,
+  "osap_blended_score": 50.16,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -207,5 +208,5 @@
     "latest_filing_date": "2026-05-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.545332897198741e-08
+  "cross_source_delta": 0.0001968102756185066
 }

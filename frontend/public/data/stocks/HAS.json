@@ -5,19 +5,19 @@
   "industry": "Leisure Products",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 11810228233.95813,
-  "current_price": 83.47,
-  "rank": 700,
-  "composite_score": 42.82,
+  "market_cap": 12052177187.739532,
+  "current_price": 85.18,
+  "rank": 683,
+  "composite_score": 43.7,
   "pillar_scores": {
     "quality": 33.56,
-    "value": 36.65,
+    "value": 36.81,
     "growth": 52.55,
-    "momentum": 60.92,
+    "momentum": 58.92,
     "health": 40.2,
     "profitability": 42.9,
-    "technical": 51.55,
-    "risk": 50.06,
+    "technical": 71.76,
+    "risk": 52.4,
     "sentiment": null,
     "ml": null
   },
@@ -35,7 +35,8 @@
     "eps_diluted": -1.542150914068609,
     "shares_outstanding": 141490692.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 11810228233.95813,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 12052177187.739532,
     "pe_ratio_ttm": null,
     "goodwill": 1256500000.0
   },
@@ -54,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 98.29645920215519,
+        "value": 100.98799584639617,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 66.39990435560813,
-    "max": 98.29645920215519,
+    "median": 67.74567267772862,
+    "max": 100.98799584639617,
     "low": 34.50334950906106,
-    "high": 98.29645920215519,
-    "mos_pct": -25.70801423700132,
+    "high": 100.98799584639617,
+    "mos_pct": -25.734968653102907,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 66.39990435560813,
+    "median_trimmed": 67.74567267772862,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -121,22 +122,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": -3.799871335669794,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.58974102699524,
-  "price_change_1d_pct": -1.7538,
+  "loss_chance_pct": 55.15740985952412,
+  "price_change_1d_pct": 2.0486,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 42.32,
+  "composite_score_adjusted": 43.2,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.33,
+  "osap_blended_score": 47.78,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +199,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 8.43178445457958e-10
+  "cross_source_delta": 0.0002935260746138296
 }

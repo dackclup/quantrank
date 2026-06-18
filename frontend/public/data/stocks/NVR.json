@@ -5,19 +5,19 @@
   "industry": "Homebuilding",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 16940594476.31836,
-  "current_price": 6275.9399,
-  "rank": 481,
-  "composite_score": 49.47,
+  "market_cap": 17630371659.439453,
+  "current_price": 6531.48,
+  "rank": 492,
+  "composite_score": 49.12,
   "pillar_scores": {
     "quality": 62.27,
-    "value": 54.94,
+    "value": 54.32,
     "growth": 37.04,
-    "momentum": 14.83,
+    "momentum": 16.32,
     "health": 46.5,
     "profitability": 69.68,
-    "technical": 59.76,
-    "risk": 40.24,
+    "technical": 50.17,
+    "risk": 42.54,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 458.86069384119986,
     "shares_outstanding": 2699292.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 16940594476.31836,
-    "pe_ratio_ttm": 13.677222794720777,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 17630371659.439453,
+    "pe_ratio_ttm": 14.234123925047133,
     "goodwill": 441000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 8965.090180322215,
+        "value": 9007.739053134337,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 5919.89116206963,
+        "value": 5957.034014013641,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 5919.89116206963,
-    "max": 8965.090180322215,
+    "median": 5957.034014013641,
+    "max": 9007.739053134337,
     "low": 3694.083620150089,
-    "high": 8965.090180322215,
-    "mos_pct": -6.014448063132013,
+    "high": 9007.739053134337,
+    "mos_pct": -9.643154044508586,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 5919.89116206963,
+    "median_trimmed": 5957.034014013641,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -128,22 +129,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 42.37032317977872,
-  "price_change_1d_pct": -2.5109,
+  "loss_chance_pct": 43.81305751149654,
+  "price_change_1d_pct": 4.0717,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.47,
+  "composite_score_adjusted": 49.12,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.66,
+  "osap_blended_score": 50.49,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,5 +206,5 @@
     "latest_filing_date": "2026-05-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.772773439532018e-08
+  "cross_source_delta": 0.002069921908935365
 }

@@ -5,19 +5,19 @@
   "industry": "Packaged Foods & Meats",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 78122925542.23764,
-  "current_price": 60.86,
-  "rank": 855,
-  "composite_score": 34.61,
+  "market_cap": 77256462929.5347,
+  "current_price": 60.185,
+  "rank": 859,
+  "composite_score": 34.55,
   "pillar_scores": {
     "quality": 29.72,
-    "value": 30.5,
+    "value": 30.82,
     "growth": 37.74,
-    "momentum": 54.63,
+    "momentum": 55.65,
     "health": 20.49,
     "profitability": 35.85,
-    "technical": 34.09,
-    "risk": 54.29,
+    "technical": 29.46,
+    "risk": 53.53,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 2.043392262808234,
     "shares_outstanding": 1283649766.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 78122925542.23764,
-    "pe_ratio_ttm": 29.78380691659841,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 77256462929.5347,
+    "pe_ratio_ttm": 29.45347423924311,
     "goodwill": 24226000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 21.992646538428886,
+        "value": 21.944556646217865,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 34.905194036092354,
+        "value": 34.630200151626525,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 26.7419060456506,
+        "value": 27.091712715185537,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 24.38933764810745,
-    "max": 34.905194036092354,
-    "low": 21.992646538428886,
-    "high": 34.905194036092354,
-    "mos_pct": -149.53527434179477,
+    "median": 24.564240982874917,
+    "max": 34.630200151626525,
+    "low": 21.944556646217865,
+    "high": 34.630200151626525,
+    "mos_pct": -145.01062913056947,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 24.38933764810745,
+    "median_trimmed": 24.564240982874917,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -116,20 +117,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 36.95,
+      "Momentum": 38.94,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 48.03,
-      "Risk": 47.47
+      "Technical": 50.14,
+      "Risk": 47.1
     }
   },
   "beneish_m_score": -2.2586696521464433,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 67.69471013052754,
-  "price_change_1d_pct": -2.0756,
+  "loss_chance_pct": 67.72515871438732,
+  "price_change_1d_pct": -1.1091,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.61,
+  "composite_score_adjusted": 34.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.23,
+  "osap_blended_score": 43.2,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -192,5 +193,5 @@
     "latest_filing_date": "2026-05-21",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.883540982197295e-09
+  "cross_source_delta": 0.0015783976879257828
 }

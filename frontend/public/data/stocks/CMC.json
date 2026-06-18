@@ -5,19 +5,19 @@
   "industry": "Steel",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8119174391.840576,
-  "current_price": 73.22,
-  "rank": 293,
-  "composite_score": 54.46,
+  "market_cap": 8052087152.278992,
+  "current_price": 72.615,
+  "rank": 321,
+  "composite_score": 53.69,
   "pillar_scores": {
     "quality": 50.72,
     "value": 62.82,
     "growth": 37.02,
-    "momentum": 67.16,
+    "momentum": 63.75,
     "health": 60.35,
     "profitability": 49.52,
-    "technical": 42.24,
-    "risk": 56.39,
+    "technical": 36.28,
+    "risk": 55.08,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 4.556163034741626,
     "shares_outstanding": 110887384.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 8119174391.840576,
-    "pe_ratio_ttm": 16.07054020288265,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 8052087152.278992,
+    "pe_ratio_ttm": 15.937752295092626,
     "goodwill": 2134724000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 96.68437691318897,
+        "value": 94.91256891728301,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 117.57591348297474,
+        "value": 117.904089929017,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +80,16 @@
       }
     },
     "median": 38.16577309570351,
-    "max": 117.57591348297474,
+    "max": 117.904089929017,
     "low": 11.611009202851154,
-    "high": 117.57591348297474,
-    "mos_pct": -91.8472895520773,
+    "high": 117.904089929017,
+    "mos_pct": -90.26209080497868,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 67.42507500444624,
+    "median_trimmed": 66.53917100649326,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -127,22 +128,22 @@
     "label": "Materials median (n=52)",
     "values": {
       "Quality": 51.08,
-      "Value": 51.36,
+      "Value": 50.16,
       "Growth": 47.72,
-      "Momentum": 46.95,
+      "Momentum": 47.71,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.17,
-      "Risk": 47.08
+      "Technical": 53.33,
+      "Risk": 46.4
     }
   },
   "beneish_m_score": -2.1929419816583278,
   "dechow_f_score": 0.33372683585029594,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.76898825260106,
-  "price_change_1d_pct": -4.5247,
+  "loss_chance_pct": 63.15562905082723,
+  "price_change_1d_pct": -0.8263,
   "manipulation_index": 3.0,
-  "composite_score_adjusted": 54.16,
+  "composite_score_adjusted": 53.39,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.16,
+  "osap_blended_score": 52.77,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,5 +205,5 @@
     "latest_filing_date": "2026-04-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.0525342135888126e-08
+  "cross_source_delta": 0.0006197905743724846
 }

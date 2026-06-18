@@ -5,19 +5,19 @@
   "industry": "Tobacco",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 279667803131.3153,
-  "current_price": 179.44,
-  "rank": 520,
-  "composite_score": 48.43,
+  "market_cap": 280517214848.57886,
+  "current_price": 179.985,
+  "rank": 515,
+  "composite_score": 48.52,
   "pillar_scores": {
     "quality": 42.45,
     "value": 29.87,
     "growth": 57.08,
-    "momentum": 67.6,
+    "momentum": 68.93,
     "health": 43.35,
     "profitability": 78.62,
-    "technical": 52.49,
-    "risk": 68.61,
+    "technical": 51.58,
+    "risk": 68.0,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 7.438281865168664,
     "shares_outstanding": 1558558846.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 279667803131.3153,
-    "pe_ratio_ttm": 24.123850869603665,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 280517214848.57886,
+    "pe_ratio_ttm": 24.197120231913985,
     "goodwill": 17069000000.0
   },
   "fair_price": {
@@ -48,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 167.20098456941864,
+        "value": 167.59543992199195,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -60,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 131.99014495149171,
+        "value": 133.88938141026264,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 131.99014495149171,
-    "max": 167.20098456941864,
+    "median": 133.88938141026264,
+    "max": 167.59543992199195,
     "low": 80.2919098617076,
-    "high": 167.20098456941864,
-    "mos_pct": -35.94954570839592,
+    "high": 167.59543992199195,
+    "mos_pct": -34.42813665621707,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 131.99014495149171,
+    "median_trimmed": 133.88938141026264,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -120,20 +121,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 36.95,
+      "Momentum": 38.94,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 48.03,
-      "Risk": 47.47
+      "Technical": 50.14,
+      "Risk": 47.1
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.36911898257091,
-  "price_change_1d_pct": -2.51,
+  "loss_chance_pct": 55.7877760360378,
+  "price_change_1d_pct": 0.3037,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 46.43,
+  "composite_score_adjusted": 46.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -181,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.14,
+  "osap_blended_score": 50.19,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,5 +196,5 @@
     "latest_filing_date": "2026-05-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.6447359910735875e-09
+  "cross_source_delta": 0.00102783350239941
 }

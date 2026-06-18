@@ -5,19 +5,19 @@
   "industry": "Apparel, Accessories & Luxury Goods",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 29472261444.633545,
-  "current_price": 145.87,
-  "rank": 287,
-  "composite_score": 54.64,
+  "market_cap": 29612684000.683228,
+  "current_price": 146.565,
+  "rank": 294,
+  "composite_score": 54.28,
   "pillar_scores": {
     "quality": 88.77,
-    "value": 16.36,
+    "value": 16.67,
     "growth": 49.31,
-    "momentum": 57.43,
+    "momentum": 56.07,
     "health": 40.73,
     "profitability": 69.37,
-    "technical": 52.85,
-    "risk": 57.45,
+    "technical": 47.64,
+    "risk": 57.56,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 3.280461967443504,
     "shares_outstanding": 202044714.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 29472261444.633545,
-    "pe_ratio_ttm": 44.4662966877392,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 29612684000.683228,
+    "pe_ratio_ttm": 44.67815932511048,
     "goodwill": 960400000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 62.08673793019555,
+        "value": 61.97025479611388,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 15.446425302206203,
+        "value": 15.543339970458906,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 54.63356411462775,
+        "value": 55.95712838805984,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 58.36015102241165,
+    "median": 58.96369159208686,
     "max": 63.404106934973875,
-    "low": 15.446425302206203,
+    "low": 15.543339970458906,
     "high": 63.404106934973875,
-    "mos_pct": -149.94793975288042,
+    "mos_pct": -148.5682264525578,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 62.08673793019555,
+    "median_trimmed": 61.97025479611388,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -122,22 +123,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": -3.1170786900458145,
   "dechow_f_score": 0.3608223707714841,
   "recommendation": "cautious",
-  "loss_chance_pct": 70.67976855273604,
-  "price_change_1d_pct": -2.3563,
+  "loss_chance_pct": 70.858114512332,
+  "price_change_1d_pct": 0.4765,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.64,
+  "composite_score_adjusted": 54.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.25,
+  "osap_blended_score": 53.07,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -199,5 +200,5 @@
     "latest_filing_date": "2026-05-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.372965021336933e-08
+  "cross_source_delta": 0.003275025773230649
 }

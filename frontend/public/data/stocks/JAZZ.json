@@ -5,19 +5,19 @@
   "industry": "Pharmaceuticals",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 14238227683.057861,
-  "current_price": 226.93,
-  "rank": 688,
-  "composite_score": 43.56,
+  "market_cap": 13928278956.456604,
+  "current_price": 221.99,
+  "rank": 701,
+  "composite_score": 42.73,
   "pillar_scores": {
     "quality": 25.27,
-    "value": 40.75,
+    "value": 41.3,
     "growth": 32.14,
-    "momentum": 86.72,
+    "momentum": 84.26,
     "health": 59.0,
     "profitability": 27.11,
-    "technical": 49.7,
-    "risk": 66.8,
+    "technical": 36.86,
+    "risk": 66.72,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 0.4700617536795445,
     "shares_outstanding": 62742820.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 14238227683.057861,
-    "pe_ratio_ttm": 482.7663405912543,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 13928278956.456604,
+    "pe_ratio_ttm": 472.2571103806532,
     "goodwill": 1805000000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.65241530420883,
+        "value": 11.60552463989481,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 254.35458018374013,
+        "value": 251.98262854361457,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +80,16 @@
       }
     },
     "median": 183.7137424368941,
-    "max": 254.35458018374013,
-    "low": 11.65241530420883,
-    "high": 254.35458018374013,
-    "mos_pct": -23.523689445133357,
+    "max": 251.98262854361457,
+    "low": 11.60552463989481,
+    "high": 251.98262854361457,
+    "mos_pct": -20.83473046085156,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 219.03416131031713,
+    "median_trimmed": 217.84818549025434,
     "methods_excluded_from_median": [
       "multiples_pe"
     ]
@@ -131,22 +132,22 @@
     "label": "Health Care median (n=91)",
     "values": {
       "Quality": 52.47,
-      "Value": 46.7,
+      "Value": 48.35,
       "Growth": 48.35,
-      "Momentum": 40.11,
+      "Momentum": 40.52,
       "Health": 60.2,
       "Profitability": 48.9,
-      "Technical": 53.69,
-      "Risk": 42.78
+      "Technical": 51.86,
+      "Risk": 43.18
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 1.450446459676766,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.45237963616549,
-  "price_change_1d_pct": 0.022,
+  "loss_chance_pct": 56.925802756073196,
+  "price_change_1d_pct": -2.1769,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 42.56,
+  "composite_score_adjusted": 41.73,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.71,
+  "osap_blended_score": 47.29,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -208,5 +209,5 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.5947059309797545e-08
+  "cross_source_delta": 0.002184490678174679
 }

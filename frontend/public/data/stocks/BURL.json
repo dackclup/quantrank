@@ -5,19 +5,19 @@
   "industry": "Apparel Retail",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 20818764671.22998,
-  "current_price": 330.76,
-  "rank": 349,
-  "composite_score": 52.99,
+  "market_cap": 21376746712.75,
+  "current_price": 339.625,
+  "rank": 365,
+  "composite_score": 52.55,
   "pillar_scores": {
     "quality": 69.1,
-    "value": 30.56,
+    "value": 30.71,
     "growth": 68.98,
-    "momentum": 61.81,
+    "momentum": 60.67,
     "health": 26.3,
     "profitability": 58.26,
-    "technical": 52.88,
-    "risk": 49.21,
+    "technical": 44.96,
+    "risk": 50.96,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 9.91488922393346,
     "shares_outstanding": 62942206.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 20818764671.22998,
-    "pe_ratio_ttm": 33.35992992914196,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 21376746712.75,
+    "pe_ratio_ttm": 34.2540387824185,
     "goodwill": 47064000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 187.65135366986334,
+        "value": 187.2992943006836,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 133.4446846080825,
+        "value": 134.28194935289252,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,15 +80,15 @@
       }
     },
     "median": 78.7221996666745,
-    "max": 187.65135366986334,
+    "max": 187.2992943006836,
     "low": 35.09671382055541,
-    "high": 187.65135366986334,
-    "mos_pct": -320.1610361068782,
+    "high": 187.2992943006836,
+    "mos_pct": -331.42214196000623,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 106.0834421373785,
+    "median_trimmed": 106.50207450978351,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -125,22 +126,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": -2.5592227655118793,
   "dechow_f_score": 0.31976496838805046,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.507319981659414,
-  "price_change_1d_pct": -0.9196,
+  "loss_chance_pct": 59.72623935835317,
+  "price_change_1d_pct": 2.6802,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.99,
+  "composite_score_adjusted": 52.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.42,
+  "osap_blended_score": 52.2,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -202,5 +203,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0017783279562760513
+  "cross_source_delta": 0.00019145622601024378
 }

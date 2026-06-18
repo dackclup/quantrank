@@ -5,19 +5,19 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 132992389754.26611,
-  "current_price": 171.63,
-  "rank": 577,
-  "composite_score": 47.01,
+  "market_cap": 134278678972.0091,
+  "current_price": 173.29,
+  "rank": 579,
+  "composite_score": 46.94,
   "pillar_scores": {
     "quality": 39.7,
-    "value": 43.9,
+    "value": 44.06,
     "growth": 76.74,
-    "momentum": 14.83,
+    "momentum": 14.11,
     "health": 61.84,
     "profitability": 73.61,
-    "technical": 49.81,
-    "risk": 39.95,
+    "technical": 49.5,
+    "risk": 39.91,
     "sentiment": null,
     "ml": null
   },
@@ -35,59 +35,12 @@
     "eps_diluted": 7.941890900678,
     "shares_outstanding": 774878436.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 132992389754.26611,
-    "pe_ratio_ttm": 21.610723066991568,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 134278678972.0091,
+    "pe_ratio_ttm": 21.819739839455494,
     "goodwill": 2662000000.0
   },
-  "fair_price": {
-    "methods": {
-      "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
-        "tier_used": null
-      },
-      "multiples_pe": {
-        "value": 171.51517425966682,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
-      },
-      "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
-      },
-      "multiples_ev_ebitda": {
-        "value": 151.33765825978708,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
-      },
-      "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "insufficient_history_for_roe",
-        "tier_used": null
-      },
-      "dcf": {
-        "value": 109.37260933201281,
-        "applicable": true,
-        "reason": null,
-        "tier_used": null
-      }
-    },
-    "median": 151.33765825978708,
-    "max": 171.51517425966682,
-    "low": 109.37260933201281,
-    "high": 171.51517425966682,
-    "mos_pct": -13.408656415306405,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 151.33765825978708,
-    "methods_excluded_from_median": []
-  },
+  "fair_price": null,
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -102,8 +55,12 @@
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-28"
   },
-  "risk_flags": [],
-  "valuation_warnings": [],
+  "risk_flags": [
+    "post_split_share_lag_unreconciled"
+  ],
+  "valuation_warnings": [
+    "valuation_output_anomalous"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -117,22 +74,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 46.18585946532111,
-  "price_change_1d_pct": -2.3276,
+  "recommendation": "cautious",
+  "loss_chance_pct": null,
+  "price_change_1d_pct": 0.9672,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.01,
+  "composite_score_adjusted": 46.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +137,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.43,
+  "osap_blended_score": 49.4,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -189,11 +146,11 @@
     "ndx",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": null,
   "form4_diagnostics": {
     "insider_count": 17,
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.6029563745076662e-08
+  "cross_source_delta": 0.0012118944663197632
 }

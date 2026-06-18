@@ -5,19 +5,19 @@
   "industry": "Computer & Electronics Retail",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 15407076588.994888,
-  "current_price": 73.1,
-  "rank": 50,
-  "composite_score": 65.41,
+  "market_cap": 15761165424.99591,
+  "current_price": 74.78,
+  "rank": 48,
+  "composite_score": 65.33,
   "pillar_scores": {
     "quality": 88.66,
-    "value": 81.71,
+    "value": 81.56,
     "growth": 51.85,
-    "momentum": 28.82,
+    "momentum": 30.4,
     "health": 44.71,
     "profitability": 60.65,
-    "technical": 57.23,
-    "risk": 38.23,
+    "technical": 51.05,
+    "risk": 39.95,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 19.054204876333515,
     "shares_outstanding": 210767126.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 15407076588.994888,
-    "pe_ratio_ttm": 3.836423453434982,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 15761165424.99591,
+    "pe_ratio_ttm": 3.9245929843117304,
     "goodwill": 790000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 372.2756542964708,
+        "value": 374.046650093701,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 66.8970727022763,
+        "value": 67.31680137613925,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 134.45853673975,
+        "value": 138.98510541707418,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 73.38934348138622,
-    "max": 134.45853673975,
+    "median": 73.5992078183177,
+    "max": 138.98510541707418,
     "low": 31.848159747481432,
-    "high": 372.2756542964708,
-    "mos_pct": 0.39426024752287503,
+    "high": 374.046650093701,
+    "mos_pct": -1.604352813000387,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 66.8970727022763,
+    "median_trimmed": 67.31680137613925,
     "methods_excluded_from_median": [
       "multiples_pe"
     ]
@@ -125,22 +126,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.15811401930441,
-  "price_change_1d_pct": -3.2813,
+  "loss_chance_pct": 36.89854845991353,
+  "price_change_1d_pct": 2.2982,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 62.91,
+  "composite_score_adjusted": 62.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.63,
+  "osap_blended_score": 58.59,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -202,5 +203,5 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.538221004722901e-08
+  "cross_source_delta": 0.0014709744095015341
 }

@@ -5,19 +5,19 @@
   "industry": "Leisure Facilities",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4017503720.3149796,
-  "current_price": 50.21,
-  "rank": 748,
-  "composite_score": 41.24,
+  "market_cap": 4216738756.9458504,
+  "current_price": 52.7,
+  "rank": 713,
+  "composite_score": 42.34,
   "pillar_scores": {
     "quality": 20.37,
-    "value": 60.73,
+    "value": 59.8,
     "growth": 65.51,
-    "momentum": 1.98,
+    "momentum": 1.66,
     "health": 63.4,
     "profitability": 70.68,
-    "technical": 39.27,
-    "risk": 21.86,
+    "technical": 65.88,
+    "risk": 22.39,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 7.3131811392496395,
     "shares_outstanding": 80014017.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 4017503720.3149796,
-    "pe_ratio_ttm": 6.865685141449183,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 4216738756.9458504,
+    "pe_ratio_ttm": 7.206166476596623,
     "goodwill": 712340000.0
   },
   "fair_price": {
@@ -48,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 142.88286030682417,
+        "value": 143.56258497369183,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -60,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 90.13726029360366,
+        "value": 94.14899599382521,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 90.13726029360366,
-    "max": 142.88286030682417,
+    "median": 94.14899599382521,
+    "max": 143.56258497369183,
     "low": 3.889900755106242,
-    "high": 142.88286030682417,
-    "mos_pct": 44.296066997239684,
+    "high": 143.56258497369183,
+    "mos_pct": 44.02489351411055,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 116.51006030021392,
+    "median_trimmed": 118.85579048375851,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -129,22 +130,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": -2.664010932788503,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 32.87507247018541,
-  "price_change_1d_pct": -0.2186,
+  "loss_chance_pct": 32.4188352772333,
+  "price_change_1d_pct": 4.9592,
   "manipulation_index": 30.0,
-  "composite_score_adjusted": 38.24,
+  "composite_score_adjusted": 39.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -192,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.55,
+  "osap_blended_score": 47.1,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -206,5 +207,5 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.007139249223328868
+  "cross_source_delta": 0.007327673523751845
 }

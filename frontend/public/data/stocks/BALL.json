@@ -5,19 +5,19 @@
   "industry": "Metal, Glass & Plastic Containers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 15367748939.927948,
-  "current_price": 57.72,
-  "rank": 499,
-  "composite_score": 48.97,
+  "market_cap": 15490222091.231987,
+  "current_price": 58.18,
+  "rank": 481,
+  "composite_score": 49.51,
   "pillar_scores": {
     "quality": 50.72,
-    "value": 52.24,
+    "value": 53.53,
     "growth": 57.45,
-    "momentum": 40.44,
+    "momentum": 40.22,
     "health": 34.55,
     "profitability": 37.98,
-    "technical": 68.68,
-    "risk": 47.28,
+    "technical": 73.89,
+    "risk": 47.67,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 3.53431861497708,
     "shares_outstanding": 266246511.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 15367748939.927948,
-    "pe_ratio_ttm": 16.331295366554674,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 15490222091.231987,
+    "pe_ratio_ttm": 16.461447493338987,
     "goodwill": 4410000000.0
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.0002558065006,
+        "value": 73.62582430913194,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 62.23604298884307,
+        "value": 62.40975546786003,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,10 +80,10 @@
       }
     },
     "median": 11.262362855112968,
-    "max": 75.0002558065006,
+    "max": 73.62582430913194,
     "low": 2.3975213921755882,
-    "high": 75.0002558065006,
-    "mos_pct": -412.5034769635307,
+    "high": 73.62582430913194,
+    "mos_pct": -416.58786929212465,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,7 +92,7 @@
       "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 68.61814939767183,
+    "median_trimmed": 68.01778988849598,
     "methods_excluded_from_median": [
       "graham",
       "rim",
@@ -133,22 +134,22 @@
     "label": "Materials median (n=52)",
     "values": {
       "Quality": 51.08,
-      "Value": 51.36,
+      "Value": 50.16,
       "Growth": 47.72,
-      "Momentum": 46.95,
+      "Momentum": 47.71,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.17,
-      "Risk": 47.08
+      "Technical": 53.33,
+      "Risk": 46.4
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 64.5125615619137,
-  "price_change_1d_pct": -0.8077,
+  "loss_chance_pct": 64.24464731152993,
+  "price_change_1d_pct": 0.7969,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.97,
+  "composite_score_adjusted": 49.51,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -196,7 +197,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.41,
+  "osap_blended_score": 50.68,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -210,5 +211,5 @@
     "latest_filing_date": "2026-05-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.159899600751827e-08
+  "cross_source_delta": 0.0010313223834960796
 }

@@ -5,19 +5,19 @@
   "industry": "Construction Materials",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 38254336146.05316,
-  "current_price": 294.82,
-  "rank": 497,
-  "composite_score": 49.02,
+  "market_cap": 39612869950.395355,
+  "current_price": 305.29,
+  "rank": 494,
+  "composite_score": 49.1,
   "pillar_scores": {
     "quality": 53.85,
     "value": 16.35,
     "growth": 74.52,
-    "momentum": 45.76,
+    "momentum": 47.09,
     "health": 66.83,
     "profitability": 54.49,
-    "technical": 64.11,
-    "risk": 58.92,
+    "technical": 61.09,
+    "risk": 60.44,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 8.590042679318008,
     "shares_outstanding": 129754885.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 38254336146.05316,
-    "pe_ratio_ttm": 34.32113417015356,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 39612869950.395355,
+    "pe_ratio_ttm": 35.53998739493572,
     "goodwill": 3780900000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 179.68841822645814,
+        "value": 178.30256893503505,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 189.67341693131573,
+        "value": 191.22969757696066,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 188.40695174306387,
+        "value": 190.84068950734513,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 121.60316583521418,
-    "max": 189.67341693131573,
+    "median": 120.91024118950264,
+    "max": 191.22969757696066,
     "low": 25.77009638333917,
-    "high": 189.67341693131573,
-    "mos_pct": -142.44435192068326,
+    "high": 191.22969757696066,
+    "mos_pct": -152.4930936713961,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 184.04768498476102,
+    "median_trimmed": 184.5716292211901,
     "methods_excluded_from_median": [
       "rim",
       "dcf"
@@ -126,22 +127,22 @@
     "label": "Materials median (n=52)",
     "values": {
       "Quality": 51.08,
-      "Value": 51.36,
+      "Value": 50.16,
       "Growth": 47.72,
-      "Momentum": 46.95,
+      "Momentum": 47.71,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.17,
-      "Risk": 47.08
+      "Technical": 53.33,
+      "Risk": 46.4
     }
   },
   "beneish_m_score": -2.7709968254404984,
   "dechow_f_score": 0.2646905100717187,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.48808292825062,
-  "price_change_1d_pct": -1.9978,
+  "loss_chance_pct": 63.45205188612201,
+  "price_change_1d_pct": 3.5513,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.02,
+  "composite_score_adjusted": 49.1,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.44,
+  "osap_blended_score": 50.47,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -203,5 +204,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.9718464100837285e-08
+  "cross_source_delta": 0.0008189516600354527
 }

@@ -5,19 +5,19 @@
   "industry": "Health Care REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8594420001.631794,
-  "current_price": 36.38,
-  "rank": 304,
-  "composite_score": 54.18,
+  "market_cap": 8721989043.63121,
+  "current_price": 36.92,
+  "rank": 292,
+  "composite_score": 54.43,
   "pillar_scores": {
     "quality": 48.75,
     "value": 48.89,
     "growth": 79.79,
-    "momentum": 65.55,
+    "momentum": 64.77,
     "health": 34.12,
     "profitability": 58.19,
-    "technical": 30.65,
-    "risk": 80.67,
+    "technical": 39.0,
+    "risk": 78.88,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 1.4178194497647703,
     "shares_outstanding": 236240235.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 8594420001.631794,
-    "pe_ratio_ttm": 25.65912117664278,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 8721989043.63121,
+    "pe_ratio_ttm": 26.039985680172954,
     "goodwill": null
   },
   "fair_price": {
@@ -48,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 38.38379499319177,
+        "value": 38.84707586293019,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.68688978655148,
+        "value": 39.56407906119416,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 28.835652106273507,
-    "max": 39.68688978655148,
+    "median": 29.067292541142717,
+    "max": 39.56407906119416,
     "low": 1.9949469853474622,
-    "high": 39.68688978655148,
-    "mos_pct": -26.163268075357216,
+    "high": 39.56407906119416,
+    "mos_pct": -27.015607376186278,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 38.38379499319177,
+    "median_trimmed": 38.84707586293019,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -139,20 +140,20 @@
       "Quality": 48.85,
       "Value": 49.93,
       "Growth": 50.0,
-      "Momentum": 58.05,
+      "Momentum": 58.98,
       "Health": 26.31,
       "Profitability": 51.87,
-      "Technical": 51.83,
-      "Risk": 56.95
+      "Technical": 55.24,
+      "Risk": 57.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 53.0664926499769,
-  "price_change_1d_pct": -1.7553,
+  "loss_chance_pct": 53.23835630548879,
+  "price_change_1d_pct": 1.4843,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 53.68,
+  "composite_score_adjusted": 53.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -200,7 +201,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.02,
+  "osap_blended_score": 53.14,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -214,5 +215,5 @@
     "latest_filing_date": "2026-02-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.369998137405882e-08
+  "cross_source_delta": 0.000812623397407854
 }

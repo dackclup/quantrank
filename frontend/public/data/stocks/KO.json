@@ -5,19 +5,19 @@
   "industry": "Soft Drinks & Non-alcoholic Beverages",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 343897420983.7534,
-  "current_price": 79.93,
-  "rank": 375,
-  "composite_score": 52.42,
+  "market_cap": 339207698078.9588,
+  "current_price": 78.84,
+  "rank": 393,
+  "composite_score": 51.96,
   "pillar_scores": {
     "quality": 73.58,
-    "value": 16.67,
+    "value": 16.98,
     "growth": 42.92,
-    "momentum": 68.26,
+    "momentum": 66.85,
     "health": 45.17,
     "profitability": 69.5,
-    "technical": 49.92,
-    "risk": 84.71,
+    "technical": 43.85,
+    "risk": 83.51,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,9 @@
     "eps_diluted": 3.2000130767297885,
     "shares_outstanding": 4302482418.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 343897420983.7534,
-    "pe_ratio_ttm": 24.97802302322439,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 339207698078.9588,
+    "pe_ratio_ttm": 24.63739817540375,
     "goodwill": 15411000000.0
   },
   "fair_price": {
@@ -48,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 71.93130708984003,
+        "value": 72.10100518804353,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 25.48178808523843,
+        "value": 25.89917450021452,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 39.25115796216599,
+        "value": 39.86910327977357,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 23.889565956403754,
-    "max": 71.93130708984003,
+    "median": 24.098259163891797,
+    "max": 72.10100518804353,
     "low": 15.417065459659645,
-    "high": 71.93130708984003,
-    "mos_pct": -234.58121613025799,
+    "high": 72.10100518804353,
+    "mos_pct": -227.16054633532377,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 32.36647302370221,
+    "median_trimmed": 32.88413888999405,
     "methods_excluded_from_median": [
       "graham",
       "rim"
@@ -130,20 +131,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 36.95,
+      "Momentum": 38.94,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 48.03,
-      "Risk": 47.47
+      "Technical": 50.14,
+      "Risk": 47.1
     }
   },
   "beneish_m_score": -2.4802488904343734,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.79140846162964,
-  "price_change_1d_pct": -0.436,
+  "loss_chance_pct": 64.0186419678841,
+  "price_change_1d_pct": -1.3637,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 49.92,
+  "composite_score_adjusted": 49.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -191,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.13,
+  "osap_blended_score": 51.91,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,5 +207,5 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.924354355250115e-08
+  "cross_source_delta": 0.0011403404440165708
 }

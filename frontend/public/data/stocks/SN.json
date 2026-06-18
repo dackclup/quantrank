@@ -5,19 +5,19 @@
   "industry": "Household Appliances",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 18901461473.731262,
-  "current_price": 133.56,
-  "rank": 368,
-  "composite_score": 52.49,
+  "market_cap": 20011689019.74063,
+  "current_price": 141.405,
+  "rank": 360,
+  "composite_score": 52.62,
   "pillar_scores": {
     "quality": 50.46,
     "value": 45.91,
     "growth": 50.46,
-    "momentum": 59.26,
+    "momentum": 60.09,
     "health": 60.24,
     "profitability": 50.46,
-    "technical": 66.52,
-    "risk": 55.14,
+    "technical": 66.05,
+    "risk": 56.28,
     "sentiment": null,
     "ml": null
   },
@@ -35,7 +35,8 @@
     "eps_diluted": null,
     "shares_outstanding": 141520379.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 18901461473.731262,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 20011689019.74063,
     "pe_ratio_ttm": null,
     "goodwill": 834781000.0
   },
@@ -54,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 89.29199189910292,
+        "value": 89.85223179948224,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +80,20 @@
       }
     },
     "median": 26.814953884465382,
-    "max": 89.29199189910292,
+    "max": 89.85223179948224,
     "low": 16.18425393993222,
-    "high": 89.29199189910292,
-    "mos_pct": -398.0802806301622,
+    "high": 89.85223179948224,
+    "mos_pct": -427.3363489214,
     "valuation_warnings": [
+      "extreme_graham_estimate",
       "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 2,
-    "median_trimmed": 58.109127764737885,
+    "valuation_methods_applicable": 1,
+    "median_trimmed": null,
     "methods_excluded_from_median": [
+      "graham",
       "rim",
       "dcf"
     ]
@@ -122,8 +126,10 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_graham_estimate",
     "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority"
   ],
   "has_history": true,
   "tangible_book_value": 10.450791684213904,
@@ -138,22 +144,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.35,
+      "Value": 50.27,
       "Growth": 49.42,
-      "Momentum": 41.13,
+      "Momentum": 44.04,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.59,
-      "Risk": 39.72
+      "Technical": 54.64,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.75295382688675,
-  "price_change_1d_pct": -1.9959,
+  "loss_chance_pct": 61.691285312474335,
+  "price_change_1d_pct": 5.8738,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.49,
+  "composite_score_adjusted": 52.62,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -201,7 +207,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.17,
+  "osap_blended_score": 52.23,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -209,11 +215,11 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 2,
+  "valuation_methods_applicable": 1,
   "form4_diagnostics": {
     "insider_count": 7,
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 8.286495411848055e-08
+  "cross_source_delta": 0.005445370834672478
 }
