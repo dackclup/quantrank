@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 10830870553.484032,
   "current_price": 60.84,
-  "rank": 782,
-  "composite_score": 39.63,
+  "rank": 780,
+  "composite_score": 39.66,
   "pillar_scores": {
     "quality": 22.36,
     "value": 42.31,
     "growth": 38.94,
-    "momentum": 58.2,
+    "momentum": 58.26,
     "health": 65.6,
     "profitability": 20.51,
-    "technical": 50.94,
+    "technical": 51.41,
     "risk": 38.02,
     "sentiment": null,
     "ml": null
@@ -86,7 +86,9 @@
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 1
+    "valuation_methods_applicable": 1,
+    "median_trimmed": 32.17876134194871,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,8 +109,7 @@
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
-    "value_trap_risk",
-    "cross_source_disagreement"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 11.015322931806516,
@@ -125,20 +126,20 @@
       "Quality": 51.08,
       "Value": 51.36,
       "Growth": 47.72,
-      "Momentum": 46.97,
+      "Momentum": 46.95,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.22,
-      "Risk": 47.03
+      "Technical": 56.17,
+      "Risk": 47.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6565718810860849,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.18747912402638,
+  "loss_chance_pct": 70.17223522158736,
   "price_change_1d_pct": 6.6433,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.63,
+  "composite_score_adjusted": 39.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.74,
+  "osap_blended_score": 45.75,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,5 +201,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.06229456867315208
+  "cross_source_delta": 2.352907049475214e-09
 }

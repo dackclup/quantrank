@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 61901119168.23596,
   "current_price": 1311.1,
-  "rank": 36,
-  "composite_score": 66.81,
+  "rank": 37,
+  "composite_score": 66.74,
   "pillar_scores": {
     "quality": 93.98,
-    "value": 27.91,
+    "value": 27.71,
     "growth": 56.48,
     "momentum": 80.71,
     "health": 66.76,
     "profitability": 80.12,
-    "technical": 63.97,
+    "technical": 63.39,
     "risk": 70.84,
     "sentiment": null,
     "ml": null
@@ -60,7 +60,7 @@
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 1127.9909111849136,
+        "value": 1122.1341067699748,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -86,7 +86,11 @@
     "valuation_warnings": [
       "extreme_graham_estimate"
     ],
-    "valuation_methods_applicable": 5
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 381.8419062520824,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -121,20 +125,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": -2.4133730633726405,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 52.59473843266637,
+  "loss_chance_pct": 52.63187979189485,
   "price_change_1d_pct": -0.6532,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 66.81,
+  "composite_score_adjusted": 66.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.33,
+  "osap_blended_score": 59.29,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +200,5 @@
     "latest_filing_date": "2026-05-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.006574661092280798
+  "cross_source_delta": 5.165723049641108e-09
 }

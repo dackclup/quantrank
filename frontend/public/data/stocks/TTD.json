@@ -5,19 +5,19 @@
   "industry": "Advertising",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 9041701243.400574,
-  "current_price": 18.96,
-  "rank": 224,
-  "composite_score": 56.53,
+  "market_cap": 8660195207.233429,
+  "current_price": 18.16,
+  "rank": 210,
+  "composite_score": 57.09,
   "pillar_scores": {
     "quality": 71.43,
-    "value": 55.06,
+    "value": 57.74,
     "growth": 88.39,
-    "momentum": 1.83,
+    "momentum": 3.13,
     "health": 70.3,
     "profitability": 73.81,
-    "technical": 23.46,
-    "risk": 10.76,
+    "technical": 19.89,
+    "risk": 10.15,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 0.9071889750735506,
     "shares_outstanding": 476883000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 9041701243.400574,
-    "pe_ratio_ttm": 20.89972387829721,
+    "market_cap": 8660195207.233429,
+    "pe_ratio_ttm": 20.017879787328525,
     "goodwill": null
   },
   "fair_price": {
@@ -82,9 +82,11 @@
     "max": 30.23134810272325,
     "low": 6.0605345727638875,
     "high": 30.23134810272325,
-    "mos_pct": -31.98883457396403,
+    "mos_pct": -26.41969047805761,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 6
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 14.364850743376959,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -120,20 +122,20 @@
       "Quality": 52.01,
       "Value": 51.34,
       "Growth": 53.35,
-      "Momentum": 45.87,
+      "Momentum": 45.83,
       "Health": 39.18,
       "Profitability": 53.57,
-      "Technical": 34.27,
-      "Risk": 49.95
+      "Technical": 34.48,
+      "Risk": 49.98
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 47.93171762881477,
-  "price_change_1d_pct": -1.6087,
+  "loss_chance_pct": 45.70057923991018,
+  "price_change_1d_pct": -4.2194,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.53,
+  "composite_score_adjusted": 57.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.19,
+  "osap_blended_score": 54.47,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,5 +197,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.01420604816978724
+  "cross_source_delta": 0.014206128648309212
 }

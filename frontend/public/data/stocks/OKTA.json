@@ -16,8 +16,8 @@
     "momentum": 37.83,
     "health": 67.0,
     "profitability": 31.11,
-    "technical": 59.23,
-    "risk": 29.56,
+    "technical": 59.17,
+    "risk": 29.64,
     "sentiment": null,
     "ml": null
   },
@@ -87,7 +87,9 @@
       "goodwill_heavy",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 46.69582427974898,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -125,11 +127,11 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": null,
@@ -200,5 +202,5 @@
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.01504646342333057
+  "cross_source_delta": 0.013238941417367884
 }

@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 19558335743.651733,
   "current_price": 201.88,
-  "rank": 698,
-  "composite_score": 42.82,
+  "rank": 697,
+  "composite_score": 42.85,
   "pillar_scores": {
     "quality": 35.42,
     "value": 36.96,
     "growth": 41.2,
-    "momentum": 74.94,
+    "momentum": 74.99,
     "health": 26.16,
     "profitability": 29.09,
-    "technical": 70.98,
-    "risk": 60.42,
+    "technical": 71.48,
+    "risk": 60.46,
     "sentiment": null,
     "ml": null
   },
@@ -84,7 +84,9 @@
     "high": 279.60112244896527,
     "mos_pct": -22.575421389702406,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 2
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 164.69860155811995,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,7 +106,6 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "insider_sell_cluster",
     "c_suite_unusual_sell"
   ],
@@ -126,17 +127,17 @@
       "Momentum": 41.13,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.71,
-      "Risk": 39.66
+      "Technical": 54.59,
+      "Risk": 39.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 51.489673753470385,
+  "loss_chance_pct": 51.47391017253912,
   "price_change_1d_pct": 2.4616,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 42.02,
+  "composite_score_adjusted": 42.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.34,
+  "osap_blended_score": 47.35,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,5 +199,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05141918723724518
+  "cross_source_delta": 0.028069372304845786
 }

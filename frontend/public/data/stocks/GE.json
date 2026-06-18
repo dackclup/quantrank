@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 372502691738.44495,
   "current_price": 357.03,
-  "rank": 493,
-  "composite_score": 49.08,
+  "rank": 494,
+  "composite_score": 49.09,
   "pillar_scores": {
     "quality": 61.67,
     "value": 25.0,
     "growth": 55.05,
-    "momentum": 56.35,
+    "momentum": 56.31,
     "health": 36.5,
     "profitability": 49.45,
-    "technical": 68.82,
-    "risk": 63.62,
+    "technical": 69.32,
+    "risk": 63.6,
     "sentiment": null,
     "ml": null
   },
@@ -90,7 +90,13 @@
       "extreme_dcf_estimate",
       "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 2
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 220.41876661082483,
+    "methods_excluded_from_median": [
+      "graham",
+      "rim",
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -131,20 +137,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2215970973349206,
   "recommendation": "cautious",
-  "loss_chance_pct": 64.46223655709312,
+  "loss_chance_pct": 64.45270911806873,
   "price_change_1d_pct": 1.5068,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.08,
+  "composite_score_adjusted": 49.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +198,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.46,
+  "osap_blended_score": 50.47,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,5 +212,5 @@
     "latest_filing_date": "2026-05-07",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.013435486382898584
+  "cross_source_delta": 0.0014304340918137337
 }

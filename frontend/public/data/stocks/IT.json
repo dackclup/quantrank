@@ -7,8 +7,8 @@
   "country": "US",
   "market_cap": 8943433455.21257,
   "current_price": 133.58,
-  "rank": 152,
-  "composite_score": 59.07,
+  "rank": 150,
+  "composite_score": 59.08,
   "pillar_scores": {
     "quality": 94.79,
     "value": 70.42,
@@ -16,8 +16,8 @@
     "momentum": 5.65,
     "health": 36.06,
     "profitability": 66.11,
-    "technical": 21.04,
-    "risk": 13.23,
+    "technical": 21.34,
+    "risk": 13.25,
     "sentiment": null,
     "ml": null
   },
@@ -86,7 +86,11 @@
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
-    "valuation_methods_applicable": 2
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 453.82088158929446,
+    "methods_excluded_from_median": [
+      "multiples_pb"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -105,8 +109,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
-    "cross_source_disagreement"
+    "extreme_multiples_pb_estimate"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -123,20 +126,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": -3.0067390911946896,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 12.570885079471669,
+  "loss_chance_pct": 12.562916675923994,
   "price_change_1d_pct": -6.0883,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.07,
+  "composite_score_adjusted": 59.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.46,
+  "osap_blended_score": 55.47,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +201,5 @@
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.06483006908823127
+  "cross_source_delta": 3.050142109019434e-08
 }

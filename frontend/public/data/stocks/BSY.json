@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 9442682078.908348,
   "current_price": 29.34,
-  "rank": 564,
-  "composite_score": 47.17,
+  "rank": 563,
+  "composite_score": 47.22,
   "pillar_scores": {
     "quality": 62.29,
-    "value": 55.0,
+    "value": 55.14,
     "growth": 66.88,
     "momentum": 10.12,
     "health": 27.01,
     "profitability": 60.56,
-    "technical": 15.08,
-    "risk": 21.36,
+    "technical": 15.47,
+    "risk": 21.38,
     "sentiment": null,
     "ml": null
   },
@@ -84,7 +84,9 @@
     "high": 31.05973783662052,
     "mos_pct": -11.707416065538172,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 26.265042363323722,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +104,9 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -118,20 +122,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 57.51289572764395,
+  "loss_chance_pct": 57.487223610127316,
   "price_change_1d_pct": -2.7511,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.17,
+  "composite_score_adjusted": 47.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.51,
+  "osap_blended_score": 49.54,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -193,5 +197,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.02934935271487901
+  "cross_source_delta": 0.05605265394782179
 }

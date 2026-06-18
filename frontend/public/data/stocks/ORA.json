@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 7750295131.022278,
   "current_price": 126.12,
-  "rank": 874,
-  "composite_score": 32.93,
+  "rank": 873,
+  "composite_score": 32.91,
   "pillar_scores": {
     "quality": 18.75,
     "value": 12.5,
     "growth": 67.93,
-    "momentum": 75.28,
+    "momentum": 75.25,
     "health": 21.84,
     "profitability": 13.41,
-    "technical": 32.89,
-    "risk": 63.84,
+    "technical": 32.61,
+    "risk": 63.82,
     "sentiment": null,
     "ml": null
   },
@@ -86,7 +86,9 @@
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 52.26966896395993,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -101,8 +103,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk",
-    "cross_source_disagreement"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 34.75310191318874,
@@ -119,20 +120,20 @@
       "Quality": 52.58,
       "Value": 44.66,
       "Growth": 50.82,
-      "Momentum": 54.03,
+      "Momentum": 54.05,
       "Health": 17.0,
       "Profitability": 51.81,
-      "Technical": 52.51,
-      "Risk": 74.15
+      "Technical": 52.62,
+      "Risk": 74.19
     }
   },
   "beneish_m_score": -2.4328858463535736,
   "dechow_f_score": 0.5973603253746302,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.53480540425464,
+  "loss_chance_pct": 70.5438131647868,
   "price_change_1d_pct": -5.8525,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 32.93,
+  "composite_score_adjusted": 32.91,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.39,
+  "osap_blended_score": 42.38,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -194,5 +195,5 @@
     "latest_filing_date": "2026-05-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.062194256712665645
+  "cross_source_delta": 2.9385845812574555e-05
 }

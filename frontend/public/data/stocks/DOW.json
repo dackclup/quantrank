@@ -5,19 +5,19 @@
   "industry": "Commodity Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 23755637136.621506,
-  "current_price": 32.96,
-  "rank": 775,
-  "composite_score": 40.05,
+  "market_cap": 23424096735.0,
+  "current_price": 32.5,
+  "rank": 778,
+  "composite_score": 39.69,
   "pillar_scores": {
     "quality": 19.47,
     "value": 52.72,
     "growth": 42.07,
-    "momentum": 67.16,
+    "momentum": 65.88,
     "health": 53.66,
     "profitability": 20.35,
-    "technical": 25.14,
-    "risk": 34.22,
+    "technical": 21.95,
+    "risk": 33.09,
     "sentiment": null,
     "ml": null
   },
@@ -35,7 +35,7 @@
     "eps_diluted": -2.2379731689577143,
     "shares_outstanding": 720741438.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 23755637136.621506,
+    "market_cap": 23424096735.0,
     "pe_ratio_ttm": null,
     "goodwill": 7947000000.0
   },
@@ -82,12 +82,14 @@
     "max": 62.60366271009143,
     "low": 62.60366271009143,
     "high": 62.60366271009143,
-    "mos_pct": 47.35132473461548,
+    "mos_pct": 48.08610456148096,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 1
+    "valuation_methods_applicable": 1,
+    "median_trimmed": 62.60366271009143,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -125,20 +127,20 @@
       "Quality": 51.08,
       "Value": 51.36,
       "Growth": 47.72,
-      "Momentum": 46.97,
+      "Momentum": 46.95,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.22,
-      "Risk": 47.03
+      "Technical": 56.17,
+      "Risk": 47.08
     }
   },
   "beneish_m_score": -2.377896014116175,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 31.402746925493037,
-  "price_change_1d_pct": -0.8125,
+  "loss_chance_pct": 31.326075649061295,
+  "price_change_1d_pct": -1.3956,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.05,
+  "composite_score_adjusted": 39.69,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.95,
+  "osap_blended_score": 45.77,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,5 +202,5 @@
     "latest_filing_date": "2026-05-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.6864271138394756e-08
+  "cross_source_delta": 2.0449027572716776e-08
 }

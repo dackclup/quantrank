@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Exploration & Production",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 21138261243.6537,
-  "current_price": 88.36,
-  "rank": 100,
-  "composite_score": 61.45,
+  "market_cap": 20922954914.519447,
+  "current_price": 87.46,
+  "rank": 104,
+  "composite_score": 61.22,
   "pillar_scores": {
     "quality": 64.8,
     "value": 89.91,
     "growth": 53.95,
-    "momentum": 22.89,
+    "momentum": 21.81,
     "health": 62.51,
     "profitability": 67.98,
-    "technical": 29.56,
-    "risk": 48.5,
+    "technical": 28.12,
+    "risk": 47.75,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 13.489175797522648,
     "shares_outstanding": 239228849.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 21138261243.6537,
-    "pe_ratio_ttm": 6.5504373237228695,
+    "market_cap": 20922954914.519447,
+    "pe_ratio_ttm": 6.4837170481931965,
     "goodwill": 15000000.0
   },
   "fair_price": {
@@ -82,11 +82,13 @@
     "max": 157.59758928842945,
     "low": 52.92005825341249,
     "high": 157.59758928842945,
-    "mos_pct": 20.678871308527597,
+    "mos_pct": 21.486806305852607,
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 5
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 111.39528908374056,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -121,20 +123,20 @@
       "Quality": 53.12,
       "Value": 52.3,
       "Growth": 53.95,
-      "Momentum": 69.39,
+      "Momentum": 69.43,
       "Health": 39.91,
       "Profitability": 52.63,
-      "Technical": 25.11,
-      "Risk": 59.57
+      "Technical": 25.58,
+      "Risk": 59.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 29.036193885715505,
-  "price_change_1d_pct": 0.5233,
+  "loss_chance_pct": 28.87121042822603,
+  "price_change_1d_pct": -1.0186,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.45,
+  "composite_score_adjusted": 61.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.65,
+  "osap_blended_score": 56.53,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +198,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.6537834844370345e-08
+  "cross_source_delta": 4.117394298238042e-08
 }

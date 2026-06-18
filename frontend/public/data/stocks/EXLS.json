@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 4256532550.9113007,
   "current_price": 27.86,
-  "rank": 49,
-  "composite_score": 65.47,
+  "rank": 47,
+  "composite_score": 65.42,
   "pillar_scores": {
     "quality": 85.39,
-    "value": 77.01,
+    "value": 76.81,
     "growth": 68.07,
-    "momentum": 9.23,
+    "momentum": 9.2,
     "health": 81.91,
     "profitability": 78.21,
-    "technical": 15.85,
-    "risk": 30.12,
+    "technical": 15.83,
+    "risk": 30.16,
     "sentiment": null,
     "ml": null
   },
@@ -48,7 +48,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 46.35807969681845,
+        "value": 46.6301921817043,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,15 +79,19 @@
       }
     },
     "median": 19.316396851934602,
-    "max": 46.35807969681845,
+    "max": 46.6301921817043,
     "low": 3.8596618048051354,
-    "high": 46.35807969681845,
+    "high": 46.6301921817043,
     "mos_pct": -44.2298003292539,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
-    "valuation_methods_applicable": 5
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 27.04284765917982,
+    "methods_excluded_from_median": [
+      "rim"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -123,20 +127,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.74377089521019,
+  "loss_chance_pct": 49.76809351829677,
   "price_change_1d_pct": -3.2303,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.47,
+  "composite_score_adjusted": 65.42,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.66,
+  "osap_blended_score": 58.64,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,5 +202,5 @@
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03338118982745217
+  "cross_source_delta": 1.6659405234431476e-08
 }

@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 18604187443.43573,
   "current_price": 203.07,
-  "rank": 396,
-  "composite_score": 51.8,
+  "rank": 395,
+  "composite_score": 51.84,
   "pillar_scores": {
     "quality": 57.38,
     "value": 12.75,
     "growth": 79.37,
-    "momentum": 62.31,
+    "momentum": 62.33,
     "health": 80.98,
     "profitability": 34.79,
-    "technical": 62.25,
-    "risk": 54.84,
+    "technical": 63.11,
+    "risk": 54.82,
     "sentiment": null,
     "ml": null
   },
@@ -90,7 +90,13 @@
       "extreme_dcf_estimate",
       "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 126.55892694520388,
+    "methods_excluded_from_median": [
+      "graham",
+      "rim",
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -130,20 +136,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": -1.537178615612068,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 66.10076127681458,
+  "loss_chance_pct": 66.07789542315604,
   "price_change_1d_pct": 3.1179,
   "manipulation_index": 28.0,
-  "composite_score_adjusted": 49.0,
+  "composite_score_adjusted": 49.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -191,7 +197,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.83,
+  "osap_blended_score": 51.85,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,5 +211,5 @@
     "latest_filing_date": "2026-05-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.030235975913810043
+  "cross_source_delta": 1.0995603578037985e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Single-Family Residential REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 17227216724.0,
-  "current_price": 29.0,
-  "rank": 533,
-  "composite_score": 48.2,
+  "market_cap": 16924255190.474586,
+  "current_price": 28.49,
+  "rank": 562,
+  "composite_score": 47.33,
   "pillar_scores": {
     "quality": 43.75,
-    "value": 57.5,
+    "value": 59.17,
     "growth": 50.0,
-    "momentum": 53.94,
+    "momentum": 51.3,
     "health": 24.52,
     "profitability": 48.19,
-    "technical": 59.24,
-    "risk": 48.43,
+    "technical": 41.38,
+    "risk": 47.73,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 0.984260445065264,
     "shares_outstanding": 594041956.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 17227216724.0,
-    "pe_ratio_ttm": 29.463746252727933,
+    "market_cap": 16924255190.474586,
+    "pe_ratio_ttm": 28.945590482638018,
     "goodwill": 314154000.0
   },
   "fair_price": {
@@ -82,11 +82,13 @@
     "max": 34.727957822703615,
     "low": 16.75510071964239,
     "high": 34.727957822703615,
-    "mos_pct": -9.784684677881362,
+    "mos_pct": -7.853987632590339,
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 26.415342071700383,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -130,20 +132,20 @@
       "Quality": 48.85,
       "Value": 49.93,
       "Growth": 50.0,
-      "Momentum": 58.0,
+      "Momentum": 58.05,
       "Health": 26.31,
       "Profitability": 51.87,
-      "Technical": 52.25,
-      "Risk": 57.1
+      "Technical": 51.83,
+      "Risk": 56.95
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 46.32290776056472,
-  "price_change_1d_pct": -0.5828,
+  "loss_chance_pct": 46.08397089005653,
+  "price_change_1d_pct": -1.7586,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.2,
+  "composite_score_adjusted": 47.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.03,
+  "osap_blended_score": 49.59,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,5 +207,5 @@
     "latest_filing_date": "2026-05-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 9.984201322572275e-09
+  "cross_source_delta": 6.295848186648056e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Health Care Equipment",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 28762807420.547066,
-  "current_price": 63.23,
-  "rank": 504,
-  "composite_score": 48.85,
+  "market_cap": 27816633408.00978,
+  "current_price": 61.15,
+  "rank": 536,
+  "composite_score": 48.11,
   "pillar_scores": {
     "quality": 56.32,
-    "value": 69.05,
+    "value": 69.6,
     "growth": 57.42,
-    "momentum": 14.63,
+    "momentum": 14.5,
     "health": 34.72,
     "profitability": 39.93,
-    "technical": 32.29,
-    "risk": 33.07,
+    "technical": 16.35,
+    "risk": 31.67,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 5.344128152711907,
     "shares_outstanding": 454891786.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 28762807420.547066,
-    "pe_ratio_ttm": 11.831677260611709,
+    "market_cap": 27816633408.00978,
+    "pe_ratio_ttm": 11.442465408477902,
     "goodwill": 15060000000.0
   },
   "fair_price": {
@@ -82,9 +82,11 @@
     "max": 157.87541048190928,
     "low": 79.53606780419226,
     "high": 157.87541048190928,
-    "mos_pct": 36.065410222665186,
+    "mos_pct": 38.16858626056238,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 98.89795142574252,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -118,20 +120,20 @@
       "Quality": 52.47,
       "Value": 46.7,
       "Growth": 48.35,
-      "Momentum": 40.08,
+      "Momentum": 40.11,
       "Health": 60.2,
       "Profitability": 48.9,
-      "Technical": 54.05,
-      "Risk": 42.72
+      "Technical": 53.69,
+      "Risk": 42.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 30.950961428849023,
-  "price_change_1d_pct": -2.3626,
+  "loss_chance_pct": 30.586448491299535,
+  "price_change_1d_pct": -3.2896,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 46.85,
+  "composite_score_adjusted": 46.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.35,
+  "osap_blended_score": 49.98,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,5 +196,5 @@
     "latest_filing_date": "2026-05-26",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.9931674573407065e-08
+  "cross_source_delta": 3.911363984724684e-08
 }

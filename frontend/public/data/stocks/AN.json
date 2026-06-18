@@ -7,8 +7,8 @@
   "country": "US",
   "market_cap": 6235884228.623276,
   "current_price": 186.36,
-  "rank": 479,
-  "composite_score": 49.53,
+  "rank": 480,
+  "composite_score": 49.55,
   "pillar_scores": {
     "quality": 60.19,
     "value": 66.82,
@@ -16,8 +16,8 @@
     "momentum": 36.09,
     "health": 26.21,
     "profitability": 33.95,
-    "technical": 23.92,
-    "risk": 49.67,
+    "technical": 24.36,
+    "risk": 49.83,
     "sentiment": null,
     "ml": null
   },
@@ -84,7 +84,9 @@
     "high": 474.59667358975247,
     "mos_pct": 52.99387355898245,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 396.4589612466639,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -105,7 +107,6 @@
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -126,17 +127,17 @@
       "Momentum": 41.13,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.71,
-      "Risk": 39.66
+      "Technical": 54.59,
+      "Risk": 39.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.42656484615903906,
   "recommendation": "neutral",
-  "loss_chance_pct": 24.689350112052352,
+  "loss_chance_pct": 24.675145566597806,
   "price_change_1d_pct": -4.8504,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 47.03,
+  "composite_score_adjusted": 47.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -184,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.69,
+  "osap_blended_score": 50.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,5 +199,5 @@
     "latest_filing_date": "2026-05-07",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05097660696098346
+  "cross_source_delta": 5.0574499570655305e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Systems Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 172974247055.81543,
-  "current_price": 679.49,
-  "rank": 765,
-  "composite_score": 40.67,
+  "market_cap": 173857595060.66528,
+  "current_price": 682.96,
+  "rank": 769,
+  "composite_score": 40.49,
   "pillar_scores": {
     "quality": 22.08,
-    "value": 28.4,
+    "value": 28.26,
     "growth": 67.71,
-    "momentum": 71.62,
+    "momentum": 71.51,
     "health": 46.77,
     "profitability": 30.42,
-    "technical": 50.5,
-    "risk": 44.88,
+    "technical": 47.7,
+    "risk": 45.16,
     "sentiment": null,
     "ml": null
   },
@@ -35,7 +35,7 @@
     "eps_diluted": -0.01652231443449256,
     "shares_outstanding": 254564820.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 172974247055.81543,
+    "market_cap": 173857595060.66528,
     "pe_ratio_ttm": null,
     "goodwill": 2267493000.0
   },
@@ -82,14 +82,19 @@
     "max": null,
     "low": 65.21216859106777,
     "high": 126.19318913115015,
-    "mos_pct": -610.0010138906381,
+    "mos_pct": -613.6268598748632,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 0
+    "valuation_methods_applicable": 0,
+    "median_trimmed": null,
+    "methods_excluded_from_median": [
+      "multiples_pb",
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -129,20 +134,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 69.667076635255,
-  "price_change_1d_pct": -1.9368,
+  "loss_chance_pct": 69.75441726718404,
+  "price_change_1d_pct": 0.5107,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 40.17,
+  "composite_score_adjusted": 39.99,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.26,
+  "osap_blended_score": 46.17,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,5 +210,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.8591296013271957e-08
+  "cross_source_delta": 4.52132406436443e-08
 }

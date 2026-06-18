@@ -13,11 +13,11 @@
     "quality": 52.96,
     "value": 55.7,
     "growth": 21.05,
-    "momentum": 63.53,
+    "momentum": 63.55,
     "health": 43.28,
     "profitability": 61.62,
-    "technical": 11.67,
-    "risk": 50.95,
+    "technical": 11.61,
+    "risk": 50.97,
     "sentiment": null,
     "ml": null
   },
@@ -86,7 +86,9 @@
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 53.93486252034464,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -125,17 +127,17 @@
       "Quality": 53.12,
       "Value": 52.3,
       "Growth": 53.95,
-      "Momentum": 69.39,
+      "Momentum": 69.43,
       "Health": 39.91,
       "Profitability": 52.63,
-      "Technical": 25.11,
-      "Risk": 59.57
+      "Technical": 25.58,
+      "Risk": 59.61
     }
   },
   "beneish_m_score": -3.6364604867941557,
   "dechow_f_score": 0.35015459993254916,
   "recommendation": "neutral",
-  "loss_chance_pct": 42.24779604641212,
+  "loss_chance_pct": 42.2471031417558,
   "price_change_1d_pct": -1.1738,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 47.84,
@@ -200,5 +202,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.011877757462480541
+  "cross_source_delta": 4.20744453637699e-08
 }

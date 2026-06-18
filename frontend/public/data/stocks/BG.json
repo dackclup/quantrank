@@ -8,15 +8,15 @@
   "market_cap": 22533263757.68074,
   "current_price": 116.14,
   "rank": 687,
-  "composite_score": 43.57,
+  "composite_score": 43.58,
   "pillar_scores": {
     "quality": 28.3,
     "value": 60.38,
     "growth": 42.45,
-    "momentum": 64.58,
+    "momentum": 64.61,
     "health": 35.81,
     "profitability": 27.67,
-    "technical": 21.12,
+    "technical": 21.29,
     "risk": 65.41,
     "sentiment": null,
     "ml": null
@@ -54,7 +54,7 @@
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 275.86236890649826,
+        "value": 270.7987083445759,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,18 @@
       }
     },
     "median": 94.53966889669003,
-    "max": 275.86236890649826,
+    "max": 270.7987083445759,
     "low": 12.583137964492252,
-    "high": 275.86236890649826,
+    "high": 270.7987083445759,
     "mos_pct": -22.847901568771693,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 105.07306498884618,
+    "methods_excluded_from_median": [
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -126,20 +130,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 37.67,
+      "Momentum": 36.95,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 47.59,
-      "Risk": 47.45
+      "Technical": 48.03,
+      "Risk": 47.47
     }
   },
   "beneish_m_score": -1.528541237857401,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.2136516791235,
+  "loss_chance_pct": 58.207761989544785,
   "price_change_1d_pct": -2.7466,
   "manipulation_index": 51.0,
-  "composite_score_adjusted": 38.47,
+  "composite_score_adjusted": 38.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -201,5 +205,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.028241747185972655
+  "cross_source_delta": 1.7648608059313686e-08
 }

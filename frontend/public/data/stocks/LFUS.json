@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 11795756443.500488,
   "current_price": 466.44,
-  "rank": 654,
-  "composite_score": 44.76,
+  "rank": 653,
+  "composite_score": 44.81,
   "pillar_scores": {
     "quality": 14.37,
-    "value": 55.21,
+    "value": 55.35,
     "growth": 35.83,
-    "momentum": 90.44,
+    "momentum": 90.41,
     "health": 66.59,
     "profitability": 22.08,
-    "technical": 51.19,
-    "risk": 53.52,
+    "technical": 51.5,
+    "risk": 53.54,
     "sentiment": null,
     "ml": null
   },
@@ -88,7 +88,11 @@
       "extreme_graham_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 739.6725888191309,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -123,20 +127,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": -2.8970827440314117,
   "dechow_f_score": 1.2257090236200465,
   "recommendation": "neutral",
-  "loss_chance_pct": 51.26345488395676,
+  "loss_chance_pct": 51.241593742049886,
   "price_change_1d_pct": -0.5861,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 44.26,
+  "composite_score_adjusted": 44.31,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.31,
+  "osap_blended_score": 48.33,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,5 +202,5 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.005895726046279216
+  "cross_source_delta": 3.488546836756608e-08
 }

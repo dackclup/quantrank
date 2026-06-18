@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 68002987298.02734,
   "current_price": 1931.77,
-  "rank": 31,
-  "composite_score": 67.2,
+  "rank": 28,
+  "composite_score": 67.31,
   "pillar_scores": {
     "quality": 90.66,
-    "value": 9.64,
+    "value": 9.74,
     "growth": 96.99,
-    "momentum": 91.8,
+    "momentum": 91.85,
     "health": 77.58,
     "profitability": 68.27,
-    "technical": 45.32,
-    "risk": 58.96,
+    "technical": 46.87,
+    "risk": 58.98,
     "sentiment": null,
     "ml": null
   },
@@ -60,7 +60,7 @@
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 801.7632551889859,
+        "value": 797.0443996487827,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -90,7 +90,13 @@
       "extreme_dcf_estimate",
       "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 797.0443996487827,
+    "methods_excluded_from_median": [
+      "graham",
+      "rim",
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -126,20 +132,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": -2.765255548726475,
   "dechow_f_score": 0.4489775676395541,
   "recommendation": "cautious",
-  "loss_chance_pct": 55.39943059377198,
+  "loss_chance_pct": 55.34552177668545,
   "price_change_1d_pct": 0.9316,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 67.2,
+  "composite_score_adjusted": 67.31,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.53,
+  "osap_blended_score": 59.58,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -201,5 +207,5 @@
     "latest_filing_date": "2026-05-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.009749366084783394
+  "cross_source_delta": 0.0005242541753511749
 }

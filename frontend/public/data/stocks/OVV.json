@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 15065407371.130142,
   "current_price": 53.61,
-  "rank": 835,
-  "composite_score": 36.82,
+  "rank": 836,
+  "composite_score": 36.81,
   "pillar_scores": {
     "quality": 24.67,
     "value": 52.63,
     "growth": 19.74,
-    "momentum": 72.2,
+    "momentum": 72.26,
     "health": 14.39,
     "profitability": 36.4,
-    "technical": 15.69,
-    "risk": 58.68,
+    "technical": 15.41,
+    "risk": 58.7,
     "sentiment": null,
     "ml": null
   },
@@ -84,7 +84,9 @@
     "high": 62.67749320953646,
     "mos_pct": -38.593850012565454,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 6
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 38.68137049767437,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -120,20 +122,20 @@
       "Quality": 53.12,
       "Value": 52.3,
       "Growth": 53.95,
-      "Momentum": 69.39,
+      "Momentum": 69.43,
       "Health": 39.91,
       "Profitability": 52.63,
-      "Technical": 25.11,
-      "Risk": 59.57
+      "Technical": 25.58,
+      "Risk": 59.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.098792456162016,
+  "loss_chance_pct": 60.10191052711545,
   "price_change_1d_pct": 0.2056,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.82,
+  "composite_score_adjusted": 36.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -195,5 +197,5 @@
     "latest_filing_date": "2026-05-26",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0020518791406450563
+  "cross_source_delta": 6.021278548034808e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 262247911285.4004,
-  "current_price": 404.08,
-  "rank": 399,
-  "composite_score": 51.72,
+  "market_cap": 272138684753.41797,
+  "current_price": 419.32,
+  "rank": 406,
+  "composite_score": 51.46,
   "pillar_scores": {
     "quality": 26.25,
-    "value": 62.01,
+    "value": 59.79,
     "growth": 70.52,
-    "momentum": 84.15,
+    "momentum": 86.81,
     "health": 38.41,
     "profitability": 36.67,
-    "technical": 61.38,
-    "risk": 53.68,
+    "technical": 59.45,
+    "risk": 53.81,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 12.956856702619415,
     "shares_outstanding": 649000000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 262247911285.4004,
-    "pe_ratio_ttm": 31.186575250969245,
+    "market_cap": 272138684753.41797,
+    "pe_ratio_ttm": 32.36278805487192,
     "goodwill": 19504000000.0
   },
   "fair_price": {
@@ -82,11 +82,15 @@
     "max": 537.2884677649366,
     "low": 76.11098165811937,
     "high": 537.2884677649366,
-    "mos_pct": 17.274895067613524,
+    "mos_pct": 14.154888242797417,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
-    "valuation_methods_applicable": 2
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 512.8748014366173,
+    "methods_excluded_from_median": [
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -122,20 +126,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": -1.5420637623788922,
   "dechow_f_score": 0.8947937937662728,
   "recommendation": "cautious",
-  "loss_chance_pct": 49.09370438616527,
-  "price_change_1d_pct": -1.2198,
+  "loss_chance_pct": 50.31514136465135,
+  "price_change_1d_pct": 3.7715,
   "manipulation_index": 36.0,
-  "composite_score_adjusted": 48.12,
+  "composite_score_adjusted": 47.86,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -183,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.79,
+  "osap_blended_score": 51.66,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -197,5 +201,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0013744702698818305
+  "cross_source_delta": 0.001374479728072805
 }

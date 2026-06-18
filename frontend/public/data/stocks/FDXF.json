@@ -6,17 +6,17 @@
   "exchange": "NYSE",
   "country": "US",
   "market_cap": null,
-  "current_price": 163.84,
-  "rank": 440,
-  "composite_score": 50.54,
+  "current_price": 161.9,
+  "rank": 445,
+  "composite_score": 50.34,
   "pillar_scores": {
     "quality": 50.3,
     "value": 49.8,
     "growth": 50.3,
-    "momentum": 52.81,
+    "momentum": 51.98,
     "health": 57.59,
     "profitability": 50.3,
-    "technical": 35.24,
+    "technical": 33.25,
     "risk": 52.01,
     "sentiment": null,
     "ml": null
@@ -84,7 +84,9 @@
     "high": null,
     "mos_pct": null,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 0
+    "valuation_methods_applicable": 0,
+    "median_trimmed": null,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -149,20 +151,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
   "loss_chance_pct": null,
-  "price_change_1d_pct": -1.9861,
+  "price_change_1d_pct": -1.1841,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.54,
+  "composite_score_adjusted": 50.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -210,7 +212,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.2,
+  "osap_blended_score": 51.1,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",

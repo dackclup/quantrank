@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 53247307813.229004,
   "current_price": 226.28,
-  "rank": 656,
+  "rank": 657,
   "composite_score": 44.73,
   "pillar_scores": {
     "quality": 17.58,
     "value": 65.75,
     "growth": 40.93,
-    "momentum": 54.21,
+    "momentum": 54.13,
     "health": 50.73,
     "profitability": 27.84,
-    "technical": 66.19,
-    "risk": 82.37,
+    "technical": 66.38,
+    "risk": 82.39,
     "sentiment": null,
     "ml": null
   },
@@ -86,7 +86,9 @@
     "valuation_warnings": [
       "stale_filing_soft"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 176.5564409840444,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -120,11 +122,11 @@
       "Quality": 52.47,
       "Value": 46.7,
       "Growth": 48.35,
-      "Momentum": 40.08,
+      "Momentum": 40.11,
       "Health": 60.2,
       "Profitability": 48.9,
-      "Technical": 54.05,
-      "Risk": 42.72
+      "Technical": 53.69,
+      "Risk": 42.78
     }
   },
   "beneish_m_score": null,
@@ -195,5 +197,5 @@
     "latest_filing_date": "2026-04-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0016160203079716596
+  "cross_source_delta": 0.004717754334362661
 }

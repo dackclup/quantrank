@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 84292981632.61414,
-  "current_price": 231.11,
-  "rank": 701,
-  "composite_score": 42.8,
+  "market_cap": 82658988310.91309,
+  "current_price": 226.63,
+  "rank": 703,
+  "composite_score": 42.68,
   "pillar_scores": {
     "quality": 28.75,
-    "value": 16.04,
+    "value": 16.32,
     "growth": 60.52,
-    "momentum": 79.57,
+    "momentum": 78.52,
     "health": 68.26,
     "profitability": 39.86,
-    "technical": 55.27,
-    "risk": 45.07,
+    "technical": 54.91,
+    "risk": 44.24,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 0.3719809942121728,
     "shares_outstanding": 364731000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 84292981632.61414,
-    "pe_ratio_ttm": 621.2951849860631,
+    "market_cap": 82658988310.91309,
+    "pe_ratio_ttm": 609.2515704002498,
     "goodwill": 540543000.0
   },
   "fair_price": {
@@ -82,7 +82,7 @@
     "max": 62.382118717720594,
     "low": 3.666624114922782,
     "high": 62.382118717720594,
-    "mos_pct": -1749.4045053322627,
+    "mos_pct": -1713.5543722333105,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -91,7 +91,14 @@
       "extreme_estimate_majority",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 1
+    "valuation_methods_applicable": 1,
+    "median_trimmed": null,
+    "methods_excluded_from_median": [
+      "graham",
+      "multiples_pe",
+      "multiples_ev_ebitda",
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -133,20 +140,20 @@
       "Quality": 49.38,
       "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 72.03,
+      "Momentum": 71.97,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 51.07,
-      "Risk": 42.68
+      "Technical": 51.03,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 69.6010322354644,
-  "price_change_1d_pct": -0.8495,
+  "loss_chance_pct": 69.66020629311407,
+  "price_change_1d_pct": -1.9385,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 42.0,
+  "composite_score_adjusted": 41.88,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +201,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.32,
+  "osap_blended_score": 47.27,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -209,5 +216,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.024047379050474247
+  "cross_source_delta": 0.024047326002061113
 }

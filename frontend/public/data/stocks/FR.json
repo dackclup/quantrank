@@ -7,13 +7,13 @@
   "country": "US",
   "market_cap": 8047024837.943207,
   "current_price": 60.7,
-  "rank": 352,
-  "composite_score": 52.95,
+  "rank": 351,
+  "composite_score": 52.96,
   "pillar_scores": {
     "quality": 61.25,
     "value": 43.19,
     "growth": 55.21,
-    "momentum": 63.55,
+    "momentum": 63.66,
     "health": 29.11,
     "profitability": 60.69,
     "technical": 43.21,
@@ -84,7 +84,9 @@
     "high": 73.33502815332393,
     "mos_pct": -59.8773780854875,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 37.96659758235637,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -113,9 +115,7 @@
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "cross_source_disagreement"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 20.56052110084524,
   "tier2_events": {
@@ -131,20 +131,20 @@
       "Quality": 48.85,
       "Value": 49.93,
       "Growth": 50.0,
-      "Momentum": 58.0,
+      "Momentum": 58.05,
       "Health": 26.31,
       "Profitability": 51.87,
-      "Technical": 52.25,
-      "Risk": 57.1
+      "Technical": 51.83,
+      "Risk": 56.95
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 58.52556048287756,
+  "loss_chance_pct": 58.518631436314365,
   "price_change_1d_pct": -3.3593,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.95,
+  "composite_score_adjusted": 52.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.4,
+  "osap_blended_score": 52.41,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -206,5 +206,5 @@
     "latest_filing_date": "2026-05-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.06946397871435753
+  "cross_source_delta": 0.03353704897048286
 }

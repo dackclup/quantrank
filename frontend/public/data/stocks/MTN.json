@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 4629863772.192261,
   "current_price": 129.93,
-  "rank": 777,
-  "composite_score": 39.99,
+  "rank": 776,
+  "composite_score": 40.0,
   "pillar_scores": {
     "quality": 51.97,
     "value": 43.36,
     "growth": 47.69,
-    "momentum": 20.34,
+    "momentum": 20.32,
     "health": 12.11,
     "profitability": 40.9,
-    "technical": 51.94,
-    "risk": 28.71,
+    "technical": 52.11,
+    "risk": 28.79,
     "sentiment": null,
     "ml": null
   },
@@ -84,7 +84,9 @@
     "high": 180.34853763336295,
     "mos_pct": -1.8165174620284323,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 127.61190022457554,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,9 +106,7 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "cross_source_disagreement"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -125,17 +125,17 @@
       "Momentum": 41.13,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.71,
-      "Risk": 39.66
+      "Technical": 54.59,
+      "Risk": 39.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 57.63977835891096,
+  "loss_chance_pct": 57.63596738330121,
   "price_change_1d_pct": -4.9385,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.99,
+  "composite_score_adjusted": 40.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.92,
+  "osap_blended_score": 45.93,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -197,5 +197,5 @@
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05195109654249047
+  "cross_source_delta": 3.538068230898483e-08
 }

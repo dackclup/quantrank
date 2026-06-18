@@ -13,11 +13,11 @@
     "quality": 34.86,
     "value": 70.08,
     "growth": 62.42,
-    "momentum": 24.17,
+    "momentum": 24.11,
     "health": 45.9,
     "profitability": 38.25,
     "technical": 25.86,
-    "risk": 52.49,
+    "risk": 52.57,
     "sentiment": null,
     "ml": null
   },
@@ -48,7 +48,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 684.3487727555952,
+        "value": 688.3657606528719,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,13 +78,15 @@
         "tier_used": null
       }
     },
-    "median": 684.3487727555952,
+    "median": 688.3657606528719,
     "max": 897.2717123262815,
     "low": 582.8173351649758,
     "high": 897.2717123262815,
-    "mos_pct": 27.67722802387978,
+    "mos_pct": 28.099270659251474,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 688.3657606528719,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -117,17 +119,17 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6980876389367509,
   "recommendation": "neutral",
-  "loss_chance_pct": 32.10193731289873,
+  "loss_chance_pct": 31.956301104487586,
   "price_change_1d_pct": -1.8794,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 46.42,
@@ -178,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.14,
+  "osap_blended_score": 49.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -192,5 +194,5 @@
     "latest_filing_date": "2026-04-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.019153825573141547
+  "cross_source_delta": 8.987063140606615e-08
 }

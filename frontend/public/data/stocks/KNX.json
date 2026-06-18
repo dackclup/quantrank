@@ -7,8 +7,8 @@
   "country": "US",
   "market_cap": 11863687287.124634,
   "current_price": 73.01,
-  "rank": 802,
-  "composite_score": 38.5,
+  "rank": 803,
+  "composite_score": 38.52,
   "pillar_scores": {
     "quality": 16.64,
     "value": 47.69,
@@ -16,8 +16,8 @@
     "momentum": 79.38,
     "health": 23.75,
     "profitability": 24.0,
-    "technical": 68.63,
-    "risk": 56.12,
+    "technical": 69.04,
+    "risk": 56.1,
     "sentiment": null,
     "ml": null
   },
@@ -89,7 +89,12 @@
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 2
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 159.77130260967274,
+    "methods_excluded_from_median": [
+      "graham",
+      "multiples_pe"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -111,8 +116,7 @@
     "goodwill_heavy",
     "extreme_graham_estimate",
     "extreme_multiples_pe_estimate",
-    "value_trap_risk",
-    "cross_source_disagreement"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 7.399860917941585,
@@ -129,20 +133,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 67.37519575902478,
+  "loss_chance_pct": 67.36514864150814,
   "price_change_1d_pct": -5.5986,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.5,
+  "composite_score_adjusted": 38.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.18,
+  "osap_blended_score": 45.19,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,5 +208,5 @@
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05930689640133757
+  "cross_source_delta": 1.0041113770618813e-08
 }

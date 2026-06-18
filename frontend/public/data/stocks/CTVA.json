@@ -5,19 +5,19 @@
   "industry": "Fertilizers & Agricultural Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 51412195236.968994,
-  "current_price": 76.87,
-  "rank": 502,
-  "composite_score": 48.92,
+  "market_cap": 51746605236.968994,
+  "current_price": 77.37,
+  "rank": 491,
+  "composite_score": 49.12,
   "pillar_scores": {
     "quality": 46.39,
-    "value": 44.55,
+    "value": 44.23,
     "growth": 37.26,
-    "momentum": 62.25,
+    "momentum": 61.7,
     "health": 59.29,
     "profitability": 51.76,
-    "technical": 44.84,
-    "risk": 61.07,
+    "technical": 52.19,
+    "risk": 60.37,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 1.7523399419873809,
     "shares_outstanding": 668820000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 51412195236.968994,
-    "pe_ratio_ttm": 43.86706078239675,
+    "market_cap": 51746605236.968994,
+    "pe_ratio_ttm": 44.15239354690187,
     "goodwill": 10409000000.0
   },
   "fair_price": {
@@ -82,12 +82,14 @@
     "max": 107.78083845684006,
     "low": 15.995977952802606,
     "high": 107.78083845684006,
-    "mos_pct": -152.39835437288977,
+    "mos_pct": -154.0400764058977,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 30.45582564814007,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -125,20 +127,20 @@
       "Quality": 51.08,
       "Value": 51.36,
       "Growth": 47.72,
-      "Momentum": 46.97,
+      "Momentum": 46.95,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.22,
-      "Risk": 47.03
+      "Technical": 56.17,
+      "Risk": 47.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6306373773610252,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.541132330575934,
-  "price_change_1d_pct": 1.5322,
+  "loss_chance_pct": 63.44138071024504,
+  "price_change_1d_pct": 0.6504,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.92,
+  "composite_score_adjusted": 49.12,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.38,
+  "osap_blended_score": 50.48,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,5 +202,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.8064295545455066e-08
+  "cross_source_delta": 4.307469028998635e-08
 }

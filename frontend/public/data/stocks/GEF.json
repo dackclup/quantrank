@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 3297979722.2930984,
   "current_price": 69.9,
-  "rank": 42,
-  "composite_score": 66.12,
+  "rank": 41,
+  "composite_score": 66.14,
   "pillar_scores": {
     "quality": 67.55,
     "value": 91.35,
     "growth": 59.38,
-    "momentum": 41.05,
+    "momentum": 41.71,
     "health": 54.7,
     "profitability": 62.02,
-    "technical": 57.73,
-    "risk": 58.78,
+    "technical": 56.1,
+    "risk": 59.37,
     "sentiment": null,
     "ml": null
   },
@@ -87,7 +87,11 @@
       "goodwill_heavy",
       "extreme_multiples_pe_estimate"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 96.3643454356757,
+    "methods_excluded_from_median": [
+      "multiples_pe"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -129,20 +133,20 @@
       "Quality": 51.08,
       "Value": 51.36,
       "Growth": 47.72,
-      "Momentum": 46.97,
+      "Momentum": 46.95,
       "Health": 54.22,
       "Profitability": 54.97,
-      "Technical": 56.22,
-      "Risk": 47.03
+      "Technical": 56.17,
+      "Risk": 47.08
     }
   },
   "beneish_m_score": -1.9799554301449338,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 21.726691109764623,
-  "price_change_1d_pct": -1.1595,
+  "loss_chance_pct": 21.71491173060719,
+  "price_change_1d_pct": -0.2853,
   "manipulation_index": 28.0,
-  "composite_score_adjusted": 63.32,
+  "composite_score_adjusted": 63.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -190,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.99,
+  "osap_blended_score": 59.0,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,5 +208,5 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.2183330700427237
+  "cross_source_delta": 0.20420648712740902
 }

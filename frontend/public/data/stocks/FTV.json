@@ -5,19 +5,19 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 18727612613.0662,
-  "current_price": 61.43,
+  "market_cap": 18498966847.3162,
+  "current_price": 60.68,
   "rank": 839,
-  "composite_score": 36.46,
+  "composite_score": 36.47,
   "pillar_scores": {
     "quality": 18.83,
-    "value": 44.28,
+    "value": 44.68,
     "growth": 14.31,
-    "momentum": 68.57,
+    "momentum": 65.05,
     "health": 32.49,
     "profitability": 50.6,
-    "technical": 45.81,
-    "risk": 60.35,
+    "technical": 54.21,
+    "risk": 58.67,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 1.8998821105437418,
     "shares_outstanding": 304861021.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 18727612613.0662,
-    "pe_ratio_ttm": 32.3335853126143,
+    "market_cap": 18498966847.3162,
+    "pe_ratio_ttm": 31.93882397671996,
     "goodwill": 7288500000.0
   },
   "fair_price": {
@@ -82,11 +82,13 @@
     "max": 90.98606269186435,
     "low": 37.96976692360398,
     "high": 90.98606269186435,
-    "mos_pct": -6.0984708434535575,
+    "mos_pct": -4.803112667687999,
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 57.89904398887584,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -119,20 +121,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": -3.1120423799757457,
   "dechow_f_score": 0.5596828740958023,
   "recommendation": "neutral",
-  "loss_chance_pct": 50.902061234179705,
-  "price_change_1d_pct": 1.9078,
+  "loss_chance_pct": 50.44507942914936,
+  "price_change_1d_pct": -1.2209,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.46,
+  "composite_score_adjusted": 36.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,5 +196,5 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.0522761460734998e-08
+  "cross_source_delta": 3.809314355552168e-08
 }

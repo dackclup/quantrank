@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 19993715943.145752,
   "current_price": 107.32,
-  "rank": 786,
-  "composite_score": 39.32,
+  "rank": 785,
+  "composite_score": 39.35,
   "pillar_scores": {
     "quality": 23.42,
     "value": 40.26,
     "growth": 50.75,
-    "momentum": 47.64,
+    "momentum": 47.62,
     "health": 35.74,
     "profitability": 39.36,
-    "technical": 65.58,
-    "risk": 58.89,
+    "technical": 66.21,
+    "risk": 58.98,
     "sentiment": null,
     "ml": null
   },
@@ -60,7 +60,7 @@
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 99.8138163772898,
+        "value": 99.14862922439532,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +78,20 @@
         "tier_used": null
       }
     },
-    "median": 83.87763633111328,
+    "median": 83.54504275466604,
     "max": 161.38401937311272,
     "low": 20.754140542423286,
     "high": 161.38401937311272,
-    "mos_pct": -27.948287993202914,
+    "mos_pct": -28.4576512935357,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 99.14862922439532,
+    "methods_excluded_from_median": [
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -123,20 +127,20 @@
       "Quality": 50.72,
       "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 55.16,
+      "Momentum": 55.18,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 55.63,
-      "Risk": 53.25
+      "Technical": 55.58,
+      "Risk": 53.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5201868507246596,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.122029188123165,
+  "loss_chance_pct": 58.2843695361443,
   "price_change_1d_pct": -3.2281,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.32,
+  "composite_score_adjusted": 39.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.59,
+  "osap_blended_score": 45.6,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,5 +202,5 @@
     "latest_filing_date": "2026-05-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03335820728626954
+  "cross_source_delta": 3.965517217016787e-08
 }

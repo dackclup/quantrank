@@ -8,7 +8,7 @@
   "market_cap": 7774854848.098755,
   "current_price": 39.05,
   "rank": 866,
-  "composite_score": 33.61,
+  "composite_score": 33.63,
   "pillar_scores": {
     "quality": 11.79,
     "value": 72.01,
@@ -16,8 +16,8 @@
     "momentum": 24.83,
     "health": 8.48,
     "profitability": 15.88,
-    "technical": 38.5,
-    "risk": 41.91,
+    "technical": 38.89,
+    "risk": 41.98,
     "sentiment": null,
     "ml": null
   },
@@ -54,7 +54,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 171.4005180066777,
+        "value": 168.2543330204332,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,15 +78,17 @@
         "tier_used": null
       }
     },
-    "median": 171.4005180066777,
-    "max": 171.4005180066777,
-    "low": 171.4005180066777,
-    "high": 171.4005180066777,
-    "mos_pct": 77.21710547249387,
+    "median": 168.2543330204332,
+    "max": 168.2543330204332,
+    "low": 168.2543330204332,
+    "high": 168.2543330204332,
+    "mos_pct": 76.79108850509174,
     "valuation_warnings": [
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 1
+    "valuation_methods_applicable": 1,
+    "median_trimmed": 168.2543330204332,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,7 +105,8 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "value_trap_risk"
+    "value_trap_risk",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -120,20 +123,20 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 37.67,
+      "Momentum": 36.95,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 47.59,
-      "Risk": 47.45
+      "Technical": 48.03,
+      "Risk": 47.47
     }
   },
   "beneish_m_score": -3.426325967883362,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 35.170837663829204,
+  "loss_chance_pct": 35.308857127918834,
   "price_change_1d_pct": -3.8177,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 33.61,
+  "composite_score_adjusted": 33.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.73,
+  "osap_blended_score": 42.74,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,5 +198,5 @@
     "latest_filing_date": "2026-05-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.02061389173560545
+  "cross_source_delta": 0.05800422116035197
 }

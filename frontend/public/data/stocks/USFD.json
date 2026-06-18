@@ -13,11 +13,11 @@
     "quality": 65.57,
     "value": 45.6,
     "growth": 81.6,
-    "momentum": 48.09,
+    "momentum": 48.06,
     "health": 36.78,
     "profitability": 44.97,
-    "technical": 70.27,
-    "risk": 71.27,
+    "technical": 70.41,
+    "risk": 71.3,
     "sentiment": null,
     "ml": null
   },
@@ -54,7 +54,7 @@
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 64.42846921797947,
+        "value": 64.13750501090067,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,13 +78,15 @@
         "tier_used": null
       }
     },
-    "median": 66.7655708512336,
+    "median": 66.62008874769421,
     "max": 98.61532869969436,
     "low": 48.53110041370005,
     "high": 98.61532869969436,
-    "mos_pct": -40.416683036969516,
+    "mos_pct": -40.723318990241935,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 66.62008874769421,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -115,17 +117,17 @@
       "Quality": 50.0,
       "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 37.67,
+      "Momentum": 36.95,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 47.59,
-      "Risk": 47.45
+      "Technical": 48.03,
+      "Risk": 47.47
     }
   },
   "beneish_m_score": -2.4512156026905307,
   "dechow_f_score": 0.49975610548989347,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.557442296145766,
+  "loss_chance_pct": 50.66233971349399,
   "price_change_1d_pct": 0.5685,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 57.18,
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.51,
+  "osap_blended_score": 54.52,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -190,5 +192,5 @@
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.005653276969273176
+  "cross_source_delta": 6.073880399845872e-08
 }

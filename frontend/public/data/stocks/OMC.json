@@ -8,16 +8,16 @@
   "market_cap": 21748822120.94409,
   "current_price": 76.31,
   "rank": 859,
-  "composite_score": 34.47,
+  "composite_score": 34.44,
   "pillar_scores": {
     "quality": 15.18,
     "value": 44.05,
     "growth": 64.73,
-    "momentum": 36.92,
+    "momentum": 36.81,
     "health": 23.96,
     "profitability": 15.48,
-    "technical": 49.58,
-    "risk": 48.97,
+    "technical": 49.25,
+    "risk": 49.02,
     "sentiment": null,
     "ml": null
   },
@@ -48,7 +48,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.580661862666807,
+        "value": 11.334679121884532,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,13 +80,17 @@
     },
     "median": 40.52765610809513,
     "max": 96.80595714731919,
-    "low": 11.580661862666807,
+    "low": 11.334679121884532,
     "high": 96.80595714731919,
     "mos_pct": -88.29116925750694,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 45.303555094084004,
+    "methods_excluded_from_median": [
+      "multiples_pe"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -123,20 +127,20 @@
       "Quality": 52.01,
       "Value": 51.34,
       "Growth": 53.35,
-      "Momentum": 45.87,
+      "Momentum": 45.83,
       "Health": 39.18,
       "Profitability": 53.57,
-      "Technical": 34.27,
-      "Risk": 49.95
+      "Technical": 34.48,
+      "Risk": 49.98
     }
   },
   "beneish_m_score": -1.9779656455653414,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 71.7652282295956,
+  "loss_chance_pct": 71.77943277505015,
   "price_change_1d_pct": -1.37,
   "manipulation_index": 11.0,
-  "composite_score_adjusted": 33.37,
+  "composite_score_adjusted": 33.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.16,
+  "osap_blended_score": 43.15,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +202,5 @@
     "latest_filing_date": "2026-05-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.013890801321372617
+  "cross_source_delta": 4.825277029408133e-09
 }

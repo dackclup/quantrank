@@ -5,19 +5,19 @@
   "industry": "Specialized Consumer Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 75208689240.05127,
-  "current_price": 170.03,
-  "rank": 883,
-  "composite_score": 32.12,
+  "market_cap": 73275726779.84619,
+  "current_price": 165.66,
+  "rank": 882,
+  "composite_score": 32.29,
   "pillar_scores": {
     "quality": 33.68,
-    "value": 10.49,
+    "value": 11.11,
     "growth": 65.62,
-    "momentum": 15.3,
+    "momentum": 14.8,
     "health": 48.58,
     "profitability": 37.81,
-    "technical": 45.05,
-    "risk": 24.3,
+    "technical": 47.53,
+    "risk": 23.26,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 2.0934785655828505,
     "shares_outstanding": 442326000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 75208689240.05127,
-    "pe_ratio_ttm": 81.21888686830592,
+    "market_cap": 73275726779.84619,
+    "pe_ratio_ttm": 79.13145440588143,
     "goodwill": 5499000000.0
   },
   "fair_price": {
@@ -82,13 +82,17 @@
     "max": 105.44087534485405,
     "low": 6.6153587357176225,
     "high": 105.44087534485405,
-    "mos_pct": -225.06994770050244,
+    "mos_pct": -216.71522150868782,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 53.974123737393526,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -136,17 +140,17 @@
       "Momentum": 41.13,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 54.71,
-      "Risk": 39.66
+      "Technical": 54.59,
+      "Risk": 39.72
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 72.9381291745367,
-  "price_change_1d_pct": 1.1541,
+  "loss_chance_pct": 72.85725180326298,
+  "price_change_1d_pct": -2.5701,
   "manipulation_index": 18.0,
-  "composite_score_adjusted": 30.32,
+  "composite_score_adjusted": 30.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +198,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.99,
+  "osap_blended_score": 42.07,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -209,5 +213,5 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.014937584093049188
+  "cross_source_delta": 0.014937617734379693
 }
