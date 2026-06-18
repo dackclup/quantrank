@@ -4544,3 +4544,29 @@ Gate: quantrank-reviewer (opus) + frontend-design-reviewer + phase-coordinator M
 schema-sentinel (schema untouched); no methodology-scientist (display-only tag — no defense/scoring change).
 
 ---
+
+## PR #495 — docs(Mode C): reconcile PHASE_STATUS / SKILL / WORKFLOW after #493 + #494 (in flight, 2026-06-17)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: docs-only (Mode C triple-doc reconciliation); NO code / schema / workflow change.
+
+phase-coordinator Mode C reconciliation after #493 (multi-index membership, schema `0.10.23`) + #494
+(Russell 1000 RUI market-cap proxy, NO bump) BOTH merged 2026-06-17 — neither had a Mode C pass.
+
+- **PHASE_STATUS.md**: Phase 8 row appends #493/#494 DONE; §Current state date 06-15→06-17; Schema cell
+  adds #494 + corrects stale "Cron default still sp500" → `sp900` (since #492); **Active vetoes 7→8**
+  (added `fundamentals_unavailable` — stale since #487, internal-inconsistency fix caught by Mode C);
+  In-flight cleared; new 2026-06-17 §Chronological history entry (incl. the first post-#494 cron
+  `768c35f16` validated counts russell1000 900/902, dow30 30, ndx 88, 0 empty).
+- **SKILL.md**: the `0.10.23-phase8pilot` schema-version row gets the #494 note (RUI via market-cap
+  proxy, no bump); stale "Russell deferred" corrected.
+- **WORKFLOW.md**: session-start schema pointer `0.10.22`→`0.10.23`; Phase 8 acceptance criteria tick
+  Dow/NDX (#493) + Russell (#494); RUT/RUA/SML/COMP remain SOON.
+- **CLAUDE.md** §Phase status: #494 moved from in-flight to merged-since list; "nothing in flight".
+- **AGENTS.md** §Phase + version state: schema pointer reflects #493 + #494 both merged.
+- **PHASE_STATUS_INFLIGHT.md**: #493/#494 entries left append-only (per the file's own
+  MERGED→housekeeping-drain convention; not annotated in-place).
+
+Gate: phase-coordinator Mode C (designed the diffs) + docs-reviewer substance. Docs-only → no
+ruff/tests/schema_check/tsc impact.
+
+---
