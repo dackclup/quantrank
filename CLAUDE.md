@@ -343,10 +343,11 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`russell1000` in `index_memberships` is a market-cap PROXY, NOT a fetched FTSE list — every S&P 900 constituent qualifies (sp400 floor > Russell cutoff), so the RUI tab ≈ All-stocks by design; RUT/RUA stay SOON (need small-cap ingest)**
 - **`fair_price.median_trimmed` / `methods_excluded_from_median` are SHADOW diagnostics (#177 obs-first, 0.10.24) — live `median`/`mos_pct` STILL use the untrimmed median; behavioral flip DEFERRED to Q3 2026-08-19 (Path C #497) via a forward-OOS shadow record (V55.1 condition-2 substituted for a synthetic backfill holdout, +U9 charge `BASKET_RULE_N_TRIALS` 15→16) — NOT a silent relaxation**
 - **`prices.py` cache freshness is LAST-BAR-DATE, not file-mtime (#498) — GHA `actions/cache` restore resets mtime every run so the old `age_hours < PRICES_CACHE_MAX_AGE_HOURS` TTL was DEAD (same class as #471 frozen-fast-cache); `PRICES_CACHE_MAX_STALE_DAYS=7` forces a refetch when the cached frame's last bar is > 7 calendar days old, regardless of mtime. (Distinct from post-split share lag — that's a FUNDAMENTALS `shares_outstanding` bug, not prices)**
+- **`post_split_share_lag` defense (#499): EDGAR `shares_outstanding` lags a stock split until the next 10-Q/10-K → pre-split shares × post-split price corrupts P/E / market_cap (KLAC rank-2 P/E 6.68 vs real ~66.8). HYBRID: Tier-1 CORRECT (split ≤100d / ratio ≥2× / yf-ratio-match ±10% → `shares_outstanding × ratio` at `main.py` Step 3b, raw kept in `shares_outstanding_pre_split_raw`) else Tier-2 VETO `post_split_share_lag_unreconciled` (cautious + null fair-price). Runs BEFORE DQIC. New `compute/ingest/splits.py` yfinance `.splits` fetcher (`POST_SPLIT_WINDOW_DAYS=100`/`MIN_RATIO=2.0`/`RATIO_TOLERANCE=0.10`)**
 
 ## Phase status
 
-Current schema **`0.10.24-phase8pilot`** on `main` (#496/PR-A in flight, 2026-06-18 — additive `Metadata.median_trim_delta_count: int | None` + shadow `FairPriceEnsemble.median_trimmed`/`methods_excluded_from_median` (#177 trimmed-median diagnostic, observability-first Rule 18; live `median`/`mos_pct` byte-identical; 33 tickers ~3.8% would flip MoS sign; behavioral flip gated on ≥1 cron + data-scientist V55.1-gauntlet). Prior #493/#494, 2026-06-16/17 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail` for Dow 30 / NDX 100 overlap tabs + Wikipedia sources + DJI/NDX frontend tabs; `index_membership` (singular) UNCHANGED; defense layer 34. Prior #487, 2026-06-15 —
+Current schema **`0.10.25-phase8pilot`** in flight (#499, 2026-06-18 — `post_split_share_lag` HYBRID defense: `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` post-split counters; defense 34→35; KLAC/CVNA/COKE rank correction next cron). Prior **`0.10.24-phase8pilot`** on `main` (#496/PR-A merged 2026-06-18 — additive `Metadata.median_trim_delta_count: int | None` + shadow `FairPriceEnsemble.median_trimmed`/`methods_excluded_from_median` (#177 trimmed-median diagnostic, observability-first Rule 18; live `median`/`mos_pct` byte-identical; 33 tickers ~3.8% would flip MoS sign; behavioral flip gated on ≥1 cron + data-scientist V55.1-gauntlet). Prior #493/#494, 2026-06-16/17 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail` for Dow 30 / NDX 100 overlap tabs + Wikipedia sources + DJI/NDX frontend tabs; `index_membership` (singular) UNCHANGED; defense layer 34. Prior #487, 2026-06-15 —
 OZK/PBF flip-blocker: `fundamentals_unavailable` direct veto (`snap is
 None` → cautious + Top-5 suppress) + `Metadata.fundamentals_unavailable_count`
 Rule-18 counter + PBF EDGAR-identity ingest fix; defense layer 33→34.
@@ -359,9 +360,9 @@ that ranks all ~903 names on `QR_UNIVERSE=sp900`. **The scheduled cron now defau
 A1/A2/A2-S/B/C tracked on issue #130). The technical
 pillar is an honest 4-metric mean after the #441 MAD close-out
 (`0.10.17`, RATIFY-REMOVE) — **no 5th technical input without a fresh
-pre-registration**. Defense layer **34 declared boolean flags** (8
-active vetoes incl. `fundamentals_unavailable` #487 + 26 annotates +
-reserved; ~27 emit; `USE_SECTOR_COE = True`) + 5 numerical guards + `manipulation_index` rollup. Gate (a)
+pre-registration**. Defense layer **35 declared boolean flags** (9
+active vetoes incl. `fundamentals_unavailable` #487 + `post_split_share_lag_unreconciled` #499 + 26 annotates incl.
+the paired `post_split_share_lag` #499 + reserved; ~28 emit; `USE_SECTOR_COE = True`) + 5 numerical guards + `manipulation_index` rollup. Gate (a)
 verdict (#453): **the veto layer does NOT rescue returns**
 (drawdown-year protection only; bite is 97% `sloan_accruals_top_decile`
 on structural compounders — disposition routed to issue #454 for the Q3
@@ -371,8 +372,8 @@ on structural compounders — disposition routed to issue #454 for the Q3
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
-**In flight** (not yet merged on `main`): **#497** (`claude/confident-thompson-y58bhe`) — docs(methodology) Path C amendment: #177 behavioral flip DEFERRED to Q3 2026-08-19 via forward-OOS shadow + U9 charge (`BASKET_RULE_N_TRIALS` 15→16); METHODOLOGY.md even-n correction (Huber 1981); NO schema change; live `mos_pct`/book byte-identical. Merged
-since last Mode C: **#496/PR-A** (trimmed-median diagnostic #177, `0.10.24-phase8pilot` — shadow `median_trimmed`/`methods_excluded_from_median` + `Metadata.median_trim_delta_count`) · **#485** (fix+test: APA `OilAndGasRevenue` #385 +
+**In flight** (not yet merged on `main`): **#499** (`claude/confident-thompson-y58bhe`) — feat(ingest+scoring+schema): `post_split_share_lag` HYBRID defense — Tier-1 annotate (CORRECT shares for splits ≤100d/≥2×/±10%) + Tier-2 veto `post_split_share_lag_unreconciled` (cautious + null fair-price on mismatch); new `compute/ingest/splits.py` yfinance `.splits` fetcher; schema `0.10.25-phase8pilot`; defense 34→35; fixes KLAC rank-2 P/E (6.68→~66.8). Merged
+since last Mode C: **#498** (fix(ingest): prices.py last-bar-date recency guard — `PRICES_CACHE_MAX_STALE_DAYS=7`, mtime-TTL dead on GHA) · **#497** (docs(methodology) Path C amendment: #177 flip DEFERRED Q3 + `BASKET_RULE_N_TRIALS` 15→16) · **#496/PR-A** (trimmed-median diagnostic #177, `0.10.24-phase8pilot` — shadow `median_trimmed`/`methods_excluded_from_median` + `Metadata.median_trim_delta_count`) · **#485** (fix+test: APA `OilAndGasRevenue` #385 +
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
 `universe` dispatch input) · **#487** (`fundamentals_unavailable` veto,

@@ -578,6 +578,31 @@ class Metadata(BaseModel):
     # on legacy snapshots (pre-0.10.24); None when the per-stock JSON loop was
     # skipped or all tickers had null median_trimmed.
     median_trim_delta_count: int | None = None
+    # Post-split share-lag defense (defense layer 35, 0.10.25-phase8pilot,
+    # Rule 18 observability-before-wiring).
+    #
+    # ``post_split_share_lag_count`` — tickers where the flag fired (either
+    # tier).  Equals ``post_split_correction_applied_count +
+    # post_split_veto_count``.  A non-zero value on a production cron is
+    # expected immediately after any universe-wide 2:1+ split; it should
+    # decay to 0 within one 10-Q EDGAR cycle (~45 days) unless the filer
+    # is unusually slow to file.  Nullable on legacy snapshots
+    # (pre-0.10.25).
+    #
+    # ``post_split_correction_applied_count`` — subset of the above where
+    # Tier-1 (CORRECT) fired: split confirmed + ratio reconciled → shares
+    # corrected in-flight before scoring.  Gates the first post-cron
+    # audit of the corrected composite/rank deltas (expected ≥ 1 for
+    # KLAC / CVNA / COKE on the first post-2026-06-18 cron).
+    #
+    # ``post_split_veto_count`` — subset where Tier-2 (VETO) fired: split
+    # confirmed but ratio unreconcilable → ticker vetoed (cautious +
+    # Top-5 suppression).  Expected steady-state near 0; non-zero
+    # warrants investigation (yfinance/EDGAR both stale? M&A ticker
+    # change?).  Nullable on legacy snapshots (pre-0.10.25).
+    post_split_share_lag_count: int | None = None
+    post_split_correction_applied_count: int | None = None
+    post_split_veto_count: int | None = None
 
 
 class RawMetrics(BaseModel):
@@ -606,6 +631,17 @@ class RawMetrics(BaseModel):
     # whichever ticker last wrote the CIK-keyed parquet (harmless; see
     # compute/ingest/fundamentals.py §CIK-keyed-parquet caveat).
     shares_outstanding_listed_class: float | None = None
+    # Post-split share-lag defense (defense layer 35, 0.10.25-phase8pilot).
+    # Preserves the RAW EDGAR ``shares_outstanding`` BEFORE the Tier-1
+    # correction is applied (Rule 9 — audit trail).  Non-null only when
+    # ``post_split_share_lag`` is in ``valuation_warnings`` (Tier-1 correct
+    # path — PR-2 fix 2026-06-18: moved from risk_flags to valuation_warnings
+    # so Tier-1-corrected tickers are not excluded from entered_top5);
+    # always ``None`` on normal / Tier-2 / no-split rows.
+    # The corrected value lives in ``shares_outstanding`` (where all
+    # scoring consumers naturally read it after main.py writes it back
+    # to the snapshot object).
+    shares_outstanding_pre_split_raw: float | None = None
     market_cap: float | None = None
     pe_ratio_ttm: float | None = None
     goodwill: float | None = None

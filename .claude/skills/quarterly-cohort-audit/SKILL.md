@@ -86,6 +86,8 @@ Per-flag expected fire-rate bands (S&P 500 cohort, ~502 stocks):
 | `cross_source_disagreement` | Internal | 3-8% | Healthy |
 | `late_filing_notification` | Internal (NT 10-K/10-Q) | 0.5-3% | Healthy |
 | `extreme_<method>_estimate` (×6 methods: dcf, rim, graham, multiples_pe, multiples_pb, multiples_ev_ebitda) | Method applicability | 5-20% per method (cohort varies by method) | Method-applicability signals; semantic split planned per epic #150 Phase 2.1 |
+| `post_split_share_lag` (Tier-1 annotate, #499) | Corporate action (yfinance `.splits`) | 0.5-2% (splits infrequent in S&P 500/900; tenure-bias suppresses sub-1y issuers) | Re-gate if Tier-2 `unreconciled` veto > ~5/cron — investigate yfinance `.splits` data quality or extend `POST_SPLIT_WINDOW_DAYS` |
+| `post_split_share_lag_unreconciled` (Tier-2 direct veto, #499) | Corporate action / data-uncertainty | < 0.5% (rare: unreconcilable ratio mismatch only) | > 1% = yfinance `.splits` data anomaly or multi-stage split not handled — file issue |
 
 ### 4. Undocumented-flag check
 

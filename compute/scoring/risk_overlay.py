@@ -59,7 +59,9 @@ provides 5y annual history, so Phase 3e can reach for prior-year values.
 
 from __future__ import annotations
 
+import logging
 import math
+from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 
 import pandas as pd
@@ -67,10 +69,13 @@ import pandas as pd
 from compute import config
 from compute.features import health
 from compute.ingest.fundamentals import ALL_METRIC_KEYS, FundamentalsSnapshot
+from compute.ingest.splits import SplitEvent, fetch_splits
 from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
 from compute.scoring.dechow_f import DECHOW_VETO_THRESHOLD
 from compute.scoring.eight_k_events import check_non_reliance
 from compute.valuation.tangible_book import tangible_book_value_per_share
+
+logger = logging.getLogger(__name__)
 
 ALTMAN_DISTRESS_THRESHOLD = 1.1
 SLOAN_TOP_DECILE = 0.90
@@ -352,6 +357,212 @@ def _net_stock_issuance(
     return math.log(float(snap.shares_outstanding) / prior)
 
 
+@dataclass(frozen=True)
+class PostSplitResult:
+    """Outcome of the three-leg post-split share-lag detection for one ticker.
+
+    ``tier`` encodes the detection outcome:
+
+    * ``0`` — no recent material split detected, or the detection couldn't run
+      (missing EDGAR shares, missing yfinance data).  No flag fires.
+    * ``1`` — **CORRECT** (Tier 1): all 3 legs hold (recent, material,
+      ratio-reconciled).  ``corrected_shares`` holds the adjusted count.
+      Flag ``post_split_share_lag`` fires as ANNOTATE only.
+    * ``2`` — **VETO** (Tier 2): legs 1 + 2 hold but leg 3 (ratio-match)
+      fails — split happened but the numbers don't reconcile.  Can't safely
+      correct → direct veto (cautious + Top-5 suppression).
+      Flag ``post_split_share_lag_unreconciled`` fires.
+    """
+
+    tier: int  # 0 = no-fire; 1 = correct; 2 = veto
+    split_event: SplitEvent | None = None
+    """The triggering split event (None when tier == 0)."""
+    edgar_shares: float | None = None
+    """The raw EDGAR share count before any correction (None when tier == 0)."""
+    corrected_shares: float | None = None
+    """``edgar_shares × split_ratio`` when tier == 1; None otherwise."""
+    yf_implied_shares: float | None = None
+    """yfinance-implied share count used in leg 3 (None when tier == 0)."""
+
+
+def check_post_split_share_lag(
+    ticker: str,
+    snap: FundamentalsSnapshot | None,
+    yf_market_cap: float | None,
+    current_price: float | None,
+    *,
+    today: date | None = None,
+    splits_override: list[SplitEvent] | None = None,
+    yf_shares_outstanding_override: float | None = None,
+) -> PostSplitResult:
+    """Detect a post-split EDGAR share-count lag for one ticker.
+
+    Three-leg detection (all constants are frozen pre-registration from
+    methodology-scientist ruling 2026-06-18; cite:
+    CRSP CFACSHR / Damodaran 2019 Ch. 16):
+
+    **Leg 1 — Recent split**: ``yfinance.Ticker(t).splits`` has at least one
+    split where ``0 < (today − split_date).days ≤ POST_SPLIT_WINDOW_DAYS``.
+
+    **Leg 2 — Material**: ``split_ratio ≥ POST_SPLIT_MIN_RATIO``.
+
+    **Leg 3 — Ratio-match**: the ratio implied by the discrepancy between the
+    yfinance share count and the EDGAR share count agrees with the split ratio
+    to within ``POST_SPLIT_RATIO_TOLERANCE``:
+    ``|(yf_implied_shares / edgar_shares) − split_ratio| / split_ratio ≤ 0.10``
+
+    ``yf_implied_shares`` is ``info["sharesOutstanding"]`` when available
+    (from the pre-existing yfinance_info cache), falling back to
+    ``yf_market_cap / current_price``.
+
+    Tier-1 (legs 1+2+3): emit ``post_split_share_lag`` annotate; set
+    ``corrected_shares = edgar_shares × split_ratio``.
+    Tier-2 (legs 1+2, leg 3 fails): emit ``post_split_share_lag_unreconciled``
+    veto (direct veto → cautious + Top-5 suppression).
+    Tier-0 (else): no action.
+
+    Parameters
+    ----------
+    ticker:
+        Ticker symbol (used only for logging).
+    snap:
+        EDGAR fundamentals snapshot.  ``None`` → tier 0 (no-fire).
+    yf_market_cap:
+        yfinance-reported market cap in dollars (from the existing
+        yfinance_info cache via ``fetch_yfinance_market_cap``).  May be
+        ``None`` — used as the fallback for leg 3's yf_implied_shares.
+    current_price:
+        Current price in dollars (from the price cache).  May be ``None``.
+    today:
+        Override for "today" (defaults to ``datetime.now(UTC).date()``).
+        Injected in tests so the window arithmetic is deterministic.
+    splits_override:
+        Injects a pre-fetched split list (used in tests to mock yfinance).
+        When ``None``, ``fetch_splits(ticker)`` is called.
+    yf_shares_outstanding_override:
+        Injects a specific yfinance ``info["sharesOutstanding"]`` value
+        for leg 3 (used in tests; also set by the main.py caller when the
+        yfinance_info cache already has this field).
+
+    Returns
+    -------
+    PostSplitResult
+        ``tier=0`` when no recent material split is detected or data is missing.
+        ``tier=1`` when Tier-1 (CORRECT) fires.
+        ``tier=2`` when Tier-2 (VETO) fires.
+    """
+    _no_fire = PostSplitResult(tier=0)
+
+    if snap is None or snap.shares_outstanding is None or snap.shares_outstanding <= 0:
+        return _no_fire
+
+    edgar_shares = float(snap.shares_outstanding)
+    asof = today if today is not None else datetime.now(UTC).date()
+
+    # --- Fetch split events (leg 1 + 2 scan) ---
+    if splits_override is not None:
+        split_events = splits_override
+    else:
+        split_events = fetch_splits(ticker)
+    if split_events is None:
+        # Fetch failed — graceful degradation: no flag.
+        return _no_fire
+
+    # Find the most-recent split within the window that is also material.
+    triggering_event: SplitEvent | None = None
+    for event in split_events:
+        days_ago = (asof - event.split_date).days
+        if days_ago <= 0:
+            # Future-dated event (data quirk); skip.
+            continue
+        if days_ago > config.POST_SPLIT_WINDOW_DAYS:
+            # Sorted descending — all remaining events are older; stop.
+            break
+        if event.ratio >= config.POST_SPLIT_MIN_RATIO:
+            triggering_event = event
+            break  # Use the most-recent qualifying split.
+
+    if triggering_event is None:
+        return _no_fire
+
+    # Legs 1 + 2 hold. Now attempt leg 3 (ratio-match).
+    split_ratio = triggering_event.ratio
+
+    # Derive yf_implied_shares.  Priority:
+    #   1. Caller-injected override (tests + main.py pre-computed value)
+    #   2. yf_market_cap / current_price (fallback, less precise)
+    yf_implied: float | None = None
+    if yf_shares_outstanding_override is not None:
+        yf_implied = float(yf_shares_outstanding_override)
+    elif yf_market_cap is not None and current_price is not None and current_price > 0:
+        yf_implied = yf_market_cap / current_price
+
+    if yf_implied is None or yf_implied <= 0 or edgar_shares <= 0:
+        # Can't evaluate leg 3 — treat as Tier-2 (split confirmed, can't verify).
+        logger.warning(
+            "[post_split] %s: legs 1+2 hold (%.0f:1 on %s) but yf_implied_shares "
+            "unavailable — emitting Tier-2 veto (can't reconcile).",
+            ticker,
+            split_ratio,
+            triggering_event.split_date.isoformat(),
+        )
+        return PostSplitResult(
+            tier=2,
+            split_event=triggering_event,
+            edgar_shares=edgar_shares,
+            corrected_shares=None,
+            yf_implied_shares=None,
+        )
+
+    ratio_implied = yf_implied / edgar_shares
+    ratio_delta = abs(ratio_implied - split_ratio) / split_ratio
+
+    if ratio_delta <= config.POST_SPLIT_RATIO_TOLERANCE:
+        # Tier 1 — CORRECT.
+        corrected = edgar_shares * split_ratio
+        logger.info(
+            "[post_split] %s: Tier-1 CORRECT — %.0f:1 split on %s, "
+            "edgar=%.2fM → corrected=%.2fM (yf_implied=%.2fM, ratio_delta=%.1f%%)",
+            ticker,
+            split_ratio,
+            triggering_event.split_date.isoformat(),
+            edgar_shares / 1e6,
+            corrected / 1e6,
+            yf_implied / 1e6,
+            ratio_delta * 100,
+        )
+        return PostSplitResult(
+            tier=1,
+            split_event=triggering_event,
+            edgar_shares=edgar_shares,
+            corrected_shares=corrected,
+            yf_implied_shares=yf_implied,
+        )
+    else:
+        # Tier 2 — VETO (ratio mismatch).
+        logger.warning(
+            "[post_split] %s: Tier-2 VETO — %.0f:1 split on %s, "
+            "edgar=%.2fM yf_implied=%.2fM ratio_implied=%.2f "
+            "expected_ratio=%.2f ratio_delta=%.1f%% > tolerance=%.1f%%",
+            ticker,
+            split_ratio,
+            triggering_event.split_date.isoformat(),
+            edgar_shares / 1e6,
+            yf_implied / 1e6,
+            ratio_implied,
+            split_ratio,
+            ratio_delta * 100,
+            config.POST_SPLIT_RATIO_TOLERANCE * 100,
+        )
+        return PostSplitResult(
+            tier=2,
+            split_event=triggering_event,
+            edgar_shares=edgar_shares,
+            corrected_shares=None,
+            yf_implied_shares=yf_implied,
+        )
+
+
 def compute_risk_flags(
     snapshots: dict[str, FundamentalsSnapshot | None],
     *,
@@ -361,6 +572,7 @@ def compute_risk_flags(
     non_reliance_by_ticker: dict[str, bool] | None = None,
     beneish_m_scores: dict[str, float | None] | None = None,
     dechow_f_scores: dict[str, float | None] | None = None,
+    post_split_results: dict[str, PostSplitResult] | None = None,
 ) -> dict[str, list[str]]:
     """Compute the risk-flag list per ticker.
 
@@ -501,9 +713,43 @@ def compute_risk_flags(
             out[ticker] = flags
             continue
 
+        # Post-split share-lag defense (defense layer 35, 2026-06-18).
+        # Must run BEFORE DQIC so a correctable split-lag is FIXED at the
+        # snapshot level rather than blindly caught by the TBVPS ceiling in
+        # DQIC (which would veto a stock whose only corruption is a stale
+        # EDGAR share count that has already been corrected in main.py).
+        #
+        # CHANNEL ROUTING (PR-2 bug-fix, 2026-06-18):
+        #   Tier-1 ANNOTATE → ``valuation_warnings`` only (in compute.main
+        #     per-ticker loop).  The data IS corrected; routing through
+        #     ``risk_flags`` was a double-penalty — it accidentally triggered
+        #     the Top-5 rotation skip (``if risk_flags.get(ticker): continue``
+        #     in Step 7) on a stock whose share count is already correct.
+        #     Every other annotate in the defense layer uses valuation_warnings
+        #     (e.g. goodwill_heavy, restatement_history, accruals_momentum_high)
+        #     — Tier-1 now follows that convention.
+        #   Tier-2 VETO → ``risk_flags`` (this function).  The split happened
+        #     but the numbers won't reconcile; the data is UNTRUSTWORTHY →
+        #     cautious + Top-5 suppression is correct.
+        #
+        # The `post_split_results` dict is injected from main.py (same inject
+        # pattern as `beneish_m_scores` / `dechow_f_scores`).  When the dict
+        # is None or the ticker is absent the flag simply doesn't fire — safe
+        # for callers that don't run the split pass (tests, external callers).
+        if post_split_results is not None:
+            _psr = post_split_results.get(ticker)
+            if _psr is not None:
+                if _psr.tier == 2:
+                    # Tier-2 VETO — can't safely correct, suppress Top-5.
+                    flags.append("post_split_share_lag_unreconciled")
+                # Tier-1 ANNOTATE: NOT emitted here — goes to valuation_warnings
+                # in the compute.main per-ticker loop so it never triggers the
+                # Top-5 rotation skip.  Tier==0 → no flag (as before).
+
         # Issue #18: data-quality corruption is a veto, not a soft warning.
-        # Emit first so a corrupted snapshot never relies on a coincidental
-        # co-firing of altman/sloan/NSI to be suppressed from Top-5.
+        # Emit AFTER the post-split correction check (above) so a Tier-1
+        # corrected snapshot is no longer seen as corrupted by the TBVPS
+        # ceiling guard (correction happened in main.py before this call).
         if _data_quality_input_corruption(snap):
             flags.append("data_quality_input_corruption")
 

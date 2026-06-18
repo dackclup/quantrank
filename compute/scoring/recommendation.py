@@ -61,7 +61,18 @@ _BULLISH_DISQUALIFYING_RISK: frozenset[str] = frozenset(
     {"sloan_accruals_top_decile", "net_issuance_top_decile"}
 )
 _CAUTIOUS_FORCING_RISK: frozenset[str] = frozenset(
-    {"data_quality_input_corruption", "altman_distress", "fundamentals_unavailable"}
+    {
+        "data_quality_input_corruption",
+        "altman_distress",
+        "fundamentals_unavailable",
+        # Post-split share-lag Tier-2 veto (defense layer 35, 2026-06-18):
+        # split confirmed but yfinance/EDGAR numbers don't reconcile —
+        # can't safely correct, so composite & fair-price are untrustworthy.
+        # Same direct-veto rationale as data_quality_input_corruption: the
+        # input-absence / unresolvable corruption case where annotate-first
+        # staging does NOT bind.
+        "post_split_share_lag_unreconciled",
+    }
 )
 _BULLISH_DISQUALIFYING_WARNING: frozenset[str] = frozenset(
     {"beneish_high", "dechow_high"}

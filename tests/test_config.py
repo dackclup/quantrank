@@ -115,8 +115,21 @@ def test_schema_version_pinned():
     count of universe tickers whose MoS SIGN would flip under the shadow
     trimmed median vs the live median. Diagnostic only; live mos_pct is
     byte-identical. Also adds ``EnsembleResult.median_trimmed`` +
-    ``EnsembleResult.methods_excluded_from_median`` diagnostic fields."""
-    assert config.SCHEMA_VERSION == "0.10.24-phase8pilot"
+    ``EnsembleResult.methods_excluded_from_median`` diagnostic fields.
+
+    PR-2 (0.10.25-phase8pilot) — post-split share-lag defense (defense layer 35).
+    Adds four new fields:
+    - ``Metadata.post_split_share_lag_count: int | None`` — tickers where the
+      flag fired (either tier); equals correction_applied + veto.
+    - ``Metadata.post_split_correction_applied_count: int | None`` — Tier-1
+      (CORRECT) subset: split confirmed + ratio reconciled → shares corrected.
+    - ``Metadata.post_split_veto_count: int | None`` — Tier-2 (VETO) subset:
+      split confirmed but ratio unreconcilable → cautious + Top-5 suppression.
+    - ``RawMetrics.shares_outstanding_pre_split_raw: float | None`` — the raw
+      EDGAR share count before the Tier-1 correction (Rule 9 audit trail);
+      non-null only when the Tier-1 correction applied (``post_split_share_lag``
+      annotate in ``valuation_warnings``, NOT ``risk_flags``)."""
+    assert config.SCHEMA_VERSION == "0.10.25-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():
@@ -231,3 +244,66 @@ def test_use_sector_coe_flipped_true():
     Mode B verdict (load-bearing default; not a feature toggle).
     Pin protects against accidental revert."""
     assert config.USE_SECTOR_COE is True
+
+
+# ---------------------------------------------------------------------------
+# Post-split share-lag defense constants (PR-2, defense layer 35).
+#
+# These three constants are METHODOLOGY-FROZEN per the pre-registration ruling
+# (methodology-scientist 2026-06-18).  Citations:
+#   POST_SPLIT_WINDOW_DAYS  — CRSP CFACSHR / Damodaran 2019 *Investment
+#       Valuation* 3rd ed. Ch. 16: one missed 10-Q/A cycle = 45-day EDGAR
+#       refetch cadence × 2 quarters + buffer → 100 days.
+#   POST_SPLIT_MIN_RATIO    — 2:1 materiality floor; prevents noise from
+#       rounding-lot adjustments (Damodaran 2019 Ch. 16).
+#   POST_SPLIT_RATIO_TOLERANCE — 10% tolerance on yf/EDGAR ratio-match for
+#       Tier-1 (CORRECT) vs Tier-2 (VETO) classification.
+#
+# A silent retune of any of these constants MUST trip CI.  Changing them
+# requires a new methodology-scientist Mode B ruling + METHODOLOGY.md update.
+# ---------------------------------------------------------------------------
+
+def test_post_split_window_days_is_100():
+    """POST_SPLIT_WINDOW_DAYS = 100 (methodology-frozen pre-registration constant).
+
+    Covers one missed 10-Q/A EDGAR refetch cycle (45-day cadence × 2 + buffer).
+    Changing this without a methodology-scientist ruling must fail CI.
+    """
+    assert config.POST_SPLIT_WINDOW_DAYS == 100
+
+
+def test_post_split_min_ratio_is_2():
+    """POST_SPLIT_MIN_RATIO = 2.0 (methodology-frozen pre-registration constant).
+
+    Only material splits (≥ 2:1) trigger the defense; prevents noise from
+    tiny rounding-lot adjustments.  Changing this without a methodology-
+    scientist ruling must fail CI.
+    """
+    assert config.POST_SPLIT_MIN_RATIO == 2.0
+
+
+def test_post_split_ratio_tolerance_is_10_pct():
+    """POST_SPLIT_RATIO_TOLERANCE = 0.10 (methodology-frozen pre-registration constant).
+
+    The yfinance-implied share count must match EDGAR × split_ratio to within
+    10% for Tier-1 (CORRECT) classification; outside this band → Tier-2 (VETO).
+    Changing this without a methodology-scientist ruling must fail CI.
+    """
+    assert config.POST_SPLIT_RATIO_TOLERANCE == 0.10
+
+
+def test_post_split_constants_are_consistent():
+    """Cross-constant sanity: window > 0, min_ratio >= 2, 0 < tolerance < 1.
+
+    Structural invariants — any combination violating these is incoherent
+    regardless of the individual constant values.
+    """
+    assert config.POST_SPLIT_WINDOW_DAYS > 0, (
+        "POST_SPLIT_WINDOW_DAYS must be positive"
+    )
+    assert config.POST_SPLIT_MIN_RATIO >= 2.0, (
+        "POST_SPLIT_MIN_RATIO must be >= 2.0 (materiality floor)"
+    )
+    assert 0.0 < config.POST_SPLIT_RATIO_TOLERANCE < 1.0, (
+        "POST_SPLIT_RATIO_TOLERANCE must be in (0, 1)"
+    )

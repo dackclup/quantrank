@@ -4681,3 +4681,44 @@ Gate: quantrank-reviewer FUNCTIONAL-PASS (7/7 invariants; the doc-lockstep FAIL 
 entry) · phase-coordinator Mode B (file-touch).
 
 ---
+
+## PR #499 — feat(ingest+scoring+schema): `post_split_share_lag` HYBRID defense — Tier-1 CORRECT + Tier-2 veto, schema `0.10.25-phase8pilot`, defense 34→35 (in flight, 2026-06-18)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: feat(ingest+scoring+schema); **SCHEMA BUMP**
+`0.10.24-phase8pilot` → `0.10.25-phase8pilot`; **defense layer 34 → 35**. Data-integrity sprint item —
+the active KLAC rank-2 corruption (post-split EDGAR `shares_outstanding` lag). methodology-scientist
+RATIFIED the HYBRID (CORRECT-if-high-confidence / VETO-on-mismatch); the ruling IS the gate (FP ~0,
+no Mode B re-gate). LIVE RANKING CHANGE on the next cron (KLAC de-inflates).
+
+**Root cause**: post-split price × pre-split EDGAR shares → wrong EPS / P/E / market_cap. yfinance
+auto-split-adjusts prices, so the bug is ONLY in EDGAR `shares_outstanding` until the next 10-Q/10-K.
+
+- **`compute/ingest/splits.py`** (NEW) — yfinance `.splits` fetcher, 24h cache, `QR_SKIP_SPLITS`,
+  graceful-degradation → None. **`compute/config.py`**: `POST_SPLIT_WINDOW_DAYS=100`,
+  `POST_SPLIT_MIN_RATIO=2.0`, `POST_SPLIT_RATIO_TOLERANCE=0.10`.
+- **Detection (3 legs)**: split ≤100d · ratio ≥2× · `|yf_implied/EDGAR − ratio|/ratio ≤ 0.10`.
+- **Tier-1 CORRECT** (`post_split_share_lag`, ANNOTATE): `corrected_shares = EDGAR × ratio` at
+  `main.py` Step 3b BEFORE scoring → EPS/MC/value-pillar/composite recompute; raw kept in
+  `RawMetrics.shares_outstanding_pre_split_raw` (Rule 9). KLAC: 130.6M → 1306M, P/E 6.68 → ~66.8.
+  The Tier-1 annotate lands in `valuation_warnings` (NOT `risk_flags`) — a corrected ticker at
+  rank ≤ 5 stays `entered_top5`-eligible (no double-penalty on data that is now correct; the
+  Top-5 rotation gate keys on `risk_flags`).
+- **Tier-2 VETO** (`post_split_share_lag_unreconciled`, DIRECT veto, the 9th): legs 1+2 fire, leg-3
+  fails → `cautious` + Top-5 suppress (`_CAUTIOUS_FORCING_RISK`) + null fair-price (DQIC contract).
+- **Order**: runs BEFORE DQIC (Step-3b correction de-inflates TBVPS so DQIC doesn't double-fire).
+- **Schema `0.10.25`**: `RawMetrics.shares_outstanding_pre_split_raw: float|None` + 3 `Metadata.*`
+  counters (`post_split_share_lag_count` / `post_split_correction_applied_count` / `post_split_veto_count`;
+  `count == applied + veto`). Frontend `types.ts` mirrored + `flag-labels.ts` 2 labels.
+- **Tests**: `test_post_split_share_lag.py` (PSL1-7 + SPLITS1 + rotation-gate ROT1/2/3 + annotate-channel
+  VW1/2/3) + `test_post_split_schema.py` (5, `count == applied + veto`) + `test_config.py` pin 0.10.25 +
+  4 frozen-constant value-pins. New-flag files + config = 49 passed; **full offline suite 2067 passed /
+  0 failed**, ruff clean, schema_check in-sync, tsc + next build 910.
+
+Gate: compute-builder BUILT-CLEAN · frontend-builder · test-engineer (methodology pins incl. the
+before-DQIC ordering invariant + ROT/VW rotation-channel pins) · schema-sentinel (folded into
+schema_check) · methodology-scientist RATIFIED HYBRID · phase-coordinator Mode B · quantrank-reviewer
+(push gate — new flag + ranking change; FIX-AND-RE-REVIEW caught a Tier-1 Top-5 double-penalty →
+channel-moved `post_split_share_lag` to `valuation_warnings`, re-review READY-TO-PUSH).
+Cohort-audit band added (~0.5-2% Tier-1; <0.5% Tier-2, re-gate if >5/cron).
+
+---

@@ -1767,3 +1767,46 @@ the authoritative freshness gate.
   `shares_outstanding`), not prices — yfinance retroactively split-adjusts prices so the price parquet is
   fine. That is the separate `post_split_share_lag` defense.
 - Do NOT revert to a pure mtime/age check — it is dead on GHA runners by construction.
+
+## `post_split_share_lag` defense (#499, 2026-06-18)
+
+**Root cause.** After a stock split, SEC EDGAR `shares_outstanding` (via edgartools `companyfacts`)
+reflects the **pre-split** count until the company files its NEXT 10-Q/10-K (up to months later).
+yfinance retroactively **split-adjusts prices**, so the price is already post-split. Result:
+`market_cap = price × shares` and any `P/E` derived from market cap are corrupted by the split ratio
+(e.g. 10× for a 10:1). Active examples at #499: KLAC (post-split rank 2, P/E ~6.68 vs real ~66.8),
+CVNA (5:1), COKE (10:1). **The prices parquet is FINE** — the bug lives ONLY in the EDGAR
+`shares_outstanding` field. (Companion: the #498 `PRICES_CACHE_MAX_STALE_DAYS` guard is the prices-side
+staleness fix — a DIFFERENT failure.)
+
+**Detection** (`compute/ingest/splits.py`, yfinance `.splits`, 24h cache, `QR_SKIP_SPLITS` escape hatch,
+graceful-degradation → None on failure). Three legs (constants in `compute/config.py`):
+1. a split event within `POST_SPLIT_WINDOW_DAYS = 100` (covers the worst-case filing gap);
+2. `split_ratio ≥ POST_SPLIT_MIN_RATIO = 2.0` (sub-2× drift is left to `cross_source_disagreement`);
+3. ratio-match: `|(yf_implied_shares / EDGAR_shares) − split_ratio| / split_ratio ≤ POST_SPLIT_RATIO_TOLERANCE = 0.10`.
+
+**HYBRID response (methodology-scientist RATIFIED; the ruling IS the gate — FP structurally ~0, so
+Rule-16 annotate-before-veto does NOT bind):**
+- **Tier-1 CORRECT** (`post_split_share_lag`, an ANNOTATE): all 3 legs hold → correct `shares_outstanding`
+  at `compute/main.py` Step 3b (`= EDGAR_shares × split_ratio`) BEFORE scoring, so EPS / market_cap /
+  value-pillar / composite all recompute from the corrected count. The raw EDGAR value is preserved in
+  `RawMetrics.shares_outstanding_pre_split_raw` (Rule-9 audit trail). It is an annotate, NOT a veto — the
+  data is now correct, so there is nothing to suppress (the transparency flag shows "share count adjusted
+  for N:1 split, pending EDGAR refresh").
+- **Tier-2 VETO** (`post_split_share_lag_unreconciled`, a DIRECT veto): legs 1+2 hold but leg-3 ratio-match
+  FAILS (split confirmed but numbers don't reconcile — partial/confounded) → can't safely correct →
+  `cautious` + Top-5 suppress (added to `_CAUTIOUS_FORCING_RISK`) + null the fair-price ensemble (DQIC
+  null-all-methods contract). This is the safety net that makes the CORRECT path safe: an unreconcilable
+  split falls to suppression, never to a bad rewrite.
+
+**Pipeline order.** The flag/correction runs in `compute_risk_flags` BEFORE the `data_quality_input_corruption`
+(DQIC) check — so a correctable split-lag is FIXED rather than blindly DQIC-vetoed by the TBVPS ceiling
+(the Step-3b correction already de-inflates TBVPS, so DQIC does not double-fire).
+
+**Schema `0.10.25-phase8pilot`:** `RawMetrics.shares_outstanding_pre_split_raw: float|None` +
+`Metadata.post_split_share_lag_count` / `post_split_correction_applied_count` / `post_split_veto_count`
+(the last two partition the first: `count == applied + veto`, pinned by test).
+
+**Live ranking impact.** On the first cron after merge, KLAC's P/E corrects 6.68→~66.8 → value pillar
+de-inflates → rank-2 drops to its correct position (CVNA/COKE similarly). Until SEC files the post-split
+10-Q, the correction persists; once SEC updates, the legs stop firing and the correction is a no-op.
