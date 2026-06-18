@@ -86,6 +86,19 @@ UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
 # constituent lists refresh on the same weekly schedule.
 SP400_CACHE_MAX_AGE_DAYS: int = 7
 PRICES_CACHE_MAX_AGE_HOURS: int = 24
+# Prices data-recency floor — the authoritative freshness gate on GitHub Actions.
+# On GHA runners, ``actions/cache`` restore resets every restored file's mtime to
+# "now", so the mtime-based ``PRICES_CACHE_MAX_AGE_HOURS`` check never fires for
+# stale DATA (the mtime is always fresh after a cache restore).  This constant
+# closes that gap: if the cached frame's LAST BAR DATE is older than this many
+# calendar days, the cache is treated as stale and a live refetch is triggered
+# regardless of the file's mtime.  7 days covers the Fri→Mon weekend gap plus a
+# single-day holiday extension.  For a cache entry whose last bar IS recent
+# (calendar_days_stale <= 7), behaviour is byte-identical to the pre-fix path.
+# See compute/ingest/prices.fetch_prices for the guard implementation.
+# Rationale mirrors fundamentals Design B (config.py lines 91-104): the mtime-based
+# gate is dead on GHA frozen caches; data-content checking is the real gate.
+PRICES_CACHE_MAX_STALE_DAYS: int = 7
 FUNDAMENTALS_REFETCH_DAYS: int = 45
 # Issue #471 / #15 — Design B filing-date precheck (replaces Design C mtime gate).
 # Design C used the parquet's st_mtime to decide whether to skip _build_snapshot —

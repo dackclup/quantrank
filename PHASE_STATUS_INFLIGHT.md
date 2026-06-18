@@ -4654,3 +4654,30 @@ Gate: methodology-scientist PATH-C (this records its ruling) · compute-builder 
 artifact-consistency) · docs-reviewer (substance) · phase-coordinator Mode B.
 
 ---
+
+## PR #498 — fix(ingest): prices.py last-bar-date recency guard — mtime-TTL dead on GHA (in flight, 2026-06-18)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: fix(ingest); compute-only, **NO schema change**,
+defense layer UNCHANGED (34). Live weekly-cron behavior **BYTE-IDENTICAL when prices are fresh**.
+
+**Root cause**: `compute/ingest/prices.py` gated price-cache freshness on file MTIME
+(`age_hours < PRICES_CACHE_MAX_AGE_HOURS`). On GitHub Actions, `actions/cache` restore resets every
+parquet's mtime to "now" each run → `age_hours ≈ 0` always → the TTL **never fires** → a cached frame
+with stale DATA (an old last-bar date) but fresh mtime persists indefinitely. Same failure class as
+the fundamentals frozen-immutable-cache gotcha (#471).
+
+- **Fix**: added `_latest_date(df)` (last-bar sibling of `_earliest_date`) + a data-recency guard inside
+  the cache-hit block — if the cached frame's LAST BAR DATE is > `PRICES_CACHE_MAX_STALE_DAYS`
+  (= **7** calendar days, ≈ 5 trading + holiday buffer) old → fall through to a fresh re-download
+  REGARDLESS of mtime. The mtime `age_hours` check stays as a cheap pre-filter. Byte-identical for
+  ≤7-day-old caches; fail-closed (None last-bar → return cached; refetch failure → existing None).
+- **NOT this PR**: the active KLAC corruption (post-split EDGAR share lag) is a SEPARATE PR (the
+  `post_split_share_lag` CORRECT/veto defense, methodology-ratified HYBRID, defense 34→35). #498 only
+  closes the latent prices-cache-recency gap.
+- **Tests**: `test_prices_recency_guard.py` (R1-R6) + surgical `PRICES_CACHE_MAX_STALE_DAYS=999999`
+  monkeypatch on 3 pre-existing tests (old-dated fixtures). ruff PASS · pytest 2027 passed.
+
+Gate: quantrank-reviewer FUNCTIONAL-PASS (7/7 invariants; the doc-lockstep FAIL is closed by this
+entry) · phase-coordinator Mode B (file-touch).
+
+---

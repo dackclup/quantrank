@@ -342,6 +342,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`index_membership` (singular, sp500/sp400 partition — MidcapChip + survivorship-ledger verifier depend on it) vs `index_memberships` (plural list — all indices incl. dow30/ndx/russell1000) — never consolidate the two; the ledger verifier reads the SINGULAR field**
 - **`russell1000` in `index_memberships` is a market-cap PROXY, NOT a fetched FTSE list — every S&P 900 constituent qualifies (sp400 floor > Russell cutoff), so the RUI tab ≈ All-stocks by design; RUT/RUA stay SOON (need small-cap ingest)**
 - **`fair_price.median_trimmed` / `methods_excluded_from_median` are SHADOW diagnostics (#177 obs-first, 0.10.24) — live `median`/`mos_pct` STILL use the untrimmed median; behavioral flip DEFERRED to Q3 2026-08-19 (Path C #497) via a forward-OOS shadow record (V55.1 condition-2 substituted for a synthetic backfill holdout, +U9 charge `BASKET_RULE_N_TRIALS` 15→16) — NOT a silent relaxation**
+- **`prices.py` cache freshness is LAST-BAR-DATE, not file-mtime (#498) — GHA `actions/cache` restore resets mtime every run so the old `age_hours < PRICES_CACHE_MAX_AGE_HOURS` TTL was DEAD (same class as #471 frozen-fast-cache); `PRICES_CACHE_MAX_STALE_DAYS=7` forces a refetch when the cached frame's last bar is > 7 calendar days old, regardless of mtime. (Distinct from post-split share lag — that's a FUNDAMENTALS `shares_outstanding` bug, not prices)**
 
 ## Phase status
 
