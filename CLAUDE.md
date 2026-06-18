@@ -341,10 +341,11 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`fundamentals_unavailable` is a DIRECT veto (#487, widened 2026-06-16) — fires on NO-USABLE-FUNDAMENTALS: `snap is None` (complete EDGAR ingest failure, OZK/PBF) OR a non-None snap with ALL 34 metrics null (`_snapshot_has_no_usable_fundamentals`, FDXF empty-snap case) → cautious + Top-5 suppress; FP rate structurally zero (input-absence) so annotate-before-veto does NOT bind (DQIC issue #18 governing precedent); defense layer stays 34 (domain widening, no new flag). Distinct from `data_quality_input_corruption` (requires a PRESENT field internally inconsistent — never fires when all null) — partition is no-usable-fundamentals vs present-but-corrupt, `test_D3` locks it**
 - **`index_membership` (singular, sp500/sp400 partition — MidcapChip + survivorship-ledger verifier depend on it) vs `index_memberships` (plural list — all indices incl. dow30/ndx/russell1000) — never consolidate the two; the ledger verifier reads the SINGULAR field**
 - **`russell1000` in `index_memberships` is a market-cap PROXY, NOT a fetched FTSE list — every S&P 900 constituent qualifies (sp400 floor > Russell cutoff), so the RUI tab ≈ All-stocks by design; RUT/RUA stay SOON (need small-cap ingest)**
+- **`fair_price.median_trimmed` / `methods_excluded_from_median` are SHADOW diagnostics (#177 obs-first, 0.10.24) — live `median`/`mos_pct` STILL use the untrimmed median; behavioral flip gated on data-scientist V55.1-gauntlet + ≥1 cron**
 
 ## Phase status
 
-Current schema **`0.10.23-phase8pilot`** on `main` (#493, 2026-06-16 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail` for Dow 30 / NDX 100 overlap tabs + Wikipedia sources + DJI/NDX frontend tabs; `index_membership` (singular) UNCHANGED; defense layer 34. Prior #487, 2026-06-15 —
+Current schema **`0.10.24-phase8pilot`** on `main` (#496/PR-A in flight, 2026-06-18 — additive `Metadata.median_trim_delta_count: int | None` + shadow `FairPriceEnsemble.median_trimmed`/`methods_excluded_from_median` (#177 trimmed-median diagnostic, observability-first Rule 18; live `median`/`mos_pct` byte-identical; 33 tickers ~3.8% would flip MoS sign; behavioral flip gated on ≥1 cron + data-scientist V55.1-gauntlet). Prior #493/#494, 2026-06-16/17 — additive `index_memberships: list[str]` on `StockSummary`/`StockDetail` for Dow 30 / NDX 100 overlap tabs + Wikipedia sources + DJI/NDX frontend tabs; `index_membership` (singular) UNCHANGED; defense layer 34. Prior #487, 2026-06-15 —
 OZK/PBF flip-blocker: `fundamentals_unavailable` direct veto (`snap is
 None` → cautious + Top-5 suppress) + `Metadata.fundamentals_unavailable_count`
 Rule-18 counter + PBF EDGAR-identity ingest fix; defense layer 33→34.
@@ -369,7 +370,7 @@ on structural compounders — disposition routed to issue #454 for the Q3
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
-**In flight** (not yet merged on `main`): _Nothing currently in flight._ Merged
+**In flight** (not yet merged on `main`): **#496/PR-A** (`claude/confident-thompson-y58bhe`) — trimmed-median diagnostic (#177, `0.10.24-phase8pilot`): shadow `median_trimmed`/`methods_excluded_from_median` on `FairPriceEnsemble` + `Metadata.median_trim_delta_count`; live `mos_pct` byte-identical; behavioral flip deferred + gated. Merged
 since last Mode C: **#485** (fix+test: APA `OilAndGasRevenue` #385 +
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +

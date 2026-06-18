@@ -4570,3 +4570,40 @@ Gate: phase-coordinator Mode C (designed the diffs) + docs-reviewer substance. D
 ruff/tests/schema_check/tsc impact.
 
 ---
+
+## PR #496/PR-A — feat(valuation+schema): trimmed-median diagnostic — shadow `median_trimmed` + `median_trim_delta_count` (in flight, 2026-06-18)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: feat(valuation+schema); **SCHEMA BUMP**
+`0.10.23-phase8pilot` → `0.10.24-phase8pilot` (additive PATCH). Issue #177 follow-up.
+methodology-scientist RATIFIED-WITH-CONDITIONS. User-authorized as frozen pre-registration.
+
+**What**: OBSERVABILITY-FIRST (Rule 18) diagnostic half of the fair-value ensemble trimmed-median
+change — the root-cause fix for "the MoS gate kicks out growth/tech" (the even-n median + the
+majority-extreme collapse drag the central fair value negative for asset-light / IP / high-growth
+structures, producing false-negative MoS).
+
+- **`compute/valuation/ensemble.py`** — SHADOW `median_trimmed` + `methods_excluded_from_median`
+  (two-regime trim: minority-extreme → median of non-extreme subset; majority-collapse <2 survivors
+  → null). Reuses the existing SYMMETRIC `_classify_outliers` (trims extreme-HIGH too). **Live
+  `median`/`mos_pct` BYTE-IDENTICAL** — `median_trimmed` feeds nothing in scoring/recommendation/
+  portfolio/loss_chance; the AI-pick `is_high_conviction` gate still consumes the untrimmed `mos_pct`.
+- **`compute/output/schemas.py`** — `Metadata.median_trim_delta_count: int | None` (count of universe
+  tickers whose MoS SIGN would flip under the trim — the blast-radius metric).
+- **`compute/config.py`** — `SCHEMA_VERSION` `0.10.23-phase8pilot` → `0.10.24-phase8pilot`.
+- **`frontend/lib/types.ts`** — mirrored `median_trim_delta_count` on Metadata (snapshot-tracked) +
+  `median_trimmed`/`methods_excluded_from_median` on `FairPriceEnsemble` (untyped fair_price dict
+  keys, not snapshot-tracked). NO UI surface (types-only).
+- **Blast-radius (offline, 2026-06-18 cron data)**: 33 tickers (3.8%) would flip MoS sign (FFIV
+  −27.6%→+15.8% confirmed; flippers span sectors — KTOS/BALL not just tech — confirming the rule is
+  structure-driven, not tech-flattering).
+
+**Staged sequence**: PR-A (this, diagnostic) → after ≥1 cron + data-scientist V55.1-gauntlet
+validation (PBO ≤ 0.5 / DSR > 0 / purged-embargo holdout; non-inferiority framing) → the BEHAVIORAL
+flip PR (median actually trims `mos_pct`) → a UI-bridge chip ("bullish but below margin-of-safety —
+not AI-pick-eligible") + the METHODOLOGY.md "Why median, not mean" even-n correction.
+
+Gate: compute-builder BUILT-CLEAN · frontend-builder · test-engineer (72 tests, +8, methodology's
+symmetry hard-gate `test_shadow_trimmed_symmetry_high` satisfied) · schema-sentinel PASS ·
+quantrank-reviewer PASS (8/8 invariants, byte-identical confirmed) · phase-coordinator Mode B.
+
+---

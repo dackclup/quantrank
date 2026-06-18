@@ -388,6 +388,14 @@ export type Metadata = {
   // null on legacy snapshots pre-0.10.22. A non-zero value on a production
   // sp500 cron is a data-pipeline health signal requiring investigation.
   fundamentals_unavailable_count?: number | null;
+  // Issue #177 follow-up (0.10.24-phase8pilot) — count of tickers whose
+  // MoS (margin-of-safety) SIGN would FLIP under the shadow trimmed-median
+  // (i.e. the trim would move them across the mos_pct=0 line). Rule-18
+  // blast-radius metric for the fair-value trimmed-median feature; the live
+  // `mos_pct` is byte-identical (shadow only). Optional + nullable: absent /
+  // null on legacy snapshots pre-0.10.24. NOT currently rendered by the static
+  // site (UI-bridge chip is a separate later task).
+  median_trim_delta_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -494,6 +502,13 @@ export type FairPriceEnsemble = {
   // Inverse of the count of `extreme_*_estimate` warnings emitted.
   // Optional + null on legacy outputs from before 0.9.4-phase4h.4.
   valuation_methods_applicable?: number | null;
+  // Issue #177 follow-up (0.10.24-phase8pilot) — trimmed-median result
+  // and the list of method keys excluded from it. These are keys of the
+  // untyped fair_price dict (not a Pydantic-schema field), so they are
+  // NOT in the schema-snapshot triple, but typed here for the UI-bridge
+  // chip that will consume them in a later task.
+  median_trimmed?: number | null;
+  methods_excluded_from_median?: string[];
 };
 
 // Sector-median overlay for the per-stock pillar bars (#34).
