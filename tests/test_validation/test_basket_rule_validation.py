@@ -1,7 +1,7 @@
 """Tests for compute.validation.basket_rule_validation (Phase-A OOS-validation protocol).
 
 Pins:
-- n_trials default == BASKET_RULE_N_TRIALS == 15.
+- n_trials default == BASKET_RULE_N_TRIALS == 16 (U9 +1 charge for #177 amendment).
 - Quarterly annualization (ANNUALIZATION_FACTOR_QUARTERLY = 4.0) is used,
   NOT the monthly default (12.0). A test explicitly fails if the monthly default
   is passed by accident.
@@ -35,9 +35,15 @@ from compute.validation.pbo_dsr import (
 # ---------------------------------------------------------------- protocol constants
 
 
-def test_basket_rule_n_trials_is_15() -> None:
-    """Pin: n_trials default == 15 (pre-registered multiplicity charge, issue #130)."""
-    assert BASKET_RULE_N_TRIALS == 15
+def test_basket_rule_n_trials_is_16() -> None:
+    """Pin: n_trials default == 16 (pre-registered multiplicity charge, issue #130).
+
+    The count is 16 rather than 15: the base 12-configuration grid
+    {55,60,65,70}×{1,3,5} + 1 uncap amendment + 2 hold-band sweep trials = 15,
+    plus a U9 +1 charge for the #177 trimmed-median behavioral-flip amendment
+    (PATH-C ruling, methodology-scientist ratified) = 16.
+    """
+    assert BASKET_RULE_N_TRIALS == 16
 
 
 def test_quarterly_annualization_constant_is_4() -> None:
@@ -285,11 +291,17 @@ def test_compute_basket_rule_validation_expected_keys() -> None:
     assert set(result.keys()) == expected_keys
 
 
-def test_compute_basket_rule_validation_n_trials_default_is_15() -> None:
-    """Default n_trials == BASKET_RULE_N_TRIALS == 15."""
+def test_compute_basket_rule_validation_n_trials_default_is_16() -> None:
+    """Default n_trials == BASKET_RULE_N_TRIALS == 16.
+
+    16 = 15-base (12-config grid + uncap + 2 hold-band sweeps) + 1 U9 charge
+    for the #177 trimmed-median behavioral-flip amendment (PATH-C ruling).
+    The relative pin (== BASKET_RULE_N_TRIALS) self-updates; the literal pin
+    here catches an accidental constant regression back to 15.
+    """
     artifact = _make_synthetic_artifact(n_legs=40, drift_per_leg=0.04)
     result = compute_basket_rule_validation(artifact)
-    assert result["n_trials"] == 15
+    assert result["n_trials"] == 16
     assert result["n_trials"] == BASKET_RULE_N_TRIALS
 
 

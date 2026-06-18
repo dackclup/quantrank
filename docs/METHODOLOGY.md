@@ -84,8 +84,21 @@ and RIM. The full netting (intangibles, not just goodwill) is per Penman
 
 ### Aggregation
 
-- **Median** = median of every applicable method's value. Robust by
-  construction — a single absurd estimate doesn't drag the headline.
+- **Median** = median of every applicable method's value. Robust to a
+  **single** outlier (Huber 1981 §1.4 — the median tolerates a minority of
+  extreme estimates) **but NOT "robust by construction" for even-n.** With
+  an even applicable-method count the median is the *mean of the 3rd+4th
+  order statistics*, so a **minority of 2** extreme-flagged estimates still
+  drags it (the FFIV pattern: Graham+RIM collapsing on a goodwill-heavy
+  software name pulled the median to −23.6% MoS, vs +15.8% on the
+  non-extreme subset), and a **majority**-extreme count passes the
+  breakdown point and collapses the median entirely (the APP −1257%
+  pattern). The #177 shadow `median_trimmed` field (PR-A, schema 0.10.24)
+  *measures* this even-n drag; a two-regime trim of extreme-flagged methods
+  from the central estimate is gated behind the Q3 2026-08-19 forward-OOS
+  validation (V55.1 condition (2) via a measured shadow record, not a
+  synthetic backfill holdout — see PHASE_STATUS_INFLIGHT.md). Until then
+  the live `median` keeps ALL applicable values.
 - **Max** = largest method value **excluding** outliers (defined as
   `value > 5 × current_price` OR `value < 0.2 × current_price`). The
   outlier guard is Defense #4; the spec is "exclude from MAX, keep in
@@ -108,6 +121,15 @@ also compute the max separately so the "Graham was conservative,
 RIM was right" upside scenario is still surfaced. This dispersion is
 information — the difference between a Graham floor and a RIM ceiling
 is itself a signal about how growth-loaded the stock is.
+
+**The even-n limit (#177).** "The median is unmoved" holds for a *single*
+outlier; it does NOT hold when 2+ of an even applicable-method count are
+extreme-flagged (see §Aggregation — the median of 6 is the mean of the
+two middle order statistics, so a minority drag is real, and a majority
+collapses it). The trimmed-median diagnostic (`median_trimmed`, PR-A)
+quantifies the residual even-n drag per stock; the behavioral correction
+(trimming extreme-flagged methods from the central estimate) is
+Q3-2026-08-19-gated on a forward-OOS shadow record.
 
 ### Why dispersion matters
 

@@ -15,10 +15,11 @@ is approximately +127.7 pp, representing ~16% of total return — a tuning artif
 until OOS-confirmed.
 
 The DSR (Bailey-López de Prado 2014) is the primary inferential gate. With n_trials
-= 15 (the 12-configuration grid {55,60,65,70}×{1,3,5} + 1 uncap amendment + 2
-hold-band sweep trials), a quarterly-annualized DSR > 0 AND Φ(DSR) >= 0.95 provides
-inferential evidence that the adaptive rule's excess Sharpe survives the in-sample
-selection haircut.
+= 16 (the 12-configuration grid {55,60,65,70}×{1,3,5} + 1 uncap amendment + 2
+hold-band sweep trials + 1 U9 charge for the #177 trimmed-median behavioral-flip
+amendment — see BASKET_RULE_N_TRIALS comment), a quarterly-annualized DSR > 0 AND
+Φ(DSR) >= 0.95 provides inferential evidence that the adaptive rule's excess Sharpe
+survives the in-sample selection haircut.
 
 Walk-forward stability note
 ----------------------------
@@ -72,12 +73,21 @@ logger = logging.getLogger(__name__)
 # n_trials = number of strategy variants examined during the in-sample grid sweep.
 #
 # Grid exhausted: {55, 60, 65, 70} x {1, 3, 5} floors = 12 configurations.
-# Two amendments post-results counted as additional trials (U9 +1 multiplicity rule):
+# Three amendments post-results counted as additional trials (U9 +1 multiplicity rule):
 #   +1  uncap amendment (carry-domain rank-free, V55.1)
 #   +2  hold-band sweep (V60, V55 tested; V60 failed C2, V55 passed)
-# Total: 12 + 1 + 2 = 15. This is the pre-registered multiplicity charge per the
-# methodology-scientist RATIFY-WITH-CONDITIONS 2026-06-11 (U9 rule; issue #130).
-BASKET_RULE_N_TRIALS: int = 15
+#   +1  #177 trimmed-median behavioral-flip amendment — PATH C decision
+#       (methodology-scientist ruling, user-confirmed 2026-06-18). V55.1
+#       gauntlet condition (2) substitutes a forward-OOS shadow record +
+#       structural non-inferiority for the synthetic backfill_portfolio_pit
+#       purged-embargo holdout (artifact is not trim-replayable; the trim is a
+#       frozen-threshold-inheriting estimator-correctness fix with zero new
+#       tunable params). Charge booked even though immaterial (DSR headroom is
+#       large), per the "immaterial charges still get booked" discipline. The
+#       shipped backtest_pit.json artifact reflects n_trials=15 and will lag
+#       until the next Q3 backtest rerun — this is intentional and benign.
+# Total: 12 + 1 + 2 + 1 = 16.
+BASKET_RULE_N_TRIALS: int = 16
 
 # Walk-forward anchor: start the anchored Sharpe trace at k0 legs so the estimate
 # is not wildly unstable (at least k0 quarterly observations before reporting).
@@ -318,10 +328,12 @@ def compute_basket_rule_validation(
         Loaded ``backtest_pit.json`` dict (full artifact, not a sub-section).
     n_trials:
         Number of strategy variants examined during the in-sample grid sweep.
-        Default :data:`BASKET_RULE_N_TRIALS` = 15. Callers SHOULD NOT override
+        Default :data:`BASKET_RULE_N_TRIALS` = 16. Callers SHOULD NOT override
         this unless they have a documented reason to change the multiplicity
         charge — the default reflects the pre-registered count from the
-        methodology-scientist RATIFY-WITH-CONDITIONS 2026-06-11 (U9; issue #130).
+        methodology-scientist RATIFY-WITH-CONDITIONS 2026-06-11 (U9; issue #130)
+        plus the +1 U9 charge for the #177 trimmed-median behavioral-flip
+        amendment (PATH C, 2026-06-18).
 
     Returns
     -------
