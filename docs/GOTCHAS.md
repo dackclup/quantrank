@@ -1721,10 +1721,21 @@ feed `mos_pct`, the composite, the recommendation, the loss-chance, or any veto/
 trim (33 / 3.8% on the 2026-06-18 blast-radius run; FFIV confirmed −27.6%→+15.8%; flippers are
 structure-driven across sectors — KTOS/BALL not just tech).
 
-The BEHAVIORAL flip (wiring `median_trimmed` → `mos_pct`) is a SEPARATE PR gated on: (1) ≥ 1 green
-cron confirming the shadow counts; (2) data-scientist V55.1-gauntlet validation (PBO ≤ 0.5, DSR > 0,
-purged-embargo holdout, non-inferiority framing, flip-ticker audit); (3) the METHODOLOGY.md "Why
-median, not mean" section corrected for even-n behavior.
+The BEHAVIORAL flip (wiring `median_trimmed` → `mos_pct`) is a SEPARATE PR, **deferred to the
+Q3 2026-08-19 cohort audit** (methodology-scientist **PATH-C** ruling, 2026-06-18, #497). The frozen
+V55.1 gauntlet condition (2) is satisfied by a **measured forward-OOS shadow record (across live
+crons) + structural non-inferiority IN LIEU OF a synthetic `backfill_portfolio_pit` holdout** —
+because the shipped `backtest_pit.json` is NOT trim-replayable (scalar `mos_pct` per holding only) and
+the trim is a frozen-threshold-inheriting estimator correctness fix (zero new tunable params, Huber
+1981 even-n root cause). This substitution is the honest amendment, charged **+1 trial (U9 rule) →
+`BASKET_RULE_N_TRIALS` 15→16** (#497) — NOT a silent relaxation. (Bare Path B — skipping the holdout
+on assertion alone — was rejected as a silent relaxation; Path A — full backfill — as disproportionate
+for a 1-name swap.) Flip preconditions: (1) ≥ 1 green cron confirming the shadow counts hold near
+33/3.8% (>~1.5× drift → re-audit); (2) measured forward-OOS non-inferiority (trim-book vs live-book) to
+2026-08-19; (3) METHODOLOGY.md "Why median, not mean" even-n correction (DONE #497); (4) flip-ticker
+audit refreshed (flips are structure-driven — may NOT stay 1 name); (5) a test pinning `mos_pct`
+derives from `median_trimmed`; (6) a forward AUTO-REVERT monitor (IC-decay pattern — reverts to shadow
+if the trim-book trails by ε).
 
 **Never read `median_trimmed` as the operative fair-price value.** Always use `median` for current
 production logic.

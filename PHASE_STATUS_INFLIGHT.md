@@ -4607,3 +4607,50 @@ symmetry hard-gate `test_shadow_trimmed_symmetry_high` satisfied) · schema-sent
 quantrank-reviewer PASS (8/8 invariants, byte-identical confirmed) · phase-coordinator Mode B.
 
 ---
+
+## PR #497 — docs(methodology): Path C amendment — #177 behavioral flip → Q3 forward-OOS gate + U9 trial charge (in flight, 2026-06-18)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Type**: docs(methodology) + 1-constant (validation);
+NO schema change. Records the methodology-scientist **PATH-C** ruling (user-confirmed) on the #177
+trimmed-median BEHAVIORAL flip — the honest amendment, NOT a silent relaxation.
+
+**The decision — V55.1 condition-(2) substitution.** The behavioral flip's pre-registered validation
+condition (2) — `(PBO ≤ 0.5, DSR > 0, purged-embargo holdout, non-inferiority, flip-audit)` — is
+satisfied by a **forward-OOS shadow record + structural non-inferiority IN LIEU OF a synthetic
+`backfill_portfolio_pit` holdout replay**, because: (a) the shipped `backtest_pit.json` is NOT
+trim-replayable (stores only scalar `mos_pct` per holding, not the per-method breakdown needed to
+recompute `median_trimmed` historically → the synthetic holdout would need a multi-hour networked
+backfill); (b) the trim is a **frozen-threshold-inheriting estimator correctness fix** (reuses
+Defense #4 `EXTREME_ESTIMATE_HIGH/LOW`, zero new tunable params), Huber-1981 even-n root cause,
+enormous DSR headroom (3.07 @ n_trials=15), directionally-dominant 1-name swap (FFIV-in / BBY-out).
+
+**Why NOT bare Path B, NOT Path A.** Path B (skip the holdout, assert structural non-inferiority) was
+a SILENT relaxation — the pre-registration names the holdout + non-inferiority as CO-EQUAL
+sub-elements, and dropping the only `in_sample=False` OOS block AFTER observing the lever is small +
+evidence favorable is the hindsight protocol-erosion the U9 rule polices. Path A (full backfill) is
+disproportionate for a 1-name swap + the 9-leg holdout is a self-described WEAK FLOOR. **Path C** =
+observability-first forward OOS: the merged #496 shadow `median_trimmed` ALREADY accrues the record →
+convert "asserted" non-inferiority into "measured" across live crons → flip at the **Q3 2026-08-19
+cohort audit**.
+
+**The U9 charge (anti-silent-relaxation).** The amendment is charged **+1 trial →
+`BASKET_RULE_N_TRIALS` 15 → 16** (booked even though immaterial — DSR headroom is large — per
+"immaterial charges still get booked"). Applied in this PR if artifact-consistency-safe, else recorded
+here and applied with the Q3 flip backtest — per the compute-builder assessment.
+
+**Q3 flip preconditions (frozen).** (1) ≥1 green sp900 cron confirming `median_trim_delta_count` holds
+near 33 / 3.8% (> ~1.5× drift → re-audit root cause); (2) forward-OOS shadow non-inferiority across
+crons to 2026-08-19 (trim-book vs live-book realized return, ε margin); (3) flip-ticker audit
+refreshed (flips are structure-driven — may NOT stay 1 name as the universe drifts); (4) METHODOLOGY.md
+"Why median, not mean" even-n correction (THIS PR); (5) a test pinning `mos_pct` derives from
+`median_trimmed` (at flip time, `test-engineer`); (6) a forward AUTO-REVERT monitor (IC-decay-monitor
+pattern — reverts the trim to shadow if the trim-book trails the live book by ε).
+
+**This PR**: METHODOLOGY.md §Aggregation + §"Why median, not mean" even-n correction (Huber 1981 +
+FFIV/APP examples) + `BASKET_RULE_N_TRIALS` 15→16 (U9 charge) + this amendment record. **#496 stays
+shadow-only on main; live `mos_pct`/AI-pick book UNCHANGED.**
+
+Gate: methodology-scientist PATH-C (this records its ruling) · compute-builder (constant +
+artifact-consistency) · docs-reviewer (substance) · phase-coordinator Mode B.
+
+---
