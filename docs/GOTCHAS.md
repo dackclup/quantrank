@@ -1700,3 +1700,31 @@ Russell 1000 … partial overlap").
 - `test_index_memberships.py` `TestRussell1000Membership` (9 tests, #494) locks the
   positive/None/zero/negative-cap gate, the cohort→dow30→ndx→russell1000 ordering contract, and the
   dow30/ndx regression guard.
+
+## `fair_price.median_trimmed` / `methods_excluded_from_median` are shadow diagnostics
+
+**PR-A #496, 2026-06-18. Issue #177 follow-up. methodology-scientist RATIFIED-WITH-CONDITIONS.**
+
+`FairPriceEnsemble.median_trimmed` and `FairPriceEnsemble.methods_excluded_from_median` are SHADOW
+diagnostic fields introduced in `0.10.24-phase8pilot`. They hold the two-regime trimmed-median result
+(see `_aggregate_methods` in `compute/valuation/ensemble.py`):
+- minority-extreme (≥ 2 non-extreme methods survive) → median of the non-extreme subset
+- majority-collapse (< 2 survivors) → `null`
+
+The trim reuses the SYMMETRIC `_classify_outliers` — it trims extreme-HIGH methods too (a deep-value
+name with a runaway DCF gets the same treatment), so it is NOT a one-way "make growth/tech look cheap"
+thumb on the scale (methodology's hard symmetry guard; `test_shadow_trimmed_symmetry_high` pins it).
+
+**The live `median` and `mos_pct` fields are byte-identical to pre-PR-A.** `median_trimmed` does NOT
+feed `mos_pct`, the composite, the recommendation, the loss-chance, or any veto/portfolio gate.
+`Metadata.median_trim_delta_count` counts the universe tickers whose MoS sign would flip under the
+trim (33 / 3.8% on the 2026-06-18 blast-radius run; FFIV confirmed −27.6%→+15.8%; flippers are
+structure-driven across sectors — KTOS/BALL not just tech).
+
+The BEHAVIORAL flip (wiring `median_trimmed` → `mos_pct`) is a SEPARATE PR gated on: (1) ≥ 1 green
+cron confirming the shadow counts; (2) data-scientist V55.1-gauntlet validation (PBO ≤ 0.5, DSR > 0,
+purged-embargo holdout, non-inferiority framing, flip-ticker audit); (3) the METHODOLOGY.md "Why
+median, not mean" section corrected for even-n behavior.
+
+**Never read `median_trimmed` as the operative fair-price value.** Always use `median` for current
+production logic.

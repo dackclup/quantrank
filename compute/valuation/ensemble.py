@@ -95,6 +95,21 @@ class EnsembleResult:
     # ``[0, len(METHOD_NAMES)]``; ``0`` means every method either
     # skipped or produced an outlier estimate.
     valuation_methods_applicable: int = 0
+    # Issue #177 PR-A (0.10.24-phase8pilot) — shadow two-regime trimmed
+    # median (DIAGNOSTIC-ONLY; does NOT feed mos_pct or any live path).
+    # Huber 1981 §1.4 breakdown-point: the even-n median of 6 methods
+    # = mean of the 3rd+4th order statistics; even a MINORITY of 2
+    # garbage-low values drags it (FFIV: −23.6% → +18.1% if trimmed).
+    # At MAJORITY-extreme the median collapses (APP: −1257%).
+    # The shadow trim reuses _classify_outliers' SYMMETRIC extreme-flag
+    # set (trims extreme-HIGH and extreme-LOW equally per Huber symmetry).
+    # See _aggregate_methods for the unified two-regime implementation.
+    # This field is None when < 2 non-extreme survivors remain (majority
+    # collapse — unreliable to report any estimate).
+    median_trimmed: float | None = None
+    # Names of methods the trim would exclude from median_trimmed.
+    # Empty when n_extreme == 0 (no-op) or when median_trimmed is None.
+    methods_excluded_from_median: list[str] = field(default_factory=list)
 
 
 def _all_methods_skipped(reason: str) -> dict[str, FairPriceMethodResult]:
@@ -171,15 +186,27 @@ def _aggregate_methods(
     methods: dict[str, FairPriceMethodResult],
     current_price: float,
 ) -> tuple[
-    dict[str, float | None], list[str]
+    dict[str, float | None], list[str], float | None, list[str]
 ]:
     """Aggregate per-method results into median/max/low/high/mos_pct.
 
-    Returns (aggregates, extreme_warnings) where aggregates is a dict
-    with keys ``median``, ``max``, ``low``, ``high``, ``mos_pct``. The
-    median includes ALL applicable values (robust by construction);
+    Returns (aggregates, extreme_warnings, median_trimmed,
+    methods_excluded_from_median) where aggregates is a dict with keys
+    ``median``, ``max``, ``low``, ``high``, ``mos_pct``. The live
+    ``median`` includes ALL applicable values (robust by construction);
     the max EXCLUDES outliers (a 5× DCF shouldn't anchor user
     expectations of upside).
+
+    The SHADOW ``median_trimmed`` implements the ratified two-regime trim
+    rule (Issue #177 + Huber 1981 §1.4 breakdown-point; PR-A diagnostic-
+    first — median_trimmed does NOT yet feed mos_pct):
+      - n_extreme == 0          → median_trimmed = median (no-op)
+      - len(survivors) >= 2     → median_trimmed = median(survivors)
+      - len(survivors) < 2      → median_trimmed = None (majority collapse)
+    The trim is inherently SYMMETRIC because it reuses _classify_outliers
+    which flags both extreme-HIGH (v > 5× price) and extreme-LOW
+    (v < 0.2× price) methods equally — satisfying methodology's hard
+    symmetry guard at the logic level.
 
     MoS sign convention: positive when median > current_price (i.e.,
     intrinsic value above market = potential undervaluation). Returns
@@ -189,6 +216,7 @@ def _aggregate_methods(
 
     applicable_values: list[float] = []
     non_outlier_values: list[float] = []
+    excluded_method_names: list[str] = []
     for name in METHOD_NAMES:
         r = methods.get(name)
         if r is None or not r.applicable or r.value is None:
@@ -196,6 +224,8 @@ def _aggregate_methods(
         applicable_values.append(float(r.value))
         if name not in outlier_names:
             non_outlier_values.append(float(r.value))
+        else:
+            excluded_method_names.append(name)
 
     if not applicable_values:
         aggregates = {
@@ -205,7 +235,7 @@ def _aggregate_methods(
             "high": None,
             "mos_pct": None,
         }
-        return (aggregates, extreme_warnings)
+        return (aggregates, extreme_warnings, None, [])
 
     median_v = float(statistics.median(applicable_values))
     max_v = max(non_outlier_values) if non_outlier_values else None
@@ -224,7 +254,26 @@ def _aggregate_methods(
         "high": high_v,
         "mos_pct": mos_pct,
     }
-    return (aggregates, extreme_warnings)
+
+    # Shadow two-regime trimmed median (Issue #177 PR-A, diagnostic-only).
+    # Reuses the already-computed outlier_names + non_outlier_values —
+    # no second call to _classify_outliers. BYTE-IDENTICAL to the live
+    # median path because median_trimmed is a NEW field, not a replacement.
+    n_extreme = len(outlier_names)
+    if n_extreme == 0:
+        # No-op regime: trim changes nothing.
+        median_trimmed: float | None = median_v
+        methods_excluded_from_median: list[str] = []
+    elif len(non_outlier_values) >= 2:
+        # Minority OR majority-with-≥2-survivors: trim to non-extreme subset.
+        median_trimmed = float(statistics.median(non_outlier_values))
+        methods_excluded_from_median = excluded_method_names
+    else:
+        # < 2 survivors (majority collapse): unreliable — emit None.
+        median_trimmed = None
+        methods_excluded_from_median = excluded_method_names
+
+    return (aggregates, extreme_warnings, median_trimmed, methods_excluded_from_median)
 
 
 def _convert_peer_panel(
@@ -488,7 +537,12 @@ def compute_fair_price_ensemble(
     # (2026-05-28 08:44 UTC) confirmed no Site-2 regression on NVR cohort.
 
     # Defense #4 outlier guard + aggregation.
-    aggregates, extreme_warnings = _aggregate_methods(methods, current_price)
+    # Returns 4-tuple: (aggregates, extreme_warnings, median_trimmed,
+    # methods_excluded_from_median). The trimmed fields are shadow/
+    # diagnostic only — they do NOT alter the live median or mos_pct.
+    aggregates, extreme_warnings, median_trimmed, methods_excluded_from_median = (
+        _aggregate_methods(methods, current_price)
+    )
     valuation_warnings.extend(extreme_warnings)
 
     # Issue #177 — extreme_estimate_majority annotate. The median is a
@@ -524,6 +578,12 @@ def compute_fair_price_ensemble(
             valuation_methods_applicable=_count_applicable_non_outliers(
                 methods, extreme_warnings
             ),
+            # Issue #177 PR-A — shadow trimmed fields (diagnostic-only).
+            # median_trimmed and methods_excluded_from_median are written to
+            # the per-stock JSON for post-cron audit but do NOT feed mos_pct
+            # or any live scoring path (byte-identical live behavior).
+            median_trimmed=median_trimmed,
+            methods_excluded_from_median=methods_excluded_from_median,
         ),
         [],
     )
@@ -589,6 +649,12 @@ def ensemble_result_to_dict(r: EnsembleResult) -> dict:
         "mos_pct": r.mos_pct,
         "valuation_warnings": list(r.valuation_warnings),
         "valuation_methods_applicable": r.valuation_methods_applicable,
+        # Issue #177 PR-A — shadow trimmed median diagnostics (OBSERVABILITY).
+        # Does NOT alter live behavior. median_trimmed is None on majority
+        # collapse (< 2 non-extreme survivors); methods_excluded_from_median
+        # is empty when n_extreme == 0 (no-op trim).
+        "median_trimmed": r.median_trimmed,
+        "methods_excluded_from_median": list(r.methods_excluded_from_median),
     }
 
 

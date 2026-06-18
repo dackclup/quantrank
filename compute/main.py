@@ -1858,6 +1858,12 @@ def run_weekly_compute() -> int:
         key: 0 for key in CROSS_SOURCE_BUCKET_KEYS
     }
     cross_source_delta_by_ticker: dict[str, float | None] = {}
+    # Issue #177 PR-A (0.10.24-phase8pilot) — per-ticker shadow trimmed
+    # median cache. Populated in the Step 8 per-ticker loop alongside the
+    # ensemble computation; consumed after the loop to compute the
+    # universe-wide blast-radius metric ``median_trim_delta_count``. Only
+    # entries where ensemble.median_trimmed is not None are stored.
+    _median_trimmed_by_ticker: dict[str, float] = {}
     # PR-A2 — listing-metadata wiring (StockDetail.exchange / .country).
     # Display-mapped exchange name + derived country, one entry per ticker
     # iterated in Step 8. Skip-safe: fetch_yfinance_exchange honors
@@ -2030,6 +2036,10 @@ def run_weekly_compute() -> int:
             )
             ensemble_dict = ensemble_result_to_dict(ensemble)
             valuation_warnings = list(ensemble.valuation_warnings)
+            # Issue #177 PR-A — cache shadow trimmed median for the
+            # post-loop blast-radius computation (median_trim_delta_count).
+            if ensemble.median_trimmed is not None:
+                _median_trimmed_by_ticker[ticker] = ensemble.median_trimmed
             if extra_flags:
                 merged = list(risk_flags.get(ticker, []))
                 for f in extra_flags:
@@ -2550,6 +2560,51 @@ def run_weekly_compute() -> int:
             _pilot_cohort_sizes,
         )
 
+    # Issue #177 PR-A (0.10.24-phase8pilot) — compute the blast-radius
+    # metric for the shadow trimmed median across the scored universe.
+    # Counts tickers where the MoS SIGN would flip under median_trimmed
+    # vs the live median (the "would the recommendation direction change?"
+    # measure). Sign convention: positive mos_pct = undervalued (median >
+    # price); negative = overvalued. A flip means the live median calls
+    # a stock undervalued but the trim says overvalued (or vice versa).
+    # Only counted when median_trimmed is not None (excludes majority-
+    # collapse cases where < 2 non-extreme survivors remain). Reads from
+    # _median_trimmed_by_ticker populated in the Step 8 per-ticker loop.
+    median_trim_delta_count: int | None = None
+    try:
+        _sign_flips = 0
+        _trim_eligible = 0
+        for s in summaries:
+            _mt = _median_trimmed_by_ticker.get(s.ticker)
+            if _mt is None:
+                continue
+            _price = s.current_price
+            # Shadow MoS under trimmed median (same sign convention as mos_pct:
+            # positive = intrinsic value above market price = potential undervaluation).
+            if _mt > 0 and _price > 0:
+                _trim_mos = (_mt - _price) / _mt * 100.0
+            else:
+                continue
+            _live_mos = s.margin_of_safety_pct
+            if _live_mos is None:
+                continue
+            _trim_eligible += 1
+            # Sign flip: one side says undervalued (>= 0) and the other says overvalued (< 0).
+            if (_trim_mos >= 0) != (_live_mos >= 0):
+                _sign_flips += 1
+        median_trim_delta_count = _sign_flips
+        logger.info(
+            "median_trim_delta_count=%d (sign flips out of %d trim-eligible tickers; "
+            "Issue #177 PR-A blast-radius metric)",
+            _sign_flips,
+            _trim_eligible,
+        )
+    except Exception as _trim_exc:  # noqa: BLE001
+        logger.warning(
+            "median_trim_delta_count computation failed (non-fatal): %s", _trim_exc
+        )
+        median_trim_delta_count = None
+
     # Issue #246 PR2a (0.10.3-phase4.5e) — read the universe-wide
     # shares-fallback counters that accumulated inside
     # ``_build_snapshot`` calls during the threaded fundamentals fetch
@@ -2839,6 +2894,12 @@ def run_weekly_compute() -> int:
         midcap_fundamentals_coverage_pct=_pilot_midcap_coverage_pct,
         midcap_null_rate_pct=_pilot_midcap_null_rate_pct,
         midcap_cik_resolution_pct=_pilot_midcap_cik_resolution_pct,
+        # Issue #177 PR-A (0.10.24-phase8pilot) — shadow trimmed-median blast-radius
+        # metric. Count of universe tickers whose MoS SIGN would flip under the
+        # shadow trimmed median vs the live median. Decision-critical gate for the
+        # follow-up PR that wires median_trimmed → mos_pct. None when the
+        # computation failed or all tickers had null median_trimmed.
+        median_trim_delta_count=median_trim_delta_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

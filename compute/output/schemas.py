@@ -563,6 +563,21 @@ class Metadata(BaseModel):
     # non-zero value on a production sp500 cron is a data-pipeline health signal
     # requiring investigation. Nullable on legacy snapshots (pre-0.10.22).
     fundamentals_unavailable_count: int | None = None
+    # Issue #177 PR-A (0.10.24-phase8pilot, Rule 18) — blast-radius metric for the
+    # ratified two-regime trimmed-median change (OBSERVABILITY-FIRST; methodology-
+    # scientist RATIFIED-WITH-CONDITIONS, user-authorized as frozen pre-registration).
+    # Counts universe tickers whose MoS SIGN would flip under the shadow trimmed
+    # median vs the live median:
+    #   sign((median_trimmed - price) / median_trimmed) != sign(mos_pct)
+    # Counted only where ``median_trimmed is not None`` (excludes majority-collapse
+    # cases). This is the decision-critical metric that gates the follow-up PR
+    # that wires median_trimmed → mos_pct (replacing the live median). A large
+    # sign-flip count validates the Huber 1981 §1.4 breakdown-point rationale
+    # empirically; a near-zero count would suggest the live median is already robust
+    # (contra the FFIV −23.6% → +18.1% and APP −1257% audit findings). Nullable
+    # on legacy snapshots (pre-0.10.24); None when the per-stock JSON loop was
+    # skipped or all tickers had null median_trimmed.
+    median_trim_delta_count: int | None = None
 
 
 class RawMetrics(BaseModel):

@@ -108,8 +108,15 @@ def test_schema_version_pinned():
     ``default_factory=list`` so legacy JSONs (pre-0.10.23) deserialize
     cleanly under ``extra="forbid"``.  ``index_membership`` (singular)
     is kept unchanged — MidcapChip + the membership-ledger script depend
-    on it as the sp500/sp400 partition.  Additive PATCH bump."""
-    assert config.SCHEMA_VERSION == "0.10.23-phase8pilot"
+    on it as the sp500/sp400 partition.  Additive PATCH bump.
+
+    Issue #177 PR-A (0.10.24-phase8pilot) — shadow observability-first
+    trimmed-median. Adds ``Metadata.median_trim_delta_count`` (int | None):
+    count of universe tickers whose MoS SIGN would flip under the shadow
+    trimmed median vs the live median. Diagnostic only; live mos_pct is
+    byte-identical. Also adds ``EnsembleResult.median_trimmed`` +
+    ``EnsembleResult.methods_excluded_from_median`` diagnostic fields."""
+    assert config.SCHEMA_VERSION == "0.10.24-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

@@ -78,7 +78,7 @@ def test_A1_four_methods_no_outliers_aggregation():
         "rim": 207.0,           # 1.035× — in band
         "dcf": 117.0,           # 0.585× — in band
     })
-    aggs, warnings = _aggregate_methods(methods, current_price=200.0)
+    aggs, warnings, _, _ = _aggregate_methods(methods, current_price=200.0)
     assert aggs["median"] == pytest.approx(138.5, abs=1e-6)
     assert aggs["max"] == 207.0
     assert aggs["low"] == 50.0
@@ -92,7 +92,7 @@ def test_A1_four_methods_no_outliers_aggregation():
 
 def test_A2_single_applicable_method_aggregates_to_self():
     methods = _methods_fixture({"graham": 50.0})
-    aggs, _w = _aggregate_methods(methods, current_price=40.0)
+    aggs, _w, _, _ = _aggregate_methods(methods, current_price=40.0)
     assert aggs["median"] == 50.0
     assert aggs["max"] == 50.0
     assert aggs["low"] == 50.0
@@ -103,7 +103,7 @@ def test_A2_single_applicable_method_aggregates_to_self():
 
 def test_A3_no_applicable_methods_yields_all_null():
     methods = _methods_fixture({})  # all skipped
-    aggs, warnings = _aggregate_methods(methods, current_price=100.0)
+    aggs, warnings, _, _ = _aggregate_methods(methods, current_price=100.0)
     assert aggs["median"] is None
     assert aggs["max"] is None
     assert aggs["low"] is None
@@ -115,7 +115,7 @@ def test_A3_no_applicable_methods_yields_all_null():
 def test_A4_mos_sign_convention_undervalued_positive():
     """Direction check: median > current → POSITIVE MoS (undervalued)."""
     methods = _methods_fixture({"graham": 100.0})
-    aggs, _w = _aggregate_methods(methods, current_price=80.0)
+    aggs, _w, _, _ = _aggregate_methods(methods, current_price=80.0)
     # (100-80)/100 = 0.20 = 20.0%, positive (NOT 25% — common sign error)
     assert aggs["mos_pct"] == pytest.approx(20.0, abs=1e-9)
 
@@ -129,7 +129,7 @@ def test_B1_outlier_above_5x_excluded_from_max_kept_in_median():
         "rim": 207.0,
         "dcf": 1500.0,
     })
-    aggs, warnings = _aggregate_methods(methods, current_price=200.0)
+    aggs, warnings, _, _ = _aggregate_methods(methods, current_price=200.0)
     # Max excludes the 1500 outlier → max = 207 (NOT 1500).
     assert aggs["max"] == 207.0
     # Median INCLUDES the 1500 outlier (median([28, 207, 1500]) = 207).
@@ -162,7 +162,7 @@ def test_B3_multiple_outliers_each_warning_emitted():
         "rim": 1300.0,                  # > 5× of 240 → outlier
         "dcf": 200.0,                   # in band
     })
-    aggs, warnings = _aggregate_methods(methods, current_price=240.0)
+    aggs, warnings, _, _ = _aggregate_methods(methods, current_price=240.0)
     # Max excludes both outliers → max = max(100, 200) = 200.
     assert aggs["max"] == 200.0
     # Two extreme warnings, both names.
@@ -447,13 +447,13 @@ def test_F4_tier_used_none_for_non_multiples_when_applicable():
 
 def test_G1_zero_current_price_yields_null_mos():
     methods = _methods_fixture({"graham": 50.0})
-    aggs, _w = _aggregate_methods(methods, current_price=0.0)
+    aggs, _w, _, _ = _aggregate_methods(methods, current_price=0.0)
     assert aggs["mos_pct"] is None
 
 
 def test_G2_negative_current_price_yields_null_mos():
     methods = _methods_fixture({"graham": 50.0})
-    aggs, _w = _aggregate_methods(methods, current_price=-10.0)
+    aggs, _w, _, _ = _aggregate_methods(methods, current_price=-10.0)
     assert aggs["mos_pct"] is None
 
 
@@ -875,6 +875,7 @@ def test_I1_ensemble_result_to_dict_shape_matches_ts_type():
     assert set(out.keys()) == {
         "methods", "median", "max", "low", "high", "mos_pct",
         "valuation_warnings", "valuation_methods_applicable",
+        "median_trimmed", "methods_excluded_from_median",
     }
     assert set(out["methods"].keys()) == set(METHOD_NAMES)
     for name, sub in out["methods"].items():
@@ -1403,3 +1404,211 @@ def test_M2_lag_200_hard_stale_days_455_does_not_null_ensemble():
     assert any(m.applicable for m in result.methods.values()), (
         "At least one valuation method must be applicable when lag=200 is soft"
     )
+
+
+# -- N. Issue #177 PR-A — shadow two-regime trimmed median -------------------
+#
+# The ratified pre-registration (Huber 1981 §1.4 breakdown-point) defines
+# two regimes for _aggregate_methods's 4-tuple return
+# (aggs, extreme_warnings, median_trimmed, methods_excluded_from_median):
+#
+#   n_extreme == 0            → median_trimmed == median,  excluded == []
+#   len(survivors) >= 2       → median_trimmed == median(non_outlier_values),
+#                                excluded == [extreme method names]
+#   len(survivors) < 2        → median_trimmed is None,   excluded == [names]
+#
+# The trim is SYMMETRIC — _classify_outliers flags both extreme-HIGH and
+# extreme-LOW; methodology's hard requirement is that a high-extreme method
+# is trimmed AND that doing so LOWERS the central estimate (symmetry guard).
+#
+# These tests exercise the logic at the _aggregate_methods level so they're
+# independent of any single valuation method's internal gates.
+
+
+def test_shadow_trimmed_no_op():
+    """No extreme methods → median_trimmed == live median AND excluded == [].
+
+    Regime 1 (n_extreme == 0): the trim is a no-op.  Values [50, 117, 160, 207]
+    at current_price=200 are all within the [0.2×, 5×] band (band = [$40, $1000]).
+    """
+    methods = _methods_fixture({
+        "graham": 50.0,          # 0.25× of 200 — in band
+        "multiples_pe": 160.0,   # 0.80× — in band
+        "rim": 207.0,            # 1.035× — in band
+        "dcf": 117.0,            # 0.585× — in band
+    })
+    aggs, _warnings, median_trimmed, methods_excluded = _aggregate_methods(
+        methods, current_price=200.0
+    )
+    assert median_trimmed == pytest.approx(aggs["median"], abs=1e-9), (
+        "No-op regime: median_trimmed must equal the live median when n_extreme == 0"
+    )
+    assert methods_excluded == [], (
+        "No-op regime: methods_excluded_from_median must be empty when n_extreme == 0"
+    )
+
+
+def test_shadow_trimmed_minority_low():
+    """MINORITY of extreme-LOW methods → trimmed median is higher than live.
+
+    Setup (current_price=200, band = [$40, $1000]):
+      graham=5.0   (< $40 = 0.2× → extreme-LOW)
+      dcf=10.0     (< $40 = 0.2× → extreme-LOW)
+      rim=150.0    (in band)
+      multiples_pe=200.0  (in band)
+      multiples_pb=180.0  (in band)
+      multiples_ev_ebitda=160.0  (in band)
+
+    2 extreme methods vs 4 survivors (minority) → trim is applied.
+    Live median([5, 10, 150, 160, 180, 200]) = 155.0.
+    Trimmed median([150, 160, 180, 200]) = 170.0.
+    Trimming low outliers raises the central estimate → trimmed > live.
+    """
+    methods = _methods_fixture({
+        "graham": 5.0,               # 0.025× of 200 — extreme LOW
+        "dcf": 10.0,                 # 0.05× of 200 — extreme LOW
+        "rim": 150.0,                # 0.75× — in band
+        "multiples_pe": 200.0,       # 1.0× — in band
+        "multiples_pb": 180.0,       # 0.90× — in band
+        "multiples_ev_ebitda": 160.0,  # 0.80× — in band
+    })
+    aggs, _warnings, median_trimmed, methods_excluded = _aggregate_methods(
+        methods, current_price=200.0
+    )
+    # The two low-extreme names must appear in the excluded list.
+    assert set(methods_excluded) == {"graham", "dcf"}, (
+        f"Expected graham+dcf excluded; got {methods_excluded}"
+    )
+    # Survivors: [150, 160, 180, 200] → median = 170.0.
+    import statistics as _st
+    expected_trimmed = _st.median([150.0, 160.0, 180.0, 200.0])
+    assert median_trimmed == pytest.approx(expected_trimmed, abs=1e-9), (
+        f"median_trimmed should be median of survivors; got {median_trimmed}"
+    )
+    # Trimming low outliers RAISES the central estimate.
+    assert median_trimmed > aggs["median"], (
+        f"Trimming low outliers must raise the estimate: "
+        f"trimmed={median_trimmed}, live={aggs['median']}"
+    )
+
+
+def test_shadow_trimmed_symmetry_high():
+    """Methodology HARD REQUIREMENT — extreme-HIGH method is trimmed AND
+    trimming it LOWERS the central estimate (proves the trim is symmetric,
+    not a one-sided tech-flattering thumb on the scale).
+
+    Setup (current_price=100, band = [$20, $500]):
+      graham=60.0          (0.60× — in band)
+      dcf=80.0             (0.80× — in band)
+      rim=90.0             (0.90× — in band)
+      multiples_pe=110.0   (1.10× — in band)
+      multiples_pb=600.0   (6.0× of 100 → strictly > 5× — extreme HIGH)
+      multiples_ev_ebitda stays skipped (not in fixture)
+
+    1 extreme HIGH method, 4 survivors → trim applied.
+    Live median([60, 80, 90, 110, 600]) = 90.0.
+    Trimmed median([60, 80, 90, 110]) = 85.0.
+    Trimming the high outlier LOWERS the central estimate → trimmed < live.
+    """
+    methods = _methods_fixture({
+        "graham": 60.0,          # in band
+        "dcf": 80.0,             # in band
+        "rim": 90.0,             # in band
+        "multiples_pe": 110.0,   # in band
+        "multiples_pb": 600.0,   # 6.0× of 100 — extreme HIGH
+    })
+    aggs, _warnings, median_trimmed, methods_excluded = _aggregate_methods(
+        methods, current_price=100.0
+    )
+    # The extreme-HIGH method must be in the excluded list.
+    assert "multiples_pb" in methods_excluded, (
+        f"extreme-HIGH multiples_pb must be in methods_excluded; got {methods_excluded}"
+    )
+    assert median_trimmed is not None, (
+        "median_trimmed must not be None when 4 survivors remain"
+    )
+    # Trimming the high outlier LOWERS the central estimate (symmetry hard gate).
+    assert median_trimmed < aggs["median"], (
+        f"Trimming a high outlier must LOWER the central estimate "
+        f"(symmetry hard gate): trimmed={median_trimmed}, live={aggs['median']}. "
+        "This test is the methodology unshippable gate — a failure here means "
+        "the trim is asymmetric or the wrong methods are being flagged."
+    )
+    # Sanity: survivors are [60, 80, 90, 110] → median = 85.0.
+    import statistics as _st
+    assert median_trimmed == pytest.approx(
+        _st.median([60.0, 80.0, 90.0, 110.0]), abs=1e-9
+    )
+
+
+def test_shadow_trimmed_majority_collapse():
+    """Majority extreme leaving < 2 survivors → median_trimmed is None.
+
+    Setup (current_price=100, band = [$20, $500]):
+      5 of 6 methods extreme (4 HIGH above $500, 1 LOW below $20).
+      Only 1 survivor (in band) → len(survivors) < 2 → collapse.
+
+    Regime 3: median_trimmed = None; excluded list has the 5 extreme names.
+    """
+    methods = _methods_fixture({
+        "graham": 10.0,              # 0.10× of 100 — extreme LOW
+        "multiples_pe": 600.0,       # 6.0× — extreme HIGH
+        "multiples_pb": 700.0,       # 7.0× — extreme HIGH
+        "multiples_ev_ebitda": 800.0,  # 8.0× — extreme HIGH
+        "rim": 900.0,                # 9.0× — extreme HIGH
+        "dcf": 50.0,                 # 0.50× — in band (sole survivor)
+    })
+    _aggs, _warnings, median_trimmed, methods_excluded = _aggregate_methods(
+        methods, current_price=100.0
+    )
+    # Only 1 survivor → majority collapse → median_trimmed is None.
+    assert median_trimmed is None, (
+        f"Expected None on majority collapse (< 2 survivors); got {median_trimmed}"
+    )
+    # All 5 extreme names must appear in the excluded list.
+    expected_excluded = {"graham", "multiples_pe", "multiples_pb", "multiples_ev_ebitda", "rim"}
+    assert set(methods_excluded) == expected_excluded, (
+        f"Expected excluded={expected_excluded}; got {set(methods_excluded)}"
+    )
+
+
+def test_ensemble_result_dict_includes_trimmed_fields():
+    """ensemble_result_to_dict output contains keys median_trimmed and
+    methods_excluded_from_median (Issue #177 PR-A schema contract)."""
+    er = EnsembleResult(
+        methods=_methods_fixture({"graham": 50.0, "dcf": 60.0}),
+        median=55.0,
+        max=60.0,
+        low=50.0,
+        high=60.0,
+        mos_pct=10.0,
+        valuation_warnings=[],
+        valuation_methods_applicable=2,
+        median_trimmed=55.0,
+        methods_excluded_from_median=[],
+    )
+    d = ensemble_result_to_dict(er)
+    assert "median_trimmed" in d, (
+        "ensemble_result_to_dict must include 'median_trimmed' key (PR-A schema contract)"
+    )
+    assert "methods_excluded_from_median" in d, (
+        "ensemble_result_to_dict must include 'methods_excluded_from_median' key"
+    )
+    assert d["median_trimmed"] == 55.0
+    assert d["methods_excluded_from_median"] == []
+
+    # Verify the None path (majority collapse).
+    er_collapsed = EnsembleResult(
+        methods=_methods_fixture({"graham": 50.0}),
+        median=50.0,
+        max=50.0,
+        low=50.0,
+        high=50.0,
+        mos_pct=0.0,
+        valuation_warnings=[],
+        median_trimmed=None,
+        methods_excluded_from_median=["dcf"],
+    )
+    d2 = ensemble_result_to_dict(er_collapsed)
+    assert d2["median_trimmed"] is None
+    assert d2["methods_excluded_from_median"] == ["dcf"]
