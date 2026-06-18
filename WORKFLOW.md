@@ -42,11 +42,8 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-17: schema `0.10.23-phase8pilot` (#493 — additive
-`index_memberships: list[str]`, Dow 30 / NDX 100 overlap tabs; #494 appends
-the `"russell1000"` value, NO schema bump; prior #487 `fundamentals_unavailable`
-direct veto; prior #482 `index_membership` singular). Full lineage: SKILL.md §schema-version. Defense
-layer **34 declared** = 8 vetoes + 26 annotates; release tag
+schema PR; this prose stays stable). As of 2026-06-18: schema `0.10.25-phase8pilot` (#499 squash `816cda0ea` — `post_split_share_lag` HYBRID defense: Tier-1 CORRECT + Tier-2 veto `post_split_share_lag_unreconciled`, `compute/ingest/splits.py`, defense 34→35; prior #496/PR-A `0.10.24-phase8pilot` trimmed-median shadow diagnostic; prior #493 `0.10.23-phase8pilot` multi-index membership). Full lineage: SKILL.md §schema-version. Defense
+layer **35 declared** = 9 vetoes + 26 annotates; release tag
 [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
