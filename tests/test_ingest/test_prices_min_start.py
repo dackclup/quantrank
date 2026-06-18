@@ -122,6 +122,9 @@ def test_P2_deep_enough_cache_returned_without_download(tmp_path, monkeypatch) -
     cache_dir.mkdir()
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_DIR", cache_dir)
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_AGE_HOURS", 48)
+    # Disable the recency guard so this test exercises only the depth-check path.
+    # (The recency guard is tested in test_prices_recency_guard.py.)
+    monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_STALE_DAYS", 999999)
 
     deep_cached = _bday_frame("2015-01-02", 10)
     deep_cached.to_parquet(cache_dir / "DEEP.parquet")
@@ -211,6 +214,9 @@ def test_P4_min_start_none_skips_depth_check_old_behavior(tmp_path, monkeypatch)
     cache_dir.mkdir()
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_DIR", cache_dir)
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_AGE_HOURS", 48)
+    # Disable the recency guard so this test exercises only the min_start=None path.
+    # (The recency guard is tested in test_prices_recency_guard.py.)
+    monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_STALE_DAYS", 999999)
 
     shallow = _bday_frame("2022-01-03", 3)
     shallow.to_parquet(cache_dir / "SHL.parquet")
@@ -393,6 +399,9 @@ def test_A8_warm_boundary_floor_on_non_trading_day(tmp_path, monkeypatch) -> Non
     from compute import config
 
     monkeypatch.setattr(config, "PRICES_CACHE_DIR", tmp_path)
+    # Disable the recency guard so this test exercises only the depth/grace-window path.
+    # (The recency guard is tested in test_prices_recency_guard.py.)
+    monkeypatch.setattr(config, "PRICES_CACHE_MAX_STALE_DAYS", 999999)
     idx = pd.bdate_range("2015-11-30", periods=50)
     cached = pd.DataFrame({"Close": [100.0] * len(idx)}, index=idx)
     cached.to_parquet(tmp_path / "TESTY.parquet")

@@ -95,6 +95,9 @@ def test_fetch_prices_returns_dataframe_on_cache_hit(tmp_path, monkeypatch) -> N
     """
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_DIR", tmp_path)
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_AGE_HOURS", 48)
+    # Disable the recency guard so this test exercises only the mtime path.
+    # (The recency guard is tested in test_prices_recency_guard.py.)
+    monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_STALE_DAYS", 999999)
 
     frame = _bday_frame("2025-01-02", 30)
     (tmp_path / "SMOK.parquet").write_bytes(frame.to_parquet())

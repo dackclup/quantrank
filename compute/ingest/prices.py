@@ -152,7 +152,32 @@ def fetch_prices(
                 # Depth check: if min_start is set and the cached frame is
                 # shallower than required, fall through to a fresh download.
                 if min_start is None or _frame_covers(cached, min_start):
-                    return cached
+                    # Data-recency guard — the authoritative freshness check on GHA.
+                    # ``actions/cache`` restore resets mtime to "now" each run, so the
+                    # mtime-based age_hours check above is DEAD on GHA (always looks
+                    # fresh).  We verify the actual DATA is recent by checking the last
+                    # bar date.  If it is None (empty frame) we fall through unchanged;
+                    # if it is stale (> PRICES_CACHE_MAX_STALE_DAYS calendar days old)
+                    # we log and fall through to a live refetch regardless of mtime.
+                    last_bar = _latest_date(cached)
+                    if last_bar is not None:
+                        calendar_days_stale = (
+                            datetime.date.today() - last_bar
+                        ).days
+                        if calendar_days_stale > config.PRICES_CACHE_MAX_STALE_DAYS:
+                            logger.info(
+                                "fetch_prices(%s): cache last-bar %s is %d days old"
+                                " > floor %d — refetching",
+                                ticker,
+                                last_bar,
+                                calendar_days_stale,
+                                config.PRICES_CACHE_MAX_STALE_DAYS,
+                            )
+                            # Fall through to live download below.
+                        else:
+                            return cached
+                    else:
+                        return cached
                 logger.info(
                     "fetch_prices(%s): cache shallow (earliest %s > floor %s) — refetching",
                     ticker,
@@ -206,6 +231,24 @@ def _earliest_date(df: pd.DataFrame) -> datetime.date | None:
         return first.date()
     if isinstance(first, datetime.date):
         return first
+    return None
+
+
+def _latest_date(df: pd.DataFrame) -> datetime.date | None:
+    """Return the latest index date of a price DataFrame, or ``None`` if empty.
+
+    Mirrors ``_earliest_date``'s exact style: handles both pandas Timestamp
+    (via ``.date()``) and bare ``datetime.date`` index types.  Returns ``None``
+    for ``None`` or empty frames so callers can treat the result uniformly.
+    """
+    if df is None or df.empty:
+        return None
+    idx = df.index
+    last = idx[-1]
+    if hasattr(last, "date"):
+        return last.date()
+    if isinstance(last, datetime.date):
+        return last
     return None
 
 

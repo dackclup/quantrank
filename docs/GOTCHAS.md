@@ -1739,3 +1739,31 @@ if the trim-book trails by ε).
 
 **Never read `median_trimmed` as the operative fair-price value.** Always use `median` for current
 production logic.
+
+## `prices.py` cache freshness is last-bar-date, not file-mtime (the GHA mtime-dead-gate, #498)
+
+The price-cache freshness gate in `compute/ingest/prices.py` was originally
+`age_hours = (now - cache_path.stat().st_mtime)/3600; if age_hours < PRICES_CACHE_MAX_AGE_HOURS (24): return cached`.
+On GitHub Actions, `actions/cache` restore **rewrites every cached file's mtime to the restore time** at
+the start of each run → `age_hours ≈ 0` for ALL parquets → the 24h TTL **never fires** → a cached frame
+with stale DATA (an old last-bar date) but a fresh mtime would be returned forever. Same failure class as
+the fundamentals fast-cache being frozen-immutable within a quarter (#471) — file-mtime / fetch-recency
+signals are NO-OPs on the GHA runner.
+
+**The fix (#498):** `_latest_date(df)` (the last-bar sibling of `_earliest_date`) + a data-recency guard.
+After the depth-check (`_frame_covers`) passes, if the cached frame's LAST BAR DATE is older than
+`PRICES_CACHE_MAX_STALE_DAYS` (= 7 calendar days, ≈ 5 trading days + a long-weekend/holiday buffer) → fall
+through to a fresh `_yf_download` REGARDLESS of mtime. The mtime `age_hours` check is KEPT as a cheap
+pre-filter (short-circuits the common fresh case before the parquet read), but the last-bar-date guard is
+the authoritative freshness gate.
+
+- **Byte-identical** for healthy caches (last bar ≤ 7 days old return exactly as before — no churn on the
+  live weekly cron when prices are fresh).
+- **Fail-closed:** `_latest_date` None (empty/corrupt frame) → returns cached (no regression); a
+  fall-through refetch failure → the existing `except → None`.
+- **Boundary:** `calendar_days_stale == 7` returns cached; `== 8` refetches (`>` not `>=`) — pinned by
+  `test_prices_recency_guard.py` R6.
+- **NOT a fix for post-split share lag:** the KLAC/CVNA/COKE corruption is in the FUNDAMENTALS (pre-split
+  `shares_outstanding`), not prices — yfinance retroactively split-adjusts prices so the price parquet is
+  fine. That is the separate `post_split_share_lag` defense.
+- Do NOT revert to a pure mtime/age check — it is dead on GHA runners by construction.
