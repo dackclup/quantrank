@@ -5,19 +5,19 @@
   "industry": "Apparel, Accessories & Luxury Goods",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6934324077.3965645,
-  "current_price": 17.7,
-  "rank": 583,
-  "composite_score": 46.81,
+  "market_cap": 6542554372.3965645,
+  "current_price": 16.7,
+  "rank": 617,
+  "composite_score": 45.89,
   "pillar_scores": {
     "quality": 46.99,
-    "value": 52.55,
+    "value": 53.78,
     "growth": 40.39,
-    "momentum": 48.86,
+    "momentum": 47.09,
     "health": 36.7,
     "profitability": 47.69,
-    "technical": 61.86,
-    "risk": 31.06,
+    "technical": 44.37,
+    "risk": 28.42,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 0.6506883935806114,
     "shares_outstanding": 391769705.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 6934324077.3965645,
-    "pe_ratio_ttm": 27.201961703265983,
+    "market_cap": 6542554372.3965645,
+    "pe_ratio_ttm": 25.665127774974753,
     "goodwill": 587705000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 12.694975338121315,
+        "value": 12.31507030637602,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 22.344915255337312,
+        "value": 21.923218347601654,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 18.383714944535686,
+        "value": 17.21222756647256,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 18.383714944535686,
-    "max": 22.344915255337312,
-    "low": 12.694975338121315,
-    "high": 22.344915255337312,
-    "mos_pct": 3.7191295864792453,
+    "median": 17.21222756647256,
+    "max": 21.923218347601654,
+    "low": 12.31507030637602,
+    "high": 21.923218347601654,
+    "mos_pct": 2.975947195416273,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -98,13 +98,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 29,
     "latest_period_end": "2026-04-25",
     "latest_filed_date": "2026-05-20"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk"
+    "value_trap_risk",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -119,22 +120,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.81,
+      "Value": 50.35,
       "Growth": 49.42,
-      "Momentum": 41.35,
+      "Momentum": 41.13,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 52.58,
-      "Risk": 39.97
+      "Technical": 54.71,
+      "Risk": 39.66
     }
   },
   "beneish_m_score": -3.1890329793906345,
   "dechow_f_score": 0.40903666537865496,
   "recommendation": "neutral",
-  "loss_chance_pct": 42.293124155900855,
-  "price_change_1d_pct": -1.5025,
+  "loss_chance_pct": 43.0119793699594,
+  "price_change_1d_pct": -5.6497,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.81,
+  "composite_score_adjusted": 45.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.33,
+  "osap_blended_score": 48.87,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -196,5 +197,5 @@
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.001473632107380828
+  "cross_source_delta": 0.061442110332234894
 }

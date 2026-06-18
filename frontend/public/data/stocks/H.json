@@ -5,19 +5,19 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 19088462326.587067,
-  "current_price": 197.03,
-  "rank": 709,
-  "composite_score": 42.56,
+  "market_cap": 19558335743.651733,
+  "current_price": 201.88,
+  "rank": 698,
+  "composite_score": 42.82,
   "pillar_scores": {
     "quality": 35.42,
-    "value": 37.73,
+    "value": 36.96,
     "growth": 41.2,
-    "momentum": 74.03,
+    "momentum": 74.94,
     "health": 26.16,
     "profitability": 29.09,
-    "technical": 65.47,
-    "risk": 59.13,
+    "technical": 70.98,
+    "risk": 60.42,
     "sentiment": null,
     "ml": null
   },
@@ -35,7 +35,7 @@
     "eps_diluted": -0.33030214027013244,
     "shares_outstanding": 96880995.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 19088462326.587067,
+    "market_cap": 19558335743.651733,
     "pe_ratio_ttm": null,
     "goodwill": 3450000000.0
   },
@@ -54,7 +54,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 294.1266953183487,
+        "value": 279.60112244896527,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 171.96138799281167,
-    "max": 294.1266953183487,
+    "median": 164.69860155811995,
+    "max": 279.60112244896527,
     "low": 49.79608066727463,
-    "high": 294.1266953183487,
-    "mos_pct": -14.57804631556773,
+    "high": 279.60112244896527,
+    "mos_pct": -22.575421389702406,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
@@ -98,12 +98,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "insider_sell_cluster",
     "c_suite_unusual_sell"
   ],
@@ -120,22 +121,22 @@
     "label": "Consumer Discretionary median (n=108)",
     "values": {
       "Quality": 46.88,
-      "Value": 50.81,
+      "Value": 50.35,
       "Growth": 49.42,
-      "Momentum": 41.35,
+      "Momentum": 41.13,
       "Health": 44.0,
       "Profitability": 49.38,
-      "Technical": 52.58,
-      "Risk": 39.97
+      "Technical": 54.71,
+      "Risk": 39.66
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 48.823091245692744,
-  "price_change_1d_pct": -0.9651,
+  "loss_chance_pct": 51.489673753470385,
+  "price_change_1d_pct": 2.4616,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 41.76,
+  "composite_score_adjusted": 42.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.21,
+  "osap_blended_score": 47.34,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -197,5 +198,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.028069328027579547
+  "cross_source_delta": 0.05141918723724518
 }

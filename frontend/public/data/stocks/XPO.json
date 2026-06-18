@@ -5,19 +5,19 @@
   "industry": "Cargo Ground Transportation",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 25157437130.499557,
-  "current_price": 214.27,
-  "rank": 782,
-  "composite_score": 39.79,
+  "market_cap": 23692159277.71498,
+  "current_price": 201.79,
+  "rank": 798,
+  "composite_score": 38.58,
   "pillar_scores": {
     "quality": 43.0,
-    "value": 16.57,
+    "value": 18.07,
     "growth": 28.16,
-    "momentum": 79.27,
+    "momentum": 75.14,
     "health": 30.52,
     "profitability": 38.86,
-    "technical": 66.3,
-    "risk": 53.84,
+    "technical": 46.62,
+    "risk": 52.42,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 3.0491445186419033,
     "shares_outstanding": 117409981.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 25157437130.499557,
-    "pe_ratio_ttm": 70.27217075558535,
+    "market_cap": 23692159277.71498,
+    "pe_ratio_ttm": 66.17921585953906,
     "goodwill": 1532000000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 86.41431138086945,
+        "value": 85.67042471338942,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 84.47701878891162,
+        "value": 83.63739285236137,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 132.7563533561461,
+        "value": 128.961515111684,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 84.47701878891162,
-    "max": 132.7563533561461,
+    "median": 83.63739285236137,
+    "max": 128.961515111684,
     "low": 0.30589749668300664,
-    "high": 132.7563533561461,
-    "mos_pct": -153.64295206471687,
+    "high": 128.961515111684,
+    "mos_pct": -141.26767514422298,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -102,7 +102,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -110,7 +110,8 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_rim_estimate"
+    "extreme_rim_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 0.20441192303744601,
@@ -125,22 +126,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 47.82,
+      "Value": 47.72,
       "Growth": 50.26,
-      "Momentum": 53.59,
+      "Momentum": 55.16,
       "Health": 57.59,
       "Profitability": 48.74,
-      "Technical": 53.16,
-      "Risk": 53.37
+      "Technical": 55.63,
+      "Risk": 53.25
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.28812703214961977,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.10250021705447,
-  "price_change_1d_pct": -2.9311,
+  "loss_chance_pct": 68.70981862594502,
+  "price_change_1d_pct": -5.8244,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.79,
+  "composite_score_adjusted": 38.58,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.82,
+  "osap_blended_score": 45.22,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -202,5 +203,5 @@
     "latest_filing_date": "2026-05-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.2302542619878426e-08
+  "cross_source_delta": 0.06184654362269421
 }

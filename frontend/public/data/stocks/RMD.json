@@ -5,19 +5,19 @@
   "industry": "Health Care Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 28132235467.101562,
-  "current_price": 193.94,
-  "rank": 58,
-  "composite_score": 64.52,
+  "market_cap": 27022552801.470703,
+  "current_price": 186.29,
+  "rank": 61,
+  "composite_score": 64.25,
   "pillar_scores": {
     "quality": 79.12,
-    "value": 65.38,
+    "value": 66.85,
     "growth": 79.4,
-    "momentum": 16.1,
+    "momentum": 15.55,
     "health": 80.82,
     "profitability": 75.09,
-    "technical": 40.11,
-    "risk": 35.44,
+    "technical": 30.16,
+    "risk": 34.68,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 10.475691990226366,
     "shares_outstanding": 145056384.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 28132235467.101562,
-    "pe_ratio_ttm": 18.513335693942587,
+    "market_cap": 27022552801.470703,
+    "pe_ratio_ttm": 17.783072799385288,
     "goodwill": 3043136000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 317.85650452221626,
+        "value": 309.4712787154588,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 135.6902556031308,
+        "value": 132.5158602616574,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 275.6925177090066,
+        "value": 269.83633071284214,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,15 +78,13 @@
         "tier_used": null
       }
     },
-    "median": 100.4264228612189,
-    "max": 317.85650452221626,
+    "median": 98.83922519048218,
+    "max": 309.4712787154588,
     "low": 38.38300507560808,
-    "high": 317.85650452221626,
-    "mos_pct": -93.11650949612681,
-    "valuation_warnings": [
-      "extreme_rim_estimate"
-    ],
-    "valuation_methods_applicable": 5
+    "high": 309.4712787154588,
+    "mos_pct": -88.47779606438253,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,13 +93,12 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_rim_estimate",
     "restatement_history"
   ],
   "has_history": true,
@@ -117,22 +114,22 @@
     "label": "Health Care median (n=91)",
     "values": {
       "Quality": 52.47,
-      "Value": 48.72,
+      "Value": 46.7,
       "Growth": 48.35,
-      "Momentum": 40.13,
+      "Momentum": 40.08,
       "Health": 60.2,
       "Profitability": 48.9,
-      "Technical": 55.07,
-      "Risk": 42.83
+      "Technical": 54.05,
+      "Risk": 42.72
     }
   },
   "beneish_m_score": -2.6654462080473946,
   "dechow_f_score": 0.43795008495615667,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.74168032171081,
-  "price_change_1d_pct": 0.6226,
+  "loss_chance_pct": 52.87444770676478,
+  "price_change_1d_pct": -3.9445,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 64.02,
+  "composite_score_adjusted": 63.75,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.18,
+  "osap_blended_score": 58.05,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -188,11 +185,11 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 6,
   "form4_diagnostics": {
     "insider_count": 4,
     "latest_filing_date": "2026-06-09",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.219531584594879e-09
+  "cross_source_delta": 0.04106504928242392
 }

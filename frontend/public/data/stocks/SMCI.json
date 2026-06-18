@@ -5,19 +5,19 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 17573447631.0787,
-  "current_price": 29.22,
-  "rank": 345,
-  "composite_score": 53.03,
+  "market_cap": 16707405842.921299,
+  "current_price": 27.78,
+  "rank": 328,
+  "composite_score": 53.61,
   "pillar_scores": {
     "quality": 41.88,
-    "value": 86.81,
+    "value": 87.5,
     "growth": 53.54,
-    "momentum": 24.17,
+    "momentum": 28.71,
     "health": 82.04,
     "profitability": 27.5,
-    "technical": 36.45,
-    "risk": 13.88,
+    "technical": 33.4,
+    "risk": 14.1,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 2.1429254979230916,
     "shares_outstanding": 601418482.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 17573447631.0787,
-    "pe_ratio_ttm": 13.635564718266833,
+    "market_cap": 16707405842.921299,
+    "pe_ratio_ttm": 12.963586794580442,
     "goodwill": null
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 77.26383927127988,
+        "value": 80.78624663313714,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 96.77775328434622,
+        "value": 93.71815336245545,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 73.90151481689692,
+        "value": 73.11762343648097,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 55.79138589896274,
-    "max": 96.77775328434622,
+    "median": 55.39944020875476,
+    "max": 93.71815336245545,
     "low": 15.338029193132297,
-    "high": 96.77775328434622,
-    "mos_pct": 47.62632466906017,
+    "high": 93.71815336245545,
+    "mos_pct": 49.85508773741103,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6
   },
@@ -95,7 +95,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-11"
   },
@@ -108,6 +108,7 @@
     "beneish_high",
     "dechow_high",
     "manipulation_triple_flag",
+    "cross_source_disagreement",
     "rem_suspect"
   ],
   "has_history": true,
@@ -123,22 +124,22 @@
     "label": "Information Technology median (n=120)",
     "values": {
       "Quality": 49.38,
-      "Value": 48.96,
+      "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 71.1,
+      "Momentum": 72.03,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 49.29,
-      "Risk": 42.54
+      "Technical": 51.07,
+      "Risk": 42.68
     }
   },
   "beneish_m_score": -0.8324584836047407,
   "dechow_f_score": 6.652106582990692,
   "recommendation": "neutral",
-  "loss_chance_pct": 30.81773666146826,
-  "price_change_1d_pct": -5.2836,
+  "loss_chance_pct": 29.74751576271176,
+  "price_change_1d_pct": -4.9281,
   "manipulation_index": 84.0,
-  "composite_score_adjusted": 44.63,
+  "composite_score_adjusted": 45.21,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -186,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.44,
+  "osap_blended_score": 52.73,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,5 +201,5 @@
     "latest_filing_date": "2026-05-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.7838190893285737e-09
+  "cross_source_delta": 0.05183580534410919
 }

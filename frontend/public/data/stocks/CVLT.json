@@ -5,19 +5,19 @@
   "industry": "Systems Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 5164990968.903923,
-  "current_price": 125.21,
-  "rank": 108,
-  "composite_score": 61.08,
+  "market_cap": 5242954628.756538,
+  "current_price": 127.1,
+  "rank": 111,
+  "composite_score": 61.05,
   "pillar_scores": {
     "quality": 95.0,
-    "value": 35.07,
+    "value": 34.24,
     "growth": 65.0,
-    "momentum": 32.62,
+    "momentum": 32.65,
     "health": 77.98,
     "profitability": 49.03,
-    "technical": 63.11,
-    "risk": 22.6,
+    "technical": 65.22,
+    "risk": 23.8,
     "sentiment": null,
     "ml": null
   },
@@ -35,8 +35,8 @@
     "eps_diluted": 1.712870934058772,
     "shares_outstanding": 41250627.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 5164990968.903923,
-    "pe_ratio_ttm": 73.09949430210628,
+    "market_cap": 5242954628.756538,
+    "pe_ratio_ttm": 74.20290457784138,
     "goodwill": 209322000.0
   },
   "fair_price": {
@@ -48,19 +48,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 79.8308936954263,
+        "value": 76.77445676543846,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 1.2826378879742577,
+        "value": 1.2594268101163217,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 104.01329993152441,
+        "value": 100.68305295144226,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 82.11727896590142,
-    "max": 104.01329993152441,
-    "low": 1.2826378879742577,
-    "high": 104.01329993152441,
-    "mos_pct": -52.477043396025294,
+    "median": 80.58906050090751,
+    "max": 100.68305295144226,
+    "low": 1.2594268101163217,
+    "high": 100.68305295144226,
+    "mos_pct": -57.71371161807976,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -99,15 +99,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-05-07",
     "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_pb_estimate",
-    "accruals_momentum_high",
-    "c_suite_unusual_sell"
+    "accruals_momentum_high"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -122,22 +121,22 @@
     "label": "Information Technology median (n=120)",
     "values": {
       "Quality": 49.38,
-      "Value": 48.96,
+      "Value": 49.13,
       "Growth": 52.4,
-      "Momentum": 71.1,
+      "Momentum": 72.03,
       "Health": 67.37,
       "Profitability": 49.58,
-      "Technical": 49.29,
-      "Risk": 42.54
+      "Technical": 51.07,
+      "Risk": 42.68
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 53.82509450001561,
-  "price_change_1d_pct": -1.6727,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 60.28,
+  "loss_chance_pct": 55.47496689455532,
+  "price_change_1d_pct": 1.5095,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 60.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,7 +153,7 @@
     "beneish_high": false,
     "dechow_high": false,
     "insider_sell_cluster": false,
-    "c_suite_unusual_sell": true
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -185,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.47,
+  "osap_blended_score": 56.45,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -199,5 +198,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3738798398785795e-09
+  "cross_source_delta": 0.014870174982809051
 }

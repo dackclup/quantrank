@@ -5,19 +5,19 @@
   "industry": "Brewers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8083459696.19751,
-  "current_price": 40.6,
-  "rank": 858,
-  "composite_score": 34.69,
+  "market_cap": 7774854848.098755,
+  "current_price": 39.05,
+  "rank": 866,
+  "composite_score": 33.61,
   "pillar_scores": {
     "quality": 11.79,
     "value": 72.01,
     "growth": 45.75,
-    "momentum": 26.39,
+    "momentum": 24.83,
     "health": 8.48,
     "profitability": 15.88,
-    "technical": 55.93,
-    "risk": 42.39,
+    "technical": 38.5,
+    "risk": 41.91,
     "sentiment": null,
     "ml": null
   },
@@ -35,7 +35,7 @@
     "eps_diluted": -10.74635861376193,
     "shares_outstanding": 199100000.0,
     "shares_outstanding_listed_class": null,
-    "market_cap": 8083459696.19751,
+    "market_cap": 7774854848.098755,
     "pe_ratio_ttm": null,
     "goodwill": 1944700000.0
   },
@@ -54,7 +54,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 178.65891973857163,
+        "value": 171.4005180066777,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,11 +78,11 @@
         "tier_used": null
       }
     },
-    "median": 178.65891973857163,
-    "max": 178.65891973857163,
-    "low": 178.65891973857163,
-    "high": 178.65891973857163,
-    "mos_pct": 77.27513491432147,
+    "median": 171.4005180066777,
+    "max": 171.4005180066777,
+    "low": 171.4005180066777,
+    "high": 171.4005180066777,
+    "mos_pct": 77.21710547249387,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -95,7 +95,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 119,
+    "filing_lag_days": 120,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-18"
   },
@@ -103,8 +103,7 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "value_trap_risk",
-    "cross_source_disagreement"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -119,22 +118,22 @@
     "label": "Consumer Staples median (n=53)",
     "values": {
       "Quality": 50.0,
-      "Value": 48.11,
+      "Value": 48.74,
       "Growth": 50.0,
-      "Momentum": 37.11,
+      "Momentum": 37.67,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 52.85,
-      "Risk": 47.75
+      "Technical": 47.59,
+      "Risk": 47.45
     }
   },
   "beneish_m_score": -3.426325967883362,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 34.60867591794786,
-  "price_change_1d_pct": -0.7092,
+  "loss_chance_pct": 35.170837663829204,
+  "price_change_1d_pct": -3.8177,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.69,
+  "composite_score_adjusted": 33.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.27,
+  "osap_blended_score": 42.73,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +195,5 @@
     "latest_filing_date": "2026-05-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05800423108660643
+  "cross_source_delta": 0.02061389173560545
 }
