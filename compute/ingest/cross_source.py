@@ -154,9 +154,54 @@ def _cache_read(ticker: str) -> float | None:
     return float(val)
 
 
-def _cache_write(ticker: str, market_cap: float) -> None:
+def _shares_outstanding_cache_read(ticker: str) -> float | None:
+    """Return cached sharesOutstanding or None on miss / expired / corrupt.
+
+    Reuses the same ``yfinance_info/<ticker>.json`` file as the market-cap
+    cache.  Backward-compatible: entries written before this field existed
+    simply have no ``shares_outstanding`` key and return None.
+    """
     path = _cache_path(ticker)
-    payload = {"market_cap": float(market_cap)}
+    if not path.exists():
+        return None
+    try:
+        age_seconds = time.time() - path.stat().st_mtime
+        if age_seconds > _CACHE_TTL_SECONDS:
+            return None
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning("yfinance_info shares cache read failed for %s: %s", ticker, e)
+        return None
+    val = payload.get("shares_outstanding")
+    if not isinstance(val, (int, float)) or val <= 0:
+        return None
+    return float(val)
+
+
+def _cache_write(
+    ticker: str,
+    market_cap: float,
+    shares_outstanding: float | None = None,
+) -> None:
+    """Merge-write market_cap (and optionally shares_outstanding) into the cache.
+
+    Reads the existing JSON file first so that a subsequent exchange-code
+    write (``_exchange_cache_write``) does not clobber a freshly written
+    ``shares_outstanding`` value.  The merge pattern keeps the file
+    as the single source of truth for all yfinance_info fields.
+    """
+    path = _cache_path(ticker)
+    payload: dict[str, object] = {}
+    if path.exists():
+        try:
+            existing = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(existing, dict):
+                payload = existing
+        except (OSError, json.JSONDecodeError):
+            payload = {}
+    payload["market_cap"] = float(market_cap)
+    if shares_outstanding is not None and shares_outstanding > 0:
+        payload["shares_outstanding"] = float(shares_outstanding)
     tmp = path.with_suffix(path.suffix + ".tmp")
     try:
         with tmp.open("w", encoding="utf-8") as f:
@@ -174,8 +219,31 @@ def _cache_write(ticker: str, market_cap: float) -> None:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
+def _yf_info_fetch(ticker: str) -> tuple[float | None, float | None]:
+    """Pull marketCap + sharesOutstanding from yfinance .info in one call.
+
+    Returns ``(market_cap, shares_outstanding)``.  Either element may be
+    None when the field is absent or non-positive.  Raises on persistent
+    network errors (tenacity retries the caller).
+    """
+    info = yf.Ticker(ticker).info
+    mc_val = info.get("marketCap") if isinstance(info, dict) else None
+    so_val = info.get("sharesOutstanding") if isinstance(info, dict) else None
+    market_cap = float(mc_val) if isinstance(mc_val, (int, float)) and mc_val > 0 else None
+    shares_out = float(so_val) if isinstance(so_val, (int, float)) and so_val > 0 else None
+    return (market_cap, shares_out)
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
 def _yf_info_market_cap(ticker: str) -> float | None:
-    """Pull marketCap from yfinance .info. Raises on persistent network errors."""
+    """Pull marketCap from yfinance .info. Raises on persistent network errors.
+
+    .. deprecated::
+        Kept for backward-compatibility with any call sites that mock this
+        private function in tests.  New production code uses ``_yf_info_fetch``
+        so the single Ticker round-trip populates both market_cap and
+        shares_outstanding into the cache.
+    """
     info = yf.Ticker(ticker).info
     val = info.get("marketCap") if isinstance(info, dict) else None
     if not isinstance(val, (int, float)) or val <= 0:
@@ -236,7 +304,7 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
         return cached
 
     try:
-        market_cap = _yf_info_market_cap(ticker)
+        market_cap, shares_outstanding = _yf_info_fetch(ticker)
     except Exception as e:  # noqa: BLE001
         logger.warning("yfinance info fetch failed for %s: %s", ticker, e)
         return None
@@ -244,8 +312,68 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
     if market_cap is None:
         return None
 
-    _cache_write(ticker, market_cap)
+    # Populate both fields in a single cache write so a subsequent call to
+    # fetch_yfinance_shares_outstanding hits the cache without a second
+    # Ticker.info round-trip.
+    _cache_write(ticker, market_cap, shares_outstanding)
     return market_cap
+
+
+def fetch_yfinance_shares_outstanding(ticker: str) -> float | None:
+    """Return yfinance-reported ``sharesOutstanding`` for ``ticker``, or ``None``.
+
+    Used by ``compute/main.py`` Step 3b to supply the
+    ``yf_shares_outstanding_override`` to ``check_post_split_share_lag``
+    — a direct share count avoids the cache-timing trap where
+    ``yf_market_cap / current_price`` gives a wrong implied-share count
+    when the price and market-cap caches straddle a split date.
+
+    Cache contract (identical to ``fetch_yfinance_market_cap``)
+    -----------------------------------------------------------
+    • Reads ``yfinance_info/<ticker>.json`` (same file, ``shares_outstanding``
+      key written as a side-effect of ``fetch_yfinance_market_cap`` from
+      ``_yf_info_fetch``).
+    • 24h TTL on live runs; stale-cache-tolerant read on
+      ``QR_SKIP_CROSS_SOURCE=1`` (pre-merge-prod-sim escape hatch — same
+      semantics as for market_cap: warm cache → return stale value, cold
+      cache → return None, never crash, never live-fetch).
+    • On a warm market_cap cache (common case) the ``shares_outstanding``
+      field was already written during the same Ticker.info call, so this
+      function is a pure cache read at zero network cost.
+    • On a cold cache (first cron / cache eviction) this function does NOT
+      trigger a live fetch on its own — it returns None and lets the caller
+      fall back to the existing market_cap/price path.  The live fetch is
+      owned by ``fetch_yfinance_market_cap`` which is called first in the
+      Step 3b loop, ensuring the cache is populated before this function
+      is called.
+    """
+    if os.environ.get("QR_SKIP_CROSS_SOURCE"):
+        # Stale-cache-tolerant path: same pattern as fetch_yfinance_market_cap.
+        cache_file = _cache_path(ticker)
+        if cache_file.exists():
+            try:
+                with cache_file.open() as f:
+                    payload = json.load(f)
+                val = payload.get("shares_outstanding")
+                if not isinstance(val, (int, float)) or val <= 0:
+                    return None
+                logger.debug(
+                    "yfinance_info shares FORCE-HIT (QR_SKIP_CROSS_SOURCE=1) "
+                    "for %s (stale-tolerant)", ticker,
+                )
+                return float(val)
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "QR_SKIP_CROSS_SOURCE shares stale-read failed for %s: %s — "
+                    "skipping override", ticker, e,
+                )
+                return None
+        return None
+
+    # Normal path: TTL-gated cache read only.  No live fetch here — the
+    # market_cap call (earlier in the same loop iteration) already did the
+    # Ticker.info round-trip and populated the cache.
+    return _shares_outstanding_cache_read(ticker)
 
 
 def _exchange_cache_read(ticker: str) -> str | None:
@@ -479,6 +607,7 @@ BUCKET_KEYS: tuple[str, ...] = (
 
 __all__ = [
     "fetch_yfinance_market_cap",
+    "fetch_yfinance_shares_outstanding",
     "validate_market_cap",
     "bucket_delta",
     "BUCKET_KEYS",

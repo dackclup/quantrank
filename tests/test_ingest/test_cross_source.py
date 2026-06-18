@@ -142,7 +142,7 @@ def test_fetch_yfinance_market_cap_reads_from_cache(tmp_path: Path, monkeypatch)
     cache_file = tmp_path / "AAPL.json"
     cache_file.write_text(json.dumps({"market_cap": 3.5e12}))
 
-    with patch("compute.ingest.cross_source._yf_info_market_cap") as mock_yf:
+    with patch("compute.ingest.cross_source._yf_info_fetch") as mock_yf:
         result = fetch_yfinance_market_cap("AAPL")
     assert result == 3.5e12
     mock_yf.assert_not_called()
@@ -152,7 +152,7 @@ def test_fetch_yfinance_market_cap_falls_back_to_live(tmp_path: Path, monkeypatc
     """Cache miss invokes yfinance and writes the result back to cache."""
     monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
     with patch(
-        "compute.ingest.cross_source._yf_info_market_cap", return_value=2.0e12
+        "compute.ingest.cross_source._yf_info_fetch", return_value=(2.0e12, None)
     ) as mock_yf:
         result = fetch_yfinance_market_cap("AAPL")
     assert result == 2.0e12
@@ -169,7 +169,7 @@ def test_fetch_yfinance_market_cap_returns_none_on_yfinance_failure(
     """Quiet-failure: yfinance raises → return None, no cache write."""
     monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
     with patch(
-        "compute.ingest.cross_source._yf_info_market_cap",
+        "compute.ingest.cross_source._yf_info_fetch",
         side_effect=Exception("network error"),
     ):
         result = fetch_yfinance_market_cap("AAPL")

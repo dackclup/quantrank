@@ -813,3 +813,143 @@ def test_SPLITS1_qr_skip_splits_cold_cache_returns_none(monkeypatch, tmp_path):
         "QR_SKIP_SPLITS=1 + cold cache must return None (no live fetch)"
     )
     assert not called, "_yf_fetch_splits must not be called when QR_SKIP_SPLITS=1"
+
+
+# ---------------------------------------------------------------------------
+# PSL_LEG3_OVERRIDE — leg-3 robustness fix (PR #499 additional coverage)
+#
+# Before the fix, Step 3b called check_post_split_share_lag with only
+# yf_market_cap + current_price, so leg-3 reconciliation divided market_cap
+# by a possibly split-adjusted price — a cache-timing-sensitive path that
+# could degrade KLAC from Tier-1 CORRECT to Tier-2 VETO.
+#
+# The fix wires a direct yfinance sharesOutstanding count into the existing
+# yf_shares_outstanding_override parameter.  These tests verify:
+#
+# (1) Override used → Tier-1: the override is the primary leg-3 input
+#     (not market_cap / price), and corrected_shares uses edgar × ratio.
+# (2) Override=None fallback: None routes to the market_cap/price branch
+#     and still resolves to Tier-1 when those inputs agree.
+# (3) Override present but unreconcilable → Tier-2: the override is used
+#     for leg-3, finds a mismatch, and correctly emits the veto.
+# ---------------------------------------------------------------------------
+
+
+def test_PSL_LEG3_OVERRIDE1_direct_shares_override_fires_tier1():
+    """Override wired via yf_shares_outstanding_override → Tier-1 CORRECT.
+
+    Scenario: EDGAR holds 130,627,521 shares (stale pre-split value).
+    yfinance reports 1,306,275,210 shares (post-10:1 split).  Passing the
+    yfinance count directly into the override avoids the market_cap/price
+    division path entirely.
+
+    Invariants:
+    - tier == 1 (Tier-1 CORRECT)
+    - corrected_shares == edgar_shares × split_ratio = 1,306,275,210
+    - result.yf_implied_shares == the override value (not derived from prices)
+    """
+    edgar_shares = 130_627_521.0
+    split_ratio = 10.0
+    yf_shares_direct = edgar_shares * split_ratio  # 1_306_275_210.0
+
+    snap = _snap(ticker="KLAC_LEG3", shares_outstanding=edgar_shares)
+    split_6d = _split_event(days_ago=6, ratio=split_ratio)
+
+    result = check_post_split_share_lag(
+        ticker="KLAC_LEG3",
+        snap=snap,
+        yf_market_cap=None,       # explicitly None — override must take priority
+        current_price=None,       # explicitly None — override must take priority
+        today=_TODAY,
+        splits_override=[split_6d],
+        yf_shares_outstanding_override=yf_shares_direct,
+    )
+
+    assert result.tier == 1, (
+        f"Direct-shares override that matches the split ratio must fire Tier-1, "
+        f"got tier={result.tier}"
+    )
+    assert result.corrected_shares is not None
+    assert abs(result.corrected_shares - edgar_shares * split_ratio) < 1.0, (
+        f"corrected_shares={result.corrected_shares} must equal edgar × ratio "
+        f"({edgar_shares * split_ratio})"
+    )
+    # yf_implied_shares on the result should be the override value (leg-3 used it).
+    assert result.yf_implied_shares is not None
+    assert abs(result.yf_implied_shares - yf_shares_direct) < 1.0, (
+        "yf_implied_shares must reflect the override (not a market_cap/price derivation)"
+    )
+
+
+def test_PSL_LEG3_OVERRIDE2_none_override_falls_back_to_market_cap_path():
+    """yf_shares_outstanding_override=None routes to market_cap/price fallback.
+
+    When the override is None (cold cache / missing info field), the function
+    falls back to yf_market_cap / current_price for leg-3.  If that pair
+    agrees with the split ratio, Tier-1 must still fire — preserving the
+    pre-fix behavior.
+    """
+    edgar_shares = 130_627_521.0
+    split_ratio = 10.0
+    # Construct a market_cap / price pair whose implied shares = edgar × ratio.
+    # yf_implied = yf_market_cap / current_price = edgar × ratio within ±10%.
+    post_split_price = 150.0  # hypothetical post-split price
+    yf_market_cap_matching = edgar_shares * split_ratio * post_split_price
+
+    snap = _snap(ticker="KLAC_FALLBACK", shares_outstanding=edgar_shares)
+    split_6d = _split_event(days_ago=6, ratio=split_ratio)
+
+    result = check_post_split_share_lag(
+        ticker="KLAC_FALLBACK",
+        snap=snap,
+        yf_market_cap=yf_market_cap_matching,
+        current_price=post_split_price,
+        today=_TODAY,
+        splits_override=[split_6d],
+        yf_shares_outstanding_override=None,  # explicit None → must fall back
+    )
+
+    assert result.tier == 1, (
+        f"None override + reconcilable market_cap/price must fall back to Tier-1, "
+        f"got tier={result.tier}"
+    )
+    assert result.corrected_shares is not None
+    assert abs(result.corrected_shares - edgar_shares * split_ratio) < 1.0
+
+
+def test_PSL_LEG3_OVERRIDE3_direct_shares_mismatch_fires_tier2():
+    """Direct-shares override that doesn't match the split ratio → Tier-2 VETO.
+
+    Scenario: 10:1 split detected (legs 1+2 hold), but yfinance reports only
+    ~1.15× more shares than EDGAR (not ~10×).  The override is used for leg-3;
+    the ratio mismatch (|1.15 - 10| / 10 ≈ 88.5% >> 10% tolerance) fires Tier-2.
+
+    This is the robustness gap the fix addresses: if yfinance info itself had
+    a stale/wrong sharesOutstanding, the override correctly classifies it as
+    unreconcilable rather than silently passing with corrupted inputs.
+    """
+    edgar_shares = 130_627_521.0
+    split_ratio = 10.0
+    # Override with only 1.15× edgar shares — clearly wrong for a 10:1 split.
+    yf_shares_mismatch = edgar_shares * 1.15  # ≈ 150M, not 1.3B
+
+    snap = _snap(ticker="KLAC_MISMATCH", shares_outstanding=edgar_shares)
+    split_6d = _split_event(days_ago=6, ratio=split_ratio)
+
+    result = check_post_split_share_lag(
+        ticker="KLAC_MISMATCH",
+        snap=snap,
+        yf_market_cap=None,
+        current_price=None,
+        today=_TODAY,
+        splits_override=[split_6d],
+        yf_shares_outstanding_override=yf_shares_mismatch,
+    )
+
+    assert result.tier == 2, (
+        f"Override that mismatches the split ratio (1.15× vs 10×) must fire Tier-2, "
+        f"got tier={result.tier}"
+    )
+    assert result.corrected_shares is None, (
+        "Tier-2 must NOT set corrected_shares (ratio unreconcilable)"
+    )

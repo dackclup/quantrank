@@ -4706,19 +4706,32 @@ auto-split-adjusts prices, so the bug is ONLY in EDGAR `shares_outstanding` unti
 - **Tier-2 VETO** (`post_split_share_lag_unreconciled`, DIRECT veto, the 9th): legs 1+2 fire, leg-3
   fails → `cautious` + Top-5 suppress (`_CAUTIOUS_FORCING_RISK`) + null fair-price (DQIC contract).
 - **Order**: runs BEFORE DQIC (Step-3b correction de-inflates TBVPS so DQIC doesn't double-fire).
+- **Leg-3 override (robustness increment, post-base, option B)**: `main.py` Step 3b passes the direct
+  yfinance `sharesOutstanding` (`fetch_yfinance_shares_outstanding` — a pure cache-read priming off the
+  existing `fetch_yfinance_market_cap` single `.info` round-trip; merge-write so `_exchange_cache_write`
+  doesn't clobber it) as `yf_shares_outstanding_override`, so leg-3 compares share COUNTS directly
+  instead of `market_cap/price` (split-adjusted-price sensitive — could degrade KLAC to a Tier-2 veto on
+  a cache straddle). KLAC now lands Tier-1 CORRECT regardless of prices/info cache timing; graceful →
+  `None` (QR_SKIP_CROSS_SOURCE / cold / old-format) falls back to the price path; no new external fetch;
+  no schema change. Live probe: KLAC override 1306M vs EDGAR 130.6M → ratio 10.000, delta 0%.
 - **Schema `0.10.25`**: `RawMetrics.shares_outstanding_pre_split_raw: float|None` + 3 `Metadata.*`
   counters (`post_split_share_lag_count` / `post_split_correction_applied_count` / `post_split_veto_count`;
   `count == applied + veto`). Frontend `types.ts` mirrored + `flag-labels.ts` 2 labels.
 - **Tests**: `test_post_split_share_lag.py` (PSL1-7 + SPLITS1 + rotation-gate ROT1/2/3 + annotate-channel
-  VW1/2/3) + `test_post_split_schema.py` (5, `count == applied + veto`) + `test_config.py` pin 0.10.25 +
-  4 frozen-constant value-pins. New-flag files + config = 49 passed; **full offline suite 2067 passed /
-  0 failed**, ruff clean, schema_check in-sync, tsc + next build 910.
+  VW1/2/3 + leg-3 override LEG3_OVERRIDE1/2/3) + `test_post_split_schema.py` (5, `count == applied + veto`) +
+  `test_cross_source_shares.py` (8, cache/skip/merge/backward-compat) + `test_main.py` (2 Step-3b wiring) +
+  `test_config.py` pin 0.10.25 + 4 frozen-constant value-pins; 3 `test_cross_source.py` mock-target swaps
+  (`_yf_info_market_cap`→`_yf_info_fetch` seam move). **Full offline suite 2079 passed** (pre-existing
+  unrelated reds only: alpha158 Hypothesis DeadlineExceeded on a slow box + OSAP missing-dep collection
+  errors — both green/handled on CI), ruff clean, schema_check in-sync, tsc + next build 910.
 
 Gate: compute-builder BUILT-CLEAN · frontend-builder · test-engineer (methodology pins incl. the
 before-DQIC ordering invariant + ROT/VW rotation-channel pins) · schema-sentinel (folded into
 schema_check) · methodology-scientist RATIFIED HYBRID · phase-coordinator Mode B · quantrank-reviewer
 (push gate — new flag + ranking change; FIX-AND-RE-REVIEW caught a Tier-1 Top-5 double-penalty →
-channel-moved `post_split_share_lag` to `valuation_warnings`, re-review READY-TO-PUSH).
+channel-moved `post_split_share_lag` to `valuation_warnings`, re-review READY-TO-PUSH). Leg-3 override
+increment (data-pipeline-engineer live-probe verified KLAC→Tier-1 / CVNA→Tier-2 dual-class / COKE→Tier-0;
+compute-builder + test-engineer +13 tests; quantrank-reviewer re-review READY-TO-PUSH).
 Cohort-audit band added (~0.5-2% Tier-1; <0.5% Tier-2, re-gate if >5/cron).
 
 ---

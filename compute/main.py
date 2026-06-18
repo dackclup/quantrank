@@ -54,6 +54,7 @@ from compute.ingest.cross_source import (
     exchange_name,
     fetch_yfinance_exchange,
     fetch_yfinance_market_cap,
+    fetch_yfinance_shares_outstanding,
 )
 from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
@@ -1312,18 +1313,30 @@ def run_weekly_compute() -> int:
                 continue
             _current_price = _price_by_ticker.get(_ticker)
             # Fetch yfinance market cap from the existing cache (24h TTL,
-            # same call site as Step 8's cross-source validation).  Using
-            # market_cap / price as the yf_implied_shares proxy (leg 3
-            # fallback per the spec).  On a warm cache this is a cheap
-            # JSON read; on a cold cache it does a live yfinance.info call.
+            # same call site as Step 8's cross-source validation).  On a
+            # warm cache this is a cheap JSON read; on a cold cache it does
+            # a live yfinance.info call that also populates sharesOutstanding
+            # into the cache as a side-effect (_yf_info_fetch dual-field).
             # The split pass only triggers when the 3-leg check passes, so
             # cold-cache overhead is bounded to actual split candidates.
+            #
+            # After the market_cap fetch (which primes the cache), read the
+            # sharesOutstanding directly from the same cache file.  This
+            # avoids the cache-timing trap where yf_market_cap / current_price
+            # gives a wrong implied count when the market_cap and prices caches
+            # straddle the split date (yfinance retroactively split-adjusts
+            # price bars but not marketCap snapshots on the same cadence).
+            # When the override is unavailable (None) — cold cache,
+            # QR_SKIP_CROSS_SOURCE=1, or missing info field — leg 3 falls
+            # back gracefully to the existing market_cap / price path.
             _yf_mc = fetch_yfinance_market_cap(_ticker)
+            _yf_shares = fetch_yfinance_shares_outstanding(_ticker)
             _psr = check_post_split_share_lag(
                 _ticker,
                 _snap,
                 yf_market_cap=_yf_mc,
                 current_price=_current_price,
+                yf_shares_outstanding_override=_yf_shares,
             )
             if _psr.tier == 0:
                 continue
