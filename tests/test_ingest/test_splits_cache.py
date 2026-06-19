@@ -161,10 +161,11 @@ def test_S2_expired_cache_triggers_live_refetch(
     to ``_yf_fetch_splits`` exactly once, and the returned events must
     be the live-fetched ones.
 
-    This is the weekly-refresh path: the slow-text bundle (run-id key)
-    has its mtime reset when the bundle is restored by ``actions/cache``,
-    but the SLOW-TEXT bundle always saves (unlike the fast quarter-key
-    bundle), so a real stale entry here means the TTL genuinely expired.
+    This locks the in-process mtime-TTL code path. NOTE per #501: the
+    splits cache is NOT in any GHA bundle — in CI/cron it is cold-every-run
+    live fetch (mtime-TTL is dead under ``actions/cache`` restore, same
+    class as #471/#498). So this test exercises the LOCAL / in-run TTL
+    logic via ``os.utime`` backdating, not a cross-run freshness guarantee.
     """
     cache_dir = tmp_path / "yfinance_splits"
     cache_dir.mkdir()
@@ -365,10 +366,11 @@ def test_S6_qr_skip_splits_present_stale_cache_returns_events(
     but would normally be considered stale (age > TTL) must be returned
     AS-IS without calling ``_yf_fetch_splits``.
 
-    This is the CI pre-merge-prod-sim path: the slow-text bundle may
-    have a stale mtime after GHA cache restore, but no live fetch is
-    permitted in the sim budget.  A stale cache (= some events) is
-    preferable to None (= miss-treated as "no split").
+    This is the CI pre-merge-prod-sim path: no live fetch is permitted in
+    the sim budget, so a present-but-stale cache (= some events) is returned
+    AS-IS in preference to None (= miss-treated as "no split"). Per #501 the
+    splits cache is NOT bundled, so in real CI the file is simply absent
+    (cold) and S7 covers that branch; this test pins the present-stale case.
     """
     cache_dir = tmp_path / "yfinance_splits"
     cache_dir.mkdir()
