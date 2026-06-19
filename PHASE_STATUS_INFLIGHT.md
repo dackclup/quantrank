@@ -4738,6 +4738,8 @@ Cohort-audit band added (~0.5-2% Tier-1; <0.5% Tier-2, re-gate if >5/cron).
 
 ## PR (cross-source-corruption-obs) — feat(scoring+schema): cross-source share-count-corruption shadow observability, schema `0.10.26-phase8pilot` (in flight, 2026-06-19)
 
+> **MERGED 2026-06-19** — squash `72ee8667d` (#501). Schema `0.10.26-phase8pilot` now on `main`; defense layer UNCHANGED at 35; PR-2 veto/correction wiring gated on yfinance `.splits` corroboration + methodology re-anchor Q3 2026-08-19.
+
 **Branch**: `claude/cross-source-corruption-obs` · **Type**: feat(scoring+schema); **SCHEMA BUMP**
 `0.10.25-phase8pilot` → `0.10.26-phase8pilot`; **defense layer UNCHANGED (35)**.
 Methodology-scientist **RATIFIED-WITH-CONDITIONS** 2026-06-19 (per #114 audit).

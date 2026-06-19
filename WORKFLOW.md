@@ -42,7 +42,7 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-18: schema `0.10.25-phase8pilot` (#499 squash `816cda0ea` — `post_split_share_lag` HYBRID defense: Tier-1 CORRECT + Tier-2 veto `post_split_share_lag_unreconciled`, `compute/ingest/splits.py`, defense 34→35; prior #496/PR-A `0.10.24-phase8pilot` trimmed-median shadow diagnostic; prior #493 `0.10.23-phase8pilot` multi-index membership). Full lineage: SKILL.md §schema-version. Defense
+schema PR; this prose stays stable). As of 2026-06-19: schema `0.10.26-phase8pilot` (#501 squash `72ee8667d` — cross-source share-count-corruption SHADOW observability PR-1; 4 new `Metadata.cross_source_corruption_*` fields; MUTATES NOTHING; defense UNCHANGED at 35; prior #499 `0.10.25-phase8pilot` `post_split_share_lag` HYBRID defense Tier-1/Tier-2, defense 34→35; prior #496/PR-A `0.10.24-phase8pilot` trimmed-median shadow diagnostic). Full lineage: SKILL.md §schema-version. Defense
 layer **35 declared** = 9 vetoes + 26 annotates; release tag
 [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
