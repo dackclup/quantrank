@@ -4828,3 +4828,41 @@ None-propagation files; the wall-clock additions came via #507). Ruff clean. No 
 Gate: test-engineer (authored, red-green verified) — no production behavior change.
 
 ---
+
+## PR (test) — Test-coverage hardening P2-P3: triple-flag gate + pre_split_raw writer + manipulation-index properties (in flight, 2026-06-19)
+
+Test-only PR (no production code / schema / workflow change) — the P2-P3 follow-up to #506,
+closing the remaining Python-side gaps from the `test-engineer` coverage analysis. Branched off
+`main` at `8a9b5774` (post-#506/#507). +15 tests, all offline:
+
+- **P2-1 · manipulation triple-flag joint-gate** — `tests/test_scoring/test_triple_flag_gate.py`
+  (new, 6 tests). Locks the `manipulation_triple_flag` / `TRIPLE_FLAG_WEIGHT=10.0` semantics:
+  all-three-co-fire reaches the documented ≥70 (Sloan+beneish_veto+dechow_veto=60 +10 gate) ·
+  two-of-three does NOT reach the triple level · the gate label alone contributes exactly the
+  weight · Sloan is required for gate injection. **Contract note**: the joint-gate CONDITION lives
+  in `compute/main.py` Step 5 (injects the label into `valuation_warnings`); `compute_manipulation_index`
+  treats it as a regular `FLAG_WEIGHTS` table entry — the tests exercise the weight-table wiring +
+  the bonus math, and confirm the two-flag path has no auto-bonus.
+- **P2-2 · `RawMetrics.shares_outstanding_pre_split_raw` writer round-trip** —
+  `tests/test_output/test_writer.py` (+2 tests). The #499 audit-trail field survives
+  `write_stock_detail` → JSON → exact float, and is null on a normal (non-split) row.
+- **P3-1 · manipulation-index properties** — `tests/test_scoring/test_manipulation_index_properties.py`
+  (new, 4 `@given`). Locks `compute_adjusted_composite` ∈ [0,100] · ≤ composite (penalty never
+  raises) · anti-monotone in index · `compute_manipulation_index` ∈ [0,MAX_INDEX] (clip contract).
+  **Contract finding (Hypothesis-caught)**: `compute_adjusted_composite` applies `round(x,2)` for
+  display, so the `adjusted ≤ composite` invariant holds against `round(composite,2)`, NOT the raw
+  float (e.g. 1.875 → 1.88 by banker's rounding). Callers comparing `composite_score_adjusted` vs
+  raw `composite_score` directly (e.g. the frontend Manipulation Risk card) must account for it.
+- **P3-2 · `fetch_benchmarks` graceful-degradation — ALREADY COVERED** by `test_benchmarks.py`
+  (shipped in #506); no new tests needed.
+
+Affected-scope suite green (manipulation index + writer + prices); ruff clean. The full offline
+suite carries one PRE-EXISTING unrelated red — `test_alpha158_replicate.py::test_C1` Hypothesis
+`DeadlineExceeded` (a known slow-box timing flake per §Gotchas, green on CI), untouched by this PR.
+No schema triple touch (test-only), so schema_check / tsc / next-build rungs are N/A. frontend
+`flagLabel` contract + vitest is a SEPARATE follow-up PR (dep-adding review path).
+
+Gate: test-engineer (authored, red-green verified; safety-classifier was down on the subagent pass
+so the orchestrator hand-verified the two new files + ruff + targeted run) — no production behavior change.
+
+---
