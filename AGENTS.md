@@ -722,14 +722,15 @@ Cross-tool agents (Copilot / Cursor / Devin / Codex): READ those files; do NOT
 maintain a parallel phase log here. The former ~1,068-line mirror was collapsed
 2026-06-03 (token-economy drain — it duplicated CLAUDE.md verbatim; git history
 preserves it).
-Schema is currently **`0.10.25-phase8pilot`** on `main` (#499 squash `816cda0ea`, merged 2026-06-18 — `post_split_share_lag` HYBRID defense + folded leg-3 override, new `compute/ingest/splits.py`, `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` counters, defense 34→35); prior **`0.10.24-phase8pilot`** (#496/PR-A merged 2026-06-18). #498 merged 2026-06-18 (prices.py last-bar-date recency guard). #497 merged 2026-06-18 (docs methodology Path C, NO schema change). See CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md.
+Schema is currently **`0.10.25-phase8pilot`** on `main` (#499 squash `816cda0ea`, merged 2026-06-18 — `post_split_share_lag` HYBRID defense + folded leg-3 override, new `compute/ingest/splits.py`, `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` counters, defense 34→35); prior **`0.10.24-phase8pilot`** (#496/PR-A merged 2026-06-18). #498 merged 2026-06-18 (prices.py last-bar-date recency guard). #497 merged 2026-06-18 (docs methodology Path C, NO schema change). **In flight: #501** (Draft — cross-source share-count-corruption shadow observability, Rule-18 obs-first; 4 new shadow `Metadata.cross_source_corruption_*` counters only, MUTATES NOTHING; schema `0.10.25 → 0.10.26-phase8pilot`; PR-2 veto/correction wiring gated on yfinance `.splits` corroboration + methodology re-anchor Q3). See CLAUDE.md §Phase status + PHASE_STATUS_INFLIGHT.md.
 
 ## Claude-Code-specific tooling
 
 Claude Code sessions for this project keep 2 MCP connectors active
 (GitHub · Vercel); Supabase / Sentry / Gmail / Google Drive are toggled
-OFF by the 2026-06-11 token-economy policy until their phase needs them
-(CLAUDE.md §Connectors is canonical).
+OFF at user discretion until their phase needs them (the token-economy
+policy that previously governed this was retired 2026-06-19;
+CLAUDE.md §Connectors is canonical).
 Other agent runtimes (GitHub Copilot, Cursor, Devin, VS Code Agent
 Mode) do not have these connectors — when those tools work this repo,
 they should:

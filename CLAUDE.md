@@ -86,12 +86,11 @@ cannot toggle them — the user flips the switch there):
 |---|---|---|
 | **GitHub** | ✅ active | PRs, issues, releases, CI runs, file ops |
 | **Vercel** | ✅ active | pre-Playwright deploy + runtime log check: `list_deployments` / `get_deployment_build_logs` / `get_runtime_logs` |
-| **Supabase** | ⏸ toggle OFF (token-economy policy 2026-06-11) | reserved for Phase 5+ — re-enable with the Phase 5 client-wiring pre-PR |
-| **Sentry** | ⏸ toggle OFF (same policy) | planned post-deploy monitor; re-enable when the `@sentry/nextjs` wiring PR lands |
-| Gmail · Google Drive | ⏸ toggle OFF (same policy) | rarely used; re-enable per-task for cross-tool comms / doc backup |
+| **Supabase** | ⏸ toggle OFF (user discretion) | reserved for Phase 5+ — re-enable with the Phase 5 client-wiring pre-PR |
+| **Sentry** | ⏸ toggle OFF (user discretion) | planned post-deploy monitor; re-enable when the `@sentry/nextjs` wiring PR lands |
+| Gmail · Google Drive | ⏸ toggle OFF (user discretion) | rarely used; re-enable per-task for cross-tool comms / doc backup |
 
-Unused connectors cost schema/name tokens on surfaces that load tools
-eagerly. If `ToolSearch query="<name>"` returns no matches, the session
+If `ToolSearch query="<name>"` returns no matches, the session
 predates the connector — don't restart mid-task (loses audit context);
 delegate the connector-bound step to a sibling session
 ([`AGENTS.md`](AGENTS.md) §"Multi-session audit pattern").
@@ -146,29 +145,24 @@ delegate the connector-bound step to a sibling session
   route through [`WORKFLOW.md`](WORKFLOW.md) §"Agentic 6-Phase Cadence"
   (Planning → Code Gen → Integration → Test → Deploy → Monitor) using
   the standing 25 subagents — don't spawn ad-hoc workflow agents on top.
-- **CLAUDE.md is an INDEX, not an encyclopedia (token-budget
-  discipline, adopted 2026-06-03).** CLAUDE.md loads into EVERY session
-  AND every sub-agent spawn, so it is the project's most token-expensive
-  file. Keep it lean: §Gotchas is a **one-line index** whose detail
-  lives in [`docs/GOTCHAS.md`](docs/GOTCHAS.md); §Phase status keeps only
-  current-state + the one in-flight entry + Next deliverables, with the
-  merged-PR log in [`PHASE_STATUS.md`](PHASE_STATUS.md) /
-  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) /
-  [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md). When
-  adding a new gotcha: append the **one-line title** here AND the **full
-  detail** to `docs/GOTCHAS.md` (both required) — never paste a
-  multi-paragraph gotcha back into CLAUDE.md, and never inline a
-  merged-PR note here (it goes in PHASE_STATUS_INFLIGHT.md). This is the
-  rule that keeps the ~46K-token P0 drain (2026-06-03) from re-bloating.
+- **Doc layout (token-budget control RETIRED 2026-06-19).** The former
+  "CLAUDE.md is an INDEX, not an encyclopedia" discipline no longer
+  binds — there is no length cap on CLAUDE.md and no requirement to
+  keep §Gotchas a one-line index. The split files
+  ([`docs/GOTCHAS.md`](docs/GOTCHAS.md) ·
+  [`PHASE_STATUS.md`](PHASE_STATUS.md) ·
+  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) ·
+  [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md))
+  remain as the canonical long-form trackers and stay useful for
+  organization, but inlining fuller detail here is now allowed. The
+  CLAUDE.md + AGENTS.md lockstep (ship both with every PR) is
+  unaffected — that's correctness, not token budget.
 - **Thai sessions: Thai for the human, English for the machine
-  (token economy, 2026-06-03).** When the user works in Thai, reply in
-  concise Thai but keep ALL machine-facing artifacts + your own
-  reasoning in English (code · comments · commit messages · PR bodies ·
-  log lines · sub-agent prompts · scratch reasoning) — Thai costs ~2-4x
-  tokens/char at the tokenizer, so this layer-split closes most of the
-  gap at zero capability cost. Never let concision drop a real finding /
-  warning / caveat. Full discipline in the `thai-token-economy` skill
-  ([`.claude/skills/thai-token-economy/SKILL.md`](.claude/skills/thai-token-economy/SKILL.md)).
+  (language-split, token-cost rationale RETIRED 2026-06-19).** When the
+  user works in Thai, reply in Thai but keep machine-facing artifacts in
+  English (code · comments · commit messages · PR bodies · log lines ·
+  sub-agent prompts) for tooling / review consistency. This is now a
+  practical convention, not a token-saving mandate.
 
 ## Auto-routing policy
 
@@ -203,7 +197,7 @@ command needs user authorization. Pattern not in the table → walk the
 
 | Trigger (user ask OR event) | Spawn |
 |---|---|
-| "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" — OR explicit "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | `quantrank-reviewer` (opus) + `phase-coordinator` Mode B, plus conditional sonnet re-batch (`schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer`, dedup-skipped). **The opus review fires at this gate only — NOT on every push / edit set** (narrowed 2026-06-11, token economy) |
+| "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" — OR explicit "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | `quantrank-reviewer` (opus) + `phase-coordinator` Mode B, plus conditional sonnet re-batch (`schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer`, dedup-skipped). **The opus review fires at this gate only — NOT on every push / edit set** (narrowed 2026-06-11) |
 | "ตรวจ data หุ้น" / "check ticker X" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` — deterministic prefilter, then thorough verdict per flagged ticker |
 | Non-trivial edit to `schemas.py` / `types.ts` / `schema-snapshot.json` OR "schema in sync?" OR CI schema-drift | `schema-sentinel` |
 | Non-trivial edit to `compute/scoring/*` / `compute/valuation/*` OR "audit defenses" / defense count diff | `defense-layer-auditor` |
@@ -265,9 +259,10 @@ the subagent fallback (same flow). Cue→recipe table:
 
 ## Gotchas
 
-One-line invariant index — **full detail in [`docs/GOTCHAS.md`](docs/GOTCHAS.md)**.
-Open that file before touching the file/area a gotcha names; the index keeps the
-always-loaded context small while preserving discoverability of every invariant.
+Invariant index — **full detail in [`docs/GOTCHAS.md`](docs/GOTCHAS.md)**.
+Open that file before touching the file/area a gotcha names. The one-line-per-entry
+format is now a convenience, not a hard cap (token-budget control retired 2026-06-19) —
+inline fuller detail here when it aids the reader.
 
 - **`compute/cache/` is gitignored.**
 - **`shares_outstanding` is wrong for ~12 tickers**
@@ -372,7 +367,17 @@ on structural compounders — disposition routed to issue #454 for the Q3
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
-**In flight** (not yet merged on `main`): _Nothing currently in flight._ Merged
+**In flight** (not yet merged on `main`): **#501** (Draft — cross-source
+share-count-corruption shadow observability, PR-1, Rule-18 obs-first;
+generalizes #499 past its 100d/2× window via `cross_source_delta`
+(yfinance `marketCap` vs EDGAR `price × shares`); MUTATES NOTHING —
+4 new shadow `Metadata` counters only (`cross_source_corruption_*`);
+`grade_cross_source_corruption` dual-ratio corroboration guards the
+COKE false-negative (mc_ratio 7≠share_ratio 10 → VETO_CANDIDATE, not a
+wrong-30%-share CORRECT) + BKNG false-positive; schema
+`0.10.25 → 0.10.26-phase8pilot`; the `round(R)` integer-recovery is
+GUT-FEEL — PR-2 veto/correction wiring GATED on a corroborating
+yfinance `.splits` event + methodology re-anchor Q3 2026-08-19). Merged
 since last Mode C: **#499** (`post_split_share_lag` HYBRID defense — Tier-1 CORRECT annotate + Tier-2 veto `post_split_share_lag_unreconciled` + folded leg-3 override; new `compute/ingest/splits.py`; schema `0.10.25-phase8pilot`; defense 34→35; fixes KLAC rank-2 P/E 6.68→~66.8 — squash `816cda0ea`) · **#498** (fix(ingest): prices.py last-bar-date recency guard — `PRICES_CACHE_MAX_STALE_DAYS=7`, mtime-TTL dead on GHA) · **#497** (docs(methodology) Path C amendment: #177 flip DEFERRED Q3 + `BASKET_RULE_N_TRIALS` 15→16) · **#496/PR-A** (trimmed-median diagnostic #177, `0.10.24-phase8pilot` — shadow `median_trimmed`/`methods_excluded_from_median` + `Metadata.median_trim_delta_count`) · **#485** (fix+test: APA `OilAndGasRevenue` #385 +
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
