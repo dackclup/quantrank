@@ -66,26 +66,30 @@ Wikipedia ─┘   (Python)              (the JSON contract)                    
 
 ### The compute pipeline (`compute/main.py::run_weekly_compute`)
 
-One orchestrator runs ~9 numbered steps over the full universe
-(~900 tickers). Steps that hit the network are parallelized across
-`EDGAR_MAX_WORKERS`; every external call site degrades gracefully
-(try/except → `None`, never blocks the cron — see the
-`portable-graceful-degradation-try-except` skill).
+One orchestrator runs ~12 numbered steps (the main steps 1-9 plus
+sub-steps 3b · 4b · 5b/5c · 6b) over the full universe (~900 tickers),
+with a couple of unnumbered blocks interleaved (the Form-4 loop, the
+sp900 cohort-size recompute). Steps that hit the network are
+parallelized across `EDGAR_MAX_WORKERS`; every external call site
+degrades gracefully (try/except → `None`, never blocks the cron — see
+the `portable-graceful-degradation-try-except` skill).
 
 | Step | What it does | Key modules |
 |---|---|---|
 | 1 | Prices (10y daily OHLCV) in parallel | `ingest/prices.py` (yfinance) |
 | 2 | Fundamentals snapshot (XBRL facts) in parallel | `ingest/fundamentals.py` (edgartools) |
-| 3 | Annual history (feeds growth CAGRs) + Form-4 insider loop | `ingest/fundamentals.py` · `scoring/form4_*.py` |
+| 3 | Annual history in parallel (feeds growth CAGRs) | `ingest/fundamentals.py` |
+| — | (unnumbered) Form-4 insider-transaction fetch loop | `scoring/form4_*.py` |
 | 3b | **Post-split share-lag correction** (Tier-1 CORRECT or Tier-2 veto, #499) | `ingest/splits.py` · `scoring/risk_overlay.py` |
 | 4 | Assemble `TickerInputs`, compute the 8 pillars | `scoring/pillars.py` |
-| 4b | Tier-2 event defenses (8-K / going-concern / Beneish / Dechow …) fetched in parallel | `scoring/tier2.py` + siblings |
-| 5 | Composite score + risk-overlay flags | `scoring/composite.py` · `scoring/risk_overlay.py` |
-| 5b/5c | Cross-sectional inputs + per-sector pillar medians for the fair-price ensemble & stock-detail baselines | `scoring/sector_rules.py` |
-| 6 | Assemble the ranking DataFrame; inject `stale_filing_hard` | `scoring/` |
+| 4b | Tier-2 event defenses (8-K going-concern / non-reliance / auditor-change) fetched in parallel | `scoring/tier2.py` + siblings |
+| 5 | Composite score + risk-overlay flags (Beneish / Dechow-F computed here) | `scoring/composite.py` · `scoring/risk_overlay.py` · `scoring/beneish.py` · `scoring/dechow_f.py` |
+| 5b/5c | Cross-sectional inputs (`main.py` local helpers) + per-sector pillar medians for the ensemble & stock-detail baselines | `compute/main.py` · `scoring/composite.py` |
+| 6 / 6b | Assemble + sort the ranking DataFrame (6); inject `stale_filing_hard` (6b) | `scoring/composite.py` · `valuation/applicability.py` |
 | 7 | **Top-5 rotation** — flagged stocks keep their rank but lose `entered_top5`; next clean stock inherits it | `scoring/composite.py` (Rule 16) |
 | 8 | Per-ticker loop: 6-method fair-price ensemble + price-history series + per-stock JSON write | `valuation/ensemble.py` · `output/writer.py` |
-| 9 | Sanity smoke test (cross-sectional Spearman IC) + post-scoring cohort-size recompute | `scoring/sanity.py` |
+| 9 | Sanity smoke test (cross-sectional Spearman IC) | `scoring/sanity.py` |
+| — | (unnumbered, `sp900` only) post-scoring cohort-size recompute | `compute/main.py` |
 
 Interleaved are the **observability-first** factor-research surfaces
 (OSAP Alpha replication + PBO/DSR gate, Qlib Alpha158, IPCA) — these
@@ -109,12 +113,16 @@ production scoring until an accounting-equation verification clears on
 
 ### Valuation (`compute/valuation/`)
 
-A **6-method fair-price ensemble** (`dcf` · `rim` · `graham` ·
-`multiples` · `tangible_book` + sector-median), reduced to a `median`
-+ margin-of-safety `mos_pct`. `applicability.py` excludes methods that
-don't fit a sector (e.g. tangible book for asset-light tech). Tier-1
-defenses null out fair-price on corrupt inputs rather than print a
-garbage number.
+A **6-method fair-price ensemble** — the `METHOD_NAMES` tuple in
+`ensemble.py`: `graham` · `multiples_pe` · `multiples_pb` ·
+`multiples_ev_ebitda` · `rim` · `dcf` — reduced to a `median` +
+margin-of-safety `mos_pct`. (The three `multiples_*` methods use
+sector-peer medians for their comparable; `tangible_book` is NOT an
+ensemble method — it's a Tier-1 defense input feeding the
+`goodwill_heavy` annotate + the per-method `tangible_book_value_per_share`
+parameter.) `applicability.py` excludes methods that don't fit a
+sector; Tier-1 defenses null out fair-price on corrupt inputs rather
+than print a garbage number.
 
 ### The output contract (`compute/output/`)
 
@@ -131,9 +139,10 @@ together, enforced by a CI guard (`schema_check`).
 ### Frontend rendering (`frontend/`)
 
 Next.js 14 App Router, **static export only**. `frontend/lib/data.ts`
-reads the JSON from `public/data/` at **build time** inside Server
-Components — there is no client-side fetch and no `fs` access from
-`'use client'` components. The **home page IS the AI-pick portfolio**
+resolves the JSON at **build time** — `rankings.json` + `metadata.json`
+via static `import`, per-stock + backtest files via `fs` inside Server
+Components — so there is no client-side fetch and no `fs` access from a
+`'use client'` component. The **home page IS the AI-pick portfolio**
 (`getAiPickData()` fs-read; the basket self-sizes when `nav.adaptive`
 is present). Routes: `/` (home/AI-pick), `/stock/[ticker]` (one static
 page per ranked stock). Design tokens + component family live in
