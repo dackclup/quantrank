@@ -50,6 +50,124 @@ design-system spec.
 | `.claude/worktrees/` | Harness-managed isolation dirs for `isolation: "worktree"` subagent spawns. Transient, gitignored — never commit. |
 | `docs/agents/` | Config consumed by the vendored mattpocock skills: `issue-tracker.md` + `domain.md`. See §Agent skills. |
 
+## Architecture & data flow
+
+QuantRank is **two layers joined by a JSON contract**. There is no
+server, no database, and no API at runtime — the Python layer runs
+once a weekday in CI, writes static JSON, and the Next.js layer is a
+static export (`next build` → HTML/JS) that reads that JSON at build
+time. Everything the user sees was computed hours earlier by the cron.
+
+```
+SEC EDGAR ─┐
+yfinance  ─┤→ compute/  ──writes──>  frontend/public/data/*.json  ──read at build──>  Next.js static export  ──>  Vercel CDN
+Wikipedia ─┘   (Python)              (the JSON contract)                              (HTML/JS, no runtime)
+```
+
+### The compute pipeline (`compute/main.py::run_weekly_compute`)
+
+One orchestrator runs ~12 numbered steps (the main steps 1-9 plus
+sub-steps 3b · 4b · 5b/5c · 6b) over the full universe (~900 tickers),
+with a couple of unnumbered blocks interleaved (the Form-4 loop, the
+sp900 cohort-size recompute). Steps that hit the network are
+parallelized across `EDGAR_MAX_WORKERS`; every external call site
+degrades gracefully (try/except → `None`, never blocks the cron — see
+the `portable-graceful-degradation-try-except` skill).
+
+| Step | What it does | Key modules |
+|---|---|---|
+| 1 | Prices (10y daily OHLCV) in parallel | `ingest/prices.py` (yfinance) |
+| 2 | Fundamentals snapshot (XBRL facts) in parallel | `ingest/fundamentals.py` (edgartools) |
+| 3 | Annual history in parallel (feeds growth CAGRs) | `ingest/fundamentals.py` |
+| — | (unnumbered) Form-4 insider-transaction fetch loop | `scoring/form4_*.py` |
+| 3b | **Post-split share-lag correction** (Tier-1 CORRECT or Tier-2 veto, #499) | `ingest/splits.py` · `scoring/risk_overlay.py` |
+| 4 | Assemble `TickerInputs`, compute the 8 pillars | `scoring/pillars.py` |
+| 4b | Tier-2 event defenses (8-K going-concern / non-reliance / auditor-change) fetched in parallel | `scoring/tier2.py` + siblings |
+| 5 | Composite score + risk-overlay flags (Beneish / Dechow-F computed here) | `scoring/composite.py` · `scoring/risk_overlay.py` · `scoring/beneish.py` · `scoring/dechow_f.py` |
+| 5b/5c | Cross-sectional inputs (`main.py` local helpers) + per-sector pillar medians for the ensemble & stock-detail baselines | `compute/main.py` · `scoring/composite.py` |
+| 6 / 6b | Assemble + sort the ranking DataFrame (6); inject `stale_filing_hard` (6b) | `scoring/composite.py` · `valuation/applicability.py` |
+| 7 | **Top-5 rotation** — flagged stocks keep their rank but lose `entered_top5`; next clean stock inherits it | `scoring/composite.py` (Rule 16) |
+| 8 | Per-ticker loop: 6-method fair-price ensemble + price-history series + per-stock JSON write | `valuation/ensemble.py` · `output/writer.py` |
+| 9 | Sanity smoke test (cross-sectional Spearman IC) | `scoring/sanity.py` |
+| — | (unnumbered, `sp900` only) post-scoring cohort-size recompute | `compute/main.py` |
+
+Interleaved are the **observability-first** factor-research surfaces
+(OSAP Alpha replication + PBO/DSR gate, Qlib Alpha158, IPCA) — these
+emit diagnostic `Metadata` fields but, per Rule 18, do **not** drive
+production scoring until an accounting-equation verification clears on
+≥ 1 real cron.
+
+### Scoring model (the 8-pillar composite + defense layer)
+
+- **8 pillars** (`scoring/pillars.py`): value · quality · profitability ·
+  growth · health · momentum · technical (an honest 4-metric mean
+  since #441) · risk. Each is normalized cross-sectionally to 0-100,
+  then weighted into the **composite** (`scoring/composite.py`).
+- **Defense layer** (`scoring/risk_overlay.py` + `manipulation_index.py`):
+  **35 declared boolean flags** (9 active vetoes + 26 annotates/reserved;
+  ~28 emit) + 5 numerical guards. A **veto** marks a stock `cautious`
+  and suppresses its Top-5 badge; an **annotate** is informational only
+  and never changes rank. New flags ship `annotate`-first
+  (`portable-annotate-before-veto`); vetoes are added only after a cron
+  of calibration. Academic anchors per flag live in `docs/METHODOLOGY.md`.
+
+### Valuation (`compute/valuation/`)
+
+A **6-method fair-price ensemble** — the `METHOD_NAMES` tuple in
+`ensemble.py`: `graham` · `multiples_pe` · `multiples_pb` ·
+`multiples_ev_ebitda` · `rim` · `dcf` — reduced to a `median` +
+margin-of-safety `mos_pct`. (The three `multiples_*` methods use
+sector-peer medians for their comparable; `tangible_book` is NOT an
+ensemble method — it's a Tier-1 defense input feeding the
+`goodwill_heavy` annotate + the per-method `tangible_book_value_per_share`
+parameter.) `applicability.py` excludes methods that don't fit a
+sector; Tier-1 defenses null out fair-price on corrupt inputs rather
+than print a garbage number.
+
+### The output contract (`compute/output/`)
+
+Three JSON shapes land in `frontend/public/data/`:
+`metadata.json` (run-level: schema version, universe, coverage %,
+latency, all the Rule-18 diagnostic counters) · `rankings.json` (the
+full ordered table) · `stocks/<TICKER>.json` (per-stock detail). The
+Pydantic models in `schemas.py` are the source of truth; `writer.py`
+writes atomically and prunes orphan stock files for de-listed/renamed
+tickers. **Schema triple lockstep:** `schemas.py` ↔
+`frontend/lib/types.ts` ↔ `frontend/lib/schema-snapshot.json` move
+together, enforced by a CI guard (`schema_check`).
+
+### Frontend rendering (`frontend/`)
+
+Next.js 14 App Router, **static export only**. `frontend/lib/data.ts`
+resolves the JSON at **build time** — `rankings.json` + `metadata.json`
+via static `import`, per-stock + backtest files via `fs` inside Server
+Components — so there is no client-side fetch and no `fs` access from a
+`'use client'` component. The **home page IS the AI-pick portfolio**
+(`getAiPickData()` fs-read; the basket self-sizes when `nav.adaptive`
+is present). Routes: `/` (home/AI-pick), `/stock/[ticker]` (one static
+page per ranked stock). Design tokens + component family live in
+`frontend/lib/visual.ts` + `docs/design.md` (LedgerCraft design
+system); consult the `frontend-design-system` skill before adding any
+new UI surface.
+
+### CI cadence (`.github/workflows/`)
+
+- **`compute-rankings.yml`** — weekday cron (Mon-Fri 22:00 UTC), the
+  `trading-day-gate` skips weekends + NYSE holidays. Runs the full
+  `compute.main`, folds a warm PIT-backtest refresh, commits the JSON.
+  Universe defaults to `sp900` (manual `sp500` via dispatch).
+- **`precache-edgar.yml`** — Saturday 08:00 UTC off-cycle EDGAR cache
+  warmer (outputs discarded, caches saved).
+- **PR checks** — `Python (lint + test)` (`ruff` + offline pytest) +
+  `Frontend (build)` (`tsc --noEmit` + `next build`) + Vercel preview.
+
+The EDGAR cache (`compute/cache/`, **gitignored**) is split into two
+`actions/cache` bundles — a fast quarter-keyed bundle and a slow-text
+run-id-keyed bundle — and has several non-obvious freshness invariants
+(frozen-fast-cache, last-bar-date price recency, jittered 8-K TTL).
+These are exactly the kind of trap catalogued in §Gotchas /
+`docs/GOTCHAS.md` — read the relevant entry before touching ingest.
+
 ## Commands
 
 | Action | Command |

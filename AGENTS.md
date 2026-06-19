@@ -52,7 +52,10 @@ ladder. Setup + dev-loop commands that don't fit there:
 
 ## Project structure
 
-[`CLAUDE.md`](CLAUDE.md) §Layout has the top-level path table.
+[`CLAUDE.md`](CLAUDE.md) §Layout has the top-level path table, and
+[`CLAUDE.md`](CLAUDE.md) §Architecture & data flow explains how the
+two layers join through the JSON contract + the ~9-step compute
+pipeline (read it first for the end-to-end mental model).
 Granular tree for cross-tool agents below — annotations are
 file-purpose only. Known bugs / drift live in CLAUDE.md §Gotchas;
 this section doesn't duplicate them.
