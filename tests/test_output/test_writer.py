@@ -419,6 +419,71 @@ def test_prune_orphan_stock_files_below_floor_boundary_skips(tmp_path):
     assert (tmp_path / "stocks" / "ORPHAN.json").exists()
 
 
+def test_write_stock_detail_pre_split_raw_field_round_trip(tmp_path):
+    """P2-2: ``RawMetrics.shares_outstanding_pre_split_raw`` (#499 field) must
+    survive a full write_stock_detail → read JSON round-trip with its exact
+    float value intact.
+
+    This is the audit-trail contract (SKILL.md Rule 9): the pre-correction raw
+    EDGAR share count is preserved alongside the corrected value so a post-cron
+    audit can compute the delta independently.  The field is ``None`` on normal
+    rows (no split detected); only non-None when ``post_split_share_lag`` is in
+    ``valuation_warnings``.
+    """
+    detail = StockDetail(
+        ticker="KLAC",
+        name="KLA Corporation",
+        sector="Information Technology",
+        industry="Semiconductor Equipment",
+        current_price=750.0,
+        rank=2,
+        composite_score=82.1,
+        raw_metrics=RawMetrics(
+            revenue=10_500_000_000.0,
+            shares_outstanding=260_200_000.0,  # corrected (post-split × 2)
+            shares_outstanding_pre_split_raw=130_600_000.0,  # raw EDGAR before correction
+            market_cap=195_150_000_000.0,
+        ),
+        valuation_warnings=["post_split_share_lag"],  # matches the non-None condition
+    )
+    out = write_stock_detail(detail, tmp_path)
+    payload = json.loads(out.read_text())
+
+    raw_metrics = payload["raw_metrics"]
+    assert raw_metrics["shares_outstanding_pre_split_raw"] == 130_600_000.0, (
+        "shares_outstanding_pre_split_raw must survive the JSON round-trip "
+        f"unchanged; got {raw_metrics['shares_outstanding_pre_split_raw']!r}"
+    )
+    assert raw_metrics["shares_outstanding"] == 260_200_000.0
+    assert payload["valuation_warnings"] == ["post_split_share_lag"]
+
+
+def test_write_stock_detail_pre_split_raw_field_null_on_normal_row(tmp_path):
+    """P2-2 complement: ``shares_outstanding_pre_split_raw`` must be ``null`` in
+    the JSON for a normal (no-split) row.  This guards against the field being
+    accidentally populated for every ticker when it should only appear on split-
+    correction rows (SKILL.md Rule 9 audit-trail discipline).
+    """
+    detail = StockDetail(
+        ticker="AAPL",
+        name="Apple Inc.",
+        sector="Information Technology",
+        current_price=220.0,
+        rank=1,
+        composite_score=88.0,
+        raw_metrics=RawMetrics(
+            shares_outstanding=15_550_000_000.0,
+            # shares_outstanding_pre_split_raw intentionally omitted (defaults None)
+        ),
+    )
+    out = write_stock_detail(detail, tmp_path)
+    payload = json.loads(out.read_text())
+
+    assert payload["raw_metrics"]["shares_outstanding_pre_split_raw"] is None, (
+        "shares_outstanding_pre_split_raw must be null for a normal (no-split) row"
+    )
+
+
 def test_prune_orphan_stock_files_ignores_non_json_files(tmp_path):
     """The glob is `*.json` — a non-JSON file in stocks/ is never an unlink target."""
     keep = _big_keep()
