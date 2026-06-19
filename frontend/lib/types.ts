@@ -411,6 +411,41 @@ export type Metadata = {
   post_split_share_lag_count?: number | null;
   post_split_correction_applied_count?: number | null;
   post_split_veto_count?: number | null;
+  // PR-1 cross-source share-count corruption shadow observability
+  // (0.10.26-phase8pilot, Rule 18 observability-first). All 4 fields are
+  // null by default so legacy snapshots (pre-0.10.26) deserialize cleanly.
+  // PR-2 will wire the actual veto/correction once the first cron confirms
+  // the grades on real data. NOT currently rendered by the static site.
+  //
+  // Grading is by `compute/scoring/risk_overlay.grade_cross_source_corruption`:
+  //   NO_FIRE            : cross_source_delta < 0.50 (normal noise)
+  //   CORRECT_CANDIDATE  : delta ≥ 0.50 + near-integer mc_ratio + dual-ratio
+  //                        corroboration (share_ratio rounds to SAME integer)
+  //   VETO_CANDIDATE     : delta ≥ 0.50 + NOT CORRECT_CANDIDATE (incl. the
+  //                        COKE-class ratio_disagreement case)
+  //
+  // `cross_source_corruption_correct_candidate_count` — universe tickers where
+  // the grade is CORRECT_CANDIDATE: the inferred integer ratio is consistent
+  // across both mc and share channels (first candidates for PR-2 Tier-1 CORRECT).
+  cross_source_corruption_correct_candidate_count?: number | null;
+  // `cross_source_corruption_veto_candidate_count` — universe tickers where
+  // the grade is VETO_CANDIDATE: delta ≥ 0.50 but ratio is non-integer,
+  // uncorroborated (no yf_shares), or ratio_disagreement=True (first candidates
+  // for PR-2 Tier-2 VETO, analogous to `post_split_veto_count`).
+  cross_source_corruption_veto_candidate_count?: number | null;
+  // `cross_source_corruption_ratio_disagreement_count` — subset of VETO_CANDIDATEs
+  // where ratio_disagreement=True: mc_ratio and share_ratio are BOTH near-integer
+  // but round to DIFFERENT integers. This is the COKE-class detector where
+  // yfinance marketCap is stale (mc_ratio ≈ 7 → 7) while sharesOutstanding may
+  // reflect a different factor (share_ratio ≈ 10 → 10) or vice versa. Non-zero
+  // means the dual-ratio corroboration guard is load-bearing for ≥ 1 ticker.
+  cross_source_corruption_ratio_disagreement_count?: number | null;
+  // `cross_source_corruption_inferred_ratio_by_ticker` — shadow integer factor
+  // per CORRECT_CANDIDATE ticker. Keys = ticker symbols; values = inferred
+  // integer ratio (e.g. {"CVNA": 5.0}). Lets the methodology-scientist verify
+  // the ratio is plausible and no clean stock spuriously inferred a factor.
+  // Informational only — NOT a correction input until PR-2 literature anchor.
+  cross_source_corruption_inferred_ratio_by_ticker?: Record<string, number> | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

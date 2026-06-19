@@ -42,7 +42,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.25-phase8pilot"
+SCHEMA_VERSION: str = "0.10.26-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -481,6 +481,52 @@ YFINANCE_INFO_CACHE_MAX_AGE_HOURS: int = 24
 POST_SPLIT_WINDOW_DAYS: int = 100
 POST_SPLIT_MIN_RATIO: float = 2.0
 POST_SPLIT_RATIO_TOLERANCE: float = 0.10
+
+# --- Cross-source share-count-corruption defense (PR-1 shadow observability) ---
+# Methodology-scientist RATIFIED-WITH-CONDITIONS 2026-06-19.
+#
+# ``DELTA_CORRUPTION_THRESHOLD``: the minimum cross_source_delta
+# (|sec_mc − yf_mc| / sec_mc) at which a ticker is graded as a
+# corruption candidate rather than normal noise.
+#
+# Provenance: LITERATURE-ANCHORED on shape, empirical on value.
+#   - Shape: Ince-Porter 2006 *J. Financial Research* 29(4), 463-479 §II
+#     (cross-source price/share discrepancy consistent with an unadjusted
+#     split → corruption signal; literature-searcher 2026-06-19) + the #114
+#     `cross_source_delta_histogram` audit (first cron with the Rule-18
+#     histogram surface, 2026-06-19).
+#     The histogram shows 95.45% of the universe at delta < 5%; the
+#     corruption tail (COKE 6.07, CVNA 3.89, KLAC-pre-#499 ~10) is
+#     separated from the clean mass at delta ≥ 50%.  A 0.50 (50%) threshold
+#     captures the documented corruption cases with structurally zero FP rate
+#     on clean stocks (BKNG ≈ 0, KLAC-post-#499 ≈ 0).
+#   - Empirical: #114 daylight analysis — the clean cluster is < 5% and the
+#     corruption cluster is ≥ 50% (no observed cases 5-50%).  The choice of
+#     0.50 as the boundary is CONSERVATIVE: a lower threshold (e.g. 0.25)
+#     would still yield zero FPs on the current universe but lacks the
+#     histogram daylight evidence that the 0.50 threshold carries.
+#   - Q3 2026-08-19 follow-up: recalibrate if new crons show cases in the
+#     5%-50% band (would indicate a new class of partial corruption not seen
+#     in the current universe).
+DELTA_CORRUPTION_THRESHOLD: float = 0.50
+
+# ``INTEGER_RATIO_TOLERANCE`` (reuses ``POST_SPLIT_RATIO_TOLERANCE``):
+# tolerance for the near-integer test in the shadow grading function.
+# ``|R − round(R)| / round(R) ≤ 0.10`` with ``round(R) ≥ 2``.
+# Named alias so callers import the semantic rather than a magic float.
+#
+# GUT-FEEL provenance (the round(R) integer-recovery inference): NO
+# peer-reviewed anchor as of 2026-06-19 (literature-searcher). Closest
+# documented analog is the Linnsoft Stock Split Finder (round 2.007 → 2:1)
+# — within-series only, NOT cross-source. COUNTER-EVIDENCE: Chen 2012
+# (kaichen.work) documents a near-integer cross-source market-cap ratio
+# (Ascent Media 11.7×) arising from MISSING SHARE CLASSES, not a split —
+# so a near-integer cross-source ratio does NOT uniquely identify a stale
+# split. This is why PR-1 only COUNTS candidates (shadow) and the future
+# PR-2 CORRECT mutation must require a corroborating yfinance `.splits`
+# event before mutating (esp. dual-class names like CVNA). Q3 2026-08-19
+# academic-validation follow-up.
+INTEGER_RATIO_TOLERANCE: float = POST_SPLIT_RATIO_TOLERANCE  # 0.10
 
 # PR 4.5b — disclosure-driven defenses. 10-K/A + 10-Q/A list (5y) +
 # Form 12b-25 (NT 10-K / NT 10-Q, 1y) per-ticker JSON caches.

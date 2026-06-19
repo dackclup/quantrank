@@ -159,6 +159,7 @@ from compute.scoring.risk_overlay import (
     _snapshot_has_no_usable_fundamentals,
     check_post_split_share_lag,
     check_share_count_extraction_missing,
+    compute_cross_source_corruption_shadow,
     compute_risk_flags,
 )
 from compute.scoring.sanity import compute_mos_trailing_ic
@@ -1974,6 +1975,13 @@ def run_weekly_compute() -> int:
         key: 0 for key in CROSS_SOURCE_BUCKET_KEYS
     }
     cross_source_delta_by_ticker: dict[str, float | None] = {}
+    # PR-1 cross-source corruption shadow — per-ticker yfinance data collected
+    # as a zero-cost side-channel in the Step 8 loop.  Both values are already
+    # in the 24h on-disk cache from the validate_market_cap + Step 3b calls
+    # earlier this run (pure cache reads at this point — no new network call).
+    # Consumed after the loop by compute_cross_source_corruption_shadow().
+    _cs_yf_market_cap_by_ticker: dict[str, float | None] = {}
+    _cs_yf_shares_by_ticker: dict[str, float | None] = {}
     # Issue #177 PR-A (0.10.24-phase8pilot) — per-ticker shadow trimmed
     # median cache. Populated in the Step 8 per-ticker loop alongside the
     # ensemble computation; consumed after the loop to compute the
@@ -2286,6 +2294,14 @@ def run_weekly_compute() -> int:
             cross_source_disagreement_count += 1
             if "cross_source_disagreement" not in valuation_warnings:
                 valuation_warnings.append("cross_source_disagreement")
+
+        # PR-1 cross-source corruption shadow — cache-read side-channel.
+        # Both fetch_yfinance_market_cap and fetch_yfinance_shares_outstanding
+        # are pure cache reads at this point (the cache was already primed
+        # either by Step 3b or by the validate_market_cap call above which
+        # calls fetch_yfinance_market_cap internally).  No new network call.
+        _cs_yf_market_cap_by_ticker[ticker] = fetch_yfinance_market_cap(ticker)
+        _cs_yf_shares_by_ticker[ticker] = fetch_yfinance_shares_outstanding(ticker)
 
         # PR-A2 — listing metadata (display-only; no scoring/ranking impact).
         # Piggybacks the cross_source yfinance loop; skip-safe via
@@ -2770,6 +2786,52 @@ def run_weekly_compute() -> int:
         )
         median_trim_delta_count = None
 
+    # PR-1 cross-source corruption shadow (0.10.26-phase8pilot, Rule 18).
+    # Aggregates the per-ticker grade results into the 4 new Metadata counters.
+    # Uses the delta dict already populated in Step 8, plus the yf_market_cap
+    # and yf_shares_outstanding dicts collected as a zero-cost cache-read
+    # side-channel in the same Step 8 per-ticker loop.
+    # Wrapped in try/except so a bug never blocks the cron — all 4 counters
+    # fall to None on failure (backward-compatible with legacy consumers).
+    cross_source_corruption_correct_candidate_count: int | None = None
+    cross_source_corruption_veto_candidate_count: int | None = None
+    cross_source_corruption_ratio_disagreement_count: int | None = None
+    cross_source_corruption_inferred_ratio_by_ticker: dict[str, float] | None = None
+    try:
+        (
+            cross_source_corruption_correct_candidate_count,
+            cross_source_corruption_veto_candidate_count,
+            cross_source_corruption_ratio_disagreement_count,
+            cross_source_corruption_inferred_ratio_by_ticker,
+        ) = compute_cross_source_corruption_shadow(
+            universe_deltas=cross_source_delta_by_ticker,
+            snapshots=snapshots,
+            current_prices={
+                str(r["ticker"]): (
+                    float(r["current_price"])
+                    if r.get("current_price") is not None
+                    else None
+                )
+                for _, r in df.iterrows()
+            },
+            yf_market_caps=_cs_yf_market_cap_by_ticker,
+            yf_shares_outstanding=_cs_yf_shares_by_ticker,
+        )
+        logger.info(
+            "[cross_source_corruption shadow] correct_candidate=%s "
+            "veto_candidate=%s ratio_disagreement=%s inferred_tickers=%s",
+            cross_source_corruption_correct_candidate_count,
+            cross_source_corruption_veto_candidate_count,
+            cross_source_corruption_ratio_disagreement_count,
+            list(cross_source_corruption_inferred_ratio_by_ticker or {})[:10],
+        )
+    except Exception as _cs_corruption_exc:  # noqa: BLE001
+        logger.warning(
+            "cross_source_corruption shadow aggregation failed (non-fatal — "
+            "Metadata counters will be None): %s",
+            _cs_corruption_exc,
+        )
+
     # Issue #246 PR2a (0.10.3-phase4.5e) — read the universe-wide
     # shares-fallback counters that accumulated inside
     # ``_build_snapshot`` calls during the threaded fundamentals fetch
@@ -3075,6 +3137,20 @@ def run_weekly_compute() -> int:
         ),
         post_split_correction_applied_count=post_split_correction_applied_count,
         post_split_veto_count=post_split_veto_count,
+        # PR-1 cross-source share-count-corruption shadow (0.10.26-phase8pilot,
+        # Rule 18 observability-first). Aggregated from the Step 8 per-ticker
+        # grading pass in compute_cross_source_corruption_shadow(). All 4 fields
+        # are None on failure (graceful-degradation) — backward-compatible with
+        # legacy consumers.  PR-2 will wire the actual veto/correction once the
+        # first cron confirms the grades.
+        cross_source_corruption_correct_candidate_count=cross_source_corruption_correct_candidate_count,
+        cross_source_corruption_veto_candidate_count=cross_source_corruption_veto_candidate_count,
+        cross_source_corruption_ratio_disagreement_count=cross_source_corruption_ratio_disagreement_count,
+        cross_source_corruption_inferred_ratio_by_ticker=(
+            cross_source_corruption_inferred_ratio_by_ticker
+            if cross_source_corruption_inferred_ratio_by_ticker
+            else None
+        ),
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

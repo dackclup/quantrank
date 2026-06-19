@@ -603,6 +603,60 @@ class Metadata(BaseModel):
     post_split_share_lag_count: int | None = None
     post_split_correction_applied_count: int | None = None
     post_split_veto_count: int | None = None
+    # Cross-source share-count-corruption shadow grading (PR-1, Rule 18
+    # observability-first, 0.10.26-phase8pilot).
+    #
+    # Methodology-scientist RATIFIED-WITH-CONDITIONS 2026-06-19.
+    # PR-1 ships SHADOW METADATA ONLY — no flag emitted, no score mutated,
+    # no ranking change.  All 4 fields are ``None`` by default so legacy
+    # snapshots (pre-0.10.26) deserialize cleanly.  PR-2 will wire the
+    # actual veto/correction once the first cron confirms the grades on real
+    # data.
+    #
+    # Background: ``cross_source_delta = |sec_mc − yf_mc| / sec_mc`` where
+    # ``sec_mc = edgar_shares × current_price``, ``yf_mc = yfinance .info
+    # marketCap``.  The #114 audit showed delta ≥ 0.50 is the corruption
+    # tail (COKE 6.07, CVNA 3.89, KLAC-pre-#499 ≈ 10; clean stocks < 0.05).
+    #
+    # Grading logic (``compute/scoring/risk_overlay.grade_cross_source_corruption``):
+    # - ``NO_FIRE``            : delta < 0.50 (normal noise; BKNG/KLAC-post-#499)
+    # - ``CORRECT_CANDIDATE``  : delta ≥ 0.50 + near-integer mc_ratio + dual-ratio
+    #                             corroboration (share_ratio rounds to SAME integer)
+    # - ``VETO_CANDIDATE``     : delta ≥ 0.50 + NOT CORRECT_CANDIDATE (includes
+    #                             the COKE-class ratio_disagreement case)
+    #
+    # ``cross_source_corruption_correct_candidate_count`` — universe tickers where
+    # the grade is CORRECT_CANDIDATE: the inferred integer ratio is consistent
+    # across both mc and share channels.  These are the first candidates for
+    # PR-2's Tier-1 CORRECT branch (analogous to ``post_split_correction_applied``).
+    cross_source_corruption_correct_candidate_count: int | None = None
+    # ``cross_source_corruption_veto_candidate_count`` — universe tickers where
+    # the grade is VETO_CANDIDATE: delta ≥ 0.50 but the ratio either is
+    # non-integer, uncorroborated (no yf_shares), or ratio_disagreement=True.
+    # These are the first candidates for PR-2's Tier-2 VETO branch (analogous
+    # to ``post_split_veto_count``).
+    cross_source_corruption_veto_candidate_count: int | None = None
+    # ``cross_source_corruption_ratio_disagreement_count`` — subset of VETO_CANDIDATEs
+    # where ``ratio_disagreement=True``: mc_ratio and share_ratio are BOTH near-integer
+    # but round to DIFFERENT integers.  This is the COKE-class detector: yfinance
+    # marketCap is stale (mc_ratio ≈ 7.07 → 7) while sharesOutstanding may reflect
+    # the true factor (share_ratio ≈ 10 → 10) or vice versa.  A bare round(mc_ratio)
+    # alone would infer the wrong factor.  A non-zero value here means the dual-ratio
+    # corroboration guard is load-bearing for at least one ticker in the universe.
+    cross_source_corruption_ratio_disagreement_count: int | None = None
+    # ``cross_source_corruption_inferred_ratio_by_ticker`` — shadow integer factor per
+    # CORRECT_CANDIDATE ticker.  Keys are ticker symbols; values are the inferred
+    # integer ratio (e.g. ``{"CVNA": 5.0}``).  Lets the methodology-scientist eyeball
+    # that CVNA → 5 and that no clean stock spuriously inferred a factor.
+    #
+    # GUT-FEEL NOTE (methodology prior 6): the ``round(R)`` integer-recovery mechanism
+    # is NOT yet literature-anchored.  The assumption that a share-count corruption
+    # factor is always a near-integer is plausible (stock-split ratios are always
+    # integers; unit-conversion errors like millions→raw are always powers of 10)
+    # but lacks a systematic literature citation.  The literature-searcher is
+    # checking in parallel; Q3 2026-08-19 will either anchor or revise this.
+    # Until then treat the inferred_ratio as informational, NOT a correction input.
+    cross_source_corruption_inferred_ratio_by_ticker: dict[str, float] | None = None
 
 
 class RawMetrics(BaseModel):
