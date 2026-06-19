@@ -1,16 +1,16 @@
 {
-  "version": "0.10.25-phase8pilot",
-  "last_update_utc": "2026-06-19T01:26:57Z",
-  "next_update_utc": "2026-06-22T01:26:57Z",
+  "version": "0.10.26-phase8pilot",
+  "last_update_utc": "2026-06-19T05:45:40Z",
+  "next_update_utc": "2026-06-22T05:45:40Z",
   "universe": "SP900",
   "universe_size": 902,
-  "compute_run_id": "27799179046",
-  "git_commit": "b820c9320a2dddde075f49d21f4c6377961bbdb9",
-  "mos_trailing_ic_smoke": -0.2727334852312128,
+  "compute_run_id": "27807352366",
+  "git_commit": "2089674a90bfee526c7da0b0c15776903564cad8",
+  "mos_trailing_ic_smoke": -0.2604650973468149,
   "tier2_coverage_pct": 99.67,
   "fundamentals_coverage_pct": 99.89,
-  "fundamentals_latency_p50_seconds": 1.67,
-  "fundamentals_latency_p95_seconds": 3.28,
+  "fundamentals_latency_p50_seconds": 1.59,
+  "fundamentals_latency_p95_seconds": 3.26,
   "osap_signals_used": [
     "AbnormalAccruals",
     "Activism1",
@@ -685,10 +685,10 @@
   "form4_universe_insider_count_median": 14,
   "form4_tickers_with_recent_activity": 900,
   "form4_fetch_failures": null,
-  "cross_source_disagreement_count": 39,
+  "cross_source_disagreement_count": 41,
   "cross_source_delta_histogram": {
-    "<5": 861,
-    "5-25": 28,
+    "<5": 859,
+    "5-25": 30,
     "25-50": 2,
     "50-75": 2,
     "75-100": 3,
@@ -709,10 +709,10 @@
   "multi_class_mc_reconcile_failure_count": 0,
   "universe_membership_as_of": "2026-06-19",
   "survivorship_bias_corrected": true,
-  "tier2_wall_clock_seconds": 19.5,
+  "tier2_wall_clock_seconds": 20.2,
   "form4_wall_clock_seconds": 0.4,
-  "osap_wall_clock_seconds": 313.0,
-  "cross_source_wall_clock_seconds": 23.8,
+  "osap_wall_clock_seconds": 329.4,
+  "cross_source_wall_clock_seconds": 23.4,
   "form4_negation_guard_downgrade_count": 0,
   "decay_report_url": "/data/decay_report.json",
   "universe_cohort_sizes": {
@@ -726,5 +726,11 @@
   "median_trim_delta_count": 34,
   "post_split_share_lag_count": 3,
   "post_split_correction_applied_count": 1,
-  "post_split_veto_count": 2
+  "post_split_veto_count": 2,
+  "cross_source_corruption_correct_candidate_count": 1,
+  "cross_source_corruption_veto_candidate_count": 8,
+  "cross_source_corruption_ratio_disagreement_count": 5,
+  "cross_source_corruption_inferred_ratio_by_ticker": {
+    "DVN": 2.0
+  }
 }

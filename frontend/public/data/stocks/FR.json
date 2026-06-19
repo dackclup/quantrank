@@ -5,19 +5,19 @@
   "industry": "Industrial REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8192852102.056793,
-  "current_price": 61.8,
-  "rank": 307,
-  "composite_score": 54.02,
+  "market_cap": 8047024837.943207,
+  "current_price": 60.7,
+  "rank": 342,
+  "composite_score": 53.13,
   "pillar_scores": {
     "quality": 61.25,
-    "value": 42.92,
+    "value": 43.19,
     "growth": 55.21,
-    "momentum": 65.02,
+    "momentum": 63.33,
     "health": 29.11,
     "profitability": 60.69,
-    "technical": 61.83,
-    "risk": 71.9,
+    "technical": 47.78,
+    "risk": 70.77,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 132570424.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8192852102.056793,
-    "pe_ratio_ttm": 22.81413399697809,
+    "market_cap": 8047024837.943207,
+    "pe_ratio_ttm": 22.40805773654311,
     "goodwill": null
   },
   "fair_price": {
@@ -83,7 +83,7 @@
     "max": 73.85351809183673,
     "low": 23.886798641254867,
     "high": 73.85351809183673,
-    "mos_pct": -64.03136072120226,
+    "mos_pct": -61.11171268351869,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
     "median_trimmed": 37.67572186522284,
@@ -116,7 +116,9 @@
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 20.56052110084524,
   "tier2_events": {
@@ -130,22 +132,22 @@
     "label": "Real Estate median (n=60)",
     "values": {
       "Quality": 48.85,
-      "Value": 49.93,
+      "Value": 49.86,
       "Growth": 50.0,
-      "Momentum": 58.69,
+      "Momentum": 58.74,
       "Health": 26.31,
       "Profitability": 51.87,
-      "Technical": 55.32,
+      "Technical": 54.32,
       "Risk": 56.69
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 57.98932156935206,
-  "price_change_1d_pct": 1.8122,
+  "loss_chance_pct": 58.436175782212366,
+  "price_change_1d_pct": -3.3593,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.02,
+  "composite_score_adjusted": 53.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -193,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.94,
+  "osap_blended_score": 52.49,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -207,5 +209,5 @@
     "latest_filing_date": "2026-05-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03353705773282884
+  "cross_source_delta": 0.052266698130920025
 }
