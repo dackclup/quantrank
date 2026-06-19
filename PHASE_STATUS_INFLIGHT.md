@@ -4866,3 +4866,39 @@ Gate: test-engineer (authored, red-green verified; safety-classifier was down on
 so the orchestrator hand-verified the two new files + ruff + targeted run) — no production behavior change.
 
 ---
+
+## docs — S&P 900 pilot milestone reconciliation (in flight, 2026-06-19)
+
+**Docs-only.** No code / schema / workflow touched — the verification ladder's
+`schema_check` / `tsc` / `next-build` / `pytest` rungs are N/A.
+
+Reconciles a **stale "next" pointer** that had survived the pilot's own
+completion. `CLAUDE.md` §Phase status + §Next deliverables, `WORKFLOW.md`
+§Phase 8 acceptance criteria, and `PHASE_STATUS.md` (Phase 8 row + Next bullet)
+all still read `next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge)` —
+but **both gates have since closed**:
+
+- **frontend PR 4 (midcap badge) shipped as #490** (`feat(frontend): S&P 900
+  pilot PR 4 — per-index tab cohort filter`, `3533bc596`). `MidcapChip.tsx`
+  renders the "Mid-cap" badge iff `index_membership === 'sp400'` and is wired
+  into `RankingTable.tsx` (rows + mobile cards), `StockListCard.tsx`, the
+  per-index `RankingView.tsx` (SPX / MID / ALL tabs, chip shown only in the
+  mixed ALL view), and the stock-detail page. #493 / #494 later extended the
+  same tab surface with Dow 30 / NDX / Russell 1000.
+- **≥ 2 green sp900 crons confirmed** — 3 green scheduled `compute-rankings.yml`
+  runs since the #492 cron-default flip: 2026-06-16, 06-17, 06-18 (all
+  `event=schedule`, `conclusion=success`); current production `metadata.json`
+  is `universe=SP900`, `universe_size=902`.
+
+Net effect: marks the **S&P 900 pilot milestone COMPLETE 2026-06-19** and
+re-points the universe-expansion "next" at the **S&P 1500 cutover** (S&P 600
+small-cap ingest + virtualized 1500-row table + Bonferroni / liquidity guards
+per WORKFLOW.md §8.6). No content change to any merged-PR history entry — only
+the forward-looking "next" pointers.
+
+Gate: docs-reviewer (substance) + phase-coordinator Mode C (triple-doc
+consistency). CLAUDE.md / AGENTS.md lockstep satisfied via this INFLIGHT entry
+(AGENTS.md carries no Phase-8 "next" pointer — it delegates to
+CLAUDE.md / PHASE_STATUS.md — so no AGENTS.md substance diff applies).
+
+---

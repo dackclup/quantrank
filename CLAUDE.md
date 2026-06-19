@@ -490,7 +490,7 @@ since last Mode C: **#501** (cross-source share-count-corruption SHADOW observab
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
 `universe` dispatch input) · **#487** (`fundamentals_unavailable` veto,
-schema `0.10.22`, defense 34) · **#488** (Mode C bump) · **#492** (precache-900 Phase B — cache-v10 fast-bundle + cron-default flip sp500→sp900) · **#493** (multi-index membership `0.10.23` — `index_memberships: list[str]`, Dow 30 / NDX 100 DJI/NDX tabs) · **#494** (Russell 1000 RUI overlap tab — market-cap proxy appends `"russell1000"`, NO schema bump). precache-900 Phase B (#492) + multi-index membership (#493) + Russell 1000 (#494) **MERGED 2026-06-16/17**; the gated sequence is COMPLETE — the weekday cron ranks S&P 900 by default and the first post-#494 cron tagged russell1000/dow30/ndx live (russell1000 900/902). Next: ≥ 2 green sp900 crons confirm the firing-rates hold, then frontend PR 4 (midcap badge). Detail: PHASE_STATUS_INFLIGHT.md.
+schema `0.10.22`, defense 34) · **#488** (Mode C bump) · **#492** (precache-900 Phase B — cache-v10 fast-bundle + cron-default flip sp500→sp900) · **#493** (multi-index membership `0.10.23` — `index_memberships: list[str]`, Dow 30 / NDX 100 DJI/NDX tabs) · **#494** (Russell 1000 RUI overlap tab — market-cap proxy appends `"russell1000"`, NO schema bump). precache-900 Phase B (#492) + multi-index membership (#493) + Russell 1000 (#494) **MERGED 2026-06-16/17**; the gated sequence is COMPLETE — the weekday cron ranks S&P 900 by default and the first post-#494 cron tagged russell1000/dow30/ndx live (russell1000 900/902). **S&P 900 pilot milestone COMPLETE 2026-06-19**: both remaining acceptance gates cleared — frontend PR 4 (midcap badge) shipped earlier as #490 (`MidcapChip` + per-index SPX/MID/ALL tabs, wired into RankingTable + StockListCard + stock-detail) and ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16 · 6/17 · 6/18 all green). Next universe step = **S&P 1500 cutover** (S&P 600 small-cap ingest). Detail: PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
@@ -518,7 +518,7 @@ PHASE_STATUS.md):
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
   pilot — **3a integration slice merged 2026-06-15 (#482)** ·
   **precache-900 Phase A merged (#486)**; #249 pre-cache DONE (#468),
-  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge). Detail in WORKFLOW.md.
+  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). Next universe step = **S&P 1500 cutover** (S&P 600 small-cap ingest + virtualized 1500-row table + Bonferroni / liquidity guards). Detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.

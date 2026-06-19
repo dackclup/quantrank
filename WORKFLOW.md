@@ -1271,7 +1271,7 @@ positives without proportional true positives.
 - [x] **precache-900 Phase B — cron-default flip sp500→sp900 — DONE (#492, 2026-06-16): cache-v10-fast bump across all 4 workflows + sim QR_UNIVERSE=sp900 + sp400/sp900 parquet paths; cron now defaults sp900**
 - [x] **Dow 30 / NASDAQ 100 overlap tabs (DJI/NDX) — DONE (#493, 2026-06-17): `index_memberships: list[str]`, data-driven tabs in `RankingView.tsx`; schema 0.10.23**
 - [x] **Russell 1000 (RUI) overlap tab via market-cap proxy — DONE (#494, 2026-06-17): no schema bump; every S&P 900 constituent qualifies by construction; RUT/RUA/SML/COMP remain SOON**
-- [ ] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover**
+- [x] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover — DONE 2026-06-19: 3 green scheduled sp900 crons (6/16, 6/17, 6/18); frontend PR 4 (midcap badge) shipped #490 (`MidcapChip` + per-index SPX/MID/ALL tabs). Pilot milestone COMPLETE → S&P 1500 cutover is next.**
 - [ ] S&P 1500 ranked weekly
 - [ ] Compute time <90 min
 - [ ] Frontend handles 1500-row table smoothly on mobile
