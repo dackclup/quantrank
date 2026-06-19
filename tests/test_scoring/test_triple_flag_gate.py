@@ -64,6 +64,13 @@ def test_TF1_triple_flag_fires_index_reaches_70_threshold() -> None:
     scenario confirmed by test_smci_real_world_case_saturates in the
     main test file) and asserts the total EXACTLY reaches 70 (no extra
     flags, no saturation clipping).
+
+    NOTE: main.py's ACTUAL gate-injection condition keys on the ANNOTATE
+    band (`beneish_high` + `dechow_high`), NOT the active vetoes — so in
+    THIS veto-path scenario main.py would not auto-inject the label. The
+    label is injected manually here purely to assert the weight-table sum
+    reaches 70; the real injection path is covered by the second TF1 test
+    (`..._with_beneish_dechow_high_path`).
     """
     risk_flags = [
         _SLOAN_FLAG,
