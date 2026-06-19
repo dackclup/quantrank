@@ -372,7 +372,17 @@ on structural compounders — disposition routed to issue #454 for the Q3
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
-**In flight** (not yet merged on `main`): _Nothing currently in flight._ Merged
+**In flight** (not yet merged on `main`): **#501** (Draft — cross-source
+share-count-corruption shadow observability, PR-1, Rule-18 obs-first;
+generalizes #499 past its 100d/2× window via `cross_source_delta`
+(yfinance `marketCap` vs EDGAR `price × shares`); MUTATES NOTHING —
+4 new shadow `Metadata` counters only (`cross_source_corruption_*`);
+`grade_cross_source_corruption` dual-ratio corroboration guards the
+COKE false-negative (mc_ratio 7≠share_ratio 10 → VETO_CANDIDATE, not a
+wrong-30%-share CORRECT) + BKNG false-positive; schema
+`0.10.25 → 0.10.26-phase8pilot`; the `round(R)` integer-recovery is
+GUT-FEEL — PR-2 veto/correction wiring GATED on a corroborating
+yfinance `.splits` event + methodology re-anchor Q3 2026-08-19). Merged
 since last Mode C: **#499** (`post_split_share_lag` HYBRID defense — Tier-1 CORRECT annotate + Tier-2 veto `post_split_share_lag_unreconciled` + folded leg-3 override; new `compute/ingest/splits.py`; schema `0.10.25-phase8pilot`; defense 34→35; fixes KLAC rank-2 P/E 6.68→~66.8 — squash `816cda0ea`) · **#498** (fix(ingest): prices.py last-bar-date recency guard — `PRICES_CACHE_MAX_STALE_DAYS=7`, mtime-TTL dead on GHA) · **#497** (docs(methodology) Path C amendment: #177 flip DEFERRED Q3 + `BASKET_RULE_N_TRIALS` 15→16) · **#496/PR-A** (trimmed-median diagnostic #177, `0.10.24-phase8pilot` — shadow `median_trimmed`/`methods_excluded_from_median` + `Metadata.median_trim_delta_count`) · **#485** (fix+test: APA `OilAndGasRevenue` #385 +
 cache-v8→v9 + form4 retry #207 + 83 tests; closed #261 CLOSE-AS-CORRECT)
 · **#486** (precache-900 Phase A — `edgar_form4` fast→slow-text +
