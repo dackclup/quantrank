@@ -5,18 +5,18 @@
   "industry": "Managed Health Care",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 30301853733.82187,
-  "current_price": 61.365,
-  "rank": 681,
-  "composite_score": 43.78,
+  "market_cap": 30131493166.042328,
+  "current_price": 61.02,
+  "rank": 676,
+  "composite_score": 43.95,
   "pillar_scores": {
     "quality": 9.62,
     "value": 80.68,
     "growth": 45.88,
-    "momentum": 73.86,
+    "momentum": 73.59,
     "health": 23.67,
     "profitability": 23.26,
-    "technical": 59.62,
+    "technical": 63.83,
     "risk": 32.32,
     "sentiment": null,
     "ml": null
@@ -36,7 +36,7 @@
     "shares_outstanding": 493797000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 30301853733.82187,
+    "market_cap": 30131493166.042328,
     "pe_ratio_ttm": null,
     "goodwill": 10835000000.0
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 151.36620061674887,
+        "value": 152.45381696412505,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 142.1237260155114,
-    "max": 151.36620061674887,
+    "median": 142.6675341891995,
+    "max": 152.45381696412505,
     "low": 132.88125141427392,
-    "high": 151.36620061674887,
-    "mos_pct": 56.82283078353194,
+    "high": 152.45381696412505,
+    "mos_pct": 57.22923172076305,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 142.1237260155114,
+    "median_trimmed": 142.6675341891995,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -103,7 +103,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 52,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -127,22 +127,22 @@
     "label": "Health Care median (n=91)",
     "values": {
       "Quality": 52.47,
-      "Value": 48.35,
-      "Growth": 48.35,
-      "Momentum": 40.52,
-      "Health": 60.2,
+      "Value": 49.18,
+      "Growth": 48.08,
+      "Momentum": 40.85,
+      "Health": 58.75,
       "Profitability": 48.9,
-      "Technical": 51.86,
-      "Risk": 43.18
+      "Technical": 50.3,
+      "Risk": 42.94
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 38.2229937696752,
-  "price_change_1d_pct": 1.1956,
+  "loss_chance_pct": 37.992754550291764,
+  "price_change_1d_pct": 0.6267,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.78,
+  "composite_score_adjusted": 43.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.81,
+  "osap_blended_score": 47.9,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -204,5 +204,5 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0006518742383018399
+  "cross_source_delta": 1.0024140729316922e-08
 }

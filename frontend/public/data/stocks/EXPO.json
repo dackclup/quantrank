@@ -5,19 +5,19 @@
   "industry": "Research & Consulting Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2757886034.6271286,
-  "current_price": 56.85,
-  "rank": 352,
-  "composite_score": 52.9,
+  "market_cap": 2759826544.2008514,
+  "current_price": 56.89,
+  "rank": 343,
+  "composite_score": 53.09,
   "pillar_scores": {
     "quality": 73.72,
-    "value": 47.09,
+    "value": 46.99,
     "growth": 47.59,
-    "momentum": 15.11,
-    "health": 74.04,
+    "momentum": 15.16,
+    "health": 74.06,
     "profitability": 61.85,
-    "technical": 37.94,
-    "risk": 27.31,
+    "technical": 42.09,
+    "risk": 27.4,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 48511629.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2757886034.6271286,
-    "pe_ratio_ttm": 25.31843084080428,
+    "market_cap": 2759826544.2008514,
+    "pe_ratio_ttm": 25.336245448377383,
     "goodwill": 8607000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 65.39672444059576,
+        "value": 65.2582099404293,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 37.03430203294711,
+        "value": 36.996535401919544,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 45.696784464379434,
+        "value": 45.66928573517741,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 35.42678152979089,
-    "max": 65.39672444059576,
+    "median": 35.407898214277104,
+    "max": 65.2582099404293,
     "low": 14.306514791776571,
-    "high": 65.39672444059576,
-    "mos_pct": -60.4718126209549,
+    "high": 65.2582099404293,
+    "mos_pct": -60.67036525401376,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 35.42678152979089,
+    "median_trimmed": 35.407898214277104,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -103,14 +103,13 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "restatement_history",
-    "c_suite_unusual_sell"
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 6.796926980126765,
@@ -125,22 +124,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.42,
+      "Value": 48.52,
       "Growth": 50.26,
-      "Momentum": 53.82,
-      "Health": 57.59,
+      "Momentum": 53.64,
+      "Health": 58.26,
       "Profitability": 48.74,
-      "Technical": 53.94,
-      "Risk": 53.71
+      "Technical": 55.5,
+      "Risk": 53.58
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 58.552448847496414,
-  "price_change_1d_pct": -0.2807,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 52.1,
+  "loss_chance_pct": 58.453849349727065,
+  "price_change_1d_pct": -0.2105,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 52.59,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -157,7 +156,7 @@
     "beneish_high": false,
     "dechow_high": false,
     "insider_sell_cluster": false,
-    "c_suite_unusual_sell": true
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -188,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.37,
+  "osap_blended_score": 52.47,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -202,5 +201,5 @@
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.009234822995981704
+  "cross_source_delta": 4.065503742479552e-08
 }

@@ -5,19 +5,19 @@
   "industry": "Independent Power Producers & Energy Traders",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 20241180336.195923,
-  "current_price": 445.89,
-  "rank": 488,
-  "composite_score": 49.36,
+  "market_cap": 19805387991.92679,
+  "current_price": 436.29,
+  "rank": 489,
+  "composite_score": 49.26,
   "pillar_scores": {
     "quality": 74.46,
-    "value": 17.75,
+    "value": 18.12,
     "growth": 63.59,
-    "momentum": 49.11,
+    "momentum": 46.31,
     "health": 22.61,
     "profitability": 61.96,
-    "technical": 52.84,
-    "risk": 54.06,
+    "technical": 56.5,
+    "risk": 53.63,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 45395007.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 20241180336.195923,
-    "pe_ratio_ttm": 32.28258426825506,
+    "market_cap": 19805387991.92679,
+    "pe_ratio_ttm": 31.587540656980522,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 277.453637658736,
+        "value": 276.03193145784655,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 49.21654325385095,
+        "value": 49.21301974137696,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 8.121492717829739,
+        "value": 7.815358201779429,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,10 +80,10 @@
       }
     },
     "median": 39.589670074638235,
-    "max": 277.453637658736,
-    "low": 8.121492717829739,
-    "high": 277.453637658736,
-    "mos_pct": -1026.2786828175203,
+    "max": 276.03193145784655,
+    "low": 7.815358201779429,
+    "high": 276.03193145784655,
+    "mos_pct": -1002.029917709307,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
@@ -111,7 +111,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-05"
   },
@@ -124,6 +124,7 @@
     "extreme_multiples_ev_ebitda_estimate",
     "extreme_rim_estimate",
     "extreme_estimate_majority",
+    "cross_source_disagreement",
     "insider_sell_cluster"
   ],
   "has_history": true,
@@ -139,22 +140,22 @@
     "label": "Utilities median (n=46)",
     "values": {
       "Quality": 52.58,
-      "Value": 45.56,
+      "Value": 45.92,
       "Growth": 50.82,
-      "Momentum": 53.19,
+      "Momentum": 52.8,
       "Health": 17.0,
       "Profitability": 51.81,
-      "Technical": 56.26,
-      "Risk": 74.34
+      "Technical": 55.96,
+      "Risk": 74.04
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.1815458559927467,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.32021684903114,
-  "price_change_1d_pct": 8.8041,
+  "loss_chance_pct": 76.37091939410007,
+  "price_change_1d_pct": 6.4615,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 48.86,
+  "composite_score_adjusted": 48.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -202,7 +203,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.61,
+  "osap_blended_score": 50.56,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -216,5 +217,5 @@
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.04198369312902364
+  "cross_source_delta": 0.052869151389512564
 }

@@ -5,19 +5,19 @@
   "industry": "Health Care REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 146826672580.9021,
-  "current_price": 207.995,
-  "rank": 758,
-  "composite_score": 41.02,
+  "market_cap": 145877216783.94012,
+  "current_price": 206.65,
+  "rank": 767,
+  "composite_score": 40.66,
   "pillar_scores": {
     "quality": 24.79,
     "value": 29.86,
     "growth": 67.71,
-    "momentum": 66.88,
+    "momentum": 66.57,
     "health": 30.82,
     "profitability": 31.25,
-    "technical": 50.67,
-    "risk": 82.5,
+    "technical": 44.32,
+    "risk": 82.34,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 705914450.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 146826672580.9021,
-    "pe_ratio_ttm": 100.7805453247503,
+    "market_cap": 145877216783.94012,
+    "pe_ratio_ttm": 100.12884716052984,
     "goodwill": 342907000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 55.25334011302711,
+        "value": 55.710715049300866,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 134.6107777080237,
+        "value": 133.17627996482733,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 55.25334011302711,
-    "max": 134.6107777080237,
+    "median": 55.710715049300866,
+    "max": 133.17627996482733,
     "low": 40.50913696481488,
-    "high": 134.6107777080237,
-    "mos_pct": -276.43877219315544,
+    "high": 133.17627996482733,
+    "mos_pct": -270.9340181931083,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 94.9320589105254,
+    "median_trimmed": 94.4434975070641,
     "methods_excluded_from_median": [
       "graham"
     ]
@@ -114,7 +114,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -140,20 +140,20 @@
       "Quality": 48.85,
       "Value": 49.93,
       "Growth": 50.0,
-      "Momentum": 58.98,
+      "Momentum": 58.69,
       "Health": 26.31,
       "Profitability": 51.87,
-      "Technical": 55.24,
-      "Risk": 57.08
+      "Technical": 55.32,
+      "Risk": 56.69
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 70.4889308481153,
-  "price_change_1d_pct": 0.6996,
+  "loss_chance_pct": 70.66977896341463,
+  "price_change_1d_pct": 0.0484,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.02,
+  "composite_score_adjusted": 40.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -201,7 +201,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.44,
+  "osap_blended_score": 46.26,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -215,5 +215,5 @@
     "latest_filing_date": "2026-05-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0018990943266691473
+  "cross_source_delta": 8.083469361755683e-08
 }

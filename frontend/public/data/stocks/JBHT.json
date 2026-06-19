@@ -5,19 +5,19 @@
   "industry": "Cargo Ground Transportation",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 25576301909.23166,
-  "current_price": 271.225,
-  "rank": 299,
-  "composite_score": 54.19,
+  "market_cap": 25575829952.77133,
+  "current_price": 271.22,
+  "rank": 293,
+  "composite_score": 54.37,
   "pillar_scores": {
     "quality": 49.77,
-    "value": 41.77,
+    "value": 41.67,
     "growth": 40.21,
-    "momentum": 85.03,
+    "momentum": 85.2,
     "health": 69.69,
     "profitability": 48.29,
-    "technical": 62.86,
-    "risk": 61.88,
+    "technical": 66.35,
+    "risk": 61.92,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 94299203.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 25576301909.23166,
-    "pe_ratio_ttm": 41.11317710194047,
+    "market_cap": 25575829952.77133,
+    "pe_ratio_ttm": 41.112418445368206,
     "goodwill": 134057000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 190.3631957623047,
+        "value": 189.0919128964335,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 202.4015513875459,
+        "value": 202.19514747843863,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 270.3272108990282,
+        "value": 269.7728483717529,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 130.60589846994804,
-    "max": 270.3272108990282,
+    "median": 129.97025703701243,
+    "max": 269.7728483717529,
     "low": 48.31519454738973,
-    "high": 270.3272108990282,
-    "mos_pct": -107.66673579135751,
+    "high": 269.7728483717529,
+    "mos_pct": -108.67851414917655,
     "valuation_warnings": [
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 196.3823735749253,
+    "median_trimmed": 195.64353018743606,
     "methods_excluded_from_median": [
       "rim",
       "dcf"
@@ -105,15 +105,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 55,
+    "filing_lag_days": 56,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_rim_estimate",
-    "extreme_dcf_estimate",
-    "insider_sell_cluster"
+    "extreme_dcf_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 35.88578580033174,
@@ -128,22 +127,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.42,
+      "Value": 48.52,
       "Growth": 50.26,
-      "Momentum": 53.82,
-      "Health": 57.59,
+      "Momentum": 53.64,
+      "Health": 58.26,
       "Profitability": 48.74,
-      "Technical": 53.94,
-      "Risk": 53.71
+      "Technical": 55.5,
+      "Risk": 53.58
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.1743410928635943,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.90409295162913,
-  "price_change_1d_pct": 1.4912,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 53.69,
+  "loss_chance_pct": 59.816995671154686,
+  "price_change_1d_pct": 1.4893,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 54.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -159,7 +158,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -191,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.02,
+  "osap_blended_score": 53.11,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,5 +204,5 @@
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.002083155061174426
+  "cross_source_delta": 1.7546696729522227e-08
 }

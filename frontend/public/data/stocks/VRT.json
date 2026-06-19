@@ -5,18 +5,18 @@
   "industry": "Electrical Components & Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 128173271748.80566,
-  "current_price": 333.69,
-  "rank": 178,
-  "composite_score": 58.15,
+  "market_cap": 127927436479.97168,
+  "current_price": 333.05,
+  "rank": 175,
+  "composite_score": 58.27,
   "pillar_scores": {
     "quality": 82.98,
     "value": 3.92,
     "growth": 71.84,
-    "momentum": 84.78,
+    "momentum": 84.65,
     "health": 60.24,
     "profitability": 70.08,
-    "technical": 51.36,
+    "technical": 54.02,
     "risk": 50.68,
     "sentiment": null,
     "ml": null
@@ -36,8 +36,8 @@
     "shares_outstanding": 384108816.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 128173271748.80566,
-    "pe_ratio_ttm": 82.24670928439788,
+    "market_cap": 127927436479.97168,
+    "pe_ratio_ttm": 82.0889607802693,
     "goodwill": 2023700000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 166.84210976832654,
+        "value": 166.44746938678583,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 69.35443845097952,
+        "value": 67.89868100097138,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 144.81152450400847,
+        "value": 145.7798453943683,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 49.840089300508765,
-    "max": 166.84210976832654,
+    "median": 49.1122105755047,
+    "max": 166.44746938678583,
     "low": 2.152620287242806,
-    "high": 166.84210976832654,
-    "mos_pct": -569.5212771980325,
+    "high": 166.44746938678583,
+    "mos_pct": -578.1409020083519,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,7 +92,7 @@
       "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 144.81152450400847,
+    "median_trimmed": 145.7798453943683,
     "methods_excluded_from_median": [
       "graham",
       "rim",
@@ -107,7 +107,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 57,
+    "filing_lag_days": 58,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-22"
   },
@@ -132,22 +132,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.42,
+      "Value": 48.52,
       "Growth": 50.26,
-      "Momentum": 53.82,
-      "Health": 57.59,
+      "Momentum": 53.64,
+      "Health": 58.26,
       "Profitability": 48.74,
-      "Technical": 53.94,
-      "Risk": 53.71
+      "Technical": 55.5,
+      "Risk": 53.58
     }
   },
   "beneish_m_score": -2.533000075251267,
   "dechow_f_score": 0.5421279360611256,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.92417396860168,
-  "price_change_1d_pct": 5.0727,
+  "loss_chance_pct": 59.86631642979902,
+  "price_change_1d_pct": 4.8712,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.15,
+  "composite_score_adjusted": 58.27,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -195,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.0,
+  "osap_blended_score": 55.06,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -209,5 +209,5 @@
     "latest_filing_date": "2026-05-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.501659922493027e-05
+  "cross_source_delta": 7.354146959053941e-08
 }

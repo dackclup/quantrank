@@ -5,19 +5,19 @@
   "industry": "Tobacco",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 280517214848.57886,
-  "current_price": 179.985,
-  "rank": 515,
-  "composite_score": 48.52,
+  "market_cap": 278046888613.71173,
+  "current_price": 178.4,
+  "rank": 520,
+  "composite_score": 48.41,
   "pillar_scores": {
     "quality": 42.45,
-    "value": 29.87,
+    "value": 30.19,
     "growth": 57.08,
-    "momentum": 68.93,
+    "momentum": 68.43,
     "health": 43.35,
     "profitability": 78.62,
-    "technical": 51.58,
-    "risk": 68.0,
+    "technical": 49.2,
+    "risk": 67.81,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 1558558846.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 280517214848.57886,
-    "pe_ratio_ttm": 24.197120231913985,
+    "market_cap": 278046888613.71173,
+    "pe_ratio_ttm": 23.98403248630309,
     "goodwill": 17069000000.0
   },
   "fair_price": {
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 167.59543992199195,
+        "value": 167.090588769775,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 133.88938141026264,
+        "value": 133.2223832900628,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 133.88938141026264,
-    "max": 167.59543992199195,
+    "median": 133.2223832900628,
+    "max": 167.090588769775,
     "low": 80.2919098617076,
-    "high": 167.59543992199195,
-    "mos_pct": -34.42813665621707,
+    "high": 167.090588769775,
+    "mos_pct": -33.9114265116074,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 133.88938141026264,
+    "median_trimmed": 133.2223832900628,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,7 +98,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 55,
+    "filing_lag_days": 56,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-24"
   },
@@ -119,22 +119,22 @@
     "label": "Consumer Staples median (n=53)",
     "values": {
       "Quality": 50.0,
-      "Value": 48.74,
+      "Value": 49.06,
       "Growth": 50.0,
-      "Momentum": 38.94,
+      "Momentum": 38.58,
       "Health": 36.78,
       "Profitability": 51.57,
-      "Technical": 50.14,
-      "Risk": 47.1
+      "Technical": 49.2,
+      "Risk": 47.02
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.7877760360378,
-  "price_change_1d_pct": 0.3037,
+  "loss_chance_pct": 55.66578516019327,
+  "price_change_1d_pct": -0.5796,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 46.52,
+  "composite_score_adjusted": 46.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.19,
+  "osap_blended_score": 50.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +196,5 @@
     "latest_filing_date": "2026-05-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00102783350239941
+  "cross_source_delta": 4.1756584031310806e-08
 }
