@@ -518,7 +518,7 @@ PHASE_STATUS.md):
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
   pilot — **3a integration slice merged 2026-06-15 (#482)** ·
   **precache-900 Phase A merged (#486)**; #249 pre-cache DONE (#468),
-  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). Next universe step = **S&P 1500 cutover** (S&P 600 small-cap ingest + virtualized 1500-row table + Bonferroni / liquidity guards). Detail in WORKFLOW.md.
+  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). Next universe step = **S&P 1500 cutover** (S&P 600 small-cap ingest + virtualized 1500-row table + Bonferroni / liquidity guards). Detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
