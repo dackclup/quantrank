@@ -373,7 +373,7 @@ class TestGetSp1500Constituents:
         assert (df[df["ticker"] == "SML1"]["cohort"] == "sp600").all()
         assert (df[df["ticker"] == "SML2"]["cohort"] == "sp600").all()
 
-    def test_dedup_sp500_wins_on_overlap_with_sp400(
+    def test_dedup_sp500_wins_on_overlap_with_sp600(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: pytest.TempPathFactory
     ) -> None:
         """A ticker in both SP500 and SP600 must appear exactly once with cohort=sp500."""
