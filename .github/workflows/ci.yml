@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Unit tests (vitest)
         run: npm run test:unit
       - name: Build (static export)

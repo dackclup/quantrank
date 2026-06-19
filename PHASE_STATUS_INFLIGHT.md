@@ -4935,3 +4935,29 @@ frontend-builder BUILT-CLEAN · dependency-auditor GO · security-reviewer SAFE-
 (P0-P3 Python via #506/#508 + this frontend PR) is now complete.
 
 ---
+
+## PR (test+ci) — frontend vitest coverage expansion + hermetic CI (vitest exact-pin + npm ci) (in flight, 2026-06-19)
+
+Follow-up to #511 (which added the vitest runner + flagLabel contract test). Two parts, frontend/CI only:
+
+- **vitest coverage expansion** — `frontend/lib/format.test.ts` (new, 31 tests) + `frontend/lib/visual.test.ts`
+  (new, 90 tests). +121 tests (total frontend now 138 incl. the 17 flag-labels). Locks the pure-function
+  display layer: `format.ts` (`formatMosPct` clamps ±99/±500 + boundaries · `formatFairPrice` absurd-value
+  ≥$1M + sub-penny guards · `mosColorClass` 4 tiers) and `visual.ts` (`TIERS` contiguity + dark-pair
+  invariant · `getTier`/`scoreTierLabel` 5 boundaries · `MOS_BUCKETS` · `sectorStyle` all 11 GICS +
+  neutral-chip-body Phase-4-A1 invariant · `scoreColorClasses`/`scoreAccentColor` · `pillarColor`
+  composite-TIERS alignment §Gotchas invariant · `mosVisualFraction` · `universeLabel` ·
+  `filingLagBadgeClasses`). `data.ts` skipped (all exports fs-dependent Server-Component fns; pure helpers
+  are unexported). Two EDGE FINDINGS documented (not bugs, structurally unreachable from compute):
+  `getMosBucket(Infinity) → null` (cheap bucket upper bound is `< Infinity`, exclusive) and `TIERS` is
+  ordered highest-first so contiguity is `TIERS[i].min === TIERS[i+1].max`.
+- **Hermetic CI** — `frontend/package.json` pins `vitest` `^2.1.9` → exact `2.1.9` (lockfile regenerated);
+  `.github/workflows/ci.yml` Frontend job `npm install` → `npm ci` (installs strictly from the committed
+  lockfile, fails on drift). Net supply-chain hardening — no new dep, no permission/secret/trigger change.
+
+Verify: `npm ci` clean (lockfile in sync) · `npm run test:unit` 138/138 · `tsc --noEmit` clean. Gate:
+frontend-builder BUILT-CLEAN · security-reviewer GO/SAFE-TO-PUSH (npm ci is a hardening improvement; vitest
+pin is the same already-audited 2.1.9 from #511). No schema triple touch. No `.tsx`/UI surface touched, so
+no design review needed (pure test files + dep pin + workflow verb).
+
+---
