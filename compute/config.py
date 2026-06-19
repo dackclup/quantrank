@@ -136,6 +136,16 @@ WIKIPEDIA_SP400_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_400_comp
 SP400_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp400-v1.parquet"
 # SP900 = SP500 ∪ SP400 combined universe cache (de-duped, cohort column).
 SP900_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp900-v1.parquet"
+# S&P 1500 cutover — Slice 1 scout (no main.py wiring yet).
+# SP600 = small-cap index; SP1500 = SP500 ∪ SP400 ∪ SP600 (de-duped, cohort column).
+# Cache filename suffix `-v1` follows the universe-v2 bump convention
+# (bump if column set or normalisation changes). 7-day TTL matches SP500/SP400 cadence.
+WIKIPEDIA_SP600_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_600_companies"
+SP600_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp600-v1.parquet"
+SP1500_UNIVERSE_CACHE: Path = CACHE_DIR / "universe_sp1500-v1.parquet"
+# SP600 universe re-fetch cadence. 7 days matches the SP500/SP400 cache so all
+# constituent lists refresh on the same weekly schedule.
+SP600_CACHE_MAX_AGE_DAYS: int = 7
 # Multi-index membership — Dow 30 + NASDAQ 100 overlap tabs (0.10.23-phase8pilot).
 # Wikipedia pages for Dow Jones Industrial Average + Nasdaq-100 components.
 # 7-day TTL matches the SP500/SP400 cache cadence.

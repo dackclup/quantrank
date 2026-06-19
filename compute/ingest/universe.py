@@ -1,12 +1,17 @@
-"""S&P 500, S&P 400, and S&P 900 (combined) constituents from Wikipedia.
+"""S&P 500, S&P 400, S&P 600, and combined universe constituents from Wikipedia.
 
 SP500 cached to ``compute/cache/universe-v2.parquet`` (gitignored).
 SP400 cached to ``compute/cache/universe_sp400-v1.parquet`` (gitignored).
 SP900 (combined, de-duped) cached to ``compute/cache/universe_sp900-v1.parquet``.
+SP600 cached to ``compute/cache/universe_sp600-v1.parquet`` (gitignored).
+SP1500 (combined, de-duped) cached to ``compute/cache/universe_sp1500-v1.parquet``.
 
 Re-fetched after the respective ``*_CACHE_MAX_AGE_DAYS`` unless
 ``force_refresh=True``. Phase 8 pilot adds the SP400 + SP900 paths
 (PR 1 — observability-first; ranked output stays SP500-only until PR 3).
+
+S&P 1500 cutover — Slice 1 scout: adds SP600 fetcher + SP1500 constructor.
+NO main.py wiring in this slice (Slice 2). NO schema change.
 
 Multi-index membership (0.10.23-phase8pilot): adds ``fetch_dow30_constituents``
 + ``fetch_ndx_constituents`` (7-day cache, graceful-degradation) and
@@ -406,6 +411,280 @@ def get_sp900_constituents(force_refresh: bool = False) -> pd.DataFrame:
         len(combined),
         int((combined["cohort"] == "sp500").sum()),
         int((combined["cohort"] == "sp400").sum()),
+        cache,
+    )
+    return combined
+
+
+# ---------------------------------------------------------------------------
+# S&P 1500 cutover — Slice 1 scout (no main.py wiring)
+# ---------------------------------------------------------------------------
+
+
+def _parse_sp600_html(html: str) -> pd.DataFrame:
+    """Parse the S&P 600 Wikipedia page into a DataFrame.
+
+    The S&P 600 page uses the same wikitable structure as the S&P 400 page.
+    Column names may be "Symbol" or "Ticker"; we normalise both.  The CIK
+    column may be absent — we tolerate that gracefully and leave it None
+    (resolved at scoring time via ``Company(ticker).cik``).
+
+    ADRs are NOT in the S&P 600 (domestic small-cap index). No 20-F/6-K
+    filtering is needed here.
+
+    Mirrors ``_parse_sp400_html`` exactly — the two Wikipedia tables share
+    the same structure so the column-resolution and CIK zero-pad logic is
+    identical.  Both parsers are kept separate (rather than merging into a
+    generic helper) to match the existing codebase factoring where sp500
+    and sp400 each own their own parser.
+    """
+    soup = BeautifulSoup(html, "lxml")
+    tables = soup.find_all("table", {"class": "wikitable"})
+    if not tables:
+        raise ValueError("Could not find any wikitable on the S&P 600 Wikipedia page.")
+
+    df: pd.DataFrame | None = None
+    for table in tables:
+        try:
+            candidate = pd.read_html(StringIO(str(table)))[0]
+        except Exception:  # noqa: BLE001
+            continue
+        cols_lower = {str(c).lower().strip(): c for c in candidate.columns}
+        if "symbol" in cols_lower or "ticker" in cols_lower:
+            df = candidate
+            break
+
+    if df is None:
+        raise ValueError(
+            "Could not find S&P 600 constituents table on Wikipedia page. "
+            "Expected a wikitable with a 'Symbol' or 'Ticker' column."
+        )
+
+    # Normalise column names — the S&P 600 page may use "Ticker" or "Symbol".
+    col_map: dict[str, str] = {}
+    for col in df.columns:
+        cl = str(col).lower().strip()
+        if cl in ("symbol", "ticker"):
+            col_map[col] = "wiki_ticker"
+        elif cl in ("security", "company"):
+            col_map[col] = "name"
+        elif "sector" in cl and "sub" not in cl:
+            col_map[col] = "sector"
+        elif "sub" in cl and "industry" in cl:
+            col_map[col] = "sub_industry"
+        elif cl == "cik":
+            col_map[col] = "cik"
+
+    df = df.rename(columns=col_map)
+
+    if "wiki_ticker" not in df.columns:
+        raise ValueError(
+            f"S&P 600 Wikipedia table has no ticker column. Columns: {list(df.columns)}"
+        )
+
+    df["wiki_ticker"] = df["wiki_ticker"].astype(str)
+    df["ticker"] = df["wiki_ticker"].map(_normalize_ticker)
+
+    if "name" not in df.columns:
+        df["name"] = df["ticker"]
+    else:
+        df["name"] = df["name"].astype(str)
+
+    if "sector" not in df.columns:
+        df["sector"] = "Unknown"
+    else:
+        df["sector"] = df["sector"].astype(str).fillna("Unknown")
+
+    if "sub_industry" not in df.columns:
+        df["sub_industry"] = None
+
+    # CIK: zero-pad to 10 digits when present; otherwise leave None.
+    # Scoring time resolves missing CIKs via Company(ticker).cik.
+    if "cik" not in df.columns:
+        df["cik"] = None
+    else:
+        def _safe_cik(v: Any) -> str | None:  # noqa: ANN001
+            if pd.isna(v) or str(v).strip() in ("", "nan"):
+                return None
+            try:
+                return str(int(float(str(v)))).zfill(10)
+            except (ValueError, TypeError):
+                return None
+        df["cik"] = df["cik"].map(_safe_cik)
+
+    df = df[["ticker", "name", "sector", "sub_industry", "cik", "wiki_ticker"]]
+    df = df.drop_duplicates(subset=["ticker"]).reset_index(drop=True)
+    return df
+
+
+def fetch_sp600_constituents(force_refresh: bool = False) -> pd.DataFrame:
+    """Return the S&P 600 small-cap constituents, hitting the disk cache when fresh.
+
+    Mirrors the ``fetch_sp400_constituents`` caching pattern.  Cache file:
+    ``compute/cache/universe_sp600-v1.parquet`` (gitignored).
+
+    The returned DataFrame has the same columns as ``get_sp500_constituents``
+    (ticker, name, sector, sub_industry, cik, wiki_ticker).  The ``cik``
+    column may be None for tickers whose CIK was not on the Wikipedia page;
+    ``get_sp1500_constituents`` resolves those via edgartools before returning.
+
+    On any fetch or parse failure this function logs a WARNING and returns an
+    empty DataFrame — the cron MUST NOT crash if Wikipedia restructures this
+    page.  The empty-return graceful-degradation posture matches sp400's
+    failure behaviour (``fetch_sp400_constituents`` itself never raises
+    uncaught because the calling site in main.py wraps it in a try/except,
+    and here we add an inner guard for the Slice-1-no-wiring context).
+    """
+    cache = config.SP600_UNIVERSE_CACHE
+    if not force_refresh and cache.exists():
+        age_days = (time.time() - cache.stat().st_mtime) / 86400
+        if age_days < config.SP600_CACHE_MAX_AGE_DAYS:
+            logger.info("SP600 universe cache hit (age=%.1f days)", age_days)
+            return pd.read_parquet(cache)
+
+    logger.info(
+        "Fetching S&P 600 constituents from Wikipedia (%s)", config.WIKIPEDIA_SP600_URL
+    )
+    try:
+        html = _fetch_wikipedia_html(config.WIKIPEDIA_SP600_URL)
+        df = _parse_sp600_html(html)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "SP600 Wikipedia fetch/parse failed (graceful degradation — returning empty DataFrame): %s",
+            exc,
+        )
+        return pd.DataFrame(columns=["ticker", "name", "sector", "sub_industry", "cik", "wiki_ticker"])
+
+    try:
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        df.to_parquet(cache, index=False)
+        logger.info("Cached %d S&P 600 constituents to %s", len(df), cache)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("SP600 cache write failed (non-fatal): %s", exc)
+
+    return df
+
+
+def get_sp1500_constituents(force_refresh: bool = False) -> pd.DataFrame:
+    """Return the S&P 1500 = S&P 500 ∪ S&P 400 ∪ S&P 600 constituents DataFrame.
+
+    S&P 1500 cutover — Slice 1 scout (no main.py wiring). This function is
+    NOT called by main.py yet; it is available for tests and future Slice 2
+    wiring.
+
+    Construction:
+      1. Fetch SP500 (``get_sp500_constituents``).
+      2. Fetch SP400 (``fetch_sp400_constituents``).
+      3. Fetch SP600 (``fetch_sp600_constituents``).
+      4. Concatenate; add a ``cohort`` column ("sp500" | "sp400" | "sp600").
+      5. De-duplicate on ticker: sp500 > sp400 > sp600 priority (larger-cap
+         cohort wins when a ticker appears in multiple lists — matches how
+         ``get_sp900_constituents`` dedups sp500 vs sp400 via concat order +
+         ``drop_duplicates(keep="first")``).
+      6. For sp400 and sp600 rows with a None CIK: attempt CIK resolution via
+         ``Company(ticker).cik``. Failures are logged + the CIK stays None.
+
+    Dedup rationale: index-overlap is rare but can happen during rebalance.
+    The priority order (500 > 400 > 600) matches market-cap ordering so
+    the "correct" cohort label (the larger-cap index) is preserved.
+
+    Cache: ``compute/cache/universe_sp1500-v1.parquet`` (gitignored).
+    Re-built whenever any constituent list re-fetches (or force_refresh).
+    Target: ~1500 rows after dedup.
+    """
+    cache = config.SP1500_UNIVERSE_CACHE
+
+    # The SP1500 cache is only valid if all three constituent caches are fresh.
+    sp500_cache_age = (
+        (time.time() - config.UNIVERSE_CACHE.stat().st_mtime) / 86400
+        if config.UNIVERSE_CACHE.exists()
+        else float("inf")
+    )
+    sp400_cache_age = (
+        (time.time() - config.SP400_UNIVERSE_CACHE.stat().st_mtime) / 86400
+        if config.SP400_UNIVERSE_CACHE.exists()
+        else float("inf")
+    )
+    sp600_cache_age = (
+        (time.time() - config.SP600_UNIVERSE_CACHE.stat().st_mtime) / 86400
+        if config.SP600_UNIVERSE_CACHE.exists()
+        else float("inf")
+    )
+    constituent_caches_fresh = (
+        sp500_cache_age < config.UNIVERSE_CACHE_MAX_AGE_DAYS
+        and sp400_cache_age < config.SP400_CACHE_MAX_AGE_DAYS
+        and sp600_cache_age < config.SP600_CACHE_MAX_AGE_DAYS
+    )
+
+    if not force_refresh and cache.exists() and constituent_caches_fresh:
+        age_days = (time.time() - cache.stat().st_mtime) / 86400
+        if age_days < config.UNIVERSE_CACHE_MAX_AGE_DAYS:
+            logger.info("SP1500 universe cache hit (age=%.1f days)", age_days)
+            return pd.read_parquet(cache)
+
+    logger.info("Building S&P 1500 universe (500 + 400 mid-cap + 600 small-cap, de-duped)…")
+    sp500_df = get_sp500_constituents(force_refresh=force_refresh)
+    sp400_df = fetch_sp400_constituents(force_refresh=force_refresh)
+    sp600_df = fetch_sp600_constituents(force_refresh=force_refresh)
+
+    # Tag cohort before concat.  Order matters for dedup: sp500 rows first so
+    # drop_duplicates(keep="first") keeps the larger-cap cohort.
+    sp500_tagged = sp500_df.copy()
+    sp500_tagged["cohort"] = "sp500"
+
+    sp400_tagged = sp400_df.copy()
+    sp400_tagged["cohort"] = "sp400"
+
+    sp600_tagged = sp600_df.copy()
+    sp600_tagged["cohort"] = "sp600"
+
+    combined = pd.concat([sp500_tagged, sp400_tagged, sp600_tagged], ignore_index=True)
+
+    # De-duplicate: sp500 → sp400 → sp600 priority.  Rows with a higher-cap
+    # cohort appear first in the concat, so drop_duplicates(keep="first") keeps
+    # the correct cohort label on overlap tickers.
+    before = len(combined)
+    combined = combined.drop_duplicates(subset=["ticker"], keep="first").reset_index(drop=True)
+    n_deduped = before - len(combined)
+    if n_deduped > 0:
+        logger.info(
+            "[sp1500] De-duplicated %d tickers present in multiple indices (larger-cap cohort kept)",
+            n_deduped,
+        )
+
+    # Resolve missing CIKs for sp400 + sp600 rows (same pattern as sp900).
+    smallmid_mask = combined["cohort"].isin(("sp400", "sp600"))
+    missing_cik_mask = smallmid_mask & combined["cik"].isna()
+    n_missing = int(missing_cik_mask.sum())
+    if n_missing > 0:
+        logger.info(
+            "[sp1500] Resolving CIKs for %d sp400/sp600 tickers with null CIK (via edgartools)…",
+            n_missing,
+        )
+        resolved = 0
+        for idx in combined[missing_cik_mask].index:
+            ticker = str(combined.at[idx, "ticker"])
+            cik = _resolve_cik_for_midcap(ticker)
+            if cik:
+                combined.at[idx, "cik"] = cik
+                resolved += 1
+            else:
+                logger.warning("[sp1500] Could not resolve CIK for %s — skipping", ticker)
+        logger.info(
+            "[sp1500] CIK resolution: %d / %d resolved; %d remain None",
+            resolved,
+            n_missing,
+            n_missing - resolved,
+        )
+
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    combined.to_parquet(cache, index=False)
+    logger.info(
+        "SP1500 universe: %d total (%d sp500 + %d sp400 + %d sp600 after dedup); cached to %s",
+        len(combined),
+        int((combined["cohort"] == "sp500").sum()),
+        int((combined["cohort"] == "sp400").sum()),
+        int((combined["cohort"] == "sp600").sum()),
         cache,
     )
     return combined
