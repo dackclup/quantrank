@@ -4735,3 +4735,51 @@ compute-builder + test-engineer +13 tests; quantrank-reviewer re-review READY-TO
 Cohort-audit band added (~0.5-2% Tier-1; <0.5% Tier-2, re-gate if >5/cron).
 
 ---
+
+## PR (cross-source-corruption-obs) — feat(scoring+schema): cross-source share-count-corruption shadow observability, schema `0.10.26-phase8pilot` (in flight, 2026-06-19)
+
+**Branch**: `claude/cross-source-corruption-obs` · **Type**: feat(scoring+schema); **SCHEMA BUMP**
+`0.10.25-phase8pilot` → `0.10.26-phase8pilot`; **defense layer UNCHANGED (35)**.
+Methodology-scientist **RATIFIED-WITH-CONDITIONS** 2026-06-19 (per #114 audit).
+**PR-1 is SHADOW ONLY** — `rankings.json` + `stocks/*.json` ranking/score/flag fields stay BYTE-IDENTICAL.
+The ONLY output change is 4 new `Metadata.*` shadow fields.  PR-2 wires the veto/correction.
+
+**Background**: `cross_source_delta = |sec_mc − yf_mc| / sec_mc` (already in `StockDetail.cross_source_delta`).
+The #114 audit showed delta ≥ 50% is the corruption tail (COKE 6.07, CVNA 3.89) with structurally zero FP rate
+on clean stocks (BKNG ≈0, KLAC-post-#499 ≈0).  The dual-ratio corroboration is the load-bearing guard:
+COKE's yf marketCap is ALSO stale (mc_ratio≈7.07 ≠ true 10), so a bare round(mc_ratio) would infer a wrong
+factor.  Both mc_ratio and share_ratio must round to the SAME integer for CORRECT_CANDIDATE.
+
+**Changes** (`compute/**` only):
+- **`compute/scoring/risk_overlay.py`** — new `CorruptionGradeResult` dataclass + `grade_cross_source_corruption()`
+  pure function (NO_FIRE / CORRECT_CANDIDATE / VETO_CANDIDATE with dual-ratio corroboration) +
+  `compute_cross_source_corruption_shadow()` universe aggregator. GUT-FEEL provenance label on the
+  round(R) integer-recovery mechanism per methodology prior 6 (Q3 2026-08-19 follow-up).
+- **`compute/config.py`** — `DELTA_CORRUPTION_THRESHOLD=0.50` (LITERATURE-ANCHORED on #114 histogram
+  daylight: 95.45% <5%, corruption tail ≥50%) + `INTEGER_RATIO_TOLERANCE=POST_SPLIT_RATIO_TOLERANCE` (0.10).
+  SCHEMA_VERSION bumped `0.10.25` → `0.10.26`.
+- **`compute/output/schemas.py`** — 4 new `Metadata` fields (all `| None`, default None):
+  `cross_source_corruption_correct_candidate_count`, `cross_source_corruption_veto_candidate_count`,
+  `cross_source_corruption_ratio_disagreement_count`, `cross_source_corruption_inferred_ratio_by_ticker`.
+- **`compute/main.py`** — imports `compute_cross_source_corruption_shadow`; collects yf_market_cap +
+  yf_shares_outstanding as zero-cost cache-read side-channels in Step 8; aggregates after Step 8 loop
+  inside a graceful-degradation try/except; writes 4 fields to Metadata.
+- **`compute/ingest/splits.py`** — docstring corrected: the splits cache is NOT in any GHA bundle
+  (cold-every-run live fetch is the freshness mechanism; mtime-TTL is dead under actions/cache restore,
+  same class as #471/#498; bundling would freeze split detection per-quarter).
+- **`frontend/lib/schema-snapshot.json`** — regenerated (schema sentinel: TS types.ts mirror NEEDED for
+  the 4 new Metadata fields; they are dict-typed in Python → will be added as optional fields in TS).
+
+**Gold fixtures**: COKE → VETO_CANDIDATE + ratio_disagreement=True (load-bearing: mc_ratio≈7.07→7 ≠ share_ratio=10→10) ·
+CVNA → CORRECT_CANDIDATE inferred_ratio=5 · BKNG → NO_FIRE · KLAC → NO_FIRE. All 4 verified by python -c smoke.
+
+**Tests**: `test_config.py::test_schema_version_pinned` updated to `0.10.26` · `test_schema_check.py::test_F1` regenerated.
+Full offline suite: **2080 passed, 0 failed**. ruff clean, schema_check in-sync.
+
+Gate: schema-sentinel (TS mirror for 4 new Metadata fields — `cross_source_corruption_*`) ·
+test-engineer (shadow grading unit tests: NO_FIRE/CORRECT_CANDIDATE/VETO_CANDIDATE branches +
+dual-ratio-corroboration edge + ratio_disagreement edge + missing-yf_shares fallback to VETO +
+universe aggregator counts + graceful-degradation on None inputs) ·
+quantrank-reviewer (push gate — schema bump; byte-identical ranking invariant; Rule 18 obs-first).
+
+---

@@ -128,8 +128,20 @@ def test_schema_version_pinned():
     - ``RawMetrics.shares_outstanding_pre_split_raw: float | None`` — the raw
       EDGAR share count before the Tier-1 correction (Rule 9 audit trail);
       non-null only when the Tier-1 correction applied (``post_split_share_lag``
-      annotate in ``valuation_warnings``, NOT ``risk_flags``)."""
-    assert config.SCHEMA_VERSION == "0.10.25-phase8pilot"
+      annotate in ``valuation_warnings``, NOT ``risk_flags``).
+
+    PR-1 cross-source corruption shadow (0.10.26-phase8pilot, Rule 18
+    observability-first) — methodology-scientist RATIFIED-WITH-CONDITIONS
+    2026-06-19.  Adds four shadow ``Metadata`` counters for the generalized
+    cross-source share-count-corruption defense.  PR-1 is SHADOW ONLY —
+    no flag emitted, no score mutated, no ranking change:
+    - ``Metadata.cross_source_corruption_correct_candidate_count: int | None``
+    - ``Metadata.cross_source_corruption_veto_candidate_count: int | None``
+    - ``Metadata.cross_source_corruption_ratio_disagreement_count: int | None``
+    - ``Metadata.cross_source_corruption_inferred_ratio_by_ticker: dict[str, float] | None``
+    Grade COKE→VETO_CANDIDATE+ratio_disagreement / CVNA→CORRECT_CANDIDATE
+    inferred_ratio=5 / BKNG→NO_FIRE / KLAC-post-#499→NO_FIRE."""
+    assert config.SCHEMA_VERSION == "0.10.26-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

@@ -92,6 +92,26 @@
       "required": false,
       "default": null
     },
+    "cross_source_corruption_correct_candidate_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "cross_source_corruption_inferred_ratio_by_ticker": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "cross_source_corruption_ratio_disagreement_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "cross_source_corruption_veto_candidate_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "cross_source_delta_histogram": {
       "type": "dict[str, int] | None",
       "required": false,

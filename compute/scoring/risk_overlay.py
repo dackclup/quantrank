@@ -563,6 +563,333 @@ def check_post_split_share_lag(
         )
 
 
+# ---------------------------------------------------------------------------
+# Cross-source share-count-corruption shadow grader (PR-1, Rule 18 obs-first)
+# ---------------------------------------------------------------------------
+# Methodology-scientist RATIFIED-WITH-CONDITIONS 2026-06-19.
+# This module grades each ticker's cross-source delta into one of three
+# grades: NO_FIRE, CORRECT_CANDIDATE, or VETO_CANDIDATE.
+#
+# The dual-ratio corroboration is the load-bearing guard: BOTH the mc_ratio
+# (yf_market_cap / sec_mc) and share_ratio (yf_shares_outstanding / edgar_shares)
+# must independently round to the SAME integer within tolerance for
+# CORRECT_CANDIDATE.  This prevents COKE-class errors where yfinance's
+# marketCap is ALSO stale (so mc_ratio ≈ 7.07 instead of true 10), causing a
+# bare round(R) on the mc path alone to infer a wrong factor.
+#
+# PR-1 is SHADOW ONLY — no flag is emitted, no score is mutated, no
+# ranking changes.  This module exposes the grading logic so main.py can
+# aggregate the 4 new Metadata counters.  PR-2 will wire the veto/correction.
+#
+# **GUT-FEEL NOTE (methodology prior 6)**: the ``round(R)`` integer-recovery
+# mechanism is NOT yet literature-anchored.  The assumption that a
+# share-count corruption factor is always a near-integer (2×, 5×, 10×, etc.)
+# is plausible (stock-split ratios are always integers; unit-conversion
+# errors like millions→raw are always powers of 10) but has not been
+# validated against a systematic literature source.  The literature-searcher
+# is checking in parallel (Q3 2026-08-19 follow-up will either anchor or
+# revise the mechanism).  Until then treat the inferred_ratio as
+# informational, not authoritative.
+# ---------------------------------------------------------------------------
+
+_CORRUPTION_GRADE_NO_FIRE = "NO_FIRE"
+_CORRUPTION_GRADE_CORRECT_CANDIDATE = "CORRECT_CANDIDATE"
+_CORRUPTION_GRADE_VETO_CANDIDATE = "VETO_CANDIDATE"
+
+
+@dataclass(frozen=True)
+class CorruptionGradeResult:
+    """Shadow grade for one ticker's cross-source share-count-corruption signal.
+
+    All fields are None when the grade is NO_FIRE (delta below threshold)
+    or when inputs were insufficient to compute a ratio.
+
+    This result is purely diagnostic — PR-1 does NOT mutate any score,
+    flag, or recommendation.  See module docstring for the GUT-FEEL caveat
+    on the integer-recovery mechanism.
+    """
+
+    grade: str
+    """One of ``NO_FIRE`` / ``CORRECT_CANDIDATE`` / ``VETO_CANDIDATE``."""
+
+    delta: float | None
+    """``|sec_mc − yf_mc| / sec_mc`` — same value as ``StockDetail.cross_source_delta``."""
+
+    mc_ratio: float | None
+    """``yf_market_cap / sec_mc`` — the market-cap ratio (> 1 when yf > sec)."""
+
+    share_ratio: float | None
+    """``yf_shares_outstanding / edgar_shares`` — None when yf_shares not available."""
+
+    inferred_ratio: float | None
+    """``round(mc_ratio)`` when CORRECT_CANDIDATE (both ratios agree); else None.
+
+    GUT-FEEL provenance: integer rounding assumes the corruption factor is
+    always a near-integer (split ratios, unit-conversion errors).  This will
+    be anchored or revised at Q3 2026-08-19 per the literature-searcher
+    parallel track.
+    """
+
+    ratio_disagreement: bool
+    """True when mc_ratio and share_ratio round to DIFFERENT integers (COKE-class detector).
+
+    A disagreement fires when both ratios are available, both round to an
+    integer ≥ 2 within tolerance, but the two integers differ.  This is the
+    structural signal that one of the yfinance sources (marketCap or
+    sharesOutstanding) is stale while the other is fresh — exactly the COKE
+    pattern where yf marketCap is stale (7.07 instead of 10) but yf
+    sharesOutstanding may reflect the real count.
+    """
+
+
+def grade_cross_source_corruption(
+    edgar_shares: float | None,
+    current_price: float | None,
+    yf_market_cap: float | None,
+    yf_shares_outstanding: float | None,
+) -> CorruptionGradeResult:
+    """Shadow-grade one ticker's cross-source share-count-corruption signal.
+
+    Parameters
+    ----------
+    edgar_shares:
+        ``FundamentalsSnapshot.shares_outstanding`` — the EDGAR-derived count.
+        ``None`` or non-positive → grade is NO_FIRE (insufficient input).
+    current_price:
+        Last close price in dollars (from the yfinance OHLCV cache).
+        ``None`` or non-positive → NO_FIRE.
+    yf_market_cap:
+        yfinance ``.info["marketCap"]`` (already fetched by the cross-source
+        validator in the existing main.py Step 8 loop — no new yfinance call).
+        ``None`` or non-positive → NO_FIRE (no validation possible).
+    yf_shares_outstanding:
+        yfinance ``.info["sharesOutstanding"]`` from the same cache write as
+        ``yf_market_cap`` (``fetch_yfinance_shares_outstanding`` in
+        ``compute/ingest/cross_source.py``).  ``None`` = unavailable; the
+        dual-ratio corroboration falls back to mc-only path (single ratio),
+        which cannot produce CORRECT_CANDIDATE without corroboration —
+        VETO_CANDIDATE is the safe fallback when share_ratio is absent.
+
+    Returns
+    -------
+    CorruptionGradeResult
+        ``grade`` is one of ``NO_FIRE`` / ``CORRECT_CANDIDATE`` /
+        ``VETO_CANDIDATE``.  See class docstring for field semantics.
+
+    Grade rules
+    -----------
+    1. **NO_FIRE** — ``delta < DELTA_CORRUPTION_THRESHOLD (0.50)``.
+       Covers clean stocks (BKNG ≈ 0, KLAC-post-#499 ≈ 0).
+    2. **CORRECT_CANDIDATE** — ``delta ≥ 0.50`` AND near-integer mc_ratio
+       (``|mc_ratio − round(mc_ratio)| / round(mc_ratio) ≤ 0.10`` with
+       ``round(mc_ratio) ≥ 2``) AND dual-ratio corroboration: share_ratio
+       is also available, also near-integer, AND rounds to the SAME integer
+       as mc_ratio within tolerance.  CVNA lands here (mc_ratio ≈ 4.89 →
+       5, share_ratio ≈ 4.89 → 5, agree).
+    3. **VETO_CANDIDATE** — ``delta ≥ 0.50`` but NOT CORRECT_CANDIDATE.
+       Covers: (a) mc_ratio not near-integer, (b) share_ratio unavailable
+       (no corroboration), (c) ratios near-integer but DISAGREE (COKE:
+       mc_ratio ≈ 7.07 → 7, share_ratio ≈ 10 → 10, disagree →
+       ratio_disagreement=True → VETO_CANDIDATE).
+
+    The dual-ratio corroboration is the guard that prevents COKE from
+    landing in CORRECT_CANDIDATE: COKE's yfinance marketCap is ALSO stale,
+    so mc_ratio ≈ 7.07 ≠ true factor 10.  A bare round(mc_ratio) would infer
+    7 and install a ~30% wrong share count.  The disagree signal catches this.
+    """
+    _no_fire = CorruptionGradeResult(
+        grade=_CORRUPTION_GRADE_NO_FIRE,
+        delta=None,
+        mc_ratio=None,
+        share_ratio=None,
+        inferred_ratio=None,
+        ratio_disagreement=False,
+    )
+
+    # Guard: all inputs must be positive scalars to compute anything.
+    if edgar_shares is None or edgar_shares <= 0:
+        return _no_fire
+    if current_price is None or current_price <= 0:
+        return _no_fire
+    if yf_market_cap is None or yf_market_cap <= 0:
+        return _no_fire
+
+    sec_mc = float(edgar_shares) * float(current_price)
+    if sec_mc <= 0:
+        return _no_fire
+
+    delta = abs(sec_mc - float(yf_market_cap)) / sec_mc
+
+    if delta < config.DELTA_CORRUPTION_THRESHOLD:
+        # Below corruption threshold — this is normal cross-source noise.
+        return CorruptionGradeResult(
+            grade=_CORRUPTION_GRADE_NO_FIRE,
+            delta=delta,
+            mc_ratio=None,
+            share_ratio=None,
+            inferred_ratio=None,
+            ratio_disagreement=False,
+        )
+
+    # --- Corruption territory (delta >= 0.50) --- compute the ratios.
+    mc_ratio: float = float(yf_market_cap) / sec_mc  # always > 0 given guards above
+    share_ratio: float | None = None
+    if (
+        yf_shares_outstanding is not None
+        and yf_shares_outstanding > 0
+        and edgar_shares > 0
+    ):
+        share_ratio = float(yf_shares_outstanding) / float(edgar_shares)
+
+    def _is_near_integer(r: float) -> tuple[bool, int]:
+        """Return (is_near_integer, rounded_int). Requires round(r) >= 2."""
+        rounded = round(r)
+        if rounded < 2:
+            return (False, rounded)
+        frac_error = abs(r - rounded) / rounded
+        return (frac_error <= config.INTEGER_RATIO_TOLERANCE, rounded)
+
+    mc_near, mc_rounded = _is_near_integer(mc_ratio)
+
+    if not mc_near:
+        # mc_ratio not near any integer ≥ 2 → cannot infer a correction factor.
+        return CorruptionGradeResult(
+            grade=_CORRUPTION_GRADE_VETO_CANDIDATE,
+            delta=delta,
+            mc_ratio=mc_ratio,
+            share_ratio=share_ratio,
+            inferred_ratio=None,
+            ratio_disagreement=False,
+        )
+
+    # mc_ratio is near-integer.  Check dual-ratio corroboration.
+    if share_ratio is None:
+        # No yf_shares_outstanding available → cannot corroborate.
+        # Safe fallback: VETO_CANDIDATE (cannot confirm the inferred factor).
+        return CorruptionGradeResult(
+            grade=_CORRUPTION_GRADE_VETO_CANDIDATE,
+            delta=delta,
+            mc_ratio=mc_ratio,
+            share_ratio=None,
+            inferred_ratio=None,
+            ratio_disagreement=False,
+        )
+
+    share_near, share_rounded = _is_near_integer(share_ratio)
+
+    if not share_near:
+        # share_ratio is available but NOT near-integer → disagree on shape.
+        return CorruptionGradeResult(
+            grade=_CORRUPTION_GRADE_VETO_CANDIDATE,
+            delta=delta,
+            mc_ratio=mc_ratio,
+            share_ratio=share_ratio,
+            inferred_ratio=None,
+            ratio_disagreement=True,  # one near-integer, one not
+        )
+
+    if mc_rounded != share_rounded:
+        # Both near-integer but different integers → COKE-class ratio disagreement.
+        # e.g. mc_ratio≈7.07→7, share_ratio≈10.0→10 → disagree → VETO_CANDIDATE.
+        return CorruptionGradeResult(
+            grade=_CORRUPTION_GRADE_VETO_CANDIDATE,
+            delta=delta,
+            mc_ratio=mc_ratio,
+            share_ratio=share_ratio,
+            inferred_ratio=None,
+            ratio_disagreement=True,
+        )
+
+    # Both near-integer AND agree on the same integer → CORRECT_CANDIDATE.
+    # GUT-FEEL: inferred_ratio is the integer factor (e.g. 5 for CVNA),
+    # pending Q3 2026-08-19 literature anchor.
+    return CorruptionGradeResult(
+        grade=_CORRUPTION_GRADE_CORRECT_CANDIDATE,
+        delta=delta,
+        mc_ratio=mc_ratio,
+        share_ratio=share_ratio,
+        inferred_ratio=float(mc_rounded),
+        ratio_disagreement=False,
+    )
+
+
+def compute_cross_source_corruption_shadow(
+    universe_deltas: dict[str, float | None],
+    snapshots: dict[str, FundamentalsSnapshot | None],
+    current_prices: dict[str, float | None],
+    yf_market_caps: dict[str, float | None],
+    yf_shares_outstanding: dict[str, float | None],
+) -> tuple[int, int, int, dict[str, float]]:
+    """Aggregate shadow corruption grades across the universe.
+
+    Iterates the universe using the already-fetched cross-source data from the
+    existing Step 8 loop.  Does NOT issue any new yfinance fetch — all inputs
+    are from caches already populated by the main.py cross-source pass.
+
+    Parameters
+    ----------
+    universe_deltas:
+        ``{ticker: cross_source_delta}`` from the existing Step 8 validator
+        (``cross_source_delta_by_ticker`` in ``main.py``).  Used to identify
+        which tickers have a computable delta; others are skipped.
+    snapshots, current_prices, yf_market_caps, yf_shares_outstanding:
+        Per-ticker dicts already available in the main.py Step 8 context.
+        Keyed by ticker; values may be None (missing inputs → NO_FIRE).
+
+    Returns
+    -------
+    tuple[int, int, int, dict[str, float]]
+        ``(correct_candidate_count, veto_candidate_count,
+           ratio_disagreement_count, inferred_ratio_by_ticker)``
+
+        ``inferred_ratio_by_ticker`` maps ticker → ``inferred_ratio`` for
+        every CORRECT_CANDIDATE ticker where inferred_ratio is not None.
+        Used by Metadata.cross_source_corruption_inferred_ratio_by_ticker.
+    """
+    correct_candidate_count: int = 0
+    veto_candidate_count: int = 0
+    ratio_disagreement_count: int = 0
+    inferred_ratio_by_ticker: dict[str, float] = {}
+
+    for ticker, delta in universe_deltas.items():
+        if delta is None:
+            # Validator couldn't run (missing snap/price/yf_mc) — skip.
+            continue
+
+        snap = snapshots.get(ticker)
+        edgar_shares: float | None = (
+            float(snap.shares_outstanding)
+            if snap is not None and snap.shares_outstanding is not None
+            else None
+        )
+        current_price = current_prices.get(ticker)
+        yf_mc = yf_market_caps.get(ticker)
+        yf_so = yf_shares_outstanding.get(ticker)
+
+        result = grade_cross_source_corruption(
+            edgar_shares=edgar_shares,
+            current_price=current_price,
+            yf_market_cap=yf_mc,
+            yf_shares_outstanding=yf_so,
+        )
+
+        if result.grade == _CORRUPTION_GRADE_CORRECT_CANDIDATE:
+            correct_candidate_count += 1
+            if result.inferred_ratio is not None:
+                inferred_ratio_by_ticker[ticker] = result.inferred_ratio
+        elif result.grade == _CORRUPTION_GRADE_VETO_CANDIDATE:
+            veto_candidate_count += 1
+            if result.ratio_disagreement:
+                ratio_disagreement_count += 1
+
+    return (
+        correct_candidate_count,
+        veto_candidate_count,
+        ratio_disagreement_count,
+        inferred_ratio_by_ticker,
+    )
+
+
 def compute_risk_flags(
     snapshots: dict[str, FundamentalsSnapshot | None],
     *,

@@ -8,20 +8,37 @@ post-split share count.
 Cache strategy
 --------------
 
-Modelled on ``compute/ingest/cross_source.py``'s yfinance_info 24h-TTL
-cache.  Split events are date-stamped and stable — once a split fires
-it never un-fires — so a 24h TTL is conservative and correct.  The
-cache lives at ``compute/cache/yfinance_splits/<TICKER>.json`` (the
-directory is gitignored along with the rest of ``compute/cache/``).
+Split events are date-stamped and stable — once a split fires it never
+un-fires. The 24h mtime-based TTL is therefore a sound WITHIN-RUN
+de-duplication gate (it stops repeat calls in the same cron from
+re-fetching), but it is **NOT** the cross-run freshness mechanism — that
+is cold-every-run live fetching (see below), because the mtime TTL is
+dead across GHA runs (``actions/cache`` resets mtime on restore, #498).
 
-Unlike the ``prices.py`` freshness gate (issue #498 last-bar-date
-recency), ``.splits`` is event-data rather than a continuous price
-series, so file-mtime TTL is the correct freshness mechanism here.
-A cache entry older than 24h is re-fetched live; within 24h the
-cached payload is returned as-is.  This avoids a new GHA mtime
-regression because the cache is in the SLOW-TEXT bundle (run-id key,
-always saves) — the mtime is never reset to "now" on a fresh checkout
-in the same way the fast (quarter-key) bundle is.
+**The splits cache is intentionally NOT in any GHA bundle** (neither the
+fast quarter-key bundle nor the slow-text run-id bundle).  Cold-every-run
+live fetching is the deliberate freshness mechanism because:
+
+1. ``_cache_read``'s mtime-based TTL is **dead on GHA** when the cache
+   file is restored from ``actions/cache`` — ``actions/cache`` resets
+   every restored file's mtime to "now" on checkout, so a restored entry
+   with a 6-day-old split history would look 0 seconds old and be served
+   as fresh indefinitely (same failure class as prices.py #471 / #498).
+2. Bundling the splits cache (even in the slow-text / run-id key bundle)
+   would freeze split detection within a GHA run: if a stock split on
+   Monday and the slow-text cache was written Sunday, a Tuesday cron
+   restoring Sunday's bundle would serve Sunday's stale "no splits" entry
+   until the next cold-cache run.
+3. The yfinance ``.splits`` call is cheap (a single HTTP request with no
+   EDGAR dependency) and split events are rare (< 0.5% of tickers/week),
+   so the cost of a live fetch per uncached ticker is negligible compared
+   to the cost of a missed split detection.
+
+The cache lives at ``compute/cache/yfinance_splits/<TICKER>.json`` (the
+directory is gitignored along with the rest of ``compute/cache/``).
+Within a single GHA run the mtime-gate functions correctly (the file was
+written minutes ago by ``_cache_write``, not hours ago by cache restore)
+so warm-run repeat calls within the same run still hit the in-run cache.
 
 Graceful degradation
 --------------------
