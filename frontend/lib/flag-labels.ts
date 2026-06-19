@@ -1,7 +1,7 @@
 // Shared human labels for the defense-layer flags that surface across the app:
 //   • `valuation_warnings` (compute/valuation/ensemble.py + the manipulation
 //     flags compute/main.py ALSO appends — beneish/dechow/… at main.py:1650+)
-//   • `risk_flags` (the 7 active vetoes + the annotate cohort)
+//   • `risk_flags` (the 9 active vetoes + the annotate cohort)
 //
 // One map so the SAME flag never reads two ways across two surfaces (the
 // FairPriceCard valuation chips, the cross-stock CompareMatrix risk row, and any
@@ -65,6 +65,7 @@ export const FLAG_LABELS: Record<string, string> = {
   non_reliance_filing: '8-K Item 4.02 non-reliance',
   beneish_manipulation_veto: 'Beneish M-score veto',
   dechow_manipulation_veto: 'Dechow F-score veto',
+  fundamentals_unavailable: 'Fundamentals unavailable',
   stale_filing_hard: 'Stale filing — fair-price suppressed',
 };
 

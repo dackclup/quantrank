@@ -4902,3 +4902,36 @@ consistency). CLAUDE.md / AGENTS.md lockstep satisfied via this INFLIGHT entry
 CLAUDE.md / PHASE_STATUS.md — so no AGENTS.md substance diff applies).
 
 ---
+
+## PR (test+ci+fix) — frontend vitest runner + flagLabel contract test + fundamentals_unavailable label fix (in flight, 2026-06-19)
+
+The frontend test-coverage follow-up to #506/#508 (which closed the Python-side gaps). Adds the
+frontend's FIRST real test runner + a contract guard for the Python↔TS defense-flag label boundary,
+and fixes a drift bug the new test surfaced. Branched off `main` post-#508.
+
+- **vitest runner** — `frontend/package.json` adds `vitest ^2.1.9` (devDependency) + a `test:unit`
+  script (`vitest run`, one-shot CI mode); new `frontend/vitest.config.ts` (node env, no jsdom — pure
+  pure-function contract tests). Replaces the un-wired `downsample.test.mjs` precedent with a real
+  runner. Dependency-auditor GO (dev-only, all MIT/Apache, no reachable CVE — vite/esbuild dev-server
+  CVEs don't apply to `vitest run`); security-reviewer SAFE (devDep correctly scoped, never in the
+  static export).
+- **`flagLabel` contract test** — `frontend/lib/flag-labels.test.ts` (new, 17 tests). Guards the
+  `flag-labels.ts` map (the SHARED Python-flag-string → UI-label token, AGENTS.md §Gotchas): all 9
+  active-veto flag literals have an EXPLICIT curated entry (not the Title-Case fallback), representative
+  annotates resolve, and the unknown-key Title-Case fallback is pinned. A Python flag rename without a
+  matching map update now fails CI.
+- **DRIFT FIX** — `frontend/lib/flag-labels.ts`: the test surfaced that `fundamentals_unavailable`
+  (active veto since #487, schema 0.10.22+) was MISSING from `FLAG_LABELS` and fell back to Title Case
+  silently. Added `fundamentals_unavailable: 'Fundamentals unavailable'` + corrected the stale header
+  comment (`7 → 9 active vetoes`). UI display unchanged in practice (the fallback already read
+  "Fundamentals Unavailable"); now it's a curated, rename-guarded entry.
+- **CI wiring** — `.github/workflows/ci.yml`: a `Unit tests (vitest)` step (`npm run test:unit`) added
+  to the `Frontend (build)` job, BEFORE the build (tests gate the build). No `permissions:` change, no
+  new secret/env surface, triggers on the safe `pull_request` event (security-reviewer confirmed).
+
+Verify: `npm run test:unit` 17/17 pass · `tsc --noEmit` clean · no schema triple touch. Gate:
+frontend-builder BUILT-CLEAN · dependency-auditor GO · security-reviewer SAFE-TO-PUSH. frontend
+`flagLabel`/vitest was the LAST remaining item from the test-coverage analysis — the coverage sweep
+(P0-P3 Python via #506/#508 + this frontend PR) is now complete.
+
+---
