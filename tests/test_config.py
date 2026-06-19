@@ -141,7 +141,7 @@ def test_schema_version_pinned():
     - ``Metadata.cross_source_corruption_inferred_ratio_by_ticker: dict[str, float] | None``
     Grade COKE→VETO_CANDIDATE+ratio_disagreement / CVNA→CORRECT_CANDIDATE
     inferred_ratio=5 / BKNG→NO_FIRE / KLAC-post-#499→NO_FIRE."""
-    assert config.SCHEMA_VERSION == "0.10.26-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.27-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

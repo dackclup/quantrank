@@ -178,17 +178,57 @@ def _shares_outstanding_cache_read(ticker: str) -> float | None:
     return float(val)
 
 
+def _dividend_cache_read(ticker: str) -> tuple[float | None, float | None]:
+    """Return cached (dividend_yield_pct, payout_ratio) or (None, None).
+
+    Reuses the same ``yfinance_info/<ticker>.json`` file as the market-cap
+    cache.  ``dividend_yield_pct`` is stored as a PERCENT (e.g. 2.0 for 2%),
+    converted from yfinance's fractional ``dividendYield`` at write time.
+    ``payout_ratio`` is the raw yfinance fraction (0-1).
+
+    Backward-compatible: cache entries written before this field existed
+    simply have no ``dividend_yield_pct`` / ``payout_ratio`` keys and
+    return (None, None).
+    """
+    path = _cache_path(ticker)
+    if not path.exists():
+        return (None, None)
+    try:
+        age_seconds = time.time() - path.stat().st_mtime
+        if age_seconds > _CACHE_TTL_SECONDS:
+            return (None, None)
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning("yfinance_info dividend cache read failed for %s: %s", ticker, e)
+        return (None, None)
+    dy_val = payload.get("dividend_yield_pct")
+    pr_val = payload.get("payout_ratio")
+    dividend_yield_pct = (
+        float(dy_val) if isinstance(dy_val, (int, float)) and dy_val >= 0 else None
+    )
+    payout_ratio = (
+        float(pr_val) if isinstance(pr_val, (int, float)) and pr_val >= 0 else None
+    )
+    return (dividend_yield_pct, payout_ratio)
+
+
 def _cache_write(
     ticker: str,
     market_cap: float,
     shares_outstanding: float | None = None,
+    dividend_yield_pct: float | None = None,
+    payout_ratio: float | None = None,
 ) -> None:
-    """Merge-write market_cap (and optionally shares_outstanding) into the cache.
+    """Merge-write market_cap (and optionally other fields) into the cache.
 
     Reads the existing JSON file first so that a subsequent exchange-code
-    write (``_exchange_cache_write``) does not clobber a freshly written
-    ``shares_outstanding`` value.  The merge pattern keeps the file
-    as the single source of truth for all yfinance_info fields.
+    write (``_exchange_cache_write``) does not clobber freshly written
+    values.  The merge pattern keeps the file as the single source of
+    truth for all yfinance_info fields.
+
+    ``dividend_yield_pct`` is stored as a PERCENT (e.g. 2.0 for 2%),
+    already converted from yfinance's fractional ``dividendYield`` by the
+    caller.  ``payout_ratio`` is the raw 0-1 fraction from yfinance.
     """
     path = _cache_path(ticker)
     payload: dict[str, object] = {}
@@ -202,6 +242,13 @@ def _cache_write(
     payload["market_cap"] = float(market_cap)
     if shares_outstanding is not None and shares_outstanding > 0:
         payload["shares_outstanding"] = float(shares_outstanding)
+    # Dividend fields: store only when the ingest yielded a positive value.
+    # Zero dividend_yield_pct is valid (non-dividend payer detected) and is
+    # also stored so pays_dividend can be derived correctly on cache reads.
+    if dividend_yield_pct is not None and dividend_yield_pct >= 0:
+        payload["dividend_yield_pct"] = float(dividend_yield_pct)
+    if payout_ratio is not None and payout_ratio >= 0:
+        payload["payout_ratio"] = float(payout_ratio)
     tmp = path.with_suffix(path.suffix + ".tmp")
     try:
         with tmp.open("w", encoding="utf-8") as f:
@@ -219,19 +266,36 @@ def _cache_write(
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
-def _yf_info_fetch(ticker: str) -> tuple[float | None, float | None]:
-    """Pull marketCap + sharesOutstanding from yfinance .info in one call.
+def _yf_info_fetch(
+    ticker: str,
+) -> tuple[float | None, float | None, float | None, float | None]:
+    """Pull marketCap + sharesOutstanding + dividendYield + payoutRatio in one call.
 
-    Returns ``(market_cap, shares_outstanding)``.  Either element may be
-    None when the field is absent or non-positive.  Raises on persistent
-    network errors (tenacity retries the caller).
+    Returns ``(market_cap, shares_outstanding, dividend_yield_pct, payout_ratio)``.
+    Any element may be None when the field is absent or invalid.  Raises on
+    persistent network errors (tenacity retries the caller).
+
+    ``dividend_yield_pct`` is returned as a PERCENT (multiplied by 100)
+    because yfinance ``dividendYield`` is a fraction (e.g. 0.02 → 2.0%).
+    ``payout_ratio`` is returned as-is (0-1 fraction).
     """
     info = yf.Ticker(ticker).info
     mc_val = info.get("marketCap") if isinstance(info, dict) else None
     so_val = info.get("sharesOutstanding") if isinstance(info, dict) else None
+    dy_val = info.get("dividendYield") if isinstance(info, dict) else None
+    pr_val = info.get("payoutRatio") if isinstance(info, dict) else None
     market_cap = float(mc_val) if isinstance(mc_val, (int, float)) and mc_val > 0 else None
     shares_out = float(so_val) if isinstance(so_val, (int, float)) and so_val > 0 else None
-    return (market_cap, shares_out)
+    # dividendYield is a fraction in yfinance (e.g. 0.0123 = 1.23%) — convert to percent.
+    dividend_yield_pct = (
+        float(dy_val) * 100.0
+        if isinstance(dy_val, (int, float)) and dy_val >= 0
+        else None
+    )
+    payout_ratio = (
+        float(pr_val) if isinstance(pr_val, (int, float)) and pr_val >= 0 else None
+    )
+    return (market_cap, shares_out, dividend_yield_pct, payout_ratio)
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
@@ -304,7 +368,9 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
         return cached
 
     try:
-        market_cap, shares_outstanding = _yf_info_fetch(ticker)
+        market_cap, shares_outstanding, dividend_yield_pct, payout_ratio = (
+            _yf_info_fetch(ticker)
+        )
     except Exception as e:  # noqa: BLE001
         logger.warning("yfinance info fetch failed for %s: %s", ticker, e)
         return None
@@ -312,10 +378,16 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
     if market_cap is None:
         return None
 
-    # Populate both fields in a single cache write so a subsequent call to
-    # fetch_yfinance_shares_outstanding hits the cache without a second
-    # Ticker.info round-trip.
-    _cache_write(ticker, market_cap, shares_outstanding)
+    # Populate all fields in a single cache write so subsequent calls to
+    # fetch_yfinance_shares_outstanding and fetch_yfinance_dividend hit the
+    # cache without a second Ticker.info round-trip.
+    _cache_write(
+        ticker,
+        market_cap,
+        shares_outstanding,
+        dividend_yield_pct=dividend_yield_pct,
+        payout_ratio=payout_ratio,
+    )
     return market_cap
 
 
@@ -374,6 +446,111 @@ def fetch_yfinance_shares_outstanding(ticker: str) -> float | None:
     # market_cap call (earlier in the same loop iteration) already did the
     # Ticker.info round-trip and populated the cache.
     return _shares_outstanding_cache_read(ticker)
+
+
+def fetch_yfinance_dividend(
+    ticker: str,
+) -> tuple[float | None, bool | None, float | None]:
+    """Return ``(dividend_yield_pct, pays_dividend, payout_ratio)`` for ``ticker``.
+
+    Dividend signal PR-1 (roadmap item #5 / 7a — observability-first,
+    Rule 18).  This is a PURE CACHE-READ off the existing
+    ``yfinance_info/<ticker>.json`` cache file populated by
+    ``fetch_yfinance_market_cap`` during the Step-8 cross-source loop.
+    No new network round-trip is introduced; the dividend fields are
+    written to the cache as a zero-cost side-channel during the live
+    ``_yf_info_fetch`` call that already fetches ``marketCap`` +
+    ``sharesOutstanding``.
+
+    Parameters
+    ----------
+    ticker:
+        Stock ticker symbol.
+
+    Returns
+    -------
+    tuple[float | None, bool | None, float | None]
+        ``(dividend_yield_pct, pays_dividend, payout_ratio)`` where:
+
+        - ``dividend_yield_pct``: annualised dividend yield expressed as
+          a PERCENT (e.g. 2.0 for 2%).  Derived from yfinance
+          ``dividendYield`` (a fraction) multiplied by 100.  Zero means
+          the ticker actively pays no dividend (confirmed by yfinance);
+          ``None`` means the data was unavailable.
+        - ``pays_dividend``: ``True`` iff ``dividend_yield_pct > 0``;
+          ``False`` iff ``dividend_yield_pct == 0``; ``None`` when
+          ``dividend_yield_pct`` is ``None``.
+        - ``payout_ratio``: raw 0-1 fraction from yfinance
+          ``payoutRatio``, or ``None``.
+
+    Failure semantics
+    -----------------
+    Returns ``(None, None, None)`` on:
+
+    - No cache entry exists (cold cache / first run before
+      ``fetch_yfinance_market_cap`` has been called for this ticker).
+    - Cache entry is stale / corrupt.
+    - Dividend fields were absent from the yfinance ``.info`` dict
+      (e.g. a ticker with no dividend history).
+
+    This function NEVER triggers a live yfinance fetch.  Callers that
+    need live data must call ``fetch_yfinance_market_cap`` first (which
+    populates all fields in one round-trip), then call this function.
+    In practice the Step-8 loop already calls ``fetch_yfinance_market_cap``
+    earlier in the same ticker iteration, so the cache is warm by the
+    time this function is called.
+
+    QR_SKIP_CROSS_SOURCE
+    ---------------------
+    When ``QR_SKIP_CROSS_SOURCE=1`` is set (pre-merge-prod-sim escape
+    hatch), reads the cache with the same stale-tolerant path as
+    ``fetch_yfinance_shares_outstanding``: warm cache → return values;
+    cold cache → ``(None, None, None)`` (no live fetch).
+    """
+    if os.environ.get("QR_SKIP_CROSS_SOURCE"):
+        cache_file = _cache_path(ticker)
+        if cache_file.exists():
+            try:
+                payload = json.loads(cache_file.read_text(encoding="utf-8"))
+                dy_val = payload.get("dividend_yield_pct")
+                pr_val = payload.get("payout_ratio")
+                dividend_yield_pct = (
+                    float(dy_val)
+                    if isinstance(dy_val, (int, float)) and dy_val >= 0
+                    else None
+                )
+                payout_ratio = (
+                    float(pr_val)
+                    if isinstance(pr_val, (int, float)) and pr_val >= 0
+                    else None
+                )
+                pays_dividend = (
+                    dividend_yield_pct > 0 if dividend_yield_pct is not None else None
+                )
+                logger.debug(
+                    "yfinance_info dividend FORCE-HIT (QR_SKIP_CROSS_SOURCE=1) "
+                    "for %s (stale-tolerant)",
+                    ticker,
+                )
+                return (dividend_yield_pct, pays_dividend, payout_ratio)
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "QR_SKIP_CROSS_SOURCE dividend stale-read failed for %s: %s — "
+                    "returning (None, None, None)",
+                    ticker,
+                    e,
+                )
+                return (None, None, None)
+        return (None, None, None)
+
+    # Normal path: TTL-gated cache read only. No live fetch here — the
+    # market_cap call (earlier in the same loop iteration) already did the
+    # Ticker.info round-trip and populated all fields into the cache.
+    dividend_yield_pct, payout_ratio = _dividend_cache_read(ticker)
+    pays_dividend = (
+        dividend_yield_pct > 0 if dividend_yield_pct is not None else None
+    )
+    return (dividend_yield_pct, pays_dividend, payout_ratio)
 
 
 def _exchange_cache_read(ticker: str) -> str | None:
@@ -608,6 +785,7 @@ BUCKET_KEYS: tuple[str, ...] = (
 __all__ = [
     "fetch_yfinance_market_cap",
     "fetch_yfinance_shares_outstanding",
+    "fetch_yfinance_dividend",
     "validate_market_cap",
     "bucket_delta",
     "BUCKET_KEYS",

@@ -4866,3 +4866,36 @@ Gate: test-engineer (authored, red-green verified; safety-classifier was down on
 so the orchestrator hand-verified the two new files + ruff + targeted run) — no production behavior change.
 
 ---
+
+## PR (dividend-signal-obs) — Dividend signal PR-1: observability-first display metadata (in flight, 2026-06-19)
+
+Roadmap item #5 / 7a. Branch `claude/dividend-signal-obs`. Schema `0.10.26-phase8pilot` →
+`0.10.27-phase8pilot` (additive PATCH — optional fields, default `None`, backward-compatible
+under `extra="forbid"`).
+
+**What ships**: 3 new `StockDetail` fields (`dividend_yield_pct: float | None`,
+`pays_dividend: bool | None`, `payout_ratio: float | None`) + 1 new `Metadata` field
+(`dividend_coverage_pct: float | None`). All default `None`; legacy per-stock JSONs
+deserialize cleanly. A new `fetch_yfinance_dividend(ticker)` function in
+`compute/ingest/cross_source.py` — a pure cache-read off the existing
+`yfinance_info/<ticker>.json` populated by `fetch_yfinance_market_cap` (zero new network
+round-trips; dividend fields written as a side-channel of `_yf_info_fetch`). Wired into
+the Step-8 per-ticker loop in `compute/main.py`; `dividend_coverage_pct` aggregated after
+the loop and written to `Metadata`.
+
+**Normalization decision**: yfinance `.info["dividendYield"]` is a fraction (0.0123 = 1.23%);
+stored as `dividend_yield_pct` in PERCENT (×100). `payoutRatio` is a 0-1 fraction, stored
+as-is. `pays_dividend = True iff dividend_yield_pct > 0`.
+
+**Invariant gates**: Rankings/scores/pillar scores/risk_flags/recommendation/vetoes are
+byte-identical (no scoring consumer reads the 3 new fields). Defense layer UNCHANGED at 35.
+Rule 16 annotate-before-veto: N/A (not a defense flag). Rule 18 observability-before-wiring:
+`dividend_coverage_pct` ships as the Metadata canary BEFORE any frontend tile wires the
+display — the UI tile is a SEPARATE follow-up PR after ≥ 1 cron confirms coverage.
+
+**Schema triple**: `compute/output/schemas.py` + `frontend/lib/types.ts` (frontend-builder mirror) +
+`frontend/lib/schema-snapshot.json` (regenerated via `--update-snapshot`) — all three in lockstep
+(`schema_check` in sync). `StockDetail`: `dividend_yield_pct: number | null`, `pays_dividend:
+boolean | null`, `payout_ratio: number | null`; `Metadata`: `dividend_coverage_pct: number | null`.
+
+---

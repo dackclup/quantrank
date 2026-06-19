@@ -603,6 +603,19 @@ class Metadata(BaseModel):
     post_split_share_lag_count: int | None = None
     post_split_correction_applied_count: int | None = None
     post_split_veto_count: int | None = None
+    # Dividend signal PR-1 (roadmap item #5 / 7a — observability-first,
+    # Rule 18, 0.10.27-phase8pilot) — coverage diagnostic canary.
+    # Modelled exactly on ``exchange_coverage_pct`` / ``country_coverage_pct``:
+    # % of the ranked universe with a non-null ``StockDetail.dividend_yield_pct``
+    # after the Step-8 per-ticker loop.  A low value (< 80%) on the first
+    # post-merge cron would indicate that the ``yfinance_info`` cache was
+    # cold and the dividend fields were not pre-populated by an earlier
+    # ``fetch_yfinance_market_cap`` call.  Expected steady-state:
+    # ~95-99% (same as ``exchange_coverage_pct`` since both derive from the
+    # same ``yfinance_info`` cache populated during the cross-source loop).
+    # Zero is a valid value (all tickers with confirmed no-dividend);
+    # ``None`` means the loop was skipped or the field aggregation failed.
+    dividend_coverage_pct: float | None = None
     # Cross-source share-count-corruption shadow grading (PR-1, Rule 18
     # observability-first, 0.10.26-phase8pilot).
     #
@@ -796,3 +809,34 @@ class StockDetail(BaseModel):
     # threshold-sweep analysis on the universe is possible without
     # re-running the validator.
     cross_source_delta: float | None = None
+    # Dividend signal PR-1 (roadmap item #5 / 7a — observability-first,
+    # Rule 18, 0.10.27-phase8pilot).  Display-only descriptive metadata;
+    # does NOT feed the composite score, any pillar, or any defense flag.
+    # Defense layer UNCHANGED at 35.
+    #
+    # ``dividend_yield_pct`` — annualised dividend yield expressed as a
+    # PERCENT (e.g. 2.0 for 2%).  Sourced from yfinance ``.info``
+    # ``dividendYield`` (a fraction) × 100.  Zero means the ticker
+    # actively pays no dividend (confirmed by yfinance); ``None`` means
+    # the data was unavailable.
+    #
+    # ``pays_dividend`` — ``True`` iff ``dividend_yield_pct > 0``;
+    # ``False`` iff ``dividend_yield_pct == 0.0``; ``None`` when yield
+    # is unavailable.  The tri-state lets the frontend distinguish
+    # "confirmed non-payer" from "data missing".
+    #
+    # ``payout_ratio`` — yfinance ``.info`` ``payoutRatio`` (0-1
+    # fraction; ``None`` when absent or non-positive).  The ratio is NOT
+    # converted to percent — callers multiply by 100 for display.
+    # Populated only when the underlying yfinance field is present and
+    # non-negative; many growth stocks have NaN / None here.
+    #
+    # All three fields default to ``None`` so legacy per-stock JSONs
+    # (pre-0.10.27) deserialise cleanly under ``extra="forbid"``.
+    # Source: ``compute/ingest/cross_source.fetch_yfinance_dividend``
+    # (pure cache-read off the warm ``yfinance_info/<ticker>.json``
+    # populated earlier in the Step-8 cross-source loop — zero new
+    # network round-trips).
+    dividend_yield_pct: float | None = None
+    pays_dividend: bool | None = None
+    payout_ratio: float | None = None
