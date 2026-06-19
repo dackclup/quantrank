@@ -728,8 +728,9 @@ Schema is currently **`0.10.25-phase8pilot`** on `main` (#499 squash `816cda0ea`
 
 Claude Code sessions for this project keep 2 MCP connectors active
 (GitHub · Vercel); Supabase / Sentry / Gmail / Google Drive are toggled
-OFF by the 2026-06-11 token-economy policy until their phase needs them
-(CLAUDE.md §Connectors is canonical).
+OFF at user discretion until their phase needs them (the token-economy
+policy that previously governed this was retired 2026-06-19;
+CLAUDE.md §Connectors is canonical).
 Other agent runtimes (GitHub Copilot, Cursor, Devin, VS Code Agent
 Mode) do not have these connectors — when those tools work this repo,
 they should:
