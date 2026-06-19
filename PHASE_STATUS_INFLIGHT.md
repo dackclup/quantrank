@@ -4785,3 +4785,45 @@ universe aggregator counts + graceful-degradation on None inputs) ·
 quantrank-reviewer (push gate — schema bump; byte-identical ranking invariant; Rule 18 obs-first).
 
 ---
+
+## PR (test) — Test-coverage hardening: splits cache + wall-clock harness + filing_text cache + feature None-propagation (in flight, 2026-06-19)
+
+Test-only PR (no production code / schema / workflow change) closing the highest-value
+coverage gaps surfaced by a `test-engineer` coverage analysis of the suite at schema
+`0.10.25-phase8pilot`. Four areas, all offline-first:
+
+- **P0 · `compute/ingest/splits.py` cache** — `tests/test_ingest/test_splits_cache.py` (new, 9
+  tests). The newest defense's (`post_split_share_lag` #499) yfinance split-event fetcher had
+  ZERO dedicated tests (only indirect coverage that monkeypatched `_yf_fetch_splits` out before
+  the cache ran). Locks: fresh-hit-no-live-fetch · expired-TTL-refetch · corrupt-JSON graceful
+  None · write/read atomic round-trip · warm-cache skips `_yf_fetch_splits` · `QR_SKIP_SPLITS=1`
+  stale-present returns events / cold returns None · `[]` vs None contract. The tests exercise the
+  in-process mtime-TTL code path via `os.utime()` backdating. NOTE per merged #501: the splits cache
+  is NOT in any GHA bundle — it is cold-every-run live fetch in CI/cron (mtime-TTL is dead under
+  `actions/cache` restore, same class as #471/#498), so these tests lock the LOCAL/in-run TTL logic,
+  not a cross-run freshness guarantee.
+- **P0 · orchestrator wall-clock harness** — `tests/test_output/test_wall_clock_schema.py` (3
+  `pytest.skip` TODO stubs → implemented + positive/negative controls, net +5 active). Locks
+  `Metadata.form4_wall_clock_seconds` None-when-`FORM4_FETCH_SKIP=1` · `osap_wall_clock_seconds`
+  None-on-pipeline-failure · `tier2_wall_clock_seconds` float-on-success, via block-level harnesses
+  (`_form4_wc_block`/`_osap_wc_block`/`_tier2_wc_block`) mirroring `test_main.py`'s `_step6b_then_step7`
+  pattern (OSAP uses a deferred in-try import so call-site monkeypatch is impossible — the block
+  harness injects the fetch fn directly).
+- **P1 · `compute/ingest/filing_text.py` cache** — `tests/test_ingest/test_filing_text_cache.py`
+  (new, 11 offline + 1 `@network` smoke). Previously only HTML extraction was tested; the
+  `fetch_latest_10k_text` cache read/write/TTL(90d)/corrupt/`invalidate_cache`/`_ensure_edgar_identity`
+  paths (the `going_concern_disclosure` Tier-2 data source) had no offline coverage. Graceful-degradation
+  return value confirmed `None` on every failure path.
+- **P1 · `compute/features/` None-propagation** — `tests/test_features/test_features_none_propagation.py`
+  (new, 57 tests: 30 `@given` + 27 parametrized). Locks "returns finite float / nan, never raises" across
+  all 27 public pillar-math functions in growth/health/profitability/quality/value; FIRST coverage for
+  `quality.msci_3descriptor`; all-None snapshot (the `fundamentals_unavailable` #487 scenario) confirmed
+  safe across every function. Hypothesis surfaced a subnormal-denominator `inf` (non-bug: unreachable at
+  EDGAR magnitudes, and `pillars.py:_safe()` already coerces non-finite → nan before scoring).
+
+**Full offline suite 2162 passed / 10 skipped (+68 tests, 0 regressions)**, ruff clean. No schema
+triple touch (test-only), so the schema_check / tsc / next-build rungs are N/A.
+
+Gate: test-engineer (authored, red-green verified) — no production behavior change.
+
+---
