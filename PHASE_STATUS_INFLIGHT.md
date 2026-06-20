@@ -5581,7 +5581,7 @@ Verify: `ruff` clean · `pytest tests/test_scoring -m "not network"` 828 passed 
 production code / schema / workflow touched. Gate: test-engineer authored.
 
 ---
----
+
 ## PR #TBD — S&P 1500 cutover Slice 6 — SmallcapChip + SML tab activation (in flight, 2026-06-20)
 
 **Branch**: `claude/sp1500-slice6-sml-tab`
@@ -5659,6 +5659,32 @@ Verify: `ruff` clean · the 8 new files 143 passed · `pytest tests/test_feature
 tests/test_output -m "not network"` green apart from the two KNOWN pre-existing items (alpha158
 `test_C1` Hypothesis DeadlineExceeded slow-box flake + optional-`[factors]` osap collection error). No
 production code / schema / workflow touched. Gate: test-engineer (drafted) + orchestrator (verified/cleaned).
+
+## S&P 1500 cutover Slice 7 — cron-default flip sp900→sp1500 (in flight, 2026-06-20)
+
+The production cutover slice of the S&P 1500 epic. Flips the scheduled-cron universe default
+`sp900`→`sp1500` across both compute workflows and lifts the Slice-2 probe-only guard so the
+weekday cron RANKS the full ~1500 names instead of scoring 901 + probing sp600.
+
+- **`compute/main.py`** — removes the Slice-2 `cohort != "sp600"` filter on the scored frame
+  (`universe = _sp1500_full_frame.reset_index(drop=True)`); `Metadata.universe` label
+  `"SP1500-probe"` → `"SP1500"`. The `_run_smallcap_coverage_probe` call and the
+  `derive_index_memberships` russell1000-proxy suppression for sp600 are **retained** (the
+  smallcap_* coverage Metadata fields keep emitting; sp600 still excluded from the market-cap
+  Russell proxy).
+- **`.github/workflows/compute-rankings.yml`** — dispatch input `default: sp900`→`sp1500`,
+  env fallback `|| 'sp900'`→`|| 'sp1500'`, with an inline rollback comment.
+- **`.github/workflows/precache-edgar.yml`** — scheduled default flipped to `sp1500`.
+- **Tests** — `test_sp1500_seam.py` reconciled to ranked behavior (sp600 rows now PRESENT in
+  the scored universe; label `SP1500`); `test_workflow_cache_coverage.py` dispatch-default
+  assertions updated to `sp1500`.
+
+NO schema bump (stays `0.10.29-phase8pilot`); defense layer unchanged at 36. Mirrors the #492
+sp500→sp900 production flip precedent. **GATED — DO NOT MERGE** until a warm ranked-1500 timing
+run confirms total wall-clock < 90 min (cron `timeout-minutes` headroom) AND explicit owner go;
+this is the 902→~1500 ranked production cutover. Slice 3 (Bonferroni shadow) stays DEFERRED to
+the Slice-8 calibration; Slice 6 SML tab/chip merged as #531; Slice 8 = v2.0 tag after ≥1-2
+green sp1500 crons.
 
 ---
 
