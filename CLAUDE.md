@@ -2,8 +2,8 @@
 
 QuantRank is a static-site US-equity ranking tool. Python compute layer
 generates JSON; a Next.js static site renders it. Currently ranks the
-S&P 900 (~903 names: S&P 500 large-caps + S&P 400 mid-caps; `sp500`-only
-via manual dispatch). See
+S&P 1500 (~1500 names: S&P 500 large-caps + S&P 400 mid-caps + S&P 600
+small-caps; `sp900`-only or `sp500`-only via manual dispatch). See
 [`README.md`](README.md) for the user-facing pitch,
 [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the academic
 backing, and [`docs/design.md`](docs/design.md) for the visual /
@@ -27,8 +27,9 @@ design-system spec.
   Saturday `precache-edgar.yml` (08:00 UTC off-cycle EDGAR cache warmer,
   #249 — full 5-loop `compute.main`, outputs discarded, caches saved)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500 +
-  S&P 400 constituents scraped from Wikipedia (`QR_UNIVERSE=sp900` cron
-  default since Phase B flip 2026-06-16; `sp500`-only via manual dispatch)
+  S&P 400 + S&P 600 constituents scraped from Wikipedia (`QR_UNIVERSE=sp1500`
+  cron default since Slice 7 flip 2026-06-20; `sp900`/`sp500`-only via manual
+  dispatch)
 
 ## Layout
 
@@ -159,7 +160,7 @@ Posture detail: [`AGENTS.md`](AGENTS.md) §Security considerations.
 - **`compute-rankings.yml`** — weekday cron (Mon-Fri 22:00 UTC), the
   `trading-day-gate` skips weekends + NYSE holidays. Runs the full
   `compute.main`, folds a warm PIT-backtest refresh, commits the JSON.
-  Universe defaults to `sp900` (manual `sp500` via dispatch).
+  Universe defaults to `sp1500` (Slice 7 flip 2026-06-20; manual `sp900`/`sp500` via dispatch).
 - **`precache-edgar.yml`** — Saturday 08:00 UTC off-cycle EDGAR cache
   warmer (outputs discarded, caches saved).
 - **PR checks** — `Python (lint + test)` (`ruff` + offline pytest) +
