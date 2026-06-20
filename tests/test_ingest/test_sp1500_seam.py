@@ -13,6 +13,16 @@ Coverage targets:
   5. universe_cohort_sizes carries sp600 key when QR_UNIVERSE=sp1500.
   6. Source-check: _pilot_smallcap_* initialised to None before the probe
      block in run_weekly_compute (guards against uninitialised leakage).
+
+Integration-path targets (builder-flagged gaps, Slice 2 PR):
+  7. run_weekly_compute source encodes "SP1500" label in the sp1500 branch
+     (locks the universe field string literal against accidental rename).
+  8. sp1500 branch source merges sp600 key from smallcap probe into
+     _pilot_cohort_sizes (ensures universe_cohort_sizes carries "sp600"
+     through to Metadata at write time).
+  9. Empty all-cohorts DataFrame degrades through BOTH midcap + smallcap
+     probes without crashing (regression guard: adding sp1500 seam must not
+     introduce a crash path when all three cohort segments are absent).
 """
 
 from __future__ import annotations
@@ -51,6 +61,19 @@ def _make_sp1500_df_no_sp600() -> pd.DataFrame:
         "wiki_ticker":  ["AAPL", "MSFT", "MID1"],
         "cohort":       ["sp500", "sp500", "sp400"],
     })
+
+
+def _make_empty_all_cohorts_df() -> pd.DataFrame:
+    """sp1500-schema DataFrame with zero rows in ALL cohorts.
+
+    Simulates the worst-case scenario where the Wikipedia fetcher returns no
+    rows for any cohort segment (e.g. network outage + stale cache miss).
+    Both ``_run_midcap_coverage_probe`` and ``_run_smallcap_coverage_probe``
+    must degrade gracefully when passed this frame — no crash allowed.
+    """
+    return pd.DataFrame(
+        columns=["ticker", "name", "sector", "sub_industry", "cik", "wiki_ticker", "cohort"]
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -319,3 +342,214 @@ class TestSmallcapVariableInitialisation:
             "_run_smallcap_coverage_probe must appear AFTER the sp1500 elif "
             "(i.e. inside the sp1500 block, not the sp900 block)"
         )
+
+
+# ---------------------------------------------------------------------------
+# 5. Integration-path coverage gaps (builder-flagged, Slice 2 PR)
+# ---------------------------------------------------------------------------
+
+class TestSp1500IntegrationSeam:
+    """Locks the three integration-path invariants the builder flagged as
+    untested at the Metadata-write level.
+
+    These tests use source-code inspection (``inspect.getsource``) to avoid
+    spinning up a full ``run_weekly_compute`` pipeline — an impractical cost
+    for offline CI.  The source assertions are tighter than unit tests
+    because they pin the *wiring* between the probe return value and the
+    Metadata constructor argument (the layer that was actually missing
+    coverage).
+
+    Gap 3: ``universe="SP1500"`` string literal is in the sp1500 branch of
+           ``run_weekly_compute``, gated behind the correct env sentinel.
+    Gap 4: The sp1500 branch contains the ``_pilot_cohort_sizes.update()``
+           merge that carries the ``sp600`` key through to
+           ``universe_cohort_sizes`` at Metadata construction time.
+    Gap 5: Empty all-cohorts DataFrame degrades through BOTH
+           ``_run_midcap_coverage_probe`` and ``_run_smallcap_coverage_probe``
+           without crashing (direct probe-function calls, synthetic fixture).
+    """
+
+    # -- Gap 3: "SP1500" universe label is wired into the sp1500 branch ------
+
+    def test_sp1500_universe_label_present_in_sp1500_branch(self) -> None:
+        """Source: universe="SP1500" must be assigned inside the sp1500 gated block.
+
+        Locks the string literal against accidental rename / missing-branch
+        wiring.  The check that it appears AFTER the sp1500 elif (not in the
+        sp900 or sp500 branches) mirrors the placement guard already applied to
+        ``_run_smallcap_coverage_probe`` in TestSmallcapVariableInitialisation.
+        """
+        import compute.main as main_mod
+
+        src = inspect.getsource(main_mod.run_weekly_compute)
+        sp1500_label = '"SP1500"'
+        sp1500_elif_pos = src.find('elif config.QR_UNIVERSE == "sp1500"')
+        label_pos = src.find(sp1500_label)
+
+        assert sp1500_elif_pos != -1, "sp1500 elif branch not found in run_weekly_compute"
+        assert label_pos != -1, (
+            f'{sp1500_label} not found in run_weekly_compute — '
+            "the Metadata universe field must carry the SP1500 label on this path"
+        )
+        assert label_pos > sp1500_elif_pos, (
+            f'{sp1500_label} must appear AFTER the sp1500 elif, not in the sp900/sp500 branches'
+        )
+
+    def test_sp1500_universe_label_gated_on_qr_universe_sentinel(self) -> None:
+        """Source: the "SP1500" label assignment must be conditional on QR_UNIVERSE == 'sp1500'.
+
+        Checks that the production Metadata ``universe`` field uses the
+        config-sentinel guard (``config.QR_UNIVERSE == "sp1500"``) — not a
+        hardcoded always-on string — so the default sp900 path still emits
+        ``"SP900"``.
+        """
+        import compute.main as main_mod
+
+        src = inspect.getsource(main_mod.run_weekly_compute)
+        # The conditional ternary / if-elif in the Metadata constructor must
+        # reference the QR_UNIVERSE sentinel when choosing between SP1500 / SP900
+        # / SP500.  A simple grep for the patterns that implement this:
+        assert 'config.QR_UNIVERSE == "sp1500"' in src, (
+            'run_weekly_compute must gate universe="SP1500" on config.QR_UNIVERSE == "sp1500"'
+        )
+        assert '"SP900"' in src, (
+            '"SP900" must also be present (the sp900 Metadata label fallback) so the '
+            "conditional is a real branch, not a single-value assignment"
+        )
+
+    # -- Gap 4: universe_cohort_sizes sp600 key merge is wired in sp1500 -----
+
+    def test_sp1500_branch_merges_sp600_cohort_key_into_pilot_sizes(self) -> None:
+        """Source: sp1500 branch must merge sp600 sizes from smallcap probe return.
+
+        ``_run_smallcap_coverage_probe`` returns a ``cohort_sizes`` dict with
+        all 3 keys.  The sp1500 branch must call ``.update()`` (or equivalent)
+        on ``_pilot_cohort_sizes`` with that return value so the ``sp600`` key
+        reaches ``universe_cohort_sizes`` in Metadata.
+
+        Limitation: this is a source-level wiring check, not an end-to-end
+        Metadata serialisation check — a full pipeline run is needed to confirm
+        the dict survives to the JSON writer.  That runs in CI on the sp1500
+        workflow_dispatch path, not in the offline suite.
+        """
+        import compute.main as main_mod
+
+        src = inspect.getsource(main_mod.run_weekly_compute)
+
+        # The sp1500 elif block must contain the merge call.  Check it appears
+        # after the sp1500 elif (so it's inside that branch, not sp900).
+        sp1500_elif_pos = src.find('elif config.QR_UNIVERSE == "sp1500"')
+        # The merge pattern: either .update(_sp1500_cohort_sizes) or a full
+        # reassignment from _run_smallcap_coverage_probe's return value.
+        merge_pos = src.find("_pilot_cohort_sizes.update")
+        # Also accept the initialisation pattern where None-guard is used.
+        init_pos = src.find("_pilot_cohort_sizes = _sp1500_cohort_sizes")
+
+        assert sp1500_elif_pos != -1, "sp1500 elif not found"
+        found_merge = (merge_pos != -1 and merge_pos > sp1500_elif_pos) or (
+            init_pos != -1 and init_pos > sp1500_elif_pos
+        )
+        assert found_merge, (
+            "sp1500 branch must merge the smallcap probe's cohort_sizes dict into "
+            "_pilot_cohort_sizes so that universe_cohort_sizes carries the 'sp600' key. "
+            "Expected _pilot_cohort_sizes.update(...) or _pilot_cohort_sizes = _sp1500_cohort_sizes "
+            "after the sp1500 elif."
+        )
+
+    def test_universe_cohort_sizes_field_passed_from_pilot_cohort_sizes(self) -> None:
+        """Source: Metadata constructor receives universe_cohort_sizes from _pilot_cohort_sizes.
+
+        Confirms that the Metadata assembly block (near the end of
+        run_weekly_compute) passes ``_pilot_cohort_sizes`` (possibly guarded
+        with ``or None``) to ``universe_cohort_sizes``.  This is the final hop
+        that lands the sp600 key in the JSON output.
+        """
+        import compute.main as main_mod
+
+        src = inspect.getsource(main_mod.run_weekly_compute)
+        assert "universe_cohort_sizes=_pilot_cohort_sizes" in src, (
+            "Metadata constructor must receive universe_cohort_sizes from _pilot_cohort_sizes "
+            "(with or without 'or None' guard). This wires the sp600 key into the JSON output."
+        )
+
+    # -- Gap 5: empty all-cohorts DataFrame degrades through both probes ------
+
+    def test_empty_all_cohorts_df_midcap_probe_does_not_crash(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Both probes must survive an all-cohorts-empty DataFrame without crashing.
+
+        This is the worst-case fallback: the Wikipedia fetcher returned no rows
+        for any segment (network outage + stale cache miss).  The defense is
+        the outer try/except in each probe function that returns (None, None,
+        None, {}) on any unexpected error, plus the explicit zero-count early-
+        return path when the cohort mask selects no rows.
+
+        Regression guard: the Slice 2 seam must not introduce a new crash path
+        on an all-empty universe frame.  Mirrors the sp900 test that checks the
+        same invariant for _run_midcap_coverage_probe.
+        """
+        from compute.main import _run_midcap_coverage_probe
+
+        monkeypatch.setattr("compute.main.fetch_fundamentals", lambda t, c: None)
+        empty_df = _make_empty_all_cohorts_df()
+
+        # Must not raise.
+        cov, null_rate, cik_res, cohort_sizes = _run_midcap_coverage_probe(empty_df)
+
+        assert cov is None
+        assert null_rate is None
+        assert cik_res is None
+        # cohort_sizes must be a dict (possibly empty or with zero-count keys)
+        assert isinstance(cohort_sizes, dict)
+
+    def test_empty_all_cohorts_df_smallcap_probe_does_not_crash(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """_run_smallcap_coverage_probe must survive an all-cohorts-empty DataFrame.
+
+        Called directly with the empty frame (no sp500 / sp400 / sp600 rows).
+        The probe must return sentinel Nones and an empty or zero-valued
+        cohort_sizes dict — not raise AttributeError / KeyError / empty-mask
+        exceptions.
+        """
+        from compute.main import _run_smallcap_coverage_probe
+
+        monkeypatch.setattr("compute.main.fetch_fundamentals", lambda t, c: None)
+        empty_df = _make_empty_all_cohorts_df()
+
+        # Must not raise.
+        cov, null_rate, cik_res, cohort_sizes = _run_smallcap_coverage_probe(empty_df)
+
+        assert cov is None
+        assert null_rate is None
+        assert cik_res is None
+        assert isinstance(cohort_sizes, dict)
+
+    def test_empty_all_cohorts_both_probes_sequential_no_crash(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Running both probes in sequence (as run_weekly_compute does) must not crash.
+
+        Mirrors the sp1500 branch flow: midcap probe runs first, then smallcap
+        probe on the same frame.  Ensures no shared-state mutation between the
+        two probe calls causes the second call to crash even when the first
+        returned empty results.
+        """
+        from compute.main import _run_midcap_coverage_probe, _run_smallcap_coverage_probe
+
+        monkeypatch.setattr("compute.main.fetch_fundamentals", lambda t, c: None)
+        empty_df = _make_empty_all_cohorts_df()
+
+        # Run midcap probe first (mimics sp1500 branch order).
+        mid_cov, mid_null, mid_cik, mid_sizes = _run_midcap_coverage_probe(empty_df)
+
+        # Then smallcap probe on the same frame.
+        sml_cov, sml_null, sml_cik, sml_sizes = _run_smallcap_coverage_probe(empty_df)
+
+        # Both must return clean sentinel values (no crash, no exception).
+        assert mid_cov is None
+        assert sml_cov is None
+        # cohort_sizes from both must be dicts (even if empty).
+        assert isinstance(mid_sizes, dict)
+        assert isinstance(sml_sizes, dict)

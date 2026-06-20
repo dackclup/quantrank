@@ -130,18 +130,31 @@ def test_schema_version_pinned():
       non-null only when the Tier-1 correction applied (``post_split_share_lag``
       annotate in ``valuation_warnings``, NOT ``risk_flags``).
 
-    PR-1 cross-source corruption shadow (0.10.26-phase8pilot, Rule 18
-    observability-first) — methodology-scientist RATIFIED-WITH-CONDITIONS
-    2026-06-19.  Adds four shadow ``Metadata`` counters for the generalized
-    cross-source share-count-corruption defense.  PR-1 is SHADOW ONLY —
-    no flag emitted, no score mutated, no ranking change:
-    - ``Metadata.cross_source_corruption_correct_candidate_count: int | None``
-    - ``Metadata.cross_source_corruption_veto_candidate_count: int | None``
-    - ``Metadata.cross_source_corruption_ratio_disagreement_count: int | None``
-    - ``Metadata.cross_source_corruption_inferred_ratio_by_ticker: dict[str, float] | None``
-    Grade COKE→VETO_CANDIDATE+ratio_disagreement / CVNA→CORRECT_CANDIDATE
-    inferred_ratio=5 / BKNG→NO_FIRE / KLAC-post-#499→NO_FIRE."""
-    assert config.SCHEMA_VERSION == "0.10.27-phase8pilot"
+    S&P 1500 cutover Slice 2 (0.10.28-phase8pilot, Rule 18
+    observability-before-wiring) — adds three additive nullable
+    ``Metadata`` fields for the sp600 small-cap coverage diagnostic probe.
+    Populated ONLY when ``QR_UNIVERSE=sp1500``; None on the default
+    sp900/sp500 paths.  Rankings are byte-identical on non-sp1500 paths.
+    Also wires the ``sp1500`` branch in ``run_weekly_compute`` (universe
+    seam) + ``_run_smallcap_coverage_probe()`` helper.  sp600 is
+    PROBE-ONLY — filtered out of the scored frame (label ``SP1500-probe``);
+    no ranked sp600 exposure until a later slice (gated on ≥ 1 cron of
+    coverage data).
+
+    New ``Metadata`` fields (additive PATCH bump; backward-compatible):
+    - ``Metadata.smallcap_fundamentals_coverage_pct: float | None`` — % of
+      sp600 tickers for which ``fetch_fundamentals`` returned non-null.
+    - ``Metadata.smallcap_null_rate_pct: float | None`` — complement of
+      the above (coverage + null_rate ≈ 100%, small float-rounding allowed).
+    - ``Metadata.smallcap_cik_resolution_pct: float | None`` — % of sp600
+      tickers whose CIK was resolved (either from Wikipedia or via
+      ``Company(ticker).cik``).
+
+    Prior version (0.10.27-phase8pilot, #512): Dividend-signal
+    observability (display-only Metadata). Before that (0.10.26, #501):
+    four shadow ``Metadata.cross_source_corruption_*`` fields (SHADOW
+    ONLY — no flag emitted, no score mutated)."""
+    assert config.SCHEMA_VERSION == "0.10.28-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():
