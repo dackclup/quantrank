@@ -9,6 +9,7 @@ import { MidcapChip } from '@/components/MidcapChip';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
+import { SmallcapChip } from '@/components/SmallcapChip';
 import { StockListCard } from '@/components/StockListCard';
 import { StockLogo } from '@/components/StockLogo';
 import type { StockSummary } from '@/lib/types';
@@ -39,6 +40,7 @@ export default function RankingTable({
   data,
   cohortSize,
   showMidcapChip = true,
+  showSmallcapChip = true,
   sortKey: sortKeyProp,
   sortDir: sortDirProp,
   onSortChange,
@@ -59,6 +61,15 @@ export default function RankingTable({
    * Defaults to true for backward compatibility.
    */
   showMidcapChip?: boolean;
+  /**
+   * Show the SmallcapChip (S&P 600 badge) in table rows + mobile cards.
+   * Set to false in single-cohort tabs (SPX / MID / SML) where the tab itself
+   * communicates the cohort — only needed in the "All stocks" mixed view.
+   * Defaults to true for backward compatibility; renders nothing today because
+   * sp600 rows don't exist yet (data-driven dormancy — chip renders null for
+   * non-sp600 index_membership values).
+   */
+  showSmallcapChip?: boolean;
   /**
    * Controlled sort state (optional). When provided, the table binds its
    * column-header sort to these props + reports changes via `onSortChange`,
@@ -317,6 +328,7 @@ export default function RankingTable({
                     <div className="flex flex-wrap items-center gap-1.5">
                       <SectorChip sector={row.sector} />
                       {showMidcapChip && <MidcapChip indexMembership={row.index_membership} size="sm" />}
+                      {showSmallcapChip && <SmallcapChip indexMembership={row.index_membership} size="sm" />}
                     </div>
                   </td>
                   <td className="px-3 py-2 text-right">
@@ -351,7 +363,7 @@ export default function RankingTable({
                 href={`/stock/${row.ticker}/`}
                 className="press flex flex-col gap-1 p-3"
               >
-                <StockListCard row={row} showMidcapChip={showMidcapChip} />
+                <StockListCard row={row} showMidcapChip={showMidcapChip} showSmallcapChip={showSmallcapChip} />
               </Link>
             </li>
           );

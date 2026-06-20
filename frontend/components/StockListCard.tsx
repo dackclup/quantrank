@@ -2,6 +2,7 @@ import { MidcapChip } from '@/components/MidcapChip';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
+import { SmallcapChip } from '@/components/SmallcapChip';
 import { StockLogo } from '@/components/StockLogo';
 import { formatMosPct } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
@@ -18,6 +19,7 @@ import type { StockSummary } from '@/lib/types';
 export function StockListCard({
   row,
   showMidcapChip = true,
+  showSmallcapChip = true,
 }: {
   row: StockSummary;
   /**
@@ -26,6 +28,14 @@ export function StockListCard({
    * the cohort; true (default) in the "All stocks" mixed view.
    */
   showMidcapChip?: boolean;
+  /**
+   * Show the "Small-cap" chip beside the sector chip. Set to false in
+   * single-cohort tabs (SPX / MID / SML) where the tab already communicates
+   * the cohort; true (default) in the "All stocks" mixed view.
+   * Renders nothing today (data-driven dormancy — SmallcapChip returns null
+   * for non-sp600 index_membership values until sp600 data lands post-Slice 7).
+   */
+  showSmallcapChip?: boolean;
 }) {
   const mos = formatMosPct(row.margin_of_safety_pct);
 
@@ -42,6 +52,7 @@ export function StockListCard({
             </span>
             <SectorChip sector={row.sector} size="xs" />
             {showMidcapChip && <MidcapChip indexMembership={row.index_membership} />}
+            {showSmallcapChip && <SmallcapChip indexMembership={row.index_membership} />}
           </div>
           <div className="mt-1 flex items-center gap-2">
             <StockLogo ticker={row.ticker} size={32} />
