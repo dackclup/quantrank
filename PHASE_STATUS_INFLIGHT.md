@@ -5581,3 +5581,48 @@ Verify: `ruff` clean · `pytest tests/test_scoring -m "not network"` 828 passed 
 production code / schema / workflow touched. Gate: test-engineer authored.
 
 ---
+---
+## PR #TBD — S&P 1500 cutover Slice 6 — SmallcapChip + SML tab activation (in flight, 2026-06-20)
+
+**Branch**: `claude/sp1500-slice6-sml-tab`
+**Type**: feat(frontend) — frontend-only, NO schema bump, NO compute change.
+
+**Summary**: Implements the small-cap membership chip (`SmallcapChip`) and wires
+the `SML` (S&P 600) tab in `IndexTabs` to go from a hardcoded "SOON" placeholder
+to a fully data-driven active path — exactly mirroring the MidcapChip + MID-tab
+pattern shipped in #490.
+
+**Changes**:
+- `frontend/components/SmallcapChip.tsx` (NEW) — renders "Small-cap" chip iff
+  `index_membership === 'sp600'`, else null. Violet outlined-light tone
+  (`bg-violet-50 / text-violet-700 / ring-violet-200` + paired `dark:` variants)
+  — distinct from MidcapChip's neutral-steel slate, same chip family. Uses the
+  shared `Chip` primitive.
+- `frontend/components/RankingView.tsx` — `filterAndRerank` gains `SML` branch
+  (filters to `index_membership === 'sp600'`); `computeAvailableCodes` adds
+  `'SML'` when `memberships.has('sp600')`; `showSmallcapChip = safeTab === 'ALL'`
+  mirrors `showMidcapChip`; `tabConfig` gains `SML` → "S&P SmallCap 600 ranking";
+  SML honesty note in the descriptive paragraph; `showSmallcapChip` wired to
+  `<RankingTable>`.
+- `frontend/components/RankingTable.tsx` — `showSmallcapChip` prop added;
+  `<SmallcapChip>` rendered beside `<MidcapChip>` in desktop table rows and
+  passed to `<StockListCard>`.
+- `frontend/components/StockListCard.tsx` — `showSmallcapChip` prop added;
+  `<SmallcapChip>` rendered beside `<MidcapChip>` in mobile card header.
+- `frontend/lib/sml-tab.test.ts` (NEW) — vitest contract tests: `filterAndRerank`
+  SML branch (returns only sp600, re-numbered, empty on sp900-only data),
+  `computeAvailableCodes` (SML present iff ≥1 sp600 row; absent on sp900-only),
+  `SmallcapChip` render contract (VIOLET_TONE design-system compliance + guard logic).
+
+**Data-driven dormancy**: on the current ~902-row sp900 production data
+(sp500 + sp400 only, sp600 probe-only/not-ranked), the SML tab stays "SOON"
+(`availableCodes` does not contain 'SML') and no SmallcapChip renders in any row.
+The tab and chip light up automatically once sp600 rows appear in `rankings.json`
+after the Slice 7 cron flip — no frontend code change required.
+
+**Schema triple**: UNTOUCHED. `index_membership` (singular) already exists as
+`'sp500' | 'sp400' | 'sp600'` per Slice 2; this PR only adds the consumer UI.
+
+**Verification**: `tsc --noEmit` clean · `npm run test:unit` green (new tests +
+existing) · `next build` succeeds.
+

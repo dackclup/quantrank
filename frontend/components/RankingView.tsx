@@ -18,16 +18,17 @@
 // Tab / cohort mapping:
 //   'SPX' → index_membership === 'sp500'  (large-caps, e.g. 502)
 //   'MID' → index_membership === 'sp400'  (mid-caps, e.g. 400)
-//   'ALL' → all rows                       (e.g. 902)
+//   'SML' → index_membership === 'sp600'  (small-caps, e.g. 600, Slice 6)
+//   'ALL' → all rows                       (e.g. 902 sp900 / 1502 sp1500)
 //   Any other code → empty (future expansion; tab stays SOON)
 //
 // Re-numbering: displayed `rank` is re-sequenced 1..N within the selected
-// cohort. Composite SCORES are unchanged — a midcap that outscores a large-cap
+// cohort. Composite SCORES are unchanged — a smallcap that outscores a large-cap
 // on the cross-sectional universe keeps its score, only the per-tab rank number
 // is local. This is the pilot's explicit design intent.
 //
-// MidcapChip visibility: shown ONLY in the "All stocks" mixed view; hidden in
-// the single-cohort tabs (the tab itself communicates the cohort).
+// MidcapChip / SmallcapChip visibility: shown ONLY in the "All stocks" mixed
+// view; hidden in single-cohort tabs (the tab itself communicates the cohort).
 
 import { useMemo, useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
@@ -75,11 +76,12 @@ function tabConfig(code: IndexCode, universeCode: string): TabConfig {
   switch (code) {
     case 'SPX': return { h1: 'S&P 500 ranking',              countLabel: 'S&P 500 companies' };
     case 'MID': return { h1: 'S&P MidCap 400 ranking',       countLabel: 'S&P 400 mid-caps' };
+    case 'SML': return { h1: 'S&P SmallCap 600 ranking',     countLabel: 'S&P 600 small-caps' };
     case 'DJI': return { h1: 'Dow 30 ranking',               countLabel: 'Dow 30 companies' };
     case 'NDX': return { h1: 'NASDAQ 100 ranking',           countLabel: 'NASDAQ 100 companies' };
     case 'RUI': return { h1: 'Russell 1000 ranking',         countLabel: 'Russell 1000 companies' };
     case 'ALL': return { h1: `${universeLabel(universeCode)} ranking`, countLabel: 'companies' };
-    // For future tabs (SML / RUT / RUA / COMP / …) — should never be reachable as
+    // For future tabs (RUT / RUA / COMP / …) — should never be reachable as
     // active while still SOON, but guard defensively.
     default:    return { h1: 'Ranking',                      countLabel: 'companies' };
   }
@@ -106,6 +108,11 @@ function filterAndRerank(data: StockSummary[], code: IndexCode): StockSummary[] 
     // surfaced in the "N of 100" note below).
     // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
     filtered = data.filter((r) => r.index_memberships?.includes('ndx'));
+  } else if (code === 'SML') {
+    // S&P 600 SmallCap (Slice 6): filter to index_membership === 'sp600'.
+    // Produces an empty array on the current sp900 dataset (no sp600 rows yet)
+    // → tab stays SOON until the Slice 7 cron flip populates sp600 rows.
+    filtered = data.filter((r) => r.index_membership === 'sp600');
   } else if (code === 'RUI') {
     // Russell 1000 overlap: the entire S&P 900 universe falls within the
     // Russell 1000 (the 1000 largest US companies by market cap). The
@@ -115,7 +122,7 @@ function filterAndRerank(data: StockSummary[], code: IndexCode): StockSummary[] 
     // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
     filtered = data.filter((r) => r.index_memberships?.includes('russell1000'));
   } else {
-    // Not yet wired (future: SML / RUT / RUA / COMP).
+    // Not yet wired (future: RUT / RUA / COMP).
     filtered = [];
   }
 
@@ -136,7 +143,11 @@ function computeAvailableCodes(data: StockSummary[]): ReadonlySet<IndexCode> {
 
   if (memberships.has('sp500')) available.add('SPX');
   if (memberships.has('sp400')) available.add('MID');
-  // 'ALL' is meaningful only when there is more than one cohort.
+  // SML: available iff ≥1 row has index_membership === 'sp600'.
+  // Stays absent on the current sp900 dataset (no sp600 rows) so the SML tab
+  // remains "SOON" until the Slice 7 cron flip produces sp600 membership rows.
+  if (memberships.has('sp600')) available.add('SML');
+  // 'ALL' is meaningful only when there is more than one distinct cohort.
   if (memberships.size > 1) available.add('ALL');
 
   // Multi-index overlaps: a tab lights up purely because the loaded data has
@@ -185,8 +196,11 @@ export function RankingView({
         ? [...availableCodes][0]
         : 'SPX';
 
-  // MidcapChip is only shown in the "All stocks" mixed view.
+  // MidcapChip / SmallcapChip are only shown in the "All stocks" mixed view —
+  // in a single-cohort tab (SPX / MID / SML) the tab header already communicates
+  // the cohort, so the per-row chip would be redundant noise.
   const showMidcapChip = safeTab === 'ALL';
+  const showSmallcapChip = safeTab === 'ALL';
 
   const cohortRows = useMemo(
     () => filterAndRerank(data, safeTab),
@@ -329,6 +343,13 @@ export function RankingView({
               large-cap. Re-numbered 1..{cohortRows.length} within this cohort.
             </span>
           )}
+          {safeTab === 'SML' && (
+            <span>
+              {' '}Composite scores are cross-sectional (small-caps ranked against
+              large- and mid-caps in the full universe), so a small-cap can outrank
+              a large-cap. Re-numbered 1..{cohortRows.length} within this cohort.
+            </span>
+          )}
           {safeTab === 'DJI' && (() => {
             const full = FULL_INDEX_SIZE.DJI ?? 30;
             const isPartial = cohortRows.length < full;
@@ -420,6 +441,7 @@ export function RankingView({
           data={filteredRows}
           cohortSize={cohortRows.length}
           showMidcapChip={showMidcapChip}
+          showSmallcapChip={showSmallcapChip}
           sortKey={sortKey}
           sortDir={sortDir}
           onSortChange={(key, dir) => {
