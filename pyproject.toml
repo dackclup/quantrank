@@ -39,6 +39,10 @@ dev = [
   # quintile/tercile silent-drop in OSAP_SIGNALS_100 from PR #112's
   # CI until production cron diagnostics caught it 2026-05-19).
   "hypothesis>=6.92",
+  # Coverage measurement. Added 2026-06-20 (branch `claude/python-coverage-tooling`).
+  # No --cov-fail-under gate yet — baseline first, threshold once the
+  # CI step is wired. Pin to 6.x compatible with pytest 8+.
+  "pytest-cov>=6.0,<7",
 ]
 # Phase 4 factor libraries. Heavy transitive deps (wrds, polars,
 # psycopg2-binary, sqlalchemy, ipython) — kept out of the base install
@@ -97,3 +101,32 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.coverage.run]
+source = ["compute"]
+branch = true
+omit = [
+  "tests/*",
+  "compute/__init__.py",
+  "compute/*/__init__.py",
+  # Optional-extra factor modules — not in the base install; their tests
+  # are already skip-guarded. Omitting keeps the coverage denominator
+  # representative of what CI always exercises.
+  "compute/ingest/osap.py",
+  "compute/ingest/qlib_features.py",
+  "compute/ingest/jkp.py",
+  "compute/ml/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+  # Standard pragmas
+  "pragma: no cover",
+  # Type-checking guard — never executed at runtime
+  "if TYPE_CHECKING:",
+  # Abstract method stubs
+  "raise NotImplementedError",
+  # Script entry points
+  "if __name__",
+]

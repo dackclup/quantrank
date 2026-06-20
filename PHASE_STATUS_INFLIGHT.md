@@ -5163,3 +5163,37 @@ Follow-up (not blocking merge): enable Speed Insights in the Vercel dashboard
 (Settings → Speed Insights) or `<SpeedInsights />` 404s silently.
 
 ---
+
+## PR (test+tooling) — pytest-cov coverage tooling + P-low coverage tests (in flight, 2026-06-20)
+
+Adds the project's FIRST real coverage measurement + closes the remaining P-low Python gaps from the
+test-coverage analysis. Test/tooling only — no production code, schema, or workflow logic touched.
+Coverage runs ON-DEMAND via `pytest --cov=compute --cov-report=term-missing` (the pyproject config makes
+it work); it is deliberately NOT folded into the blocking CI `pytest` step — coverage instrumentation
+~2x's full-suite runtime (12→24 min) and that slowdown tipped the pre-existing `test_alpha158_replicate`
+Hypothesis `deadline=4000` property test over its per-example budget. Tooling without the CI-time tax.
+
+- **pytest-cov tooling** — `pyproject.toml`: `pytest-cov>=6.0,<7` added to `[dev]` + `[tool.coverage.run]`
+  (`source=["compute"]`, `branch=true`, omit tests/`__init__`/optional-extra modules osap·qlib·jkp·ml) +
+  `[tool.coverage.report]` (`show_missing`, standard `exclude_lines`). **No `--cov-fail-under` gate**
+  (baseline-first; a hard gate could red CI before we know the floor). **Baseline measured: 85% statement**
+  (6937/8160). 10 lowest modules are the network/optional-dep fetch layers (osap 11%, filing_text 49%,
+  restatement_filings 58%, …) — expected (offline suite can't reach live-fetch paths).
+- **P-low coverage tests (+22)** — `tests/test_scoring/test_risk_overlay_coverage.py` (11: defense-#35
+  graceful-degradation branches — `fetch_splits` None → tier0, future-dated split skip, legs-1+2-hold →
+  Tier-2 veto, Sloan zero-total-assets NaN guard, `_shares_at_lookback` None/NaN/negative/non-castable
+  guards) lifts risk_overlay 95→97% · `tests/test_valuation/test_applicability_coverage.py` (10:
+  `_finite_positive` edge cases + ev_ebitda peer-median gate) lifts applicability 96→100% ·
+  `tests/test_main.py` (+1: `test_step4_sectors_dict_passed_to_compute_risk_flags` — the P-low orchestrator
+  gap, locks Step-4 sector-map construction + verbatim forward to `compute_risk_flags`).
+- **Finding (documented, NOT patched — user disposition: document-only)**: `_finite_positive(math.inf)`
+  returns `True` despite the "finite" docstring (no `math.isfinite` guard). Zero production impact — peer
+  EV/EBITDA medians from real S&P data cannot be infinite. Behavior pinned in
+  `test_finite_positive_infinity_behavior` so a future change surfaces; docstring-vs-impl gap left for a
+  separate disposition if ever desired.
+
+Verify: `ruff check .` clean · `pytest -m "not network"` green (the pre-existing test_R6 weekend flake was
+fixed first in #515; the alpha158 `test_C1` Hypothesis DeadlineExceeded remains a known slow-box flake,
+green on CI). Gate: test-engineer (authored). No schema triple touch.
+
+---
