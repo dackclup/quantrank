@@ -672,8 +672,8 @@ export function FairPriceCard(props) {  // no types
   (2026-06-06, edgar-debugger root-cause of tier2-cold-every-run): the old
   single 11-path bundle (~250-500 MB) was too big to save reliably post-job, so
   `edgar_10k_text`/`edgar_8k` never persisted → tier2 ran cold ~80m every run.
-  Now: **fast** (fundamentals/prices, `cache-v10-fast-<quarter>-<os>`;
-  family bumped v5→…→v10 — current pin lives in
+  Now: **fast** (fundamentals/prices, `cache-v11-fast-<quarter>-<os>`;
+  family bumped v5→…→v11 — current pin lives in
   tests/test_workflow_cache_coverage.py) + **slow-text**
   (edgar_10k_text/edgar_8k/edgar_form4/osap, `cache-v5-text-<os>-<run_id>` +
   prefix restore-keys so each run persists fresh text + restores last-good;

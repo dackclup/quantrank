@@ -8,11 +8,12 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to rank. sp900 = full S&P 500 + S&P 400 midcap universe (~903 names; midcaps carry index_membership='sp400'). sp500 = large-cap only (502 names). The SCHEDULED cron now defaults to sp900 (precache-900 Phase B flip, 2026-06-16). A manual sp500 dispatch is available for diagnostics. First sp900 cold-run probes ~400 midcaps — keep the sp500 caches warm (recent cron/precache) so it fits the 240-min budget."
+        description: "Universe to rank. sp900 = full S&P 500 + S&P 400 midcap universe (~903 names; midcaps carry index_membership='sp400'). sp1500 = sp900 + S&P 600 small-cap (~1500 names; Slice 5 prep — requires a prior sp1500 precache dispatch to warm the cache-v11-fast bundle; cron default stays sp900 until Slice 7). sp500 = large-cap only (502 names). The SCHEDULED cron now defaults to sp900 (precache-900 Phase B flip, 2026-06-16). A manual sp500 dispatch is available for diagnostics. First sp900 cold-run probes ~400 midcaps — keep the sp500 caches warm (recent cron/precache) so it fits the 240-min budget."
         type: choice
         options:
           - sp500
           - sp900
+          - sp1500
         default: sp900
 
 env:
@@ -230,6 +231,13 @@ jobs:
       #     a cold-seed of the full sp900 fast bundle on the first post-flip cron
       #     so all ~903 tickers warm correctly. Also adds sp400/sp900 universe
       #     parquets to the path: block so they persist in the fast bundle.
+      #   v11-fast (S&P 1500 cutover Slice 5, 2026-06-20): adds sp600/sp1500
+      #     universe parquets to path: so they persist in the fast bundle.
+      #     The fast bundle's exact-key save-skip means sp600 fundamentals/prices
+      #     written under a warm v10 sp900 key would be silently dropped; v11
+      #     forces a cold-seed on the first post-bump cron so all ~1500 tickers
+      #     warm correctly once the sp1500 dispatch or Slice 7 cron-default flip
+      #     fires. The cron default STAYS sp900 — same mechanism as v9→v10 (#492).
       - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@v5
         with:
@@ -240,11 +248,13 @@ jobs:
             compute/cache/universe-v2.parquet
             compute/cache/universe_sp400-v1.parquet
             compute/cache/universe_sp900-v1.parquet
+            compute/cache/universe_sp600-v1.parquet
+            compute/cache/universe_sp1500-v1.parquet
             compute/cache/yfinance_info
-          key: cache-v10-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v11-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v10-fast-${{ steps.quarter.outputs.q }}-
-            cache-v10-fast-
+            cache-v11-fast-${{ steps.quarter.outputs.q }}-
+            cache-v11-fast-
 
       # SLOW-changing text bundle — RUN-ID key + prefix restore-keys (the textbook
       # "keep a cache fresh AND persistent" idiom). A unique key per run means the
