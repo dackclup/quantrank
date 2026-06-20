@@ -43,7 +43,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.28-phase8pilot"
+SCHEMA_VERSION: str = "0.10.29-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -538,6 +538,23 @@ DELTA_CORRUPTION_THRESHOLD: float = 0.50
 # event before mutating (esp. dual-class names like CVNA). Q3 2026-08-19
 # academic-validation follow-up.
 INTEGER_RATIO_TOLERANCE: float = POST_SPLIT_RATIO_TOLERANCE  # 0.10
+
+# --- S&P 1500 Slice 4: ADV liquidity backstop (annotate-first, defense 36) ---
+# Ships as ANNOTATE ONLY per Rule 16 / ``portable-annotate-before-veto``.
+# Veto promotion requires ≥ 1 cron of firing-rate data + methodology ratification
+# (WORKFLOW.md §8.6 "Liquidity backstop").
+#
+# Academic anchor: Amihud 2002 *J. Financial Markets* §2 "Illiquidity and
+# stock returns" — dollar-volume < $5M/day places a stock in the bottom
+# decile of the Amihud illiquidity measure for US equities; microstructure
+# noise dominates any fundamental signal at this scale.
+#
+# ``ADV_FLOOR_USD``: minimum acceptable 30-day mean dollar volume.
+# ``ADV_LOOKBACK_DAYS``: trailing trading-day window for the mean.
+#   30 trading days ≈ 6 calendar weeks — long enough to smooth single-day
+#   volume spikes, short enough to reflect current liquidity regime.
+ADV_FLOOR_USD: float = 5_000_000.0  # $5M average daily dollar volume
+ADV_LOOKBACK_DAYS: int = 30  # trailing trading days
 
 # PR 4.5b — disclosure-driven defenses. 10-K/A + 10-Q/A list (5y) +
 # Form 12b-25 (NT 10-K / NT 10-Q, 1y) per-ticker JSON caches.

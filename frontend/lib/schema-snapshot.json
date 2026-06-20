@@ -237,6 +237,11 @@
       "required": false,
       "default": null
     },
+    "low_liquidity_annotate_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "median_trim_delta_count": {
       "type": "int | None",
       "required": false,
@@ -617,6 +622,11 @@
     }
   },
   "StockDetail": {
+    "average_dollar_volume": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "beneish_m_score": {
       "type": "float | None",
       "required": false,

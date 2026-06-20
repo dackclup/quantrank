@@ -78,7 +78,12 @@ from compute.ingest.fundamentals import (
 from compute.ingest.fundamentals import (
     reset_filing_precheck_skip_count as reset_fundamentals_filing_precheck_skip_count,
 )
-from compute.ingest.prices import fetch_benchmarks, fetch_prices, fetch_spy_benchmark
+from compute.ingest.prices import (
+    compute_average_dollar_volume,
+    fetch_benchmarks,
+    fetch_prices,
+    fetch_spy_benchmark,
+)
 from compute.ingest.universe import (
     derive_index_memberships,
     fetch_dow30_constituents,
@@ -233,6 +238,10 @@ def _fetch_prices_one(row: pd.Series) -> dict | None:
         prev = float(last.iloc[-2])
         if not math.isnan(prev) and prev > 0:
             price_change_1d_pct = (current - prev) / prev * 100.0
+    # S&P 1500 Slice 4 — compute ADV while we already hold the OHLCV
+    # DataFrame.  No extra network round-trip; uses the already-cached frame.
+    # Graceful degradation: compute_average_dollar_volume never raises.
+    adv = compute_average_dollar_volume(prices, config.ADV_LOOKBACK_DAYS)
     return {
         "ticker": ticker,
         "name": row["name"],
@@ -246,6 +255,8 @@ def _fetch_prices_one(row: pd.Series) -> dict | None:
         "current_price": current,
         "price_change_1d_pct": price_change_1d_pct,
         "_prices": prices,
+        # Slice 4 ADV (None when volume data unavailable — graceful degradation).
+        "_adv": adv,
     }
 
 
@@ -1141,6 +1152,10 @@ def run_weekly_compute() -> int:
     # Step 1 — prices in parallel.
     rows: list[dict] = []
     prices_by_ticker: dict[str, pd.DataFrame] = {}
+    # S&P 1500 Slice 4 — ADV dict built alongside prices (zero extra I/O).
+    # Keyed by ticker; value is trailing-30-day mean dollar volume in USD,
+    # or None when the price DataFrame was unavailable / missing columns.
+    adv_by_ticker: dict[str, float | None] = {}
     with ThreadPoolExecutor(max_workers=config.MAX_PARALLEL_FETCHES) as ex:
         futures = {
             ex.submit(_fetch_prices_one, row): row["ticker"]
@@ -1155,6 +1170,10 @@ def run_weekly_compute() -> int:
                 continue
             if result is not None:
                 prices_by_ticker[ticker] = result.pop("_prices")
+                # Use .pop with default so test mocks that don't include
+                # "_adv" (pre-Slice-4 fixtures) degrade gracefully to None
+                # rather than raising KeyError.
+                adv_by_ticker[ticker] = result.pop("_adv", None)
                 rows.append(result)
 
     logger.info("Fetched prices for %d / %d tickers", len(rows), len(universe))
@@ -2142,6 +2161,17 @@ def run_weekly_compute() -> int:
     # so a non-zero value on a production sp500 cron is immediately visible
     # as a data-pipeline health signal without grepping per-stock JSONs.
     fundamentals_unavailable_count: int = 0
+    # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+    # 0.10.29-phase8pilot, Rule 18 observability-before-wiring).
+    # Counter increments inside the per-ticker loop when the
+    # ``low_liquidity`` annotate fires (``average_dollar_volume is not None
+    # and average_dollar_volume < config.ADV_FLOOR_USD``). Written to
+    # Metadata.low_liquidity_annotate_count so the universe-wide firing
+    # rate is visible from the first cron without grepping per-stock JSONs.
+    # Expected base rate for S&P 900: near-zero (large-caps all clear
+    # $5M/day comfortably); the counter is designed for S&P 1500 small-cap
+    # exposure where thinly-traded names may appear.
+    low_liquidity_annotate_count: int = 0
     # Issue #177 — same Rule 18 observability surface for the new
     # ``extreme_estimate_majority`` annotate. The flag itself is
     # appended by ``compute.valuation.ensemble`` when ≥
@@ -2661,6 +2691,31 @@ def run_weekly_compute() -> int:
             valuation_warnings.append("share_count_extraction_missing")
             share_count_extraction_missing_count += 1
 
+        # S&P 1500 Slice 4 — low_liquidity ANNOTATE (defense layer 36,
+        # ANNOTATE-ONLY per Rule 16 / ``portable-annotate-before-veto``).
+        #
+        # Fires when the trailing-30-day mean dollar volume (close × volume)
+        # is known AND below the $5M ADV floor (config.ADV_FLOOR_USD).
+        # Academic anchor: Amihud 2002 *J. Financial Markets* §2 — sub-$5M
+        # names sit in the bottom decile of the US-equity illiquidity measure;
+        # microstructure noise dominates any fundamental signal at this scale.
+        #
+        # ANNOTATE-ONLY invariants (enforced by this placement in
+        # ``valuation_warnings``, NOT ``risk_flags``):
+        #   - Does NOT set ``cautious`` (recommendation unchanged).
+        #   - Does NOT suppress Top-5 badge.
+        #   - Does NOT null fair-price or change the composite score.
+        # Veto promotion is gated on ≥ 1 cron of firing-rate data +
+        # methodology ratification (WORKFLOW.md §8.6 "Liquidity backstop").
+        _ticker_adv = adv_by_ticker.get(ticker)
+        if (
+            _ticker_adv is not None
+            and _ticker_adv < config.ADV_FLOOR_USD
+            and "low_liquidity" not in valuation_warnings
+        ):
+            valuation_warnings.append("low_liquidity")
+            low_liquidity_annotate_count += 1
+
         # Issue #177 — extreme_estimate_majority annotate count.
         # The flag is appended by ``compute.valuation.ensemble`` when
         # ≥ config.EXTREME_MAJORITY_THRESHOLD of the 6 methods fire
@@ -2914,6 +2969,13 @@ def run_weekly_compute() -> int:
             dividend_yield_pct=_dividend_yield_pct_by_ticker.get(ticker),
             pays_dividend=_pays_dividend_by_ticker.get(ticker),
             payout_ratio=_payout_ratio_by_ticker.get(ticker),
+            # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+            # 0.10.29-phase8pilot, ANNOTATE-ONLY per Rule 16). Display-only
+            # diagnostic; does NOT influence composite score / risk_flags /
+            # recommendation / Top-5 eligibility. None when price DataFrame
+            # was unavailable or missing Close/Volume column (graceful
+            # degradation per Rule 18).
+            average_dollar_volume=adv_by_ticker.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
@@ -3411,6 +3473,15 @@ def run_weekly_compute() -> int:
             if cross_source_corruption_inferred_ratio_by_ticker
             else None
         ),
+        # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+        # 0.10.29-phase8pilot, Rule 18 observability-before-wiring).
+        # Universe-wide count of tickers where the ``low_liquidity``
+        # annotate fired on this cron run. Expected base rate for S&P 900:
+        # near-zero (large-caps all clear $5M/day comfortably); designed
+        # for S&P 1500 small-cap exposure. Zero is valid (counter ran,
+        # no tickers fired); None semantics would indicate the counter
+        # was never reached (shouldn't happen in production).
+        low_liquidity_annotate_count=low_liquidity_annotate_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

@@ -47,6 +47,7 @@ export const FLAG_LABELS: Record<string, string> = {
   cross_source_disagreement: 'Cross-source price disagreement',
   post_split_share_lag: 'Post-split share count adjusted',
   post_split_share_lag_unreconciled: 'Post-split share count unreliable',
+  low_liquidity: 'Low liquidity (<$5M ADV)',
   // Tier-2 8-K / going-concern event vetoes + annotates (tier2.py).
   going_concern_disclosure: 'Going-concern disclosure',
   going_concern: 'Going-concern disclosure',

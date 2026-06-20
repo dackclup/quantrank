@@ -697,6 +697,27 @@ class Metadata(BaseModel):
     # hardening before ranked production exposure.  None when the probe
     # didn't run (QR_UNIVERSE != sp1500).
     smallcap_cik_resolution_pct: float | None = None
+    # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+    # 0.10.29-phase8pilot, Rule 18 observability-before-wiring).
+    #
+    # ``low_liquidity_annotate_count`` — universe-wide count of tickers
+    # where the ``low_liquidity`` annotate fired on this cron run:
+    # ``average_dollar_volume is not None and average_dollar_volume <
+    # config.ADV_FLOOR_USD`` ($5M trailing-30-day mean dollar volume).
+    #
+    # The flag is ANNOTATE-ONLY (emitted to ``valuation_warnings``, NOT
+    # ``risk_flags``): it does NOT set ``cautious``, does NOT suppress
+    # Top-5, does NOT null fair-price, and does NOT change the composite
+    # score.  Veto promotion is gated on ≥ 1 cron of firing-rate data +
+    # methodology ratification (WORKFLOW.md §8.6).
+    #
+    # Nullable on legacy snapshots (pre-0.10.29); ``None`` when the
+    # Step-1 prices loop was skipped or the ADV computation failed for
+    # the entire universe.  Expected base rate for the S&P 900 universe:
+    # near-zero (large-cap S&P names all clear $5M/day comfortably) —
+    # the flag is designed for S&P 1500 small-cap exposure where
+    # micro-cap / thinly-traded names may appear.
+    low_liquidity_annotate_count: int | None = None
 
 
 class RawMetrics(BaseModel):
@@ -867,3 +888,28 @@ class StockDetail(BaseModel):
     dividend_yield_pct: float | None = None
     pays_dividend: bool | None = None
     payout_ratio: float | None = None
+    # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+    # 0.10.29-phase8pilot, ANNOTATE-ONLY per Rule 16).
+    #
+    # ``average_dollar_volume`` — trailing-30-day mean of (close × volume)
+    # in USD.  Sourced from ``compute.ingest.prices.compute_average_dollar_volume``
+    # over the OHLCV DataFrame already cached during the Step-1 prices loop.
+    # No new network round-trips; derived purely from the existing price cache.
+    #
+    # ``None`` when the price DataFrame was unavailable, empty, or missing
+    # a Close / Volume column — graceful degradation per Rule 18 (cron never
+    # blocks on a failed ADV computation).
+    #
+    # Academic anchor: Amihud 2002 *J. Financial Markets* §2 — dollar volume
+    # < $5M/day places a stock in the bottom decile of the US-equity Amihud
+    # illiquidity measure; microstructure noise dominates any fundamental
+    # signal at this scale.
+    #
+    # The corresponding ``low_liquidity`` flag in ``valuation_warnings``
+    # (emitted in ``compute.main`` per-ticker loop when
+    # ``average_dollar_volume is not None and average_dollar_volume <
+    # config.ADV_FLOOR_USD``) is ANNOTATE-ONLY: it does NOT set ``cautious``,
+    # does NOT suppress Top-5, does NOT null fair-price, and does NOT change
+    # the composite score.  Veto promotion is gated on ≥ 1 cron of
+    # firing-rate data + methodology ratification (WORKFLOW.md §8.6).
+    average_dollar_volume: float | None = None
