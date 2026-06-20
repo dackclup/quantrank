@@ -14,7 +14,7 @@ import { StockLogo } from '@/components/StockLogo';
 import type { StockSummary } from '@/lib/types';
 import { useFlip } from '@/lib/useFlip';
 
-type SortKey =
+export type SortKey =
   | 'rank'
   | 'ticker'
   | 'name'
@@ -22,8 +22,12 @@ type SortKey =
   | 'composite_score'
   | 'current_price'
   | 'fair_price'
-  | 'margin_of_safety_pct';
-type SortDir = 'asc' | 'desc';
+  | 'margin_of_safety_pct'
+  // `loss_chance_pct` has no column header (the Loss-Chance column isn't
+  // header-sortable) but IS a valid sort key for the RankingView sort-chip row.
+  // The generic comparator below handles it (number | null) like any other.
+  | 'loss_chance_pct';
+export type SortDir = 'asc' | 'desc';
 
 const PAGE_SIZE = 50;
 
@@ -35,6 +39,11 @@ export default function RankingTable({
   data,
   cohortSize,
   showMidcapChip = true,
+  sortKey: sortKeyProp,
+  sortDir: sortDirProp,
+  onSortChange,
+  hasActiveFilters = false,
+  onClearFilters,
 }: {
   data: StockSummary[];
   /**
@@ -50,16 +59,38 @@ export default function RankingTable({
    * Defaults to true for backward compatibility.
    */
   showMidcapChip?: boolean;
+  /**
+   * Controlled sort state (optional). When provided, the table binds its
+   * column-header sort to these props + reports changes via `onSortChange`,
+   * so an EXTERNAL affordance (the RankingView sort-chip row) and the column
+   * headers share ONE source of truth. When omitted, the table falls back to
+   * its own internal sort state (backward-compatible standalone behavior).
+   */
+  sortKey?: SortKey;
+  sortDir?: SortDir;
+  onSortChange?: (key: SortKey, dir: SortDir) => void;
+  /**
+   * True when an upstream (drawer) filter is narrowing `data`. Drives the
+   * empty-state copy + a "Clear filters" recovery action so a zero-match from
+   * a FILTER (not just search) is recoverable.
+   */
+  hasActiveFilters?: boolean;
+  /** Clear the upstream drawer filters (shown in the empty state). */
+  onClearFilters?: () => void;
 }) {
   const _cohortSize = cohortSize ?? data.length;
-  // Search-only view. The multi-dimension filter screener + the cross-stock
-  // compare multi-select were removed; the table keeps free-text search, column
-  // sort, and pagination.
+  // Search + multi-dimension filter view. Free-text search + pagination live
+  // here; the structured filters (MoS / composite / sector) are committed in
+  // the RankingView FilterDrawer and arrive pre-applied in `data`.
   const [search, setSearch] = useState('');
 
-  // Sort + pagination
-  const [sortKey, setSortKey] = useState<SortKey>('rank');
-  const [sortDir, setSortDir] = useState<SortDir>('asc');
+  // Sort state — controlled when the parent passes sortKey/sortDir/onSortChange
+  // (RankingView's sort-chip row), else internal (standalone fallback).
+  const isSortControlled = sortKeyProp !== undefined && sortDirProp !== undefined && onSortChange !== undefined;
+  const [sortKeyInternal, setSortKeyInternal] = useState<SortKey>('rank');
+  const [sortDirInternal, setSortDirInternal] = useState<SortDir>('asc');
+  const sortKey = isSortControlled ? sortKeyProp : sortKeyInternal;
+  const sortDir = isSortControlled ? sortDirProp : sortDirInternal;
   const [page, setPage] = useState(1);
 
   // Free-text search over ticker + company name. Empty query passes everything.
@@ -75,6 +106,14 @@ export default function RankingTable({
   useEffect(() => {
     setPage(1);
   }, [search]);
+
+  // Reset page when the upstream (drawer) filter set changes the row count, for
+  // the same reason — applying a filter that shrinks the result must not strand
+  // the user past the new last page. Keyed on `data` (a fresh array reference is
+  // produced on every committed-filter change in RankingView).
+  useEffect(() => {
+    setPage(1);
+  }, [data]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -126,16 +165,22 @@ export default function RankingTable({
   const animateRows = safePage === 1 && firstRenderRef.current;
 
   const onSort = (key: SortKey) => {
+    let nextDir: SortDir;
     if (sortKey === key) {
-      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+      nextDir = sortDir === 'asc' ? 'desc' : 'asc';
     } else {
-      setSortKey(key);
       const descByDefault: SortKey[] = [
         'composite_score',
         'fair_price',
         'margin_of_safety_pct',
       ];
-      setSortDir(descByDefault.includes(key) ? 'desc' : 'asc');
+      nextDir = descByDefault.includes(key) ? 'desc' : 'asc';
+    }
+    if (isSortControlled) {
+      onSortChange!(key, nextDir);
+    } else {
+      setSortKeyInternal(key);
+      setSortDirInternal(nextDir);
     }
     setPage(1);
   };
@@ -326,19 +371,34 @@ export default function RankingTable({
             className="mb-3 h-6 w-6 text-slate-300 dark:text-slate-600"
           />
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-            No stocks match your search
+            {hasActiveFilters ? 'No stocks match your search and filters' : 'No stocks match your search'}
           </p>
           <p className="mt-1 max-w-xs text-xs text-slate-500 dark:text-slate-400">
-            Try a different ticker or company name.
+            {hasActiveFilters
+              ? 'Try a different ticker or name, or loosen a filter to see more of the ranking.'
+              : 'Try a different ticker or company name.'}
           </p>
-          {search && (
-            <button
-              type="button"
-              onClick={() => setSearch('')}
-              className="mt-4 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              Clear search
-            </button>
+          {(search || hasActiveFilters) && (
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                >
+                  Clear search
+                </button>
+              )}
+              {hasActiveFilters && onClearFilters && (
+                <button
+                  type="button"
+                  onClick={onClearFilters}
+                  className="inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}

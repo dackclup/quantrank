@@ -90,6 +90,17 @@ const config: Config = {
           '55%': { opacity: '1', transform: 'translateY(0) scale(1.012)' },
           '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
+        // drawer-in / scrim-in — the ranking FilterDrawer (the ONE floating
+        // overlay surface). transform + opacity only; both ≤ 320ms with a
+        // reduced-motion off-switch in globals.css.
+        'drawer-in': {
+          from: { opacity: '0', transform: 'translateX(100%)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
+        },
+        'scrim-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
       },
       animation: {
         // App-wide motion uses a single `ease-in-out` timing curve (2026-05-30
@@ -113,6 +124,11 @@ const config: Config = {
         'rise-in': 'rise-in 320ms ease-in-out both',
         'chip-pop': 'chip-pop 260ms ease-in-out both',
         'flag-pulse': 'flag-pulse 900ms ease-in-out both',
+        // FilterDrawer slide-over + its scrim. The panel uses the LedgerCraft
+        // overlay easing (a soft decel into rest); the scrim a flat fade. Both
+        // ≤ 320ms (Motion budget); reduced-motion snaps to end state.
+        'drawer-in': 'drawer-in 300ms cubic-bezier(0.22,1,0.36,1) both',
+        'scrim-in': 'scrim-in 200ms ease-in-out both',
       },
     },
   },

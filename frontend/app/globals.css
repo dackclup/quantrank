@@ -303,6 +303,22 @@ code {
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* FilterDrawer entrance (ranking screen) — the ONE floating-overlay surface in
+ * the system (the right-anchored slide-over). transform + opacity ONLY
+ * (Motion Rule 1): the panel slides in from the right edge; the backdrop fades.
+ * Both ≤ 320ms and reduced-motion-guarded below. The panel uses the app's
+ * single ease-in-out curve via the `ease-[cubic-bezier(0.22,1,0.36,1)]`-class on
+ * the element; here the @keyframes just define the from→to. */
+@keyframes drawer-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scrim-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* Stagger helper — list/row entrances apply `animate-rise-in` plus an
  * inline `style={{ animationDelay }}` OR one of these step classes so a
  * group cascades in instead of popping as a block. Capped at 12 steps
@@ -408,6 +424,8 @@ code {
      but no element carries the class so it needs no reduced-motion guard.
      Re-add this line if a future surface starts using animate-chip-pop. */
   .animate-flag-pulse,
+  .animate-drawer-in,
+  .animate-scrim-in,
   .gauge-sweep {
     animation: none !important;
   }
