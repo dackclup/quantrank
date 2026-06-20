@@ -933,6 +933,18 @@ def derive_index_memberships(
     # Russell 1000 proxy: every S&P 900 name with a known positive market cap
     # qualifies by construction (see extended docstring above).  No hardcoded
     # dollar floor — the cap-presence gate is the rule.
-    if market_cap is not None and market_cap > 0:
+    #
+    # GUARD: the "S&P 900 ⊂ Russell 1000" structural argument DOES NOT hold
+    # for S&P 600 small-caps, which sit below the Russell 1000 cutoff (the
+    # Russell 1000 covers the ~1000 largest US stocks; S&P 600 targets the
+    # small-cap tier that is generally outside that boundary).  Suppress the
+    # russell1000 proxy tag for sp600 cohorts to prevent latent corruption
+    # when sp600 names are eventually ranked in a later Slice (Rule 16
+    # annotate-before-veto: the proxy is an additive code, not a veto, but
+    # a structurally incorrect code is still a data-quality defect).
+    # RUT (Russell 2000) would be the correct tag for small-caps but requires
+    # a dedicated FTSE Russell source, not a market-cap proxy.
+    _SP600_COHORTS = {"sp600"}  # extend when additional small-cap cohorts land
+    if cohort not in _SP600_COHORTS and market_cap is not None and market_cap > 0:
         result.append("russell1000")
     return result

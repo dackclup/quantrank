@@ -5002,27 +5002,53 @@ ranked exposure yet.** Second slice of the S&P 1500 universe-expansion epic — 
 universe seam into `compute/main.py` and ships the sp600 small-cap coverage probe so EDGAR ingest
 readiness is visible before ranked production exposure is allowed.
 
+**Rule-18 fix applied (2026-06-20, compute-builder)**: The original Slice 2 draft had a
+Rule-18 violation — `universe = get_sp1500_constituents()` (including ~600 sp600 rows) flowed
+straight into Step 1 (prices) → Step 2 (fundamentals) → composite scoring → JSON write with no
+filter. This was corrected: the full ~1500-row frame is loaded as `_sp1500_full_frame` (probes run
+on it), then sp600 rows are dropped BEFORE Step 1 so the scored/written set is sp500 + sp400 only
+(≈ sp900). A second fix was applied in `derive_index_memberships` to suppress the russell1000
+proxy tag for `cohort == "sp600"` (the S&P 900 ⊂ Russell 1000 structural argument does NOT hold
+for S&P 600 small-caps). One test requires updating by test-engineer (see below).
+
 What lands, pure-additive (rankings byte-identical on the sp500/sp900 cron paths):
 - `compute/main.py` — (a) imports `get_sp1500_constituents`; (b) new `_run_smallcap_coverage_probe`
   function (sp600 sibling of `_run_midcap_coverage_probe`: iterates sp600 rows, calls
   `fetch_fundamentals`, counts coverage/null/CIK — sequential, cache-safe, never feeds scoring);
-  (c) `elif config.QR_UNIVERSE == "sp1500":` branch at the universe-load seam → loads the SP1500
-  frame, runs both the midcap probe (sp400 cohort stats) and the new smallcap probe (sp600 cohort
-  stats), merges sp600 key into `_pilot_cohort_sizes`; (d) new `_pilot_smallcap_*` variables (3
-  float|None, initialised to None before the probe block); (e) `universe=` label → "SP1500" when
-  `QR_UNIVERSE=sp1500`; (f) 3 new `Metadata` keyword args wired.
+  (c) `elif config.QR_UNIVERSE == "sp1500":` branch at the universe-load seam → loads the full
+  SP1500 frame as `_sp1500_full_frame`, runs both probes (midcap sp400 cohort stats + smallcap
+  sp600 cohort stats) on the full frame, then filters out sp600 rows (`cohort != "sp600"`) BEFORE
+  assigning to `universe` (the variable consumed by Step 1 onwards); merges sp600 key into
+  `_pilot_cohort_sizes`; (d) new `_pilot_smallcap_*` variables (3 float|None, initialised to None
+  before the probe block); (e) `universe=` label → `"SP1500-probe"` when `QR_UNIVERSE=sp1500`
+  (signals probe-only run to downstream consumers — NOT the eventual `"SP1500"` label which
+  requires sp600 to be scored); (f) 3 new `Metadata` keyword args wired.
+- `compute/ingest/universe.py` — `derive_index_memberships`: russell1000 proxy tag now suppressed
+  for `cohort in {"sp600"}` — S&P 600 small-caps sit below the Russell 1000 cutoff; the proxy
+  was never valid for this cohort. (The `russell1000` code is annotate-only so Rule 16 does not
+  mandate a prior annotate; suppressing an incorrect tag is a data-quality fix, not a veto.)
 - `compute/output/schemas.py` — 3 additive `Metadata` fields: `smallcap_fundamentals_coverage_pct`,
   `smallcap_null_rate_pct`, `smallcap_cik_resolution_pct` (all `float | None`, detailed docstrings
   mirroring the midcap field style). Schema version bumped `0.10.26` → `0.10.27-phase8pilot`.
 - `frontend/lib/types.ts` — 3 matching optional fields mirrored onto the `Metadata` TS interface.
 - `frontend/lib/schema-snapshot.json` — regenerated via `--update-snapshot`.
 - `compute/config.py` — SCHEMA_VERSION bump + QR_UNIVERSE comment updated to mention sp1500.
-- `tests/test_ingest/test_sp1500_seam.py` — 16 offline tests: smallcap probe coverage/null/cik/
-  exception-safety, graceful degradation on empty sp600, Metadata field round-trip, variable-
-  initialisation source-check, probe-placement guard.
+- `tests/test_ingest/test_sp1500_seam.py` — 21 offline tests (original 16 + 5 added for seam
+  correctness). **One test needs updating by test-engineer**: `test_sp1500_universe_label_present_in_sp1500_branch`
+  currently checks for the literal `'"SP1500"'` via source inspection — must be updated to check
+  for `'"SP1500-probe"'` (and the companion error message). Also needed (test-engineer):
+  - `test_sp600_rows_absent_from_universe_after_sp1500_seam` — assert `cohort="sp600"` rows not
+    in `universe` after the sp1500 elif branch executes (the Rule-18 filter invariant)
+  - `test_russell1000_not_tagged_for_sp600_cohort` — assert `derive_index_memberships` does NOT
+    include `"russell1000"` when `cohort="sp600"`, regardless of market_cap value
+  - `test_russell1000_tagged_for_sp500_sp400_cohorts` — regression: sp500/sp400 still get
+    `"russell1000"` when market_cap > 0
 
-Verify: `ruff check .` clean · `pytest -m "not network"` green · `schema_check` in-sync ·
-`tsc --noEmit` clean. Gate: compute-builder BUILT-CLEAN → quantrank-reviewer (pending) →
+Verify: `ruff check .` clean · `pytest -m "not network"` 2235 passed / 3 failed (2 pre-existing:
+`test_C1_accounting_equation_holds_for_all_inputs` + `test_R6_boundary_exact_threshold`; 1 test
+needing test-engineer update: `test_sp1500_universe_label_present_in_sp1500_branch`) ·
+`schema_check` in-sync · `tsc --noEmit` clean. Gate: compute-builder BUILT-CLEAN →
+test-engineer (label fix + 3 new coverage tests) → quantrank-reviewer (pending) →
 schema-sentinel (schema triple touched). Staging context: Slice 2 of 8 (seam+probe →
 3 Bonferroni-shadow ∥ 4 ADV-guard ∥ 6 SML-tab → 5 precache v11 → 7 cron flip → 8 v2.0).
 

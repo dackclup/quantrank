@@ -1009,14 +1009,27 @@ def run_weekly_compute() -> int:
         except Exception as _sp900_exc:  # noqa: BLE001
             logger.error("[sp900-probe] Outer probe block failed (non-fatal): %s", _sp900_exc)
     elif config.QR_UNIVERSE == "sp1500":
-        # S&P 1500 cutover — Slice 2: wire the seam + smallcap coverage probe.
-        # Ranked output includes ALL ~1500 tickers. The smallcap probe is
-        # observability-only (Rule 18); the counters land in Metadata so the
-        # next slice can decide on ranked sp600 exposure with real coverage data.
+        # S&P 1500 cutover — Slice 2 (Rule 18 observability-first, probe-only).
+        #
+        # The FULL sp1500 frame (sp500 + sp400 + sp600) is loaded so the
+        # smallcap coverage probe can observe EDGAR readiness across all three
+        # cohorts BEFORE any ranked sp600 exposure is allowed.  After both
+        # probes finish the sp600 rows are DROPPED from `universe` so that
+        # only sp500 + sp400 tickers are scored and written to JSON — identical
+        # to the sp900 ranked set.
+        #
+        # Ranked sp600 exposure is a LATER slice, gated on ≥ 1 coverage cron
+        # confirming adequate EDGAR reach for small-caps AND a russell1000
+        # proxy fix for sp600 (the "S&P 900 ⊂ Russell 1000" structural
+        # argument does NOT hold for S&P 600 small-caps; the proxy guard in
+        # derive_index_memberships has been hardened to reject sp600 cohorts).
         logger.info("[sp1500] Loading SP1500 universe (sp500 + sp400 + sp600 de-duped)…")
-        universe = get_sp1500_constituents()
-        logger.info("[sp1500] Universe size: %d (sp500+sp400+sp600 combined)", len(universe))
-        # Midcap probe — reuse the same frame for sp400 cohort stats.
+        _sp1500_full_frame = get_sp1500_constituents()
+        logger.info(
+            "[sp1500] Full frame size: %d (sp500+sp400+sp600 combined, incl. probe-only sp600)",
+            len(_sp1500_full_frame),
+        )
+        # Midcap probe — runs on the FULL frame to capture sp400 cohort stats.
         logger.info("[sp1500-probe] Running midcap diagnostic probe (Rule 18)…")
         try:
             (
@@ -1024,7 +1037,7 @@ def run_weekly_compute() -> int:
                 _pilot_midcap_null_rate_pct,
                 _pilot_midcap_cik_resolution_pct,
                 _pilot_cohort_sizes,
-            ) = _run_midcap_coverage_probe(universe)
+            ) = _run_midcap_coverage_probe(_sp1500_full_frame)
             logger.info(
                 "[sp1500-probe] Midcap complete: cohorts=%s coverage=%.1f%% null_rate=%.1f%% cik_resolution=%.1f%%",
                 _pilot_cohort_sizes,
@@ -1036,7 +1049,8 @@ def run_weekly_compute() -> int:
             logger.error(
                 "[sp1500-probe] Midcap probe block failed (non-fatal): %s", _sp1500_mid_exc
             )
-        # Smallcap probe — sp600 cohort within the sp1500 frame.
+        # Smallcap probe — sp600 cohort within the FULL frame (probe-only; sp600
+        # rows are NOT fed to scoring below).
         logger.info("[sp1500-probe] Running smallcap diagnostic probe (Rule 18)…")
         try:
             (
@@ -1044,7 +1058,7 @@ def run_weekly_compute() -> int:
                 _pilot_smallcap_null_rate_pct,
                 _pilot_smallcap_cik_resolution_pct,
                 _sp1500_cohort_sizes,
-            ) = _run_smallcap_coverage_probe(universe)
+            ) = _run_smallcap_coverage_probe(_sp1500_full_frame)
             # Merge sp600 key into the cohort-sizes dict (probe returns all 3 cohorts).
             if _sp1500_cohort_sizes and _pilot_cohort_sizes is None:
                 _pilot_cohort_sizes = _sp1500_cohort_sizes
@@ -1060,6 +1074,20 @@ def run_weekly_compute() -> int:
             logger.error(
                 "[sp1500-probe] Smallcap probe block failed (non-fatal): %s", _sp1500_sml_exc
             )
+        # Rule 18 filter: drop sp600 rows BEFORE Step 1 (prices) so small-caps
+        # are NOT scored, ranked, or written to JSON in this Slice.  The probe
+        # above already captured their EDGAR coverage into Metadata.
+        # The scored set is therefore sp500 + sp400 — equivalent to sp900.
+        _n_before = len(_sp1500_full_frame)
+        universe = _sp1500_full_frame[
+            _sp1500_full_frame["cohort"] != "sp600"
+        ].reset_index(drop=True)
+        _n_dropped = _n_before - len(universe)
+        logger.info(
+            "[sp1500] Dropped %d sp600 rows (probe-only); scored universe: %d (sp500+sp400)",
+            _n_dropped,
+            len(universe),
+        )
     else:
         # Default sp500 path — byte-identical scoring to pre-PR-3a.
         # Add cohort column so _fetch_prices_one.row.get("cohort") is always defined.
@@ -3158,10 +3186,13 @@ def run_weekly_compute() -> int:
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
-        # Universe label: "SP1500" / "SP900" / "SP500" per active QR_UNIVERSE.
-        # Slice 2 adds "SP1500" when QR_UNIVERSE=sp1500.
+        # Universe label: "SP1500-probe" when QR_UNIVERSE=sp1500 (Slice 2,
+        # probe-only — sp600 is NOT ranked, scored set = sp500+sp400 ≈ sp900).
+        # "SP900" on the sp900 path; config.UNIVERSE ("SP500") on the sp500 path.
+        # The "SP1500-probe" label signals to consumers that this is an
+        # observability run — not yet a full 1500-name ranked output.
         universe=(
-            "SP1500"
+            "SP1500-probe"
             if config.QR_UNIVERSE == "sp1500"
             else ("SP900" if config.QR_UNIVERSE == "sp900" else config.UNIVERSE)
         ),
