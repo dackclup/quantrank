@@ -148,11 +148,11 @@ is present). Routes: `/` (home/AI-pick), `/stock/[ticker]` (one static
 page per ranked stock). Design tokens + component family live in
 `frontend/lib/visual.ts` + `docs/design.md` (LedgerCraft design
 system); consult the `frontend-design-system` skill before adding any
-new UI surface. The ONE client-side beacon is **Vercel Web Analytics**
-(`<Analytics />` in `app/layout.tsx`, PR #517 — cookieless, no IP
-storage, Vercel-edge-served); the former "no analytics in v1.0" pledge
-was lifted by explicit owner decision. Posture detail: [`AGENTS.md`](AGENTS.md)
-§Security considerations.
+new UI surface. The frontend carries TWO cookieless Vercel-edge beacons in
+`app/layout.tsx` — **Web Analytics** (`<Analytics />`, PR #517, page views)
++ **Speed Insights** (`<SpeedInsights />`, Core Web Vitals); the former
+"no analytics in v1.0" pledge was lifted by explicit owner decision.
+Posture detail: [`AGENTS.md`](AGENTS.md) §Security considerations.
 
 ### CI cadence (`.github/workflows/`)
 
