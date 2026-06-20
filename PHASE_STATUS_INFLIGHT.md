@@ -5626,3 +5626,38 @@ after the Slice 7 cron flip — no frontend code change required.
 **Verification**: `tsc --noEmit` clean · `npm run test:unit` green (new tests +
 existing) · `next build` succeeds.
 
+---
+
+## PR (test) — final clean coverage pass: pure-logic features + scoring + output modules (in flight, 2026-06-20)
+
+Capstone of the coverage sweep (after #506/#508/#525/#528/#529). Lifts the remaining PURE-LOGIC
+compute modules that were < 90% — all OFFLINE (no network, no production touch). +143 tests, 8 new files.
+
+Per-module coverage delta:
+- `compute/scoring/pillars.py` 88% → **100%** · `compute/features/risk.py` 79% → **98%** ·
+  `compute/features/technical.py` 85% → **98%** · `compute/output/writer.py` 86% → **98%** ·
+  `compute/scoring/rem.py` 88% → **98%** · `compute/scoring/earnings_quality.py` 89% → **96%** ·
+  `compute/scoring/composite.py` 89% → **95%** · `compute/features/quality.py` 84% → **89%** (remaining
+  = `@given` None-propagation branch-arcs already locked by #506's `test_features_none_propagation.py`).
+
+New files: `tests/test_features/test_risk_coverage.py` · `test_quality_coverage.py` ·
+`test_technical_coverage.py` · `tests/test_scoring/test_composite_coverage.py` · `test_pillars_coverage.py`
+· `test_rem_coverage.py` · `test_earnings_quality_coverage.py` · `tests/test_output/test_writer_coverage.py`.
+Cover: pillar-math edge/NaN/None branches, technical-indicator boundaries, risk metrics (Sharpe/Sortino/
+max-drawdown short-series guards), REM proxy + index branches, composite normalization + adjusted-score
+clamps, earnings-quality loss-avoidance walker edges, writer atomic-write / null-pad / orphan-prune /
+optional-field round-trip.
+
+**No real bug found.** Authored partly under a sub-agent rate-limit cutoff, then orchestrator-verified:
+4 agent-drafted tests asserted wrong contracts (pre-verification) — 1 fixed to the real behavior
+(`write_benchmarks_json` NULL-PADS a no-price-column benchmark as `[None,None]`, it does not drop it),
+3 dropped (piotroski all-fail fixture didn't fire all 9 criteria; sortino sd≈1e-16 float-noise not exact-0;
+rem dsales-lag fixture supplied a t-1 row) rather than ship guessed assertions. `valuation/graham.py`
+(89%) was NOT reached before the cutoff — deferred.
+
+Verify: `ruff` clean · the 8 new files 143 passed · `pytest tests/test_features tests/test_scoring
+tests/test_output -m "not network"` green apart from the two KNOWN pre-existing items (alpha158
+`test_C1` Hypothesis DeadlineExceeded slow-box flake + optional-`[factors]` osap collection error). No
+production code / schema / workflow touched. Gate: test-engineer (drafted) + orchestrator (verified/cleaned).
+
+---
