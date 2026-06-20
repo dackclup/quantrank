@@ -5506,7 +5506,7 @@ schema / workflow touched).
 read `0.10.29-phase8pilot` (#527 merged) while CLAUDE.md §Phase status,
 AGENTS.md schema line, SKILL.md schema-version table, and PHASE_STATUS.md
 §Current state still showed `0.10.27` / defense **35**.  The last tracker
-sweep (#524, 2026-05-… reconcile to 0.10.27) and #526 (no-schema-bump sweep
+sweep (#524, 2026-06-20 reconcile to 0.10.27) and #526 (no-schema-bump sweep
 covering #514/#515/#518/#521) did not fold the three S&P 1500 cutover slices
 that bumped the schema (#519 → 0.10.28, #527 → 0.10.29) or the no-bump
 precache slice (#520).
