@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 345801123931.7583,
   "current_price": 173.63,
-  "rank": 718,
-  "composite_score": 42.31,
+  "rank": 726,
+  "composite_score": 42.09,
   "pillar_scores": {
     "quality": 41.78,
-    "value": 39.25,
+    "value": 38.38,
     "growth": 28.62,
     "momentum": 59.3,
-    "health": 41.61,
-    "profitability": 55.48,
-    "technical": 11.6,
+    "health": 41.04,
+    "profitability": 55.92,
+    "technical": 11.57,
     "risk": 74.53,
     "sentiment": null,
     "ml": null
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 97.73047570962302,
+        "value": 94.05406001509165,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 179.72734943646273,
+        "value": 171.85316954109334,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,9 +80,9 @@
       }
     },
     "median": 136.72654922717925,
-    "max": 179.72734943646273,
-    "low": 97.73047570962302,
-    "high": 179.72734943646273,
+    "max": 171.85316954109334,
+    "low": 94.05406001509165,
+    "high": 171.85316954109334,
     "mos_pct": -26.990702145430422,
     "valuation_warnings": [
       "value_trap_risk"
@@ -123,23 +123,23 @@
   "pillar_baseline": {
     "label": "Energy median (n=38)",
     "values": {
-      "Quality": 51.64,
-      "Value": 52.85,
+      "Quality": 53.12,
+      "Value": 52.3,
       "Growth": 53.45,
       "Momentum": 68.04,
-      "Health": 39.82,
-      "Profitability": 51.54,
-      "Technical": 22.66,
+      "Health": 39.79,
+      "Profitability": 52.63,
+      "Technical": 22.64,
       "Risk": 58.07
     }
   },
   "beneish_m_score": -2.2759618512066275,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.29012670432472,
+  "loss_chance_pct": 55.404100334988506,
   "price_change_1d_pct": -2.2243,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 41.81,
+  "composite_score_adjusted": 41.59,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.08,
+  "osap_blended_score": 46.97,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,5 +205,6 @@
   "cross_source_delta": 1.7502087993251065e-08,
   "dividend_yield_pct": 409.99999999999994,
   "pays_dividend": true,
-  "payout_ratio": 1.2038
+  "payout_ratio": 1.2038,
+  "average_dollar_volume": 1803800067.0950317
 }
