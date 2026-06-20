@@ -269,14 +269,19 @@ export function RankingView({
             {cfg.h1}
           </h1>
           {/* Same-row count: filtered N out of cohort M. tabular-nums so the
-              digits don't jitter as the filter narrows. */}
-          <span className="text-sm text-slate-500 dark:text-slate-400">
-            <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
-              {filteredRows.length.toLocaleString()}
+              digits don't jitter as the filter narrows. Shown ONLY when a
+              drawer filter is active — otherwise it duplicates the unfiltered
+              cohort count already in the descriptive caption below (avoids the
+              "502 / 502" triple-count on the default view). */}
+          {activeFilterCount > 0 && (
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                {filteredRows.length.toLocaleString()}
+              </span>
+              <span className="font-mono tabular-nums"> / {cohortRows.length.toLocaleString()}</span>{' '}
+              stocks
             </span>
-            <span className="font-mono tabular-nums"> / {cohortRows.length.toLocaleString()}</span>{' '}
-            stocks
-          </span>
+          )}
           <button
             type="button"
             onClick={openDrawer}

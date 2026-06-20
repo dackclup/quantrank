@@ -136,7 +136,7 @@ export function FilterDrawer({
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="animate-scrim-in fixed inset-0 z-50 flex items-stretch justify-end bg-slate-900/40 backdrop-blur-[2px]"
+      className="animate-scrim-in fixed inset-0 z-50 flex items-stretch justify-end bg-slate-900/40"
     >
       <div
         ref={panelRef}
