@@ -711,8 +711,16 @@ export function FairPriceCard(props) {  // no types
     (`compute/ingest/cross_source.py:fetch_yfinance_market_cap`)
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
-- No telemetry / external network beacons in the frontend. The site is
-  pure static HTML+JS; no analytics in v1.0.
+- Frontend telemetry: **Vercel Web Analytics** (`@vercel/analytics`,
+  added PR #517) is the ONE sanctioned client-side beacon — cookieless,
+  no IP storage, no user IDs, Vercel-edge-served (`/_vercel/insights/`,
+  not a third-party CDN); it sends only page pathname / referrer / device
+  class / edge-inferred country + Core Web Vitals. The original
+  "no analytics in v1.0" pledge was lifted by explicit owner decision
+  (2026-06-20, PR #517). No OTHER third-party telemetry / external network beacons in
+  the frontend; the site otherwise stays pure static HTML+JS. (Requires
+  Web Analytics enabled in the Vercel dashboard or the injected script
+  404s silently.)
 
 ## Phase + version state
 
