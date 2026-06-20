@@ -4989,3 +4989,23 @@ v11 → 7 cron flip → 8 v2.0). WORKFLOW §8.3 react-virtual note found OBSOLET
 50 rows/page — 1500 rows need no virtualization).
 
 ---
+
+## PR (fix) — test_R6 prices-recency boundary: weekend-robust last-bar pin (in flight, 2026-06-19)
+
+Test-only fix. `tests/test_ingest/test_prices_recency_guard.py::test_R6_boundary_exact_threshold`
+failed every weekend/holiday and was actively red on `main` (2026-06-20 Sat) — blocking CI on ALL
+open PRs (CI runs the full `pytest -v`). Root cause is in the TEST, not the #498 guard: the boundary
+frames were built with `pd.bdate_range(end=today-7)`, which snaps a weekend `end` back to the prior
+Friday, so `today-7` on a Saturday became `today-8` → `calendar_days_stale` flipped 7→8 → the strict
+`>` edge tripped a spurious refetch → assertion failure. The production recency guard (`prices.py`,
+`PRICES_CACHE_MAX_STALE_DAYS=7`) is CORRECT.
+
+Fix: new test helper `_frame_last_bar_on(end, periods)` that builds via `_bday_frame` then pins the
+final index entry to exactly `end` (any weekday), used for R6 sub-cases A (today-7) and B (today-8).
+Boundary is now exact regardless of which day the suite runs. No production code touched.
+
+Verify: `pytest tests/test_ingest/test_prices_recency_guard.py` 6/6 · ruff clean. Gate: orchestrator
+hand-fix (confirmed pre-existing on clean origin/main, weekend date-boundary). Discovered while
+building the pytest-cov coverage PR; split out as a standalone unblock.
+
+---
