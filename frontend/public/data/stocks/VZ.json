@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 189445103286.72192,
   "current_price": 45.37,
-  "rank": 395,
-  "composite_score": 51.88,
+  "rank": 396,
+  "composite_score": 51.85,
   "pillar_scores": {
     "quality": 56.7,
     "value": 76.19,
     "growth": 22.77,
-    "momentum": 54.55,
-    "health": 20.59,
+    "momentum": 54.38,
+    "health": 20.43,
     "profitability": 51.49,
-    "technical": 29.35,
-    "risk": 73.04,
+    "technical": 29.44,
+    "risk": 72.99,
     "sentiment": null,
     "ml": null
   },
@@ -99,7 +99,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -120,20 +120,20 @@
       "Quality": 52.01,
       "Value": 51.64,
       "Growth": 53.35,
-      "Momentum": 45.58,
-      "Health": 39.19,
+      "Momentum": 45.39,
+      "Health": 39.09,
       "Profitability": 53.57,
-      "Technical": 31.39,
-      "Risk": 49.64
+      "Technical": 31.34,
+      "Risk": 49.63
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 25.79761839845864,
+  "loss_chance_pct": 25.81415082670417,
   "price_change_1d_pct": -1.0253,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.88,
+  "composite_score_adjusted": 51.85,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.87,
+  "osap_blended_score": 51.85,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +196,8 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.1503959655943336e-08
+  "cross_source_delta": 4.1503959655943336e-08,
+  "dividend_yield_pct": 624.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.67440003
 }

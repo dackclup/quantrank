@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1242004188.292099,
-  "current_price": 27.04,
-  "rank": 329,
-  "composite_score": 53.48,
+  "market_cap": 1229602498.6460495,
+  "current_price": 26.77,
+  "rank": 316,
+  "composite_score": 53.82,
   "pillar_scores": {
-    "quality": 79.79,
-    "value": 80.42,
-    "growth": 53.96,
+    "quality": 79.96,
+    "value": 80.58,
+    "growth": 54.03,
     "momentum": 1.54,
-    "health": 10.43,
-    "profitability": 52.64,
-    "technical": 31.4,
-    "risk": 16.06,
+    "health": 10.38,
+    "profitability": 52.75,
+    "technical": 36.35,
+    "risk": 15.95,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 45932106.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1242004188.292099,
-    "pe_ratio_ttm": 8.75970962078131,
+    "market_cap": 1229602498.6460495,
+    "pe_ratio_ttm": 8.672241960744005,
     "goodwill": 1055777000.0
   },
   "fair_price": {
@@ -55,7 +55,7 @@
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 4.272367172589446,
+        "value": 4.265229988726366,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -81,9 +81,9 @@
     },
     "median": 69.38279979659929,
     "max": 105.85291921135305,
-    "low": 4.272367172589446,
+    "low": 4.265229988726366,
     "high": 140.08169784974567,
-    "mos_pct": 61.02780372830576,
+    "mos_pct": 61.4169498258331,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
@@ -105,7 +105,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 52,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -128,25 +128,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=121)",
     "values": {
-      "Quality": 49.38,
-      "Value": 49.06,
-      "Growth": 52.4,
-      "Momentum": 72.55,
-      "Health": 67.37,
-      "Profitability": 49.58,
-      "Technical": 52.22,
-      "Risk": 43.22
+      "Quality": 48.97,
+      "Value": 49.31,
+      "Growth": 52.27,
+      "Momentum": 73.31,
+      "Health": 67.55,
+      "Profitability": 49.45,
+      "Technical": 52.52,
+      "Risk": 43.32
     }
   },
   "beneish_m_score": -2.8985955187424457,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 32.900791222193256,
-  "price_change_1d_pct": 1.0086,
+  "loss_chance_pct": 32.596469674618476,
+  "price_change_1d_pct": -4.427,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 52.98,
+  "composite_score_adjusted": 53.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.67,
+  "osap_blended_score": 52.83,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -208,5 +208,8 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.430900786730507e-08
+  "cross_source_delta": 0.010085858940272368,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0
 }

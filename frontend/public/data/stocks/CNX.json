@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 4622072736.926788,
   "current_price": 32.67,
-  "rank": 124,
-  "composite_score": 60.15,
+  "rank": 122,
+  "composite_score": 60.37,
   "pillar_scores": {
     "quality": 75.66,
-    "value": 72.37,
+    "value": 73.25,
     "growth": 67.43,
-    "momentum": 30.82,
-    "health": 24.97,
+    "momentum": 30.69,
+    "health": 25.46,
     "profitability": 64.25,
-    "technical": 42.99,
-    "risk": 56.34,
+    "technical": 42.84,
+    "risk": 56.31,
     "sentiment": null,
     "ml": null
   },
@@ -107,7 +107,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-30"
   },
@@ -132,23 +132,23 @@
   "pillar_baseline": {
     "label": "Energy median (n=38)",
     "values": {
-      "Quality": 53.12,
-      "Value": 52.3,
-      "Growth": 53.95,
-      "Momentum": 68.2,
-      "Health": 39.91,
-      "Profitability": 52.63,
-      "Technical": 22.53,
-      "Risk": 58.14
+      "Quality": 51.64,
+      "Value": 52.85,
+      "Growth": 53.45,
+      "Momentum": 68.04,
+      "Health": 39.82,
+      "Profitability": 51.54,
+      "Technical": 22.66,
+      "Risk": 58.07
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.13942683479974402,
   "recommendation": "cautious",
-  "loss_chance_pct": 44.9628543635674,
+  "loss_chance_pct": 44.85196910948514,
   "price_change_1d_pct": -0.5177,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 57.65,
+  "composite_score_adjusted": 57.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -196,7 +196,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.0,
+  "osap_blended_score": 56.11,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -210,5 +210,8 @@
     "latest_filing_date": "2026-05-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.0569388904324332e-08
+  "cross_source_delta": 2.0569388904324332e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0
 }

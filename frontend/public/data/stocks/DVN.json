@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 26173367336.273193,
   "current_price": 42.12,
-  "rank": 348,
-  "composite_score": 52.91,
+  "rank": 350,
+  "composite_score": 52.88,
   "pillar_scores": {
     "quality": 53.29,
-    "value": 64.47,
-    "growth": 46.05,
-    "momentum": 64.33,
-    "health": 34.3,
-    "profitability": 57.24,
-    "technical": 21.76,
-    "risk": 49.39,
+    "value": 65.79,
+    "growth": 43.09,
+    "momentum": 64.12,
+    "health": 34.76,
+    "profitability": 57.68,
+    "technical": 21.84,
+    "risk": 49.33,
     "sentiment": null,
     "ml": null
   },
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-05-06"
   },
@@ -123,23 +123,23 @@
   "pillar_baseline": {
     "label": "Energy median (n=38)",
     "values": {
-      "Quality": 53.12,
-      "Value": 52.3,
-      "Growth": 53.95,
-      "Momentum": 68.2,
-      "Health": 39.91,
-      "Profitability": 52.63,
-      "Technical": 22.53,
-      "Risk": 58.14
+      "Quality": 51.64,
+      "Value": 52.85,
+      "Growth": 53.45,
+      "Momentum": 68.04,
+      "Health": 39.82,
+      "Profitability": 51.54,
+      "Technical": 22.66,
+      "Risk": 58.07
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 40.63643433038875,
+  "loss_chance_pct": 40.6486852083837,
   "price_change_1d_pct": -1.0803,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 52.41,
+  "composite_score_adjusted": 52.38,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.38,
+  "osap_blended_score": 52.37,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -201,5 +201,8 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.8561362954881243
+  "cross_source_delta": 0.8561362954881243,
+  "dividend_yield_pct": 247.00000000000003,
+  "pays_dividend": true,
+  "payout_ratio": 0.2674
 }

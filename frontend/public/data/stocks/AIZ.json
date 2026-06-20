@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 12875448225.024536,
   "current_price": 259.86,
-  "rank": 25,
-  "composite_score": 67.53,
+  "rank": 26,
+  "composite_score": 67.5,
   "pillar_scores": {
     "quality": 66.25,
     "value": 65.36,
     "growth": 79.46,
-    "momentum": 79.1,
-    "health": 56.41,
+    "momentum": 78.97,
+    "health": 56.32,
     "profitability": 49.4,
-    "technical": 67.43,
-    "risk": 71.51,
+    "technical": 67.48,
+    "risk": 71.44,
     "sentiment": null,
     "ml": null
   },
@@ -110,7 +110,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-07"
   },
@@ -133,20 +133,20 @@
       "Quality": 50.36,
       "Value": 51.99,
       "Growth": 50.62,
-      "Momentum": 57.43,
-      "Health": 55.6,
+      "Momentum": 57.24,
+      "Health": 55.53,
       "Profitability": 49.02,
-      "Technical": 57.34,
-      "Risk": 59.38
+      "Technical": 57.27,
+      "Risk": 59.29
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 48.72643728143858,
+  "loss_chance_pct": 48.73957170832568,
   "price_change_1d_pct": -0.866,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 67.53,
+  "composite_score_adjusted": 67.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.69,
+  "osap_blended_score": 59.68,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -208,5 +208,8 @@
     "latest_filing_date": "2026-05-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.376478255925456e-09
+  "cross_source_delta": 7.376478255925456e-09,
+  "dividend_yield_pct": 135.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.1722
 }

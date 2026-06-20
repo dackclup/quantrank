@@ -8,16 +8,16 @@
   "market_cap": 8233424340.391159,
   "current_price": 200.14,
   "rank": 10,
-  "composite_score": 70.44,
+  "composite_score": 70.41,
   "pillar_scores": {
     "quality": 83.73,
     "value": 69.28,
     "growth": 45.33,
-    "momentum": 63.44,
-    "health": 81.7,
+    "momentum": 63.24,
+    "health": 81.65,
     "profitability": 83.23,
-    "technical": 53.71,
-    "risk": 57.87,
+    "technical": 53.75,
+    "risk": 57.79,
     "sentiment": null,
     "ml": null
   },
@@ -97,7 +97,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-07"
   },
@@ -122,22 +122,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.39,
+      "Value": 48.17,
       "Growth": 50.26,
-      "Momentum": 53.66,
-      "Health": 58.26,
+      "Momentum": 53.47,
+      "Health": 57.96,
       "Profitability": 48.74,
-      "Technical": 55.65,
-      "Risk": 53.59
+      "Technical": 55.55,
+      "Risk": 53.56
     }
   },
   "beneish_m_score": -1.1734802914965743,
   "dechow_f_score": 0.40380933270699265,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 48.97676295469726,
+  "loss_chance_pct": 48.992603247326045,
   "price_change_1d_pct": 4.3537,
   "manipulation_index": 48.0,
-  "composite_score_adjusted": 65.64,
+  "composite_score_adjusted": 65.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 61.15,
+  "osap_blended_score": 61.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -199,5 +199,8 @@
     "latest_filing_date": "2026-05-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.29656181188774e-09
+  "cross_source_delta": 5.29656181188774e-09,
+  "dividend_yield_pct": 60.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.1362
 }

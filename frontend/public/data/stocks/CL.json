@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 71600942144.98238,
   "current_price": 89.48,
-  "rank": 149,
-  "composite_score": 59.27,
+  "rank": 159,
+  "composite_score": 58.88,
   "pillar_scores": {
-    "quality": 95.75,
-    "value": 20.75,
-    "growth": 56.13,
-    "momentum": 56.62,
-    "health": 41.87,
-    "profitability": 80.5,
-    "technical": 50.97,
-    "risk": 64.14,
+    "quality": 95.67,
+    "value": 20.67,
+    "growth": 53.37,
+    "momentum": 56.38,
+    "health": 42.61,
+    "profitability": 80.13,
+    "technical": 50.64,
+    "risk": 64.0,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 62.088837301745436,
+        "value": 63.23527043716265,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 0.5942964674650744,
+        "value": 0.602978752464936,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 51.60704846037434,
+        "value": 52.50429673265804,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 43.32076589542206,
-    "max": 62.088837301745436,
-    "low": 0.5942964674650744,
-    "high": 62.088837301745436,
-    "mos_pct": -106.55221925886916,
+    "median": 43.769390031563915,
+    "max": 63.23527043716265,
+    "low": 0.602978752464936,
+    "high": 63.23527043716265,
+    "mos_pct": -104.43511616772787,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 51.60704846037434,
+    "median_trimmed": 52.50429673265804,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -101,7 +101,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -119,25 +119,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Staples median (n=53)",
+    "label": "Consumer Staples median (n=52)",
     "values": {
-      "Quality": 50.0,
-      "Value": 49.06,
-      "Growth": 50.0,
-      "Momentum": 38.55,
-      "Health": 36.78,
-      "Profitability": 51.57,
-      "Technical": 47.28,
-      "Risk": 47.05
+      "Quality": 50.24,
+      "Value": 48.72,
+      "Growth": 50.12,
+      "Momentum": 39.54,
+      "Health": 37.39,
+      "Profitability": 51.6,
+      "Technical": 48.81,
+      "Risk": 47.25
     }
   },
   "beneish_m_score": -2.916024320658715,
   "dechow_f_score": 0.3622828265099358,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.36536383159715,
+  "loss_chance_pct": 56.5596048016449,
   "price_change_1d_pct": -1.2144,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.27,
+  "composite_score_adjusted": 58.88,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.56,
+  "osap_blended_score": 55.37,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -199,5 +199,8 @@
     "latest_filing_date": "2026-05-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.381202651979999e-08
+  "cross_source_delta": 4.381202651979999e-08,
+  "dividend_yield_pct": 237.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.8062
 }

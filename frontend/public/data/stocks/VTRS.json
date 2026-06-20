@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 17899174158.707527,
   "current_price": 15.37,
-  "rank": 453,
-  "composite_score": 50.25,
+  "rank": 455,
+  "composite_score": 50.23,
   "pillar_scores": {
     "quality": 53.85,
     "value": 56.78,
     "growth": 31.04,
-    "momentum": 79.85,
-    "health": 43.56,
+    "momentum": 79.69,
+    "health": 43.52,
     "profitability": 10.99,
-    "technical": 27.74,
-    "risk": 63.41,
+    "technical": 27.75,
+    "risk": 63.36,
     "sentiment": null,
     "ml": null
   },
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-07"
   },
@@ -123,20 +123,20 @@
       "Quality": 52.47,
       "Value": 49.18,
       "Growth": 48.08,
-      "Momentum": 40.85,
-      "Health": 58.75,
+      "Momentum": 40.68,
+      "Health": 58.68,
       "Profitability": 48.9,
-      "Technical": 50.28,
-      "Risk": 42.98
+      "Technical": 52.64,
+      "Risk": 42.84
     }
   },
   "beneish_m_score": -3.152830324684186,
   "dechow_f_score": 1.5284470814031033,
   "recommendation": "cautious",
-  "loss_chance_pct": 41.21770619756251,
+  "loss_chance_pct": 41.23082916575996,
   "price_change_1d_pct": -2.2886,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 49.75,
+  "composite_score_adjusted": 49.73,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.05,
+  "osap_blended_score": 51.04,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +198,8 @@
     "latest_filing_date": "2026-04-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 9.929466337835171e-08
+  "cross_source_delta": 9.929466337835171e-08,
+  "dividend_yield_pct": 312.0,
+  "pays_dividend": true,
+  "payout_ratio": 9.6
 }

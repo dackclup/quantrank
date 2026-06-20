@@ -5,19 +5,19 @@
   "industry": "Systems Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 14416242310.068222,
-  "current_price": 23.93,
-  "rank": 227,
-  "composite_score": 56.65,
+  "market_cap": 14566850773.568222,
+  "current_price": 24.18,
+  "rank": 211,
+  "composite_score": 57.11,
   "pillar_scores": {
-    "quality": 60.0,
+    "quality": 61.16,
     "value": 83.47,
-    "growth": 60.42,
-    "momentum": 38.11,
-    "health": 19.39,
-    "profitability": 53.06,
-    "technical": 51.66,
-    "risk": 32.46,
+    "growth": 60.54,
+    "momentum": 38.37,
+    "health": 19.25,
+    "profitability": 53.03,
+    "technical": 53.44,
+    "risk": 32.85,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 602433854.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 14416242310.068222,
-    "pe_ratio_ttm": 14.816281921961172,
+    "market_cap": 14566850773.568222,
+    "pe_ratio_ttm": 14.9710696542325,
     "goodwill": 10996000000.0
   },
   "fair_price": {
@@ -83,7 +83,7 @@
     "max": 87.62377222691094,
     "low": 13.643329929346477,
     "high": 157.47349924641279,
-    "mos_pct": 61.35167836681767,
+    "mos_pct": 60.94791404232639,
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate"
     ],
@@ -100,7 +100,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 30,
     "latest_period_end": "2026-05-18",
     "latest_filed_date": "2026-05-21"
   },
@@ -122,25 +122,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=121)",
     "values": {
-      "Quality": 49.38,
-      "Value": 49.06,
-      "Growth": 52.4,
-      "Momentum": 72.55,
-      "Health": 67.37,
-      "Profitability": 49.58,
-      "Technical": 52.22,
-      "Risk": 43.22
+      "Quality": 48.97,
+      "Value": 49.31,
+      "Growth": 52.27,
+      "Momentum": 73.31,
+      "Health": 67.55,
+      "Profitability": 49.45,
+      "Technical": 52.52,
+      "Risk": 43.32
     }
   },
   "beneish_m_score": -1.7251663796768728,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 31.20059682266087,
-  "price_change_1d_pct": -2.6048,
+  "loss_chance_pct": 31.115233223724825,
+  "price_change_1d_pct": 1.0447,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 54.35,
+  "composite_score_adjusted": 54.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -188,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.25,
+  "osap_blended_score": 54.48,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -202,5 +202,8 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.010447122536681699
+  "cross_source_delta": 1.466124870541142e-08,
+  "dividend_yield_pct": 206.99999999999997,
+  "pays_dividend": true,
+  "payout_ratio": 0.3185
 }

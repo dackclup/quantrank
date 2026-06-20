@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 16876731879.316391,
   "current_price": 28.41,
-  "rank": 556,
-  "composite_score": 47.45,
+  "rank": 562,
+  "composite_score": 47.31,
   "pillar_scores": {
     "quality": 43.75,
-    "value": 59.72,
+    "value": 59.44,
     "growth": 50.0,
-    "momentum": 52.66,
-    "health": 24.52,
+    "momentum": 52.44,
+    "health": 24.08,
     "profitability": 48.19,
-    "technical": 38.44,
-    "risk": 47.12,
+    "technical": 38.35,
+    "risk": 47.0,
     "sentiment": null,
     "ml": null
   },
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 26.56883942598877,
+        "value": 26.415342071700383,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 26.56883942598877,
+    "median": 26.415342071700383,
     "max": 34.437796445392664,
     "low": 16.75510071964239,
     "high": 34.437796445392664,
-    "mos_pct": -6.9297736039699815,
+    "mos_pct": -7.551133618855037,
     "valuation_warnings": [
       "value_trap_risk"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 26.56883942598877,
+    "median_trimmed": 26.415342071700383,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -110,7 +110,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-04-30"
   },
@@ -131,22 +131,22 @@
     "label": "Real Estate median (n=60)",
     "values": {
       "Quality": 48.85,
-      "Value": 49.86,
+      "Value": 49.93,
       "Growth": 50.0,
-      "Momentum": 58.74,
-      "Health": 26.31,
+      "Momentum": 58.56,
+      "Health": 25.87,
       "Profitability": 51.87,
-      "Technical": 54.32,
-      "Risk": 56.69
+      "Technical": 54.4,
+      "Risk": 56.39
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 45.69799598003941,
+  "loss_chance_pct": 45.986900150185406,
   "price_change_1d_pct": -0.2808,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.45,
+  "composite_score_adjusted": 47.31,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.65,
+  "osap_blended_score": 49.58,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -208,5 +208,8 @@
     "latest_filing_date": "2026-05-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.180020947459219e-08
+  "cross_source_delta": 3.180020947459219e-08,
+  "dividend_yield_pct": 422.0,
+  "pays_dividend": true,
+  "payout_ratio": 1.2421
 }

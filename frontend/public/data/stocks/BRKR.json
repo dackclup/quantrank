@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 8711727256.5578,
   "current_price": 57.23,
-  "rank": 854,
-  "composite_score": 34.89,
+  "rank": 853,
+  "composite_score": 34.8,
   "pillar_scores": {
     "quality": 20.05,
     "value": 33.7,
     "growth": 42.31,
-    "momentum": 59.15,
-    "health": 32.42,
+    "momentum": 58.91,
+    "health": 31.9,
     "profitability": 24.36,
-    "technical": 64.02,
-    "risk": 30.52,
+    "technical": 63.87,
+    "risk": 30.5,
     "sentiment": null,
     "ml": null
   },
@@ -98,7 +98,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -121,20 +121,20 @@
       "Quality": 52.47,
       "Value": 49.18,
       "Growth": 48.08,
-      "Momentum": 40.85,
-      "Health": 58.75,
+      "Momentum": 40.68,
+      "Health": 58.68,
       "Profitability": 48.9,
-      "Technical": 50.28,
-      "Risk": 42.98
+      "Technical": 52.64,
+      "Risk": 42.84
     }
   },
   "beneish_m_score": -2.8692967326186563,
   "dechow_f_score": 0.5265783363235808,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.55534963004476,
+  "loss_chance_pct": 68.60044903302395,
   "price_change_1d_pct": 4.5679,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.89,
+  "composite_score_adjusted": 34.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.37,
+  "osap_blended_score": 43.33,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -196,5 +196,8 @@
     "latest_filing_date": "2026-05-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.6673552548418595e-05
+  "cross_source_delta": 1.6673552548418595e-05,
+  "dividend_yield_pct": 35.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.38459998
 }

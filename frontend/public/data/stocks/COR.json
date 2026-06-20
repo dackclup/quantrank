@@ -8,16 +8,16 @@
   "market_cap": 52887530327.28577,
   "current_price": 271.83,
   "rank": 580,
-  "composite_score": 46.92,
+  "composite_score": 46.86,
   "pillar_scores": {
     "quality": 65.93,
-    "value": 44.05,
+    "value": 43.96,
     "growth": 62.36,
-    "momentum": 15.27,
-    "health": 28.54,
+    "momentum": 15.15,
+    "health": 28.41,
     "profitability": 27.84,
-    "technical": 49.97,
-    "risk": 55.56,
+    "technical": 49.69,
+    "risk": 55.51,
     "sentiment": null,
     "ml": null
   },
@@ -98,7 +98,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
@@ -121,20 +121,20 @@
       "Quality": 52.47,
       "Value": 49.18,
       "Growth": 48.08,
-      "Momentum": 40.85,
-      "Health": 58.75,
+      "Momentum": 40.68,
+      "Health": 58.68,
       "Profitability": 48.9,
-      "Technical": 50.28,
-      "Risk": 42.98
+      "Technical": 52.64,
+      "Risk": 42.84
     }
   },
   "beneish_m_score": -2.4659328921685906,
   "dechow_f_score": 0.6318843133255636,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.665719465373016,
+  "loss_chance_pct": 53.697681047549814,
   "price_change_1d_pct": -1.8983,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 44.92,
+  "composite_score_adjusted": 44.86,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.39,
+  "osap_blended_score": 49.36,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,5 +196,8 @@
     "latest_filing_date": "2026-05-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.4895468717012443e-08
+  "cross_source_delta": 5.4895468717012443e-08,
+  "dividend_yield_pct": 88.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.1762
 }

@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 30131493166.042328,
   "current_price": 61.02,
-  "rank": 674,
-  "composite_score": 43.99,
+  "rank": 678,
+  "composite_score": 43.92,
   "pillar_scores": {
     "quality": 9.62,
-    "value": 80.68,
+    "value": 80.59,
     "growth": 45.88,
-    "momentum": 73.59,
-    "health": 23.67,
+    "momentum": 73.36,
+    "health": 23.61,
     "profitability": 23.26,
-    "technical": 64.66,
-    "risk": 32.22,
+    "technical": 64.29,
+    "risk": 32.15,
     "sentiment": null,
     "ml": null
   },
@@ -103,7 +103,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 52,
+    "filing_lag_days": 53,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -129,20 +129,20 @@
       "Quality": 52.47,
       "Value": 49.18,
       "Growth": 48.08,
-      "Momentum": 40.85,
-      "Health": 58.75,
+      "Momentum": 40.68,
+      "Health": 58.68,
       "Profitability": 48.9,
-      "Technical": 50.28,
-      "Risk": 42.98
+      "Technical": 52.64,
+      "Risk": 42.84
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 37.97369967224297,
+  "loss_chance_pct": 38.01181441695659,
   "price_change_1d_pct": 0.6267,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.99,
+  "composite_score_adjusted": 43.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.92,
+  "osap_blended_score": 47.88,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -204,5 +204,8 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.0024140729316922e-08
+  "cross_source_delta": 1.0024140729316922e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0
 }

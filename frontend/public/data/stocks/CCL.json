@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 38247937584.25036,
   "current_price": 30.87,
-  "rank": 479,
-  "composite_score": 49.59,
+  "rank": 478,
+  "composite_score": 49.6,
   "pillar_scores": {
-    "quality": 43.75,
-    "value": 66.05,
-    "growth": 65.97,
-    "momentum": 45.65,
-    "health": 13.13,
-    "profitability": 49.23,
-    "technical": 60.95,
-    "risk": 34.98,
+    "quality": 44.16,
+    "value": 65.89,
+    "growth": 65.89,
+    "momentum": 45.42,
+    "health": 12.95,
+    "profitability": 49.22,
+    "technical": 60.79,
+    "risk": 34.91,
     "sentiment": null,
     "ml": null
   },
@@ -99,7 +99,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 84,
+    "filing_lag_days": 85,
     "latest_period_end": "2026-03-19",
     "latest_filed_date": "2026-03-27"
   },
@@ -117,25 +117,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=107)",
     "values": {
-      "Quality": 46.88,
-      "Value": 50.42,
-      "Growth": 49.42,
-      "Momentum": 43.83,
-      "Health": 44.0,
+      "Quality": 47.2,
+      "Value": 50.62,
+      "Growth": 49.07,
+      "Momentum": 43.98,
+      "Health": 44.51,
       "Profitability": 49.38,
-      "Technical": 54.78,
+      "Technical": 54.58,
       "Risk": 40.23
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 24.032215779773846,
+  "loss_chance_pct": 24.027758196564147,
   "price_change_1d_pct": 3.2096,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.59,
+  "composite_score_adjusted": 49.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.72,
+  "osap_blended_score": 50.73,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -197,5 +197,8 @@
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.1179493800891189
+  "cross_source_delta": 0.1179493800891189,
+  "dividend_yield_pct": 97.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.0661
 }

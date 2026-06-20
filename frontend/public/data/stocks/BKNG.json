@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 133108616790.18347,
   "current_price": 171.78,
-  "rank": 585,
-  "composite_score": 46.83,
+  "rank": 581,
+  "composite_score": 46.84,
   "pillar_scores": {
-    "quality": 39.7,
-    "value": 44.37,
-    "growth": 76.74,
-    "momentum": 13.86,
-    "health": 61.84,
-    "profitability": 73.61,
-    "technical": 46.59,
-    "risk": 39.87,
+    "quality": 39.72,
+    "value": 44.55,
+    "growth": 76.64,
+    "momentum": 13.73,
+    "health": 61.78,
+    "profitability": 73.68,
+    "technical": 46.39,
+    "risk": 39.79,
     "sentiment": null,
     "ml": null
   },
@@ -51,7 +51,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 52,
+    "filing_lag_days": 53,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-28"
   },
@@ -71,15 +71,15 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=108)",
+    "label": "Consumer Discretionary median (n=107)",
     "values": {
-      "Quality": 46.88,
-      "Value": 50.42,
-      "Growth": 49.42,
-      "Momentum": 43.83,
-      "Health": 44.0,
+      "Quality": 47.2,
+      "Value": 50.62,
+      "Growth": 49.07,
+      "Momentum": 43.98,
+      "Health": 44.51,
       "Profitability": 49.38,
-      "Technical": 54.78,
+      "Technical": 54.58,
       "Risk": 40.23
     }
   },
@@ -89,7 +89,7 @@
   "loss_chance_pct": null,
   "price_change_1d_pct": 0.0874,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.83,
+  "composite_score_adjusted": 46.84,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -152,5 +152,8 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.3970877598765556e-08
+  "cross_source_delta": 3.3970877598765556e-08,
+  "dividend_yield_pct": 94.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.20729999
 }

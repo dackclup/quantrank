@@ -8,16 +8,16 @@
   "market_cap": 8755063433.526592,
   "current_price": 37.06,
   "rank": 286,
-  "composite_score": 54.74,
+  "composite_score": 54.66,
   "pillar_scores": {
     "quality": 48.75,
     "value": 48.89,
     "growth": 79.79,
-    "momentum": 65.02,
-    "health": 34.12,
+    "momentum": 64.82,
+    "health": 33.72,
     "profitability": 58.19,
-    "technical": 44.35,
-    "risk": 79.01,
+    "technical": 44.17,
+    "risk": 78.95,
     "sentiment": null,
     "ml": null
   },
@@ -113,7 +113,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-07"
   },
@@ -138,22 +138,22 @@
     "label": "Real Estate median (n=60)",
     "values": {
       "Quality": 48.85,
-      "Value": 49.86,
+      "Value": 49.93,
       "Growth": 50.0,
-      "Momentum": 58.74,
-      "Health": 26.31,
+      "Momentum": 58.56,
+      "Health": 25.87,
       "Profitability": 51.87,
-      "Technical": 54.32,
-      "Risk": 56.69
+      "Technical": 54.4,
+      "Risk": 56.39
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 53.40297964735407,
+  "loss_chance_pct": 53.44156436229264,
   "price_change_1d_pct": 1.8692,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 54.24,
+  "composite_score_adjusted": 54.16,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -201,7 +201,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.29,
+  "osap_blended_score": 53.26,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -215,5 +215,8 @@
     "latest_filing_date": "2026-02-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.27722095434917e-08
+  "cross_source_delta": 4.27722095434917e-08,
+  "dividend_yield_pct": 421.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.8829
 }

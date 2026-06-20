@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 26357925000.0,
   "current_price": 118.25,
-  "rank": 51,
-  "composite_score": 65.09,
+  "rank": 52,
+  "composite_score": 65.05,
   "pillar_scores": {
     "quality": 80.77,
     "value": 62.18,
     "growth": 59.13,
-    "momentum": 48.97,
-    "health": 62.42,
+    "momentum": 48.72,
+    "health": 62.33,
     "profitability": 75.64,
-    "technical": 56.29,
-    "risk": 42.46,
+    "technical": 56.33,
+    "risk": 42.36,
     "sentiment": null,
     "ml": null
   },
@@ -98,7 +98,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 52,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -119,20 +119,20 @@
       "Quality": 51.08,
       "Value": 50.64,
       "Growth": 47.72,
-      "Momentum": 48.23,
-      "Health": 54.22,
+      "Momentum": 48.04,
+      "Health": 54.15,
       "Profitability": 54.97,
-      "Technical": 54.41,
-      "Risk": 46.63
+      "Technical": 55.26,
+      "Risk": 46.54
     }
   },
   "beneish_m_score": -2.458238303879437,
   "dechow_f_score": 0.4564417045160459,
   "recommendation": "bullish",
-  "loss_chance_pct": 29.84773754957986,
+  "loss_chance_pct": 29.86874455768369,
   "price_change_1d_pct": 0.9476,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.09,
+  "composite_score_adjusted": 65.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.47,
+  "osap_blended_score": 58.45,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,5 +194,8 @@
     "latest_filing_date": "2026-04-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.369005716497031e-08
+  "cross_source_delta": 3.369005716497031e-08,
+  "dividend_yield_pct": 240.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.4026
 }

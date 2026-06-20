@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 50869721577.13852,
   "current_price": 111.11,
-  "rank": 738,
-  "composite_score": 41.58,
+  "rank": 739,
+  "composite_score": 41.53,
   "pillar_scores": {
     "quality": 49.46,
     "value": 21.2,
     "growth": 28.26,
-    "momentum": 71.45,
-    "health": 16.57,
+    "momentum": 71.23,
+    "health": 16.5,
     "profitability": 42.75,
-    "technical": 61.78,
-    "risk": 88.8,
+    "technical": 61.46,
+    "risk": 88.75,
     "sentiment": null,
     "ml": null
   },
@@ -102,7 +102,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -123,20 +123,20 @@
       "Quality": 52.58,
       "Value": 45.92,
       "Growth": 50.82,
-      "Momentum": 52.85,
-      "Health": 17.0,
+      "Momentum": 52.64,
+      "Health": 16.93,
       "Profitability": 51.81,
-      "Technical": 56.17,
-      "Risk": 74.02
+      "Technical": 55.67,
+      "Risk": 73.69
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.91729072851943,
+  "loss_chance_pct": 62.943853970642614,
   "price_change_1d_pct": 0.2255,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.58,
+  "composite_score_adjusted": 41.53,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.72,
+  "osap_blended_score": 46.69,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,5 +198,8 @@
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00011968248837864353
+  "cross_source_delta": 0.00011968248837864353,
+  "dividend_yield_pct": 229.99999999999997,
+  "pays_dividend": true,
+  "payout_ratio": 0.6327
 }

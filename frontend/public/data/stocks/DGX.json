@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 21585803655.0,
   "current_price": 195.0,
-  "rank": 461,
-  "composite_score": 50.07,
+  "rank": 463,
+  "composite_score": 50.03,
   "pillar_scores": {
     "quality": 43.68,
     "value": 70.51,
     "growth": 30.49,
-    "momentum": 51.11,
-    "health": 43.55,
+    "momentum": 50.89,
+    "health": 43.42,
     "profitability": 44.32,
-    "technical": 42.6,
-    "risk": 73.02,
+    "technical": 42.54,
+    "risk": 72.96,
     "sentiment": null,
     "ml": null
   },
@@ -99,7 +99,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 58,
+    "filing_lag_days": 59,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-22"
   },
@@ -120,20 +120,20 @@
       "Quality": 52.47,
       "Value": 49.18,
       "Growth": 48.08,
-      "Momentum": 40.85,
-      "Health": 58.75,
+      "Momentum": 40.68,
+      "Health": 58.68,
       "Profitability": 48.9,
-      "Technical": 50.28,
-      "Risk": 42.98
+      "Technical": 52.64,
+      "Risk": 42.84
     }
   },
   "beneish_m_score": -2.4971380421163807,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 33.66370360754913,
+  "loss_chance_pct": 33.68681032440229,
   "price_change_1d_pct": -1.3956,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.07,
+  "composite_score_adjusted": 50.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.96,
+  "osap_blended_score": 50.94,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,5 +195,8 @@
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.8113756904734527e-08
+  "cross_source_delta": 1.8113756904734527e-08,
+  "dividend_yield_pct": 176.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.36020002
 }

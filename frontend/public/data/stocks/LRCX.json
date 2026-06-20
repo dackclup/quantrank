@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 486522152526.0315,
   "current_price": 389.04,
-  "rank": 65,
-  "composite_score": 63.75,
+  "rank": 64,
+  "composite_score": 63.85,
   "pillar_scores": {
-    "quality": 87.71,
-    "value": 16.39,
-    "growth": 43.44,
-    "momentum": 94.65,
-    "health": 82.06,
-    "profitability": 79.44,
-    "technical": 68.9,
+    "quality": 87.81,
+    "value": 16.8,
+    "growth": 43.39,
+    "momentum": 94.6,
+    "health": 81.98,
+    "profitability": 79.48,
+    "technical": 68.87,
     "risk": 55.15,
     "sentiment": null,
     "ml": null
@@ -100,7 +100,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 57,
+    "filing_lag_days": 58,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-23"
   },
@@ -119,25 +119,25 @@
     "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/707549/0000707549-25-000078-index.html"
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=120)",
+    "label": "Information Technology median (n=121)",
     "values": {
-      "Quality": 49.38,
-      "Value": 49.06,
-      "Growth": 52.4,
-      "Momentum": 72.55,
-      "Health": 67.37,
-      "Profitability": 49.58,
-      "Technical": 52.22,
-      "Risk": 43.22
+      "Quality": 48.97,
+      "Value": 49.31,
+      "Growth": 52.27,
+      "Momentum": 73.31,
+      "Health": 67.55,
+      "Profitability": 49.45,
+      "Technical": 52.52,
+      "Risk": 43.32
     }
   },
   "beneish_m_score": -2.3315243868135314,
   "dechow_f_score": 0.363907181175394,
   "recommendation": "cautious",
-  "loss_chance_pct": 55.12354586258931,
+  "loss_chance_pct": 55.07294791064719,
   "price_change_1d_pct": 3.9714,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.75,
+  "composite_score_adjusted": 63.85,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.8,
+  "osap_blended_score": 57.85,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,5 +200,8 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3520388479140051e-08
+  "cross_source_delta": 1.3520388479140051e-08,
+  "dividend_yield_pct": 27.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.1909
 }

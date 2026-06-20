@@ -5,19 +5,19 @@
   "industry": "Regional Banks",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6489222627.322636,
-  "current_price": 18.23,
-  "rank": 546,
-  "composite_score": 47.73,
+  "market_cap": 6442947612.68947,
+  "current_price": 18.1,
+  "rank": 548,
+  "composite_score": 47.59,
   "pillar_scores": {
     "quality": 34.82,
-    "value": 55.18,
+    "value": 55.3,
     "growth": 28.3,
-    "momentum": 66.3,
-    "health": 52.73,
+    "momentum": 65.54,
+    "health": 52.65,
     "profitability": 46.61,
-    "technical": 64.72,
-    "risk": 66.44,
+    "technical": 64.21,
+    "risk": 65.33,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 355963949.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6489222627.322636,
-    "pe_ratio_ttm": 11.092688251833566,
+    "market_cap": 6442947612.68947,
+    "pe_ratio_ttm": 11.013585662717043,
     "goodwill": 2480000000.0
   },
   "fair_price": {
@@ -83,7 +83,7 @@
     "max": 23.932378870140187,
     "low": 19.33994267835145,
     "high": 23.932378870140187,
-    "mos_pct": 8.522977844916566,
+    "mos_pct": 9.17530567860832,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -110,7 +110,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
@@ -133,20 +133,20 @@
       "Quality": 50.36,
       "Value": 51.99,
       "Growth": 50.62,
-      "Momentum": 57.43,
-      "Health": 55.6,
+      "Momentum": 57.24,
+      "Health": 55.53,
       "Profitability": 49.02,
-      "Technical": 57.34,
-      "Risk": 59.38
+      "Technical": 57.27,
+      "Risk": 59.29
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 40.15226718570144,
-  "price_change_1d_pct": 0.7182,
+  "loss_chance_pct": 39.99530574833614,
+  "price_change_1d_pct": -1.5234,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.73,
+  "composite_score_adjusted": 47.59,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.79,
+  "osap_blended_score": 49.72,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -208,5 +208,8 @@
     "latest_filing_date": "2026-06-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.44808220349264e-08
+  "cross_source_delta": 0.007182198908367873,
+  "dividend_yield_pct": 285.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.2963
 }

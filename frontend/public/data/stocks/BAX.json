@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 10272568253.892334,
   "current_price": 19.89,
-  "rank": 879,
-  "composite_score": 32.43,
+  "rank": 880,
+  "composite_score": 32.4,
   "pillar_scores": {
     "quality": 10.99,
     "value": 53.11,
     "growth": 39.01,
-    "momentum": 26.22,
-    "health": 44.08,
+    "momentum": 26.11,
+    "health": 44.0,
     "profitability": 16.67,
-    "technical": 67.32,
-    "risk": 13.14,
+    "technical": 67.18,
+    "risk": 13.04,
     "sentiment": null,
     "ml": null
   },
@@ -96,7 +96,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -119,20 +119,20 @@
       "Quality": 52.47,
       "Value": 49.18,
       "Growth": 48.08,
-      "Momentum": 40.85,
-      "Health": 58.75,
+      "Momentum": 40.68,
+      "Health": 58.68,
       "Profitability": 48.9,
-      "Technical": 50.28,
-      "Risk": 42.98
+      "Technical": 52.64,
+      "Risk": 42.84
     }
   },
   "beneish_m_score": -2.860454007362568,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 43.48668368265651,
+  "loss_chance_pct": 43.50323795162595,
   "price_change_1d_pct": 2.5786,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 32.43,
+  "composite_score_adjusted": 32.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.14,
+  "osap_blended_score": 42.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,5 +194,8 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.435359141135561e-09
+  "cross_source_delta": 6.435359141135561e-09,
+  "dividend_yield_pct": 101.0,
+  "pays_dividend": true,
+  "payout_ratio": 3.0769
 }

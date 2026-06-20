@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 21811226900.29605,
   "current_price": 185.04,
-  "rank": 306,
+  "rank": 307,
   "composite_score": 54.03,
   "pillar_scores": {
     "quality": 74.32,
-    "value": 36.95,
+    "value": 37.15,
     "growth": 20.78,
-    "momentum": 62.5,
-    "health": 64.87,
+    "momentum": 62.32,
+    "health": 64.78,
     "profitability": 50.0,
-    "technical": 56.6,
-    "risk": 64.73,
+    "technical": 56.27,
+    "risk": 64.74,
     "sentiment": null,
     "ml": null
   },
@@ -55,7 +55,7 @@
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 76.69081561527997,
+        "value": 76.98274156534238,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 71.8190365679748,
+    "median": 71.964999543006,
     "max": 145.6616743193244,
     "low": 4.116069088043795,
     "high": 145.6616743193244,
-    "mos_pct": -157.6475571501121,
+    "mos_pct": -157.12498361867372,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 96.14830006305785,
+    "median_trimmed": 96.29426303808904,
     "methods_excluded_from_median": [
       "graham",
       "rim"
@@ -109,7 +109,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
@@ -133,19 +133,19 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.39,
+      "Value": 48.17,
       "Growth": 50.26,
-      "Momentum": 53.66,
-      "Health": 58.26,
+      "Momentum": 53.47,
+      "Health": 57.96,
       "Profitability": 48.74,
-      "Technical": 55.65,
-      "Risk": 53.59
+      "Technical": 55.55,
+      "Risk": 53.56
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.98448102276067,
+  "loss_chance_pct": 60.9851668744902,
   "price_change_1d_pct": -0.0864,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 53.53,
@@ -210,5 +210,8 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.266760702130151e-08
+  "cross_source_delta": 1.266760702130151e-08,
+  "dividend_yield_pct": 136.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.5061
 }

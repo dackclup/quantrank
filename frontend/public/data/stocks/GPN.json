@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 18294588996.85032,
   "current_price": 66.88,
-  "rank": 859,
-  "composite_score": 34.45,
+  "rank": 858,
+  "composite_score": 34.41,
   "pillar_scores": {
     "quality": 26.61,
     "value": 46.67,
     "growth": 51.34,
-    "momentum": 26.69,
-    "health": 14.37,
+    "momentum": 26.53,
+    "health": 14.27,
     "profitability": 34.64,
-    "technical": 50.3,
-    "risk": 20.29,
+    "technical": 50.14,
+    "risk": 20.24,
     "sentiment": null,
     "ml": null
   },
@@ -100,7 +100,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 42,
+    "filing_lag_days": 43,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
@@ -125,20 +125,20 @@
       "Quality": 50.36,
       "Value": 51.99,
       "Growth": 50.62,
-      "Momentum": 57.43,
-      "Health": 55.6,
+      "Momentum": 57.24,
+      "Health": 55.53,
       "Profitability": 49.02,
-      "Technical": 57.34,
-      "Risk": 59.38
+      "Technical": 57.27,
+      "Risk": 59.29
     }
   },
   "beneish_m_score": -2.4883474664025784,
   "dechow_f_score": 1.6102117587883737,
   "recommendation": "cautious",
-  "loss_chance_pct": 36.493664859926284,
+  "loss_chance_pct": 36.513823463571896,
   "price_change_1d_pct": 0.7836,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.45,
+  "composite_score_adjusted": 34.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.15,
+  "osap_blended_score": 43.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,5 +200,8 @@
     "latest_filing_date": "2026-06-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.4222991900370283e-08
+  "cross_source_delta": 2.4222991900370283e-08,
+  "dividend_yield_pct": 150.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.3676
 }

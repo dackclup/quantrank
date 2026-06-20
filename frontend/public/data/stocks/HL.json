@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 10704569977.465649,
   "current_price": 15.96,
-  "rank": 188,
-  "composite_score": 57.77,
+  "rank": 191,
+  "composite_score": 57.75,
   "pillar_scores": {
     "quality": 66.35,
     "value": 36.86,
     "growth": 70.43,
-    "momentum": 37.86,
-    "health": 90.09,
+    "momentum": 37.79,
+    "health": 90.08,
     "profitability": 77.24,
-    "technical": 43.21,
-    "risk": 45.27,
+    "technical": 43.06,
+    "risk": 45.17,
     "sentiment": null,
     "ml": null
   },
@@ -104,7 +104,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 45,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -132,20 +132,20 @@
       "Quality": 51.08,
       "Value": 50.64,
       "Growth": 47.72,
-      "Momentum": 48.23,
-      "Health": 54.22,
+      "Momentum": 48.04,
+      "Health": 54.15,
       "Profitability": 54.97,
-      "Technical": 54.41,
-      "Risk": 46.63
+      "Technical": 55.26,
+      "Risk": 46.54
     }
   },
   "beneish_m_score": 1.120459648121553,
   "dechow_f_score": 0.4530706395696295,
   "recommendation": "neutral",
-  "loss_chance_pct": 65.11511322772756,
+  "loss_chance_pct": 65.12546311612454,
   "price_change_1d_pct": -0.6227,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 55.47,
+  "composite_score_adjusted": 55.45,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -193,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.81,
+  "osap_blended_score": 54.8,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -207,5 +207,8 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.9177122479897945e-08
+  "cross_source_delta": 5.9177122479897945e-08,
+  "dividend_yield_pct": 9.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.0217
 }

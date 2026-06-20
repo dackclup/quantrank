@@ -5,19 +5,19 @@
   "industry": "Asset Management & Custody Banks",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4307418566.513062,
-  "current_price": 59.29,
+  "market_cap": 4291435477.8289795,
+  "current_price": 59.07,
   "rank": 57,
-  "composite_score": 64.72,
+  "composite_score": 64.73,
   "pillar_scores": {
     "quality": 69.11,
     "value": 55.77,
     "growth": 55.71,
-    "momentum": 64.66,
-    "health": 83.34,
+    "momentum": 63.62,
+    "health": 83.27,
     "profitability": 66.61,
-    "technical": 52.49,
-    "risk": 79.84,
+    "technical": 55.27,
+    "risk": 80.13,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 72650000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4307418566.513062,
-    "pe_ratio_ttm": 10.60509538368166,
+    "market_cap": 4291435477.8289795,
+    "pe_ratio_ttm": 10.565744162665368,
     "goodwill": 848935000.0
   },
   "fair_price": {
@@ -83,7 +83,7 @@
     "max": 88.48334273108699,
     "low": 0.9627345294347245,
     "high": 88.48334273108699,
-    "mos_pct": -136.83913945646248,
+    "mos_pct": -135.9603251709823,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -112,7 +112,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -141,20 +141,20 @@
       "Quality": 50.36,
       "Value": 51.99,
       "Growth": 50.62,
-      "Momentum": 57.43,
-      "Health": 55.6,
+      "Momentum": 57.24,
+      "Health": 55.53,
       "Profitability": 49.02,
-      "Technical": 57.34,
-      "Risk": 59.38
+      "Technical": 57.27,
+      "Risk": 59.29
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.64199843601521,
-  "price_change_1d_pct": 0.9192,
+  "loss_chance_pct": 58.63511153282067,
+  "price_change_1d_pct": -0.3711,
   "manipulation_index": 28.0,
-  "composite_score_adjusted": 61.92,
+  "composite_score_adjusted": 61.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -202,7 +202,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.28,
+  "osap_blended_score": 58.29,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -216,5 +216,8 @@
     "latest_filing_date": "2026-06-09",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0410319876644852
+  "cross_source_delta": 0.04490922330458044,
+  "dividend_yield_pct": 237.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.2641
 }

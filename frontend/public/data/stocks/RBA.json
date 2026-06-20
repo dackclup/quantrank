@@ -8,16 +8,16 @@
   "market_cap": 20599190943.145752,
   "current_price": 110.57,
   "rank": 783,
-  "composite_score": 39.46,
+  "composite_score": 39.4,
   "pillar_scores": {
     "quality": 23.42,
     "value": 39.16,
     "growth": 50.75,
-    "momentum": 50.83,
-    "health": 35.74,
+    "momentum": 50.64,
+    "health": 35.65,
     "profitability": 39.36,
-    "technical": 64.3,
-    "risk": 60.31,
+    "technical": 63.93,
+    "risk": 60.19,
     "sentiment": null,
     "ml": null
   },
@@ -55,7 +55,7 @@
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 163.13184366407287,
+        "value": 163.19993819324736,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,9 +80,9 @@
       }
     },
     "median": 84.96198150298233,
-    "max": 163.13184366407287,
+    "max": 163.19993819324736,
     "low": 20.754140542423286,
-    "high": 163.13184366407287,
+    "high": 163.19993819324736,
     "mos_pct": -30.14056138855825,
     "valuation_warnings": [
       "extreme_dcf_estimate",
@@ -104,7 +104,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 46,
+    "filing_lag_days": 47,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-04"
   },
@@ -126,22 +126,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.39,
+      "Value": 48.17,
       "Growth": 50.26,
-      "Momentum": 53.66,
-      "Health": 58.26,
+      "Momentum": 53.47,
+      "Health": 57.96,
       "Profitability": 48.74,
-      "Technical": 55.65,
-      "Risk": 53.59
+      "Technical": 55.55,
+      "Risk": 53.56
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5201868507246596,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.81955856067994,
+  "loss_chance_pct": 58.84784383621759,
   "price_change_1d_pct": 3.0283,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.46,
+  "composite_score_adjusted": 39.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.66,
+  "osap_blended_score": 45.63,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -203,5 +203,8 @@
     "latest_filing_date": "2026-05-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.9557192305626322e-08
+  "cross_source_delta": 2.9557192305626322e-08,
+  "dividend_yield_pct": 112.00000000000001,
+  "pays_dividend": true,
+  "payout_ratio": 0.56740004
 }

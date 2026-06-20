@@ -5,19 +5,19 @@
   "industry": "Electrical Components & Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 15788580962.811829,
-  "current_price": 268.2,
-  "rank": 820,
-  "composite_score": 37.83,
+  "market_cap": 16433191941.844086,
+  "current_price": 279.15,
+  "rank": 811,
+  "composite_score": 38.23,
   "pillar_scores": {
     "quality": 27.71,
-    "value": 18.27,
+    "value": 17.57,
     "growth": 22.52,
-    "momentum": 87.64,
-    "health": 54.9,
+    "momentum": 91.45,
+    "health": 54.34,
     "profitability": 41.57,
-    "technical": 52.69,
-    "risk": 42.96,
+    "technical": 54.36,
+    "risk": 44.21,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 58868681.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 15788580962.811829,
-    "pe_ratio_ttm": 83.01565273735372,
+    "market_cap": 16433191941.844086,
+    "pe_ratio_ttm": 86.4049884421945,
     "goodwill": 1486807000.0
   },
   "fair_price": {
@@ -83,16 +83,18 @@
     "max": 342.60473643679796,
     "low": 27.225994935707984,
     "high": 342.60473643679796,
-    "mos_pct": -102.35197835759044,
+    "mos_pct": -110.61353822705766,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
+      "extreme_dcf_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4,
-    "median_trimmed": 163.26790955642798,
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 193.9944847587751,
     "methods_excluded_from_median": [
-      "graham"
+      "graham",
+      "dcf"
     ]
   },
   "top5_factors": [],
@@ -100,7 +102,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 45,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -108,6 +110,7 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
+    "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -123,22 +126,22 @@
     "label": "Industrials median (n=166)",
     "values": {
       "Quality": 50.72,
-      "Value": 48.39,
+      "Value": 48.17,
       "Growth": 50.26,
-      "Momentum": 53.66,
-      "Health": 58.26,
+      "Momentum": 53.47,
+      "Health": 57.96,
       "Profitability": 48.74,
-      "Technical": 55.65,
-      "Risk": 53.59
+      "Technical": 55.55,
+      "Risk": 53.56
     }
   },
   "beneish_m_score": -2.861008263576969,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.08276328707291,
-  "price_change_1d_pct": 0.9561,
+  "loss_chance_pct": 70.88626613836033,
+  "price_change_1d_pct": 4.0828,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.83,
+  "composite_score_adjusted": 38.23,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.84,
+  "osap_blended_score": 45.04,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,11 +197,14 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 14,
     "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.040827669991779364
+  "cross_source_delta": 3.5562693565809883e-10,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0
 }

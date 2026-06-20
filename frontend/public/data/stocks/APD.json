@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 62397353121.270935,
   "current_price": 280.21,
-  "rank": 694,
-  "composite_score": 43.11,
+  "rank": 695,
+  "composite_score": 43.04,
   "pillar_scores": {
     "quality": 40.87,
     "value": 22.6,
     "growth": 41.83,
-    "momentum": 61.02,
-    "health": 61.75,
+    "momentum": 60.81,
+    "health": 61.64,
     "profitability": 51.6,
-    "technical": 48.84,
-    "risk": 55.62,
+    "technical": 48.47,
+    "risk": 55.48,
     "sentiment": null,
     "ml": null
   },
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,20 +118,20 @@
       "Quality": 51.08,
       "Value": 50.64,
       "Growth": 47.72,
-      "Momentum": 48.23,
-      "Health": 54.22,
+      "Momentum": 48.04,
+      "Health": 54.15,
       "Profitability": 54.97,
-      "Technical": 54.41,
-      "Risk": 46.63
+      "Technical": 55.26,
+      "Risk": 46.54
     }
   },
   "beneish_m_score": -2.45651954627629,
   "dechow_f_score": 0.2029484418186148,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.81183025284821,
+  "loss_chance_pct": 58.842099535131254,
   "price_change_1d_pct": -0.5466,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.11,
+  "composite_score_adjusted": 43.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.48,
+  "osap_blended_score": 47.45,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -193,5 +193,8 @@
     "latest_filing_date": "2026-05-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3826372783227986e-08
+  "cross_source_delta": 1.3826372783227986e-08,
+  "dividend_yield_pct": 258.0,
+  "pays_dividend": true,
+  "payout_ratio": 0.7566
 }
