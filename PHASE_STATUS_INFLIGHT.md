@@ -5198,15 +5198,17 @@ green on CI). Gate: test-engineer (authored). No schema triple touch.
 
 ---
 
-## chore(ui): design-handoff structural gap-fill PR-1 — Stock-detail defense-layer note (in flight)
+## feat(ui): design-handoff structural gap-fill — Stock-detail · Home · Ranking (in flight, PR #523)
 
-Branch `claude/redesign-preserve-details-q80fq8`. Follow-up to #521
-(token/proportion polish pass): #521 aligned 15 components to the
+Branch `claude/redesign-preserve-details-q80fq8` → **PR #523**. Follow-up
+to #521 (token/proportion polish pass): #521 aligned 15 components to the
 QuantRank design kit at the token level but explicitly added/removed no
 feature, so the handoff's STRUCTURAL refinements were out of its scope.
-This staged series adds those remaining refinements WITHOUT removing any
-existing detail ("redesign โดยไม่ลดทอนรายละเอียดเดิม"). Signature surfaces
-first, one PR per surface.
+This series adds those remaining refinements WITHOUT removing any
+existing detail ("redesign โดยไม่ลดทอนรายละเอียดเดิม"). Scope = the three
+signature surfaces (Stock detail · Home · Ranking), delivered as ONE PR
+(#523) with a separate commit per surface (the session's branch
+constraint kept all work on this branch rather than a branch-per-surface).
 
 PR-1 = **Stock detail**. Audit finding: 4 of 5 handoff refinements were
 already present post-#521 (fair-price per-method plain-English list in
@@ -5226,8 +5228,46 @@ below the forensic-screen card — added here.
   between the valuation zone and the Supporting-data drawer; rides the
   article's default 16px rhythm (no new `!mt-8` seam). +1 import.
 
+PR-1 also dropped the callout's redundant inset ring (single 1px border,
+matching the page's own amber detail-pending fallback) per a
+frontend-design-reviewer WARN.
+
+**Surface 2 = Home (AI-pick backtest).** Additive handoff refinements —
+no feature/data removed:
+- **AiPickPortfolio.tsx**: Outperformance hero figure (AI net − benchmark,
+  `font-mono tabular-nums`, sage tone via `toneClass`, gated on both inputs
+  non-null); per-row buy/hold action dot keyed to the existing `isCarried`
+  state (sage = new buy / steel = held; adaptive branch only — the slider
+  branch has no carried signal, not mocked); "View the full ranking"
+  primary CTA + educational caveat footer row; Current-picks + Calendar-year
+  returns 2-col grid on `md+` (stacks on mobile).
+- **SegmentedSelector.tsx**: opt-in `variant="primary"` (emerald-fill active
+  segment); default `subtle` preserved — only call sites are
+  AiPickPortfolio's 4. **BacktestValidationBadge.tsx**: section label →
+  "Validation gates · how we know it isn't luck".
+
+**Surface 3 = Ranking** (incl. an AUTHORIZED re-introduction of the
+previously-removed filter screener — explicit user sign-off):
+- **RankingView.tsx**: same-row h1 + "N / M stocks" count + Filters button
+  (R-8); visible sort-chip row (Rank · Score · Loss chance, R-3) bound to a
+  lifted sort state shared 1:1 with RankingTable's column headers; sectors
+  for the drawer derived from REAL cohort rows.
+- **FilterDrawer.tsx** (NEW) + **Switch.tsx** (NEW): the one floating-overlay
+  surface (`shadow-xl`), focus-trapped + Escape/backdrop close + focus
+  restore + `aria-modal`; Signal switches (`role="switch"`, 44px,
+  reduced-motion guard) + multi-select sector chips (outlined-light pattern)
+  + draft-state Apply/Reset. Committed filters (MoS ≥ 0 / composite ≥ 55 /
+  sector) feed `filteredRows` UPSTREAM of search.
+- **RankingTable.tsx**: optional controlled sort props (backward-compatible
+  standalone fallback) + `loss_chance_pct` added to `SortKey`; filter-aware
+  empty state (Clear search + Clear filters); page-reset on filter change;
+  FLIP reshuffle stays search-scoped. **globals.css** + **tailwind.config.ts**:
+  `drawer-in`/`scrim-in` keyframes (transform+opacity, ≤320ms,
+  reduced-motion off-switch).
+
 No schema-triple touch · defense layer unchanged · no dependency added ·
-no existing feature removed. Verify: `tsc --noEmit` clean · `next build`
+no existing feature removed (Ranking filters are an authorized RE-add, not a
+removal). Verify (all three surfaces): `tsc --noEmit` clean · `next build`
 clean (910 pages).
 
 ---
