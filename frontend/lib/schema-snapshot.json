@@ -367,6 +367,21 @@
       "required": false,
       "default": null
     },
+    "smallcap_cik_resolution_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "smallcap_fundamentals_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "smallcap_null_rate_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "survivorship_bias_corrected": {
       "type": "bool | None",
       "required": false,

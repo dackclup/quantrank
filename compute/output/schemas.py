@@ -670,6 +670,33 @@ class Metadata(BaseModel):
     # checking in parallel; Q3 2026-08-19 will either anchor or revise this.
     # Until then treat the inferred_ratio as informational, NOT a correction input.
     cross_source_corruption_inferred_ratio_by_ticker: dict[str, float] | None = None
+    # S&P 1500 cutover — Slice 2 (0.10.27-phase8pilot, Rule 18
+    # observability-before-wiring).  These three fields mirror the midcap
+    # equivalents (``midcap_*``), targeting the sp600 small-cap cohort.
+    # They are populated ONLY when ``QR_UNIVERSE=sp1500``; on the default
+    # sp900/sp500 paths they are ``None``.  No ranked exposure of sp600
+    # tickers ships until Slice 3 (which requires ≥ 1 cron of coverage
+    # data from these counters).
+    #
+    # ``smallcap_fundamentals_coverage_pct`` — % of sp600 tickers for
+    # which ``fetch_fundamentals`` returned a non-null
+    # ``FundamentalsSnapshot`` during the Slice-2 diagnostic probe.
+    # Measures EDGAR / fundamentals-ingest readiness for the 600 before
+    # ranked exposure is allowed.  None on the default sp900/sp500 paths.
+    smallcap_fundamentals_coverage_pct: float | None = None
+    # ``smallcap_null_rate_pct`` — % of sp600 tickers whose
+    # ``FundamentalsSnapshot`` was None (failed, skipped due to null CIK,
+    # or timed out).  Complement of ``smallcap_fundamentals_coverage_pct``
+    # (coverage + null_rate ≈ 100%, small float-rounding expected).
+    # None on the default sp900/sp500 paths.
+    smallcap_null_rate_pct: float | None = None
+    # ``smallcap_cik_resolution_pct`` — % of sp600 tickers whose CIK was
+    # successfully resolved (either from the Wikipedia SP600 page or via
+    # ``Company(ticker).cik``).  A low value blocks EDGAR fetches for those
+    # tickers and is the first signal that the SP600 ingest layer needs
+    # hardening before ranked production exposure.  None when the probe
+    # didn't run (QR_UNIVERSE != sp1500).
+    smallcap_cik_resolution_pct: float | None = None
 
 
 class RawMetrics(BaseModel):

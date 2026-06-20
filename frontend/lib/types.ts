@@ -452,6 +452,24 @@ export type Metadata = {
   // the ratio is plausible and no clean stock spuriously inferred a factor.
   // Informational only — NOT a correction input until PR-2 literature anchor.
   cross_source_corruption_inferred_ratio_by_ticker?: Record<string, number> | null;
+  // S&P 1500 cutover — Slice 2 (0.10.27-phase8pilot, Rule 18
+  // observability-before-wiring). Mirrors the midcap_* equivalents,
+  // targeting the sp600 small-cap cohort. Populated ONLY when
+  // QR_UNIVERSE=sp1500; null/absent on the default sp900/sp500 paths.
+  // No ranked sp600 exposure until Slice 3 (gated on ≥ 1 cron of
+  // coverage data from these counters).
+  //
+  // `smallcap_fundamentals_coverage_pct` — % of sp600 tickers with a
+  // non-null FundamentalsSnapshot from the diagnostic probe. Measures
+  // EDGAR ingest readiness for the 600 before ranked exposure is allowed.
+  smallcap_fundamentals_coverage_pct?: number | null;
+  // `smallcap_null_rate_pct` — % of sp600 tickers returning null.
+  // Complement of smallcap_fundamentals_coverage_pct (sums ≈ 100%).
+  smallcap_null_rate_pct?: number | null;
+  // `smallcap_cik_resolution_pct` — % of sp600 tickers whose CIK
+  // resolved (Wikipedia SP600 page or Company(ticker).cik lookup).
+  // A low value signals SP600 ingest needs hardening before production.
+  smallcap_cik_resolution_pct?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

@@ -85,6 +85,7 @@ from compute.ingest.universe import (
     fetch_ndx_constituents,
     get_sp500_constituents,
     get_sp900_constituents,
+    get_sp1500_constituents,
 )
 from compute.output.schemas import (
     DataQuality,
@@ -843,6 +844,105 @@ def _run_midcap_coverage_probe(
         return None, None, None, {}
 
 
+def _run_smallcap_coverage_probe(
+    sp1500_df: pd.DataFrame,
+) -> tuple[float | None, float | None, float | None, dict[str, int]]:
+    """Diagnostic-only coverage probe over the S&P 600 small-cap cohort.
+
+    S&P 1500 cutover Slice 2 (Rule 18 observability-before-wiring). This
+    probe is the sp600 sibling of ``_run_midcap_coverage_probe``. It:
+      - iterates only over the ``sp600`` rows of ``sp1500_df``
+      - calls ``fetch_fundamentals`` on each ticker (reusing the production
+        tenacity / cache layer — no new retry policy needed)
+      - counts non-null snapshots (= GAAP coverage) vs nulls
+      - does NOT feed ``summaries``, the writer, or any scoring path
+      - returns (coverage_pct, null_rate_pct, cik_resolution_pct, cohort_sizes)
+
+    Ranked output is BYTE-IDENTICAL whether or not this probe ran. The probe
+    runs in the main thread (sequential) to avoid blowing through the EDGAR
+    10 req/s ceiling on top of the ~900 fundamentals fetches already done.
+
+    An empty sp600 cohort (e.g. ``fetch_sp600_constituents`` degraded) returns
+    (None, None, None, cohort_sizes) — graceful degradation, cron-safe.
+
+    Returns (None, None, None, {}) on any unexpected failure so the outer
+    Metadata population still proceeds cleanly.
+    """
+    try:
+        cohort_sizes: dict[str, int] = {}
+        for cohort_label in ("sp500", "sp400", "sp600"):
+            mask = sp1500_df["cohort"] == cohort_label
+            cohort_sizes[cohort_label] = int(mask.sum())
+
+        smallcap_mask = sp1500_df["cohort"] == "sp600"
+        smallcap_df = sp1500_df[smallcap_mask].reset_index(drop=True)
+        total_smallcap = len(smallcap_df)
+
+        if total_smallcap == 0:
+            logger.warning(
+                "[sp1500-probe] No sp600 tickers found in sp1500 DataFrame — "
+                "probe skipped (fetch_sp600_constituents may have degraded)"
+            )
+            return None, None, None, cohort_sizes
+
+        logger.info(
+            "[sp1500-probe] Starting smallcap coverage probe: %d sp600 tickers "
+            "(sequential, cache-safe)",
+            total_smallcap,
+        )
+
+        # CIK resolution bookkeeping
+        cik_resolved = 0
+        for _, row in smallcap_df.iterrows():
+            if row.get("cik") and str(row["cik"]).strip() not in ("", "None", "nan"):
+                cik_resolved += 1
+        cik_resolution_pct = round(100.0 * cik_resolved / total_smallcap, 2)
+        logger.info(
+            "[sp1500-probe] CIK resolution: %d / %d (%.1f%%)",
+            cik_resolved,
+            total_smallcap,
+            cik_resolution_pct,
+        )
+
+        n_ok = 0
+        n_null = 0
+        for _, row in smallcap_df.iterrows():
+            ticker = str(row["ticker"])
+            cik_raw = row.get("cik")
+            cik = (
+                str(cik_raw).strip()
+                if cik_raw and str(cik_raw).strip() not in ("", "None", "nan")
+                else ""
+            )
+            try:
+                snap = fetch_fundamentals(ticker, cik)
+                if snap is not None:
+                    n_ok += 1
+                else:
+                    n_null += 1
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(
+                    "[sp1500-probe] fetch_fundamentals failed for %s: %s", ticker, exc
+                )
+                n_null += 1
+
+        coverage_pct = round(100.0 * n_ok / total_smallcap, 2)
+        null_rate_pct = round(100.0 * n_null / total_smallcap, 2)
+        logger.info(
+            "[sp1500-probe] Smallcap GAAP coverage: %d / %d = %.1f%% (null: %d = %.1f%%)",
+            n_ok,
+            total_smallcap,
+            coverage_pct,
+            n_null,
+            null_rate_pct,
+        )
+        return coverage_pct, null_rate_pct, cik_resolution_pct, cohort_sizes
+
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[sp1500-probe] Diagnostic probe failed unexpectedly: %s", exc)
+        return None, None, None, {}
+
+
 def run_weekly_compute() -> int:
     """Run the full weekly compute. Returns the count of successfully scored tickers."""
     logging.basicConfig(
@@ -864,20 +964,28 @@ def run_weekly_compute() -> int:
         # Already logged at error level by the helper; bail immediately.
         return 0
 
-    # Phase 8 pilot PR 3a — universe selector seam (wires scored output).
-    # QR_UNIVERSE=sp500 (default): loads SP500 only; adds cohort="sp500" so
-    #   the column exists unconditionally for index_membership propagation.
-    # QR_UNIVERSE=sp900: loads the full SP900 frame (cohort column already
-    #   present from get_sp900_constituents); all ~903 tickers are ranked.
-    #   The diagnostic probe reuses this frame — no second fetch.
-    #
-    # CRON DEFAULT: QR_UNIVERSE is "sp500" (compute-rankings.yml unchanged).
-    # The sp900 path is active only via manual `workflow_dispatch universe: sp900`.
+    # Universe selector seam.
+    # QR_UNIVERSE=sp500 (default sp500 path): loads SP500 only; adds cohort="sp500"
+    #   so the column exists unconditionally for index_membership propagation.
+    # QR_UNIVERSE=sp900: loads the full SP900 frame (cohort column already present
+    #   from get_sp900_constituents); all ~903 tickers are ranked. The midcap
+    #   diagnostic probe reuses this frame — no second fetch. (PR 3a)
+    # QR_UNIVERSE=sp1500 (Slice 2, obs-first): loads the full SP1500 frame
+    #   (sp500 + sp400 + sp600, de-duped). All ~1500 tickers are SCORED and
+    #   written to JSON. The smallcap diagnostic probe (Rule 18) runs immediately
+    #   after the frame is loaded so coverage data reaches Metadata before any
+    #   downstream decision on ranked sp600 exposure.
+    #   CRON DEFAULT: unchanged (sp900). sp1500 runs ONLY under manual
+    #   `workflow_dispatch universe: sp1500`. NO workflow file change in this PR.
     logger.info("Loading universe… (QR_UNIVERSE=%s)", config.QR_UNIVERSE)
     _pilot_cohort_sizes: dict[str, int] | None = None
     _pilot_midcap_coverage_pct: float | None = None
     _pilot_midcap_null_rate_pct: float | None = None
     _pilot_midcap_cik_resolution_pct: float | None = None
+    # Slice 2 smallcap probe variables — None on sp500/sp900 paths.
+    _pilot_smallcap_coverage_pct: float | None = None
+    _pilot_smallcap_null_rate_pct: float | None = None
+    _pilot_smallcap_cik_resolution_pct: float | None = None
     if config.QR_UNIVERSE == "sp900":
         logger.info("[sp900] Loading SP900 universe (sp500 + sp400 de-duped)…")
         universe = get_sp900_constituents()
@@ -900,6 +1008,86 @@ def run_weekly_compute() -> int:
             )
         except Exception as _sp900_exc:  # noqa: BLE001
             logger.error("[sp900-probe] Outer probe block failed (non-fatal): %s", _sp900_exc)
+    elif config.QR_UNIVERSE == "sp1500":
+        # S&P 1500 cutover — Slice 2 (Rule 18 observability-first, probe-only).
+        #
+        # The FULL sp1500 frame (sp500 + sp400 + sp600) is loaded so the
+        # smallcap coverage probe can observe EDGAR readiness across all three
+        # cohorts BEFORE any ranked sp600 exposure is allowed.  After both
+        # probes finish the sp600 rows are DROPPED from `universe` so that
+        # only sp500 + sp400 tickers are scored and written to JSON — identical
+        # to the sp900 ranked set.
+        #
+        # Ranked sp600 exposure is a LATER slice, gated on ≥ 1 coverage cron
+        # confirming adequate EDGAR reach for small-caps AND a russell1000
+        # proxy fix for sp600 (the "S&P 900 ⊂ Russell 1000" structural
+        # argument does NOT hold for S&P 600 small-caps; the proxy guard in
+        # derive_index_memberships has been hardened to reject sp600 cohorts).
+        logger.info("[sp1500] Loading SP1500 universe (sp500 + sp400 + sp600 de-duped)…")
+        _sp1500_full_frame = get_sp1500_constituents()
+        logger.info(
+            "[sp1500] Full frame size: %d (sp500+sp400+sp600 combined, incl. probe-only sp600)",
+            len(_sp1500_full_frame),
+        )
+        # Midcap probe — runs on the FULL frame to capture sp400 cohort stats.
+        logger.info("[sp1500-probe] Running midcap diagnostic probe (Rule 18)…")
+        try:
+            (
+                _pilot_midcap_coverage_pct,
+                _pilot_midcap_null_rate_pct,
+                _pilot_midcap_cik_resolution_pct,
+                _pilot_cohort_sizes,
+            ) = _run_midcap_coverage_probe(_sp1500_full_frame)
+            logger.info(
+                "[sp1500-probe] Midcap complete: cohorts=%s coverage=%.1f%% null_rate=%.1f%% cik_resolution=%.1f%%",
+                _pilot_cohort_sizes,
+                _pilot_midcap_coverage_pct or 0.0,
+                _pilot_midcap_null_rate_pct or 0.0,
+                _pilot_midcap_cik_resolution_pct or 0.0,
+            )
+        except Exception as _sp1500_mid_exc:  # noqa: BLE001
+            logger.error(
+                "[sp1500-probe] Midcap probe block failed (non-fatal): %s", _sp1500_mid_exc
+            )
+        # Smallcap probe — sp600 cohort within the FULL frame (probe-only; sp600
+        # rows are NOT fed to scoring below).
+        logger.info("[sp1500-probe] Running smallcap diagnostic probe (Rule 18)…")
+        try:
+            (
+                _pilot_smallcap_coverage_pct,
+                _pilot_smallcap_null_rate_pct,
+                _pilot_smallcap_cik_resolution_pct,
+                _sp1500_cohort_sizes,
+            ) = _run_smallcap_coverage_probe(_sp1500_full_frame)
+            # Merge sp600 key into the cohort-sizes dict (probe returns all 3 cohorts).
+            if _sp1500_cohort_sizes and _pilot_cohort_sizes is None:
+                _pilot_cohort_sizes = _sp1500_cohort_sizes
+            elif _sp1500_cohort_sizes:
+                _pilot_cohort_sizes.update(_sp1500_cohort_sizes)
+            logger.info(
+                "[sp1500-probe] Smallcap complete: coverage=%.1f%% null_rate=%.1f%% cik_resolution=%.1f%%",
+                _pilot_smallcap_coverage_pct or 0.0,
+                _pilot_smallcap_null_rate_pct or 0.0,
+                _pilot_smallcap_cik_resolution_pct or 0.0,
+            )
+        except Exception as _sp1500_sml_exc:  # noqa: BLE001
+            logger.error(
+                "[sp1500-probe] Smallcap probe block failed (non-fatal): %s", _sp1500_sml_exc
+            )
+        # Rule 18 filter: drop sp600 rows BEFORE Step 1 (prices) so small-caps
+        # are NOT scored, ranked, or written to JSON in this Slice.  The probe
+        # above already captured their EDGAR coverage into Metadata.
+        # The scored set is therefore sp500 + sp400 — equivalent to sp900.
+        _n_before = len(_sp1500_full_frame)
+        universe = _sp1500_full_frame[
+            _sp1500_full_frame["cohort"] != "sp600"
+        ].reset_index(drop=True)
+        _n_dropped = _n_before - len(universe)
+        logger.info(
+            "[sp1500] Dropped %d sp600 rows (probe-only); scored universe: %d (sp500+sp400)",
+            _n_dropped,
+            len(universe),
+        )
     else:
         # Default sp500 path — byte-identical scoring to pre-PR-3a.
         # Add cohort column so _fetch_prices_one.row.get("cohort") is always defined.
@@ -2998,9 +3186,16 @@ def run_weekly_compute() -> int:
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
-        # Phase 8 pilot PR 3a — universe label: "SP900" when ranked output
-        # covers the full S&P 900; "SP500" on the default cron path.
-        universe="SP900" if config.QR_UNIVERSE == "sp900" else config.UNIVERSE,
+        # Universe label: "SP1500-probe" when QR_UNIVERSE=sp1500 (Slice 2,
+        # probe-only — sp600 is NOT ranked, scored set = sp500+sp400 ≈ sp900).
+        # "SP900" on the sp900 path; config.UNIVERSE ("SP500") on the sp500 path.
+        # The "SP1500-probe" label signals to consumers that this is an
+        # observability run — not yet a full 1500-name ranked output.
+        universe=(
+            "SP1500-probe"
+            if config.QR_UNIVERSE == "sp1500"
+            else ("SP900" if config.QR_UNIVERSE == "sp900" else config.UNIVERSE)
+        ),
         universe_size=len(summaries),
         # Phase 7.0 PR-1 — benchmark index export coverage (Rule 18 observability).
         benchmark_coverage_pct=benchmark_coverage_pct,
@@ -3174,12 +3369,18 @@ def run_weekly_compute() -> int:
         # Issue #75 §3 — IC-decay monitor artifact URL (Rule 18).
         decay_report_url=decay_report_url,
         # Phase 8 pilot PR 3a — cohort-size diagnostics (Rule 18).
-        # Populated on the scored sp900 path (probe reuses the live universe frame).
-        # None on the default sp500 path.
+        # Populated on the scored sp900/sp1500 path (probe reuses the live universe
+        # frame). None on the default sp500 path. Under sp1500, the dict carries
+        # all 3 cohort keys: "sp500", "sp400", "sp600".
         universe_cohort_sizes=_pilot_cohort_sizes or None,
         midcap_fundamentals_coverage_pct=_pilot_midcap_coverage_pct,
         midcap_null_rate_pct=_pilot_midcap_null_rate_pct,
         midcap_cik_resolution_pct=_pilot_midcap_cik_resolution_pct,
+        # S&P 1500 cutover Slice 2 (0.10.27-phase8pilot, Rule 18) — smallcap probe.
+        # Populated ONLY when QR_UNIVERSE=sp1500; None on sp900/sp500 paths.
+        smallcap_fundamentals_coverage_pct=_pilot_smallcap_coverage_pct,
+        smallcap_null_rate_pct=_pilot_smallcap_null_rate_pct,
+        smallcap_cik_resolution_pct=_pilot_smallcap_cik_resolution_pct,
         # Issue #177 PR-A (0.10.24-phase8pilot) — shadow trimmed-median blast-radius
         # metric. Count of universe tickers whose MoS SIGN would flip under the
         # shadow trimmed median vs the live median. Decision-critical gate for the
