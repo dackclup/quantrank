@@ -2996,7 +2996,7 @@ def run_weekly_compute() -> int:
     )
     logger.info("MoS trailing IC smoke: %s", mos_ic)
 
-    # Phase 8 pilot — post-scoring cohort-size recompute (sp900 path only).
+    # Phase 8 pilot — post-scoring cohort-size recompute (sp900 + sp1500 paths).
     # Bug fix: ``_pilot_cohort_sizes`` was previously populated from the
     # PRE-scoring universe frame in ``_run_midcap_coverage_probe`` (lines
     # ~763-766), which counted 503 sp500 tickers (including one recently-
@@ -3010,16 +3010,27 @@ def run_weekly_compute() -> int:
     # rows that are written to ``rankings.json``) so the per-cohort counts
     # always sum to ``universe_size``.  On the default sp500 path
     # ``_pilot_cohort_sizes`` stays None (no change).
-    if config.QR_UNIVERSE == "sp900" and _pilot_cohort_sizes is not None:
+    #
+    # sp1500 extension (Slice 7): the gate was previously "sp900" only, so on
+    # the sp1500 ranked path the stale PRE-scoring dict (sp500+sp400+sp600
+    # summing to ~1500 across the full frame) leaked into metadata.json as
+    # ``universe_cohort_sizes`` while ``universe_size`` reflected the smaller
+    # POST-scoring count — a contradictory pair.  Widening to include "sp1500"
+    # fixes this.  The recompute loop keys off ``s.index_membership`` which
+    # correctly carries "sp600" for small-cap names (set from ``cohort_by_ticker``
+    # which reads the "cohort" column written by ``get_sp1500_constituents``).
+    # The sp500 path is unaffected (_pilot_cohort_sizes stays None there).
+    if config.QR_UNIVERSE in ("sp900", "sp1500") and _pilot_cohort_sizes is not None:
         post_scoring_cohort_sizes: dict[str, int] = {}
         for s in summaries:
-            membership = s.index_membership  # "sp500" or "sp400"
+            membership = s.index_membership  # "sp500" | "sp400" | "sp600"
             post_scoring_cohort_sizes[membership] = (
                 post_scoring_cohort_sizes.get(membership, 0) + 1
             )
         _pilot_cohort_sizes = post_scoring_cohort_sizes
         logger.info(
-            "[sp900] Post-scoring cohort sizes (replaces pre-scoring probe count): %s",
+            "[%s] Post-scoring cohort sizes (replaces pre-scoring probe count): %s",
+            config.QR_UNIVERSE,
             _pilot_cohort_sizes,
         )
 
