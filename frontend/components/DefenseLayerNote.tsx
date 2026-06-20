@@ -9,10 +9,13 @@ import { TriangleAlert } from 'lucide-react';
 // guarantee). It therefore renders on every detail page, framing the whole
 // scoring methodology rather than a single stock's risk zone.
 //
-// Brand idiom: amber soft band (caution, never alarm-red), 1px ring + 4px
-// radius (borders carry depth — no shadow), TriangleAlert lucide glyph at
-// strokeWidth 1.75 (a hair lighter than the 1px chrome so it reads as content),
-// paired light + dark variants. Copy is verbatim honest-voice register — it
+// Brand idiom: amber soft band (caution, never alarm-red), a SINGLE 1px
+// border + 4px radius (borders carry depth — no shadow, and no redundant
+// inset ring doubling the same amber outline; this matches the page's own
+// detail-pending amber fallback and the handoff Card, which border only),
+// TriangleAlert lucide glyph at strokeWidth 1.75 (a hair lighter than the
+// 1px chrome so it reads as content), paired light + dark variants. Copy is
+// verbatim honest-voice register — it
 // states the model's own limits (decay after publication, stated error rates)
 // and never claims certainty. Covered by the global Disclaimer banner, so no
 // per-element legal popover (design-system Rule 9).
@@ -23,7 +26,7 @@ export function DefenseLayerNote() {
   return (
     <section
       aria-label="Defense layer caution"
-      className="flex items-start gap-3 rounded border border-amber-200 bg-amber-50 p-4 ring-1 ring-inset ring-amber-200 dark:border-amber-800 dark:bg-amber-900/30 dark:ring-amber-800"
+      className="flex items-start gap-3 rounded border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/30"
     >
       <span className="text-amber-700 dark:text-amber-300" aria-hidden="true">
         <TriangleAlert className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
