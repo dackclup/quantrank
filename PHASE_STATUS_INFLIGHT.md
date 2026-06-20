@@ -5197,3 +5197,39 @@ fixed first in #515; the alpha158 `test_C1` Hypothesis DeadlineExceeded remains 
 green on CI). Gate: test-engineer (authored). No schema triple touch.
 
 ---
+
+## chore(ui): design-handoff structural gap-fill PR-1 — Stock-detail defense-layer note (in flight)
+
+Branch `claude/redesign-preserve-details-q80fq8`. Follow-up to #521
+(token/proportion polish pass): #521 aligned 15 components to the
+QuantRank design kit at the token level but explicitly added/removed no
+feature, so the handoff's STRUCTURAL refinements were out of its scope.
+This staged series adds those remaining refinements WITHOUT removing any
+existing detail ("redesign โดยไม่ลดทอนรายละเอียดเดิม"). Signature surfaces
+first, one PR per surface.
+
+PR-1 = **Stock detail**. Audit finding: 4 of 5 handoff refinements were
+already present post-#521 (fair-price per-method plain-English list in
+`FairPriceBarChart`, pillar sublabel/tier/median-tick/axis/legend in
+`PillarRadarChart`, attribute tiles in `HeroAttributeTiles`, brand polish
+across `ListingChips`/`Chip`). The one genuine gap was the standing
+defense-layer caution callout the handoff `StockDetailScreen` renders
+below the forensic-screen card — added here.
+
+- **DefenseLayerNote.tsx** (NEW): standing amber soft-band caution
+  ("Defense layer. Flags mark elevated risk, never confirmed fraud…").
+  `TriangleAlert` lucide named import, strokeWidth 1.75; 1px ring + 4px
+  radius (borders carry depth, no shadow); paired light/dark
+  (amber-50 / amber-900-30, amber-200 / amber-800 ring); honest-voice
+  verbatim copy. Pure presentational server component.
+- **app/stock/[ticker]/page.tsx**: render `<DefenseLayerNote />` UNGATED
+  between the valuation zone and the Supporting-data drawer; rides the
+  article's default 16px rhythm (no new `!mt-8` seam). +1 import.
+
+No schema-triple touch · defense layer unchanged · no dependency added ·
+no existing feature removed. Verify: `tsc --noEmit` clean · `next build`
+clean (910 pages).
+
+---
+
+---
