@@ -4899,3 +4899,98 @@ display — the UI tile is a SEPARATE follow-up PR after ≥ 1 cron confirms cov
 boolean | null`, `payout_ratio: number | null`; `Metadata`: `dividend_coverage_pct: number | null`.
 
 ---
+
+## docs — S&P 900 pilot milestone reconciliation (in flight, 2026-06-19)
+
+**Docs-only.** No code / schema / workflow touched — the verification ladder's
+`schema_check` / `tsc` / `next-build` / `pytest` rungs are N/A.
+
+Reconciles a **stale "next" pointer** that had survived the pilot's own
+completion. `CLAUDE.md` §Phase status + §Next deliverables, `WORKFLOW.md`
+§Phase 8 acceptance criteria, and `PHASE_STATUS.md` (Phase 8 row + Next bullet)
+all still read `next = ≥ 2 green sp900 crons → frontend PR 4 (midcap badge)` —
+but **both gates have since closed**:
+
+- **frontend PR 4 (midcap badge) shipped as #490** (`feat(frontend): S&P 900
+  pilot PR 4 — per-index tab cohort filter`, `3533bc596`). `MidcapChip.tsx`
+  renders the "Mid-cap" badge iff `index_membership === 'sp400'` and is wired
+  into `RankingTable.tsx` (rows + mobile cards), `StockListCard.tsx`, the
+  per-index `RankingView.tsx` (SPX / MID / ALL tabs, chip shown only in the
+  mixed ALL view), and the stock-detail page. #493 / #494 later extended the
+  same tab surface with Dow 30 / NDX / Russell 1000.
+- **≥ 2 green sp900 crons confirmed** — 3 green scheduled `compute-rankings.yml`
+  runs since the #492 cron-default flip: 2026-06-16, 06-17, 06-18 (all
+  `event=schedule`, `conclusion=success`); current production `metadata.json`
+  is `universe=SP900`, `universe_size=902`.
+
+Net effect: marks the **S&P 900 pilot milestone COMPLETE 2026-06-19** and
+re-points the universe-expansion "next" at the **S&P 1500 cutover** (S&P 600
+small-cap ingest + virtualized 1500-row table + Bonferroni / liquidity guards
+per WORKFLOW.md §8.6). No content change to any merged-PR history entry — only
+the forward-looking "next" pointers.
+
+Gate: docs-reviewer (substance) + phase-coordinator Mode C (triple-doc
+consistency). CLAUDE.md / AGENTS.md lockstep satisfied via this INFLIGHT entry
+(AGENTS.md carries no Phase-8 "next" pointer — it delegates to
+CLAUDE.md / PHASE_STATUS.md — so no AGENTS.md substance diff applies).
+
+---
+
+## PR (test+ci+fix) — frontend vitest runner + flagLabel contract test + fundamentals_unavailable label fix (in flight, 2026-06-19)
+
+The frontend test-coverage follow-up to #506/#508 (which closed the Python-side gaps). Adds the
+frontend's FIRST real test runner + a contract guard for the Python↔TS defense-flag label boundary,
+and fixes a drift bug the new test surfaced. Branched off `main` post-#508.
+
+- **vitest runner** — `frontend/package.json` adds `vitest ^2.1.9` (devDependency) + a `test:unit`
+  script (`vitest run`, one-shot CI mode); new `frontend/vitest.config.ts` (node env, no jsdom — pure
+  pure-function contract tests). Replaces the un-wired `downsample.test.mjs` precedent with a real
+  runner. Dependency-auditor GO (dev-only, all MIT/Apache, no reachable CVE — vite/esbuild dev-server
+  CVEs don't apply to `vitest run`); security-reviewer SAFE (devDep correctly scoped, never in the
+  static export).
+- **`flagLabel` contract test** — `frontend/lib/flag-labels.test.ts` (new, 17 tests). Guards the
+  `flag-labels.ts` map (the SHARED Python-flag-string → UI-label token, AGENTS.md §Gotchas): all 9
+  active-veto flag literals have an EXPLICIT curated entry (not the Title-Case fallback), representative
+  annotates resolve, and the unknown-key Title-Case fallback is pinned. A Python flag rename without a
+  matching map update now fails CI.
+- **DRIFT FIX** — `frontend/lib/flag-labels.ts`: the test surfaced that `fundamentals_unavailable`
+  (active veto since #487, schema 0.10.22+) was MISSING from `FLAG_LABELS` and fell back to Title Case
+  silently. Added `fundamentals_unavailable: 'Fundamentals unavailable'` + corrected the stale header
+  comment (`7 → 9 active vetoes`). UI display unchanged in practice (the fallback already read
+  "Fundamentals Unavailable"); now it's a curated, rename-guarded entry.
+- **CI wiring** — `.github/workflows/ci.yml`: a `Unit tests (vitest)` step (`npm run test:unit`) added
+  to the `Frontend (build)` job, BEFORE the build (tests gate the build). No `permissions:` change, no
+  new secret/env surface, triggers on the safe `pull_request` event (security-reviewer confirmed).
+
+Verify: `npm run test:unit` 17/17 pass · `tsc --noEmit` clean · no schema triple touch. Gate:
+frontend-builder BUILT-CLEAN · dependency-auditor GO · security-reviewer SAFE-TO-PUSH. frontend
+`flagLabel`/vitest was the LAST remaining item from the test-coverage analysis — the coverage sweep
+(P0-P3 Python via #506/#508 + this frontend PR) is now complete.
+
+---
+
+## PR (test+ci) — frontend vitest coverage expansion + hermetic CI (vitest exact-pin + npm ci) (in flight, 2026-06-19)
+
+Follow-up to #511 (which added the vitest runner + flagLabel contract test). Two parts, frontend/CI only:
+
+- **vitest coverage expansion** — `frontend/lib/format.test.ts` (new, 31 tests) + `frontend/lib/visual.test.ts`
+  (new, 90 tests). +121 tests (total frontend now 138 incl. the 17 flag-labels). Locks the pure-function
+  display layer: `format.ts` (`formatMosPct` clamps ±99/±500 + boundaries · `formatFairPrice` absurd-value
+  ≥$1M + sub-penny guards · `mosColorClass` 4 tiers) and `visual.ts` (`TIERS` contiguity + dark-pair
+  invariant · `getTier`/`scoreTierLabel` 5 boundaries · `MOS_BUCKETS` · `sectorStyle` all 11 GICS +
+  neutral-chip-body Phase-4-A1 invariant · `scoreColorClasses`/`scoreAccentColor` · `pillarColor`
+  composite-TIERS alignment §Gotchas invariant · `mosVisualFraction` · `universeLabel` ·
+  `filingLagBadgeClasses`). `data.ts` skipped (all exports fs-dependent Server-Component fns; pure helpers
+  are unexported). Two EDGE FINDINGS documented (not bugs, structurally unreachable from compute):
+  `getMosBucket(Infinity) → null` (cheap bucket upper bound is `< Infinity`, exclusive) and `TIERS` is
+  ordered highest-first so contiguity is `TIERS[i].min === TIERS[i+1].max`.
+- **Hermetic CI** — `frontend/package.json` pins `vitest` `^2.1.9` → exact `2.1.9` (lockfile regenerated);
+  `.github/workflows/ci.yml` Frontend job `npm install` → `npm ci` (installs strictly from the committed
+  lockfile, fails on drift). Net supply-chain hardening — no new dep, no permission/secret/trigger change.
+
+Verify: `npm ci` clean (lockfile in sync) · `npm run test:unit` 138/138 · `tsc --noEmit` clean. Gate:
+frontend-builder BUILT-CLEAN · security-reviewer GO/SAFE-TO-PUSH (npm ci is a hardening improvement; vitest
+pin is the same already-audited 2.1.9 from #511). No schema triple touch. No `.tsx`/UI surface touched, so
+no design review needed (pure test files + dep pin + workflow verb).
+
+---
