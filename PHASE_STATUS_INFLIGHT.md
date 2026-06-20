@@ -5407,3 +5407,30 @@ known optional-`[factors]` osap collection error remains). No production code / 
 Gate: orchestrator-authored inline (sub-agent pool was rate-limited).
 
 ---
+
+## PR (test) — offline coverage for universe.py Wikipedia-scrape parsing (in flight, 2026-06-20)
+
+Test-only follow-up in the coverage sweep (after #518 baseline 85%, #525 PIT parquet readers). Lifts
+`compute/ingest/universe.py` (the S&P 500/400/600/900/1500 + Dow30/NDX constituent scrape/loader) from
+**80% → 93%** (+13 pp) by exercising the PURE parsing / normalization / cache branches offline — the
+actual `requests.get` / `pd.read_html` fetch stays network-gated; tests monkeypatch the fetch boundary
+and feed synthetic wikitable HTML / cache fixtures.
+
+`tests/test_ingest/test_universe_parsing.py` (new, **+42 tests**, 13 classes): sp500/sp400/sp600 parse
+errors (no wikitable / missing Symbol / missing CIK → ValueError) + sub_industry mapping + name→ticker
+fallback + `_safe_cik` non-numeric → None · fetch_sp400/sp600/dow30/ndx cache-hit / force-refresh /
+parquet-or-JSON write / write-OSError-non-fatal / corrupt-JSON-re-fetch · get_sp900/sp1500 CIK-resolution
+success+failure (unresolved → None, no crash) + sp1500 cache-hit skips the three constituent fetchers ·
+dow30/ndx multi-table fallthrough + skip-table-without-Symbol · `_normalize_ticker` strip/upper/dot-to-dash.
+
+**No real bug found.** One structural note (NOT patched): lines 199 & 481 (`if "wiki_ticker" not in
+df.columns`) are defensive DEAD CODE — unreachable given the col-map loop only runs after the
+symbol/ticker guard always maps that column. Harmless; flagged so a future reader doesn't mistake it for
+a reachable error path. Remaining ~27 uncovered lines are network-only (`_fetch_wikipedia_html` body,
+`_resolve_cik_for_midcap` edgar import, `pd.read_html` raise-continue) + branch-arc partials.
+
+Verify: `ruff` clean · `pytest tests/test_ingest -m "not network"` 554 passed (+42, 0 regressions; only the
+known optional-`[factors]` osap collection error remains). No production code / schema / workflow touched.
+Gate: test-engineer authored.
+
+---
