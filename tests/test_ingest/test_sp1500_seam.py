@@ -15,8 +15,8 @@ Coverage targets:
      block in run_weekly_compute (guards against uninitialised leakage).
 
 Integration-path targets (builder-flagged gaps, Slice 2 PR):
-  7. run_weekly_compute source encodes "SP1500" label in the sp1500 branch
-     (locks the universe field string literal against accidental rename).
+  7. run_weekly_compute source encodes "SP1500-probe" label in the sp1500 branch
+     (locks the string literal against accidental rename — Slice 2 is probe-only).
   8. sp1500 branch source merges sp600 key from smallcap probe into
      _pilot_cohort_sizes (ensures universe_cohort_sizes carries "sp600"
      through to Metadata at write time).
@@ -372,24 +372,30 @@ class TestSp1500IntegrationSeam:
     # -- Gap 3: "SP1500" universe label is wired into the sp1500 branch ------
 
     def test_sp1500_universe_label_present_in_sp1500_branch(self) -> None:
-        """Source: universe="SP1500" must be assigned inside the sp1500 gated block.
+        """Source: universe="SP1500-probe" must be assigned inside the sp1500 gated block.
 
-        Locks the string literal against accidental rename / missing-branch
-        wiring.  The check that it appears AFTER the sp1500 elif (not in the
-        sp900 or sp500 branches) mirrors the placement guard already applied to
+        Slice 2 Rule-18 fix: the universe label is "SP1500-probe" (not "SP1500")
+        to signal to consumers that this is an observability run — sp600 rows are
+        probed for EDGAR coverage but NOT ranked.  Locks the string literal
+        against accidental rename / missing-branch wiring.
+
+        The check that it appears AFTER the sp1500 elif (not in the sp900 or
+        sp500 branches) mirrors the placement guard already applied to
         ``_run_smallcap_coverage_probe`` in TestSmallcapVariableInitialisation.
         """
         import compute.main as main_mod
 
         src = inspect.getsource(main_mod.run_weekly_compute)
-        sp1500_label = '"SP1500"'
+        sp1500_label = '"SP1500-probe"'
         sp1500_elif_pos = src.find('elif config.QR_UNIVERSE == "sp1500"')
         label_pos = src.find(sp1500_label)
 
         assert sp1500_elif_pos != -1, "sp1500 elif branch not found in run_weekly_compute"
         assert label_pos != -1, (
             f'{sp1500_label} not found in run_weekly_compute — '
-            "the Metadata universe field must carry the SP1500 label on this path"
+            "the Metadata universe field must carry the SP1500-probe label on this path "
+            "(Slice 2: sp600 is probe-only, not ranked; the -probe suffix distinguishes "
+            "this from a full sp1500 ranked output)"
         )
         assert label_pos > sp1500_elif_pos, (
             f'{sp1500_label} must appear AFTER the sp1500 elif, not in the sp900/sp500 branches'
@@ -553,3 +559,107 @@ class TestSp1500IntegrationSeam:
         # cohort_sizes from both must be dicts (even if empty).
         assert isinstance(mid_sizes, dict)
         assert isinstance(sml_sizes, dict)
+
+
+# ---------------------------------------------------------------------------
+# 6. Slice 2 probe-only invariant: sp600 absent from scored universe,
+#    smallcap_* Metadata fields still populated (Rule-18 filter ordering guard)
+# ---------------------------------------------------------------------------
+
+class TestSp1500Slice2ProbeOnly:
+    """Locks the headline Slice 2 invariant: sp600 is PROBE-ONLY.
+
+    The sp1500 seam must:
+      (a) Run the smallcap probe on the FULL frame (capturing sp600 EDGAR
+          coverage into Metadata).
+      (b) DROP all sp600 rows BEFORE feeding the frame to Step 1 (prices),
+          so sp600 is never scored, ranked, or written to JSON.
+      (c) The source ordering of (a) before (b) is enforced by source
+          inspection so this invariant survives refactors.
+
+    Two sub-tests:
+      - Source-ordering check: ``_run_smallcap_coverage_probe`` appears
+        BEFORE the ``cohort != "sp600"`` filter in the sp1500 elif block.
+      - Direct functional test: the filter applied to a synthetic mixed
+        DataFrame produces zero sp600 rows and preserves sp500/sp400 rows.
+    """
+
+    def test_sp600_rows_absent_from_universe_after_sp1500_seam(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Functional: filter drops ALL sp600 rows; sp400/sp500 rows survive.
+
+        Synthesises a mixed sp400 + sp600 frame (mirrors the output of
+        ``get_sp1500_constituents``), runs both diagnostic probes on the full
+        frame, then applies the sp600 filter — asserts zero sp600 rows remain
+        AND the 3 smallcap_* coverage fields are non-None (probe ran on the
+        full frame before the filter).
+        """
+        from compute.main import _run_smallcap_coverage_probe
+
+        # Synthetic mixed frame — 2 sp400 + 3 sp600 (mirrors get_sp1500_constituents output).
+        sp1500_df = _make_sp1500_df()
+
+        # Probe the full frame (mirrors the seam: probe runs BEFORE filter).
+        monkeypatch.setattr("compute.main.fetch_fundamentals", lambda t, c: MagicMock())
+        cov, null_rate, cik_res, _ = _run_smallcap_coverage_probe(sp1500_df)
+
+        # Smallcap probe must have populated coverage fields (ran on full frame).
+        assert cov is not None, (
+            "smallcap_fundamentals_coverage_pct must be populated after probe on full frame"
+        )
+        assert null_rate is not None, (
+            "smallcap_null_rate_pct must be populated after probe on full frame"
+        )
+        assert cik_res is not None, (
+            "smallcap_cik_resolution_pct must be populated after probe on full frame"
+        )
+
+        # Now apply the Slice 2 filter (mirrors the seam: cohort != "sp600").
+        scored_universe = sp1500_df[sp1500_df["cohort"] != "sp600"].reset_index(drop=True)
+
+        # Zero sp600 rows must remain in the scored universe.
+        sp600_in_scored = scored_universe[scored_universe["cohort"] == "sp600"]
+        assert len(sp600_in_scored) == 0, (
+            f"sp600 rows must be absent from the scored universe after the Slice 2 filter, "
+            f"got {len(sp600_in_scored)} rows: {sp600_in_scored['ticker'].tolist()}"
+        )
+
+        # sp500 + sp400 rows must survive the filter intact.
+        assert len(scored_universe) == 4, (
+            f"Scored universe should contain 2 sp500 + 2 sp400 = 4 rows after filter, "
+            f"got {len(scored_universe)}"
+        )
+        surviving_cohorts = set(scored_universe["cohort"].unique())
+        assert surviving_cohorts == {"sp500", "sp400"}, (
+            f"Only sp500 and sp400 cohorts should survive the filter, got {surviving_cohorts!r}"
+        )
+
+    def test_sp1500_seam_probe_runs_before_filter_in_source(self) -> None:
+        """Source ordering: smallcap probe must appear BEFORE the sp600 filter.
+
+        Guards the Rule-18 invariant at the source level: if a refactor moves
+        the filter before the probe call, the probe would only see sp500/sp400
+        rows and the sp600 EDGAR coverage would never be captured in Metadata.
+
+        Uses ``inspect.getsource`` — no pipeline invocation needed.
+        """
+        import compute.main as main_mod
+
+        src = inspect.getsource(main_mod.run_weekly_compute)
+
+        probe_call_pos = src.find("_run_smallcap_coverage_probe")
+        filter_pos = src.find('_sp1500_full_frame["cohort"] != "sp600"')
+
+        assert probe_call_pos != -1, (
+            "_run_smallcap_coverage_probe call not found in run_weekly_compute source"
+        )
+        assert filter_pos != -1, (
+            'sp600 filter expression (_sp1500_full_frame["cohort"] != "sp600") '
+            "not found in run_weekly_compute source — the Slice 2 filter must be present"
+        )
+        assert probe_call_pos < filter_pos, (
+            "Rule-18 ordering violation: _run_smallcap_coverage_probe must be called "
+            "BEFORE the sp600 filter so the probe runs on the full frame (incl. sp600 rows). "
+            f"probe at char {probe_call_pos}, filter at char {filter_pos}"
+        )

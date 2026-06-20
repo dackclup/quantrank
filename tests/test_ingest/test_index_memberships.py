@@ -249,6 +249,54 @@ class TestRussell1000Membership:
                 f"russell1000 must not be at position 0 in {result!r}"
             )
 
+    def test_russell1000_not_tagged_for_sp600_cohort(self):
+        """sp600 ticker with well-above-cutoff market_cap must NOT receive 'russell1000'.
+
+        Slice 2 Rule-18 guard: the 'S&P 900 ⊂ Russell 1000' structural argument
+        does NOT hold for S&P 600 small-caps.  derive_index_memberships must
+        suppress the russell1000 proxy tag for cohort=='sp600' regardless of
+        market_cap value — even a clearly above-cutoff cap (5e9) must not trigger it.
+        """
+        from compute.ingest.universe import derive_index_memberships
+
+        result = derive_index_memberships(
+            "SML1",
+            cohort="sp600",
+            dow30=set(),
+            ndx=set(),
+            market_cap=5_000_000_000,  # well above any Russell 1000 cutoff
+        )
+        assert "russell1000" not in result, (
+            f"russell1000 must NOT be tagged for sp600 cohort, got {result!r}"
+        )
+        # The primary cohort should still be present and first
+        assert result[0] == "sp600"
+
+    def test_russell1000_tagged_for_sp500_sp400_cohorts(self):
+        """sp500 and sp400 tickers with positive market_cap both receive 'russell1000'.
+
+        Regression guard: the sp600 suppression guard must not over-broaden and
+        accidentally remove the russell1000 tag from sp500 or sp400 tickers.
+        The structural argument 'S&P 900 ⊂ Russell 1000' holds for both cohorts.
+        """
+        from compute.ingest.universe import derive_index_memberships
+
+        for cohort in ("sp500", "sp400"):
+            result = derive_index_memberships(
+                "AAPL",
+                cohort=cohort,
+                dow30=set(),
+                ndx=set(),
+                market_cap=1_000_000_000,  # positive cap → should get russell1000
+            )
+            assert "russell1000" in result, (
+                f"russell1000 must be tagged for cohort={cohort!r} with positive market_cap, "
+                f"got {result!r}"
+            )
+            assert result[0] == cohort, (
+                f"Primary cohort {cohort!r} must be first in {result!r}"
+            )
+
     def test_main_memberships_by_ticker_russell1000_wiring(self):
         """Integration smoke for the main.py memberships_by_ticker comprehension.
 
