@@ -5068,3 +5068,35 @@ Verify: `tsc --noEmit` clean · `next build` clean (910 static pages) ·
 14/14 passed · schema triple untouched · defense layer unchanged.
 
 ---
+
+## PR #517 — feat(frontend): Vercel Web Analytics integration (in flight, 2026-06-20)
+
+**Frontend-only, no schema/compute touch.** Adds `@vercel/analytics@^2.0.1`
+(MIT, 0 runtime transitive deps, small unpacked footprint, locked `2.0.1`) and renders
+`<Analytics />` in `frontend/app/layout.tsx` after the ThemeProvider; also
+adds `frontend/.eslintrc.json` (`extends: next/core-web-vitals`). Originated
+as duplicate bot PRs #516 + #517 from `vercel[bot]`; **#516 closed as a
+duplicate**, #517 (the superset — it carries the `.eslintrc.json`) is the
+surviving PR.
+
+Reviews: `dependency-auditor` GO-WITH-NOTES (clean license/CVE/footprint;
+`--legacy-peer-deps` masks an OPTIONAL+unused SvelteKit peer chain — runtime
+identical; CI `Frontend (build)` confirmed green so `npm ci` accepts the lock).
+`security-reviewer` GO-WITH-NOTES (no secrets/env/workflow/schema; telemetry is
+cookieless, no IP storage, no PII, Vercel-edge-served not third-party CDN).
+
+The ONE FAIL was process, now resolved by this doc-lockstep commit: the
+`AGENTS.md` §Security pledge "no telemetry … no analytics in v1.0" directly
+contradicted the change. Per explicit owner decision (2026-06-20) the pledge is
+**lifted** — `AGENTS.md` §Security + `CLAUDE.md` §Frontend rendering updated to
+record Vercel Web Analytics as the one sanctioned cookieless beacon. Defense
+layer UNCHANGED (35); no schema bump.
+
+Follow-ups (not blocking merge): (1) enable Web Analytics in the Vercel
+dashboard or `<Analytics />` 404s silently; (2) optional one-line privacy note
+in the `Disclaimer` component; (3) `.eslintrc.json` makes `next build` enforce
+core-web-vitals — no current violations found. Branch rebased onto `origin/main`
+so it carries the #515 test_R6 weekend-boundary fix (the `test_R6` red that hit
+the pre-rebase base `08a74c09` is resolved on the rebased tip).
+
+---
