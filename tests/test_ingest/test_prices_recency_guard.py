@@ -279,7 +279,13 @@ def test_R6_boundary_exact_threshold(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_STALE_DAYS", 7)
 
     end_7 = today - datetime.timedelta(days=7)
-    frame_7 = _bday_frame(end=end_7, periods=30)
+    # If today-7 lands on a weekend, ``bdate_range`` would snap the cached frame's
+    # last bar BACK to the prior Friday (stale==8, >7) and spuriously trip the
+    # guard on weekend CI runs. Roll forward to the next business day so the bar
+    # is the tightest one still inside the 7-day window (stale==7 on weekdays;
+    # <=6 on weekends — the cron's trading-day-gate skips weekends anyway).
+    end_7_bday = pd.tseries.offsets.BDay(0).rollforward(pd.Timestamp(end_7)).date()
+    frame_7 = _bday_frame(end=end_7_bday, periods=30)
     (cache_dir_a / "BND7.parquet").write_bytes(frame_7.to_parquet())
 
     calls_a: list[str] = []
