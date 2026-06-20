@@ -84,6 +84,28 @@ def _bday_frame(
     )
 
 
+def _frame_last_bar_on(
+    end: datetime.date,
+    periods: int,
+    close_start: float = 100.0,
+) -> pd.DataFrame:
+    """Like ``_bday_frame`` but GUARANTEES the final bar is exactly ``end``.
+
+    ``pd.bdate_range(end=...)`` snaps a weekend / holiday ``end`` back to the
+    prior business day, which silently shifts the last-bar date the recency
+    guard (#498) compares against ``today``. For an EXACT calendar-day boundary
+    test that is a latent weekend bug: ``today - 7`` landing on a Saturday
+    becomes the prior Friday (``today - 8``), flipping the strict ``>`` edge and
+    spuriously failing every weekend. Pinning the final index entry to ``end``
+    keeps the boundary exact regardless of which weekday the suite runs on.
+    """
+    frame = _bday_frame(end=end, periods=periods, close_start=close_start)
+    idx = frame.index.to_list()
+    idx[-1] = pd.Timestamp(end)
+    frame.index = pd.DatetimeIndex(idx)
+    return frame
+
+
 # ---------------------------------------------------------------------------
 # R1 — Fresh last-bar (today) → cache returned immediately, no download
 # ---------------------------------------------------------------------------
@@ -279,13 +301,7 @@ def test_R6_boundary_exact_threshold(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_MAX_STALE_DAYS", 7)
 
     end_7 = today - datetime.timedelta(days=7)
-    # If today-7 lands on a weekend, ``bdate_range`` would snap the cached frame's
-    # last bar BACK to the prior Friday (stale==8, >7) and spuriously trip the
-    # guard on weekend CI runs. Roll forward to the next business day so the bar
-    # is the tightest one still inside the 7-day window (stale==7 on weekdays;
-    # <=6 on weekends — the cron's trading-day-gate skips weekends anyway).
-    end_7_bday = pd.tseries.offsets.BDay(0).rollforward(pd.Timestamp(end_7)).date()
-    frame_7 = _bday_frame(end=end_7_bday, periods=30)
+    frame_7 = _frame_last_bar_on(end=end_7, periods=30)
     (cache_dir_a / "BND7.parquet").write_bytes(frame_7.to_parquet())
 
     calls_a: list[str] = []
@@ -311,7 +327,7 @@ def test_R6_boundary_exact_threshold(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(prices_mod.config, "PRICES_CACHE_DIR", cache_dir_b)
 
     end_8 = today - datetime.timedelta(days=8)
-    frame_8 = _bday_frame(end=end_8, periods=30)
+    frame_8 = _frame_last_bar_on(end=end_8, periods=30)
     (cache_dir_b / "BND8.parquet").write_bytes(frame_8.to_parquet())
 
     calls_b: list[str] = []

@@ -4994,3 +4994,51 @@ pin is the same already-audited 2.1.9 from #511). No schema triple touch. No `.t
 no design review needed (pure test files + dep pin + workflow verb).
 
 ---
+
+## feat(ingest) — S&P 1500 cutover Slice 1: S&P 600 fetcher + S&P 1500 loader (in flight, 2026-06-19)
+
+**Compute ingest only.** No schema triple, no `compute/main.py` wiring, no workflow change — the
+`schema_check` / `tsc` / `next-build` rungs are N/A. First slice of the **S&P 1500 universe-expansion
+epic** (the next universe step after the S&P 900 pilot milestone closed #510). Mirrors the proven
+sp900 ingest ladder (`fetch_sp400_constituents` / `get_sp900_constituents`).
+
+Adds, pure-additive with **no production caller yet** (the `sp1500` universe seam in `main.py` is
+Slice 2):
+- `compute/ingest/universe.py` — `_parse_sp600_html` (mirrors `_parse_sp400_html`: Symbol/Ticker
+  column variants, dot→dash normalize, CIK zero-pad, sector fallback), `fetch_sp600_constituents`
+  (Wikipedia + parquet cache + graceful-degradation try/except → empty DataFrame, never raises into
+  the cron), `get_sp1500_constituents` (concats sp500+sp400+sp600, tags `cohort`, dedup keeps the
+  larger-cap cohort on collision, runs the CIK-resolution loop; ~1500 rows).
+- `compute/config.py` — `WIKIPEDIA_SP600_URL`, `SP600_UNIVERSE_CACHE` (`universe_sp600-v1.parquet`),
+  `SP1500_UNIVERSE_CACHE` (`universe_sp1500-v1.parquet`), `SP600_CACHE_MAX_AGE_DAYS`.
+- `tests/test_ingest/test_universe_sp1500.py` — 33 tests (32 offline + 1 `@network` Wikipedia smoke):
+  parser column/CIK/dedup/malformed-HTML paths, fetch cache + graceful-degradation, loader
+  cohort-tag + cross-cohort dedup + CIK-resolution-call assertions.
+
+Verify: `ruff check .` clean · `pytest -m "not network"` 460 passed / new file 32/32 offline green ·
+no schema touch. Gate: compute-builder BUILT-CLEAN → quantrank-reviewer (pending). Staging context:
+Slice 1 of 8 (1 fetcher → 2 seam+probe → 3 Bonferroni-shadow ∥ 4 ADV-guard ∥ 6 SML-tab → 5 precache
+v11 → 7 cron flip → 8 v2.0). WORKFLOW §8.3 react-virtual note found OBSOLETE (RankingTable paginates
+50 rows/page — 1500 rows need no virtualization).
+
+---
+
+## PR (fix) — test_R6 prices-recency boundary: weekend-robust last-bar pin (in flight, 2026-06-19)
+
+Test-only fix. `tests/test_ingest/test_prices_recency_guard.py::test_R6_boundary_exact_threshold`
+failed every weekend/holiday and was actively red on `main` (2026-06-20 Sat) — blocking CI on ALL
+open PRs (CI runs the full `pytest -v`). Root cause is in the TEST, not the #498 guard: the boundary
+frames were built with `pd.bdate_range(end=today-7)`, which snaps a weekend `end` back to the prior
+Friday, so `today-7` on a Saturday became `today-8` → `calendar_days_stale` flipped 7→8 → the strict
+`>` edge tripped a spurious refetch → assertion failure. The production recency guard (`prices.py`,
+`PRICES_CACHE_MAX_STALE_DAYS=7`) is CORRECT.
+
+Fix: new test helper `_frame_last_bar_on(end, periods)` that builds via `_bday_frame` then pins the
+final index entry to exactly `end` (any weekday), used for R6 sub-cases A (today-7) and B (today-8).
+Boundary is now exact regardless of which day the suite runs. No production code touched.
+
+Verify: `pytest tests/test_ingest/test_prices_recency_guard.py` 6/6 · ruff clean. Gate: orchestrator
+hand-fix (confirmed pre-existing on clean origin/main, weekend date-boundary). Discovered while
+building the pytest-cov coverage PR; split out as a standalone unblock.
+
+---
