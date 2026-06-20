@@ -1241,11 +1241,27 @@ git push origin v2.0
 Per `docs/RESEARCH_FINDINGS.md` §"Phase 8 Defense Layer".
 
 **Bonferroni-adjusted multi-test thresholds** — when expanding to 1500
-stocks (3× more multiple-comparison burden):
-- Beneish M-Score cutoff: bump from −2.22 to −2.50 to maintain 5% FDR
-- IC significance: t-hurdle bumps from 1.96 → 2.78 (Hou-Xue-Zhang 2020)
+stocks (~3× the multiple-comparison burden). **SIGN CORRECTION
+2026-06-19** (methodology-scientist REVISE on the Slice-3 shadow):
+tighter false-positive control TIGHTENS the cutoff. For the Beneish
+M-Score (higher M = more suspicious) that means moving the cutoff UP
+toward 0, NOT down. The original "−2.22 → −2.50" was **backwards** —
+−2.50 < −2.22 is LOOSER (flags a superset, MORE names). The control
+target is **FWER** (Bonferroni α/n), not FDR (Benjamini-Hochberg); the
+arithmetic shown is FWER.
+- Beneish M-Score cutoff: TIGHTEN from −2.22 toward 0 (provisional
+  ~−1.94). Exact value DEFERRED — must be re-derived from the empirical
+  M-score distribution on a real ≥1 sp1500 cron (need its SD to map
+  z→M), not a round number.
+- IC significance: t-hurdle rises from 1.96 toward ~2.8 for the larger
+  comparison burden — primary anchor **Harvey-Liu-Zhu 2016** (RFS,
+  "…and the Cross-Section of Expected Returns"); Hou-Xue-Zhang 2020
+  corroborating. The specific "2.78" must show its Bonferroni m or be
+  dropped.
 - Document each adjustment in `docs/METHODOLOGY.md`.
-- Mode: infrastructure. ~100 LOC.
+- Mode: infrastructure. **Slice 3 (Bonferroni shadow counter) DEFERRED**
+  to the Slice-8 calibration (the round-number −2.50 + missing
+  accumulation made the shadow unshippable) — see PHASE_STATUS_INFLIGHT.md.
 
 **Liquidity backstop** — exclude any stock with average daily volume
 < $5M (microstructure noise dominates at smaller caps; market-impact
