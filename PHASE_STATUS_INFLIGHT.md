@@ -5547,3 +5547,37 @@ moved in lockstep (the "ship with every PR" rule).
 gate, then user-authorized Mark-Ready (no push / no PR from this session per
 the handoff).
 
+---
+
+## PR (test) — offline coverage for the EDGAR-fetch scoring modules (eight_k_events + restatement_filings) (in flight, 2026-06-20)
+
+Test-only follow-up in the coverage sweep (after #518 baseline 85%, #525 PIT parquet readers, #528
+universe.py 80→93%). Lifts the two EDGAR-fetch scoring modules' PURE parsing + cache + graceful-
+degradation branches by MOCKING the edgartools/EFTS boundary — the live fetch stays network-gated; no
+live `@network` tests added (they don't run in offline CI). Both modules **→ 96%**.
+
+- **`compute/scoring/eight_k_events.py` 68% → 96%** — `tests/test_scoring/test_eight_k_events_offline.py`
+  (new, 39 tests): `_ttl_jitter_seconds` zero-window + SHA-256 determinism · `_ensure_edgar_identity` all
+  3 outcomes · `_cache_read` error branches (missing/invalid `fetched_at`, filings-not-list) + `_cache_write`
+  OSError no-raise + roundtrip · `_filing_to_dict` all attr paths (date/datetime/str, html callable/raises,
+  url/filing_url fallback, header-raises→None) · `_fetch` ImportError / Company()-raises / mid-loop-partial /
+  None-entry-skip · `_filing_date_within` future + malformed + boundary · `_check_item` non-dict/empty/missing
+  items · `get_non_reliance_filing_dates` None-fetch / non-dict / malformed-date / custom-lookback / wrong-item ·
+  `check_non_reliance`+`check_auditor_change` no-identity graceful · `invalidate_cache` idempotent.
+- **`compute/scoring/restatement_filings.py` 55% → 96%** — `tests/test_scoring/test_restatement_filings_offline.py`
+  (new, 49 tests): identity 3 outcomes · `_cache_read` 8 error/expiry branches + write roundtrip ·
+  `invalidate_cache` both-subdirs / idempotent / OSError-swallow · `_filing_to_dict` 8 attr/fallback/exception
+  paths · `_fetch_filings` ImportError / Company-raises / per-form-raises-continue / iteration-raises-continue /
+  None-skip · `fetch_amendments`+`fetch_late_filings` default-lookback wiring · `check_restatement_history`+
+  `check_late_filing` None-fetch + default-lookback + all-out-of-window · `_parse_iso_date` non-string/malformed/
+  valid/truncate · `get_amendment_filing_dates` None-fetch / out-of-window / parse-None-skip · frozen dataclasses.
+
+**No real bug found** — every graceful-degradation path behaves as documented (the `_cache_write` OSError
+path correctly cleans up the `.tmp` file and does not propagate). Remaining ~uncovered = live-fetch
+network-only paths (`from edgar import Company`, real EFTS calls) + a couple of structurally-dead inner
+guards already short-circuited upstream.
+
+Verify: `ruff` clean · `pytest tests/test_scoring -m "not network"` 828 passed (+88, 0 regressions). No
+production code / schema / workflow touched. Gate: test-engineer authored.
+
+---
