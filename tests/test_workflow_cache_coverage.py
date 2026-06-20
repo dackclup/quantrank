@@ -596,35 +596,38 @@ def _first_diff(a: str, b: str) -> str:
 
 def test_compute_rankings_has_universe_dispatch_input() -> None:
     """compute-rankings.yml exposes the `universe` dispatch input wired to
-    QR_UNIVERSE. After the precache-900 Phase B flip (2026-06-16) the scheduled
-    cron defaults to sp900; the `|| 'sp900'` fallback makes the cron rank the
-    full S&P 900 universe when the schedule trigger fires (null inputs).
+    QR_UNIVERSE. After the S&P 1500 cutover Slice 7 cron-default flip (2026-06-20)
+    the scheduled cron defaults to sp1500; the `|| 'sp1500'` fallback makes the
+    cron rank the full S&P 1500 universe (~1500 names) when the schedule trigger
+    fires (null inputs).  sp900 and sp500 remain available as manual-dispatch
+    options for diagnostics / rollback.
 
-    S&P 1500 cutover Slice 5 (2026-06-20) adds `sp1500` as a manual-dispatch
-    option so the +600 small-cap cohort can be cold-seeded under cache-v11-fast
-    before the Slice 7 cron-default flip. The cron default STAYS sp900.
+    Prior history: Phase B flip (2026-06-16) moved the default to sp900; Slice 5
+    (2026-06-20) added sp1500 as a manual-dispatch option; Slice 7 (2026-06-20)
+    moved the default to sp1500.
 
     WHY: PR 1 added `config.QR_UNIVERSE` (code default sp500) + a midcap coverage
-    probe that only fires on sp900. The Phase B flip moves the WORKFLOW default to
-    sp900 so the weekday cron permanently ranks midcaps. The env-block assignment
-    (not a run-line ${{ }}) keeps it injection-safe. sp500 remains available as a
-    manual dispatch option for diagnostics.
+    probe that only fires on sp900+. The Phase B flip moved the WORKFLOW default to
+    sp900 so the weekday cron ranked midcaps; the Slice 7 flip moves it to sp1500
+    so the cron ranks all ~1500 names. The env-block assignment (not a run-line
+    ${{ }}) keeps it injection-safe.
     """
     text = _workflow_text("compute-rankings.yml")
     assert "universe:" in text, "compute-rankings.yml missing the `universe` dispatch input"
     # choices present — all three options must remain available
     for choice in ("- sp500", "- sp900", "- sp1500"):
         assert choice in text, f"`universe` input missing choice {choice!r}"
-    # default sp900 (Phase B flip — cron now ranks the full S&P 900 universe)
-    assert "default: sp900" in text, (
-        "`universe` input must default to sp900 after the precache-900 Phase B flip "
-        "(2026-06-16). The scheduled cron now permanently ranks the full S&P 900 universe."
+    # default sp1500 (Slice 7 flip — cron now ranks the full S&P 1500 universe)
+    assert "default: sp1500" in text, (
+        "`universe` input must default to sp1500 after the S&P 1500 cutover Slice 7 "
+        "cron-default flip (2026-06-20). The scheduled cron now permanently ranks the "
+        "full S&P 1500 universe (~1500 names: sp500 + sp400 + sp600)."
     )
-    # QR_UNIVERSE wired with the sp900 fallback (schedule trigger has null inputs)
-    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}" in text, (
+    # QR_UNIVERSE wired with the sp1500 fallback (schedule trigger has null inputs)
+    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp1500' }}" in text, (
         "compute-rankings.yml must wire QR_UNIVERSE from the universe input with a "
-        "`|| 'sp900'` fallback so the scheduled cron (null inputs) defaults to sp900 "
-        "(precache-900 Phase B flip, 2026-06-16)"
+        "`|| 'sp1500'` fallback so the scheduled cron (null inputs) defaults to sp1500 "
+        "(S&P 1500 cutover Slice 7, 2026-06-20)"
     )
     # injection-safety: the universe input must NOT be interpolated into a run: line
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
@@ -634,26 +637,29 @@ def test_compute_rankings_has_universe_dispatch_input() -> None:
 
 def test_precache_has_universe_dispatch_input() -> None:
     """precache-edgar.yml exposes the `universe` dispatch input wired to
-    QR_UNIVERSE with a sp900 fallback after the precache-900 Phase B flip
-    (2026-06-16). The scheduled Saturday precache now warms sp900 by default
-    so it matches the weekday cron's universe and the Monday run restores warm.
-    The `|| 'sp900'` fallback keeps the Saturday run (null inputs) on sp900.
-    sp500 remains available as a manual dispatch for diagnostics.
-    sp1500 added as a manual dispatch option by S&P 1500 cutover Slice 5
-    (2026-06-20) so the +600 cohort can be cold-seeded before Slice 7."""
+    QR_UNIVERSE with a sp1500 fallback after the S&P 1500 cutover Slice 7
+    cron-default flip (2026-06-20). The scheduled Saturday precache now warms
+    sp1500 by default so it matches the weekday cron's universe and the Monday
+    run restores warm. The `|| 'sp1500'` fallback keeps the Saturday run (null
+    inputs) on sp1500.  sp900 and sp500 remain available as manual-dispatch
+    options for diagnostics / rollback.
+
+    Prior history: Phase B flip (2026-06-16) moved the precache default to sp900;
+    Slice 5 (2026-06-20) added sp1500 as a manual-dispatch option; Slice 7
+    (2026-06-20) moved the default to sp1500 to match the weekday cron."""
     text = _workflow_text("precache-edgar.yml")
     assert "universe:" in text
     for choice in ("- sp500", "- sp900", "- sp1500"):
         assert choice in text
-    # default sp900 (Phase B flip — precache warms the same universe as the cron)
-    assert "default: sp900" in text, (
-        "precache-edgar.yml `universe` input must default to sp900 after the "
-        "Phase B flip (2026-06-16) so the Saturday precache warms the same "
-        "universe as the weekday cron"
+    # default sp1500 (Slice 7 flip — precache now warms the same universe as the cron)
+    assert "default: sp1500" in text, (
+        "precache-edgar.yml `universe` input must default to sp1500 after the "
+        "S&P 1500 cutover Slice 7 flip (2026-06-20) so the Saturday precache warms "
+        "the same universe as the weekday cron"
     )
-    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}" in text, (
-        "precache-edgar.yml must wire QR_UNIVERSE with a `|| 'sp900'` fallback "
-        "so the scheduled Saturday run (null inputs) defaults to sp900"
+    assert "QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp1500' }}" in text, (
+        "precache-edgar.yml must wire QR_UNIVERSE with a `|| 'sp1500'` fallback "
+        "so the scheduled Saturday run (null inputs) defaults to sp1500"
     )
     # injection-safety: the universe input must NOT be interpolated into a run: line
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
