@@ -30,7 +30,7 @@
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
-- _Nothing currently in flight._ (#512 Dividend signal PR-1 merged 2026-06-20 — squash `78fd608423`; prior #517/#522 Vercel analytics + #509/#510/#511/#513/#514/#515 merged 2026-06-19/20; #501 merged 2026-06-19; #499/#496/#497/#498 merged 2026-06-18.)
+- _Nothing currently in flight._ (#512 Dividend signal PR-1 + #524 Mode C merged 2026-06-20 — squash `78fd608423` / `eae50fc4e`; prior no-schema-bump parallel merges #514/#515/#517/#518/#521/#522 + #509/#510/#511/#513 merged 2026-06-19/20; #501 merged 2026-06-19; #499/#496/#497/#498 merged 2026-06-18.)
 
 **Next deliverables** (re-scoped 2026-06-11; prior items 1-2 — 7.0c gate (a)
 + issue #441 — are DONE, closed entries relocated to §Chronological history):
@@ -117,6 +117,15 @@ pre-cache DONE — #468) — detail in WORKFLOW.md.
   - **Invariant gates**: rankings/pillar scores/risk_flags/recommendation/vetoes **byte-identical** (no scoring consumer reads the new fields). **Defense layer UNCHANGED at 35 declared / 9 active vetoes**. Rule 18 observability-before-wiring: `dividend_coverage_pct` is the canary — the `HeroAttributeTiles` "Dividend" UI tile is a SEPARATE follow-up gated on ≥ 1 cron confirming coverage.
   - Schema triple lockstep updated in sync (`schema_check` passes); +25 tests; `tsc --noEmit` + `next build` green. CI took 3 cycles: the R6 weekend-flaky prices-recency test (inherited from #498) was resolved by deferring to main's #515 fix; two `PHASE_STATUS_INFLIGHT.md` append-collisions (parallel #510/#511/#513 then #514/#515) resolved keep-both. pre-merge-prod-sim movers (V/KLAC/BRK-B/PBF) are all sim-env artifacts (cold-cache can't reproduce #499 split-correction / #487 fundamentals-unavailable / dual-class), NOT regressions.
   - **Next**: await first cron carrying `dividend_coverage_pct`; then the `HeroAttributeTiles` "Dividend" tile PR (7a PR-2). Security-type tile (7b) proceeds in parallel.
+
+## 2026-06-20 — parallel no-schema-bump merges: #514 · #515 · #518 · #521
+
+Four PRs merged on `main` alongside the #512 dividend bump (2026-06-19/20), none touching the schema triple or the defense layer (current schema stays `0.10.27-phase8pilot`; defense 35 declared / 9 active vetoes). Logged here for chronological completeness; per-PR detail in `PHASE_STATUS_INFLIGHT.md`.
+
+- **#514** (squash `08a74c099`): feat(ingest): **S&P 1500 cutover Slice 1** — `fetch_sp600_constituents` + an S&P 1500 universe-loader scout in `compute/ingest/universe.py` (+ S&P 600 config constants). SCOUT ONLY — no `compute/main.py` wiring, so the weekday cron still ranks S&P 900; the S&P 600 small-cap ingest + virtualized 1500-row table + Bonferroni / liquidity guards are the remaining cutover work. No schema bump; +567 tests.
+- **#515** (squash `a766bd1eb`): fix(test): weekend-robust boundary in `test_R6` prices-recency guard — the `_frame_last_bar_on` helper pins the cached frame's last bar to an exact calendar date so the strict-`>` boundary test stops spuriously failing on weekend CI runs (the latent #498 test bug). This session's own R6 fix on the #512 branch deferred to #515. Test-only.
+- **#518** (squash `7952c1dd1`): test+tooling: **pytest-cov** coverage tooling (baseline 85%) + P-low coverage tests (`pyproject.toml` coverage config + `test_main` / `test_risk_overlay_coverage` / `test_applicability_coverage`). Dev-tooling + tests only; no production code path changed.
+- **#521** (squash `92c69ce51`): chore(ui): **design-kit alignment polish pass** — token / spacing alignment across ~12 frontend components (Chip · FairPriceCard · HeroAttributeTiles · PillarRadarChart · RecommendationBadge · …) per the LedgerCraft design system. Frontend-only; no schema / compute touch.
 
 ## 2026-06-19 — cross-source share-count-corruption SHADOW observability PR-1 (#501)
 
