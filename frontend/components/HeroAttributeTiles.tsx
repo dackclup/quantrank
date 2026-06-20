@@ -49,10 +49,10 @@ function Tile({
   const filled = value != null;
   return (
     <div
-      className={`flex flex-col gap-2 rounded border p-3 ${
+      className={`flex flex-col gap-2 rounded border p-4 ${
         filled
-          ? 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/40'
-          : 'border-dashed border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/40'
+          ? 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800'
+          : 'border-dashed border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800'
       }`}
     >
       <span

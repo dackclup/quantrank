@@ -62,7 +62,7 @@ export function StockListCard({
             <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Price
             </span>
-            <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+            <span className="font-mono text-[0.8125rem] font-semibold tabular-nums text-slate-900 dark:text-slate-100">
               ${row.current_price.toFixed(2)}
             </span>
             <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -124,7 +124,7 @@ export function StockListCard({
                     <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       Loss Chance
                     </span>
-                    <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
+                    <span className={`font-mono text-[0.8125rem] font-semibold tabular-nums ${band.tone}`}>
                       {rounded}%
                     </span>
                   </div>
@@ -141,7 +141,7 @@ export function StockListCard({
                 <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Loss Chance
                 </span>
-                <span className="font-mono text-base font-semibold tabular-nums text-slate-300 dark:text-slate-600">—</span>
+                <span className="font-mono text-[0.8125rem] font-semibold tabular-nums text-slate-300 dark:text-slate-600">—</span>
               </div>
               <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">Unavailable</span>
             </>

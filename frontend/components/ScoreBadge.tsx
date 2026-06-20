@@ -65,15 +65,15 @@ export function ScoreBadge({
     <span
       className={`${CHIP_BASE} min-w-[3.25rem] justify-center gap-1.5 px-2 py-0.5 text-sm font-semibold tabular-nums ${scoreColorClasses(score)}`}
     >
-      {/* Skip the dot for top-tier (≥80) where the badge already has
-          a solid color fill — the dot would be invisible anyway. */}
-      {score < 80 && (
-        <span
-          aria-hidden="true"
-          className={CHIP_DOT}
-          style={{ backgroundColor: accent }}
-        />
-      )}
+      {/* Heat dot at every tier — the outlined-light tint alone distinguishes
+          Exceptional (≥80) from Strong (60-79) via the darker accent color
+          (rgb(5 150 105) vs rgb(16 185 129)), keeping them visually distinct
+          without a solid fill (kit alignment, 2026-06-20). */}
+      <span
+        aria-hidden="true"
+        className={CHIP_DOT}
+        style={{ backgroundColor: accent }}
+      />
       {score.toFixed(1)}
     </span>
   );

@@ -196,7 +196,7 @@ export default function StockDetailPage({
               }`}
             >
               <StockLogo ticker={detail.ticker} size={48} />
-              <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
+              <span className="font-mono text-[2rem] font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-[2.5rem]">
                 {detail.ticker}
               </span>
               {/* aria-hidden: the H1's own aria-label already carries
@@ -212,7 +212,7 @@ export default function StockDetailPage({
                 the "editorial finance" register (Bloomberg / WSJ
                 headline) at hero scale. Ticker stays in mono (line
                 99); the slab handles the wordmark-style name read. */}
-            <p className="mt-1 font-slab text-2xl text-slate-700 dark:text-slate-300 sm:text-3xl">
+            <p className="mt-1 font-slab text-xl text-slate-700 dark:text-slate-300 sm:text-2xl">
               {detail.name}
             </p>
             {/* Current quote (price + day-over-day change) — re-wired

@@ -92,9 +92,6 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
         <div className="flex min-w-[3.5rem] flex-col">
           <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Margin of safety
-            <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
-              (vs fair value)
-            </span>
           </span>
           <span className="font-mono text-lg font-semibold tabular-nums text-slate-300 dark:text-slate-600">
             —
@@ -178,9 +175,6 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
       <div className="flex min-w-[3.5rem] flex-col">
         <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Margin of safety
-          <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
-            (vs fair value)
-          </span>
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
           {fullOf(shown)}

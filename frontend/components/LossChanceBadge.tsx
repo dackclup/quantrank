@@ -30,7 +30,9 @@ type Band = {
 const BANDS: readonly Band[] = [
   {
     max: 25,
-    cls: 'bg-emerald-50 text-emerald-900 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800',
+    // text-emerald-800 (mapped → var(--c-pos-strong)); text-emerald-900 was NOT
+    // on the globals.css soft-color allowlist (only 600/700/800 are mapped there).
+    cls: 'bg-emerald-50 text-emerald-800 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800',
     dot: 'bg-emerald-700 dark:bg-emerald-400',
     label: 'Low loss chance',
   },
@@ -53,8 +55,10 @@ const BANDS: readonly Band[] = [
     label: 'Moderate-high loss chance',
   },
   {
+    // text-rose-800 (mapped → var(--c-neg-strong)); text-red-900 was NOT on
+    // the globals.css soft-color allowlist (only text-red-700 is mapped there).
     max: 100,
-    cls: 'bg-red-50 text-red-900 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
+    cls: 'bg-red-50 text-rose-800 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
     dot: 'bg-rose-500 dark:bg-rose-400',
     label: 'High loss chance',
   },

@@ -30,8 +30,8 @@ export type ChipSize = 'xs' | 'sm' | 'md' | 'lg';
 // scale RecommendationBadge + LossChanceBadge previously duplicated verbatim.
 // xs = ultra-tight mobile rows; sm = default; lg = detail-hero badge.
 export const CHIP_SIZES: Record<ChipSize, string> = {
-  xs: 'px-1.5 py-0 text-[0.625rem]',
-  sm: 'px-2 py-0.5 text-xs',
+  xs: 'px-1.5 py-0 h-[18px] text-[0.625rem]',
+  sm: 'px-2 py-0.5 h-5 text-xs',
   md: 'px-2.5 py-0.5 text-sm',
   lg: 'px-3 py-1 text-base',
 };
