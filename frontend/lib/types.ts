@@ -470,6 +470,20 @@ export type Metadata = {
   // resolved (Wikipedia SP600 page or Company(ticker).cik lookup).
   // A low value signals SP600 ingest needs hardening before production.
   smallcap_cik_resolution_pct?: number | null;
+  // S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+  // 0.10.29-phase8pilot, Rule 18 observability-before-wiring).
+  // Universe-wide count of tickers where the `low_liquidity` annotate
+  // fired on this cron run: trailing-30-day mean dollar volume (close ×
+  // volume) < $5M (config.ADV_FLOOR_USD). Amihud 2002 *J. Financial
+  // Markets* §2 anchor — sub-$5M names sit in the bottom decile of the
+  // US-equity illiquidity measure. ANNOTATE-ONLY: no cautious, no
+  // Top-5 suppression, no fair-price null, no composite change. Veto
+  // promotion gated on ≥ 1 cron firing-rate data + methodology
+  // ratification (WORKFLOW.md §8.6). Optional + nullable: absent / null
+  // on legacy snapshots pre-0.10.29. Expected base rate for S&P 900:
+  // near-zero (large-caps clear $5M/day comfortably); designed for
+  // S&P 1500 small-cap exposure.
+  low_liquidity_annotate_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -705,6 +719,18 @@ export type StockDetail = {
   // BELOW the 5% tolerance threshold too — so post-hoc threshold sweeps
   // are possible without re-running the validator.
   cross_source_delta?: number | null;
+  // S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
+  // 0.10.29-phase8pilot, ANNOTATE-ONLY per Rule 16).
+  // Trailing-30-day mean of (close × volume) in USD (raw dollars, not
+  // millions). Sourced from the OHLCV DataFrame already cached in the
+  // Step-1 prices loop — zero new network round-trips. Null when the
+  // price DataFrame was unavailable or missing a Close/Volume column
+  // (graceful degradation per Rule 18). The `low_liquidity` flag
+  // (in `valuation_warnings`) fires when this field is non-null and
+  // < config.ADV_FLOOR_USD ($5M). Display-only diagnostic — does NOT
+  // affect composite score, rank, or Top-5 eligibility. Absent / null
+  // on legacy per-stock JSONs pre-0.10.29.
+  average_dollar_volume?: number | null;
 };
 
 // ---------------------------------------------------------------------------

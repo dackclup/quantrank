@@ -150,11 +150,25 @@ def test_schema_version_pinned():
       tickers whose CIK was resolved (either from Wikipedia or via
       ``Company(ticker).cik``).
 
-    Prior version (0.10.27-phase8pilot, #512): Dividend-signal
-    observability (display-only Metadata). Before that (0.10.26, #501):
-    four shadow ``Metadata.cross_source_corruption_*`` fields (SHADOW
-    ONLY — no flag emitted, no score mutated)."""
-    assert config.SCHEMA_VERSION == "0.10.28-phase8pilot"
+    S&P 1500 Slice 4 (0.10.29-phase8pilot, Rule 16 annotate-before-veto +
+    Rule 18 observability-before-wiring) — ADV liquidity backstop (defense
+    layer 36, ANNOTATE-ONLY).  Adds two additive nullable fields:
+    - ``Metadata.low_liquidity_annotate_count: int | None`` — universe-wide
+      count of tickers where the ``low_liquidity`` annotate fired (trailing-
+      30-day mean dollar volume < $5M ADV floor).  Expected near-zero for
+      S&P 900 (large-caps clear $5M/day comfortably); designed for S&P 1500
+      small-cap exposure.  ANNOTATE-ONLY: no cautious, no Top-5 suppression,
+      no fair-price null, no composite change.
+    - ``StockDetail.average_dollar_volume: float | None`` — trailing-30-day
+      mean of (close × volume) in USD.  Sourced from the existing price cache;
+      zero new network round-trips.  Graceful degradation to None when the
+      price DataFrame is unavailable or missing Close/Volume column.
+
+    Prior version (0.10.28-phase8pilot): S&P 1500 Slice 2 smallcap probe.
+    Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
+    Before that (0.10.26, #501): four shadow
+    ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
+    assert config.SCHEMA_VERSION == "0.10.29-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

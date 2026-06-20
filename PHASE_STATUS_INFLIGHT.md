@@ -5434,3 +5434,64 @@ known optional-`[factors]` osap collection error remains). No production code / 
 Gate: test-engineer authored.
 
 ---
+---
+---
+
+## PR #TBD — S&P 1500 Slice 4: low_liquidity ADV annotate (defense 36, obs-first, 0.10.29-phase8pilot) (in flight, 2026-06-20)
+
+Ships the `<$5M ADV liquidity backstop` (WORKFLOW.md §8.6) for the S&P 1500
+cutover as an **ANNOTATE-ONLY** flag per Rule 16 (portable-annotate-before-veto)
++ Rule 18 (observability-before-wiring).  Rankings and composite scores are
+byte-identical; no `cautious`, no Top-5 suppression, no fair-price null, no
+composite change.  Veto promotion is gated on ≥ 1 cron of firing-rate data +
+methodology ratification.
+
+**Academic anchor**: Amihud 2002 *J. Financial Markets* §2 — trailing-30-day
+mean dollar volume < $5M places a stock in the bottom decile of the US-equity
+Amihud illiquidity measure; microstructure noise dominates any fundamental signal
+at that scale.  Expected base rate for S&P 900: near-zero (large-caps all clear
+$5M/day comfortably); the flag is designed for S&P 1500 small-cap exposure where
+thinly-traded names may appear.
+
+**Schema bump**: `0.10.28-phase8pilot` → `0.10.29-phase8pilot` (additive PATCH;
+backward-compatible — all new fields default to `None`/`0`).
+
+**New fields** (all additive; legacy snapshots deserialize cleanly under
+`extra="forbid"`):
+- `StockDetail.average_dollar_volume: float | None` — trailing-30d mean of
+  (close × volume) in USD.  Sourced from the existing OHLCV price cache in the
+  Step-1 prices loop; zero new network round-trips.  Graceful degradation to
+  `None` when price DataFrame unavailable or missing Close/Volume column.
+- `Metadata.low_liquidity_annotate_count: int | None` — universe-wide count of
+  tickers where the `low_liquidity` annotate fired on this cron run.
+
+**New compute module**: `compute.ingest.prices.compute_average_dollar_volume` —
+pure function; never raises; returns `None` on any failure (Rule 18).
+
+**New constants** (config.py): `ADV_FLOOR_USD = 5_000_000.0` + `ADV_LOOKBACK_DAYS = 30`.
+
+**New annotate flag**: `low_liquidity` emitted to `valuation_warnings` (NOT
+`risk_flags`) in the per-ticker Step-8 loop — placed in `valuation_warnings`
+following the same convention as `post_split_share_lag`, `share_count_extraction_missing`,
+`goodwill_heavy`, etc.  This placement is load-bearing for the annotate-only
+invariant: `valuation_warnings` is NOT checked by the Top-5 rotation skip
+(`if risk_flags.get(ticker): continue` in Step 7).
+
+**New flag label**: `frontend/lib/flag-labels.ts` → `low_liquidity: 'Low liquidity (<$5M ADV)'`.
+
+**Schema triple**: all three parts updated in lockstep — `compute/output/schemas.py` +
+`frontend/lib/types.ts` + `frontend/lib/schema-snapshot.json` (regenerated;
+`python -m compute.output.schema_check` passes).
+
+**Verify**: `ruff check .` clean · `pytest -m "not network"` 2287 passed, 0 failed ·
+`schema_check` in sync · `tsc --noEmit` pre-existing failures only (missing `node_modules`
+in worktree; no new TS errors from this PR).
+
+**Defense layer**: 35 → **36** declared boolean flags (27 annotates incl. `low_liquidity`,
+9 active vetoes; ~29 emit now).
+
+**Follow-up gate** (not in this PR): veto promotion requires ≥ 1 cron of
+`Metadata.low_liquidity_annotate_count` firing-rate data + methodology-scientist
+ratification per WORKFLOW.md §8.6.  Expected approval path: Q3 2026-08-19
+cohort audit if the S&P 1500 small-cap expansion (Slice 3+) is underway by then.
+

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import datetime
 import logging
+import math as _math
 import time
 
 import pandas as pd
@@ -219,6 +220,79 @@ def fetch_prices(
         logger.warning("Cache write failed for %s: %s", ticker, e)
 
     return df
+
+
+def compute_average_dollar_volume(
+    df: pd.DataFrame | None,
+    lookback_days: int,
+) -> float | None:
+    """Return trailing-N-day mean dollar volume (close * volume) in USD.
+
+    Parameters
+    ----------
+    df:
+        Daily OHLCV DataFrame as returned by ``fetch_prices``.  Must contain
+        a close column (``"Close"`` or ``"Adj Close"``) and a ``"Volume"``
+        column.  ``None`` or empty → ``None``.
+    lookback_days:
+        Number of trailing trading-day rows to average over.  Recommended
+        value: ``config.ADV_LOOKBACK_DAYS`` (30).
+
+    Returns
+    -------
+    float | None
+        Mean daily dollar volume over the last ``lookback_days`` trading
+        days, or ``None`` when volume data is missing, zero-filled, or
+        the frame has fewer than 1 usable row.
+
+    Graceful degradation contract (Rule 18)
+    ----------------------------------------
+    Never raises.  Any failure — missing column, NaN-only series,
+    insufficient depth — silently returns ``None`` so the caller can
+    propagate ``None`` without breaking the weekly cron.
+    """
+    if df is None or df.empty:
+        return None
+    try:
+        # Pick the close column (prefer Adj Close for return accuracy).
+        if "Adj Close" in df.columns:
+            close_col = "Adj Close"
+        elif "Close" in df.columns:
+            close_col = "Close"
+        else:
+            return None
+
+        if "Volume" not in df.columns:
+            return None
+
+        # Slice the last N rows (most-recent trading days).
+        tail = df[[close_col, "Volume"]].tail(lookback_days)
+        if tail.empty:
+            return None
+
+        close = tail[close_col].astype(float)
+        volume = tail["Volume"].astype(float)
+
+        # Dollar volume = price × shares traded per day.
+        dollar_vol = close * volume
+
+        # Drop NaN / infinite values before averaging.
+        dollar_vol = dollar_vol.replace(
+            [float("inf"), float("-inf")], float("nan")
+        )
+        dollar_vol = dollar_vol.dropna()
+
+        if dollar_vol.empty:
+            return None
+
+        mean_adv = float(dollar_vol.mean())
+        if not _math.isfinite(mean_adv) or mean_adv <= 0:
+            return None
+
+        return mean_adv
+    except Exception:  # noqa: BLE001
+        # Broad catch: never let a volume computation failure crash the cron.
+        return None
 
 
 def _earliest_date(df: pd.DataFrame) -> datetime.date | None:
