@@ -216,18 +216,35 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               since {view.periodStart ?? meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
-              {benchLabel}
+          <div className="flex items-end gap-x-6 gap-y-3">
+            <div className="text-right">
+              <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                {benchLabel}
+              </div>
+              <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
+                {pctStr(benchReturn)}
+              </div>
+              <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                {netReturn !== null && benchReturn !== null
+                  ? `${pctStr(netReturn - benchReturn)} vs index`
+                  : 'benchmark'}
+              </div>
             </div>
-            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
-              {pctStr(benchReturn)}
-            </div>
-            <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {netReturn !== null && benchReturn !== null
-                ? `${pctStr(netReturn - benchReturn)} vs index`
-                : 'benchmark'}
-            </div>
+            {/* Outperformance — AI net return minus the benchmark return (the
+                two inputs above). Sage/positive tone when ahead via toneClass. */}
+            {netReturn !== null && benchReturn !== null && (
+              <div className="text-right">
+                <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                  Outperformance
+                </div>
+                <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(netReturn - benchReturn)}`}>
+                  {pctStr(netReturn - benchReturn)}
+                </div>
+                <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  AI net − {benchLabel}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -385,6 +402,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             value={bench}
             onChange={setBench}
             ariaLabel="Benchmark index"
+            variant="primary"
           />
         </div>
 
@@ -437,6 +455,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             value={period}
             onChange={setPeriod}
             ariaLabel="Chart timeframe"
+            variant="primary"
           />
         </div>
 
@@ -448,6 +467,10 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </div>
       </div>
 
+      {/* Current basket + calendar-year returns — side-by-side on desktop
+          (2-col grid, items-start so unequal-height cards top-align), stacking
+          to a single column on mobile (H-6). */}
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
       {/* Current picks — adaptive basket */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
         <div className="mb-1 flex items-baseline justify-between gap-2">
@@ -504,6 +527,8 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </p>
         <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span className="w-4 shrink-0">#</span>
+          {/* spacer aligning with the per-row action dot */}
+          <span className="h-[7px] w-[7px] shrink-0" aria-hidden="true" />
           <span>Ticker</span>
           <span className="hidden sm:inline">Sector</span>
           <span className="ml-auto w-14 shrink-0 text-right">Score</span>
@@ -523,6 +548,19 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
+                {/* Action dot (7px) — keyed to the same carried/held state that
+                    drives the row's muted score tone. New buy = sage (emerald)
+                    dot; held (carried) = neutral steel dot. aria-hidden because
+                    the held state is already announced by the "(held)" sr-only
+                    label on the score cell below. */}
+                <span
+                  className={`h-[7px] w-[7px] shrink-0 rounded-full ${
+                    isCarried
+                      ? 'bg-slate-400 dark:bg-slate-500'
+                      : 'bg-emerald-600 dark:bg-emerald-400'
+                  }`}
+                  aria-hidden="true"
+                />
                 <Link
                   href={`/stock/${h.ticker}/`}
                   className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
@@ -555,10 +593,26 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         vetoLayerReplayed={vetoLayerReplayed}
         vetoesNotReplayed={vetoesNotReplayed}
       />
+      </div>
 
       {timeline.length > 0 && (
         <HoldingsTimeline timeline={timeline} count={displayCount} />
       )}
+
+      {/* Footer CTA (H-8) — primary route into the full ranking, paired with
+          the educational-backtest caveat so the call-to-action is never read
+          without the past-performance disclaimer beside it. */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 pt-5 dark:border-slate-800">
+        <Link
+          href="/ranking"
+          className="press inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 dark:bg-emerald-700 dark:hover:bg-emerald-800"
+        >
+          View the full ranking
+        </Link>
+        <span className="max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          Educational backtest. Past performance does not guarantee future results.
+        </span>
+      </div>
 
       <p className="text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
         {meta.disclaimer}
@@ -670,18 +724,35 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
               since {view.periodStart ?? meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
-              {benchLabel}
+          <div className="flex items-end gap-x-6 gap-y-3">
+            <div className="text-right">
+              <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                {benchLabel}
+              </div>
+              <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
+                {pctStr(benchReturn)}
+              </div>
+              <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                {netReturn !== null && benchReturn !== null
+                  ? `${pctStr(netReturn - benchReturn)} vs index`
+                  : 'benchmark'}
+              </div>
             </div>
-            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
-              {pctStr(benchReturn)}
-            </div>
-            <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {netReturn !== null && benchReturn !== null
-                ? `${pctStr(netReturn - benchReturn)} vs index`
-                : 'benchmark'}
-            </div>
+            {/* Outperformance — AI net return minus the benchmark return (the
+                two inputs above). Sage/positive tone when ahead via toneClass. */}
+            {netReturn !== null && benchReturn !== null && (
+              <div className="text-right">
+                <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                  Outperformance
+                </div>
+                <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(netReturn - benchReturn)}`}>
+                  {pctStr(netReturn - benchReturn)}
+                </div>
+                <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  AI net − {benchLabel}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -746,6 +817,7 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
               value={bench}
               onChange={setBench}
               ariaLabel="Benchmark index"
+              variant="primary"
             />
           </div>
         </div>
@@ -799,6 +871,7 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
             value={period}
             onChange={setPeriod}
             ariaLabel="Chart timeframe"
+            variant="primary"
           />
         </div>
 
@@ -811,6 +884,10 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         </div>
       </div>
 
+      {/* Current basket + calendar-year returns — side-by-side on desktop
+          (2-col grid, items-start so unequal-height cards top-align), stacking
+          to a single column on mobile (H-6). */}
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
       {/* Current picks */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
         <div className="mb-1 flex items-baseline justify-between gap-2">
@@ -891,8 +968,24 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         vetoLayerReplayed={vetoLayerReplayed}
         vetoesNotReplayed={vetoesNotReplayed}
       />
+      </div>
 
       {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
+
+      {/* Footer CTA (H-8) — primary route into the full ranking, paired with
+          the educational-backtest caveat so the call-to-action is never read
+          without the past-performance disclaimer beside it. */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 pt-5 dark:border-slate-800">
+        <Link
+          href="/ranking"
+          className="press inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 dark:bg-emerald-700 dark:hover:bg-emerald-800"
+        >
+          View the full ranking
+        </Link>
+        <span className="max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          Educational backtest. Past performance does not guarantee future results.
+        </span>
+      </div>
 
       {/* Disclaimer — the artifact's own honest, result-dependent text (Rule 9: the
           global banner covers terminology; this is the backtest-specific provenance). */}

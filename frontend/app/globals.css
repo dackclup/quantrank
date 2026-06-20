@@ -303,6 +303,12 @@ code {
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* FilterDrawer entrance keyframes (drawer-in / scrim-in) live ONLY in
+ * tailwind.config.ts (the `animate-drawer-in` / `animate-scrim-in` utilities
+ * compile their own @keyframes), matching every other keyframe in this app
+ * (rise-in / chip-pop / flag-pulse are all config-only). The reduced-motion
+ * off-switch for `.animate-drawer-in` / `.animate-scrim-in` stays below. */
+
 /* Stagger helper — list/row entrances apply `animate-rise-in` plus an
  * inline `style={{ animationDelay }}` OR one of these step classes so a
  * group cascades in instead of popping as a block. Capped at 12 steps
@@ -408,6 +414,8 @@ code {
      but no element carries the class so it needs no reduced-motion guard.
      Re-add this line if a future surface starts using animate-chip-pop. */
   .animate-flag-pulse,
+  .animate-drawer-in,
+  .animate-scrim-in,
   .gauge-sweep {
     animation: none !important;
   }

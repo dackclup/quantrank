@@ -238,9 +238,11 @@ export function BacktestValidationBadge({
       aria-label="Backtest OOS validation"
       className="rounded border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50"
     >
-      {/* Section header — quiet secondary label, not a second hero */}
+      {/* Section header — quiet secondary label, not a second hero.
+          Honest-voice copy (handoff H-2): the gates exist to show the result
+          isn't luck, not to advertise it. */}
       <h3 className="mb-3 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
-        Backtest validation
+        Validation gates · how we know it isn&rsquo;t luck
       </h3>
 
       {/* Chip row — DSR headline + optional PBO + optional holdout */}

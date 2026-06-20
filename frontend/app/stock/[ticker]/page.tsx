@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { CurrentPriceLine } from '@/components/CurrentPriceLine';
+import { DefenseLayerNote } from '@/components/DefenseLayerNote';
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { HeroAttributeTiles } from '@/components/HeroAttributeTiles';
@@ -376,6 +377,15 @@ export default function StockDetailPage({
           tangibleBookValue={detail.tangible_book_value}
         />
       </div>
+
+      {/* Standing defense-layer caution — the honest-voice callout from the
+          design handoff. Deliberately UNGATED (unlike the warnings zone above):
+          the defense layer screens every ranked stock, so the "elevated risk,
+          never confirmed fraud" framing applies even on a clean stock, and it
+          caps the decision zone before the demoted Supporting-data drawer. No
+          `!mt-8` seam — it rides the article's default 16px rhythm so it reads
+          as part of the valuation/risk read, not a new zone. */}
+      <DefenseLayerNote />
 
       {/* Supporting data — the reference/audit zone (raw fundamentals +
           data-quality provenance), grouped into ONE collapsible card and

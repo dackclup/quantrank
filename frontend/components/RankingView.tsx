@@ -30,12 +30,31 @@
 // the single-cohort tabs (the tab itself communicates the cohort).
 
 import { useMemo, useState } from 'react';
+import { SlidersHorizontal } from 'lucide-react';
 
+import { Chip } from '@/components/Chip';
 import { CountryTabs } from '@/components/CountryTabs';
+import {
+  countActiveFilters,
+  EMPTY_FILTERS,
+  FilterDrawer,
+  type RankingFilters,
+} from '@/components/FilterDrawer';
 import { IndexTabs, type IndexCode } from '@/components/IndexTabs';
-import RankingTable from '@/components/RankingTable';
+import RankingTable, { type SortDir, type SortKey } from '@/components/RankingTable';
 import type { Metadata, StockSummary } from '@/lib/types';
 import { universeLabel } from '@/lib/visual';
+
+// Sort keys exposed by the visible sort-chip row. These are a 3-key SUBSET of
+// RankingTable's full SortKey union (the column headers still expose all 8);
+// the chip row binds to the same lifted sort state so the two stay in sync.
+type ChipSortKey = Extract<SortKey, 'rank' | 'composite_score' | 'loss_chance_pct'>;
+
+const SORT_CHIPS: { key: ChipSortKey; label: string }[] = [
+  { key: 'rank', label: 'Rank' },
+  { key: 'composite_score', label: 'Score' },
+  { key: 'loss_chance_pct', label: 'Loss chance' },
+];
 
 // Per-tab display config — label used in h1, description used in the count line.
 type TabConfig = {
@@ -142,6 +161,18 @@ export function RankingView({
   // single-cohort (sp500-only), where 'ALL' is not in `availableCodes`.
   const [activeTab, setActiveTab] = useState<IndexCode>('ALL');
 
+  // Lifted sort state (shared by the visible sort-chip row + RankingTable's
+  // column headers — ONE source of truth). Defaults match RankingTable's prior
+  // internal defaults (rank ascending).
+  const [sortKey, setSortKey] = useState<SortKey>('rank');
+  const [sortDir, setSortDir] = useState<SortDir>('asc');
+
+  // FilterDrawer state: committed `filters` feed the row pipeline; `draft` is
+  // edited inside the drawer and committed on Apply (draft-state pattern).
+  const [filters, setFilters] = useState<RankingFilters>(EMPTY_FILTERS);
+  const [draft, setDraft] = useState<RankingFilters>(EMPTY_FILTERS);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const availableCodes = useMemo(() => computeAvailableCodes(data), [data]);
 
   // If the default tab has no data (e.g. an empty build artefact), fall back to
@@ -162,6 +193,56 @@ export function RankingView({
     [data, safeTab],
   );
 
+  // Distinct GICS sectors present in the CURRENT cohort, sourced from the real
+  // loaded rows (never a hardcoded list). Sorted alphabetically for a stable
+  // chip order; empties skipped.
+  const cohortSectors = useMemo(() => {
+    const set = new Set<string>();
+    for (const row of cohortRows) {
+      if (row.sector) set.add(row.sector);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b));
+  }, [cohortRows]);
+
+  // Apply the committed drawer filters to the cohort. Keeps `rank` as already
+  // re-numbered by filterAndRerank (the rank column stays the cohort rank, not
+  // a post-filter re-sequence — matches the handoff, which filters without
+  // re-ranking). Search is applied DOWNSTREAM inside RankingTable.
+  const filteredRows = useMemo(() => {
+    let rows = cohortRows;
+    if (filters.undervalued) {
+      rows = rows.filter(
+        (r) => r.margin_of_safety_pct != null && r.margin_of_safety_pct >= 0,
+      );
+    }
+    if (filters.strongOnly) {
+      rows = rows.filter((r) => r.composite_score >= 55);
+    }
+    if (filters.sectors.length > 0) {
+      rows = rows.filter((r) => filters.sectors.includes(r.sector));
+    }
+    return rows;
+  }, [cohortRows, filters]);
+
+  const activeFilterCount = countActiveFilters(filters);
+
+  // Sort-chip handler — shares the same lifted state the column headers drive.
+  // Re-tap on the active chip flips direction; a new key picks a sensible
+  // default direction (composite_score / loss desc; rank asc).
+  const onSortChip = (key: ChipSortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir(key === 'rank' ? 'asc' : 'desc');
+    }
+  };
+
+  const openDrawer = () => {
+    setDraft(filters);
+    setDrawerOpen(true);
+  };
+
   const cfg = tabConfig(safeTab, meta.universe);
 
   return (
@@ -178,11 +259,47 @@ export function RankingView({
         />
       </div>
 
-      {/* Per-tab h1 + count header. Re-renders on tab switch (client-side). */}
+      {/* Per-tab h1 + count header. Re-renders on tab switch (client-side).
+          R-8: the h1 and the cohort "N / M stocks" count sit on the SAME
+          horizontal row (handoff layout); the Filters button trails on the
+          right. Wraps to stacked on narrow widths. */}
       <header className="max-w-3xl space-y-3">
-        <h1 className="text-balance font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
-          {cfg.h1}
-        </h1>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <h1 className="text-balance font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
+            {cfg.h1}
+          </h1>
+          {/* Same-row count: filtered N out of cohort M. tabular-nums so the
+              digits don't jitter as the filter narrows. Shown ONLY when a
+              drawer filter is active — otherwise it duplicates the unfiltered
+              cohort count already in the descriptive caption below (avoids the
+              "502 / 502" triple-count on the default view). */}
+          {activeFilterCount > 0 && (
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                {filteredRows.length.toLocaleString()}
+              </span>
+              <span className="font-mono tabular-nums"> / {cohortRows.length.toLocaleString()}</span>{' '}
+              stocks
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={openDrawer}
+            aria-haspopup="dialog"
+            aria-expanded={drawerOpen}
+            className={`press ml-auto inline-flex min-h-[44px] items-center gap-2 rounded-sm border px-3 py-1.5 text-sm font-medium ${
+              activeFilterCount > 0
+                ? 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-900/50'
+                : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800'
+            }`}
+          >
+            <SlidersHorizontal aria-hidden="true" strokeWidth={1.75} className="h-4 w-4" />
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="font-mono tabular-nums">· {activeFilterCount}</span>
+            )}
+          </button>
+        </div>
         <p className="max-w-2xl text-pretty text-base text-slate-600 dark:text-slate-300">
           {/* Count reflects the selected cohort, not the raw dataset size. */}
           <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
@@ -251,6 +368,43 @@ export function RankingView({
         </p>
       </header>
 
+      {/* R-3: visible sort-chip row — a fast affordance for the 3 headline
+          sorts (Rank · Score · Loss chance), bound to the SAME lifted sort
+          state the column headers drive. Active chip = emerald outlined-light
+          chip + leading dot (the handoff `tone={active?'emerald':'slate'}
+          dot={active}` treatment). The column-header sort still works for the
+          other keys. Hidden when the cohort is empty (the compute-pending
+          panel takes over). */}
+      {cohortRows.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-slate-500 dark:text-slate-400">Sort</span>
+          {SORT_CHIPS.map(({ key, label }) => {
+            const active = sortKey === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onSortChip(key)}
+                className="press inline-flex min-h-[44px] items-center rounded-sm"
+              >
+                <Chip
+                  tone={
+                    active
+                      ? 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800'
+                      : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800'
+                  }
+                  dot={active ? 'bg-emerald-500 dark:bg-emerald-400' : undefined}
+                  size="md"
+                >
+                  {label}
+                </Chip>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Empty-universe fallback (first cron hasn't run, or a filtered cohort
           has no rows in this build artefact). */}
       {cohortRows.length === 0 ? (
@@ -263,11 +417,34 @@ export function RankingView({
         </div>
       ) : (
         <RankingTable
-          data={cohortRows}
+          data={filteredRows}
           cohortSize={cohortRows.length}
           showMidcapChip={showMidcapChip}
+          sortKey={sortKey}
+          sortDir={sortDir}
+          onSortChange={(key, dir) => {
+            setSortKey(key);
+            setSortDir(dir);
+          }}
+          hasActiveFilters={activeFilterCount > 0}
+          onClearFilters={() => setFilters(EMPTY_FILTERS)}
         />
       )}
+
+      {/* FilterDrawer (authorized re-introduction) — the one floating-overlay
+          surface. Draft-state: edits stay in `draft` until Apply commits. */}
+      <FilterDrawer
+        open={drawerOpen}
+        draft={draft}
+        sectors={cohortSectors}
+        onClose={() => setDrawerOpen(false)}
+        onChangeDraft={setDraft}
+        onReset={() => setDraft(EMPTY_FILTERS)}
+        onApply={() => {
+          setFilters(draft);
+          setDrawerOpen(false);
+        }}
+      />
     </section>
   );
 }
