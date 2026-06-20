@@ -5379,3 +5379,31 @@ clean (910 pages).
 ---
 
 ---
+
+## PR (test) — offline coverage for the PIT parquet readers (historical_8k + historical_sector) (in flight, 2026-06-20)
+
+Test-only follow-up to the #518 coverage baseline (85%). Lifts the two PIT-parquet ingest readers'
+`_load_parquet` present/cache/corrupt branches + the parquet-hit / fallback paths — uncovered offline
+because the `data/*.parquet` files don't ship in the repo. Both modules' tests point the module path
+constant at a `tmp_path` parquet (+ reset the mtime cache, + stub the Wikipedia fallback) so every
+branch runs offline with NO network and NO real `data/` file.
+
+- **`compute/ingest/historical_8k.py` 63% → 88%** — `tests/test_ingest/test_historical_8k_parquet.py`
+  (new, 9 tests): `_load_parquet` present-read + mtime-cache-hit + absent + corrupt-file graceful None ·
+  `item402_filings_for` present-parquet filter/sort/shape + absent → `[]` · `item402_parquet_row_count`
+  present/absent · `_accession_to_url` leading-zero strip + all-zero CIK segment.
+- **`compute/ingest/historical_sector.py` 60% → 90%** — `tests/test_ingest/test_historical_sector_parquet.py`
+  (new, 10 tests): `_load_parquet` present/cache/absent/corrupt · `sector_at` parquet-hit closest-prior ·
+  parquet-present-no-prior-row → today's-sector fallback · absent → fallback · fallback-miss → `"Unknown"` ·
+  raising-fallback swallowed → `"Unknown"` · `historical_sector_parquet_stats` present (rows + unique dates)
+  / absent.
+
+Remaining uncovered in both = the hard-to-reach defensive `except` guards (stat `OSError`, `itertuples`/
+`idxmax`/`len` raising on a well-formed frame) — left as defensive belt-and-suspenders. Universe-scrape
+parsing coverage (`universe.py` 80%) deferred to a separate follow-up (larger surface).
+
+Verify: `ruff` clean · `pytest tests/test_ingest -m "not network"` 487 passed (+19, 0 regressions; only the
+known optional-`[factors]` osap collection error remains). No production code / schema / workflow touched.
+Gate: orchestrator-authored inline (sub-agent pool was rate-limited).
+
+---
