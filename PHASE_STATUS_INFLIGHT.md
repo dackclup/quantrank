@@ -5495,3 +5495,55 @@ in worktree; no new TS errors from this PR).
 ratification per WORKFLOW.md §8.6.  Expected approval path: Q3 2026-08-19
 cohort audit if the S&P 1500 small-cap expansion (Slice 3+) is underway by then.
 
+---
+
+## docs(phase-status) — Mode C: reconcile trackers to 0.10.29 (S&P 1500 Slices 2/4/5, defense 36) (in flight, 2026-06-20)
+
+**Branch**: `claude/mode-c-sp1500-slices-2-4` · **Type**: docs-only (no code /
+schema / workflow touched).
+
+**Why**: the canonical doc trackers had drifted behind `main` — `config.py`
+read `0.10.29-phase8pilot` (#527 merged) while CLAUDE.md §Phase status,
+AGENTS.md schema line, SKILL.md schema-version table, and PHASE_STATUS.md
+§Current state still showed `0.10.27` / defense **35**.  The last tracker
+sweep (#524, 2026-06-20 reconcile to 0.10.27) and #526 (no-schema-bump sweep
+covering #514/#515/#518/#521) did not fold the three S&P 1500 cutover slices
+that bumped the schema (#519 → 0.10.28, #527 → 0.10.29) or the no-bump
+precache slice (#520).
+
+**What this Mode C folds in** (S&P 1500 cutover epic):
+- **#519** (squash `5e49dca0a`) — Slice 2: `sp1500` universe seam +
+  `_run_smallcap_coverage_probe`; 3 additive `Metadata.smallcap_*` fields;
+  sp600 PROBE-ONLY (label `SP1500-probe`, NOT ranked); WORKFLOW.md §8.6
+  Beneish Bonferroni sign-fix (−2.22→−2.50) + Slice 3 (Bonferroni shadow)
+  DEFERRED to Slice-8; schema `0.10.27` → **`0.10.28-phase8pilot`**; defense
+  UNCHANGED at 35.
+- **#520** (squash `b2bffde3e`) — Slice 5: `cache-v10-fast` → `cache-v11-fast`
+  precache cold-seed across 4 workflows + `sp1500` dispatch + sp600/sp1500
+  parquet paths; cron default UNCHANGED (stays sp900); NO schema bump.
+- **#527** (squash `2e45a33bf`) — Slice 4: `low_liquidity` ANNOTATE flag
+  (<$5M ADV, Amihud 2002; rank-neutral — `valuation_warnings`, not
+  `risk_flags`) + `compute_average_dollar_volume()` + `StockDetail.average_dollar_volume`
+  + `Metadata.low_liquidity_annotate_count`; schema `0.10.28` →
+  **`0.10.29-phase8pilot`**; **defense 35 → 36** (new annotate); dormant on
+  sp900, lights up on sp600; methodology RATIFY-SHADOW.
+- **#525** / **#528** — offline coverage tests (PIT parquet readers /
+  `universe.py` scrape parsing); no schema / defense touch.
+
+**Defense-layer accounting**: 35 → **36** = the new `low_liquidity` annotate
+(9 active vetoes UNCHANGED; annotates 26 → 27).
+
+**Files changed** (docs only): `CLAUDE.md` (§Scoring model defense count,
+§Phase status current-schema + defense + merged-since list + next-universe-step
+notes, §Gotchas +3 entries) · `AGENTS.md` (schema-version line) · `SKILL.md`
+(schema-version table +2 rows) · `PHASE_STATUS.md` (§Current state schema +
+defense rows, Phase 8 row, +1 chronological section) · this file.
+
+**Verify**: no code/test/schema/workflow files touched → ruff / pytest /
+schema_check N/A; `git diff --stat` confirms docs-only.  CLAUDE.md + AGENTS.md
+moved in lockstep (the "ship with every PR" rule).
+
+**Next**: open as Draft, `quantrank-reviewer` + `docs-reviewer` at the push
+gate, then user-authorized Mark-Ready (no push / no PR from this session per
+the handoff).
+
