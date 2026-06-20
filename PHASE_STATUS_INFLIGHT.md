@@ -5009,3 +5009,62 @@ hand-fix (confirmed pre-existing on clean origin/main, weekend date-boundary). D
 building the pytest-cov coverage PR; split out as a standalone unblock.
 
 ---
+
+## PR #521 — chore(ui): design-kit alignment polish pass (in flight, 2026-06-20)
+
+Frontend-only polish PR aligning 15 live components to the idealized design kit
+(`/tmp/qr_design/quantrank-design-system/`). No schema bump, no schema-triple touch,
+no defense-layer change, no new feature added or removed — pure visual alignment.
+
+Changes (all `frontend/**` only):
+- **AppShell.tsx**: footer dark bg `dark:bg-slate-950` → `dark:bg-slate-900` (kit
+  `--surface` dark = slate-900); header chrome row `h-14` → `h-[52px] sm:h-14` (kit
+  mobile 52px / desktop 56px).
+- **Chip.tsx**: `CHIP_SIZES.xs` adds `h-[18px]`; `CHIP_SIZES.sm` adds `h-5` — makes
+  explicit the kit's 18/20px heights (was height-by-content).
+- **lib/visual.ts** + **ScoreBadge.tsx**: retire the last solid emerald-600 fill (score
+  ≥80); all score tiers now use the kit's outlined-light emerald tint. Heat dot always
+  renders at every tier; Exceptional vs Strong distinguished by the darker accent color
+  (rgb(5 150 105) vs rgb(16 185 129)).
+- **ScoreGauge.tsx**: side-label value changed from `shown.toFixed(0)}/100` → the
+  STATIC `score.toFixed(1)` (no "/100" suffix — kit shows 1-decimal without the
+  denominator; the count-up animation lives only in the donut-center integer, kit
+  alignment). "Composite Score" label text kept (more explicit than kit's bare
+  "Composite").
+- **MoSBadge.tsx**: remove visible `(vs fair value)` parenthetical span from the side
+  label in both branches; SR `aria-label` already says "versus fair value" — stays intact.
+- **RecommendationBadge.tsx**: `bullish` tone `text-emerald-900` → `text-emerald-800`
+  (mapped in globals.css allowlist); `cautious` tone `text-red-900` → `text-rose-800`
+  (mapped → `var(--c-neg-strong)`). Neither `text-emerald-900` nor `text-red-900` were
+  on the soft-color allowlist.
+- **LossChanceBadge.tsx**: High band `text-red-900` → `text-rose-800` and Low band
+  `text-emerald-900` → `text-emerald-800` (same allowlist fix — both were un-mapped).
+- **HeroAttributeTiles.tsx**: tile padding `p-3` → `p-4` (kit `--space-md` = 16px);
+  dark bg `dark:bg-slate-800/40` → `dark:bg-slate-800` (kit solid `--surface-alt` dark).
+- **PillarRadarChart.tsx**: bar track `h-5` → `h-[14px]`; fill inset `inset-y-0.5` →
+  `inset-y-[1px]`; pillar value `text-sm` → `text-base`; label column `8rem` → `9.5rem`;
+  legend row gains `border-t border-slate-200 dark:border-slate-800 pt-3` top divider.
+- **FairPriceCard.tsx**: `<dd>` values `text-lg` → `text-xl`; `<dt>` labels `text-xs
+  tracking-wider` → `text-[0.5625rem] tracking-[0.08em]`; card bg `bg-slate-50/60
+  dark:bg-slate-900/40` → `bg-slate-50 dark:bg-slate-800`.
+- **FairPriceBarChart.tsx**: verdict banner headline `text-lg font-semibold` →
+  `font-slab text-lg font-semibold` (kit uses `var(--font-slab)` for this label).
+- **RankingTable.tsx**: `<thead>` label size `text-xs` → `text-[0.625rem]`; rank `<td>`
+  adds `font-mono`; empty-state icon `h-8 w-8` → `h-6 w-6`.
+- **StockListCard.tsx**: price number and loss-chance number `text-base` →
+  `text-[0.8125rem]` (kit 13px supporting data). Day-change chip treatment kept (live
+  exceeds kit; not downgraded).
+- **app/stock/[ticker]/page.tsx**: hero ticker `text-4xl sm:text-5xl` → `text-[2rem]
+  sm:text-[2.5rem]`; company name `text-2xl sm:text-3xl` → `text-xl sm:text-2xl`.
+  Container-query hero-split classes untouched.
+- **HeroMetric.tsx**: label `tracking-wider` → `tracking-[0.08em]` (kit small-caption
+  register 0.08em).
+
+- **lib/visual.test.ts**: updated the `scoreColorClasses(80)` assertion to expect the
+  new outlined-light emerald tint (solid fill retired) instead of `bg-emerald-600`/`text-white`.
+
+Verify: `tsc --noEmit` clean · `next build` clean (910 static pages) ·
+`vitest run` 138/138 passed (visual + format + flag-labels) · `downsample.test.mjs`
+14/14 passed · schema triple untouched · defense layer unchanged.
+
+---

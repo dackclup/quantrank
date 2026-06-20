@@ -37,10 +37,14 @@ import { Chip, type ChipSize } from '@/components/Chip';
 // for the strong end, `dark:text-{tone}-300` for the middle, with
 // translucent `dark:bg-{tone}-900/30` backgrounds.
 const TONES: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-50 text-emerald-900 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800',
+  // text-emerald-800 (mapped → var(--c-pos-strong)); text-emerald-900 was
+  // NOT on the globals.css soft-color allowlist (only 600/700/800 are mapped).
+  bullish: 'bg-emerald-50 text-emerald-800 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800',
   lean_bullish: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:ring-emerald-800',
   neutral: 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500',
-  cautious: 'bg-red-50 text-red-900 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
+  // text-rose-800 (mapped → var(--c-neg-strong)); text-red-900 was NOT on the
+  // globals.css soft-color allowlist (only text-red-700 is mapped there).
+  cautious: 'bg-red-50 text-rose-800 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
 };
 
 // Small colored-dot indicator paired with the chip — same shape as

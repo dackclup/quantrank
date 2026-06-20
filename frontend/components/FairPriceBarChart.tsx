@@ -196,7 +196,7 @@ export function FairPriceBarChart({
         <div className={`mb-4 rounded border border-slate-200 p-4 dark:border-slate-800 ${headline.bg}`}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <div className={`text-lg font-semibold ${headline.cls}`}>{headline.tag}</div>
+              <div className={`font-slab text-lg font-semibold ${headline.cls}`}>{headline.tag}</div>
               <div className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">{headline.desc}</div>
             </div>
             {/* items-center + equal-height columns so the chevron sits at the

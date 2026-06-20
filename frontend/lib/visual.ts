@@ -161,12 +161,13 @@ export const ACTIVE_FILTER_CHIP_TONE =
   'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500';
 
 // Score-badge color classes — matches the design's 5-step ramp.
-// LedgerCraft Phase 3b: paired light + `dark:` variants. Top tier
-// is solid-fill emerald (the legacy "score ≥ 80" surface predates
-// Rule 2's outlined-light retire); the dark variant softens to
-// `emerald-500` to avoid neon glare.
+// LedgerCraft Phase 3b: paired light + `dark:` variants. All tiers
+// use outlined-light (kit alignment, 2026-06-20): the former solid
+// emerald-600 fill for ≥80 has been retired per the kit's `pillTone()`
+// which uses the same emerald tint at every tier. The Exceptional tier
+// is visually distinguished from Strong by its darker heat dot accent
+// color (scoreAccentColor ≥80 → rgb(5 150 105) vs ≥60 → rgb(16 185 129)).
 export function scoreColorClasses(score: number): string {
-  if (score >= 80) return 'bg-emerald-600 text-white ring-emerald-700/20 dark:bg-emerald-500 dark:text-emerald-950 dark:ring-emerald-400/30';
   if (score >= 60) return 'bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800';
   if (score >= 40) return 'bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
   if (score >= 20) return 'bg-amber-50 text-amber-800 ring-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-700';

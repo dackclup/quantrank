@@ -64,7 +64,7 @@ export function HeroMetric({
 
   return (
     <div className="flex flex-col items-center gap-1 text-center">
-      <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <span className="text-xs font-medium uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
         {label}
       </span>
       {value == null ? (

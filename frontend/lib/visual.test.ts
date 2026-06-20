@@ -362,11 +362,15 @@ describe('sectorStyle — unknown sector fallback', () => {
 // ---------------------------------------------------------------------------
 
 describe('scoreColorClasses — tier mapping', () => {
-  it('returns the solid-fill emerald for score >= 80', () => {
+  it('returns emerald outlined-light for score >= 80 (solid fill retired, kit alignment)', () => {
     const cls = scoreColorClasses(80);
-    // Solid-fill is the exception for the top tier (legacy surface, pre-Rule-2).
-    expect(cls).toContain('bg-emerald-600');
-    expect(cls).toContain('text-white');
+    // The legacy solid-fill ≥80 surface was retired (2026-06-20) so every tier
+    // uses the outlined-light chip family (Rule 2). Exceptional vs Strong is
+    // distinguished by the heat-dot accent color, not a solid fill.
+    expect(cls).toContain('bg-emerald-50');
+    expect(cls).toContain('text-emerald-800');
+    expect(cls).not.toContain('bg-emerald-600');
+    expect(cls).not.toContain('text-white');
   });
 
   it('returns emerald outlined-light for 60 <= score < 80', () => {

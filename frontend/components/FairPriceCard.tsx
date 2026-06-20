@@ -47,7 +47,7 @@ export default function FairPriceCard({
   // No ensemble at all (snapshot was missing entirely).
   if (!ensemble) {
     return (
-      <section className="rounded border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-900/40">
+      <section className="rounded border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Fair price ensemble
         </h2>
@@ -70,7 +70,7 @@ export default function FairPriceCard({
   const mos = formatMosPct(ensemble.mos_pct);
 
   return (
-    <section className="rounded border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-900/40">
+    <section className="rounded border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800">
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
         Fair price ensemble
       </h2>
@@ -79,40 +79,40 @@ export default function FairPriceCard({
           valid description list (the grid classes apply identically on a dl). */}
       <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
-          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <dt className="text-[0.5625rem] uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
             Median fair
           </dt>
-          <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
+          <dd className="mt-1 font-mono text-xl font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
             {dataQualityIssue ? '—' : formatFairPrice(ensemble.median)}
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <dt className="text-[0.5625rem] uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
             Margin of safety
             <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
               (vs fair value)
             </span>
           </dt>
           <dd
-            className={`mt-1 font-mono text-lg font-semibold tabular-nums leading-none ${mosColorClass(ensemble.mos_pct)}`}
+            className={`mt-1 font-mono text-xl font-semibold tabular-nums leading-none ${mosColorClass(ensemble.mos_pct)}`}
             title={mos.tooltip ?? undefined}
           >
             {mos.display}
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <dt className="text-[0.5625rem] uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
             Max (ex-outliers)
           </dt>
-          <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
+          <dd className="mt-1 font-mono text-xl font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
             {dataQualityIssue ? '—' : formatFairPrice(ensemble.max)}
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <dt className="text-[0.5625rem] uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
             Tangible BVPS
           </dt>
-          <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
+          <dd className="mt-1 font-mono text-xl font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
             {tangibleBookValue !== null
               ? formatFairPrice(tangibleBookValue)
               : '—'}

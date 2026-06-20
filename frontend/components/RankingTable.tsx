@@ -232,7 +232,7 @@ export default function RankingTable({
           content area is only ~530px beside the sidebar. */}
       <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-          <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em] dark:bg-slate-900/60">
+          <thead className="bg-slate-50 text-[0.625rem] uppercase tracking-[0.14em] dark:bg-slate-900/60">
             <tr>
               {headerCell('rank', 'Rank')}
               {headerCell('ticker', 'Ticker')}
@@ -256,7 +256,7 @@ export default function RankingTable({
                 : '';
               return (
                 <tr key={row.ticker} data-flip-key={row.ticker} className={`hover-lift transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
-                  <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
+                  <td className="px-3 py-2 font-mono tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
                       href={`/stock/${row.ticker}/`}
@@ -323,7 +323,7 @@ export default function RankingTable({
           <SearchX
             aria-hidden="true"
             strokeWidth={1.5}
-            className="mb-3 h-8 w-8 text-slate-300 dark:text-slate-600"
+            className="mb-3 h-6 w-6 text-slate-300 dark:text-slate-600"
           />
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
             No stocks match your search

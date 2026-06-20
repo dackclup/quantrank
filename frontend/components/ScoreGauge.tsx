@@ -96,15 +96,15 @@ export function ScoreGauge({
           </span>
         </div>
       </div>
-      {/* min-w reserves space for the widest count-up value ("100/100") so the
-          column doesn't reflow as digit count changes during the sweep
-          (0/100 → 73/100). Eliminates the micro-CLS the count-up introduces. */}
+      {/* min-w reserves space so the column doesn't reflow. The side-label
+          value is the STATIC final score (one decimal, kit alignment); the
+          count-up animation lives only in the donut center above. */}
       <div className="flex min-w-[4.5rem] flex-col">
         <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Composite Score
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-          {shown.toFixed(0)}/100
+          {score.toFixed(1)}
         </span>
         <span
           className="text-[0.625rem] uppercase tracking-wider"
