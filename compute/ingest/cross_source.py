@@ -182,9 +182,10 @@ def _dividend_cache_read(ticker: str) -> tuple[float | None, float | None]:
     """Return cached (dividend_yield_pct, payout_ratio) or (None, None).
 
     Reuses the same ``yfinance_info/<ticker>.json`` file as the market-cap
-    cache.  ``dividend_yield_pct`` is stored as a PERCENT (e.g. 2.0 for 2%),
-    converted from yfinance's fractional ``dividendYield`` at write time.
-    ``payout_ratio`` is the raw yfinance fraction (0-1).
+    cache.  ``dividend_yield_pct`` is stored as a PERCENT (e.g. 2.0 for 2%)
+    as returned directly by yfinance (no conversion needed since yfinance now
+    returns percent, not a fraction).  ``payout_ratio`` is the raw yfinance
+    fraction (0-1).
 
     Backward-compatible: cache entries written before this field existed
     simply have no ``dividend_yield_pct`` / ``payout_ratio`` keys and
@@ -226,9 +227,10 @@ def _cache_write(
     values.  The merge pattern keeps the file as the single source of
     truth for all yfinance_info fields.
 
-    ``dividend_yield_pct`` is stored as a PERCENT (e.g. 2.0 for 2%),
-    already converted from yfinance's fractional ``dividendYield`` by the
-    caller.  ``payout_ratio`` is the raw 0-1 fraction from yfinance.
+    ``dividend_yield_pct`` is stored as a PERCENT (e.g. 2.0 for 2%).
+    yfinance now returns ``dividendYield`` already in percent, so no
+    ×100 conversion is needed by the caller.  ``payout_ratio`` is the
+    raw 0-1 fraction from yfinance.
     """
     path = _cache_path(ticker)
     payload: dict[str, object] = {}
@@ -275,9 +277,10 @@ def _yf_info_fetch(
     Any element may be None when the field is absent or invalid.  Raises on
     persistent network errors (tenacity retries the caller).
 
-    ``dividend_yield_pct`` is returned as a PERCENT (multiplied by 100)
-    because yfinance ``dividendYield`` is a fraction (e.g. 0.02 → 2.0%).
-    ``payout_ratio`` is returned as-is (0-1 fraction).
+    ``dividend_yield_pct`` is returned as a PERCENT.  yfinance now returns
+    ``dividendYield`` already in percent (e.g. 2.67 = 2.67%) — no ×100
+    conversion is applied.  Values > 100 are discarded as implausible
+    (format-reversion guard).  ``payout_ratio`` is returned as-is (0-1 fraction).
     """
     info = yf.Ticker(ticker).info
     mc_val = info.get("marketCap") if isinstance(info, dict) else None
@@ -286,12 +289,23 @@ def _yf_info_fetch(
     pr_val = info.get("payoutRatio") if isinstance(info, dict) else None
     market_cap = float(mc_val) if isinstance(mc_val, (int, float)) and mc_val > 0 else None
     shares_out = float(so_val) if isinstance(so_val, (int, float)) and so_val > 0 else None
-    # dividendYield is a fraction in yfinance (e.g. 0.0123 = 1.23%) — convert to percent.
+    # dividendYield was a fraction pre-2025; yfinance now returns percent directly
+    # (e.g. 2.67 = 2.67%).  No ×100 conversion needed.
     dividend_yield_pct = (
-        float(dy_val) * 100.0
+        float(dy_val)
         if isinstance(dy_val, (int, float)) and dy_val >= 0
         else None
     )
+    if dividend_yield_pct is not None and dividend_yield_pct > 100.0:
+        # Implausible yield — yfinance format may have reverted to a fraction;
+        # discard rather than emit a 100× inflated value.
+        logger.warning(
+            "dividend_yield_pct %.4f > 100 for %s — discarding as implausible"
+            " (yfinance format drift?)",
+            dividend_yield_pct,
+            ticker,
+        )
+        dividend_yield_pct = None
     payout_ratio = (
         float(pr_val) if isinstance(pr_val, (int, float)) and pr_val >= 0 else None
     )
@@ -473,10 +487,10 @@ def fetch_yfinance_dividend(
         ``(dividend_yield_pct, pays_dividend, payout_ratio)`` where:
 
         - ``dividend_yield_pct``: annualised dividend yield expressed as
-          a PERCENT (e.g. 2.0 for 2%).  Derived from yfinance
-          ``dividendYield`` (a fraction) multiplied by 100.  Zero means
-          the ticker actively pays no dividend (confirmed by yfinance);
-          ``None`` means the data was unavailable.
+          a PERCENT (e.g. 2.0 for 2%).  yfinance now returns
+          ``dividendYield`` already in percent (no ×100 conversion).
+          Zero means the ticker actively pays no dividend (confirmed by
+          yfinance); ``None`` means the data was unavailable.
         - ``pays_dividend``: ``True`` iff ``dividend_yield_pct > 0``;
           ``False`` iff ``dividend_yield_pct == 0``; ``None`` when
           ``dividend_yield_pct`` is ``None``.
