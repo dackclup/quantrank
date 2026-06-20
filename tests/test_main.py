@@ -15,7 +15,10 @@ from __future__ import annotations
 
 import math
 from datetime import date
+from pathlib import Path
+from unittest.mock import patch
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -36,6 +39,9 @@ from compute.main import (
     _latency_histogram,
     _percentile,
 )
+from compute.output.schemas import Metadata  # noqa: F401 — used by step-4 fixture
+from compute.scoring.eight_k_events import ItemFlag
+from compute.scoring.tier2 import Tier2Result
 
 
 def _snap(**overrides) -> FundamentalsSnapshot:
@@ -1142,4 +1148,162 @@ def test_step3b_wiring_none_shares_passed_as_none_override(monkeypatch: pytest.M
     assert received_override is None, (
         "None from fetch_yfinance_shares_outstanding must be passed verbatim "
         "as yf_shares_outstanding_override (cold-cache graceful fallback)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Step-4 risk-overlay wiring: sectors_dict passed from inputs → compute_risk_flags
+#
+# The production wiring in run_weekly_compute (main.py ~line 1456):
+#     sectors_dict = {t: inp.sector for t, inp in inputs.items()}
+#     risk_flags = compute_risk_flags(snapshots, ..., sectors=sectors_dict, ...)
+#
+# This orchestrator-harness test locks that the sectors kwarg received by
+# compute_risk_flags equals exactly {ticker: sector} derived from the TickerInputs
+# built in Step 4 — which is populated from df["sector"] (the universe DataFrame
+# row).  The test uses the same _run_orchestrator pattern from
+# tests/test_output/test_wall_clock_schema.py, patching compute.main.compute_risk_flags
+# to capture kwargs without breaking the pipeline.
+# ---------------------------------------------------------------------------
+
+# Reuse the minimal harness fixtures from test_wall_clock_schema.py without
+# importing from that module (keeps test files independent per project style).
+_STEP4_DATES = pd.date_range("2024-01-01", periods=252, freq="B")
+_STEP4_PRICES = pd.DataFrame({"Close": np.full(252, 100.0)}, index=_STEP4_DATES)
+
+_STEP4_SNAP = FundamentalsSnapshot(
+    ticker="TST",
+    cik="0000000001",
+    net_income=50.0,
+    stockholders_equity=100.0,
+    shares_outstanding=10.0,
+    eps_diluted=5.0,
+    ebitda=50.0,
+    long_term_debt=20.0,
+    short_term_debt=5.0,
+    cash=10.0,
+    goodwill=0.0,
+    intangibles_net=0.0,
+    latest_period_end=date(2025, 12, 31),
+    latest_filed_date=date(2026, 2, 14),
+)
+
+_STEP4_UNIVERSE = pd.DataFrame([{
+    "ticker": "TST",
+    "name": "Test Corp",
+    "sector": "Information Technology",
+    "sub_industry": "Software",
+    "cik": "0000000001",
+    "cohort": "sp500",
+}])
+
+_MINIMAL_TIER2_STEP4 = Tier2Result(
+    going_concern_disclosure=False,
+    non_reliance_flag=ItemFlag(
+        fired=False, filing_date=None, filing_url=None, raw_item_text=None
+    ),
+    auditor_change_flag=ItemFlag(
+        fired=False, filing_date=None, filing_url=None, raw_item_text=None
+    ),
+    fetch_succeeded=True,
+)
+
+
+def _fake_prices_for_step4(row: pd.Series) -> dict:
+    return {
+        "ticker": row["ticker"],
+        "name": row["name"],
+        "sector": row["sector"],
+        "industry": row.get("sub_industry"),
+        "cik": row.get("cik"),
+        "cohort": row.get("cohort", "sp500"),
+        "current_price": 100.0,
+        "price_change_1d_pct": 0.5,
+        "_prices": _STEP4_PRICES,
+    }
+
+
+def test_step4_sectors_dict_passed_to_compute_risk_flags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Step-4 orchestrator wiring: sectors_dict built from inputs.sector reaches
+    compute_risk_flags as the ``sectors`` kwarg.
+
+    The production path (main.py ~line 1456):
+        sectors_dict = {t: inp.sector for t, inp in inputs.items()}
+        risk_flags = compute_risk_flags(snapshots, ..., sectors=sectors_dict, ...)
+
+    This test drives run_weekly_compute with a single-ticker universe whose
+    sector is set to "Information Technology", then monkeypatches
+    compute.main.compute_risk_flags to capture the kwargs without running the
+    real implementation.  The assertion verifies:
+
+    1. compute_risk_flags was actually called (the Step-5 code ran).
+    2. The ``sectors`` kwarg is a dict mapping the universe ticker to the
+       sector string from the universe DataFrame (not None, not empty).
+    3. The sector string matches what the universe fixture declares
+       ("Information Technology").
+
+    This locks a regression path: if the sectors_dict construction or the
+    kwarg forwarding is accidentally dropped, this test fails.
+    """
+    captured_calls: list[dict] = []
+
+    def _spy_compute_risk_flags(snapshots_arg, *, sectors=None, **kwargs):
+        # Record the sectors kwarg, then delegate to the real implementation
+        # so the pipeline can continue without raising.
+        captured_calls.append({"sectors": sectors})
+        from compute.scoring.risk_overlay import compute_risk_flags as _real
+        return _real(snapshots_arg, sectors=sectors, **kwargs)
+
+    for key, val in {
+        "QR_SKIP_SEC_HEALTH": "1",
+        "QR_SKIP_DECAY_MONITOR": "1",
+        "QR_SKIP_CROSS_SOURCE": "1",
+        "FORM4_FETCH_SKIP": "1",
+    }.items():
+        monkeypatch.setenv(key, val)
+
+    with (
+        patch("compute.main._fetch_prices_one", side_effect=_fake_prices_for_step4),
+        patch("compute.main._fundamentals_one", return_value=(_STEP4_SNAP, 0.1)),
+        patch("compute.main._history_one", return_value=(pd.DataFrame(), 0.1)),
+        patch("compute.main.get_sp500_constituents", return_value=_STEP4_UNIVERSE),
+        patch("compute.main.fetch_spy_benchmark", return_value=None),
+        patch("compute.main.fetch_benchmarks", return_value={}),
+        patch("compute.main.write_benchmarks_json", return_value=(None, None)),
+        patch("compute.main.fetch_dow30_constituents", return_value=set()),
+        patch("compute.main.fetch_ndx_constituents", return_value=set()),
+        patch("compute.main.fetch_tier2_for_ticker",
+              side_effect=lambda ticker, **kw: _MINIMAL_TIER2_STEP4),
+        patch("compute.main.compute_risk_flags", side_effect=_spy_compute_risk_flags),
+        patch("compute.config.MIN_VALID_TICKERS", 0),
+        patch("compute.config.MIN_FUNDAMENTALS_COVERAGE", 0.0),
+        patch("compute.config.DATA_DIR", tmp_path),
+        patch("compute.main.config.DATA_DIR", tmp_path),
+    ):
+        from compute.main import run_weekly_compute
+
+        run_weekly_compute()
+
+    # compute_risk_flags must have been called at least once (Step 5 ran).
+    assert len(captured_calls) >= 1, (
+        "compute_risk_flags was never called — Step-5 risk-overlay wiring missing"
+    )
+
+    # The first call carries the sectors kwarg derived from inputs.sector.
+    first_sectors = captured_calls[0]["sectors"]
+    assert first_sectors is not None, (
+        "sectors kwarg to compute_risk_flags must not be None — "
+        "sectors_dict construction at main.py ~line 1456 is broken"
+    )
+    assert isinstance(first_sectors, dict), (
+        f"sectors kwarg must be a dict; got {type(first_sectors).__name__}"
+    )
+    assert "TST" in first_sectors, (
+        "sectors dict must contain the universe ticker 'TST'"
+    )
+    assert first_sectors["TST"] == "Information Technology", (
+        f"sectors['TST'] must equal the universe sector 'Information Technology'; "
+        f"got {first_sectors['TST']!r}"
     )
