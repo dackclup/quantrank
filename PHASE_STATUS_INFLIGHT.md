@@ -5254,5 +5254,52 @@ Hypothesis `deadline=4000` property test over its per-example budget. Tooling wi
 Verify: `ruff check .` clean · `pytest -m "not network"` green (the pre-existing test_R6 weekend flake was
 fixed first in #515; the alpha158 `test_C1` Hypothesis DeadlineExceeded remains a known slow-box flake,
 green on CI). Gate: test-engineer (authored). No schema triple touch.
+---
+## ci(precache) — S&P 1500 cutover Slice 5: cache-v11-fast bump + sp1500 dispatch + sp600/sp1500 parquet paths (in flight, 2026-06-20)
+
+**Workflow YAML + cache-coverage test only.** No compute code change. No schema triple touched.
+Off-cycle precache prep — enables the precache and cron workflows to COLD-SEED and WARM the
++600 small-cap cohort. The **cron default stays `sp900`** — the cron-default flip to `sp1500`
+is Slice 7, NOT this slice.
+
+Changes (4 workflow files + 1 test file):
+
+- `.github/workflows/precache-edgar.yml` — adds `sp1500` to the `universe` dispatch `choice` list
+  (as a manual-dispatch option for cold-seeding, NOT as the scheduled default); adds
+  `universe_sp600-v1.parquet` + `universe_sp1500-v1.parquet` to the fast-bundle `path:` block;
+  bumps `cache-v10-fast` → `cache-v11-fast` with an explanatory YAML comment.
+- `.github/workflows/compute-rankings.yml` — same `sp1500` choice addition + same parquet additions
+  + same key bump; adds v11 to the bump-history comment in the fast-cache step.
+- `.github/workflows/pre-merge-prod-sim.yml` — fast-bundle restore path + key bumped to v11 in
+  lockstep (the sim must mirror the cron's key family or goes cold on every PR run after archive
+  eviction — the run #98 precedent). Cron default still `QR_UNIVERSE: sp900`.
+- `.github/workflows/backfill-portfolio.yml` — fast-bundle restore path + `cache-v10-bf-` →
+  `cache-v11-bf-` + restore-keys bumped to `cache-v11-fast-` in lockstep.
+- `tests/test_workflow_cache_coverage.py` — extends `_REQUIRED_CACHE_PATHS` with
+  `config.SP600_UNIVERSE_CACHE` + `config.SP1500_UNIVERSE_CACHE`; updates
+  `test_workflow_fast_cache_key_full_shape_pinned` + `test_workflow_fast_cache_key_is_v11`
+  (renamed from `_is_v10`) + `test_sim_restores_both_cron_cache_families` +
+  `test_sp900_universe_parquets_in_fast_path_blocks` to cover sp600/sp1500 and expect v11;
+  adds `- sp1500` choice assertion to `test_compute_rankings_has_universe_dispatch_input` +
+  `test_precache_has_universe_dispatch_input`.
+
+**WHY the key bump is required:** the fast bundle's exact-quarter-key save-skip means sp600
+fundamentals/prices written under a warm v10 sp900 key would be silently dropped (save skipped
+on an exact-key hit — the FROZEN-IMMUTABLE-within-a-quarter gotcha). The v11 bump forces a
+cold-seed of the new paths on the first post-bump cron so all ~1500 tickers warm correctly once
+the sp1500 dispatch or Slice 7 cron-default flip fires. Identical mechanism to the v9→v10 bump
+(precache-900 Phase B, #492). Do NOT bump the slow-text bundle key — it is run-id-keyed and
+always saves.
+
+**PREP PR gating note:** this PR is designed to MERGE AFTER Slice 2 (the sp1500 `main.py` seam +
+universe probe) lands on main, not before. Merging before Slice 2 would allow a manual
+`universe: sp1500` dispatch that fails silently because `main.py` does not yet route that value.
+The two-bundle cache split remains intact; `timeout-minutes` is NOT lowered (cold-1500 risk noted
+in YAML comments only).
+
+Verify: `ruff check .` clean · `pytest tests/test_workflow_cache_coverage.py` 37/37 green ·
+`pytest -m "not network"` 2220 passed (1 pre-existing unrelated failure:
+`test_R6_boundary_exact_threshold` in `test_prices_recency_guard.py`) · YAML valid (Python
+`yaml.safe_load` on all 4 files) · zero `cache-v10-fast` occurrences remaining in workflow files.
 
 ---

@@ -46,11 +46,12 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to precache. sp900 = warms the full S&P 500 + S&P 400 midcap caches (the weekday cron's default after the 2026-06-16 Phase B flip). sp500 = large-cap only (diagnostic / fallback). Default sp900 for the scheduled Saturday run so it warms the same universe as Monday's cron."
+        description: "Universe to precache. sp900 = warms the full S&P 500 + S&P 400 midcap caches (the weekday cron's default after the 2026-06-16 Phase B flip). sp1500 = sp900 + S&P 600 small-cap (Slice 5 prep — cold-seeds the +600 cohort under cache-v11-fast; cron default stays sp900 until Slice 7). sp500 = large-cap only (diagnostic / fallback). Default sp900 for the scheduled Saturday run so it warms the same universe as Monday's cron."
         type: choice
         options:
           - sp500
           - sp900
+          - sp1500
         default: sp900
 
 env:
@@ -105,6 +106,15 @@ jobs:
       # Saturdays, and must SAVE under that same key after an eviction so
       # the weekday cron restores warm. Lockstep guard:
       # tests/test_workflow_cache_coverage.py.
+      # v11-fast (S&P 1500 cutover Slice 5, 2026-06-20): added sp600/sp1500 universe
+      # parquets to path: so they persist in the fast bundle. The fast bundle's
+      # exact-key save-skip means sp600 fundamentals/prices written under a warm v10
+      # sp900 key would be silently dropped; v11 forces a cold-seed of the full sp1500
+      # fast bundle on the first post-flip cron so all ~1500 tickers warm correctly.
+      # Same mechanism as the v9→v10 flip (precache-900 Phase B, #492). The cron
+      # default stays sp900 — this key bump ONLY enables the sp1500 manual dispatch
+      # and seeds the cache so Slice 7 (the cron-default flip) has a warm bundle.
+      # Do NOT bump the slow-text bundle key — it is run-id-keyed and always saves.
       - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@v5
         with:
@@ -115,11 +125,13 @@ jobs:
             compute/cache/universe-v2.parquet
             compute/cache/universe_sp400-v1.parquet
             compute/cache/universe_sp900-v1.parquet
+            compute/cache/universe_sp600-v1.parquet
+            compute/cache/universe_sp1500-v1.parquet
             compute/cache/yfinance_info
-          key: cache-v10-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v11-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v10-fast-${{ steps.quarter.outputs.q }}-
-            cache-v10-fast-
+            cache-v11-fast-${{ steps.quarter.outputs.q }}-
+            cache-v11-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
         uses: actions/cache@v5
