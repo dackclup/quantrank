@@ -4995,6 +4995,39 @@ no design review needed (pure test files + dep pin + workflow verb).
 
 ---
 
+## feat(compute): S&P 1500 cutover Slice 2 — sp1500 seam + small-cap coverage probe (in flight, 2026-06-20)
+
+**Compute + schema + tests. Observability-first (Rule 18). Cron unchanged (stays sp900). NO sp600
+ranked exposure yet.** Second slice of the S&P 1500 universe-expansion epic — wires the `sp1500`
+universe seam into `compute/main.py` and ships the sp600 small-cap coverage probe so EDGAR ingest
+readiness is visible before ranked production exposure is allowed.
+
+What lands, pure-additive (rankings byte-identical on the sp500/sp900 cron paths):
+- `compute/main.py` — (a) imports `get_sp1500_constituents`; (b) new `_run_smallcap_coverage_probe`
+  function (sp600 sibling of `_run_midcap_coverage_probe`: iterates sp600 rows, calls
+  `fetch_fundamentals`, counts coverage/null/CIK — sequential, cache-safe, never feeds scoring);
+  (c) `elif config.QR_UNIVERSE == "sp1500":` branch at the universe-load seam → loads the SP1500
+  frame, runs both the midcap probe (sp400 cohort stats) and the new smallcap probe (sp600 cohort
+  stats), merges sp600 key into `_pilot_cohort_sizes`; (d) new `_pilot_smallcap_*` variables (3
+  float|None, initialised to None before the probe block); (e) `universe=` label → "SP1500" when
+  `QR_UNIVERSE=sp1500`; (f) 3 new `Metadata` keyword args wired.
+- `compute/output/schemas.py` — 3 additive `Metadata` fields: `smallcap_fundamentals_coverage_pct`,
+  `smallcap_null_rate_pct`, `smallcap_cik_resolution_pct` (all `float | None`, detailed docstrings
+  mirroring the midcap field style). Schema version bumped `0.10.26` → `0.10.27-phase8pilot`.
+- `frontend/lib/types.ts` — 3 matching optional fields mirrored onto the `Metadata` TS interface.
+- `frontend/lib/schema-snapshot.json` — regenerated via `--update-snapshot`.
+- `compute/config.py` — SCHEMA_VERSION bump + QR_UNIVERSE comment updated to mention sp1500.
+- `tests/test_ingest/test_sp1500_seam.py` — 16 offline tests: smallcap probe coverage/null/cik/
+  exception-safety, graceful degradation on empty sp600, Metadata field round-trip, variable-
+  initialisation source-check, probe-placement guard.
+
+Verify: `ruff check .` clean · `pytest -m "not network"` green · `schema_check` in-sync ·
+`tsc --noEmit` clean. Gate: compute-builder BUILT-CLEAN → quantrank-reviewer (pending) →
+schema-sentinel (schema triple touched). Staging context: Slice 2 of 8 (seam+probe →
+3 Bonferroni-shadow ∥ 4 ADV-guard ∥ 6 SML-tab → 5 precache v11 → 7 cron flip → 8 v2.0).
+
+---
+
 ## feat(ingest) — S&P 1500 cutover Slice 1: S&P 600 fetcher + S&P 1500 loader (in flight, 2026-06-19)
 
 **Compute ingest only.** No schema triple, no `compute/main.py` wiring, no workflow change — the

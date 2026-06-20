@@ -28,11 +28,12 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-# Phase 8 pilot — universe selector (default "sp500" so the cron and all
-# existing CI paths are unchanged). When set to "sp900", main.py runs a
-# diagnostic-only coverage probe over the 400 midcaps; ranked output
-# (rankings.json + stocks/*.json) stays 500-only in PR 1.
-# PR 5 will add the precache dispatch input + cron integration.
+# Phase 8 pilot — universe selector (default "sp500" for local runs + tests;
+# the cron sets QR_UNIVERSE=sp900 via workflow env-var since Phase B flip).
+# When set to "sp1500" (Slice 2, manual dispatch only), main.py loads SP1500
+# (sp500 + sp400 + sp600) and runs the smallcap coverage probe (Rule 18
+# observability-first). NO cron/workflow change in Slice 2.
+# Accepted values: "sp500" | "sp900" | "sp1500".
 QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 
 # 0.10.20-phase4.6 (issue #75 §3) layers the additive
