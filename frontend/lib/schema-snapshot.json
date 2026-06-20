@@ -132,6 +132,11 @@
       "required": false,
       "default": null
     },
+    "dividend_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "exchange_coverage_pct": {
       "type": "float | None",
       "required": false,
@@ -637,6 +642,11 @@
       "required": false,
       "default": null
     },
+    "dividend_yield_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "entered_top5": {
       "type": "bool",
       "required": false,
@@ -714,6 +724,16 @@
     },
     "osap_signals": {
       "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "payout_ratio": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "pays_dividend": {
+      "type": "bool | None",
       "required": false,
       "default": null
     },

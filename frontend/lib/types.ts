@@ -252,6 +252,12 @@ export type Metadata = {
   // a raw passthrough code (the CBOE/BTS canary; exchange 100% / country 99.8%
   // on the 2026-06-02 cron before the BTS fix).
   country_coverage_pct?: number | null;
+  // Dividend signal PR-1 (0.10.27-phase8pilot) — % of universe whose
+  // StockDetail.dividend_yield_pct resolved to a non-null value on this cron
+  // run. Coverage canary (Rule-18 observability-first): ships before the
+  // HeroAttributeTiles "Dividend" tile reads the field. Absent / null on
+  // legacy snapshots pre-0.10.27.
+  dividend_coverage_pct?: number | null;
   // benchmark_coverage_pct (0.10.14-phase4.6) — % of the benchmark index
   // proxies (SPY/QQQ/DIA/IWM) whose ~5y close series exported to
   // public/data/portfolio/benchmarks.json. Observability-before-wiring: ships
@@ -600,6 +606,16 @@ export type StockDetail = {
   // exchange code didn't resolve. Display-only — feeds the hero listing chips.
   exchange: string | null;
   country: string | null;
+  // Dividend signal PR-1 (0.10.27-phase8pilot) — display-only descriptive
+  // metadata (Rule-18 observability-first). `dividend_yield_pct` is in PERCENT
+  // (e.g. 2.0 = 2%, NOT 0.02); `pays_dividend` = yield > 0 boolean;
+  // `payout_ratio` is the 0-1 fraction (e.g. 0.40 = 40% of earnings paid out).
+  // All three null on legacy snapshots pre-0.10.27. No UI rendering in PR-1 —
+  // the HeroAttributeTiles "Dividend" tile ships after a cron confirms
+  // `dividend_coverage_pct` populates.
+  dividend_yield_pct: number | null;
+  pays_dividend: boolean | null;
+  payout_ratio: number | null;
   market_cap: number | null;
   current_price: number;
   rank: number;

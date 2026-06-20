@@ -52,6 +52,7 @@ from compute.ingest.cross_source import (
 from compute.ingest.cross_source import (
     country_for_exchange,
     exchange_name,
+    fetch_yfinance_dividend,
     fetch_yfinance_exchange,
     fetch_yfinance_market_cap,
     fetch_yfinance_shares_outstanding,
@@ -700,7 +701,7 @@ def _pillar_scores_to_schema(row: pd.Series) -> PillarScores:
     )
 
 
-def _coverage_pct(by_ticker: dict[str, str | None]) -> float | None:
+def _coverage_pct(by_ticker: dict[str, object | None]) -> float | None:
     """PR-A2 — % of the iterated universe with a non-null value (display-only).
 
     Rule-18 observability formula for the listing-metadata fields. Shared by
@@ -1994,6 +1995,17 @@ def run_weekly_compute() -> int:
     # QR_SKIP_CROSS_SOURCE internally (returns None on cold simulate cache).
     exchange_by_ticker: dict[str, str | None] = {}
     country_by_ticker: dict[str, str | None] = {}
+    # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot,
+    # Rule 18 observability-first) — per-ticker dividend data collected as
+    # a zero-cost side-channel in the Step 8 loop.  All three fields derive
+    # from a pure cache-read off the ``yfinance_info/<ticker>.json`` file
+    # already populated by ``fetch_yfinance_market_cap`` earlier in the
+    # same ticker iteration.  No new network round-trips.
+    # Post-loop: aggregate ``dividend_coverage_pct`` from the non-None
+    # ``dividend_yield_pct`` values across all tickers.
+    _dividend_yield_pct_by_ticker: dict[str, float | None] = {}
+    _pays_dividend_by_ticker: dict[str, bool | None] = {}
+    _payout_ratio_by_ticker: dict[str, float | None] = {}
     # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
     # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
     # so the delta (flat-10% vs per-sector) is observable before the flag
@@ -2309,6 +2321,25 @@ def run_weekly_compute() -> int:
         exchange_code = fetch_yfinance_exchange(ticker)
         exchange_by_ticker[ticker] = exchange_name(exchange_code)
         country_by_ticker[ticker] = country_for_exchange(exchange_code)
+
+        # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot,
+        # Rule 18 observability-first) — pure cache-read; no new network call.
+        # The ``yfinance_info/<ticker>.json`` cache was already populated
+        # (with dividend_yield_pct + payout_ratio) by ``fetch_yfinance_market_cap``
+        # earlier in this loop iteration.  Wrapped in try/except so any
+        # unexpected failure is non-fatal — fields remain None and the cron
+        # continues unchanged.  Rankings/scores/vetoes are NOT touched.
+        try:
+            _dy_pct, _pays_div, _pr = fetch_yfinance_dividend(ticker)
+        except Exception as _div_exc:  # noqa: BLE001
+            logger.debug(
+                "fetch_yfinance_dividend failed for %s (non-fatal): %s",
+                ticker, _div_exc,
+            )
+            _dy_pct, _pays_div, _pr = None, None, None
+        _dividend_yield_pct_by_ticker[ticker] = _dy_pct
+        _pays_dividend_by_ticker[ticker] = _pays_div
+        _payout_ratio_by_ticker[ticker] = _pr
 
         # Issue #261 — multi_class_aggregate_shares_suspected annotate.
         # CIK-collision detector (precomputed before this loop) flags
@@ -2688,6 +2719,13 @@ def run_weekly_compute() -> int:
             ),
             form4_diagnostics=form4_diagnostics.get(ticker),
             cross_source_delta=cross_source_delta_by_ticker.get(ticker),
+            # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot).
+            # Display-only; does NOT influence composite score / risk_flags /
+            # recommendation / any defense flag.  All three default to None
+            # so legacy consumers are unaffected.
+            dividend_yield_pct=_dividend_yield_pct_by_ticker.get(ticker),
+            pays_dividend=_pays_dividend_by_ticker.get(ticker),
+            payout_ratio=_payout_ratio_by_ticker.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
@@ -2849,6 +2887,23 @@ def run_weekly_compute() -> int:
         shares_fallback_triggered_count,
         shares_fallback_too_low_count,
         shares_fallback_dimensional_override_count,
+    )
+
+    # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot,
+    # Rule 18 observability-first) — aggregate coverage diagnostic after loop.
+    # Reuses the ``_coverage_pct`` helper (same formula as exchange/country).
+    # ``dividend_yield_pct`` is non-None whenever yfinance returned a value
+    # (including 0.0 for confirmed non-payers) so a high coverage % means
+    # the cache was warm and dividend data is available for display.
+    dividend_coverage_pct = _coverage_pct(_dividend_yield_pct_by_ticker)
+    n_with_dividend = sum(
+        1 for v in _dividend_yield_pct_by_ticker.values() if v is not None
+    )
+    logger.info(
+        "Dividend coverage: %d / %d (%.1f%%)",
+        n_with_dividend,
+        len(_dividend_yield_pct_by_ticker),
+        dividend_coverage_pct if dividend_coverage_pct is not None else 0.0,
     )
 
     # PR-A2 — Rule 18 observability: exchange-resolution coverage across the
@@ -3048,6 +3103,10 @@ def run_weekly_compute() -> int:
         cross_source_delta_histogram=cross_source_delta_histogram,
         exchange_coverage_pct=exchange_coverage_pct,
         country_coverage_pct=country_coverage_pct,
+        # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot,
+        # Rule 18 observability-first). Aggregated from the Step 8 per-ticker
+        # loop; None on failure or empty universe.
+        dividend_coverage_pct=dividend_coverage_pct,
         shares_fallback_triggered_count=shares_fallback_triggered_count,
         shares_fallback_too_low_count=shares_fallback_too_low_count,
         shares_fallback_dimensional_override_count=(
