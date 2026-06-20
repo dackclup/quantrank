@@ -544,10 +544,15 @@ INTEGER_RATIO_TOLERANCE: float = POST_SPLIT_RATIO_TOLERANCE  # 0.10
 # Veto promotion requires ≥ 1 cron of firing-rate data + methodology ratification
 # (WORKFLOW.md §8.6 "Liquidity backstop").
 #
-# Academic anchor: Amihud 2002 *J. Financial Markets* §2 "Illiquidity and
-# stock returns" — dollar-volume < $5M/day places a stock in the bottom
-# decile of the Amihud illiquidity measure for US equities; microstructure
-# noise dominates any fundamental signal at this scale.
+# Academic anchor: Amihud 2002 *J. Financial Markets* "Illiquidity and stock
+# returns" — dollar volume (price × shares) IS the denominator of the Amihud
+# ILLIQ ratio, so this guard sits squarely in the illiquidity-premium family
+# (see also Amihud-Mendelson 1986; Kyle 1985 price-impact). The $5M/day figure
+# is a CALIBRATION CONVENTION at the conservative end of the institutional
+# ADDV-floor band ($1M-$5M), NOT a cutoff lifted from any paper table — it is
+# to be empirically RE-DERIVED from the realized sp600 ADV distribution at veto
+# promotion (methodology-scientist RATIFY-SHADOW, S&P 1500 Slice 4). Below this
+# scale, market-impact noise dominates any fundamental signal.
 #
 # ``ADV_FLOOR_USD``: minimum acceptable 30-day mean dollar volume.
 # ``ADV_LOOKBACK_DAYS``: trailing trading-day window for the mean.

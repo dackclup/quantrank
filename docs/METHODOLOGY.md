@@ -184,10 +184,21 @@ composite.
 | Sector exclusions | EV/EBITDA skipped for Financials; DCF skipped for Financials + Utilities; Quality pillar metrics gated by sector (`magic_formula`, `ebit_based_roic`, `gross_profitability`, `asset_turnover` per Greenblatt 2005) | Greenblatt; sector-method spec |
 | Data-quality $10K ceiling | If any method computes > $10,000/share → null all 6 + emit `data_quality_input_corruption`. Catches upstream ingestion bugs (e.g., `shares_outstanding` in wrong units) before user-visible nonsense. | Internal — Step 7.5 (post-spot-check) |
 
-### Annotate-only flags (23) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
+### Annotate-only flags (24) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
 
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
+- `low_liquidity` _(S&P 1500 Slice 4)_ — trailing 30-day mean dollar
+  volume (price × volume) < `ADV_FLOOR_USD` ($5M). Anchor: Amihud 2002
+  *J. Financial Markets* (dollar volume is the ILLIQ denominator;
+  Amihud-Mendelson 1986, Kyle 1985 price-impact). The $5M figure is a
+  calibration convention at the conservative end of the institutional
+  ADDV-floor band — NOT a paper-table cutoff; to be empirically
+  re-derived from the realized sp600 ADV distribution before any veto
+  promotion. Dormant (~0 fires) on the current sp900 universe; lights up
+  on S&P 600 small-caps. Annotate-only (in `valuation_warnings`, not
+  `risk_flags`): rank-neutral, no `cautious`, no Top-5 suppression, no
+  `manipulation_index` weight. methodology-scientist RATIFY-SHADOW.
 - `value_trap_risk` — RIM was skipped because ROE < cost of equity
 - `extreme_<method>_estimate` — one of the 6 methods (`graham`,
   `multiples_pe`, `multiples_pb`, `multiples_ev_ebitda`, `rim`, `dcf`)
