@@ -711,16 +711,19 @@ export function FairPriceCard(props) {  // no types
     (`compute/ingest/cross_source.py:fetch_yfinance_market_cap`)
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
-- Frontend telemetry: **Vercel Web Analytics** (`@vercel/analytics`,
-  added PR #517) is the ONE sanctioned client-side beacon — cookieless,
-  no IP storage, no user IDs, Vercel-edge-served (`/_vercel/insights/`,
-  not a third-party CDN); it sends only page pathname / referrer / device
-  class / edge-inferred country + Core Web Vitals. The original
+- Frontend telemetry: TWO cookieless Vercel-edge client-side beacons —
+  **Vercel Web Analytics** (`@vercel/analytics`, PR #517 — page-view
+  counts) and **Vercel Speed Insights** (`@vercel/speed-insights`, added
+  alongside #517 — Core Web Vitals). Neither persists an IP or sets a
+  user ID (the source IP is transiently visible at the Vercel edge for
+  geo-country inference, then dropped — not stored in the aggregate data),
+  and both are served from Vercel's own edge (`/_vercel/insights/` +
+  `/_vercel/speed-insights/`, not third-party CDNs). The original
   "no analytics in v1.0" pledge was lifted by explicit owner decision
-  (2026-06-20, PR #517). No OTHER third-party telemetry / external network beacons in
-  the frontend; the site otherwise stays pure static HTML+JS. (Requires
-  Web Analytics enabled in the Vercel dashboard or the injected script
-  404s silently.)
+  (2026-06-20). No OTHER third-party telemetry / external network beacons
+  in the frontend; the site otherwise stays pure static HTML+JS. (Each
+  requires its feature enabled in the Vercel dashboard or the injected
+  script 404s silently.)
 
 ## Phase + version state
 

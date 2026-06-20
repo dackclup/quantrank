@@ -5133,3 +5133,33 @@ so it carries the #515 test_R6 weekend-boundary fix (the `test_R6` red that hit
 the pre-rebase base `08a74c09` is resolved on the rebased tip).
 
 ---
+
+## PR (Speed Insights) — feat(frontend): Vercel Speed Insights integration (in flight, 2026-06-20)
+
+**Frontend-only, no schema/compute touch.** Companion to #517 (Web Analytics).
+Adds `@vercel/speed-insights@^2.0.0` (Apache-2.0, framework-optimized for Next.js,
+no novel transitive deps beyond the package itself) and renders
+`<SpeedInsights />` in `frontend/app/layout.tsx` (after the ThemeProvider/AppShell
+block, alongside where #517 places `<Analytics />`). Speed Insights tracks Core
+Web Vitals (LCP/CLS/INP/TTFB/FCP); Web Analytics (#517) tracks page views — the
+two are siblings. `npm install --legacy-peer-deps` (same optional-peer chain as
+#517). Beacon posts to Vercel-edge `/_vercel/speed-insights/`, renders null,
+static-export-safe (Suspense-wrapped `/next` entry).
+
+Doc-lockstep: `AGENTS.md` §Security + `CLAUDE.md` §Frontend rendering updated to
+the TWO-beacon end state (Web Analytics + Speed Insights, both cookieless,
+no IP, Vercel-edge). Defense layer UNCHANGED (35); no schema bump.
+
+Verify (frontend-builder BUILT-CLEAN): `tsc --noEmit` clean · `next build` 910
+static pages pass (output: export unaffected). Gate (quantrank-reviewer +
+phase-coordinator Mode B + dependency/security) runs at Draft→Ready.
+
+Parallel-PR note: branch is off `origin/main` (pre-#517 merge), so the AGENTS.md
+pledge + CLAUDE.md note overlap #517's same-line edits. When #517 merges first,
+rebase resolves the shared-line conflict "keep the two-beacon version"; the
+PHASE_STATUS_INFLIGHT append is collision-free by design.
+
+Follow-up (not blocking merge): enable Speed Insights in the Vercel dashboard
+(Settings → Speed Insights) or `<SpeedInsights />` 404s silently.
+
+---
