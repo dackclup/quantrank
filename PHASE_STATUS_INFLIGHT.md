@@ -5722,4 +5722,15 @@ grounded in the `frontend-design-system` skill (Rule 2 outlined-light + Rule 10
 label-not-color-alone); semantics aligned to `HoldingsTimeline` to kill the cross-surface
 "Held" ambiguity.
 
+**Sort pass (3rd, same PR):** per owner request, the "Current picks" table is now ordered by
+portfolio `weight` **descending** (heaviest holding first) instead of composite-score order. A
+new `weightSortedHoldings` `useMemo` derives a sorted copy of `displayHoldings` (non-mutating,
+so the held-set / New-Held logic is unaffected); non-finite weights sort to the bottom and
+equal weights keep composite order as a stable tiebreak. The `#` column now reads as the weight
+rank. Latest quarter resolves ACGL 23.0% → ALL 20.7% → SYF 14.0% → IBKR 12.0% → LULU 10.7% →
+DECK 9.8% → APA 9.8%. Consistent with the historical `feat(home) — Current-picks P/L-since-entry`
+intent (which also sorted by weight desc). `HoldingsTimeline` / Rotation history ordering is
+untouched. Frontend-only — schema triple untouched. Verify: `tsc --noEmit` clean · `next build`
+clean (909/909). Commit `88358e63`.
+
 ---
