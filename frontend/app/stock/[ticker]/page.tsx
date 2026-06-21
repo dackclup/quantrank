@@ -290,7 +290,12 @@ export default function StockDetailPage({
       {/* Attribute tiles — the 4-box "what is this company" grid (cap tier ·
           sector · 2 reserved placeholders). Its own section under the hero,
           above the price chart — see HeroAttributeTiles.tsx. */}
-      <HeroAttributeTiles marketCap={detail.market_cap} sector={detail.sector} />
+      <HeroAttributeTiles
+        marketCap={detail.market_cap}
+        sector={detail.sector}
+        dividendYieldPct={detail.dividend_yield_pct}
+        paysDividend={detail.pays_dividend}
+      />
 
       <section aria-label={`Price history for ${detail.ticker}`}>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">

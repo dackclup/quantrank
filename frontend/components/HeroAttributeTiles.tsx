@@ -8,11 +8,10 @@
 // Four fixed tiles in a grid (2×2 on mobile, 1×4 on wide hero):
 //   1. Market-cap tier   — DATA (raw_metrics.market_cap → Mega/Large/Mid/Small)
 //   2. Sector            — DATA (detail.sector)
-//   3. Dividend          — PLACEHOLDER ("Coming soon" — no dividend data in
-//      the schema yet; the tile is intentionally empty + labeled so it reads
-//      as reserved, not broken, per the user's "ช่องเปล่า + label บอกว่าจะมี
-//      อะไร" direction)
-//   4. (reserved)        — PLACEHOLDER, same treatment
+//   3. Dividend          — LIVE (PR-2, schema 0.10.27+): yield%/None/— from
+//      detail.dividend_yield_pct + detail.pays_dividend. Always FILLED state
+//      (never "Coming soon") — see formatDividendYield in lib/format.ts.
+//   4. Type              — PLACEHOLDER, "Coming soon" reserved state
 //
 // Info tiles, NOT filters (this is a single-stock detail page — nothing to
 // filter). Pure server component (computation + markup, no hooks). lucide-react
@@ -21,6 +20,7 @@
 
 import { Building2, Coins, Layers, ScrollText } from 'lucide-react';
 import type { JSX } from 'react';
+import { formatDividendYield } from '@/lib/format';
 
 function capTierLabel(marketCap: number | null): string | null {
   if (marketCap == null) return null;
@@ -70,7 +70,7 @@ function Tile({
           <span className="block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {caption}
           </span>
-          <span className="mt-0.5 block truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+          <span className="mt-0.5 block truncate tabular-nums text-sm font-semibold text-slate-900 dark:text-slate-100">
             {value}
           </span>
         </span>
@@ -98,9 +98,16 @@ const ICON_CLS = 'h-5 w-5';
 export function HeroAttributeTiles({
   marketCap,
   sector,
+  dividendYieldPct,
+  paysDividend,
 }: {
   marketCap: number | null;
   sector: string | null;
+  // Dividend tile — data from StockDetail (schema 0.10.27+).
+  // `dividendYieldPct` is in PERCENT on the wire (e.g. 2.67 = 2.67%).
+  // Three display states: payer "2.67%" · non-payer "None" · unavailable "—".
+  dividendYieldPct: number | null;
+  paysDividend: boolean | null;
 }) {
   return (
     // `<section>` + sr-only heading completes the document outline (every
@@ -118,10 +125,15 @@ export function HeroAttributeTiles({
         caption="Sector"
         value={sector && sector.trim() !== '' ? sector : null}
       />
+      {/* Dividend tile — LIVE (schema 0.10.27+). formatDividendYield resolves
+          to "X.XX%" for payers, "None" for confirmed non-payers, or "—" for
+          tickers with no data available. All three are passed as a non-null
+          string so the tile always renders in FILLED state — the "Coming soon"
+          reserved era is over for this tile. */}
       <Tile
         icon={<Coins className={ICON_CLS} strokeWidth={1.75} />}
         caption="Dividend"
-        value={null}
+        value={formatDividendYield(dividendYieldPct, paysDividend)}
       />
       {/* Reserved for a future security-type signal — Common stock / ADR /
           etc. (the analog of the reference app's "Common · หุ้นสามัญ" tile).

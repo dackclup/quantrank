@@ -52,6 +52,28 @@ export function formatFairPrice(value: number | null): string {
   return `$${value.toFixed(2)}`;
 }
 
+// formatDividendYield — three display states for the Dividend tile.
+//
+//   Payer        (yield > 0):             "2.67%"  (2 decimal places, tabular-nums)
+//   Confirmed non-payer (pays_dividend === false OR yield === 0): "None"
+//   Unavailable  (yield === null):         "—"      (em-dash, missing-data convention)
+//
+// The caller owns the pays_dividend / dividend_yield_pct partitioning from
+// StockDetail. We accept them separately so the function is pure and testable.
+//
+// IMPORTANT: dividend_yield_pct is already in PERCENT on the wire
+// (e.g. 2.67 = 2.67%, NOT 0.0267). Do NOT multiply by 100.
+export function formatDividendYield(
+  dividendYieldPct: number | null,
+  paysDividend: boolean | null,
+): string {
+  if (dividendYieldPct === null) return '—';
+  // A zero yield or an explicit false pays_dividend = confirmed non-payer.
+  if (dividendYieldPct === 0 || paysDividend === false) return 'None';
+  // Positive yield — render as "X.XX%".
+  return `${dividendYieldPct.toFixed(2)}%`;
+}
+
 export function mosColorClass(mos: number | null): string {
   if (mos === null || Number.isNaN(mos)) return 'text-slate-400';
   if (mos >= 20) return 'text-emerald-700';
