@@ -47,6 +47,12 @@ KNOWN_RISK_FLAGS: frozenset[str] = frozenset(
         # Post-split share-lag: Tier-2 (legs 1+2 hold, leg 3 fails — unreconciled).
         # Defense layer 35, #499. Tier-1 CORRECT goes to valuation_warnings only.
         "post_split_share_lag_unreconciled",
+        # Stale 10-K/10-Q: filing date > 180 days old — hard veto (drives Top-5
+        # suppression exactly like the other active vetoes).
+        # Emission sites:
+        #   compute/main.py:1752  (Step 6b pre-scan, injects into risk_flags list)
+        #   compute/valuation/ensemble.py:379  (returned as extra_flags to caller)
+        "stale_filing_hard",
     }
 )
 

@@ -129,11 +129,14 @@ def flatten_stock(
     row: dict[str, Any] = {}
 
     # --- 1. StockSummary scalar fields (summary-only; StockDetail wins on dupe) ---
-    if summary is not None:
-        for field_name in StockSummary.model_fields:
-            if field_name in _SUMMARY_SKIP_FIELDS:
-                continue
-            row[field_name] = getattr(summary, field_name, None)
+    # The column SET must be invariant whether or not a summary is present so that
+    # the Slice-2 backfill/replay path (summary=None) produces rows with the same
+    # schema as the live path.  When summary is absent, emit None for every field
+    # that would have been emitted from a real summary object.
+    for field_name in StockSummary.model_fields:
+        if field_name in _SUMMARY_SKIP_FIELDS:
+            continue
+        row[field_name] = getattr(summary, field_name, None) if summary is not None else None
 
     # --- 2. StockDetail scalar fields ---
     for field_name in StockDetail.model_fields:
