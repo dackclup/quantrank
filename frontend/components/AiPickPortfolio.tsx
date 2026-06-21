@@ -8,6 +8,7 @@ import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
+import { Chip } from './Chip';
 import { SectorChip } from './SectorChip';
 import { SegmentedSelector, type SegmentOption } from './SegmentedSelector';
 import type { AiPickData } from '@/lib/types';
@@ -527,8 +528,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </p>
         <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span className="w-4 shrink-0">#</span>
-          {/* spacer aligning with the per-row action dot */}
-          <span className="h-[7px] w-[7px] shrink-0" aria-hidden="true" />
+          <span className="shrink-0">Status</span>
           <span>Ticker</span>
           <span className="hidden sm:inline">Sector</span>
           <span className="ml-auto w-14 shrink-0 text-right">Score</span>
@@ -548,19 +548,29 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
-                {/* Action dot (7px) — keyed to the same carried/held state that
-                    drives the row's muted score tone. New buy = sage (emerald)
-                    dot; held (carried) = neutral steel dot. aria-hidden because
-                    the held state is already announced by the "(held)" sr-only
-                    label on the score cell below. */}
-                <span
-                  className={`h-[7px] w-[7px] shrink-0 rounded-full ${
-                    isCarried
-                      ? 'bg-slate-400 dark:bg-slate-500'
-                      : 'bg-emerald-600 dark:bg-emerald-400'
-                  }`}
-                  aria-hidden="true"
-                />
+                {/* Status chip — replaces the bare color dot. Text label carries
+                    the meaning to screen readers (Rule 10: color is never the
+                    sole signal). New = emerald positive-light tone; Held =
+                    slate neutral tone. Both use size="xs" to stay compact in
+                    the tight table row. The "(held)" sr-only span on the score
+                    cell is removed — the chip label now covers it. */}
+                {isCarried ? (
+                  <Chip
+                    size="xs"
+                    tone="bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700"
+                    dot="bg-slate-500 dark:bg-slate-400"
+                  >
+                    Held
+                  </Chip>
+                ) : (
+                  <Chip
+                    size="xs"
+                    tone="bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800"
+                    dot="bg-emerald-500 dark:bg-emerald-400"
+                  >
+                    New
+                  </Chip>
+                )}
                 <Link
                   href={`/stock/${h.ticker}/`}
                   className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
@@ -572,7 +582,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 </span>
                 <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-500 dark:text-slate-400' : 'text-slate-700 dark:text-slate-300'}`}>
                   {h.composite_score.toFixed(1)}
-                  {isCarried && <span className="sr-only"> (held)</span>}
                 </span>
                 <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}

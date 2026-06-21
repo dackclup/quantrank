@@ -5681,3 +5681,28 @@ Gate: test-engineer authored. With this, every pure-logic compute module the off
 ≥ 95% (most 96-100%); the residual sub-90% modules are network/optional-dep fetch layers only.
 
 ---
+
+## PR (frontend) — Current-picks status indicator: bare color dot → labeled "New"/"Held" chip (in flight, 2026-06-21)
+
+The AI-pick home page ("Current picks" table in `frontend/components/AiPickPortfolio.tsx`)
+marked each holding's status with a bare 7px color dot — emerald = newly entered this
+quarter, slate = "held" (carried: composite dipped below the entry cutoff but stays above
+the hold floor). Color was the SOLE signal with no label or legend, so users couldn't
+decode it — a direct violation of the design-system Rule 10 ("color is never the sole
+signal — chips always pair color with a short text label"). User-reported the dot
+"can't convey its meaning."
+
+Fix: replace the dot with a labeled outlined-light **status chip** via the shared `Chip`
+primitive (`size="xs"`) — **"New"** (positive-light emerald tone) / **"Held"** (neutral
+slate tone), each with the canonical paired `dark:` variants. The table header's 7px
+spacer becomes a real **"Status"** column label. The now-redundant `sr-only " (held)"`
+span on the score cell is removed — the visible chip text announces the state to screen
+readers directly. The muted held-row score tone (`text-slate-500 dark:text-slate-400`) is
+kept as a secondary visual cue. No explainer caption added (per owner: labels are
+self-explanatory). Frontend-only — schema triple untouched, rankings/scores unaffected.
+
+Verify: `tsc --noEmit` clean · `next build` clean (909/909 static pages). Gate:
+frontend-builder (built) + orchestrator (verified). Design grounded in the
+`frontend-design-system` skill (Rule 2 outlined-light + Rule 10 label-not-color-alone).
+
+---
