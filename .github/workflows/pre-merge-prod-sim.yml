@@ -53,13 +53,20 @@ env:
   # is unaffected by skipping the fetch. Weekly cron (compute-
   # rankings.yml, default 360-min budget) still runs the full
   # fetch and populates the cache for future sims.
-  # precache-900 Phase B flip (2026-06-16): the weekday cron now defaults to
-  # sp900, so the sim must mirror it. Set explicitly here so the sim's universe
-  # is independent of the compute/config.py code default (which stays 'sp500'
-  # for local-dev safety) — GOTCHAS.md §pre-merge-prod-sim mirroring invariant.
-  # Sim cost: sp900 cold-cache ~131 min vs sp500 ~43 min; the 240-min timeout
-  # (already matching the cron) provides adequate headroom for a cold miss.
-  QR_UNIVERSE: sp900
+  # precache-900 Phase B flip (2026-06-16): the weekday cron defaulted to sp900,
+  # so the sim mirrored it. S&P 1500 cutover Slice 7 (2026-06-20): the cron now
+  # defaults to sp1500 (ranked, not probe), so the sim must mirror it too — the
+  # "sim mirrors the cron" invariant is the whole point of pinning this. Set
+  # explicitly here so the sim's universe is independent of the
+  # compute/config.py code default (which stays 'sp500' for local-dev safety)
+  # — GOTCHAS.md §pre-merge-prod-sim mirroring invariant.
+  # Sim cost: sp1500 warm-cache ~175 min (extrapolated from the sp900 ~105 min
+  # observed on PR #534 × 1.66) vs sp900 cold ~131 min vs sp500 ~43 min. The
+  # 240-min timeout (matching the cron) holds headroom on a warm cache-v11 hit
+  # (sp600/sp1500 paths seeded #520); a fully cold sp600 miss can approach the
+  # ceiling — the documented compute-rankings.yml rollback (sp1500→sp900) is
+  # the escape hatch.
+  QR_UNIVERSE: sp1500
   FORM4_FETCH_SKIP: "1"
   # 2026-05-24 — pre-merge-prod-sim skips the Tier-2 (10-K text + 8-K)
   # fetch loop too. The Tier-2 loop is 502 tickers × (10-K full-text

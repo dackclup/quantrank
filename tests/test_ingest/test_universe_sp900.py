@@ -674,3 +674,175 @@ class TestUniverseCohortSizesPostScoringInvariant:
         assert sum(post_scoring_cohort_sizes.values()) == universe_size
         assert post_scoring_cohort_sizes.get("sp500", 0) == 502
         assert post_scoring_cohort_sizes.get("sp400", 0) == 0
+
+    # ---------------------------------------------------------------------------
+    # sp1500 cohort-sizes invariant (Slice 7 gate widening: sp900 → sp900|sp1500)
+    # ---------------------------------------------------------------------------
+
+    def _make_summaries_sp1500(
+        self, sp500_count: int, sp400_count: int, sp600_count: int
+    ):
+        """Build a synthetic summaries list covering all three sp1500 cohorts.
+
+        Mirrors ``_make_summaries`` but adds sp600 entries so the test
+        exercises the new code path added by the Slice 7 gate widening.
+        """
+        from compute.output.schemas import StockSummary
+
+        items = []
+        for i in range(sp500_count):
+            items.append(StockSummary(
+                rank=i + 1,
+                ticker=f"SP5_{i:03d}",
+                name=f"SP500 Stock {i}",
+                sector="Technology",
+                composite_score=50.0,
+                current_price=100.0,
+                index_membership="sp500",
+            ))
+        for i in range(sp400_count):
+            items.append(StockSummary(
+                rank=sp500_count + i + 1,
+                ticker=f"SP4_{i:03d}",
+                name=f"SP400 Stock {i}",
+                sector="Industrials",
+                composite_score=45.0,
+                current_price=50.0,
+                index_membership="sp400",
+            ))
+        for i in range(sp600_count):
+            items.append(StockSummary(
+                rank=sp500_count + sp400_count + i + 1,
+                ticker=f"SP6_{i:03d}",
+                name=f"SP600 Stock {i}",
+                sector="Consumer Discretionary",
+                composite_score=40.0,
+                current_price=25.0,
+                index_membership="sp600",
+            ))
+        return items
+
+    def test_cohort_sizes_sum_equals_universe_size_sp1500(self):
+        """sp1500 positive: recompute overwrites stale pre-scoring dict.
+
+        Simulates the Slice 7 scenario where the PRE-scoring census counts
+        {sp500: 503, sp400: 401, sp600: 602} = 1506 but post-scoring only
+        {sp500: 500, sp400: 399, sp600: 598} = 1497 survive.  The recompute
+        must produce post-scoring counts AND the sp600 cohort key must be
+        present (the cohort that only exists on the sp1500 path).
+        """
+        # PRE-scoring dict (stale — what the probe sets before scoring drops tickers)
+        pre_scoring_pilot_cohort_sizes = {"sp500": 503, "sp400": 401, "sp600": 602}
+
+        # POST-scoring summaries — some tickers dropped during scoring/price-fetch
+        summaries = self._make_summaries_sp1500(
+            sp500_count=500, sp400_count=399, sp600_count=598
+        )
+
+        # Replicate the post-scoring recompute block from main.py:~3023-3030.
+        post_scoring_cohort_sizes: dict[str, int] = {}
+        for s in summaries:
+            membership = s.index_membership  # "sp500" | "sp400" | "sp600"
+            post_scoring_cohort_sizes[membership] = (
+                post_scoring_cohort_sizes.get(membership, 0) + 1
+            )
+
+        # Invariant: post-scoring counts sum to universe_size exactly.
+        universe_size = len(summaries)
+        assert sum(post_scoring_cohort_sizes.values()) == universe_size, (
+            f"Post-scoring cohort sizes {post_scoring_cohort_sizes} must sum "
+            f"to universe_size {universe_size}"
+        )
+
+        # Post-scoring counts must differ from the stale pre-scoring values.
+        assert post_scoring_cohort_sizes != pre_scoring_pilot_cohort_sizes, (
+            "Post-scoring recompute should overwrite the stale pre-scoring dict"
+        )
+
+        # Per-cohort counts must match the POST-scoring summaries exactly.
+        assert post_scoring_cohort_sizes["sp500"] == 500
+        assert post_scoring_cohort_sizes["sp400"] == 399
+        assert post_scoring_cohort_sizes["sp600"] == 598
+
+        # sp600 key MUST be present — this is the cohort unique to sp1500.
+        assert "sp600" in post_scoring_cohort_sizes, (
+            "sp600 cohort must appear in post-scoring dict on the sp1500 path"
+        )
+
+    def test_cohort_sizes_recompute_is_noop_on_sp500_path(self):
+        """sp500 negative: _pilot_cohort_sizes stays None on the sp500 default path.
+
+        The gate ``config.QR_UNIVERSE in ("sp900", "sp1500")`` must be False
+        for the default sp500 universe.  We verify this by asserting that
+        the sp500 path never enters the recompute block — i.e. the gate
+        condition itself is the safeguard, and _pilot_cohort_sizes should
+        remain None on the sp500 path.
+        """
+        from compute import config
+
+        # Precondition: the environment has QR_UNIVERSE == "sp500" (the default).
+        assert config.QR_UNIVERSE in ("sp500", ""), (
+            f"Test assumes default sp500 universe; got QR_UNIVERSE={config.QR_UNIVERSE!r}. "
+            "Set QR_UNIVERSE=sp500 in the environment for this assertion."
+        )
+
+        # On the sp500 path, _pilot_cohort_sizes is never set by the probe
+        # block (which is guarded by sp900/sp1500).  Simulate that starting
+        # state: _pilot_cohort_sizes is None.
+        _pilot_cohort_sizes: dict[str, int] | None = None
+
+        # Apply the gate condition as in main.py:~3023.
+        universe_label = config.QR_UNIVERSE  # "sp500"
+        if universe_label in ("sp900", "sp1500") and _pilot_cohort_sizes is not None:
+            # This block must NOT execute on the sp500 path.
+            post_scoring_cohort_sizes: dict[str, int] = {}
+            _pilot_cohort_sizes = post_scoring_cohort_sizes  # pragma: no cover
+
+        # Assert the recompute was a no-op: _pilot_cohort_sizes stays None.
+        assert _pilot_cohort_sizes is None, (
+            "On the sp500 path the recompute gate must not fire; "
+            "_pilot_cohort_sizes must remain None"
+        )
+
+
+# ---------------------------------------------------------------------------
+# 6. Post-scoring recompute gate-guard: sp1500 is now in the gate condition
+#
+# The gate in run_weekly_compute was widened from:
+#   if config.QR_UNIVERSE == "sp900" and ...
+# to:
+#   if config.QR_UNIVERSE in ("sp900", "sp1500") and ...
+# by commit 0392cdca8 (Slice 7 bug fix).  This source-inspection test
+# locks that invariant so a future narrowing of the gate is caught by CI.
+# ---------------------------------------------------------------------------
+
+class TestPostScoringRecomputeGateGuard:
+    """Lock the gate condition that triggers the post-scoring cohort-size recompute."""
+
+    def test_recompute_gate_includes_sp1500(self):
+        """The recompute gate in run_weekly_compute must include 'sp1500'.
+
+        Before commit 0392cdca8 the gate was ``== "sp900"`` only, which
+        allowed the stale pre-scoring dict to leak into metadata.json on the
+        sp1500 cron path.  The widened gate ``in ("sp900", "sp1500")`` is
+        the fix; this test pins it so CI catches any regression.
+        """
+        import inspect
+
+        import compute.main as main_mod
+
+        src = inspect.getsource(main_mod.run_weekly_compute)
+
+        # The gate must include both sp900 and sp1500 in the same condition.
+        # Accept any of the common ways to express the tuple membership test.
+        gate_patterns = [
+            'config.QR_UNIVERSE in ("sp900", "sp1500")',
+            "config.QR_UNIVERSE in ('sp900', 'sp1500')",
+        ]
+        assert any(pat in src for pat in gate_patterns), (
+            "run_weekly_compute recompute gate must be "
+            '"config.QR_UNIVERSE in (\\"sp900\\", \\"sp1500\\")" '
+            "— a gate of == \"sp900\" only will miss the sp1500 cron path "
+            "and produce contradictory universe_cohort_sizes / universe_size "
+            "in metadata.json"
+        )

@@ -8,28 +8,29 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to rank. sp900 = full S&P 500 + S&P 400 midcap universe (~903 names; midcaps carry index_membership='sp400'). sp1500 = sp900 + S&P 600 small-cap (~1500 names; Slice 5 prep — requires a prior sp1500 precache dispatch to warm the cache-v11-fast bundle; cron default stays sp900 until Slice 7). sp500 = large-cap only (502 names). The SCHEDULED cron now defaults to sp900 (precache-900 Phase B flip, 2026-06-16). A manual sp500 dispatch is available for diagnostics. First sp900 cold-run probes ~400 midcaps — keep the sp500 caches warm (recent cron/precache) so it fits the 240-min budget."
+        description: "Universe to rank. sp1500 = full S&P 1500 (~1500 names: sp500 + sp400 midcap + sp600 small-cap; Slice 7 cron-default flip 2026-06-20, mirrors #492 sp500→sp900). sp900 = S&P 500 + S&P 400 (~903 names; prior cron default pre-Slice 7; available for diagnostics/rollback). sp500 = large-cap only (502 names). The SCHEDULED cron now defaults to sp1500 (Slice 7 cron-default flip). A manual sp900 or sp500 dispatch is available for diagnostics or rollback."
         type: choice
         options:
           - sp500
           - sp900
           - sp1500
-        default: sp900
+        default: sp1500
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
-  # S&P 900 pilot (Phase 8): the workflow_dispatch `universe` input picks the
-  # ingest universe. Default — AND the scheduled cron, where
-  # `github.event.inputs` is null — resolves to `sp900` via the `|| 'sp900'`
-  # fallback (precache-900 Phase B flip, 2026-06-16: all gates cleared —
-  # sp900 validation run #107 PASSED pre-registered defense bands, methodology
-  # RATIFIED PROCEED-WITH-DOC, FDXF empty-snap fix merged #491). The weekday
-  # cron NOW ranks the full S&P 900 universe by default. A manual
-  # `universe: sp500` dispatch still runs sp500-only if needed for diagnostics.
-  # This is an `env:`-block assignment, NOT a `run:`-line `${{ }}` interpolation,
-  # so it carries no shell script-injection surface (AGENTS.md §Security).
-  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}
+  # S&P 1500 cutover Slice 7 (2026-06-20): the workflow_dispatch `universe` input
+  # picks the ingest universe. Default — AND the scheduled cron, where
+  # `github.event.inputs` is null — resolves to `sp1500` via the `|| 'sp1500'`
+  # fallback (Slice 7 cron-default flip, mirrors #492 sp500→sp900 precedent:
+  # sp1500 warm-timing run confirmed compute < 90 min warm + owner go).
+  # The weekday cron NOW ranks the full S&P 1500 universe (~1500 names) by default.
+  # A manual `universe: sp900` or `universe: sp500` dispatch is available for
+  # diagnostics or rollback. This is an `env:`-block assignment, NOT a `run:`-line
+  # `${{ }}` interpolation, so it carries no shell script-injection surface
+  # (AGENTS.md §Security). Prior value: || 'sp900' (precache-900 Phase B, #492).
+  # Revert: change || 'sp1500' back to || 'sp900' and update dispatch input default.
+  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp1500' }}
   # Form-4 bulk fetch RUNS on the cron (observability-only —
   # form4_enabled=False → ZERO scoring impact; it accumulates the
   # form4_* Metadata surface toward the 2026-08-19 Q3 cohort audit).

@@ -46,22 +46,25 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to precache. sp900 = warms the full S&P 500 + S&P 400 midcap caches (the weekday cron's default after the 2026-06-16 Phase B flip). sp1500 = sp900 + S&P 600 small-cap (Slice 5 prep — cold-seeds the +600 cohort under cache-v11-fast; cron default stays sp900 until Slice 7). sp500 = large-cap only (diagnostic / fallback). Default sp900 for the scheduled Saturday run so it warms the same universe as Monday's cron."
+        description: "Universe to precache. sp1500 = warms the full S&P 1500 (~1500 names: sp500 + sp400 + sp600; Slice 7 cron-default 2026-06-20 — the scheduled Saturday precache now matches Monday's cron default). sp900 = S&P 500 + S&P 400 (~903 names; prior default pre-Slice 7; use for diagnostics or rollback testing). sp500 = large-cap only (diagnostic / fallback). Default sp1500 for the scheduled Saturday run so it warms the same universe as Monday's cron (precache-must-match-cron invariant)."
         type: choice
         options:
           - sp500
           - sp900
           - sp1500
-        default: sp900
+        default: sp1500
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
-  # S&P 900 pilot (Phase B flip, 2026-06-16): the `|| 'sp900'` fallback makes
-  # the scheduled Saturday precache warm the same universe as the weekday cron
-  # (also sp900 after the flip). A manual `universe: sp500` dispatch is available
-  # for diagnostics. Env-block assignment is injection-safe (mirrors #480).
-  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp900' }}
+  # S&P 1500 cutover Slice 7 (2026-06-20): the `|| 'sp1500'` fallback makes
+  # the scheduled Saturday precache warm the SAME universe as the weekday cron
+  # (also sp1500 after the Slice 7 flip — precache-must-match-cron invariant).
+  # Prior value: || 'sp900' (precache-900 Phase B flip, #492, 2026-06-16).
+  # A manual `universe: sp900` or `universe: sp500` dispatch is available for
+  # diagnostics or rollback. Env-block assignment is injection-safe (mirrors #480).
+  # Revert: change || 'sp1500' back to || 'sp900' and update dispatch input default.
+  QR_UNIVERSE: ${{ github.event.inputs.universe || 'sp1500' }}
 
 # Never pushes, never comments — read is all it needs (least-privilege per
 # the compute-rankings.yml precedent, security-reviewer 2026-05-23 W2).

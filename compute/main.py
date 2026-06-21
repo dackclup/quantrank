@@ -981,13 +981,16 @@ def run_weekly_compute() -> int:
     # QR_UNIVERSE=sp900: loads the full SP900 frame (cohort column already present
     #   from get_sp900_constituents); all ~903 tickers are ranked. The midcap
     #   diagnostic probe reuses this frame — no second fetch. (PR 3a)
-    # QR_UNIVERSE=sp1500 (Slice 2, obs-first): loads the full SP1500 frame
-    #   (sp500 + sp400 + sp600, de-duped). All ~1500 tickers are SCORED and
-    #   written to JSON. The smallcap diagnostic probe (Rule 18) runs immediately
-    #   after the frame is loaded so coverage data reaches Metadata before any
-    #   downstream decision on ranked sp600 exposure.
-    #   CRON DEFAULT: unchanged (sp900). sp1500 runs ONLY under manual
-    #   `workflow_dispatch universe: sp1500`. NO workflow file change in this PR.
+    # QR_UNIVERSE=sp1500 (Slice 7, cron-default flip — mirrors #492): loads the full
+    #   SP1500 frame (sp500 + sp400 + sp600, de-duped). ALL ~1500 tickers are SCORED
+    #   and ranked (sp600 small-caps are NOW included — the Slice-2 probe-only filter
+    #   is lifted in this Slice). The smallcap diagnostic probe (Rule 18) still runs
+    #   immediately after the frame is loaded so coverage data reaches Metadata before
+    #   scoring proceeds. Metadata.universe emits "SP1500" (ranked), not "SP1500-probe".
+    #   russell1000 proxy suppression for sp600 cohorts in derive_index_memberships
+    #   stays in place — sp600 small-caps sit below the Russell 1000 cutoff.
+    #   CRON DEFAULT: sp1500 (Slice 7 flip, 2026-06-20). Revert: change
+    #   || 'sp1500' → || 'sp900' in compute-rankings.yml + precache-edgar.yml.
     logger.info("Loading universe… (QR_UNIVERSE=%s)", config.QR_UNIVERSE)
     _pilot_cohort_sizes: dict[str, int] | None = None
     _pilot_midcap_coverage_pct: float | None = None
@@ -1020,24 +1023,22 @@ def run_weekly_compute() -> int:
         except Exception as _sp900_exc:  # noqa: BLE001
             logger.error("[sp900-probe] Outer probe block failed (non-fatal): %s", _sp900_exc)
     elif config.QR_UNIVERSE == "sp1500":
-        # S&P 1500 cutover — Slice 2 (Rule 18 observability-first, probe-only).
+        # S&P 1500 cutover — Slice 7 (cron-default flip, mirrors #492 sp500→sp900).
         #
-        # The FULL sp1500 frame (sp500 + sp400 + sp600) is loaded so the
-        # smallcap coverage probe can observe EDGAR readiness across all three
-        # cohorts BEFORE any ranked sp600 exposure is allowed.  After both
-        # probes finish the sp600 rows are DROPPED from `universe` so that
-        # only sp500 + sp400 tickers are scored and written to JSON — identical
-        # to the sp900 ranked set.
+        # The FULL sp1500 frame (sp500 + sp400 + sp600) is loaded. ALL ~1500 tickers
+        # are scored and ranked — the Slice-2 probe-only sp600 filter is lifted here.
+        # The smallcap coverage probe (Rule 18) still runs immediately so coverage
+        # data reaches Metadata before scoring proceeds, but sp600 rows are no longer
+        # dropped before Step 1 (prices).
         #
-        # Ranked sp600 exposure is a LATER slice, gated on ≥ 1 coverage cron
-        # confirming adequate EDGAR reach for small-caps AND a russell1000
-        # proxy fix for sp600 (the "S&P 900 ⊂ Russell 1000" structural
-        # argument does NOT hold for S&P 600 small-caps; the proxy guard in
-        # derive_index_memberships has been hardened to reject sp600 cohorts).
+        # russell1000 proxy suppression for sp600 cohorts in derive_index_memberships
+        # stays intact — sp600 small-caps are below the Russell 1000 cutoff so they
+        # must NOT receive the russell1000 tag.  RUT (Russell 2000) would be correct
+        # but requires a dedicated FTSE Russell source, not a market-cap proxy.
         logger.info("[sp1500] Loading SP1500 universe (sp500 + sp400 + sp600 de-duped)…")
         _sp1500_full_frame = get_sp1500_constituents()
         logger.info(
-            "[sp1500] Full frame size: %d (sp500+sp400+sp600 combined, incl. probe-only sp600)",
+            "[sp1500] Full frame size: %d (sp500+sp400+sp600 combined; all three cohorts ranked)",
             len(_sp1500_full_frame),
         )
         # Midcap probe — runs on the FULL frame to capture sp400 cohort stats.
@@ -1085,18 +1086,11 @@ def run_weekly_compute() -> int:
             logger.error(
                 "[sp1500-probe] Smallcap probe block failed (non-fatal): %s", _sp1500_sml_exc
             )
-        # Rule 18 filter: drop sp600 rows BEFORE Step 1 (prices) so small-caps
-        # are NOT scored, ranked, or written to JSON in this Slice.  The probe
-        # above already captured their EDGAR coverage into Metadata.
-        # The scored set is therefore sp500 + sp400 — equivalent to sp900.
-        _n_before = len(_sp1500_full_frame)
-        universe = _sp1500_full_frame[
-            _sp1500_full_frame["cohort"] != "sp600"
-        ].reset_index(drop=True)
-        _n_dropped = _n_before - len(universe)
+        # Slice 7: sp600 rows are NO LONGER dropped — all ~1500 tickers are ranked.
+        # The Slice-2 probe-only filter (cohort != "sp600") is lifted here.
+        universe = _sp1500_full_frame.reset_index(drop=True)
         logger.info(
-            "[sp1500] Dropped %d sp600 rows (probe-only); scored universe: %d (sp500+sp400)",
-            _n_dropped,
+            "[sp1500] Slice 7 (cron-default): ranked universe: %d (sp500+sp400+sp600 — full S&P 1500)",
             len(universe),
         )
     else:
@@ -3002,7 +2996,7 @@ def run_weekly_compute() -> int:
     )
     logger.info("MoS trailing IC smoke: %s", mos_ic)
 
-    # Phase 8 pilot — post-scoring cohort-size recompute (sp900 path only).
+    # Phase 8 pilot — post-scoring cohort-size recompute (sp900 + sp1500 paths).
     # Bug fix: ``_pilot_cohort_sizes`` was previously populated from the
     # PRE-scoring universe frame in ``_run_midcap_coverage_probe`` (lines
     # ~763-766), which counted 503 sp500 tickers (including one recently-
@@ -3016,16 +3010,27 @@ def run_weekly_compute() -> int:
     # rows that are written to ``rankings.json``) so the per-cohort counts
     # always sum to ``universe_size``.  On the default sp500 path
     # ``_pilot_cohort_sizes`` stays None (no change).
-    if config.QR_UNIVERSE == "sp900" and _pilot_cohort_sizes is not None:
+    #
+    # sp1500 extension (Slice 7): the gate was previously "sp900" only, so on
+    # the sp1500 ranked path the stale PRE-scoring dict (sp500+sp400+sp600
+    # summing to ~1500 across the full frame) leaked into metadata.json as
+    # ``universe_cohort_sizes`` while ``universe_size`` reflected the smaller
+    # POST-scoring count — a contradictory pair.  Widening to include "sp1500"
+    # fixes this.  The recompute loop keys off ``s.index_membership`` which
+    # correctly carries "sp600" for small-cap names (set from ``cohort_by_ticker``
+    # which reads the "cohort" column written by ``get_sp1500_constituents``).
+    # The sp500 path is unaffected (_pilot_cohort_sizes stays None there).
+    if config.QR_UNIVERSE in ("sp900", "sp1500") and _pilot_cohort_sizes is not None:
         post_scoring_cohort_sizes: dict[str, int] = {}
         for s in summaries:
-            membership = s.index_membership  # "sp500" or "sp400"
+            membership = s.index_membership  # "sp500" | "sp400" | "sp600"
             post_scoring_cohort_sizes[membership] = (
                 post_scoring_cohort_sizes.get(membership, 0) + 1
             )
         _pilot_cohort_sizes = post_scoring_cohort_sizes
         logger.info(
-            "[sp900] Post-scoring cohort sizes (replaces pre-scoring probe count): %s",
+            "[%s] Post-scoring cohort sizes (replaces pre-scoring probe count): %s",
+            config.QR_UNIVERSE,
             _pilot_cohort_sizes,
         )
 
@@ -3248,13 +3253,11 @@ def run_weekly_compute() -> int:
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
-        # Universe label: "SP1500-probe" when QR_UNIVERSE=sp1500 (Slice 2,
-        # probe-only — sp600 is NOT ranked, scored set = sp500+sp400 ≈ sp900).
+        # Universe label: "SP1500" when QR_UNIVERSE=sp1500 (Slice 7 — sp600 is
+        # NOW ranked; the probe-only "SP1500-probe" label from Slice 2 is retired).
         # "SP900" on the sp900 path; config.UNIVERSE ("SP500") on the sp500 path.
-        # The "SP1500-probe" label signals to consumers that this is an
-        # observability run — not yet a full 1500-name ranked output.
         universe=(
-            "SP1500-probe"
+            "SP1500"
             if config.QR_UNIVERSE == "sp1500"
             else ("SP900" if config.QR_UNIVERSE == "sp900" else config.UNIVERSE)
         ),
