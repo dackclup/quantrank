@@ -42,8 +42,8 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-19: schema `0.10.26-phase8pilot` (#501 squash `72ee8667d` — cross-source share-count-corruption SHADOW observability PR-1; 4 new `Metadata.cross_source_corruption_*` fields; MUTATES NOTHING; defense UNCHANGED at 35; prior #499 `0.10.25-phase8pilot` `post_split_share_lag` HYBRID defense Tier-1/Tier-2, defense 34→35; prior #496/PR-A `0.10.24-phase8pilot` trimmed-median shadow diagnostic). Full lineage: SKILL.md §schema-version. Defense
-layer **35 declared** = 9 vetoes + 26 annotates; release tag
+schema PR; this prose stays stable). As of 2026-06-21: schema `0.10.29-phase8pilot` (#527 squash `2e45a33bf` — S&P 1500 Slice 4 `low_liquidity` annotate, defense 35→36; prior #519 `0.10.28` sp1500 seam + smallcap probe, #512 `0.10.27` Dividend PR-1, #501 `0.10.26`, #499 `0.10.25`, #496/PR-A `0.10.24`). **Cron now ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534 squash `8301b82cb`, 2026-06-21).** Full lineage: SKILL.md §schema-version. Defense
+layer **36 declared** = 9 vetoes + 27 annotates; release tag
 [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
@@ -1288,13 +1288,13 @@ positives without proportional true positives.
 - [x] **Dow 30 / NASDAQ 100 overlap tabs (DJI/NDX) — DONE (#493, 2026-06-17): `index_memberships: list[str]`, data-driven tabs in `RankingView.tsx`; schema 0.10.23**
 - [x] **Russell 1000 (RUI) overlap tab via market-cap proxy — DONE (#494, 2026-06-17): no schema bump; every S&P 900 constituent qualifies by construction; RUT/RUA/SML/COMP remain SOON**
 - [x] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover — DONE 2026-06-19: 3 green scheduled sp900 crons (6/16, 6/17, 6/18); frontend PR 4 (midcap badge) shipped #490 (`MidcapChip` + per-index SPX/MID/ALL tabs). Pilot milestone COMPLETE → S&P 1500 cutover is next.**
-- [ ] S&P 1500 ranked weekly
-- [ ] Compute time <90 min
-- [ ] Frontend handles 1500-row table smoothly on mobile
-- [ ] Null rate <10% mid-cap, <20% small-cap
-- [ ] **All defenses verified on S&P 1500 universe (no scaling failures)**
-- [ ] **Bonferroni adjustments documented and applied**
-- [ ] **Liquidity backstop excludes <$5M ADV stocks**
+- [x] **S&P 1500 ranked weekly — Slice 7 cron flip DONE 2026-06-21 (#534 squash `8301b82cb`): cron defaults `sp1500`; full ~1504 names ranked; `Metadata.universe` = `"SP1500"`**
+- [x] **Compute time <90 min — ranked-1500 simulate cold ~174 min (< 240-min cron ceiling); warm extrapolated ~45 min (< 90 min gate, from the #120 warm probe 31 min)**
+- [ ] Frontend handles 1500-row table smoothly on mobile (Slice 8 — virtualized table pending)
+- [x] **Null rate <10% mid-cap, <20% small-cap — sp600 smallcap null rate 0.33% / coverage 99.67% / cik 100% confirmed on the probe run**
+- [x] **All defenses verified on S&P 1500 universe (no scaling failures) — opus cohort-gate review PASSED; defense layer unchanged at 36; cohort-size sum-invariant locked by an sp1500 fixture**
+- [ ] **Bonferroni adjustments documented and applied** (Slice 3 shadow DEFERRED to Slice-8 calibration)
+- [ ] **Liquidity backstop excludes <$5M ADV stocks** (currently `low_liquidity` ANNOTATE only #527 — veto promotion deferred, RATIFY-SHADOW)
 - [ ] **Defense set FROZEN — no new flags added unless rotation criteria met**
 - [ ] **v2.0 tag pushed**
 
