@@ -5766,3 +5766,35 @@ untouched. Frontend-only — schema triple untouched. Verify: `tsc --noEmit` cle
 clean (909/909). Commit `88358e63`.
 
 ---
+
+## PR (frontend) — Current-picks: append rotated-out "Sold" rows (in flight, 2026-06-21)
+
+Follow-up to the merged #536 Current-picks status redesign. Per owner request, the "Current
+picks" table now appends the tickers SOLD this quarter (rotated out of the basket) below the
+holdings rows, continuing the same `#` sequence (so with 7 holdings the sold names are #8, #9).
+Each sold row carries a new **"Sold"** status chip — mirrors the SELL group already shown in the
+Rotation-history panel.
+
+Derivation reuses the existing `priorHeldSet` (prior quarter's basket, from
+`timeline[timeline.length - 2]` via `heldSetForEntry`): a new `soldRows` `useMemo` filters
+`priorHeldSet` against the current basket's ticker set, resolves sectors from the prior timeline
+entry's `holdings`, sorts alphabetically, and guards the empty / `timeline.length < 2` cases
+(renders nothing). Latest quarter (2026-05-15): prior band_book `[CF, TRV, LULU, ACGL, SYF]` −
+current `[ALL, DECK, APA, LULU, IBKR, ACGL, SYF]` = **CF, TRV** → rows #8, #9.
+
+Design grounded in the `frontend-design-system` skill: the "Sold" chip is the Negative
+outlined-light tone (`bg-red-50 text-red-900 ring-red-200` + paired `dark:` + `bg-rose-500` dot)
+via the shared `Chip` primitive (Rule 2, one chip family New/Held/Sold), label-not-color-alone
+(Rule 10), paired light/`dark:` (Rule 4). Sold rows are de-emphasized (`text-slate-500
+dark:text-slate-400`) with a marginally stronger top-border separator (`border-t-slate-300
+dark:border-t-slate-600`); the ticker stays a `<Link>`. **Data limit (by design):** the frontend
+`timeline` carries only ticker+sector per quarter, so sold names have no score/weight — those
+cells render "—" (no `data.ts` change to plumb stale prior-quarter scores). The holdings count /
+"7 stocks this quarter" copy is unchanged — sold rows are an informational appendix.
+
+Frontend-only — schema triple untouched, rankings/scores/flags unaffected. Verify: `tsc
+--noEmit` clean · `next build` clean (909/909 static pages) · sold set cross-checked against the
+artifact (`backtest_pit.json`) = CF, TRV. Gate: frontend-builder (built) + frontend-design-reviewer
+(design/WCAG) + orchestrator (verified).
+
+---

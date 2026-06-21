@@ -241,6 +241,25 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
     [displayHoldings],
   );
 
+  // SOLD rows — tickers in the prior quarter's basket that are NOT in the
+  // current basket. Derived from priorHeldSet (already computed above) and
+  // the current basket membership. Edge cases: timeline.length < 2 means
+  // priorHeldSet is empty (initial basket only) → soldTickers is empty →
+  // no sold rows rendered. Sorted alphabetically for deterministic order.
+  const soldRows = useMemo((): Array<{ ticker: string; sector: string }> => {
+    if (timeline.length < 2) return [];
+    const currentTickerSet = new Set(displayHoldings.map((h) => h.ticker));
+    const soldTickers = [...priorHeldSet].filter((t) => !currentTickerSet.has(t)).sort();
+    if (soldTickers.length === 0) return [];
+    // Sector lookup from the prior quarter's holdings array
+    const priorEntry = timeline[timeline.length - 2];
+    const sectorByTicker: Record<string, string> = {};
+    for (const h of priorEntry.holdings) {
+      sectorByTicker[h.ticker] = h.sector;
+    }
+    return soldTickers.map((ticker) => ({ ticker, sector: sectorByTicker[ticker] ?? '' }));
+  }, [timeline, priorHeldSet, displayHoldings]);
+
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
   const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
   const netReturn   = view.periodPortfolio;
@@ -639,6 +658,62 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               </li>
             );
           })}
+          {/* Sold rows — tickers rotated OUT of the basket this quarter.
+              Continues the # sequence after the last holding. Rendered only
+              when soldRows is non-empty (timeline.length >= 2 and at least one
+              prior ticker is absent from the current basket).
+              First sold row gets a slightly stronger top border to visually
+              separate the "out of basket" appendix from the active holdings —
+              the divide-y already places a hairline between rows; the first
+              sold row's border-t-slate-300/dark:border-t-slate-600 is
+              marginally darker so the eye reads the break.
+              Sold ticker + sector + dashes are muted (text-slate-500/400) so
+              they read as informational; the "Sold" chip keeps full contrast
+              (WCAG AA — red-900 on red-50 ≈ 10:1). */}
+          {soldRows.map((s, j) => (
+            <li
+              key={s.ticker}
+              className={`flex items-center gap-3 py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
+            >
+              <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                {weightSortedHoldings.length + j + 1}
+              </span>
+              {/* Sold chip — negative/red tone matching design-system Negative row
+                  (bg-red-50 text-rose-800 ring-red-200 + rose dot bg-rose-500;
+                  text-rose-800 not text-red-900 — only the former is on the
+                  globals.css soft-OKLCH allowlist, per RecommendationBadge/
+                  LossChanceBadge precedent)
+                  with canonical paired dark: variants. Consistent with the
+                  Rotation-history SELL color (HoldingsTimeline) and the
+                  outlined-light chip family (SKILL.md Rule 2). */}
+              <Chip
+                size="xs"
+                tone="bg-red-50 text-rose-800 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800"
+                dot="bg-rose-500 dark:bg-rose-400"
+              >
+                Sold
+              </Chip>
+              <Link
+                href={`/stock/${s.ticker}/`}
+                className="press font-mono text-sm font-semibold text-slate-500 hover:underline dark:text-slate-400"
+              >
+                {s.ticker}
+              </Link>
+              <span className="hidden sm:inline">
+                {s.sector ? <SectorChip sector={s.sector} /> : null}
+              </span>
+              {/* Score and weight unavailable for sold names — the timeline
+                  carries only ticker+sector per quarter (no score/weight).
+                  Render em dashes in tabular-nums right-aligned cells to
+                  preserve column alignment. */}
+              <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
+                —
+              </span>
+              <span className="w-12 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
+                —
+              </span>
+            </li>
+          ))}
         </ol>
       </div>
 
