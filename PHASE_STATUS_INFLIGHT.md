@@ -5946,3 +5946,42 @@ test-engineer (incl. a recurring test-isolation fix) + security-reviewer (new wo
 orchestrator (assembled workflow/docs).
 
 ---
+
+## PR #TBD — ci(compute): bump cron + precache timeout-minutes 240→270 for S&P 1500 scale (in flight, 2026-06-21)
+
+**Branch**: `claude/sp1500-cron-timeout-bump`
+**Type**: ci(compute) — workflow-only; NO schema bump, NO compute/scoring/frontend change.
+
+**Problem**: The first cold sp1500 cron (run 27902140692, commit 177485d16, 2026-06-21) ran
+~223 min against a 240-min job timeout — only ~7% headroom. The data-pipeline-engineer flagged
+this as a MEDIUM structural risk: a >10% SEC throttle spike on a cold run (tier2 ~89 min +
+form4 ~72 min dominate) would blow the budget and produce no output.
+
+**S&P 1500 empirical cold-compute breakdown (measured, run 27902140692)**:
+- Tier-2 (10-K + 8-K): ~89 min cold
+- Form-4 fetch (EDGAR): ~72 min cold
+- OSAP + cross-source yfinance.info: ~13 min cold
+- Prices + fundamentals + scoring + writes: ~22 min cold
+- **Total cold compute: ~196 min**
+- + Folded PIT backtest (warm caches): ~22-55 min
+- Worst-case cold total: ~250 min
+
+**Fix**: bump `timeout-minutes` from 240 → 270 in both `compute-rankings.yml` (the weekday
+cron) and `precache-edgar.yml` (the Saturday cache warmer), lockstep. The 270-min ceiling
+gives ~20 min buffer over the cold worst-case cold compute + backtest for the cron, and
+~45 min buffer for the precache (which has no backtest step). Budget comments in both files
+updated from the stale sp900-era "~100-115 min cold" numbers to the sp1500 empirical baseline.
+
+The `concurrency: group: edgar-cache-writers` group comment that referenced "both jobs ≤ 240 min"
+is still correct by construction (Mon-Fri 22:00 vs Sat 08:00 cannot overlap); the bump is
+noted in the per-job budget comment only.
+
+**Files**: `.github/workflows/compute-rankings.yml` · `.github/workflows/precache-edgar.yml` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+**Schema triple**: UNTOUCHED.
+**Gate**: security-reviewer pass on the workflow diff (CLAUDE.md routing: non-trivial edit to
+`.github/workflows/*` → `security-reviewer`). DRAFT PR — do NOT merge or mark ready until
+that review clears.
+
+---

@@ -33,7 +33,8 @@ name: Precache EDGAR Caches
 # fresh text snapshot and the weekday cron restores the latest by prefix.
 # CAVEAT (shared with the cron): actions/cache's post-job save only runs
 # when the job SUCCEEDS — a timed-out cold rebuild persists nothing. The
-# 240-min budget exists precisely so the cold pass can finish.
+# 270-min budget exists precisely so the cold pass can finish (bumped from
+# 240 — first cold sp1500 cron ran ~196 min compute alone, see job comment).
 #
 # Bump cache families here IN LOCKSTEP with compute-rankings.yml (see
 # tests/test_workflow_cache_coverage.py — the guard asserts both workflows
@@ -81,11 +82,22 @@ concurrency:
 jobs:
   precache:
     runs-on: ubuntu-latest
-    # Cold worst-case headroom: ~140-160 min full-cold compute + SEC throttle
-    # spike + runner spin-up (per the compute-rankings.yml budget table,
-    # MINUS its ~35-55 min folded backtest step, which this workflow does not
-    # run). Typical warm Saturday ≈ 15-25 min.
-    timeout-minutes: 240
+    # Cold worst-case headroom — S&P 1500 EMPIRICAL BASELINE (cron run
+    # 27902140692, 2026-06-21, ~1504 names, ~196 min cold compute):
+    #   Cold compute (no backtest step — this workflow discards outputs):
+    #     ~196 min (same as compute-rankings.yml cold compute total)
+    #   + 10% SEC throttle spike:  ~215-220 min
+    #   + runner overhead:         ~5-10 min
+    #   Ceiling:                   ~225 min cold worst-case
+    # Typical warm Saturday ≈ 15-25 min (exact-key fast-cache hit).
+    # 270 min ceiling (lockstep with compute-rankings.yml bump) gives
+    # ~45 min buffer over the cold worst-case — wider than the cron's
+    # ~20 min buffer because this workflow omits the 55m folded backtest.
+    # The 240-min budget was adequate for sp900 (~140-160 min cold) but
+    # became dangerously tight at sp1500 scale; bumped in lockstep so a
+    # Saturday cold rebuild can always complete and save the cache bundles
+    # (actions/cache post-job save only runs on job SUCCESS).
+    timeout-minutes: 270
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
