@@ -2129,6 +2129,7 @@ def run_weekly_compute() -> int:
     _cross_source_wc_start = time.monotonic()
     cross_source_wall_clock_seconds: float | None = None
     summaries: list[StockSummary] = []
+    all_details: list[StockDetail] = []  # Step 13.5 warehouse accumulator
     detail_count = 0
     history_count = 0
     fair_price_count = 0
@@ -2972,6 +2973,7 @@ def run_weekly_compute() -> int:
             average_dollar_volume=adv_by_ticker.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
+        all_details.append(detail)  # Step 13.5 warehouse accumulator
         detail_count += 1
 
     # Issue #287 PR A — wall-clock end marker for Step 8 (cross_source umbrella).
@@ -3495,6 +3497,41 @@ def run_weekly_compute() -> int:
     # deletions; guarded by a safety floor so a degraded run can't wipe stocks/.
     prune_orphan_stock_files((s.ticker for s in summaries), config.DATA_DIR)
     logger.info("Wrote rankings.json (%d rows) and metadata.json", len(summaries))
+
+    # --- Step 13.5 — Research warehouse Parquet snapshot (Rule 18 observability-first).
+    # Writes a point-in-time flat Parquet snapshot of all computed stock data to
+    # data/warehouse/ (NOT under frontend/public — research data must NOT ship in the
+    # static deploy). Nothing reads the warehouse yet; the read/query layer ships in
+    # a later slice. NEVER blocks the cron — wrapped in try/except.
+    # Skip via QR_SKIP_WAREHOUSE=1 (mirrors QR_SKIP_DECAY_MONITOR pattern).
+    if os.environ.get("QR_SKIP_WAREHOUSE", "").lower() in ("1", "true", "yes"):
+        logger.info(
+            "Research warehouse SKIPPED via QR_SKIP_WAREHOUSE. "
+            "No Parquet snapshot written this run."
+        )
+    else:
+        try:
+            from compute.warehouse.writer import write_run_snapshot
+
+            _wh_row_count = write_run_snapshot(
+                details=all_details,
+                summaries=summaries,
+                meta=meta,
+                run_date=now.date(),
+                warehouse_dir=config.WAREHOUSE_DIR,
+            )
+            logger.info(
+                "Research warehouse: wrote %d rows to %s (run_date=%s)",
+                _wh_row_count,
+                config.WAREHOUSE_DIR,
+                now.date().isoformat(),
+            )
+        except Exception as _wh_exc:  # noqa: BLE001
+            logger.warning(
+                "Research warehouse write failed (non-fatal — cron continues); "
+                "snapshot skipped. Error: %s",
+                _wh_exc,
+            )
 
     # Best-effort RSS memory log (psutil is not a hard requirement; production
     # still runs without it).

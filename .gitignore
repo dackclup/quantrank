@@ -226,6 +226,13 @@ models/
 # tracked alongside data/sp500_membership_historical.csv). Whitelist past *.parquet.
 !data/historical_sector.parquet
 !data/pit_item402_history.parquet
+# Research warehouse (data/warehouse/, Slice 1) — forward per-cron snapshots +
+# the run manifest are COMMITTED so the point-in-time panel persists in-repo
+# (the cron's `git add data/warehouse/` picks them up); warehouse_schema.json is
+# JSON and already tracked. The maximum-history backfill (Slice 2) is shipped as
+# a CI/release artifact, NOT committed — it writes elsewhere / is not git-added.
+!data/warehouse/_manifest.parquet
+!data/warehouse/snapshots/**/*.parquet
 .DS_Store
 # Phase-8 scout raw outputs (only report.md gets committed later)
 scout_out/
