@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SearchX } from 'lucide-react';
 
 import { LossChanceBadge } from '@/components/LossChanceBadge';
@@ -30,7 +30,11 @@ export type SortKey =
   | 'loss_chance_pct';
 export type SortDir = 'asc' | 'desc';
 
-const PAGE_SIZE = 50;
+// Window size: the number of rows rendered on initial load and each
+// subsequent scroll-triggered append. Kept at 50 to match the prior
+// pagination page-size — fast first-paint on mobile; additional rows
+// mount as the user scrolls toward the bottom sentinel.
+const WINDOW_SIZE = 50;
 
 function formatPrice(p: number): string {
   return p.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
@@ -90,9 +94,9 @@ export default function RankingTable({
   onClearFilters?: () => void;
 }) {
   const _cohortSize = cohortSize ?? data.length;
-  // Search + multi-dimension filter view. Free-text search + pagination live
-  // here; the structured filters (MoS / composite / sector) are committed in
-  // the RankingView FilterDrawer and arrive pre-applied in `data`.
+  // Search + multi-dimension filter view. Free-text search + windowed infinite
+  // scroll live here; the structured filters (MoS / composite / sector) are
+  // committed in the RankingView FilterDrawer and arrive pre-applied in `data`.
   const [search, setSearch] = useState('');
 
   // Sort state — controlled when the parent passes sortKey/sortDir/onSortChange
@@ -102,7 +106,15 @@ export default function RankingTable({
   const [sortDirInternal, setSortDirInternal] = useState<SortDir>('asc');
   const sortKey = isSortControlled ? sortKeyProp : sortKeyInternal;
   const sortDir = isSortControlled ? sortDirProp : sortDirInternal;
-  const [page, setPage] = useState(1);
+
+  // Windowed infinite scroll — `visibleCount` tracks how many rows of the
+  // sorted result are currently mounted. Starts at WINDOW_SIZE; grows by
+  // WINDOW_SIZE each time the bottom sentinel enters the viewport.
+  // This replaces the previous Prev/Next pagination: rows are append-only
+  // (never removed once mounted), so the a11y tree, keyboard navigation,
+  // and FLIP positions are all preserved. Only the FIRST WINDOW_SIZE rows
+  // mount on initial render → fast first-paint on mobile with ~1500 total rows.
+  const [visibleCount, setVisibleCount] = useState(WINDOW_SIZE);
 
   // Free-text search over ticker + company name. Empty query passes everything.
   const filtered = useMemo(() => {
@@ -113,17 +125,18 @@ export default function RankingTable({
     );
   }, [data, search]);
 
-  // Reset page on a search change so the user doesn't land on a now-empty page.
+  // Reset the window on a search change — the result set changes, so we
+  // re-start from the first WINDOW_SIZE rows (same reason the old code reset
+  // `page` to 1 on search change).
   useEffect(() => {
-    setPage(1);
+    setVisibleCount(WINDOW_SIZE);
   }, [search]);
 
-  // Reset page when the upstream (drawer) filter set changes the row count, for
-  // the same reason — applying a filter that shrinks the result must not strand
-  // the user past the new last page. Keyed on `data` (a fresh array reference is
-  // produced on every committed-filter change in RankingView).
+  // Reset the window when the upstream (drawer) filter set changes the row
+  // count. Keyed on `data` (a fresh array reference is produced on every
+  // committed-filter change in RankingView).
   useEffect(() => {
-    setPage(1);
+    setVisibleCount(WINDOW_SIZE);
   }, [data]);
 
   const sorted = useMemo(() => {
@@ -142,20 +155,57 @@ export default function RankingTable({
     return arr;
   }, [filtered, sortKey, sortDir]);
 
-  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  // Reset visible window on sort change so we re-baseline from the top.
+  // This mirrors the old `setPage(1)` on sort.
+  useEffect(() => {
+    setVisibleCount(WINDOW_SIZE);
+  }, [sortKey, sortDir]);
+
+  // Slice the sorted result to the current window. When the user scrolls to
+  // the bottom sentinel, visibleCount grows and more rows mount.
+  const visibleRows = sorted.slice(0, visibleCount);
+  const hasMore = visibleCount < sorted.length;
+
+  // IntersectionObserver-based bottom sentinel. When the sentinel <div>
+  // enters the viewport, append the next WINDOW_SIZE rows. The observer
+  // disconnects + reconnects whenever `hasMore` changes (no-op when all
+  // rows are mounted).
+  //
+  // FLIP invariant: scroll-triggered appends do NOT change `filterKey`
+  // (the search string) — the gate in useFlip stays closed on a load-more
+  // event, so the FLIP reshuffle slide never fires on scroll. Only a
+  // search-text change opens the gate. ✓
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const loadMore = useCallback(() => {
+    setVisibleCount((c) => Math.min(c + WINDOW_SIZE, sorted.length));
+  }, [sorted.length]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      // rootMargin: pre-trigger slightly before the sentinel fully enters so
+      // the next batch is queued before the user hits the bottom hard stop.
+      { rootMargin: '200px' },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, loadMore]);
 
   // FLIP reshuffle ($impeccable overdrive) — when a SEARCH change reorders the
   // visible rows, the surviving rows slide from their old position to the new
   // one (transform-only, 300ms, app ease-in-out, reduced-motion guarded).
-  // Search-scoped on purpose: a column-sort turns over the whole paginated
-  // 50-row page, so a sort-triggered FLIP would fire on <5% of rows and read as
+  // Search-scoped on purpose: a column-sort turns over the whole visible
+  // window, so a sort-triggered FLIP would fire on <5% of rows and read as
   // broken; a search keeps survivors in the DOM, so partial animation there is
   // semantically correct ("the field responded"). `orderKey` re-runs the
-  // measure on ANY order change (sort / page silently re-baseline); `filterKey`
+  // measure on ANY order change (sort / scroll silently re-baseline); `filterKey`
   // is what GATES the play.
-  const orderKey = pageRows.map((r) => r.ticker).join(',');
+  const orderKey = visibleRows.map((r) => r.ticker).join(',');
   const filterKey = search;
   const tbodyFlipRef = useFlip<HTMLTableSectionElement>(orderKey, filterKey);
   const cardsFlipRef = useFlip<HTMLUListElement>(orderKey, filterKey);
@@ -164,16 +214,17 @@ export default function RankingTable({
   // static HTML (NOT gated behind a usePlayOnMount effect) so the rows start at
   // the `rise-in` keyframe's `from` state (opacity:0) from the very FIRST paint
   // (a one-frame-opaque-then-snap flash otherwise). Hydration-safe: `animateRows`
-  // derives ONLY from `safePage` (1) + `firstRenderRef.current` (true) at first
-  // render, identical on the build-time prerender and the client's hydration
-  // render. Plays ONCE per mount (`firstRenderRef` flipped false by an empty-dep
-  // effect that runs before any interaction), never on an in-page interaction
-  // (sort / search / paginate / FLIP reshuffle).
+  // derives ONLY from `visibleCount` (WINDOW_SIZE) + `firstRenderRef.current`
+  // (true) at first render, identical on the build-time prerender and the
+  // client's hydration render. Plays ONCE per mount (`firstRenderRef` flipped
+  // false by an empty-dep effect that runs before any interaction), never on an
+  // in-page interaction (sort / search / scroll / FLIP reshuffle).
   const firstRenderRef = useRef(true);
   useEffect(() => {
     firstRenderRef.current = false;
   }, []);
-  const animateRows = safePage === 1 && firstRenderRef.current;
+  // Only stagger-animate the initial WINDOW_SIZE rows on first render.
+  const animateRows = visibleCount === WINDOW_SIZE && firstRenderRef.current;
 
   const onSort = (key: SortKey) => {
     let nextDir: SortDir;
@@ -193,7 +244,6 @@ export default function RankingTable({
       setSortKeyInternal(key);
       setSortDirInternal(nextDir);
     }
-    setPage(1);
   };
 
   const headerCell = (key: SortKey, label: string, extraClass = '') => {
@@ -302,7 +352,7 @@ export default function RankingTable({
             </tr>
           </thead>
           <tbody ref={tbodyFlipRef} className="divide-y divide-slate-100 dark:divide-slate-800/60">
-            {pageRows.map((row, i) => {
+            {visibleRows.map((row, i) => {
               // Stagger entrance on first home view this session — rows
               // cascade in (cap at 12 steps so the tail never waits > ~480ms;
               // rows beyond share the last delay). Replay-suppressed +
@@ -349,7 +399,7 @@ export default function RankingTable({
 
       {/* Mobile + tablet cards (below lg) */}
       <ul ref={cardsFlipRef} className="space-y-2 lg:hidden">
-        {pageRows.map((row, i) => {
+        {visibleRows.map((row, i) => {
           const staggerClass = animateRows
             ? `animate-rise-in stagger-${Math.min(12, i + 1)}`
             : '';
@@ -370,7 +420,44 @@ export default function RankingTable({
         })}
       </ul>
 
-      {pageRows.length === 0 && (
+      {/* Infinite-scroll sentinel — a zero-height div at the bottom of the
+          rendered list. The IntersectionObserver above triggers `loadMore`
+          when this enters the viewport (200px rootMargin pre-fires it
+          slightly before the hard bottom so batches load smoothly).
+          Hidden once all rows are mounted (hasMore = false). */}
+      {hasMore && (
+        <div
+          ref={sentinelRef}
+          aria-hidden="true"
+          className="h-px"
+          // Screen-reader note: the sentinel is aria-hidden because it
+          // carries no semantic content. SR users navigate by row links;
+          // all rows are in the a11y tree once mounted (append-only).
+        />
+      )}
+
+      {/* "X of N" progress indicator — shown while more rows remain.
+          Gives sighted users a sense of scroll depth without needing
+          page numbers. Styled as secondary/muted text per the design
+          system (text-slate-500 dark:text-slate-400). */}
+      {hasMore && (
+        <p
+          className="text-center text-xs tabular-nums text-slate-500 dark:text-slate-400"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          Showing{' '}
+          <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+            {visibleCount.toLocaleString()}
+          </span>
+          {' of '}
+          <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+            {sorted.length.toLocaleString()}
+          </span>
+        </p>
+      )}
+
+      {visibleRows.length === 0 && (
         <div className="animate-fade-in flex flex-col items-center rounded border border-slate-200 bg-white px-6 py-10 text-center dark:border-slate-800 dark:bg-slate-900">
           {/* Empty-state delight ($impeccable delight): a REACHABLE moment (the
               user searched for a name that isn't in the universe). Warm + helpful,
@@ -412,56 +499,6 @@ export default function RankingTable({
               )}
             </div>
           )}
-        </div>
-      )}
-
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between text-sm">
-          <button
-            type="button"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={safePage === 1}
-            className="inline-flex min-h-[44px] items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 press enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Prev
-          </button>
-          <span className="text-slate-500 tabular-nums dark:text-slate-400">
-            Page {safePage} of {totalPages}
-          </span>
-          <button
-            type="button"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={safePage === totalPages}
-            className="inline-flex min-h-[44px] items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 press enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
-          >
-            Next
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
         </div>
       )}
     </div>
