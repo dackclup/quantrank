@@ -5904,3 +5904,45 @@ workflow/.gitignore/docs); quantrank-reviewer + test-engineer + security-reviewe
 touch) at the pre-Ready gate.
 
 ---
+
+## PR (compute) — Research warehouse Slice 2: maximum-history PIT backfill (in flight, 2026-06-21)
+
+Slice 2 of the research warehouse — the maximum-history point-in-time BACKFILL that replays the
+per-run snapshot panel back to ~2016, complementing the Slice-1 forward cron snapshots. Unlike
+the committed forward snapshots, the historical backfill is a ONE-OFF CI/RELEASE ARTIFACT —
+written to the GITIGNORED `data/warehouse/backfill/` (blanket `*.parquet` ignores it; NOT
+whitelisted) and uploaded by `backfill-warehouse.yml`, NEVER committed.
+
+`scripts/backfill_warehouse.py` (new) — weekly PIT replay reusing the mature `backfill_portfolio_pit.py`
+scaffolding: `members_at(T)` survivorship, `pit_snapshot_fields` (filed≤T, no look-ahead),
+`_price_at`, the 6 PIT-recoverable vetoes, the `BACKTEST_HARD_STALE_DAYS=455` annual-cadence
+relaxation. Re-scores via the existing frozen pillar/composite/ensemble functions (no reimplemented
+math). Each row gets `row_provenance="pit_replay"`.
+
+NULL-discipline (the key PIT-honesty rule): `compute/warehouse/flag_registry.py` gains
+`FORWARD_ONLY_FLAGS` (11: the non-PIT-reconstructable 8-K/non_reliance, Form-4, tier2,
+cross_source, post_split, low_liquidity, OSAP family) + an import-time sanity guard;
+`compute/warehouse/flatten.py` gains keyword-only `null_flags` + `row_provenance` params and a
+`replay_completeness` column (float ∈ [0,1] on replay rows, None on live) — replay rows write
+those `flag_*`/`warn_*` columns as **NULL not False** so ML never reads an unconfirmed flag's
+absence as a confirmed False. The LIVE path default (no kwargs) is byte-identical to Slice 1.
+`warehouse_schema.json` 127 → 128 cols (`replay_completeness`).
+
+`backfill-warehouse.yml` (`workflow_dispatch`, `start`/`end` inputs via shell-safe `IN_*` env):
+`contents: read` only (uploads an `actions/upload-artifact`, does NOT commit — the cron stays the
+sole writer to main), restores the cron's v11-fast cache family (re-scores from warm caches, no
+new EDGAR calls when warm), `if-no-files-found: error`.
+
+HONEST LIMITS (encoded in the script docstring): maximum history is SP500-only before sp900/sp1500
+go-live (no historical mid/small-cap membership ledger); GICS sectors assumed stable-from-today;
+recommendation/loss-chance in replay rows differ from live precisely because the forward-only flags
+are absent (disclosed via `row_provenance` + `replay_completeness`).
+
+The JSON schema triple is UNTOUCHED (`schemas.py`/`types.ts`/`schema-snapshot.json` unchanged);
+rankings/scores/flags unaffected (the live path is byte-identical). Verify: ruff clean ·
+`pytest tests/test_warehouse/ -m "not network"` = 100 passed (Slice-1 57 + Slice-2 43) ·
+`warehouse_schema_check` 128 cols in sync. Gate: compute-builder (built) + quantrank-reviewer +
+test-engineer (incl. a recurring test-isolation fix) + security-reviewer (new workflow) +
+orchestrator (assembled workflow/docs).
+
+---

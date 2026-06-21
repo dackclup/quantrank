@@ -1,0 +1,105 @@
+name: Backfill Research Warehouse
+
+# Research warehouse Slice 2 — the maximum-history point-in-time BACKFILL of the
+# per-run snapshot panel (~2016 -> today, weekly). Unlike the weekly cron's
+# FORWARD snapshots (committed under data/warehouse/snapshots/), the historical
+# backfill is a ONE-OFF CI/RELEASE ARTIFACT — NEVER committed (it writes to the
+# gitignored data/warehouse/backfill/). Run it manually (or after a green
+# compute-rankings cron, to reuse the warm price + fundamentals_history caches).
+#
+# Honest limits (encoded in scripts/backfill_warehouse.py): SP500-only before the
+# sp900/sp1500 go-live (no historical mid/small-cap membership ledger); GICS
+# sectors assumed stable-from-today; forward-only flags (8-K / Form-4 / tier2 /
+# cross-source / post-split / low_liquidity / OSAP) are written NULL (not False)
+# in pit_replay rows; recommendation/loss-chance differ from live precisely
+# because those flags are absent (disclosed via row_provenance + replay_completeness).
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "Window start YYYY-MM-DD (default: membership-ledger floor ~2016-06-01)"
+        required: false
+      end:
+        description: "Window end YYYY-MM-DD (default: today)"
+        required: false
+
+env:
+  EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+
+# Read-only: this job UPLOADS an artifact, it does NOT commit. The weekly cron
+# (compute-rankings.yml) stays the sole writer to main. No elevated permission.
+permissions:
+  contents: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    # ~520 weekly rebalances x ~500 names x (warm-cache load + re-score). Warm
+    # cache keeps the per-date work in-memory (no network); a cold cache forces a
+    # full price + fundamentals_history re-fetch and will be far slower — run a
+    # narrow --start/--end first to validate, then widen. The artifact is
+    # all-or-none (a timeout uploads nothing).
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[factors]"
+
+      - name: Compute current quarter id
+        id: quarter
+        run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
+
+      # Same cache family as the cron / portfolio backfill: the warehouse backfill
+      # re-scores from the warm prices + annual fundamentals_history caches (it
+      # makes NO new EDGAR calls when the cache is warm). Distinct SAVE key (-whbf-)
+      # so this SUBSET bundle never poisons the cron's exact quarter key; restore
+      # borrows the cron's v11-fast family via restore-keys.
+      - name: Restore compute caches
+        uses: actions/cache@v5
+        with:
+          path: |
+            compute/cache/fundamentals_history
+            compute/cache/prices
+            compute/cache/universe-v2.parquet
+            compute/cache/universe_sp400-v1.parquet
+            compute/cache/universe_sp900-v1.parquet
+            compute/cache/universe_sp600-v1.parquet
+            compute/cache/universe_sp1500-v1.parquet
+            compute/cache/edgar_amendments
+          key: cache-v11-whbf-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          restore-keys: |
+            cache-v11-fast-${{ steps.quarter.outputs.q }}-
+            cache-v11-fast-
+
+      - name: Run point-in-time warehouse backfill
+        # Inputs go through env, NEVER interpolated into the run line (Actions
+        # script-injection vector). backfill_warehouse.py also validates each via
+        # date.fromisoformat, so a bad value fails loudly.
+        env:
+          IN_START: ${{ inputs.start }}
+          IN_END: ${{ inputs.end }}
+        run: |
+          ARGS=""
+          if [ -n "$IN_START" ]; then ARGS="$ARGS --start $IN_START"; fi
+          if [ -n "$IN_END" ]; then ARGS="$ARGS --end $IN_END"; fi
+          python -m scripts.backfill_warehouse $ARGS
+
+      - name: Show backfill summary (canary)
+        run: |
+          find data/warehouse/backfill -name '*.parquet' 2>/dev/null | wc -l \
+            | xargs echo "  backfill partitions written:"
+          du -sh data/warehouse/backfill 2>/dev/null || echo "  (no backfill output)"
+
+      - name: Upload warehouse-backfill artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: warehouse-backfill-${{ steps.quarter.outputs.q }}
+          path: data/warehouse/backfill/
+          if-no-files-found: error
+          retention-days: 30

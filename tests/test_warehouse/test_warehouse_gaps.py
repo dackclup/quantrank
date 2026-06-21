@@ -476,18 +476,62 @@ def test_flatten_warn_membership_invariant(active_warns):
     current_price=st.floats(min_value=0.01, max_value=1e6, allow_nan=False, allow_infinity=False),
 )
 @settings(max_examples=30)
-def test_flatten_scalar_round_trip(tmp_path_factory, composite, current_price):
-    """G4: scalar values survive flatten → parquet → read-back unchanged.
+def test_flatten_scalar_values_in_memory(composite, current_price):
+    """G4: scalar values survive flatten (in-memory only — no Parquet I/O).
 
-    Locks the end-to-end serialization contract for core numeric scalars.
+    Verifies that composite_score and current_price pass through flatten_stock
+    unchanged.  The Parquet serialization contract is covered by the dedicated
+    non-Hypothesis test_flatten_scalar_parquet_round_trip below.
+
+    I/O is intentionally absent here because deferred pyarrow imports on the
+    first Hypothesis example exceed the default 200ms deadline when run in
+    isolation — that startup cost is not a signal about the flatten logic.
+    """
+    from compute.output.schemas import StockDetail
+    from compute.warehouse.flatten import flatten_stock
+
+    detail = StockDetail(
+        ticker="RT",
+        name="RT Corp",
+        sector="Technology",
+        recommendation="neutral",
+        rank=1,
+        composite_score=composite,
+        current_price=current_price,
+        pillar_scores=_ps_all_set(),
+        raw_metrics=_raw_metrics_all_none(),
+        data_quality=_data_quality(),
+        risk_flags=[],
+        valuation_warnings=[],
+        index_membership="sp500",
+        index_memberships=["sp500"],
+    )
+
+    row = flatten_stock(detail, None)
+
+    assert abs(row["composite_score"] - composite) < 1e-9, (
+        f"composite_score not preserved: {composite!r} → {row['composite_score']!r}"
+    )
+    assert abs(row["current_price"] - current_price) < 1e-9, (
+        f"current_price not preserved: {current_price!r} → {row['current_price']!r}"
+    )
+    assert row["row_provenance"] == "live"
+
+
+def test_flatten_scalar_parquet_round_trip(tmp_path):
+    """G4: scalar values survive flatten → Parquet write → read-back unchanged.
+
+    Non-Hypothesis companion to test_flatten_scalar_values_in_memory.  Uses a
+    fixed pair of (composite, current_price) so deferred pyarrow import startup
+    cost does not interfere with Hypothesis deadline tracking.
     """
     import pyarrow.parquet as pq
 
+    from compute.output.schemas import StockDetail
     from compute.warehouse.writer import write_run_snapshot
 
-    tmp_path = tmp_path_factory.mktemp("rt")
-    # Build a detail with specific scalar values.
-    from compute.output.schemas import StockDetail
+    composite = 73.5
+    current_price = 142.50
 
     detail = StockDetail(
         ticker="RT",
@@ -512,7 +556,6 @@ def test_flatten_scalar_round_trip(tmp_path_factory, composite, current_price):
     assert table.num_rows == 1
     row = {col: table.column(col)[0].as_py() for col in table.schema.names}
 
-    # Composite score and current_price must survive the round-trip.
     assert abs(row["composite_score"] - composite) < 1e-6, (
         f"composite_score round-trip failed: {composite!r} → {row['composite_score']!r}"
     )
