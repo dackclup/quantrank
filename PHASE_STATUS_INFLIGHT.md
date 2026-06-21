@@ -5675,6 +5675,12 @@ weekday cron RANKS the full ~1500 names instead of scoring 901 + probing sp600.
 - **`.github/workflows/compute-rankings.yml`** — dispatch input `default: sp900`→`sp1500`,
   env fallback `|| 'sp900'`→`|| 'sp1500'`, with an inline rollback comment.
 - **`.github/workflows/precache-edgar.yml`** — scheduled default flipped to `sp1500`.
+- **`.github/workflows/pre-merge-prod-sim.yml`** — pinned `QR_UNIVERSE: sp900`→`sp1500` so the
+  pre-merge sim keeps mirroring the cron (the documented "sim mirrors the cron" invariant); this
+  also makes the `simulate` CI check measure the ranked-1500 path end-to-end (conservative upper
+  bound — the sim is heavier than the warm cron). Cost note updated: ~175 min warm (extrapolated
+  from the sp900 ~105 min observed on this PR × 1.66), 240-min timeout holds headroom on a warm
+  cache-v11 hit (sp600/sp1500 paths seeded #520); rollback = the compute-rankings.yml sp1500→sp900 hatch.
 - **Tests** — `test_sp1500_seam.py` reconciled to ranked behavior (sp600 rows now PRESENT in
   the scored universe; label `SP1500`); `test_workflow_cache_coverage.py` dispatch-default
   assertions updated to `sp1500`.
