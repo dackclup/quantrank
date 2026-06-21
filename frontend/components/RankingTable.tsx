@@ -436,25 +436,46 @@ export default function RankingTable({
         />
       )}
 
-      {/* "X of N" progress indicator — shown while more rows remain.
-          Gives sighted users a sense of scroll depth without needing
-          page numbers. Styled as secondary/muted text per the design
-          system (text-slate-500 dark:text-slate-400). */}
+      {/* "X of N" progress indicator + keyboard Load-more fallback.
+          Both are shown while more rows remain. The IntersectionObserver
+          sentinel above auto-loads for pointer/scroll users; the button
+          below is the accessible hybrid for keyboard-only users who cannot
+          trigger the observer by scrolling.
+          - Progress text: secondary/muted per the design system.
+          - Load-more button: matches the "Clear search" / "Clear filters"
+            family (same border, palette, min-h-[44px] touch target, .press
+            feedback, global :focus-visible ring). Does NOT change
+            `search` or `filterKey` — only `visibleCount` increments, so
+            the FLIP reshuffle gate stays closed (search-scoped invariant
+            is preserved, same as the scroll-triggered path). */}
       {hasMore && (
-        <p
-          className="text-center text-xs tabular-nums text-slate-500 dark:text-slate-400"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          Showing{' '}
-          <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-            {visibleCount.toLocaleString()}
-          </span>
-          {' of '}
-          <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-            {sorted.length.toLocaleString()}
-          </span>
-        </p>
+        <div className="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={loadMore}
+            className="inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+          >
+            Show{' '}
+            <span className="font-mono font-semibold tabular-nums mx-1">
+              {Math.min(WINDOW_SIZE, sorted.length - visibleCount).toLocaleString()}
+            </span>
+            {' '}more
+          </button>
+          <p
+            className="text-center text-xs tabular-nums text-slate-500 dark:text-slate-400"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Showing{' '}
+            <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
+              {visibleCount.toLocaleString()}
+            </span>
+            {' of '}
+            <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
+              {sorted.length.toLocaleString()}
+            </span>
+          </p>
+        </div>
       )}
 
       {visibleRows.length === 0 && (
