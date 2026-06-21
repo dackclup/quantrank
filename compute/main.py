@@ -2442,17 +2442,14 @@ def run_weekly_compute() -> int:
         if _psr_for_ticker is not None and _psr_for_ticker.tier == 1:
             # Emit the canonical flag key so flagLabel('post_split_share_lag')
             # resolves to 'Post-split share count adjusted' on the FairPriceCard.
+            # The structured key is the only valuation_warnings entry for this
+            # path — free-text ratio/date detail was removed (#552) because it
+            # produced an unregistered, unparseable literal that rendered as a
+            # duplicate "Pending Edgar Refresh" chip via flagLabel()'s Title-Case
+            # fallback.  A structured post_split_event field is the future path
+            # for surfacing that detail (not this PR).
             if "post_split_share_lag" not in valuation_warnings:
                 valuation_warnings.append("post_split_share_lag")
-            _split_ev = _psr_for_ticker.split_event
-            if _split_ev is not None:
-                _adj_warning = (
-                    f"share count adjusted for {int(_psr_for_ticker.split_event.ratio)}:1 "  # type: ignore[union-attr]
-                    f"split {_psr_for_ticker.split_event.split_date.isoformat()}, "  # type: ignore[union-attr]
-                    f"pending EDGAR refresh"
-                )
-                if _adj_warning not in valuation_warnings:
-                    valuation_warnings.append(_adj_warning)
         if "post_split_share_lag_unreconciled" in _ticker_flags:
             # Null the ensemble (unreconciled split → fair price untrustworthy).
             ensemble = None

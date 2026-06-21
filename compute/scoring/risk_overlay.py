@@ -30,15 +30,20 @@ only place a flag changes behavior):
   flag in :mod:`compute.scoring.tier2`; re-enabled in Phase 4 per issue #14.
 - ``data_quality_input_corruption`` — fundamentals ingest corruption (e.g.,
   ``shares_outstanding`` ingested in the wrong unit, surfaced as TBVPS >
-  ``FAIR_PRICE_DATA_QUALITY_CEILING`` of $10K/share). The fair-price
-  ensemble already nulls all 6 methods + emits this name in
-  ``valuation_warnings`` when its post-hoc ceiling guard fires; this module
-  detects the same corruption upstream from snapshot inputs alone so the
-  Top-5 rotation skip catches the ticker without depending on the
-  ensemble pass. Promoted to veto per issue #18 (FP rate 8/502 ≈ 1.6%,
-  acceptable for veto). Top issue: SPG ranked #1 in Run #15 despite
-  market_cap $1.62M (real ~$76B) — only suppressed from effective Top-5
-  by coincidental Sloan co-firing. Now suppressed explicitly.
+  ``FAIR_PRICE_DATA_QUALITY_CEILING`` of $10K/share). This module detects
+  corruption upstream from snapshot inputs alone so the Top-5 rotation
+  skip catches the ticker without depending on the ensemble pass.  The
+  fair-price ensemble runs INDEPENDENTLY — it is NOT nulled by DQIC since
+  the Site-2 ceiling guard was retired in PR #289.  The writer-parity path
+  emits ``valuation_output_anomalous`` into ``valuation_warnings`` and
+  ``FairPriceCard`` suppresses the median/max summary on that annotate.
+  Promoted to veto per issue #18 (FP rate 8/502 ≈ 1.6%, acceptable for
+  veto). Top issue: SPG ranked #1 in Run #15 despite market_cap $1.62M
+  (real ~$76B) — only suppressed from effective Top-5 by coincidental Sloan
+  co-firing. Now suppressed explicitly.  Partition with
+  ``fundamentals_unavailable`` (#487): DQIC = inputs PRESENT but corrupt
+  (ensemble still runs); ``fundamentals_unavailable`` = NO usable inputs at
+  all (separate code path).
 
 Two additional Tier-2 defenses ship in PR 3d as **annotate-only** flags
 that do NOT enter ``risk_flags`` (they live only in
@@ -142,10 +147,15 @@ def _data_quality_input_corruption(snap: FundamentalsSnapshot | None) -> bool:
        common cause is a partial-revenue tag with full NI (banks that
        only file `RevenueFromContractWithCustomerExcludingAssessedTax`).
 
-    All three patterns null the entire fair-price ensemble AND suppress
-    Top-5 entry — these tickers' composite scores remain visible (for
-    transparency) but they can't appear in the curated top tier with
-    inputs the screener can't trust.
+    All three patterns fire input-side: DQIC appends
+    ``data_quality_input_corruption`` to ``risk_flags``, forces
+    ``recommendation=cautious``, and suppresses ``entered_top5``.  The
+    fair-price ensemble runs INDEPENDENTLY and is NOT nulled by DQIC —
+    the Site-2 output ceiling guard that did null the ensemble was retired
+    in PR #289.  The writer-parity path emits ``valuation_output_anomalous``
+    into ``valuation_warnings``; ``FairPriceCard`` suppresses the median/max
+    summary on that annotate.  Composite scores remain visible for
+    transparency.
     """
     if snap is None:
         return False

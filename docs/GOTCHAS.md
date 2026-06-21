@@ -1791,12 +1791,16 @@ Rule-16 annotate-before-veto does NOT bind):**
   at `compute/main.py` Step 3b (`= EDGAR_shares × split_ratio`) BEFORE scoring, so EPS / market_cap /
   value-pillar / composite all recompute from the corrected count. The raw EDGAR value is preserved in
   `RawMetrics.shares_outstanding_pre_split_raw` (Rule-9 audit trail). It is an annotate, NOT a veto — the
-  data is now correct, so there is nothing to suppress (the transparency flag shows "share count adjusted
-  for N:1 split, pending EDGAR refresh").
+  data is now correct, so there is nothing to suppress (the transparency is the `post_split_share_lag`
+  chip — `flagLabel` → "Post-split share count adjusted"; the prior free-text `"share count adjusted
+  for N:1 split, pending EDGAR refresh"` valuation_warning was REMOVED as a duplicate/unregistered
+  literal — a structured `post_split_event` field is the future path for the ratio/date detail).
 - **Tier-2 VETO** (`post_split_share_lag_unreconciled`, a DIRECT veto): legs 1+2 hold but leg-3 ratio-match
   FAILS (split confirmed but numbers don't reconcile — partial/confounded) → can't safely correct →
-  `cautious` + Top-5 suppress (added to `_CAUTIOUS_FORCING_RISK`) + null the fair-price ensemble (DQIC
-  null-all-methods contract). This is the safety net that makes the CORRECT path safe: an unreconcilable
+  `cautious` + Top-5 suppress (added to `_CAUTIOUS_FORCING_RISK`) + null the fair-price ensemble (its OWN
+  explicit `ensemble = None` at `compute/main.py`, since the split is unreconcilable — NOT the retired
+  standalone DQIC ceiling guard deleted #289; `valuation_output_anomalous` is emitted for FairPriceCard
+  parity). This is the safety net that makes the CORRECT path safe: an unreconcilable
   split falls to suppression, never to a bad rewrite.
 
 **Pipeline order.** The flag/correction runs in `compute_risk_flags` BEFORE the `data_quality_input_corruption`

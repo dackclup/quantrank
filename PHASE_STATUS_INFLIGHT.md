@@ -6050,3 +6050,36 @@ GPK `total_liabilities > 8e9`) for `--run-network` confirmation.  Verify: ruff c
 marking ready.  Schema triple: UNTOUCHED.  Rankings/scores: CORRECTED (HASI/LGIH/GPK fix).
 
 ---
+
+## PR (compute) — drop free-text post-split valuation_warning + correct stale DQIC docstrings (in flight, 2026-06-21)
+
+A stock-detail-auditor pass on the latest production output surfaced two defects.
+
+**Fix 1 (real display bug):** the Tier-1 post-split correction path in `compute/main.py` appended a
+DYNAMIC FREE-TEXT string (`"share count adjusted for N:1 split <date>, pending EDGAR refresh"`) into
+`valuation_warnings` alongside the structured `post_split_share_lag` key. On the frontend `flagLabel`'s
+Title-Case fallback rendered it as an awkward DUPLICATE amber chip ("…Pending Edgar Refresh") next to
+the clean "Post-split share count adjusted" chip — and the free-text literal is unregistered /
+unparseable by `flag_registry.py` / the warehouse / search. Removed the free-text block (kept only the
+structured `post_split_share_lag` key); the ratio/date detail is intentionally dropped for now (a
+structured `post_split_event` field is the future path). Affects KLAC/CVNA/COKE-class post-split rows.
+
+**Fix 2 (stale docs):** two `compute/scoring/risk_overlay.py` docstrings (module §31-46 + the
+`_data_quality_input_corruption` fn §150-158) still claimed DQIC "nulls all 6 fair-price methods" — a
+pre-PR-#289 behavior (the Site-2 output ceiling guard was retired in #289 after the NVR false positive).
+Corrected to the CURRENT behavior: DQIC fires input-side → `data_quality_input_corruption` in
+`risk_flags` → `cautious` + Top-5 suppress; the ensemble runs INDEPENDENTLY (not nulled by DQIC); the
+writer-parity path emits `valuation_output_anomalous` and `FairPriceCard` suppresses the median/max
+summary on that annotate (the partition with `fundamentals_unavailable` per #487 is unchanged). Also
+removed a stale TODO in `compute/warehouse/flag_registry.py` referencing the deleted free-text format,
+and corrected two stale `docs/GOTCHAS.md` lines (the free-text transparency mention + the
+"DQIC null-all-methods contract" attribution on the Tier-2 `post_split_share_lag_unreconciled` veto,
+which actually nulls fair-price via its OWN explicit `ensemble = None`, not the retired DQIC guard).
+
+Test: `tests/test_scoring/test_post_split_share_lag.py::test_PSL_VW4_no_free_text_warning_in_valuation_warnings`
+asserts the structured key is present and NO `valuation_warnings` entry contains "share count adjusted".
+Behavior: rankings/scores/composite UNAFFECTED (only a display-string drop on post-split rows +
+docstring/doc accuracy); schema triple untouched. Verify: ruff clean · `pytest tests/test_scoring/` =
+901 passed · grep confirms it was the only free-text `valuation_warnings` emitter in `compute/`.
+
+---
