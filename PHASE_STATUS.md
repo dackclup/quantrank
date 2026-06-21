@@ -95,7 +95,20 @@
    cron before flipping the tile to read live data (the Phase 4h → 4h.2
    observability-before-wiring precedent). Schema bumps: one MINOR per signal.
    Display-only, parallel-safe — proceeds alongside items 1-3.
-6. **v1.5.0 release tag** — gated on item 2 (cluster weight promotion)
+   **Status (2026-06-21)**: 7a data + observability legs MERGED (#512 fields
+   + `Metadata.dividend_coverage_pct`; #533 fixed the `×100` double-scaling +
+   added a `>100` reversion guard). Tracked: **#543** (7a tile wiring — gated
+   on ≥ 1 post-#533 sp1500 cron of CORRECTED `dividend_coverage_pct`) ·
+   **#541** (7b Security-type obs-first ingest PR-1).
+6. **S&P 1500 cutover — Slice 8 / v2.0** (the active universe step) — compute
+   layer COMPLETE (Slices 1/2/4/5/6/7 merged; the weekday cron ranks the full
+   ~1504 names since #534). The hardening tail is tracked by **epic #545** →
+   **#540** (frontend: virtualize the ~1500-row ranking table for mobile — the
+   open WORKFLOW.md acceptance gate) · **#542** (Bonferroni multi-test shadow
+   counter — Slice 3, deferred) · **#544** (`low_liquidity` annotate → veto
+   promotion decision — gated on ≥ 1 sp600 cron firing-rate data + methodology
+   ratification). Exit → `v2.0.x` tag after ≥ 1-2 green sp1500 crons.
+7. **v1.5.0 release tag** — gated on item 2 (cluster weight promotion)
    landing + post-revert cron data accumulating ahead of the Q3 2026-08-19
    cohort audit; or a `v1.4.x` patch sooner if a structural fix lands alone.
 

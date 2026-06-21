@@ -5828,3 +5828,33 @@ JSONs with CORRECTED dividend values → then wire the `HeroAttributeTiles`
 inflated — `dividend_coverage_pct`).
 
 ---
+
+## PR (roadmap-prep) — roadmap grooming + Slice 8 / display-tile issue scaffold (in flight, 2026-06-21)
+
+Docs-only roadmap-preparation pass on branch `claude/roadmap-preparation-ycaqf8`.
+No code / schema / workflow change — schema stays `0.10.29-phase8pilot`, defense
+layer 36, rankings/scores untouched.
+
+Reconciled the forward roadmap to post-Slice-7 reality and filed the
+previously-untracked next-work as GitHub issues so each track has a tracker:
+
+- **epic #545** — S&P 1500 cutover Slice 8 / v2.0, with sub-issues:
+  - **#540** — frontend(perf): virtualize the ~1500-row ranking table for
+    mobile (the open WORKFLOW.md acceptance gate now that the cron ranks ~1504).
+  - **#542** — feat: Bonferroni multi-test shadow counter (Slice 3, deferred →
+    Slice-8 calibration; FWER α/n over the ~1500-name cross-section, Harvey-Liu-Zhu 2016).
+  - **#544** — methodology: `low_liquidity` annotate → veto promotion decision
+    (gated on ≥ 1 sp600 cron firing-rate data + methodology ratification; the
+    annotate now fires since Slice 7 ranks sp600).
+- **#541** — feat: Security-type (Type) HeroAttributeTile signal 7b
+  (observability-first ingest PR-1; yfinance `fast_info.quote_type` + SEC
+  20-F/`entityType` for ADR detection).
+- **#543** — feat(frontend): wire the `HeroAttributeTiles` "Dividend" tile 7a
+  PR-2 (gated on ≥ 1 post-#533 sp1500 cron of CORRECTED `dividend_coverage_pct`).
+
+Doc edits: CLAUDE.md + PHASE_STATUS.md §Next deliverables refreshed with the
+issue refs (Slice 8 item + the 7a/7b display-tile status incl. the #533 ×100
+fix); AGENTS.md in-flight note updated in lockstep. Per §Conventions this entry
+satisfies the "ship with every PR" rule.
+
+---

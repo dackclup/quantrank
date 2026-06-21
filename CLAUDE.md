@@ -526,14 +526,18 @@ PHASE_STATUS.md):
   display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 5.
   **Dividend PR-1 MERGED 2026-06-20 (#512)** — observability-first display
   metadata (`dividend_yield_pct` / `pays_dividend` / `payout_ratio` + coverage
-  canary `Metadata.dividend_coverage_pct`; schema `0.10.27-phase8pilot`). Next:
-  `HeroAttributeTiles` "Dividend" UI tile after ≥ 1 cron confirms
-  `dividend_coverage_pct` populates; Security-type (7b) parallel.
+  canary `Metadata.dividend_coverage_pct`; schema `0.10.27-phase8pilot`).
+  **#533 fixed the `×100` double-scaling** (yfinance now returns percent
+  directly) + a `>100` reversion guard. Next: the `HeroAttributeTiles`
+  "Dividend" UI tile (issue **#543**) — gated on ≥ 1 post-#533 sp1500 cron
+  confirming `dividend_coverage_pct` populates with CORRECTED values;
+  Security-type (7b) tile is issue **#541** (obs-first ingest PR-1),
+  parallel.
 - Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
   pilot — **3a integration slice merged 2026-06-15 (#482)** ·
   **precache-900 Phase A merged (#486)**; #249 pre-cache DONE (#468),
-  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). **S&P 1500 cutover — Slices 1/2/4/5/6/7 MERGED (#514/#519/#527/#520/#531/#534); Slice 3 (Bonferroni shadow) DEFERRED to Slice-8 calibration. The weekday cron now ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534, 2026-06-21).** Next = **Slice 8 (v2.0 — gated on ≥ 1-2 green sp1500 crons: Bonferroni shadow calibration + virtualized 1500-row table + liquidity-veto promotion decision)**. Detail in WORKFLOW.md.
+  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). **S&P 1500 cutover — Slices 1/2/4/5/6/7 MERGED (#514/#519/#527/#520/#531/#534); Slice 3 (Bonferroni shadow) DEFERRED to Slice-8 calibration. The weekday cron now ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534, 2026-06-21).** Next = **Slice 8 (v2.0 — gated on ≥ 1-2 green sp1500 crons: Bonferroni shadow calibration + virtualized 1500-row table + liquidity-veto promotion decision)** — tracked by **epic #545** → #540 (virtualized table) · #542 (Bonferroni shadow) · #544 (low_liquidity veto promotion). Detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
