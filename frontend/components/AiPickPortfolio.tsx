@@ -224,6 +224,23 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
     return heldSetForEntry(timeline[timeline.length - 2]);
   }, [timeline]);
 
+  // Weight-descending sort for the "Current picks" table. Derived copy so
+  // displayHoldings (used by held-set / topSector / displayCount above) is
+  // never mutated. Non-finite weights sort to the bottom; equal weights keep
+  // their original composite-score order (stable — spread preserves index).
+  const weightSortedHoldings = useMemo(
+    () =>
+      [...displayHoldings].sort((a, b) => {
+        const aFin = isFinite_(a.weight);
+        const bFin = isFinite_(b.weight);
+        if (aFin && bFin) return (b.weight as number) - (a.weight as number);
+        if (aFin) return -1; // a finite, b not → a goes first
+        if (bFin) return 1;  // b finite, a not → b goes first
+        return 0;            // both non-finite → preserve original order
+      }),
+    [displayHoldings],
+  );
+
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
   const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
   const netReturn   = view.periodPortfolio;
@@ -570,7 +587,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span className="w-12 shrink-0 text-right">Weight</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
-          {displayHoldings.map((h, i) => {
+          {weightSortedHoldings.map((h, i) => {
             // Portfolio-sense held: ticker was in the prior quarter's basket.
             // Derived from priorHeldSet (computed above via heldSetForEntry,
             // mirroring HoldingsTimeline's per-entry slice logic exactly).
