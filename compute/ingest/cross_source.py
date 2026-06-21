@@ -221,6 +221,18 @@ def _dividend_cache_read(ticker: str) -> tuple[float | None, float | None]:
     payout_ratio = (
         float(pr_val) if isinstance(pr_val, (int, float)) and pr_val >= 0 else None
     )
+    # Defensive >20 clamp at the cache-read boundary: a stale cache file written
+    # when yfinance returned a percent-format payout_ratio (e.g. SLG=153.75)
+    # must never surface an implausible value on a warm-cache hit.
+    # Mirrors the dividend_yield_pct >100 clamp added in the #533 follow-up.
+    if payout_ratio is not None and payout_ratio > 20.0:
+        logger.warning(
+            "cached payout_ratio %.4f > 20 for %s — discarding as implausible"
+            " (stale cache written with percent-format payout_ratio?)",
+            payout_ratio,
+            ticker,
+        )
+        payout_ratio = None
     return (dividend_yield_pct, payout_ratio)
 
 
@@ -320,6 +332,20 @@ def _yf_info_fetch(
     payout_ratio = (
         float(pr_val) if isinstance(pr_val, (int, float)) and pr_val >= 0 else None
     )
+    # payout_ratio is a 0-1 fraction; yfinance occasionally returns a PERCENT-
+    # format value for companies with negative/near-zero earnings (observed:
+    # SLG=153.75 on the first sp1500 cron, meaning 15375% payout). A legitimate
+    # high-but-real ratio (e.g. a REIT at 1.5 = 150%) stays; only garbage > 20
+    # (>2000%) is discarded as implausible. Same pattern as the
+    # dividend_yield_pct > 100 guard added in #533.
+    if payout_ratio is not None and payout_ratio > 20.0:
+        logger.warning(
+            "payout_ratio %.4f > 20 for %s — discarding as implausible"
+            " (yfinance returning percent-format instead of 0-1 fraction?)",
+            payout_ratio,
+            ticker,
+        )
+        payout_ratio = None
     return (market_cap, shares_out, dividend_yield_pct, payout_ratio)
 
 
@@ -559,6 +585,17 @@ def fetch_yfinance_dividend(
                     if isinstance(pr_val, (int, float)) and pr_val >= 0
                     else None
                 )
+                # Same >20 stale-cache clamp as _dividend_cache_read: a cache file
+                # written when yfinance returned a percent-format payout_ratio
+                # (e.g. SLG=153.75) must not surface an implausible value here.
+                if payout_ratio is not None and payout_ratio > 20.0:
+                    logger.warning(
+                        "cached payout_ratio %.4f > 20 for %s (QR_SKIP) —"
+                        " discarding as implausible (stale cache with percent-format?)",
+                        payout_ratio,
+                        ticker,
+                    )
+                    payout_ratio = None
                 pays_dividend = (
                     dividend_yield_pct > 0 if dividend_yield_pct is not None else None
                 )
