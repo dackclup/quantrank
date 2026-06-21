@@ -437,10 +437,16 @@ export default function RankingTable({
       )}
 
       {/* "X of N" progress indicator + keyboard Load-more fallback.
-          Both are shown while more rows remain. The IntersectionObserver
-          sentinel above auto-loads for pointer/scroll users; the button
-          below is the accessible hybrid for keyboard-only users who cannot
-          trigger the observer by scrolling.
+          The counter is decoupled from the button:
+          - Counter: visible whenever sorted.length > 0 (NOT gated on hasMore).
+            When hasMore is false (all rows shown) it reads "Showing all N stocks";
+            when hasMore is true it reads "Showing X of N". The aria-live region
+            is always present so both the incremental count and the "all shown"
+            completion state are announced to screen readers.
+          - Load-more button: only shown while more rows remain (hasMore). The
+            IntersectionObserver sentinel auto-loads for pointer/scroll users;
+            the button is the accessible hybrid for keyboard-only users who
+            cannot trigger the observer by scrolling.
           - Progress text: secondary/muted per the design system.
           - Load-more button: matches the "Clear search" / "Clear filters"
             family (same border, palette, min-h-[44px] touch target, .press
@@ -449,7 +455,7 @@ export default function RankingTable({
             the FLIP reshuffle gate stays closed (search-scoped invariant
             is preserved, same as the scroll-triggered path). */}
       {hasMore && (
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex justify-center">
           <button
             type="button"
             onClick={loadMore}
@@ -461,21 +467,35 @@ export default function RankingTable({
             </span>
             {' '}more
           </button>
-          <p
-            className="text-center text-xs tabular-nums text-slate-500 dark:text-slate-400"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            Showing{' '}
-            <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
-              {visibleCount.toLocaleString()}
-            </span>
-            {' of '}
-            <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
-              {sorted.length.toLocaleString()}
-            </span>
-          </p>
         </div>
+      )}
+      {sorted.length > 0 && (
+        <p
+          className="text-center text-xs tabular-nums text-slate-500 dark:text-slate-400"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {hasMore ? (
+            <>
+              Showing{' '}
+              <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
+                {visibleCount.toLocaleString()}
+              </span>
+              {' of '}
+              <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
+                {sorted.length.toLocaleString()}
+              </span>
+            </>
+          ) : (
+            <>
+              {'Showing all '}
+              <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
+                {sorted.length.toLocaleString()}
+              </span>
+              {' stocks'}
+            </>
+          )}
+        </p>
       )}
 
       {visibleRows.length === 0 && (
