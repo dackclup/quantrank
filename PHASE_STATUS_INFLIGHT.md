@@ -5661,3 +5661,23 @@ tests/test_output -m "not network"` green apart from the two KNOWN pre-existing 
 production code / schema / workflow touched. Gate: test-engineer (drafted) + orchestrator (verified/cleaned).
 
 ---
+
+## PR (test) — offline coverage for valuation/graham.py → 100% (in flight, 2026-06-20)
+
+The deferred tail of the coverage sweep (graham.py was not reached before the #532 sub-agent cutoff).
+Test-only — no production/schema/workflow touched. `compute/valuation/graham.py` **89% → 100%**.
+
+`tests/test_valuation/test_graham_coverage.py` (new, 10 tests) covers the single remaining branch — the
+post-gate `if product <= 0 or not math.isfinite(product)` guard (line 111): inf-EPS / inf-TBVPS / both-inf
+/ float-overflow → inf product → returns `(None, "graham_product_non_positive_post_gate")`; subnormal
+underflow → product 0.0 (the `<= 0` arm); + regression guards (valid inputs bypass the post-gate; soft-lag
+normal path; hard-lag applicability gate fires BEFORE the post-gate); + locks the `22.5` Graham multiplier
+constant + the post-gate reason string. The inf-passthrough is the same `_finite_positive` no-`isfinite`-guard
+finding already DOCUMENTED (document-only) in `test_applicability_coverage.py::test_finite_positive_infinity_behavior`;
+graham.py's post-gate guard is the correct compensating control — **no bug**.
+
+Verify: `ruff` clean · `pytest tests/test_valuation -m "not network"` 238 passed (+10, 0 regressions).
+Gate: test-engineer authored. With this, every pure-logic compute module the offline suite can reach is
+≥ 95% (most 96-100%); the residual sub-90% modules are network/optional-dep fetch layers only.
+
+---
