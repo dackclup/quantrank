@@ -1,0 +1,212 @@
+{
+  "ticker": "MSEX",
+  "name": "Middlesex Water Company",
+  "sector": "Utilities",
+  "industry": "Water Utilities",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 969582593.3166237,
+  "current_price": 52.06,
+  "rank": 1362,
+  "composite_score": 37.68,
+  "pillar_scores": {
+    "quality": 39.58,
+    "value": 33.06,
+    "growth": 43.75,
+    "momentum": 38.03,
+    "health": 17.39,
+    "profitability": 60.0,
+    "technical": 41.61,
+    "risk": 41.68,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 195831000.0,
+    "net_income": 43946000.0,
+    "total_assets": 1386038000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 501046000.0,
+    "cash": 2040000.0,
+    "operating_cash_flow": 60545000.0,
+    "capex": 74622000.0,
+    "free_cash_flow": -14077000.0,
+    "eps_basic": 2.3596017875328554,
+    "eps_diluted": 2.3596017875328554,
+    "shares_outstanding": 18624329.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 969582593.3166237,
+    "pe_ratio_ttm": 22.063045403827964,
+    "goodwill": null
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 36.46463084206978,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 46.412082580552784,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 52.486182722586975,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 43.21715893234967,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 30.499296420944734,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 43.21715893234967,
+    "max": 52.486182722586975,
+    "low": 30.499296420944734,
+    "high": 52.486182722586975,
+    "mos_pct": -20.461415464129797,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 43.21715893234967,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "inventory",
+      "goodwill",
+      "intangibles_net",
+      "property_plant_equipment"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 52,
+    "latest_period_end": "2026-04-29",
+    "latest_filed_date": "2026-04-30"
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "valuation_warnings": [
+    "restatement_history",
+    "loss_avoidance_pattern"
+  ],
+  "has_history": true,
+  "tangible_book_value": 26.90276787958374,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2025-03-04",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/66004/0001174947-25-000269-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Utilities median (n=60)",
+    "values": {
+      "Quality": 51.67,
+      "Value": 45.62,
+      "Growth": 51.04,
+      "Momentum": 49.81,
+      "Health": 16.15,
+      "Profitability": 51.25,
+      "Technical": 53.33,
+      "Risk": 73.97
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 56.32238581581422,
+  "price_change_1d_pct": 0.4244,
+  "manipulation_index": 30.0,
+  "composite_score_adjusted": 34.68,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": true,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": true,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.77,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 17,
+    "latest_filing_date": "2026-04-01",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 6.73657140072177e-08,
+  "dividend_yield_pct": 2.73,
+  "pays_dividend": true,
+  "payout_ratio": 0.5833,
+  "average_dollar_volume": 6486673.777211507
+}

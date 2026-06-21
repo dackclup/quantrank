@@ -1,0 +1,215 @@
+{
+  "ticker": "CRGY",
+  "name": "Crescent Energy Company",
+  "sector": "Energy",
+  "industry": "Oil & Gas Exploration & Production",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 3447826857.740902,
+  "current_price": 10.44,
+  "rank": 1249,
+  "composite_score": 40.83,
+  "pillar_scores": {
+    "quality": 24.28,
+    "value": 62.08,
+    "growth": 52.17,
+    "momentum": 65.97,
+    "health": 9.57,
+    "profitability": 30.43,
+    "technical": 18.68,
+    "risk": 43.28,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3812439000.0,
+    "net_income": -257924000.0,
+    "total_assets": 11998244000.0,
+    "total_liabilities": 7311797000.0,
+    "stockholders_equity": 4686447000.0,
+    "cash": 9775000.0,
+    "operating_cash_flow": 1752233000.0,
+    "capex": null,
+    "free_cash_flow": null,
+    "eps_basic": -0.7809923650096283,
+    "eps_diluted": -0.7809923650096283,
+    "shares_outstanding": 330251628.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 3447826857.740902,
+    "pe_ratio_ttm": null,
+    "goodwill": 0.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 18.78680990549708,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 13.068771849428876,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 15.927790877462979,
+    "max": 18.78680990549708,
+    "low": 13.068771849428876,
+    "high": 18.78680990549708,
+    "mos_pct": 34.45418978249285,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 15.927790877462979,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "capex",
+      "free_cash_flow",
+      "eps_basic",
+      "eps_diluted",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "inventory",
+      "short_term_debt",
+      "intangibles_net",
+      "property_plant_equipment"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 48,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-05-04"
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 14.190534134172383,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Energy median (n=69)",
+    "values": {
+      "Quality": 50.72,
+      "Value": 51.45,
+      "Growth": 50.72,
+      "Momentum": 67.82,
+      "Health": 36.64,
+      "Profitability": 53.62,
+      "Technical": 24.53,
+      "Risk": 53.93
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "cautious",
+  "loss_chance_pct": 46.52674282007601,
+  "price_change_1d_pct": -3.154,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 40.83,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 46.34,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 17,
+    "latest_filing_date": "2026-06-04",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 4.923127203035937e-08,
+  "dividend_yield_pct": 4.6,
+  "pays_dividend": true,
+  "payout_ratio": 0.8889,
+  "average_dollar_volume": 84289794.09402847
+}

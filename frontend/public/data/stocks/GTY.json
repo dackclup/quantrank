@@ -1,0 +1,214 @@
+{
+  "ticker": "GTY",
+  "name": "Getty Realty Corp.",
+  "sector": "Real Estate",
+  "industry": "Retail REITs",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 1976062493.4930725,
+  "current_price": 32.68,
+  "rank": 938,
+  "composite_score": 47.06,
+  "pillar_scores": {
+    "quality": 48.83,
+    "value": 44.39,
+    "growth": 40.65,
+    "momentum": 60.19,
+    "health": 26.64,
+    "profitability": 61.37,
+    "technical": 34.31,
+    "risk": 75.34,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 227241000.0,
+    "net_income": 91035000.0,
+    "total_assets": 2179763000.0,
+    "total_liabilities": 1090345000.0,
+    "stockholders_equity": 1089418000.0,
+    "cash": 3699000.0,
+    "operating_cash_flow": 131882000.0,
+    "capex": 3063000.0,
+    "free_cash_flow": 128819000.0,
+    "eps_basic": 1.505531245888255,
+    "eps_diluted": 1.505531245888255,
+    "shares_outstanding": 60467028.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 1976062493.4930725,
+    "pe_ratio_ttm": 21.706623754523783,
+    "goodwill": null
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 20.844714941322678,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 37.60769468185185,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 37.31250130889946,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 30.397845991590586,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 15.465285480111982,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 30.397845991590586,
+    "max": 37.60769468185185,
+    "low": 15.465285480111982,
+    "high": 37.60769468185185,
+    "mos_pct": -7.507618514208349,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 30.397845991590586,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "income_tax_expense",
+      "income_before_tax",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "short_term_debt",
+      "retained_earnings",
+      "goodwill",
+      "property_plant_equipment"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 59,
+    "latest_period_end": "2026-04-23",
+    "latest_filed_date": "2026-04-23"
+  },
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 15.448965012800034,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Real Estate median (n=107)",
+    "values": {
+      "Quality": 49.3,
+      "Value": 49.84,
+      "Growth": 50.23,
+      "Momentum": 57.55,
+      "Health": 27.06,
+      "Profitability": 51.09,
+      "Technical": 51.99,
+      "Risk": 60.03
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 47.09638644583758,
+  "price_change_1d_pct": 0.3069,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 47.06,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.46,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 2,
+    "latest_filing_date": "2026-06-04",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 1.492517195528109e-08,
+  "dividend_yield_pct": 5.94,
+  "pays_dividend": true,
+  "payout_ratio": 1.2484,
+  "average_dollar_volume": 14278328.65445455
+}

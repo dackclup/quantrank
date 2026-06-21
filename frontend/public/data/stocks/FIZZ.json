@@ -1,0 +1,203 @@
+{
+  "ticker": "FIZZ",
+  "name": "National Beverage Corp.",
+  "sector": "Consumer Staples",
+  "industry": "Soft Drinks & Non-alcoholic Beverages",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 3397909067.3027496,
+  "current_price": 36.29,
+  "rank": 94,
+  "composite_score": 64.52,
+  "pillar_scores": {
+    "quality": 89.61,
+    "value": 49.57,
+    "growth": 54.55,
+    "momentum": 36.79,
+    "health": 86.62,
+    "profitability": 82.47,
+    "technical": 36.85,
+    "risk": 44.05,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 1197061000.0,
+    "net_income": 188093000.0,
+    "total_assets": 792471000.0,
+    "total_liabilities": 201409000.0,
+    "stockholders_equity": 591062000.0,
+    "cash": 313973000.0,
+    "operating_cash_flow": 195801000.0,
+    "capex": 30664000.0,
+    "free_cash_flow": 165137000.0,
+    "eps_basic": 2.008851622278009,
+    "eps_diluted": 2.008851622278009,
+    "shares_outstanding": 93632102.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 3397909067.3027496,
+    "pe_ratio_ttm": 18.065047967243594,
+    "goodwill": 13145000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 15.788475167490427,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 43.95452691070746,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 18.089716030926123,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 38.7283555788234,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 19.6817553108093,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 26.49371577770745,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 23.087735544258376,
+    "max": 43.95452691070746,
+    "low": 15.788475167490427,
+    "high": 43.95452691070746,
+    "mos_pct": -57.18302406037479,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 23.087735544258376,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development",
+      "interest_expense",
+      "short_term_debt"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 101,
+    "latest_period_end": "2026-03-09",
+    "latest_filed_date": "2026-03-12"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "restatement_history"
+  ],
+  "has_history": true,
+  "tangible_book_value": 6.154961681838564,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2024-11-06",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/69891/0001437749-24-033638-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Consumer Staples median (n=77)",
+    "values": {
+      "Quality": 49.35,
+      "Value": 50.87,
+      "Growth": 47.4,
+      "Momentum": 36.79,
+      "Health": 41.63,
+      "Profitability": 50.0,
+      "Technical": 51.15,
+      "Risk": 50.4
+    }
+  },
+  "beneish_m_score": -2.6138080346795785,
+  "dechow_f_score": null,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 52.73866118920973,
+  "price_change_1d_pct": -1.4127,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 64.02,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 58.19,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 5.3178954111814385e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 11802374.217631022
+}

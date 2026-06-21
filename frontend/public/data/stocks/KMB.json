@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 34043802203.518738,
   "current_price": 102.56,
-  "rank": 393,
-  "composite_score": 51.93,
+  "rank": 636,
+  "composite_score": 52.08,
   "pillar_scores": {
-    "quality": 80.29,
-    "value": 44.07,
-    "growth": 45.43,
-    "momentum": 28.72,
-    "health": 25.6,
-    "profitability": 66.35,
-    "technical": 44.31,
-    "risk": 46.43,
+    "quality": 82.14,
+    "value": 41.13,
+    "growth": 45.13,
+    "momentum": 28.37,
+    "health": 28.98,
+    "profitability": 67.1,
+    "technical": 42.3,
+    "risk": 49.08,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 155.41844427804222,
+        "value": 98.18381399245638,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 18.00416678523182,
+        "value": 19.475250558203616,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 107.964174489451,
+        "value": 100.339518954498,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 107.964174489451,
-    "max": 155.41844427804222,
-    "low": 18.00416678523182,
-    "high": 155.41844427804222,
-    "mos_pct": 5.00552795074192,
+    "median": 98.18381399245638,
+    "max": 100.339518954498,
+    "low": 19.475250558203616,
+    "high": 100.339518954498,
+    "mos_pct": -4.457133399272512,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 131.6913093837466,
+    "median_trimmed": 99.26166647347719,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -120,25 +120,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Staples median (n=52)",
+    "label": "Consumer Staples median (n=77)",
     "values": {
-      "Quality": 50.24,
-      "Value": 48.72,
-      "Growth": 50.12,
-      "Momentum": 39.54,
-      "Health": 37.4,
-      "Profitability": 51.6,
-      "Technical": 48.81,
-      "Risk": 47.25
+      "Quality": 49.35,
+      "Value": 50.87,
+      "Growth": 47.4,
+      "Momentum": 36.79,
+      "Health": 41.63,
+      "Profitability": 50.0,
+      "Technical": 51.15,
+      "Risk": 50.4
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.28866899266235363,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 38.28412624451772,
+  "loss_chance_pct": 41.52120223397951,
   "price_change_1d_pct": 1.0742,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.93,
+  "composite_score_adjusted": 52.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.89,
+  "osap_blended_score": 51.96,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -201,7 +201,7 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 1.772771249771242e-08,
-  "dividend_yield_pct": 499.0,
+  "dividend_yield_pct": 4.99,
   "pays_dividend": true,
   "payout_ratio": 0.97870004,
   "average_dollar_volume": 444015798.21843463

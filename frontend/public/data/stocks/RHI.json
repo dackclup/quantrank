@@ -1,0 +1,202 @@
+{
+  "ticker": "RHI",
+  "name": "Robert Half",
+  "sector": "Industrials",
+  "industry": "Human Resource & Employment Services",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 3231454492.118763,
+  "current_price": 31.59,
+  "rank": 1020,
+  "composite_score": 45.71,
+  "pillar_scores": {
+    "quality": 43.6,
+    "value": 58.07,
+    "growth": 15.8,
+    "momentum": 37.95,
+    "health": 67.39,
+    "profitability": 54.33,
+    "technical": 58.56,
+    "risk": 23.15,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 5326778000.0,
+    "net_income": 129430000.0,
+    "total_assets": 2703702000.0,
+    "total_liabilities": 1472471000.0,
+    "stockholders_equity": 1231231000.0,
+    "cash": 278387000.0,
+    "operating_cash_flow": 266973000.0,
+    "capex": 49256000.0,
+    "free_cash_flow": 217717000.0,
+    "eps_basic": 1.2652796843407264,
+    "eps_diluted": 1.2652796843407264,
+    "shares_outstanding": 102293589.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 3231454492.118763,
+    "pe_ratio_ttm": 24.966812115574157,
+    "goodwill": 250977000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 23.39300136327956,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 35.435052297436,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 71.67113548323472,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 21.49110722496492,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 13.972136806048905,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 74.31073980881341,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 29.41402683035778,
+    "max": 74.31073980881341,
+    "low": 13.972136806048905,
+    "high": 74.31073980881341,
+    "mos_pct": -7.397740318861477,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 29.41402683035778,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development",
+      "interest_expense",
+      "inventory",
+      "accounts_payable"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 51,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-05-01"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 9.537821573549444,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Industrials median (n=254)",
+    "values": {
+      "Quality": 49.14,
+      "Value": 50.9,
+      "Growth": 50.49,
+      "Momentum": 51.42,
+      "Health": 57.04,
+      "Profitability": 49.31,
+      "Technical": 55.26,
+      "Risk": 52.21
+    }
+  },
+  "beneish_m_score": -2.668560743804917,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 44.7365373648684,
+  "price_change_1d_pct": -2.0769,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 45.71,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.78,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-05-14",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 8.701580987307705e-09,
+  "dividend_yield_pct": 7.47,
+  "pays_dividend": true,
+  "payout_ratio": 1.8153999,
+  "average_dollar_volume": 63143169.76551056
+}

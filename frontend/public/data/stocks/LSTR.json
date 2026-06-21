@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 7036710546.91864,
   "current_price": 207.4,
-  "rank": 573,
-  "composite_score": 47.05,
+  "rank": 886,
+  "composite_score": 47.93,
   "pillar_scores": {
-    "quality": 49.77,
-    "value": 30.82,
-    "growth": 2.41,
-    "momentum": 75.97,
-    "health": 83.49,
-    "profitability": 45.08,
-    "technical": 67.34,
-    "risk": 55.88,
+    "quality": 56.25,
+    "value": 27.23,
+    "growth": 3.15,
+    "momentum": 73.67,
+    "health": 82.28,
+    "profitability": 48.88,
+    "technical": 64.41,
+    "risk": 59.29,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 105.29899928135534,
+        "value": 196.696602571879,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 125.39500100307265,
+        "value": 62.12282044167626,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 112.79478417509449,
+        "value": 99.89412370814925,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": 36.37490516991967,
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 106.54225064725449,
-    "max": 125.39500100307265,
+    "median": 81.00847207491276,
+    "max": 196.696602571879,
     "low": 36.37490516991967,
-    "high": 125.39500100307265,
-    "mos_pct": -94.66455104572067,
+    "high": 196.696602571879,
+    "mos_pct": -156.02259687689306,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 107.78550201315365,
+    "median_trimmed": 99.89412370814925,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -112,8 +112,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_rim_estimate",
-    "rem_suspect"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 22.546753866472766,
@@ -125,32 +124,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=166)",
+    "label": "Industrials median (n=254)",
     "values": {
-      "Quality": 50.72,
-      "Value": 48.17,
-      "Growth": 50.26,
-      "Momentum": 53.48,
-      "Health": 58.15,
-      "Profitability": 48.74,
-      "Technical": 55.52,
-      "Risk": 53.56
+      "Quality": 49.14,
+      "Value": 50.9,
+      "Growth": 50.49,
+      "Momentum": 51.42,
+      "Health": 57.04,
+      "Profitability": 49.31,
+      "Technical": 55.26,
+      "Risk": 52.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.47529135688147,
+  "loss_chance_pct": 62.037323480342884,
   "price_change_1d_pct": -0.3507,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 46.25,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 47.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -191,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.45,
+  "osap_blended_score": 49.89,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -206,7 +205,7 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 9.364015128137646e-08,
-  "dividend_yield_pct": 77.0,
+  "dividend_yield_pct": 0.77,
   "pays_dividend": true,
   "payout_ratio": 0.442,
   "average_dollar_volume": 101780624.73546346

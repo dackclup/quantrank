@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 2702237320.371334,
   "current_price": 25.67,
-  "rank": 744,
-  "composite_score": 41.4,
+  "rank": 1286,
+  "composite_score": 39.89,
   "pillar_scores": {
-    "quality": 20.79,
-    "value": 69.0,
-    "growth": 13.55,
-    "momentum": 63.96,
-    "health": 55.94,
-    "profitability": 25.7,
-    "technical": 41.73,
-    "risk": 31.43,
+    "quality": 23.09,
+    "value": 58.25,
+    "growth": 15.69,
+    "momentum": 62.98,
+    "health": 55.41,
+    "profitability": 28.06,
+    "technical": 40.03,
+    "risk": 34.8,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 44.1866086472596,
+        "value": 40.74522356722408,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 136.654582953733,
+        "value": 84.19617375210836,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 28.20375512028319,
+        "value": 23.103914274236786,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,19 +79,15 @@
         "tier_used": null
       }
     },
-    "median": 45.474946424828794,
-    "max": 48.64725443363603,
-    "low": 28.20375512028319,
-    "high": 136.654582953733,
-    "mos_pct": 43.55133519788289,
-    "valuation_warnings": [
-      "extreme_multiples_pb_estimate"
-    ],
-    "valuation_methods_applicable": 5,
-    "median_trimmed": 44.1866086472596,
-    "methods_excluded_from_median": [
-      "multiples_pb"
-    ]
+    "median": 43.754253884811035,
+    "max": 84.19617375210836,
+    "low": 23.103914274236786,
+    "high": 84.19617375210836,
+    "mos_pct": 41.33141855447089,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 43.754253884811035,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,9 +103,7 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 28.45272454380427,
   "tier2_events": {
@@ -120,25 +114,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=107)",
+    "label": "Consumer Discretionary median (n=196)",
     "values": {
-      "Quality": 47.2,
-      "Value": 50.62,
-      "Growth": 49.07,
-      "Momentum": 43.98,
-      "Health": 44.51,
-      "Profitability": 49.38,
-      "Technical": 54.55,
-      "Risk": 40.23
+      "Quality": 48.31,
+      "Value": 50.47,
+      "Growth": 49.11,
+      "Momentum": 41.35,
+      "Health": 42.24,
+      "Profitability": 50.26,
+      "Technical": 54.32,
+      "Risk": 42.46
     }
   },
   "beneish_m_score": -2.405656065049054,
   "dechow_f_score": 0.3510486746000097,
   "recommendation": "neutral",
-  "loss_chance_pct": 30.0580883613451,
+  "loss_chance_pct": 30.589433074704186,
   "price_change_1d_pct": 1.0232,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.4,
+  "composite_score_adjusted": 39.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.62,
+  "osap_blended_score": 45.87,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -194,14 +188,14 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 6,
   "form4_diagnostics": {
     "insider_count": 15,
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
   "cross_source_delta": 4.4270229347447994e-08,
-  "dividend_yield_pct": 286.0,
+  "dividend_yield_pct": 2.86,
   "pays_dividend": true,
   "payout_ratio": 0.3769,
   "average_dollar_volume": 60654677.393201195

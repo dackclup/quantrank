@@ -1,0 +1,210 @@
+{
+  "ticker": "FWRD",
+  "name": "Forward Air Corp.",
+  "sector": "Industrials",
+  "industry": "Air Freight & Logistics",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 430733122.9008007,
+  "current_price": 13.62,
+  "rank": 1489,
+  "composite_score": 30.75,
+  "pillar_scores": {
+    "quality": 15.9,
+    "value": 48.72,
+    "growth": 49.11,
+    "momentum": 1.33,
+    "health": 31.95,
+    "profitability": 29.92,
+    "technical": 74.17,
+    "risk": 9.06,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2463883000.0,
+    "net_income": -91478000.0,
+    "total_assets": 2695879000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 81001000.0,
+    "cash": 141022000.0,
+    "operating_cash_flow": 51499000.0,
+    "capex": 24156000.0,
+    "free_cash_flow": 27343000.0,
+    "eps_basic": -2.892580772846939,
+    "eps_diluted": -2.892580772846939,
+    "shares_outstanding": 31625046.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 430733122.9008007,
+    "pe_ratio_ttm": null,
+    "goodwill": 522712000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 10.692765751575385,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 51.94674559988689,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "dcf_negative_equity_post_debt",
+        "tier_used": null
+      }
+    },
+    "median": 31.319755675731138,
+    "max": 51.94674559988689,
+    "low": 10.692765751575385,
+    "high": 51.94674559988689,
+    "mos_pct": 56.51307108978227,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 31.319755675731138,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 41,
+    "latest_period_end": "2026-04-29",
+    "latest_filed_date": "2026-05-11"
+  },
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "value_trap_risk",
+    "restatement_history"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2025-03-27",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/912728/0001628280-25-015157-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Industrials median (n=254)",
+    "values": {
+      "Quality": 49.14,
+      "Value": 50.9,
+      "Growth": 50.49,
+      "Momentum": 51.42,
+      "Health": 57.04,
+      "Profitability": 49.31,
+      "Technical": 55.26,
+      "Risk": 52.21
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": 1.1536073856136329,
+  "recommendation": "neutral",
+  "loss_chance_pct": 34.84400567541152,
+  "price_change_1d_pct": 0.4425,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 30.25,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 41.3,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 10,
+    "latest_filing_date": "2026-05-01",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 6.734566140213273e-09,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 21279116.112070084
+}

@@ -1,0 +1,207 @@
+{
+  "ticker": "NOG",
+  "name": "Northern Oil and Gas, Inc.",
+  "sector": "Energy",
+  "industry": "Oil & Gas Exploration & Production",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 2056579487.618555,
+  "current_price": 19.44,
+  "rank": 1372,
+  "composite_score": 37.25,
+  "pillar_scores": {
+    "quality": 25.72,
+    "value": 66.67,
+    "growth": 47.46,
+    "momentum": 30.44,
+    "health": 5.98,
+    "profitability": 36.71,
+    "technical": 27.33,
+    "risk": 31.41,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 1878653000.0,
+    "net_income": -623068000.0,
+    "total_assets": 5514846000.0,
+    "total_liabilities": 3730450000.0,
+    "stockholders_equity": 1784396000.0,
+    "cash": 37041000.0,
+    "operating_cash_flow": 1421477000.0,
+    "capex": 1001000.0,
+    "free_cash_flow": 1420476000.0,
+    "eps_basic": -5.8896056902619325,
+    "eps_diluted": -5.8896056902619325,
+    "shares_outstanding": 105791123.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2056579487.618555,
+    "pe_ratio_ttm": null,
+    "goodwill": null
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 44.3666292903374,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 22.330390202529347,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 27.061895977531528,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 27.061895977531528,
+    "max": 44.3666292903374,
+    "low": 22.330390202529347,
+    "high": 44.3666292903374,
+    "mos_pct": 28.164676450615595,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 27.061895977531528,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "research_and_development",
+      "depreciation_and_amortization",
+      "inventory",
+      "ebitda",
+      "goodwill",
+      "intangibles_net"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 53,
+    "latest_period_end": "2026-04-24",
+    "latest_filed_date": "2026-04-29"
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 16.86716190733697,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Energy median (n=69)",
+    "values": {
+      "Quality": 50.72,
+      "Value": 51.45,
+      "Growth": 50.72,
+      "Momentum": 67.82,
+      "Health": 36.64,
+      "Profitability": 53.62,
+      "Technical": 24.53,
+      "Risk": 53.93
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "cautious",
+  "loss_chance_pct": 48.51795124753945,
+  "price_change_1d_pct": 0.5691,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 37.25,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.55,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-04-01",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.028291901544160853,
+  "dividend_yield_pct": 9.26,
+  "pays_dividend": true,
+  "payout_ratio": 4.6154003,
+  "average_dollar_volume": 64272460.59135437
+}

@@ -1,0 +1,211 @@
+{
+  "ticker": "PARR",
+  "name": "Par Pacific Holdings, Inc.",
+  "sector": "Energy",
+  "industry": "Oil & Gas Refining & Marketing",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 2551842225.924362,
+  "current_price": 50.89,
+  "rank": 13,
+  "composite_score": 70.3,
+  "pillar_scores": {
+    "quality": 83.7,
+    "value": 86.59,
+    "growth": 57.97,
+    "momentum": 64.69,
+    "health": 50.2,
+    "profitability": 66.91,
+    "technical": 22.74,
+    "risk": 56.72,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 7543364000.0,
+    "net_income": 1266439000.0,
+    "total_assets": 4209519000.0,
+    "total_liabilities": 2658148000.0,
+    "stockholders_equity": 1515829000.0,
+    "cash": 172168000.0,
+    "operating_cash_flow": 406029000.0,
+    "capex": 151010000.0,
+    "free_cash_flow": 255019000.0,
+    "eps_basic": 25.25590308142243,
+    "eps_diluted": 25.25590308142243,
+    "shares_outstanding": 50144277.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2551842225.924362,
+    "pe_ratio_ttm": 2.0149744487688412,
+    "goodwill": 127276000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 61.78395156660853,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 456.51078712277433,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 69.97761957744949,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 121.33330274706346,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 48.383993381582265,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 87.44987413375463,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 78.71374685560207,
+    "max": 121.33330274706346,
+    "low": 48.383993381582265,
+    "high": 456.51078712277433,
+    "mos_pct": 35.34801553405333,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate"
+    ],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 69.97761957744949,
+    "methods_excluded_from_median": [
+      "multiples_pe"
+    ]
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "dividends_paid"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 46,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-05-06"
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": 27.496896604970495,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Energy median (n=69)",
+    "values": {
+      "Quality": 50.72,
+      "Value": 51.45,
+      "Growth": 50.72,
+      "Momentum": 67.82,
+      "Health": 36.64,
+      "Profitability": 53.62,
+      "Technical": 24.53,
+      "Risk": 53.93
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 21.47876464110194,
+  "price_change_1d_pct": 0.0787,
+  "manipulation_index": 25.0,
+  "composite_score_adjusted": 67.8,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": true,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 61.08,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-04-28",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 6.972388824633038e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 59797635.40222168
+}

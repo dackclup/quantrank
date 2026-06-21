@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 4211327978.515625,
   "current_price": 29.91,
-  "rank": 130,
-  "composite_score": 59.93,
+  "rank": 162,
+  "composite_score": 61.95,
   "pillar_scores": {
-    "quality": 66.53,
-    "value": 86.23,
-    "growth": 58.88,
-    "momentum": 10.99,
-    "health": 47.01,
-    "profitability": 56.34,
-    "technical": 84.02,
-    "risk": 28.65,
+    "quality": 74.74,
+    "value": 82.81,
+    "growth": 63.03,
+    "momentum": 11.75,
+    "health": 41.96,
+    "profitability": 62.98,
+    "technical": 81.9,
+    "risk": 31.66,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 115.73509308348542,
+        "value": 88.73236206409013,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 69.276852330625,
+        "value": 36.70321562325911,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 99.20793214334721,
+        "value": 74.75496638895908,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 84.2423922369861,
-    "max": 115.73509308348542,
+    "median": 55.729091006109094,
+    "max": 88.73236206409013,
     "low": 19.069257716832364,
-    "high": 115.73509308348542,
-    "mos_pct": 64.4953104331713,
+    "high": 88.73236206409013,
+    "mos_pct": 46.32964703455627,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 84.2423922369861,
+    "median_trimmed": 55.729091006109094,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -114,25 +114,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=121)",
+    "label": "Information Technology median (n=190)",
     "values": {
-      "Quality": 48.97,
-      "Value": 49.31,
-      "Growth": 52.27,
-      "Momentum": 73.31,
-      "Health": 67.55,
-      "Profitability": 49.45,
-      "Technical": 52.52,
-      "Risk": 43.32
+      "Quality": 50.39,
+      "Value": 50.33,
+      "Growth": 51.02,
+      "Momentum": 71.96,
+      "Health": 65.02,
+      "Profitability": 49.17,
+      "Technical": 51.67,
+      "Risk": 43.36
     }
   },
   "beneish_m_score": -2.6432642510622077,
   "dechow_f_score": 0.610990288448479,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 12.462576894446922,
+  "recommendation": "bullish",
+  "loss_chance_pct": 17.81151819309381,
   "price_change_1d_pct": 2.9959,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.93,
+  "composite_score_adjusted": 61.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.89,
+  "osap_blended_score": 56.9,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -195,7 +195,7 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 5.101567750031343e-09,
-  "dividend_yield_pct": 33.0,
+  "dividend_yield_pct": 0.33,
   "pays_dividend": true,
   "payout_ratio": 0.0353,
   "average_dollar_volume": 68051425.29004414
