@@ -6042,8 +6042,7 @@ manifest tuples `_FINANCIAL_FACT_REQUIRED_ATTRS` / `_ENTITY_FACTS_REQUIRED_ATTRS
 `edgar.entity.models.FinancialFact` + `edgar.entity.EntityFacts`.  `_try_balance_tags_most_recent`
 (shares path) left AS-IS.  No schema bump (pure ingest-logic fix; same fields, correct values).
 
-+21 offline tests in `tests/test_ingest/test_fundamentals_balance_tag_fix.py`; +3 `@network`
-regression tests (HASI `stockholders_equity > 2e9`, LGIH `stockholders_equity > 2e9`,
+offline + `@network` regression tests in `tests/test_ingest/test_fundamentals_balance_tag_fix.py` (HASI `stockholders_equity > 2e9`, LGIH `stockholders_equity > 2e9`,
 GPK `total_liabilities > 8e9`) for `--run-network` confirmation.  Verify: ruff clean ·
 `pytest tests/test_ingest/test_fundamentals*.py -m "not network"` = 53 passed.
 
