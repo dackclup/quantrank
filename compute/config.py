@@ -10,6 +10,12 @@ FRONTEND_DIR: Path = PROJECT_ROOT / "frontend"
 DATA_DIR: Path = FRONTEND_DIR / "public" / "data"
 STOCKS_DIR: Path = DATA_DIR / "stocks"
 CACHE_DIR: Path = PROJECT_ROOT / "compute" / "cache"
+# Research warehouse: point-in-time Parquet snapshots (NOT under frontend/public —
+# research data must NOT ship in the static site deploy). Written each cron run;
+# never blocks the cron (wrapped in try/except at the main.py call site).
+# Layout: data/warehouse/snapshots/year=<YYYY>/run_date=<ISO>/part-0.parquet
+#         data/warehouse/_manifest.parquet
+WAREHOUSE_DIR: Path = PROJECT_ROOT / "data" / "warehouse"
 # Universe constituents file. The `-v2` suffix bumped 2026-05-14 in
 # PR 4c.3 after PR #63 (Wikipedia name normalize) — pre-v2 cached
 # parquets store un-normalized names like "Hartford (The)" /

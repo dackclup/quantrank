@@ -5858,3 +5858,49 @@ fix); AGENTS.md in-flight note updated in lockstep. Per §Conventions this entry
 satisfies the "ship with every PR" rule.
 
 ---
+
+## PR (compute) — Research warehouse Slice 1: per-run PIT Parquet snapshot writer (in flight, 2026-06-21)
+
+First slice of the point-in-time "research warehouse" — a per-cron historical store of all
+computed stock data to power factor/IC research, walk-forward validation, and Phase-5 ML,
+WITHOUT changing the static-site runtime (the site still reads JSON; the warehouse is an
+offline research store). Owner-decided shape: Parquet-first Hybrid (build the in-repo Parquet
+leg now; defer a Supabase sync leg to Phase 5), full per-ticker snapshot, maximum backfill
+(Slice 2). This Slice 1 is WRITE-ONLY + observability-first — nothing reads the warehouse yet.
+
+New `compute/warehouse/` package: `flatten.py` (pure Pydantic `StockDetail`/`StockSummary` →
+one flat row, 126 deterministic columns: `pillar_*`/`raw_*`/`dq_*`/`fp_*` + per-flag
+`flag_*`/`warn_*` booleans + `*_json` for nested/variable fields + a `row_provenance` sentinel
+= `"live"` here, `"pit_replay"` for the Slice-2 backfill); `flag_registry.py` (KNOWN_RISK_FLAGS
+9 + KNOWN_VALUATION_WARNINGS 28 + `assert_flags_known`); `writer.py` (`write_run_snapshot` →
+`data/warehouse/snapshots/year=<YYYY>/run_date=<ISO>/part-0.parquet`, zstd, idempotent re-run, +
+a run-level `_manifest.parquet` row from `Metadata`); `warehouse_schema_check.py` (a drift guard
+modeled on `schema_check.py` — introspects the models + flag registry, compares to the committed
+`data/warehouse/warehouse_schema.json`, `--update` regenerates). `config.py`: `WAREHOUSE_DIR =
+PROJECT_ROOT / "data" / "warehouse"` (repo root, NOT `frontend/public/data/` — research data must
+never ship in the static deploy). `main.py`: an `all_details` accumulator in the Step-8 loop + a
+Step-13.5 write GATED by `QR_SKIP_WAREHOUSE` (mirrors the `QR_SKIP_DECAY_MONITOR` idiom) wrapped
+in try/except so a failure logs a warning and NEVER blocks the cron
+(`portable-graceful-degradation-try-except`).
+
+Persistence: forward per-cron snapshots + `_manifest.parquet` are gitignore-whitelisted and
+committed (the cron's added `git add data/warehouse/` rides the existing "chore: update rankings"
+commit) so the panel accumulates in-repo (~0.5 MB/run); the maximum-history backfill (Slice 2,
+~300 MB) ships as a CI/release artifact, NOT committed. `warehouse_schema.json` is committed.
+
+**The JSON schema triple is UNTOUCHED** — the warehouse manifest is a separate artifact guarded
+by `warehouse_schema_check`, NOT the Pydantic↔TS↔snapshot triple. No `SCHEMA_VERSION` bump
+(surfacing the row count into `metadata.json` via `Metadata.warehouse_*` is deferred to a later
+slice). Honest backfill limits (Slice 2): maximum history is SP500-only before sp900/sp1500
+go-live (no historical mid/small-cap membership ledger); event-driven flags (8-K / Form-4 /
+tier2 / cross-source / post-split / OSAP) are NOT PIT-reconstructable → stored NULL (not False)
+in replayed rows, disambiguated by `row_provenance`.
+
+Verify: `ruff check .` clean · `pytest tests/test_warehouse/ -m "not network"` = 35 passed ·
+`python -m compute.warehouse.warehouse_schema_check` = 126 columns in sync · full offline suite
+2646 passed (2 pre-existing Hypothesis `DeadlineExceeded` flakes in test_alpha158_replicate +
+cash-conversion, unrelated). Gate: compute-builder (built) + orchestrator (assembled
+workflow/.gitignore/docs); quantrank-reviewer + test-engineer + security-reviewer (workflow
+touch) at the pre-Ready gate.
+
+---

@@ -709,6 +709,9 @@ export function FairPriceCard(props) {  // no types
   - `QR_SKIP_CROSS_SOURCE=1` — skips the 502-ticker yfinance.info
     cross-source validation loop
     (`compute/ingest/cross_source.py:fetch_yfinance_market_cap`)
+  - `QR_SKIP_WAREHOUSE=1` — skips the research-warehouse per-run PIT
+    snapshot write (`compute/main.py` Step 13.5;
+    `compute/warehouse/writer.py`); try/except non-fatal regardless
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
 - Frontend telemetry: TWO cookieless Vercel-edge client-side beacons —

@@ -39,6 +39,7 @@ design-system spec.
 | `compute/scoring/` | 8-pillar composite + risk overlay (7 active vetoes after Phase 4.5a) |
 | `compute/valuation/` | 6-method fair-price ensemble + Tier-1 defenses |
 | `compute/output/` | Pydantic schemas + JSON writers + schema-snapshot guard |
+| `compute/warehouse/` | Per-run PIT research warehouse (Slice 1): `flatten` (Pydantic→row) + `writer` (Parquet snapshot + run manifest) + `flag_registry` + `warehouse_schema_check` drift guard. Writes `data/warehouse/`; observability-first (write-only, no read path yet) |
 | `compute/main.py` | Weekly compute orchestrator |
 | `frontend/app/` | Next.js routes (one per stock at `/stock/[ticker]`) |
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
