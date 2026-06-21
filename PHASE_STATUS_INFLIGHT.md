@@ -5977,6 +5977,7 @@ is still correct by construction (Mon-Fri 22:00 vs Sat 08:00 cannot overlap); th
 noted in the per-job budget comment only.
 
 **Files**: `.github/workflows/compute-rankings.yml` · `.github/workflows/precache-edgar.yml` ·
+`.github/workflows/pre-merge-prod-sim.yml` (bumped in lockstep — the `test_sim_timeout_at_least_cron_timeout` guard requires sim timeout ≥ cron timeout) ·
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 **Schema triple**: UNTOUCHED.
