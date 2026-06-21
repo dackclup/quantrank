@@ -1810,3 +1810,20 @@ Rule-16 annotate-before-veto does NOT bind):**
 **Live ranking impact.** On the first cron after merge, KLAC's P/E corrects 6.68→~66.8 → value pillar
 de-inflates → rank-2 drops to its correct position (CVNA/COKE similarly). Until SEC files the post-split
 10-Q, the correction persists; once SEC updates, the legs stop firing and the correction is a no-op.
+
+- **`EntityFacts.get_fact(tag)` sort-key trap — 8-K / S-type event facts beat 10-K consolidated
+  balance values.** `get_fact(tag)` returns `max(all_facts_for_concept, key=(filing_date, period_end))`.
+  A recent 8-K / S-3 / S-4 filing that incidentally tags the same XBRL concept (e.g., a preferred
+  issuance tagging `StockholdersEquity` with a tiny tranche amount, or a merger-shell tagging
+  `Liabilities` with a $10M event value) will win over the real 10-K/10-Q consolidated balance-sheet
+  fact because it was filed more recently.  Duration facts (one quarter's CHANGE in equity, tagged as
+  `period_type='duration'`) can also win over the instant balance-sheet fact.  Confirmed victims on
+  the first sp1500 production cron (2026-06-21): HASI `stockholders_equity` $1,000 (S-3 tranche),
+  LGIH `stockholders_equity` $25.2M (duration change), GPK `total_liabilities` $10.8M (8-K event).
+  **Fix**: `_try_balance_tags` in `compute/ingest/fundamentals.py` now uses `get_all_facts()` (public
+  API) with a three-tier selection: Tier 1 = instant + consolidated form (`_BALANCE_SHEET_FORM_TYPES`
+  allowlist: 10-K/10-Q/20-F family; excludes 8-K/S-type) + USD; Tier 2 = instant + USD (any form,
+  safety net for odd filers); Tier 3 = raw `get_fact()` (last resort).  Sort key WITHIN a tier is
+  `(period_end DESC, filing_date tiebreaker)` — inverted from `get_fact`'s key.
+  `_try_balance_tags_most_recent` (shares path) is left AS-IS (shares aren't mis-tagged the same way).
+  Do NOT revert to the bare `get_fact()` call for balance-sheet concepts.

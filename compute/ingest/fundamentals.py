@@ -19,7 +19,7 @@ import threading
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 import pandas as pd
 from edgar import Company, set_identity
@@ -499,12 +499,230 @@ def _max_date(*candidates: date | None) -> date | None:
     return max(real) if real else None
 
 
+# ---------------------------------------------------------------------------
+# XBRL balance-sheet context filter (SP1500 cron fix, 2026-06-21)
+# ---------------------------------------------------------------------------
+#
+# Root cause: edgartools ``EntityFacts.get_fact(tag)`` picks
+# ``max(all_facts_for_concept, key=(filing_date, period_end))``.
+# This means a recent 8-K / S-3 / S-4 (e.g., a preferred-share
+# issuance or a merger-shell registration) can win over the real
+# 10-K/10-Q consolidated balance-sheet value when it was filed more
+# recently — even if the 8-K records a trivially small equity tranche
+# (e.g., HASI stockholders_equity $1,000 from an S-3) or a duration
+# (period) fact rather than an instant fact (e.g., LGIH equity
+# change for one quarter, not the balance).
+#
+# The fix walks ``EntityFacts.get_all_facts()`` (public API) and
+# applies a three-tier preference:
+#   Tier 1 — instant + consolidated filing form + USD unit
+#   Tier 2 — instant + USD (drop form-type — odd-filer safety net)
+#   Tier 3 — raw ``get_fact()`` (original behavior — last resort)
+# Within each tier, ``period_end`` is the primary sort key (most
+# recent balance-sheet date wins); ``filing_date`` is the tiebreaker
+# only when two candidates share the same period_end.
+#
+# The tickers corrected on the first sp1500 cron:
+#   HASI: stockholders_equity $1,000 → >$2B (S-3 tranche vs 10-K total)
+#   LGIH: stockholders_equity $25.2M → >$2B (duration Q change vs instant)
+#   GPK:  total_liabilities $10.8M → >$8B (8-K event vs 10-K balance)
+#
+# 8-K / S-type forms are excluded because they report event-level
+# information (going-concern, debt amendment, shelf registration) —
+# NOT consolidated annual/quarterly balance-sheet totals.
+# 10-KT and 10-QT are transition-period variants (fiscal-year change)
+# that carry full consolidated balance sheets and are treated identically
+# to the standard 10-K / 10-Q.
+_BALANCE_SHEET_FORM_TYPES: Final[frozenset[str]] = frozenset(
+    {"10-K", "10-Q", "10-K/A", "10-Q/A", "10-KT", "10-QT", "20-F", "20-F/A"}
+)
+
+# Drift-detector manifest — attributes accessed on FinancialFact objects
+# returned by ``EntityFacts.get_all_facts()``, plus the ``get_all_facts``
+# method itself on EntityFacts.  Any edgartools upgrade that renames these
+# will raise ``AttributeError`` at module load (checked below), preventing
+# a silent wrong-value production cron from going undetected.
+#
+# Checked at module load via a hasattr scan against a sentinel import of
+# the FinancialFact / EntityFacts types from edgartools.  Uses the same
+# hasattr pattern as ``_FORM4_REQUIRED_ATTRS`` in form4_insider.py, but
+# as a module-load assertion (no test harness needed — it fires immediately
+# on ``import compute.ingest.fundamentals`` if edgartools drifts).
+_FINANCIAL_FACT_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    # Attributes on FinancialFact (a single XBRL fact row)
+    "concept",
+    "period_type",   # "instant" or "duration"
+    "form_type",     # e.g. "10-K", "8-K"
+    "unit",          # e.g. "USD"
+    "period_end",    # date the balance-sheet snapshot is as of
+    "filing_date",   # date the filing was accepted by EDGAR
+    "value",         # raw numeric value
+)
+
+_ENTITY_FACTS_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    "get_all_facts",   # public iterator — preferred over private _fact_index
+    "get_fact",        # fallback Tier-3 path still calls this
+)
+
+# Module-load drift check — fails loudly if edgartools renames any attr.
+# The try/except lets the module load in offline/test environments where
+# edgartools is installed but the SEC API is unreachable; the attributes
+# still exist on the class even without a live connection.
+#
+# Import paths (edgartools 5.32):
+#   FinancialFact: edgar.entity.models.FinancialFact
+#   EntityFacts:   edgar.entity.EntityFacts
+try:
+    from edgar.entity import EntityFacts as _EF
+    from edgar.entity.models import FinancialFact as _FF
+
+    _missing_ff = [a for a in _FINANCIAL_FACT_REQUIRED_ATTRS if not hasattr(_FF, a)]
+    _missing_ef = [a for a in _ENTITY_FACTS_REQUIRED_ATTRS if not hasattr(_EF, a)]
+    if _missing_ff or _missing_ef:
+        raise AttributeError(
+            f"edgartools API drift detected in compute.ingest.fundamentals: "
+            f"FinancialFact missing {_missing_ff!r}, "
+            f"EntityFacts missing {_missing_ef!r}. "
+            "Update _FINANCIAL_FACT_REQUIRED_ATTRS / _ENTITY_FACTS_REQUIRED_ATTRS "
+            "and the _try_balance_tags implementation to match the new API."
+        )
+    del _EF, _FF, _missing_ff, _missing_ef
+except ImportError:
+    # edgartools not installed (e.g. stripped CI environment) — skip the check.
+    pass
+
+
 def _try_balance_tags(facts, tags: list[str]) -> tuple[float | None, date | None, date | None]:
-    """Return (value, period_end, filing_date) for the first tag that resolves."""
+    """Return (value, period_end, filing_date) for the best balance-sheet fact
+    found across the tag chain.
+
+    Replaces the old ``get_fact(tag)`` single-call path which used
+    ``max(all_facts, key=(filing_date, period_end))``.  That sort-key
+    allowed a recent 8-K / S-3 event tag to beat the real 10-K consolidated
+    value — producing corrupt equity / liabilities on the first sp1500 cron
+    for HASI ($1K equity via S-3), LGIH ($25M equity via duration Q change),
+    and GPK ($10.8M liabilities via 8-K event).
+
+    Tier selection for each tag (first non-empty tier wins):
+      Tier 1 — instant + consolidated form (``_BALANCE_SHEET_FORM_TYPES``) + USD
+      Tier 2 — instant + USD (drop form-type — odd-filer safety net)
+      Tier 3 — raw ``get_fact()`` (original behavior — last resort)
+
+    Within a tier, sort key is ``(period_end DESC, filing_date DESC)`` so the
+    most-recent balance-sheet date always wins; filing_date is the tiebreaker
+    only when two candidates share the same period_end.  This is the INVERSE of
+    ``get_fact``'s ``(filing_date, period_end)`` ordering — which is what let
+    8-K event facts (filed recently, small period window) beat 10-K facts.
+
+    Uses ``get_all_facts()`` (public API) in preference to the private
+    ``_fact_index`` dict to stay drift-resilient across edgartools versions.
+    Attribute access on each fact uses ``getattr`` with safe defaults so that a
+    future edgartools shape change degrades gracefully (returns None) instead of
+    raising an AttributeError that would block the cron.
+    """
     for tag in tags:
+        # ------------------------------------------------------------------ #
+        # Build the candidate list via the public get_all_facts() iterator.   #
+        # ------------------------------------------------------------------ #
+        all_facts_iter = None
+        try:
+            get_all = getattr(facts, "get_all_facts", None)
+            if get_all is not None:
+                all_facts_iter = [
+                    f for f in get_all()
+                    if getattr(f, "concept", None) == tag
+                ]
+        except Exception:  # noqa: BLE001
+            all_facts_iter = None
+
+        if not all_facts_iter:
+            # Tier 3 fallback immediately if get_all_facts returns nothing.
+            f = facts.get_fact(tag)
+            if f is not None and getattr(f, "value", None) is not None:
+                return (
+                    float(f.value),
+                    getattr(f, "period_end", None),
+                    getattr(f, "filing_date", None),
+                )
+            continue
+
+        # ------------------------------------------------------------------ #
+        # Tier 1: instant + consolidated form + USD                           #
+        # ------------------------------------------------------------------ #
+        tier1: list[object] = []
+        for f in all_facts_iter:
+            pt = getattr(f, "period_type", None)
+            ft = getattr(f, "form_type", None)
+            ut = getattr(f, "unit", None)
+            if (
+                pt == "instant"
+                and ft in _BALANCE_SHEET_FORM_TYPES
+                and ut == "USD"
+            ):
+                tier1.append(f)
+
+        if tier1:
+            best = max(
+                tier1,
+                key=lambda f: (
+                    getattr(f, "period_end", None) or date.min,
+                    getattr(f, "filing_date", None) or date.min,
+                ),
+            )
+            val = getattr(best, "value", None)
+            if val is not None:
+                try:
+                    return (
+                        float(val),
+                        getattr(best, "period_end", None),
+                        getattr(best, "filing_date", None),
+                    )
+                except (TypeError, ValueError):
+                    pass
+
+        # ------------------------------------------------------------------ #
+        # Tier 2: instant + USD (relax form-type constraint)                  #
+        # ------------------------------------------------------------------ #
+        tier2: list[object] = []
+        for f in all_facts_iter:
+            pt = getattr(f, "period_type", None)
+            ut = getattr(f, "unit", None)
+            if pt == "instant" and ut == "USD":
+                tier2.append(f)
+
+        if tier2:
+            best = max(
+                tier2,
+                key=lambda f: (
+                    getattr(f, "period_end", None) or date.min,
+                    getattr(f, "filing_date", None) or date.min,
+                ),
+            )
+            val = getattr(best, "value", None)
+            if val is not None:
+                try:
+                    return (
+                        float(val),
+                        getattr(best, "period_end", None),
+                        getattr(best, "filing_date", None),
+                    )
+                except (TypeError, ValueError):
+                    pass
+
+        # ------------------------------------------------------------------ #
+        # Tier 3: raw get_fact() — original behavior, last resort             #
+        # ------------------------------------------------------------------ #
         f = facts.get_fact(tag)
-        if f is not None and f.value is not None:
-            return float(f.value), f.period_end, f.filing_date
+        if f is not None and getattr(f, "value", None) is not None:
+            try:
+                return (
+                    float(f.value),
+                    getattr(f, "period_end", None),
+                    getattr(f, "filing_date", None),
+                )
+            except (TypeError, ValueError):
+                pass
+
     return None, None, None
 
 
