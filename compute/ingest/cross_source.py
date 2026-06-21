@@ -207,6 +207,17 @@ def _dividend_cache_read(ticker: str) -> tuple[float | None, float | None]:
     dividend_yield_pct = (
         float(dy_val) if isinstance(dy_val, (int, float)) and dy_val >= 0 else None
     )
+    # Defensive >100 clamp at the cache-read boundary: a stale cache file written
+    # by the pre-#533 ×100 code (e.g. KO 267.0) must never surface a 100× inflated
+    # value on a pure warm-cache hit. Mirrors the live-path guard in _yf_info_fetch.
+    if dividend_yield_pct is not None and dividend_yield_pct > 100.0:
+        logger.warning(
+            "cached dividend_yield_pct %.4f > 100 for %s — discarding as implausible"
+            " (pre-#533 ×100 stale cache?)",
+            dividend_yield_pct,
+            ticker,
+        )
+        dividend_yield_pct = None
     payout_ratio = (
         float(pr_val) if isinstance(pr_val, (int, float)) and pr_val >= 0 else None
     )
@@ -533,6 +544,16 @@ def fetch_yfinance_dividend(
                     if isinstance(dy_val, (int, float)) and dy_val >= 0
                     else None
                 )
+                # Same >100 stale-cache clamp as _dividend_cache_read (a pre-#533
+                # ×100 cache file must not surface a 100× inflated value here).
+                if dividend_yield_pct is not None and dividend_yield_pct > 100.0:
+                    logger.warning(
+                        "cached dividend_yield_pct %.4f > 100 for %s (QR_SKIP) —"
+                        " discarding as implausible (pre-#533 ×100 stale cache?)",
+                        dividend_yield_pct,
+                        ticker,
+                    )
+                    dividend_yield_pct = None
                 payout_ratio = (
                     float(pr_val)
                     if isinstance(pr_val, (int, float)) and pr_val >= 0
