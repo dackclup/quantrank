@@ -679,13 +679,16 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 {weightSortedHoldings.length + j + 1}
               </span>
               {/* Sold chip — negative/red tone matching design-system Negative row
-                  (bg-red-50 text-red-900 ring-red-200 + rose dot bg-rose-500)
+                  (bg-red-50 text-rose-800 ring-red-200 + rose dot bg-rose-500;
+                  text-rose-800 not text-red-900 — only the former is on the
+                  globals.css soft-OKLCH allowlist, per RecommendationBadge/
+                  LossChanceBadge precedent)
                   with canonical paired dark: variants. Consistent with the
                   Rotation-history SELL color (HoldingsTimeline) and the
                   outlined-light chip family (SKILL.md Rule 2). */}
               <Chip
                 size="xs"
-                tone="bg-red-50 text-red-900 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800"
+                tone="bg-red-50 text-rose-800 ring-red-200 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800"
                 dot="bg-rose-500 dark:bg-rose-400"
               >
                 Sold
