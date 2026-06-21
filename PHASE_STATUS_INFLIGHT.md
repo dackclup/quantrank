@@ -5697,12 +5697,29 @@ primitive (`size="xs"`) — **"New"** (positive-light emerald tone) / **"Held"**
 slate tone), each with the canonical paired `dark:` variants. The table header's 7px
 spacer becomes a real **"Status"** column label. The now-redundant `sr-only " (held)"`
 span on the score cell is removed — the visible chip text announces the state to screen
-readers directly. The muted held-row score tone (`text-slate-500 dark:text-slate-400`) is
-kept as a secondary visual cue. No explainer caption added (per owner: labels are
-self-explanatory). Frontend-only — schema triple untouched, rankings/scores unaffected.
+readers directly. No explainer caption added (per owner: labels are self-explanatory).
 
-Verify: `tsc --noEmit` clean · `next build` clean (909/909 static pages). Gate:
-frontend-builder (built) + orchestrator (verified). Design grounded in the
-`frontend-design-system` skill (Rule 2 outlined-light + Rule 10 label-not-color-alone).
+**Semantic fix (2nd pass, same PR):** the original dot drove New/Held off the score-band
+`carried` flag (composite < `composite_min` 65 but ≥ `hold_band_min` 55), which DISAGREED
+with the app's own "Rotation history" panel (`HoldingsTimeline`), which uses the PORTFOLIO
+sense (in this quarter's basket AND the prior quarter's). User caught the mismatch: for the
+2026-05-15 basket the score-band flag marked only SYF "Held" (1) while Rotation history
+correctly shows 3 held. Per owner decision, the Status chip now uses the **portfolio sense**:
+a new local `heldSetForEntry(entry)` helper mirrors `HoldingsTimeline`'s per-entry membership
+derivation exactly (bandBook short-circuit, else `bandHeldCount ?? adaptiveCount` prefix
+slice), and `priorHeldSet` (from `timeline[timeline.length - 2]`, empty when `timeline.length
+< 2` → all New) drives `isHeld = priorHeldSet.has(h.ticker)`. The muted held-row score tone is
+**removed** (decoupled) — under the portfolio sense, healthy-score Held names (LULU 66.9 /
+ACGL 65.5) would otherwise be wrongly dimmed; all scores now render in the normal tone. Latest
+quarter now resolves Held = LULU/ACGL/SYF (3), New = ALL/DECK/APA/IBKR (4) — byte-matches
+Rotation history. The data-layer `carried` field is untouched (no longer consumed here).
+Frontend-only — schema triple untouched, rankings/scores unaffected.
+
+Verify: `tsc --noEmit` clean · `next build` clean (909/909 static pages) · New/Held split
+cross-checked against the artifact (`backtest_pit.json`) = 3 Held / 4 New, matches Rotation
+history. Gate: frontend-builder (built, both passes) + orchestrator (verified). Design
+grounded in the `frontend-design-system` skill (Rule 2 outlined-light + Rule 10
+label-not-color-alone); semantics aligned to `HoldingsTimeline` to kill the cross-surface
+"Held" ambiguity.
 
 ---
