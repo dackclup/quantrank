@@ -8,9 +8,10 @@ import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
+import { Chip } from './Chip';
 import { SectorChip } from './SectorChip';
 import { SegmentedSelector, type SegmentOption } from './SegmentedSelector';
-import type { AiPickData } from '@/lib/types';
+import type { AiPickData, AiPickTimelineEntry } from '@/lib/types';
 
 const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
@@ -160,6 +161,31 @@ function buildView(
 }
 
 // ---------------------------------------------------------------------------
+// Portfolio-sense held-set helper — mirrors HoldingsTimeline's per-entry
+// membership derivation exactly (HoldingsTimeline.tsx lines ~66-92).
+//
+// Rule:
+//   When the entry has a non-empty bandBook → the held set IS that array.
+//   Otherwise → sliceCount = bandHeldCount ?? adaptiveCount; held set is the
+//   holdings prefix sliced to that count. If both counts are absent, use all
+//   holdings tickers (full fallback).
+//
+// This must stay identical to HoldingsTimeline's logic so the "Current picks"
+// Status column and the "Rotation history" held/buy split never disagree.
+// ---------------------------------------------------------------------------
+function heldSetForEntry(entry: AiPickTimelineEntry): Set<string> {
+  const hasBandBook = Array.isArray(entry.bandBook) && entry.bandBook.length > 0;
+  if (hasBandBook) {
+    return new Set(entry.bandBook as string[]);
+  }
+  const sliceCount = entry.bandHeldCount ?? entry.adaptiveCount;
+  const tickers = sliceCount !== undefined
+    ? entry.holdings.slice(0, sliceCount).map((h) => h.ticker)
+    : entry.holdings.map((h) => h.ticker);
+  return new Set(tickers);
+}
+
+// ---------------------------------------------------------------------------
 // ADAPTIVE branch — shown when data.adaptive is non-null.
 // The slider is removed; the AI sizes the basket automatically.
 // ---------------------------------------------------------------------------
@@ -187,6 +213,33 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
   const isBand = holdBandMin !== undefined && latestBandHoldings !== undefined;
   const displayHoldings = isBand ? latestBandHoldings! : latestHoldings;
   const displayCount = isBand ? latestBandHoldings!.length : latestCount;
+
+  // Portfolio-sense "held" set: tickers present in the PRIOR quarter's basket.
+  // Mirrors HoldingsTimeline's per-entry membership derivation exactly via
+  // heldSetForEntry(). Edge case: timeline.length < 2 → initial basket only,
+  // no prior quarter exists → every row is New (matches HoldingsTimeline's
+  // i===0 initial-basket rule where entered = empty set → all rows are buys).
+  const priorHeldSet = useMemo((): Set<string> => {
+    if (timeline.length < 2) return new Set<string>();
+    return heldSetForEntry(timeline[timeline.length - 2]);
+  }, [timeline]);
+
+  // Weight-descending sort for the "Current picks" table. Derived copy so
+  // displayHoldings (used by held-set / topSector / displayCount above) is
+  // never mutated. Non-finite weights sort to the bottom; equal weights keep
+  // their original composite-score order (stable — spread preserves index).
+  const weightSortedHoldings = useMemo(
+    () =>
+      [...displayHoldings].sort((a, b) => {
+        const aFin = isFinite_(a.weight);
+        const bFin = isFinite_(b.weight);
+        if (aFin && bFin) return (b.weight as number) - (a.weight as number);
+        if (aFin) return -1; // a finite, b not → a goes first
+        if (bFin) return 1;  // b finite, a not → b goes first
+        return 0;            // both non-finite → preserve original order
+      }),
+    [displayHoldings],
+  );
 
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
   const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
@@ -527,40 +580,47 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </p>
         <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span className="w-4 shrink-0">#</span>
-          {/* spacer aligning with the per-row action dot */}
-          <span className="h-[7px] w-[7px] shrink-0" aria-hidden="true" />
+          <span className="shrink-0">Status</span>
           <span>Ticker</span>
           <span className="hidden sm:inline">Sector</span>
           <span className="ml-auto w-14 shrink-0 text-right">Score</span>
           <span className="w-12 shrink-0 text-right">Weight</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
-          {displayHoldings.map((h, i) => {
-            // "held" treatment: a carried name (composite < composite_min, kept
-            // by the hold-band) gets a subtle muted score tone — reuses the
-            // canonical muted pair `text-slate-500 dark:text-slate-400` so the
-            // light-mode score stays ≥ 4.5:1 AA at 14px (slate-400 on white is
-            // only ~2.9:1 — FAIL-3 fix). Only present on STATE 1 artifacts where
-            // `carried` is defined.
-            const isCarried = 'carried' in h && h.carried === true;
+          {weightSortedHoldings.map((h, i) => {
+            // Portfolio-sense held: ticker was in the prior quarter's basket.
+            // Derived from priorHeldSet (computed above via heldSetForEntry,
+            // mirroring HoldingsTimeline's per-entry slice logic exactly).
+            // The score-band `carried` field is intentionally NOT used here —
+            // it disagrees with the portfolio sense and HoldingsTimeline.
+            const isHeld = priorHeldSet.has(h.ticker);
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
                 <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
-                {/* Action dot (7px) — keyed to the same carried/held state that
-                    drives the row's muted score tone. New buy = sage (emerald)
-                    dot; held (carried) = neutral steel dot. aria-hidden because
-                    the held state is already announced by the "(held)" sr-only
-                    label on the score cell below. */}
-                <span
-                  className={`h-[7px] w-[7px] shrink-0 rounded-full ${
-                    isCarried
-                      ? 'bg-slate-400 dark:bg-slate-500'
-                      : 'bg-emerald-600 dark:bg-emerald-400'
-                  }`}
-                  aria-hidden="true"
-                />
+                {/* Status chip — portfolio sense: Held = in prior quarter's basket,
+                    New = entered this quarter. Text label carries the meaning to
+                    screen readers (Rule 10: color is never the sole signal).
+                    Held = slate neutral tone; New = emerald positive-light tone.
+                    Both use size="xs" to stay compact in the tight table row. */}
+                {isHeld ? (
+                  <Chip
+                    size="xs"
+                    tone="bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700"
+                    dot="bg-slate-500 dark:bg-slate-400"
+                  >
+                    Held
+                  </Chip>
+                ) : (
+                  <Chip
+                    size="xs"
+                    tone="bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800"
+                    dot="bg-emerald-500 dark:bg-emerald-400"
+                  >
+                    New
+                  </Chip>
+                )}
                 <Link
                   href={`/stock/${h.ticker}/`}
                   className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
@@ -570,9 +630,8 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="hidden sm:inline">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-500 dark:text-slate-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
                   {h.composite_score.toFixed(1)}
-                  {isCarried && <span className="sr-only"> (held)</span>}
                 </span>
                 <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}

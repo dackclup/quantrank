@@ -5681,3 +5681,56 @@ Gate: test-engineer authored. With this, every pure-logic compute module the off
 ≥ 95% (most 96-100%); the residual sub-90% modules are network/optional-dep fetch layers only.
 
 ---
+
+## PR (frontend) — Current-picks status indicator: bare color dot → labeled "New"/"Held" chip (in flight, 2026-06-21)
+
+The AI-pick home page ("Current picks" table in `frontend/components/AiPickPortfolio.tsx`)
+marked each holding's status with a bare 7px color dot — emerald = newly entered this
+quarter, slate = "held" (carried: composite dipped below the entry cutoff but stays above
+the hold floor). Color was the SOLE signal with no label or legend, so users couldn't
+decode it — a direct violation of the design-system Rule 10 ("color is never the sole
+signal — chips always pair color with a short text label"). User-reported the dot
+"can't convey its meaning."
+
+Fix: replace the dot with a labeled outlined-light **status chip** via the shared `Chip`
+primitive (`size="xs"`) — **"New"** (positive-light emerald tone) / **"Held"** (neutral
+slate tone), each with the canonical paired `dark:` variants. The table header's 7px
+spacer becomes a real **"Status"** column label. The now-redundant `sr-only " (held)"`
+span on the score cell is removed — the visible chip text announces the state to screen
+readers directly. No explainer caption added (per owner: labels are self-explanatory).
+
+**Semantic fix (2nd pass, same PR):** the original dot drove New/Held off the score-band
+`carried` flag (composite < `composite_min` 65 but ≥ `hold_band_min` 55), which DISAGREED
+with the app's own "Rotation history" panel (`HoldingsTimeline`), which uses the PORTFOLIO
+sense (in this quarter's basket AND the prior quarter's). User caught the mismatch: for the
+2026-05-15 basket the score-band flag marked only SYF "Held" (1) while Rotation history
+correctly shows 3 held. Per owner decision, the Status chip now uses the **portfolio sense**:
+a new local `heldSetForEntry(entry)` helper mirrors `HoldingsTimeline`'s per-entry membership
+derivation exactly (bandBook short-circuit, else `bandHeldCount ?? adaptiveCount` prefix
+slice), and `priorHeldSet` (from `timeline[timeline.length - 2]`, empty when `timeline.length
+< 2` → all New) drives `isHeld = priorHeldSet.has(h.ticker)`. The muted held-row score tone is
+**removed** (decoupled) — under the portfolio sense, healthy-score Held names (LULU 66.9 /
+ACGL 65.5) would otherwise be wrongly dimmed; all scores now render in the normal tone. Latest
+quarter now resolves Held = LULU/ACGL/SYF (3), New = ALL/DECK/APA/IBKR (4) — byte-matches
+Rotation history. The data-layer `carried` field is untouched (no longer consumed here).
+Frontend-only — schema triple untouched, rankings/scores unaffected.
+
+Verify: `tsc --noEmit` clean · `next build` clean (909/909 static pages) · New/Held split
+cross-checked against the artifact (`backtest_pit.json`) = 3 Held / 4 New, matches Rotation
+history. Gate: frontend-builder (built, both passes) + orchestrator (verified). Design
+grounded in the `frontend-design-system` skill (Rule 2 outlined-light + Rule 10
+label-not-color-alone); semantics aligned to `HoldingsTimeline` to kill the cross-surface
+"Held" ambiguity.
+
+**Sort pass (3rd, same PR):** per owner request, the "Current picks" table is now ordered by
+portfolio `weight` **descending** (heaviest holding first) instead of composite-score order. A
+new `weightSortedHoldings` `useMemo` derives a sorted copy of `displayHoldings` (non-mutating,
+so the held-set / New-Held logic is unaffected); non-finite weights sort to the bottom and
+equal weights keep composite order as a stable tiebreak. The `#` column now reads as the weight
+rank. Latest quarter resolves ACGL 23.0% → ALL 20.7% → SYF 14.0% → IBKR 12.0% → LULU 10.7% →
+DECK 9.8% → APA 9.8%. Consistent with the historical `feat(home) — Current-picks P/L-since-entry`
+intent (which also sorted by weight desc). `HoldingsTimeline` / Rotation history ordering is
+untouched. Frontend-only — schema triple untouched. Verify: `tsc --noEmit` clean · `next build`
+clean (909/909). Commit `88358e63`.
+
+---
