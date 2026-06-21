@@ -711,7 +711,11 @@ export function FairPriceCard(props) {  // no types
     (`compute/ingest/cross_source.py:fetch_yfinance_market_cap`)
   - `QR_SKIP_WAREHOUSE=1` — skips the research-warehouse per-run PIT
     snapshot write (`compute/main.py` Step 13.5;
-    `compute/warehouse/writer.py`); try/except non-fatal regardless
+    `compute/warehouse/writer.py`); try/except non-fatal regardless.
+    The Slice-2 max-history BACKFILL (`scripts/backfill_warehouse.py` +
+    `backfill-warehouse.yml`) writes `row_provenance="pit_replay"` rows to
+    the gitignored `data/warehouse/backfill/` (CI artifact, never committed;
+    SP500-only history; the 11 `FORWARD_ONLY_FLAGS` are NULL not False).
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
 - Frontend telemetry: TWO cookieless Vercel-edge client-side beacons —

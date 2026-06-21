@@ -21,14 +21,25 @@ Column naming conventions
                                     + ``valuation_warnings_json`` (raw list)
 - All other nested / list / dict fields → json-encoded string columns
 - ``row_provenance: str``        = "live" for live compute runs;
-                                    backfill slice will set "pit_replay"
+                                    "pit_replay" for backfill rows
+- ``replay_completeness: float | None``
+                                  = fraction of flag_*/warn_* columns that are
+                                    non-NULL for this row (1.0 for live rows;
+                                    <1.0 for pit_replay rows where forward-only
+                                    flags are NULL; None for live rows per the
+                                    sentinel convention).
 
 NULL discipline for flag_<x> / warn_<x>
 -----------------------------------------
 Live rows compute all flags, so every flag column is ``True`` or ``False``
-(never None).  The ``None`` case is reserved for a future backfill slice
-that may replay only a subset of defenses (hence "not evaluated").  In this
-module, live rows always produce True/False.
+(never None).
+
+PIT replay rows (``null_flags`` parameter) write forward-only flags as
+``None`` — "not evaluated, cannot be reconstructed PIT" — rather than
+``False`` which would incorrectly signal a confirmed negative.  The
+``FORWARD_ONLY_FLAGS`` registry in ``flag_registry.py`` declares which
+flag names are forward-only.  Callers pass ``null_flags=FORWARD_ONLY_FLAGS``
+for pit_replay rows; the live path passes nothing (all flags True/False).
 """
 
 from __future__ import annotations
@@ -109,6 +120,9 @@ def _json_encode(obj: Any) -> str | None:
 def flatten_stock(
     detail: StockDetail,
     summary: StockSummary | None,
+    *,
+    null_flags: frozenset[str] | None = None,
+    row_provenance: str = "live",
 ) -> dict[str, Any]:
     """Produce one flat dict row from a StockDetail + optional StockSummary.
 
@@ -119,6 +133,16 @@ def flatten_stock(
     summary:
         Matching StockSummary (from the ``summaries`` list in main.py).
         When None the summary-only fields are omitted.
+    null_flags:
+        Set of flag/warn string names that should be written as ``None``
+        rather than True/False.  Pass ``FORWARD_ONLY_FLAGS`` for pit_replay
+        rows so forward-only flags are explicitly "not evaluated".  When
+        None (the default) every flag column is True/False (live behavior;
+        byte-identical to Slice-1).
+    row_provenance:
+        Provenance sentinel string for this row.  "live" for cron rows;
+        "pit_replay" for backfill replay rows.  Defaults to "live" so
+        existing callers are byte-identical.
 
     Returns
     -------
@@ -182,13 +206,21 @@ def flatten_stock(
     rf_set: set[str] = set(detail.risk_flags)
     row["risk_flags_json"] = _json_encode(detail.risk_flags)
     for flag in sorted(KNOWN_RISK_FLAGS):
-        row[f"flag_{flag}"] = flag in rf_set
+        col = f"flag_{flag}"
+        if null_flags is not None and flag in null_flags:
+            row[col] = None
+        else:
+            row[col] = flag in rf_set
 
     # --- 8. valuation_warnings: dual bool columns + raw json ---
     vw_set: set[str] = set(detail.valuation_warnings)
     row["valuation_warnings_json"] = _json_encode(detail.valuation_warnings)
     for warn in sorted(KNOWN_VALUATION_WARNINGS):
-        row[f"warn_{warn}"] = warn in vw_set
+        col = f"warn_{warn}"
+        if null_flags is not None and warn in null_flags:
+            row[col] = None
+        else:
+            row[col] = warn in vw_set
 
     # --- 9. Complex / variable nested fields → json-encoded strings ---
     row["tier2_events_json"] = _json_encode(detail.tier2_events)
@@ -203,6 +235,22 @@ def flatten_stock(
     )
 
     # --- 10. Provenance sentinel ---
-    row["row_provenance"] = "live"
+    row["row_provenance"] = row_provenance
+
+    # --- 11. replay_completeness diagnostic ---
+    # For live rows: None (not applicable — all flags are always True/False).
+    # For pit_replay rows: fraction of flag_*/warn_* columns that are non-NULL.
+    # Gives downstream ML a quality signal: 1.0 = all PIT-replayable flags
+    # computed; < 1.0 = some forward-only flags are NULL.
+    if null_flags is not None:
+        all_flag_cols = (
+            [f"flag_{f}" for f in KNOWN_RISK_FLAGS]
+            + [f"warn_{w}" for w in KNOWN_VALUATION_WARNINGS]
+        )
+        total = len(all_flag_cols)
+        non_null = sum(1 for col in all_flag_cols if row.get(col) is not None)
+        row["replay_completeness"] = non_null / total if total > 0 else None
+    else:
+        row["replay_completeness"] = None
 
     return row
