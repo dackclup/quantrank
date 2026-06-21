@@ -5798,3 +5798,33 @@ artifact (`backtest_pit.json`) = CF, TRV. Gate: frontend-builder (built) + front
 (design/WCAG) + orchestrator (verified).
 
 ---
+
+## PR #533 — fix(ingest): `dividend_yield_pct` ×100 double-scaling removal (in flight, 2026-06-21)
+
+Bug fix for the Dividend signal landed in #512. `_yf_info_fetch` in
+`compute/ingest/cross_source.py` read yfinance `.info["dividendYield"]` and
+multiplied by 100 to convert fraction → percent. yfinance changed
+`dividendYield` to return PERCENT directly (e.g. `2.67` = 2.67% for KO), so the
+`×100` over-scaled every value 100× — the first sp1500 probe cron (#533 trigger)
+wrote `dividend_yield_pct = 267.0` for KO, `36.0` for AAPL, `184.0` for JPM,
+`47.0` for NVDA into the per-stock JSONs. `dividend_yield_pct` is a display-only
+`StockDetail` field (NOT a pillar / veto input), so rankings, composite scores,
+risk flags and recommendations are byte-identical and unaffected — the corruption
+was confined to the not-yet-wired Dividend tile.
+
+Fix: drop the `* 100.0` (assign `float(dy_val)` as-is) + add a format-reversion
+guard — any `dividend_yield_pct > 100.0` is discarded to `None` with a warning
+log, so a future yfinance revert-to-fraction surfaces as missing data rather than
+a 100× inflated number. `pays_dividend` logic (`True iff > 0`) is unchanged.
+Tests CS_DIV7A–D added to `tests/test_ingest/test_cross_source_dividend.py`
+(normal percent pass-through / zero non-payer / missing-key None / >100 guard
+discard); +4 tests, full ingest suite 583 passed. NO schema bump (no field
+added/removed/retyped — schema stays `0.10.29-phase8pilot`). CLAUDE.md §Gotchas
+dividend entry + AGENTS.md in-flight note updated in lockstep.
+
+Follow-up: re-cron (sp1500 on `main` after merge) to repopulate the per-stock
+JSONs with CORRECTED dividend values → then wire the `HeroAttributeTiles`
+"Dividend" tile (the Rule-18 gate now requires ≥ 1 cron of corrected — not
+inflated — `dividend_coverage_pct`).
+
+---
