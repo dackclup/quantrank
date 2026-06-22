@@ -6162,9 +6162,13 @@ change, no new flag):
    (inserted before `SalesRevenueNet`/`OilAndGasRevenue`; the OilAndGasRevenue-is-last invariant
    is preserved). TTM selector is MAX-of-fresh / order-independent, so a diversified bank's larger
    consolidated `RevenuesNetOfInterestExpense` still wins — no regression.
-2. Relax the per-filing XBRL shares-fallback guard from `revenue>0 AND total_assets>0` to
-   `revenue>0 OR total_assets>0`, so a revenue-null-but-asset-present snapshot (the MC case) still
-   reaches the shares fallback. The fallback is a no-op when it returns None.
+2. Drop the revenue condition from the per-filing XBRL shares-fallback guard:
+   `revenue>0 AND total_assets>0` → `total_assets>0` ALONE, so a revenue-null-but-asset-present
+   snapshot (the MC case) still reaches the shares fallback. Revenue presence is irrelevant to
+   recovering shares; `total_assets>0` still blocks firing on a fully-empty/corrupt snapshot
+   (assets=0 → no fire). (The two `test_fallback_does_not_fire_when_too_low_but_*` tests in
+   `test_fundamentals.py` pinned the old AND-gate — the `revenue_zero` one is repurposed to assert
+   the fallback now FIRES (the MC case); the `assets_zero` one is unchanged and still green.)
 
 Blast radius (data-correctness improvement): EVR / HLI / PJT / LAZ and other pure-advisory
 Financials that previously missed revenue. OUT OF SCOPE (deferred): the methodology-gated

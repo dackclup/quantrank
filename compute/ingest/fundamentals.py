@@ -1237,13 +1237,15 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
     )
     if (
         (primary_shares is None or primary_too_low)
-        # #566 — a healthy snapshot is proven by EITHER revenue OR total_assets.
-        # Previously both were required (AND), which blocked the per-filing
-        # XBRL shares fallback for revenue-null-but-asset-present filers (the
-        # pure-advisory IB case, e.g. MC: revenue tag missed AND dimensional
-        # DEI share contexts empty). Relaxed to OR so such snapshots still
-        # recover shares; the fallback is a no-op when it returns None.
-        and ((revenue_val or 0) > 0 or (balance_values.get("total_assets") or 0) > 0)
+        # #566 — gate on a present balance sheet (total_assets>0) ALONE. The
+        # prior guard required revenue>0 AND total_assets>0, which blocked the
+        # per-filing XBRL shares fallback for revenue-null-but-asset-present
+        # snapshots — the pure-advisory IB case (e.g. MC: revenue tag missed
+        # AND dimensional DEI share contexts empty). Revenue presence is
+        # irrelevant to whether shares can be recovered; total_assets>0 still
+        # guards against firing on a fully-empty/corrupt snapshot (assets=0 →
+        # no fire). The fallback is a no-op when it returns None.
+        and (balance_values.get("total_assets") or 0) > 0
     ):
         fallback_shares = _fetch_shares_from_per_filing_xbrl(company, ticker=ticker)
         if fallback_shares is not None:
