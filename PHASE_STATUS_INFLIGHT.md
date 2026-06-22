@@ -6392,3 +6392,47 @@ fair-price. Gate: orchestrator inline (compute-builder hit a session limit); rec
 quantrank-reviewer + methodology-scientist review on the MAX-of-fresh blast radius before merge.
 
 ---
+
+## PR #TBD — feat(warehouse): SEC filing pointer index — Slice 1 (issue #579, in flight, 2026-06-22)
+
+feat(warehouse): SEC filing pointer index foundation (Slice 1 of the Hybrid
+filing-archive design, issue #579). OBSERVABILITY-FIRST / WRITE-ONLY (Rule 18):
+the static site never reads `data/warehouse/`, there is NO read path, and this
+slice DELIBERATELY does NOT wire into the weekday cron — it ships a module +
+manual/dispatch backfill script ONLY, so the ~1500-ticker EDGAR enumeration cost
+(~1500 submissions-JSON round-trips) can be measured before touching the cron's
+critical path (same separate-script precedent as `scripts/backfill_warehouse.py`
+vs the cron's Step-13.5 write). New `compute/warehouse/filing_index.py`
+(`fetch_filing_index_rows` → one row/filing: `accession · cik · edgar_url ·
+fetched_utc · filing_date · form_type · period_of_report · primary_doc_url ·
+row_provenance · ticker`; default forms `{10-K, 10-Q, 8-K}`, widen via
+`form_types=None`; graceful try/except → `[]` on any EDGAR error; honors the
+empty-CIK gotcha). `writer.py` gains `write_filing_index_partition` (atomic
+tmp+os.replace Parquet at `data/warehouse/filing_index/year=/run_date=/part-0.parquet`,
+all-`large_string` schema). `warehouse_schema_check.py` gains
+`derive_filing_index_columns` + `check_filing_index_schema` (the index gets the
+warehouse's OWN drift guard via new baseline `data/warehouse/filing_index_schema.json`
+— NOT the Pydantic↔TS↔snapshot triple). New `scripts/backfill_filing_index.py`
+(manual entry; parallelizes across `EDGAR_MAX_WORKERS`; `QR_SKIP_FILING_INDEX=1`
+opt-out; try/except non-fatal; canary summary). `.gitignore` whitelists
+`!data/warehouse/filing_index/**/*.parquet` (forward partitions committed like
+snapshots). +27 offline tests (`tests/test_warehouse/test_filing_index.py`).
+NO schema-triple bump (warehouse is its own guard); defense layer UNCHANGED at 36;
+rankings/scores/flags BYTE-IDENTICAL (no compute/main.py wiring). Verify: ruff
+whole-repo `pass` · offline pytest `27 passed` (filing index) / `148 passed`
+(full warehouse suite) · main schema triple in-sync. PR-review gate (this session,
+pre-Mark-Ready): quantrank-reviewer (opus) READY-TO-PUSH, no FAIL · security-reviewer
+PASS on all security surfaces (no secrets, EDGAR identity/rate-limit clean, gitignore
+scoped, nothing ships to Vercel) · test-engineer COVERAGE-GAPS-FILLED (+6 graceful-
+degradation / dry-run tests → 33 offline) · phase-coordinator Mode B doc-lockstep.
+FOLLOW-UP edits folded in this PR per the gate: (1) CLAUDE.md §Layout + §Commands +
+§Gotchas and AGENTS.md §Security-considerations document the new `filing_index`
+module + `QR_SKIP_FILING_INDEX` opt-out (closes the security-reviewer doc FAIL +
+Mode B lockstep); (2) the pre-existing #541 `security_type` flat-column drift in
+`warehouse_schema.json` was regenerated (`--update`, +1 line) so the warehouse guard
+is GREEN end-to-end (was short-circuiting red before the filing-index check) —
+`filing_index_schema.json` baseline unchanged. Next slices (gated on owner
+object-store decision in #579): Layer 2 lazy full-text archive + Layer 3 PIT-freeze,
+then weekday-cron wiring after the EDGAR cost is measured.
+
+---

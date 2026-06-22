@@ -47,6 +47,7 @@ from compute.output.schemas import (
     StockDetail,
     StockSummary,
 )
+from compute.warehouse.filing_index import FILING_INDEX_COLUMNS
 from compute.warehouse.flag_registry import (
     KNOWN_RISK_FLAGS,
     KNOWN_VALUATION_WARNINGS,
@@ -54,6 +55,12 @@ from compute.warehouse.flag_registry import (
 from compute.warehouse.flatten import flatten_stock
 
 SNAPSHOT_PATH: Path = config.PROJECT_ROOT / "data" / "warehouse" / "warehouse_schema.json"
+
+# Separate snapshot for the filing-index column set (a flat, independent
+# Parquet schema — NOT part of the Pydantic↔TS↔snapshot triple).
+FILING_INDEX_SNAPSHOT_PATH: Path = (
+    config.PROJECT_ROOT / "data" / "warehouse" / "filing_index_schema.json"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -230,6 +237,104 @@ def _check_flag_registry(columns: dict[str, str]) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Filing-index schema derivation + check
+# ---------------------------------------------------------------------------
+
+def derive_filing_index_columns() -> dict[str, str]:
+    """Return {column_name: dtype_hint} for the filing-index flat schema.
+
+    All filing-index columns are ``str | None`` (filing metadata is uniformly
+    textual: dates as ISO strings, accession numbers, URLs).  The canonical
+    column set is ``FILING_INDEX_COLUMNS`` from ``filing_index.py``.
+
+    Sorted alphabetically for stable JSON output.
+    """
+    return {col: "str | None" for col in sorted(FILING_INDEX_COLUMNS)}
+
+
+def _load_filing_index_snapshot() -> dict[str, Any]:
+    if not FILING_INDEX_SNAPSHOT_PATH.exists():
+        return {}
+    try:
+        return json.loads(FILING_INDEX_SNAPSHOT_PATH.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        print(
+            f"ERROR: could not read filing-index snapshot {FILING_INDEX_SNAPSHOT_PATH}: {exc}",
+            file=sys.stderr,
+        )
+        return {}
+
+
+def _write_filing_index_snapshot(columns: dict[str, str]) -> None:
+    FILING_INDEX_SNAPSHOT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    snapshot = {"columns": columns}
+    FILING_INDEX_SNAPSHOT_PATH.write_text(
+        json.dumps(snapshot, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(
+        f"Filing-index snapshot written to {FILING_INDEX_SNAPSHOT_PATH} "
+        f"({len(columns)} columns)"
+    )
+
+
+def check_filing_index_schema(*, update: bool = False) -> int:
+    """Verify or regenerate the filing-index column snapshot.
+
+    Returns 0 on success, 1 on drift, 2 on unexpected error.
+
+    Separated from the main snapshot check because the filing-index schema
+    is independent of the Pydantic↔TS↔snapshot triple and has its own
+    snapshot file (``data/warehouse/filing_index_schema.json``).
+    """
+    try:
+        columns = derive_filing_index_columns()
+    except Exception as exc:  # noqa: BLE001
+        print(
+            f"ERROR: failed to derive filing-index columns: {exc}",
+            file=sys.stderr,
+        )
+        return 2
+
+    if update:
+        _write_filing_index_snapshot(columns)
+        return 0
+
+    snapshot = _load_filing_index_snapshot()
+    committed_cols: dict[str, str] = snapshot.get("columns", {})
+
+    added = {k: v for k, v in columns.items() if k not in committed_cols}
+    removed = {k: v for k, v in committed_cols.items() if k not in columns}
+    changed = {
+        k: (committed_cols[k], columns[k])
+        for k in columns
+        if k in committed_cols and columns[k] != committed_cols[k]
+    }
+
+    if not added and not removed and not changed:
+        print(
+            f"OK: filing-index schema in sync "
+            f"({len(columns)} columns, {FILING_INDEX_SNAPSHOT_PATH})"
+        )
+        return 0
+
+    print("DRIFT: filing-index column schema has changed.", file=sys.stderr)
+    if added:
+        print(f"  Added ({len(added)}): {sorted(added)}", file=sys.stderr)
+    if removed:
+        print(f"  Removed ({len(removed)}): {sorted(removed)}", file=sys.stderr)
+    if changed:
+        for col, (old, new) in sorted(changed.items()):
+            print(f"  Changed dtype: {col}: {old!r} → {new!r}", file=sys.stderr)
+    print(
+        "\nFix: run `python -m compute.warehouse.warehouse_schema_check --update` "
+        "to regenerate data/warehouse/filing_index_schema.json, then commit the diff.",
+        file=sys.stderr,
+    )
+    return 1
+
+
+# ---------------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------------
 
@@ -269,6 +374,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.update:
         _write_snapshot(columns)
+        # Also regenerate the filing-index snapshot on --update.
+        check_filing_index_schema(update=True)
         return 0
 
     # Compare against committed snapshot.
@@ -285,7 +392,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if not added and not removed and not changed:
         print(f"OK: warehouse schema in sync ({len(columns)} columns, {SNAPSHOT_PATH})")
-        return 0
+        # Also verify the filing-index snapshot is in sync.
+        fi_rc = check_filing_index_schema(update=False)
+        return fi_rc
 
     print("DRIFT: warehouse flat-column schema has changed.", file=sys.stderr)
     if added:
