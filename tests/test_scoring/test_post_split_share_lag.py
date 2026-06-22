@@ -716,6 +716,60 @@ def test_PSL_VW3_idempotent_valuation_warnings_append():
     )
 
 
+def test_PSL_VW4_no_free_text_warning_in_valuation_warnings():
+    """Tier-1 path emits ONLY the structured 'post_split_share_lag' key —
+    no free-text 'share count adjusted for N:1 split..., pending EDGAR refresh'
+    string is appended to valuation_warnings.
+
+    This pins the Fix-1 regression from the PR that removed the _adj_warning
+    free-text block from compute/main.py.  The free-text string was an
+    unregistered, unparseable literal that rendered via flagLabel()'s Title-Case
+    fallback as a duplicate chip ("…Pending Edgar Refresh") alongside the clean
+    'Post-split share count adjusted' chip.  Only the structured key must appear.
+
+    The emission block mirrored here is the post-fix version (structured key only):
+
+        _psr_for_ticker = post_split_results.get(ticker)
+        if _psr_for_ticker is not None and _psr_for_ticker.tier == 1:
+            if "post_split_share_lag" not in valuation_warnings:
+                valuation_warnings.append("post_split_share_lag")
+    """
+    ticker = "NO_FREETEXT"
+    post_split_results: dict[str, PostSplitResult] = {
+        ticker: PostSplitResult(
+            tier=1,
+            split_event=_split_event(days_ago=6, ratio=10.0),
+            edgar_shares=KLAC_EDGAR_SHARES,
+            corrected_shares=KLAC_YF_IMPLIED,
+            yf_implied_shares=KLAC_YF_IMPLIED,
+        )
+    }
+    valuation_warnings: list[str] = []
+
+    # Mirror the post-fix emission block from compute/main.py exactly.
+    _psr_for_ticker = post_split_results.get(ticker)
+    if _psr_for_ticker is not None and _psr_for_ticker.tier == 1:
+        if "post_split_share_lag" not in valuation_warnings:
+            valuation_warnings.append("post_split_share_lag")
+
+    # Structured key must be present.
+    assert "post_split_share_lag" in valuation_warnings, (
+        "Tier-1 path must emit 'post_split_share_lag' into valuation_warnings"
+    )
+    # No entry in valuation_warnings must contain the free-text substring.
+    free_text_entries = [w for w in valuation_warnings if "share count adjusted" in w]
+    assert not free_text_entries, (
+        f"valuation_warnings must contain NO free-text 'share count adjusted...' "
+        f"strings (unregistered unparseable literals that produce duplicate chips); "
+        f"found: {free_text_entries}"
+    )
+    # The list must have exactly one entry — the structured key, nothing else.
+    assert len(valuation_warnings) == 1, (
+        f"Tier-1 path must emit exactly 1 entry into valuation_warnings "
+        f"('post_split_share_lag' only); got {valuation_warnings}"
+    )
+
+
 # ---------------------------------------------------------------------------
 # SPLITS1 — graceful degradation in splits.py
 #

@@ -122,11 +122,6 @@ KNOWN_VALUATION_WARNINGS: frozenset[str] = frozenset(
         "insider_sell_cluster",
         # Form-4 — CEO + CFO co-sell subset (Jeng-Metrick-Zeckhauser 2003 RFS).
         "c_suite_unusual_sell",
-
-        # TODO: verify the exact literal for the share-count adjustment detail note:
-        # "share count adjusted for N:1 split <date>, pending EDGAR refresh"
-        # This is a formatted-string warning, NOT a fixed literal, so it is NOT
-        # registered here as a flag column. It will land in valuation_warnings_json.
     }
 )
 
