@@ -6434,5 +6434,37 @@ is GREEN end-to-end (was short-circuiting red before the filing-index check) —
 `filing_index_schema.json` baseline unchanged. Next slices (gated on owner
 object-store decision in #579): Layer 2 lazy full-text archive + Layer 3 PIT-freeze,
 then weekday-cron wiring after the EDGAR cost is measured.
+## Housekeeping note — 2026-06-22 Mode C reconciliation (pre-v2.0)
+
+This file is append-only — entries above are never deleted. The following
+entries were "in flight" as of the last Mode C (#538, reconciled 0.10.29 /
+Slice 7, 2026-06-21) but are now **MERGED on `main`**. Their detail has been
+incorporated into `PHASE_STATUS.md` §Chronological history (2026-06-22 entry)
+and the schema lineage in CLAUDE.md / AGENTS.md / SKILL.md.
+
+Merged since the last Mode C:
+
+- **#565** (squash `2c9dc1371`) — feat(compute): Security-type (Type) ingest PR-1 (schema 0.10.30→**0.10.31-phase8pilot**)
+- **#564** (squash `62dbf4f89`) — feat(compute): Bonferroni multi-test shadow counter (schema 0.10.29→**0.10.30-phase8pilot**)
+- **#548** (squash `e0ea07dc1`) — feat(frontend): infinite-scroll the ~1500-row ranking table (Slice 8 §8.3 gate)
+- **#549** (squash `a7fd57b18`) — feat(frontend): Dividend tile PR-2 (live data)
+- **#539 / #547 / #570** (squashes `b2e899159` / `bca926d9d` / `0b11f6415`) — research warehouse Slices 1/2 + per-method fp_* dtype fix
+- **#555** (squash `100f0f549`) — fix(ingest): XBRL balance-sheet tag selection (HASI/LGIH/GPK)
+- **#554** (squash `c38829362`) — fix(ingest): payout_ratio >20→None format-reversion guard
+- **#553** (squash `dbf59ed26`) — ci(compute): timeout-minutes 240→270
+- **#552** (squash `70b5f60fd`) — fix(compute): drop free-text post-split valuation_warning + DQIC docstrings
+- **#537** (squash `a1a0bbc49`) — feat(frontend): Sold rows in Current-picks table
+- **#533** (squash `3df2ba5f8`) — fix(ingest): dividend ×100 double-scaling removal + >100 guard
+- **#546** — docs: groom Next deliverables + scaffold Slice 8 issues
+- **#556 / #557 / #559 / #560 / #575** — dependabot + CI Node 20→22 bumps
+
+**Currently in flight (as of 2026-06-22):**
+
+- **v2.0 release PR** (`claude/release-v2.0.0-phase8`) — `pyproject` 1.4.0→2.0.0
+  + `docs/release-notes/v2.0.0-phase8.md` + the Mode C doc reconciliation above.
+  All Phase 8 WORKFLOW.md acceptance gates met; `release-captain` owns the
+  `v2.0.0-phase8` tag (DRAFT PR; HOLD the tag until ≥1 green scheduled sp1500
+  cron). Deferred post-v2.0: `low_liquidity` annotate→veto promotion (#544,
+  KEEP-ANNOTATE for v2.0) + Bonferroni provisional-threshold re-derivation (#542).
 
 ---

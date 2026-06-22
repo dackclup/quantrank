@@ -42,7 +42,7 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-21: schema `0.10.29-phase8pilot` (#527 squash `2e45a33bf` — S&P 1500 Slice 4 `low_liquidity` annotate, defense 35→36; prior #519 `0.10.28` sp1500 seam + smallcap probe, #512 `0.10.27` Dividend PR-1, #501 `0.10.26`, #499 `0.10.25`, #496/PR-A `0.10.24`). **Cron now ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534 squash `8301b82cb`, 2026-06-21).** Full lineage: SKILL.md §schema-version. Defense
+schema PR; this prose stays stable). As of 2026-06-22: schema `0.10.31-phase8pilot` (#565 squash `2c9dc1371` — Slice 8 Security-type ingest PR-1, defense UNCHANGED at 36; prior #564 `0.10.30` Bonferroni shadow, #527 `0.10.29` low_liquidity annotate, #519 `0.10.28` sp1500 seam + smallcap probe, #512 `0.10.27` Dividend PR-1). **Cron ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534 squash `8301b82cb`, 2026-06-21); Phase 8 acceptance gates met, v2.0 tag pending.** Full lineage: SKILL.md §schema-version. Defense
 layer **36 declared** = 9 vetoes + 27 annotates; release tag
 [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
@@ -738,7 +738,7 @@ in parallel (disjoint code paths).
 - [x] Weekly compute time stays under 150m — cron #3 (2026-05-23) verified warm-cache ✅
 - [x] `manipulation_index` populated for ≥ 95% of universe ✅ (100% on cron #3)
 - [x] **4.5e-specific**: Reserved-slot weights `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED` / `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED` uncommented and active in `FLAG_WEIGHTS` at 5.0 / 3.0 (PR #222). Supabase deferred — Form 4 cache uses local per-ticker SEC EDGAR cache instead of Supabase cross-run state; Supabase reserved for Phase 5+.
-- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0-phase4.5e shipped 2026-05-26 at `5db3b978` (Form-4 cluster + LedgerCraft frontend); v1.4.0-phase4.6 shipped 2026-05-27 at `bbca9cac` (honest re-validation harness).
+- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0-phase4.5e shipped 2026-05-26 at `5db3b978` (Form-4 cluster + LedgerCraft frontend); v1.4.0-phase4.6 shipped 2026-05-27 at `a820caee` (honest re-validation harness).
 
 ---
 
@@ -1231,9 +1231,18 @@ separate mid-week workflow so the weekly cron reads warm.
 - Display in `data_quality` per stock
 
 ### 8.5 v2.0 Tag
+
+Note: per CLAUDE.md §Gotchas "Release tags are mobile-only (locked 2026-05-27)", the
+release tag MUST be cut by `release-captain` (mobile pre-filled GitHub-release URL), NOT
+via a bare `git tag` + `git push` from a Claude Code session (the sandbox can't push
+tag-refs). The actual tag for this release is **`v2.0.0-phase8`**; `pyproject` carries the
+bare SemVer `2.0.0` (the `-phase8` suffix lives only in the git tag). The block below is
+reference-only.
+
 ```bash
-git tag v2.0
-git push origin v2.0
+# Reference only — run via release-captain's mobile flow, not directly:
+git tag v2.0.0-phase8
+git push origin v2.0.0-phase8
 ```
 
 ### 8.6 Scale-aware defense additions (research-validated, 2026-05-09)
@@ -1290,13 +1299,13 @@ positives without proportional true positives.
 - [x] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover — DONE 2026-06-19: 3 green scheduled sp900 crons (6/16, 6/17, 6/18); frontend PR 4 (midcap badge) shipped #490 (`MidcapChip` + per-index SPX/MID/ALL tabs). Pilot milestone COMPLETE → S&P 1500 cutover is next.**
 - [x] **S&P 1500 ranked weekly — Slice 7 cron flip DONE 2026-06-21 (#534 squash `8301b82cb`): cron defaults `sp1500`; full ~1504 names ranked; `Metadata.universe` = `"SP1500"`**
 - [x] **Compute time <90 min — ranked-1500 simulate cold ~174 min (< 240-min cron ceiling); warm extrapolated ~45 min (< 90 min gate, from the #120 warm probe 31 min)**
-- [ ] Frontend handles 1500-row table smoothly on mobile (Slice 8 — virtualized table pending)
+- [x] **Frontend handles 1500-row table smoothly on mobile — DONE (#548, 2026-06-22): infinite-scroll IntersectionObserver append (true `@tanstack/react-virtual` windowing deferred per the FLIP-search-scoped invariant, noted on issue #540)**
 - [x] **Null rate <10% mid-cap, <20% small-cap — sp600 smallcap null rate 0.33% / coverage 99.67% / cik 100% confirmed on the probe run**
 - [x] **All defenses verified on S&P 1500 universe (no scaling failures) — opus cohort-gate review PASSED; defense layer unchanged at 36; cohort-size sum-invariant locked by an sp1500 fixture**
-- [ ] **Bonferroni adjustments documented and applied** (Slice 3 shadow DEFERRED to Slice-8 calibration)
-- [ ] **Liquidity backstop excludes <$5M ADV stocks** (currently `low_liquidity` ANNOTATE only #527 — veto promotion deferred, RATIFY-SHADOW)
-- [ ] **Defense set FROZEN — no new flags added unless rotation criteria met**
-- [ ] **v2.0 tag pushed**
+- [x] **Bonferroni shadow counter documented and merged — DONE (#564, schema `0.10.30`, 2026-06-22): 3 `Metadata.bonferroni_shadow_*` observability counters; `m = valid_count`; provisional threshold −1.94 is a PLACEHOLDER — re-derivation from the empirical sp1500 M-score SD DEFERRED post-v2.0**
+- [ ] **Liquidity backstop excludes <$5M ADV stocks** (KEEP-ANNOTATE for v2.0 — `low_liquidity` #527 annotate is the shipped form; veto promotion (issue #544) deferred post-v2.0, gated on ≥ 1 sp600 cron firing-rate data + methodology ratification)
+- [x] **Defense set FROZEN at 36 for v2.0 — no new flags added unless rotation criteria met (low_liquidity #527 was the last; Bonferroni/Security-type adds are observability-only Metadata, not flags)**
+- [ ] **v2.0 tag pushed** (all other gates met; `release-captain` owns the `v2.0.0-phase8` cut — HOLD until ≥1 green scheduled sp1500 cron)
 
 ---
 
