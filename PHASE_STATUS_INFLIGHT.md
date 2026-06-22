@@ -6118,3 +6118,29 @@ stays `0.10.29-phase8pilot`, defense layer 36. Verify: `tsc --noEmit` clean ·
 of mobile scroll smoothness + FLIP-on-search (deferred to preview).
 
 ---
+
+## PR #549 — feat(frontend): wire HeroAttributeTiles Dividend tile to real data (in flight, 2026-06-21)
+
+UI follow-up (PR-2) to the dividend signal. The stock-detail hero's `HeroAttributeTiles`
+tile #3 (Dividend) was a hardcoded `value={null}` "Coming soon" placeholder; it now shows
+real `StockDetail.dividend_yield_pct` data. Ships AFTER the Rule-18 gate cleared: cron #121
+(`workflow_dispatch` universe=sp1500, committed `177485d1` 2026-06-21) confirmed CORRECTED
+dividend values (KO 2.67% / AAPL 0.36% / JPM 1.84% / NVDA 0.47% / F 4.27%; the pre-#533
+×100-inflated 267.0/36.0/184.0 are gone), `Metadata.dividend_coverage_pct = 67.29%`.
+
+New `formatDividendYield(dividendYieldPct, paysDividend)` in `frontend/lib/format.ts` with
+three display states: payer `"2.67%"` (toFixed(2)) / confirmed non-payer (`pays_dividend ===
+false` or yield 0) `"None"` / unavailable (`null`) `"—"` (em-dash, matches the app's
+`formatFairPrice`/`formatMosPct` null sentinel). `HeroAttributeTiles` gains `dividendYieldPct`
++ `paysDividend` props; tile #3 always renders FILLED via the helper, tile #4 (Type) stays the
+dashed "Coming soon" reserved state; `tabular-nums` on the value span. Call site in
+`app/stock/[ticker]/page.tsx` passes `detail.dividend_yield_pct` + `detail.pays_dividend`.
+
+Frontend-only — NO schema change (fields exist from #512; `types.ts`/`schemas.py`/snapshot
+untouched), rankings/scores unaffected. Verify: `tsc --noEmit` clean · `next build` 1512
+static pages (full sp1500) · `vitest run` 179/179 (+14 `formatDividendYield` assertions).
+Gate: frontend-builder (BUILT-CLEAN) + frontend-design-reviewer (PASS-WITH-NITS — diff clean
+across all 6 design sections; 2 deferred optional nits: over-broad `tabular-nums` harmless +
+no `title` on the `"—"` state). Closes the Dividend half of CLAUDE.md §Next deliverable 5.
+
+---

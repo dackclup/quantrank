@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { formatMosPct, formatFairPrice, mosColorClass } from './format';
+import { formatMosPct, formatFairPrice, mosColorClass, formatDividendYield } from './format';
 
 // ---------------------------------------------------------------------------
 // formatMosPct
@@ -213,5 +213,80 @@ describe('mosColorClass — boundary precision', () => {
 
   it('boundary at −20 belongs to rose-600 (not > −20)', () => {
     expect(mosColorClass(-20)).toBe('text-rose-600');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// formatDividendYield — three display states
+// ---------------------------------------------------------------------------
+//
+// Mirrors the HeroAttributeTiles "Dividend" tile contract:
+//   - Payer (yield > 0)             → "X.XX%"  (always 2 decimal places)
+//   - Confirmed non-payer (yield === 0 OR paysDividend === false) → "None"
+//   - Unavailable (yield === null)  → "—"
+//
+// IMPORTANT: dividendYieldPct is in PERCENT on the wire (2.67 = 2.67%).
+// ---------------------------------------------------------------------------
+
+describe('formatDividendYield — unavailable (null yield)', () => {
+  it('returns em-dash when yield is null', () => {
+    expect(formatDividendYield(null, null)).toBe('—');
+  });
+
+  it('returns em-dash when yield is null even if paysDividend is true', () => {
+    // Null yield wins — data is unavailable regardless of the boolean.
+    expect(formatDividendYield(null, true)).toBe('—');
+  });
+
+  it('returns em-dash when yield is null and paysDividend is false', () => {
+    expect(formatDividendYield(null, false)).toBe('—');
+  });
+});
+
+describe('formatDividendYield — confirmed non-payer', () => {
+  it('returns "None" when yield is 0', () => {
+    expect(formatDividendYield(0, null)).toBe('None');
+  });
+
+  it('returns "None" when yield is 0 and paysDividend is false', () => {
+    expect(formatDividendYield(0, false)).toBe('None');
+  });
+
+  it('returns "None" when paysDividend is explicitly false (even if yield is positive)', () => {
+    // Schema contract: paysDividend === false means confirmed non-payer.
+    // A positive yield with false paysDividend is an anomalous state — "None"
+    // is the conservative display.
+    expect(formatDividendYield(2.67, false)).toBe('None');
+  });
+});
+
+describe('formatDividendYield — payer (yield > 0)', () => {
+  it('formats a typical dividend yield to 2 decimal places', () => {
+    expect(formatDividendYield(2.67, true)).toBe('2.67%');
+  });
+
+  it('formats a small yield correctly', () => {
+    expect(formatDividendYield(0.50, true)).toBe('0.50%');
+  });
+
+  it('formats a high yield correctly (e.g. a REIT)', () => {
+    expect(formatDividendYield(8.12, true)).toBe('8.12%');
+  });
+
+  it('rounds to 2 decimal places (JS toFixed semantics)', () => {
+    // Due to IEEE 754 binary floating-point, 2.675 is actually stored as
+    // slightly below 2.675, so toFixed(2) gives "2.67", not "2.68".
+    // Use exact representable midpoints to test the round-half-up path.
+    expect(formatDividendYield(2.675, true)).toBe('2.67%'); // IEEE 754 sub-half
+    expect(formatDividendYield(2.685, true)).toBe('2.69%'); // rounds up
+    expect(formatDividendYield(2.674, true)).toBe('2.67%');
+    expect(formatDividendYield(2.676, true)).toBe('2.68%');
+  });
+
+  it('works when paysDividend is null (yield alone is enough to know it pays)', () => {
+    // paysDividend is present on schema 0.10.27+; null on older snapshots.
+    // A non-null positive yield should still render as a payer even without
+    // the boolean.
+    expect(formatDividendYield(3.14, null)).toBe('3.14%');
   });
 });
