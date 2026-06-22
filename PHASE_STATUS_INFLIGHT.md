@@ -6144,3 +6144,37 @@ across all 6 design sections; 2 deferred optional nits: over-broad `tabular-nums
 no `title` on the `"—"` state). Closes the Dividend half of CLAUDE.md §Next deliverable 5.
 
 ---
+
+## PR #566 — fix(ingest): MC / pure-advisory IB revenue+shares extraction (in flight, 2026-06-22)
+
+Closes the #566 data-quality gap surfaced by the first full sp1500 cron (#123, commit
+`364ad003`) post-cron audit: MC (Moelis, sp600) rendered a `lean_bullish` recommendation with
+`market_cap=null` + `fair_price=null` because BOTH `revenue` and `shares_outstanding` came back
+null, and `fundamentals_unavailable` does not fire (8 other metrics present, so the snapshot is
+non-null). Root cause (edgar-debugger): pure-advisory investment banks tag fee revenue under the
+ASC 942 broker-dealer concept `us-gaap:NoninterestIncome` — absent from `_TTM_REVENUE_TAGS` — and
+the per-filing XBRL shares fallback was gated on `revenue>0`, so a revenue-null snapshot never
+recovered shares.
+
+Two surgical ingest changes in `compute/ingest/fundamentals.py` (no schema change, no scoring
+change, no new flag):
+1. Add `us-gaap:NoninterestIncome` + `us-gaap:BrokerageCommissionsRevenue` to `_TTM_REVENUE_TAGS`
+   (inserted before `SalesRevenueNet`/`OilAndGasRevenue`; the OilAndGasRevenue-is-last invariant
+   is preserved). TTM selector is MAX-of-fresh / order-independent, so a diversified bank's larger
+   consolidated `RevenuesNetOfInterestExpense` still wins — no regression.
+2. Relax the per-filing XBRL shares-fallback guard from `revenue>0 AND total_assets>0` to
+   `revenue>0 OR total_assets>0`, so a revenue-null-but-asset-present snapshot (the MC case) still
+   reaches the shares fallback. The fallback is a no-op when it returns None.
+
+Blast radius (data-correctness improvement): EVR / HLI / PJT / LAZ and other pure-advisory
+Financials that previously missed revenue. OUT OF SCOPE (deferred): the methodology-gated
+annotate-before-veto guard for the "scoreable-but-shares-null" case (#566 item 3), MC
+`MULTI_CLASS_SHARE_ALLOWLIST` (needs a live multi-class probe). Tests: new offline
+`tests/test_ingest/test_advisory_revenue_tag.py` (tag-presence guard + advisory-only filer
+resolves revenue + diversified-bank-consolidated-wins no-regression + OilAndGasRevenue-last
+invariant). Local verify: `ruff check .` clean; full pytest deferred to CI (local env lacks
+pandas). Real confirmation is the next sp1500 cron repopulating MC with non-null market_cap +
+fair-price. Gate: orchestrator inline (compute-builder hit a session limit); recommend
+quantrank-reviewer + methodology-scientist review on the MAX-of-fresh blast radius before merge.
+
+---

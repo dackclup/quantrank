@@ -812,6 +812,15 @@ _TTM_REVENUE_TAGS: list[str] = [
     # consolidated revenue net of interest expense under this concept.
     # Without it, pure banks ship with revenue=None.
     "us-gaap:RevenuesNetOfInterestExpense",
+    # Pure-advisory investment banks / broker-dealers (Moelis MC, Evercore
+    # EVR, Houlihan Lokey HLI, PJT, Lazard LAZ) have negligible interest
+    # income and tag consolidated fee revenue under the ASC 942 broker-dealer
+    # concept rather than any `Revenues*` concept. Without these they ship
+    # with revenue=None (#566). MAX-of-fresh is ORDER-INDEPENDENT (largest
+    # fresh value wins), so this can't override a diversified bank's larger
+    # consolidated `RevenuesNetOfInterestExpense`.
+    "us-gaap:NoninterestIncome",
+    "us-gaap:BrokerageCommissionsRevenue",
     "us-gaap:SalesRevenueNet",
     # E&P / oil-and-gas filers (APA, COP, OXY, etc.) tag consolidated
     # revenue under this sector-specific concept rather than the generic
@@ -1228,8 +1237,13 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
     )
     if (
         (primary_shares is None or primary_too_low)
-        and (revenue_val or 0) > 0
-        and (balance_values.get("total_assets") or 0) > 0
+        # #566 — a healthy snapshot is proven by EITHER revenue OR total_assets.
+        # Previously both were required (AND), which blocked the per-filing
+        # XBRL shares fallback for revenue-null-but-asset-present filers (the
+        # pure-advisory IB case, e.g. MC: revenue tag missed AND dimensional
+        # DEI share contexts empty). Relaxed to OR so such snapshots still
+        # recover shares; the fallback is a no-op when it returns None.
+        and ((revenue_val or 0) > 0 or (balance_values.get("total_assets") or 0) > 0)
     ):
         fallback_shares = _fetch_shares_from_per_filing_xbrl(company, ticker=ticker)
         if fallback_shares is not None:
