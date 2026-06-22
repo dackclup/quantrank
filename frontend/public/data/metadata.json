@@ -1,16 +1,16 @@
 {
-  "version": "0.10.29-phase8pilot",
-  "last_update_utc": "2026-06-22T07:06:40Z",
-  "next_update_utc": "2026-06-23T07:06:40Z",
+  "version": "0.10.31-phase8pilot",
+  "last_update_utc": "2026-06-22T08:19:40Z",
+  "next_update_utc": "2026-06-23T08:19:40Z",
   "universe": "SP1500",
   "universe_size": 1504,
-  "compute_run_id": "27933530534",
-  "git_commit": "364ad0030651ff371ae6d60dc2689894ece144c9",
+  "compute_run_id": "27937085021",
+  "git_commit": "cf729abcabf816988cef62b2e9b5b798a4d3c154",
   "mos_trailing_ic_smoke": -0.22305666314936998,
   "tier2_coverage_pct": 99.53,
   "fundamentals_coverage_pct": 99.8,
   "fundamentals_latency_p50_seconds": 1.69,
-  "fundamentals_latency_p95_seconds": 3.16,
+  "fundamentals_latency_p95_seconds": 3.15,
   "osap_signals_used": [
     "AbnormalAccruals",
     "Activism1",
@@ -711,10 +711,10 @@
   "multi_class_mc_reconcile_failure_count": 0,
   "universe_membership_as_of": "2026-06-22",
   "survivorship_bias_corrected": true,
-  "tier2_wall_clock_seconds": 248.0,
+  "tier2_wall_clock_seconds": 153.5,
   "form4_wall_clock_seconds": 3.0,
-  "osap_wall_clock_seconds": 310.2,
-  "cross_source_wall_clock_seconds": 143.0,
+  "osap_wall_clock_seconds": 332.4,
+  "cross_source_wall_clock_seconds": 119.7,
   "form4_negation_guard_downgrade_count": 0,
   "decay_report_url": "/data/decay_report.json",
   "universe_cohort_sizes": {
@@ -741,5 +741,9 @@
   "smallcap_fundamentals_coverage_pct": 99.67,
   "smallcap_null_rate_pct": 0.33,
   "smallcap_cik_resolution_pct": 100.0,
-  "low_liquidity_annotate_count": 5
+  "security_type_coverage_pct": 40.09,
+  "low_liquidity_annotate_count": 5,
+  "bonferroni_shadow_flip_count": 39,
+  "bonferroni_shadow_live_fire_count": 86,
+  "bonferroni_shadow_provisional_fire_count": 47
 }
