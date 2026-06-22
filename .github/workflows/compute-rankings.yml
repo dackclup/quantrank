@@ -133,19 +133,24 @@ jobs:
     # so the workflow-level default stays read.
     permissions:
       contents: write
-    # Per-loop cold-cache budget (5 SEC EDGAR loops as of Phase 4.5e PR #205):
-    #   Step 1  prices (yfinance)         ~2-5 min   cold / ~1-2 min warm
-    #   Step 2  fundamentals snapshot     ~15-25 min cold / ~0 min warm (cache hit)
-    #   Step 3  annual fundamentals hist  ~10-15 min cold / ~0 min warm
-    #   Step 4  Form-4 fetch (EDGAR)      ~7-10 min  cold / ~2-3 min warm
-    #   Step 4b Tier-2 (10-K + 8-K)       ~20-35 min cold / ~3-5 min warm
-    #   OSAP download                     ~2-5 min   cold / ~0.5 min warm
-    #   Cross-source yfinance.info        warm-cache only in cron (24h TTL)
-    #   Scoring + JSON writes             ~2-3 min
+    # Per-loop cold-cache budget — S&P 1500 EMPIRICAL BASELINE (cron run
+    # 27902140692, 2026-06-21, commit 177485d16, ~1504 names):
     #
-    # Worst-case fully-cold (5 EDGAR loops evicted):    ~100-115 min
-    # +20% SEC throttle spike:                          ~120-140 min
-    # +Commit step + GitHub runner spin-up + headroom:  ~195m ceiling
+    #   SP 1500 cold-compute breakdown (measured):
+    #     Tier-2 (10-K + 8-K)               ~89 min cold / ~5-10 min warm
+    #     Form-4 fetch (EDGAR)               ~72 min cold / ~2-3 min  warm
+    #     OSAP + cross-source yfinance.info  ~13 min cold / ~1 min    warm
+    #     Prices + fundamentals snapshot     ~10-15 min cold / ~0 min warm (cache hit)
+    #     Annual fundamentals history        ~8-12 min  cold / ~0 min warm
+    #     Scoring + JSON writes              ~2-3 min
+    #     Total cold compute:                ~196 min
+    #
+    #   + Folded PIT backtest (warm caches):   ~22-55 min
+    #   Warm-cache path (all layers hit):      ~45 min estimated
+    #
+    # Worst-case cold compute + 10% SEC throttle spike: ~215-220 min
+    # + folded backtest step (capped 55m):              ~250 min worst-case
+    # 270 min ceiling gives ~20 min buffer over the cold worst-case.
     #
     # History:
     # - Phase 3d Part 2: 90m (4-loop reality, warm-cache wall-clock 5m14s)
@@ -176,11 +181,12 @@ jobs:
     #   a slow-SEC day could kill the step — a kill is benign: the atomic writer
     #   keeps the prior backtest_pit.json and the rankings commit still lands, but
     #   the backtest as_of would stall ~1 week). Job ceiling raised 195 → 225 →
-    #   240 to preserve headroom over a worst-case cold compute (~140-160m) PLUS
-    #   the capped backtest step. Cost: warm steady-state adds ~35-45m/run;
-    #   worst-case monthly ceiling is now 240m × 5 weekday runs × 4 weeks = 4,800
-    #   GitHub Actions minutes/month.
-    timeout-minutes: 240
+    #   240 → 270 (S&P 1500 cutover: cron run 27902140692 measured ~223 min cold
+    #   total vs 240 min budget — only ~7% headroom; a >10% SEC throttle spike
+    #   would blow the budget). Cost: warm steady-state adds ~35-45m/run;
+    #   worst-case monthly ceiling is now 270m × 5 weekday runs × 4 weeks =
+    #   5,400 GitHub Actions minutes/month.
+    timeout-minutes: 270
     steps:
       - uses: actions/checkout@v6
         with:

@@ -62,10 +62,10 @@ env:
   # — GOTCHAS.md §pre-merge-prod-sim mirroring invariant.
   # Sim cost: sp1500 warm-cache ~175 min (extrapolated from the sp900 ~105 min
   # observed on PR #534 × 1.66) vs sp900 cold ~131 min vs sp500 ~43 min. The
-  # 240-min timeout (matching the cron) holds headroom on a warm cache-v11 hit
-  # (sp600/sp1500 paths seeded #520); a fully cold sp600 miss can approach the
-  # ceiling — the documented compute-rankings.yml rollback (sp1500→sp900) is
-  # the escape hatch.
+  # 270-min timeout (matching the cron, bumped 240→270 for sp1500 scale) holds
+  # headroom on a warm cache-v11 hit (sp600/sp1500 paths seeded #520); a fully
+  # cold sp600 miss can approach the ceiling — the documented compute-rankings.yml
+  # rollback (sp1500→sp900) is the escape hatch.
   QR_UNIVERSE: sp1500
   FORM4_FETCH_SKIP: "1"
   # 2026-05-24 — pre-merge-prod-sim skips the Tier-2 (10-K text + 8-K)
@@ -179,13 +179,17 @@ jobs:
     # always visible to a PR run — run #100's main cron saved
     # cache-v8-fast-2026Q2-Linux at 15:50 yet this PR run missed it 8 min
     # later), so the timeout is the must-have safety net regardless of cache.
-    # Matches the weekly cron's `timeout-minutes: 240` (raised in the #249
-    # era + Phase 7.0 folded backtest); simulate runs FEWER loops than the
-    # cron (5 skip vars + no committed output + no PIT backtest), so 240 is
-    # an upper bound it should never approach on a warm restore. Simulate IS
-    # informational-only (workflow comment ~line 24) + restore-only, so the
-    # wider budget can never block a PR merge or poison the canonical cache.
-    timeout-minutes: 240
+    # Matches the weekly cron's `timeout-minutes: 270` (raised in the #249
+    # era + Phase 7.0 folded backtest; bumped 240→270 for sp1500 scale —
+    # cron run 27902140692 measured ~196 min cold compute vs 240 min budget,
+    # only ~7% headroom); simulate runs FEWER loops than the cron (5 skip
+    # vars + no committed output + no PIT backtest), so 270 is an upper bound
+    # it should never approach on a warm restore. Simulate IS informational-
+    # only (workflow comment ~line 24) + restore-only, so the wider budget
+    # can never block a PR merge or poison the canonical cache.
+    # Guard: tests/test_workflow_cache_coverage.py::test_sim_timeout_at_least_cron_timeout
+    # asserts sim_timeout >= cron_timeout — bump this in lockstep with the cron.
+    timeout-minutes: 270
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
