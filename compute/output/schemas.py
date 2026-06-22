@@ -697,6 +697,18 @@ class Metadata(BaseModel):
     # hardening before ranked production exposure.  None when the probe
     # didn't run (QR_UNIVERSE != sp1500).
     smallcap_cik_resolution_pct: float | None = None
+    # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.31-phase8pilot,
+    # Rule 18 observability-first) — coverage diagnostic canary.
+    # Modelled exactly on ``dividend_coverage_pct``:
+    # % of the ranked universe with a non-null ``StockDetail.security_type``
+    # after the Step-8 per-ticker loop.  A low value (< 80%) on the first
+    # post-merge cron would indicate that the ``yfinance_info`` cache was
+    # cold and the ``quote_type`` field was not yet pre-populated.
+    # Expected steady-state: ~95-99% (same as ``exchange_coverage_pct``
+    # since both derive from the same ``yfinance_info`` cache populated via
+    # the cross-source loop).
+    # ``None`` means the loop was skipped or the field aggregation failed.
+    security_type_coverage_pct: float | None = None
     # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
     # 0.10.29-phase8pilot, Rule 18 observability-before-wiring).
     #
@@ -957,3 +969,32 @@ class StockDetail(BaseModel):
     # the composite score.  Veto promotion is gated on ≥ 1 cron of
     # firing-rate data + methodology ratification (WORKFLOW.md §8.6).
     average_dollar_volume: float | None = None
+    # Security-type signal PR-1 (roadmap item #5 / 7b — observability-first,
+    # Rule 18, 0.10.31-phase8pilot).
+    #
+    # ``security_type`` — categorical label describing the instrument type:
+    # ``"Common stock"`` / ``"ADR"`` / ``"ETF"`` / ``"REIT"`` /
+    # ``"Preferred"`` / ``"Fund"`` / ``"Index"`` etc.  Sourced from
+    # ``yfinance.Ticker(t).fast_info.quote_type`` via a pure cache-read off
+    # the ``yfinance_info/<ticker>.json`` file populated by
+    # ``fetch_yfinance_exchange`` during the Step-8 cross-source loop
+    # (zero new network round-trips — ``quote_type`` is captured alongside
+    # ``exchange`` in the same ``fast_info`` call).
+    #
+    # Unknown yfinance codes are passed through verbatim (forward-safe —
+    # same philosophy as the exchange-code map).
+    #
+    # ``None`` when the ``yfinance_info`` cache was cold, the field was
+    # absent from ``fast_info``, or the fetch failed (graceful degradation
+    # per ``portable-graceful-degradation-try-except``).
+    #
+    # **DESCRIPTIVE METADATA ONLY — NOT a scoring input.** This field does
+    # NOT influence the composite score, risk_flags, recommendation, or any
+    # defense flag.  It is display information for the stock-detail hero
+    # tile (roadmap item #5 / 7b, issue #541).  All legacy per-stock JSONs
+    # (pre-0.10.31) deserialise cleanly under ``extra="forbid"`` because
+    # the field defaults to ``None``.
+    # Source: ``compute/ingest/cross_source.fetch_yfinance_security_type``
+    # (pure cache-read; the ``quote_type`` value is written as a side-channel
+    # during ``fetch_yfinance_exchange``'s ``_yf_fast_exchange`` call).
+    security_type: str | None = None

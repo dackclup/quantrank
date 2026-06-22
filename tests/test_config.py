@@ -164,27 +164,28 @@ def test_schema_version_pinned():
       zero new network round-trips.  Graceful degradation to None when the
       price DataFrame is unavailable or missing Close/Volume column.
 
-    Bonferroni shadow (0.10.30-phase8pilot, issue #542, Slice 8,
-    Rule 18 observability-before-wiring) — SHADOW / OBSERVABILITY-ONLY.
-    Adds three additive nullable ``Metadata`` fields for the Bonferroni
-    multi-test shadow counter.  Live scores, flags, and rankings are
-    byte-identical.  Methodology-scientist must review first cron counts
-    before any threshold promotion.
-    - ``Metadata.bonferroni_shadow_flip_count: int | None`` — tickers where
-      live (-2.22) fires but provisional Bonferroni-tightened (-1.94) does
-      not (false positives the tighter threshold would suppress).
-    - ``Metadata.bonferroni_shadow_live_fire_count: int | None`` — tickers
-      with Beneish M-score > -2.22 (live threshold) on this run.
-    - ``Metadata.bonferroni_shadow_provisional_fire_count: int | None`` —
-      tickers with M-score > -1.94 (provisional Bonferroni threshold).
-    Invariant: provisional <= live; live - provisional = flip_count.
+    Security-type signal PR-1 (0.10.31-phase8pilot, roadmap item #5 / 7b,
+    Rule 18 observability-first) — adds two additive nullable fields:
+    - ``Metadata.security_type_coverage_pct: float | None`` — % of the ranked
+      universe with a non-null ``StockDetail.security_type`` after the Step-8
+      per-ticker loop.  Coverage canary modelled on ``dividend_coverage_pct``.
+    - ``StockDetail.security_type: str | None`` — categorical label from
+      yfinance ``fast_info.quote_type`` (e.g. ``"Common stock"`` / ``"ETF"``).
+      Descriptive metadata only — NOT a scoring input, NOT a defense flag.
 
-    Prior version (0.10.29-phase8pilot): S&P 1500 Slice 4 ADV annotate.
+    Prior version (0.10.30-phase8pilot): Bonferroni multi-test shadow counter
+    (issue #542, Slice 8, Rule 18 observability-before-wiring) — SHADOW /
+    OBSERVABILITY-ONLY.  Adds three additive nullable ``Metadata`` fields
+    (``bonferroni_shadow_flip_count`` / ``bonferroni_shadow_live_fire_count`` /
+    ``bonferroni_shadow_provisional_fire_count``).  Live scores, flags, and
+    rankings are byte-identical.  Methodology-scientist must review first cron
+    counts before any threshold promotion.
+    Before that (0.10.29-phase8pilot): S&P 1500 Slice 4 ADV liquidity backstop.
     Before that (0.10.28-phase8pilot): S&P 1500 Slice 2 smallcap probe.
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.30-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.31-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

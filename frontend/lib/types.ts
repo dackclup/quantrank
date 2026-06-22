@@ -258,6 +258,12 @@ export type Metadata = {
   // HeroAttributeTiles "Dividend" tile reads the field. Absent / null on
   // legacy snapshots pre-0.10.27.
   dividend_coverage_pct?: number | null;
+  // Security-type signal PR-1 (0.10.31-phase8pilot) — % of universe whose
+  // StockDetail.security_type resolved to a non-null value on this cron run.
+  // Coverage canary (Rule-18 observability-first): ships before the
+  // HeroAttributeTiles "Type" tile reads the field. Modelled exactly on
+  // dividend_coverage_pct. Absent / null on legacy snapshots pre-0.10.31.
+  security_type_coverage_pct?: number | null;
   // benchmark_coverage_pct (0.10.14-phase4.6) — % of the benchmark index
   // proxies (SPY/QQQ/DIA/IWM) whose ~5y close series exported to
   // public/data/portfolio/benchmarks.json. Observability-before-wiring: ships
@@ -663,6 +669,14 @@ export type StockDetail = {
   dividend_yield_pct: number | null;
   pays_dividend: boolean | null;
   payout_ratio: number | null;
+  // Security-type signal PR-1 (0.10.31-phase8pilot) — display-only descriptive
+  // metadata (Rule-18 observability-first). Categorical label from yfinance
+  // fast_info.quote_type: "Common stock" / "ADR" / "ETF" / "REIT" / "Preferred"
+  // / "Fund" / "Index" etc. Null when the yfinance_info cache was cold, the
+  // field was absent, or the fetch failed. NOT a scoring input. No UI rendering
+  // in PR-1 — the HeroAttributeTiles "Type" tile ships after a cron confirms
+  // `security_type_coverage_pct` populates. (issue #541)
+  security_type: string | null;
   market_cap: number | null;
   current_price: number;
   rank: number;

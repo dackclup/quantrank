@@ -115,6 +115,49 @@ _EXCHANGE_NAME_BY_CODE: dict[str, str] = {
 _US_EXCHANGE_CODES: frozenset[str] = frozenset(_EXCHANGE_NAME_BY_CODE)
 
 
+# yfinance `fast_info.quote_type` returns uppercase instrument-type codes.
+# Map the codes that appear on the S&P 1500 universe to human display labels.
+# Unknown codes pass through verbatim (forward-safe — same philosophy as the
+# exchange-code map; better to show the raw code than drop the field so the
+# frontend always has something to display).
+#
+# Known codes observed on the S&P 1500 + broad US-equity universe:
+#   EQUITY     → domestic common stock (the overwhelming majority)
+#   ETF        → exchange-traded fund
+#   MUTUALFUND → open-end mutual fund (rare on S&P 1500; included for safety)
+#   INDEX      → index tracking product
+#   FUTURE     → futures contract
+#   CURRENCY   → currency pair (unexpected here but forward-safe passthrough)
+#
+# ADR note: yfinance returns ``EQUITY`` for most ADRs because Yahoo Finance
+# treats them as regular equities from the perspective of ``fast_info``.
+# The SEC-side ADR refinement (20-F document type OR EDGAR ``entityType``
+# = "foreign private issuer") is a TODO(#541 PR-1b) — wiring it cleanly
+# requires a new SEC submissions-JSON fetch that has no existing cache
+# surface in this layer.  PR-1 ships the yfinance ``quote_type`` as the
+# primary signal; the ADR override will be added in PR-1b once the SEC
+# entityType cache is available without introducing a new network round-trip.
+_QUOTE_TYPE_LABEL: dict[str, str] = {
+    "EQUITY": "Common stock",
+    "ETF": "ETF",
+    "MUTUALFUND": "Fund",
+    "INDEX": "Index",
+    "FUTURE": "Future",
+    "CURRENCY": "Currency",
+}
+
+
+def security_type_label(quote_type: str | None) -> str | None:
+    """Map a yfinance ``fast_info.quote_type`` code to a display label.
+
+    Unknown codes pass through verbatim (forward-safe) so new instrument
+    types surface as-is rather than being silently dropped.
+    """
+    if not quote_type:
+        return None
+    return _QUOTE_TYPE_LABEL.get(quote_type.upper(), quote_type)
+
+
 def exchange_name(code: str | None) -> str | None:
     """Map a yfinance exchange code to a display name (passthrough on unknown)."""
     if not code:
@@ -625,6 +668,29 @@ def fetch_yfinance_dividend(
     return (dividend_yield_pct, pays_dividend, payout_ratio)
 
 
+def _security_type_cache_read(ticker: str) -> str | None:
+    """Return cached raw ``quote_type`` code, or None on miss / expired / corrupt.
+
+    Reuses the same ``yfinance_info/<ticker>.json`` file.  The ``quote_type``
+    key is written as a side-channel during ``fetch_yfinance_exchange``'s live
+    ``_yf_fast_exchange`` call (zero extra round-trips).  Backward-compatible:
+    pre-existing cache entries without the ``quote_type`` key return None.
+    """
+    path = _cache_path(ticker)
+    if not path.exists():
+        return None
+    try:
+        age_seconds = time.time() - path.stat().st_mtime
+        if age_seconds > _CACHE_TTL_SECONDS:
+            return None
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning("yfinance_info security_type cache read failed for %s: %s", ticker, e)
+        return None
+    val = payload.get("quote_type")
+    return val if isinstance(val, str) and val else None
+
+
 def _exchange_cache_read(ticker: str) -> str | None:
     """Return cached raw exchange code, or None on miss / expired / corrupt.
 
@@ -648,8 +714,20 @@ def _exchange_cache_read(ticker: str) -> str | None:
     return val if isinstance(val, str) and val else None
 
 
-def _exchange_cache_write(ticker: str, exchange_code: str) -> None:
-    """Merge the exchange code into the existing cache file (preserves market_cap)."""
+def _exchange_cache_write(
+    ticker: str,
+    exchange_code: str,
+    quote_type: str | None = None,
+) -> None:
+    """Merge the exchange code (and optionally quote_type) into the cache file.
+
+    Security-type signal PR-1 (0.10.30-phase8pilot): ``quote_type`` is now
+    captured in the same ``fast_info`` call as ``exchange`` and stored in the
+    same cache file under the ``"quote_type"`` key.  A subsequent call to
+    ``_security_type_cache_read`` retrieves it at zero extra network cost.
+    Pre-existing callers that omit ``quote_type`` are unaffected (the key is
+    simply not written if ``None``).
+    """
     path = _cache_path(ticker)
     payload: dict[str, object] = {}
     if path.exists():
@@ -660,6 +738,8 @@ def _exchange_cache_write(ticker: str, exchange_code: str) -> None:
         except (OSError, json.JSONDecodeError):
             payload = {}
     payload["exchange"] = exchange_code
+    if quote_type is not None and isinstance(quote_type, str) and quote_type:
+        payload["quote_type"] = quote_type
     tmp = path.with_suffix(path.suffix + ".tmp")
     try:
         with tmp.open("w", encoding="utf-8") as f:
@@ -677,15 +757,40 @@ def _exchange_cache_write(ticker: str, exchange_code: str) -> None:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
-def _yf_fast_exchange(ticker: str) -> str | None:
-    """Pull the raw exchange code from yfinance `fast_info`. Raises on net error.
+def _yf_fast_exchange(ticker: str) -> tuple[str | None, str | None]:
+    """Pull the raw exchange code + quote_type from yfinance ``fast_info``.
 
-    Uses `fast_info` (the lightweight scraper) rather than `.info` — exchange
-    is one of its native attributes and it avoids the heavier `.info` payload.
+    Returns ``(exchange_code, quote_type)`` — either element may be None when
+    the field is absent or the scraper returns nothing.  Raises on persistent
+    network errors (tenacity retries the caller).
+
+    Uses ``fast_info`` (the lightweight scraper) rather than ``.info`` —
+    exchange and quote_type are both native ``fast_info`` attributes.
+    Capturing both in one call means ``fetch_yfinance_security_type`` costs
+    zero extra network round-trips: ``quote_type`` is stored as a side-channel
+    in the same ``yfinance_info/<ticker>.json`` cache file that ``exchange``
+    already writes to.
+
+    Security-type signal PR-1 (0.10.30-phase8pilot): return type changed from
+    ``str | None`` to ``tuple[str | None, str | None]`` to carry quote_type.
+    The only caller is ``fetch_yfinance_exchange`` (below) — updated in this
+    same PR to unpack the 2-tuple.
     """
     fi = yf.Ticker(ticker).fast_info
+    # ``exchange`` key is camelCase in fast_info.keys() and also an attribute.
+    # ``quoteType`` is the camelCase key (maps to snake_case ``quote_type`` attr).
+    # Primary path: fast_info.get() (camelCase-aware mapping, available in
+    # yfinance >= 0.2).  Fallback: getattr uses snake_case attribute names
+    # (``quote_type`` not ``quoteType`` — fast_info stores them as properties).
     code = fi.get("exchange") if hasattr(fi, "get") else getattr(fi, "exchange", None)
-    return code if isinstance(code, str) and code else None
+    qt = (
+        fi.get("quoteType")
+        if hasattr(fi, "get")
+        else getattr(fi, "quote_type", None)
+    )
+    exchange_code = code if isinstance(code, str) and code else None
+    quote_type = qt if isinstance(qt, str) and qt else None
+    return (exchange_code, quote_type)
 
 
 def fetch_yfinance_exchange(ticker: str) -> str | None:
@@ -697,6 +802,12 @@ def fetch_yfinance_exchange(ticker: str) -> str | None:
     on persistent failure rather than raising (the caller treats absence as
     "no exchange shown"). Honors the same ``QR_SKIP_CROSS_SOURCE=1`` escape
     hatch — stale-cache-tolerant read when set, no live fetch on a cold miss.
+
+    Security-type signal PR-1 (0.10.30-phase8pilot): on a live fetch,
+    ``quote_type`` is captured from the same ``fast_info`` call (zero extra
+    round-trips) and written to the cache alongside ``exchange`` via the
+    updated ``_exchange_cache_write``.  A subsequent call to
+    ``fetch_yfinance_security_type`` finds it in the warm cache.
     """
     if os.environ.get("QR_SKIP_CROSS_SOURCE"):
         path = _cache_path(ticker)
@@ -718,16 +829,83 @@ def fetch_yfinance_exchange(ticker: str) -> str | None:
         return cached
 
     try:
-        code = _yf_fast_exchange(ticker)
+        code, quote_type = _yf_fast_exchange(ticker)
     except Exception as e:  # noqa: BLE001
         logger.warning("yfinance exchange fetch failed for %s: %s", ticker, e)
         return None
 
     if code is None:
+        # Don't cache when the exchange code is absent: an empty-exchange key
+        # would poison the cache, and the missing exchange is already handled by
+        # the None passthrough. A quote_type seen without an exchange is dropped
+        # here and re-resolves on the next fetch that returns a valid exchange.
         return None
 
-    _exchange_cache_write(ticker, code)
+    _exchange_cache_write(ticker, code, quote_type=quote_type)
     return code
+
+
+def fetch_yfinance_security_type(ticker: str) -> str | None:
+    """Return the mapped security-type label for ``ticker``, or ``None``.
+
+    Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
+    Rule 18 observability-first).  This is a PURE CACHE-READ off the existing
+    ``yfinance_info/<ticker>.json`` cache file.  The ``quote_type`` field is
+    written to the cache as a zero-cost side-channel during the live
+    ``_yf_fast_exchange`` call inside ``fetch_yfinance_exchange`` — which is
+    called earlier in the same Step-8 loop iteration, so the cache is warm
+    by the time this function is called.
+
+    Returns the display label (e.g. ``"Common stock"`` for ``EQUITY``,
+    ``"ETF"`` for ``ETF``); unknown yfinance codes pass through verbatim
+    (forward-safe).  Returns ``None`` on cold cache, corrupt cache, or absent
+    ``quote_type`` field.
+
+    This function NEVER triggers a live yfinance fetch.  Callers that need
+    live data must call ``fetch_yfinance_exchange`` first (which populates
+    both fields in one round-trip), then call this function.  In practice
+    the Step-8 loop already calls ``fetch_yfinance_exchange`` earlier in the
+    same ticker iteration.
+
+    QR_SKIP_CROSS_SOURCE
+    --------------------
+    When ``QR_SKIP_CROSS_SOURCE=1`` is set (pre-merge-prod-sim escape hatch),
+    reads the cache with the same stale-tolerant path as
+    ``fetch_yfinance_shares_outstanding``: warm cache → return label;
+    cold cache → ``None`` (no live fetch).
+
+    **DESCRIPTIVE METADATA ONLY** — NOT a scoring input, NOT a defense flag.
+    Does NOT influence composite score, risk_flags, recommendation, or Top-5.
+    """
+    if os.environ.get("QR_SKIP_CROSS_SOURCE"):
+        path = _cache_path(ticker)
+        if path.exists():
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                qt = payload.get("quote_type")
+                if not isinstance(qt, str) or not qt:
+                    return None
+                logger.debug(
+                    "yfinance_info security_type FORCE-HIT (QR_SKIP_CROSS_SOURCE=1) "
+                    "for %s (stale-tolerant)",
+                    ticker,
+                )
+                return security_type_label(qt)
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "QR_SKIP_CROSS_SOURCE security_type stale-read failed for %s: %s — "
+                    "returning None",
+                    ticker,
+                    e,
+                )
+                return None
+        return None
+
+    # Normal path: TTL-gated cache read only.  No live fetch here — the
+    # exchange call (earlier in the same loop iteration) already did the
+    # fast_info round-trip and populated both exchange + quote_type into cache.
+    raw = _security_type_cache_read(ticker)
+    return security_type_label(raw)
 
 
 def validate_market_cap(
@@ -858,6 +1036,8 @@ __all__ = [
     "fetch_yfinance_market_cap",
     "fetch_yfinance_shares_outstanding",
     "fetch_yfinance_dividend",
+    "fetch_yfinance_security_type",
+    "security_type_label",
     "validate_market_cap",
     "bucket_delta",
     "BUCKET_KEYS",

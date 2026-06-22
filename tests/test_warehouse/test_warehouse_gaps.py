@@ -104,7 +104,7 @@ def _make_summary(ticker: str = "AAPL") -> Any:
 def _make_metadata() -> Any:
     from compute.output.schemas import Metadata
     return Metadata(
-        version="0.10.29-phase8pilot",
+        version="0.10.31-phase8pilot",
         last_update_utc="2026-06-21T22:00:00Z",
         next_update_utc="2026-06-22T22:00:00Z",
         universe="SP900",

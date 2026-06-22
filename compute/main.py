@@ -55,6 +55,7 @@ from compute.ingest.cross_source import (
     fetch_yfinance_dividend,
     fetch_yfinance_exchange,
     fetch_yfinance_market_cap,
+    fetch_yfinance_security_type,
     fetch_yfinance_shares_outstanding,
 )
 from compute.ingest.cross_source import (
@@ -2220,6 +2221,15 @@ def run_weekly_compute() -> int:
     _dividend_yield_pct_by_ticker: dict[str, float | None] = {}
     _pays_dividend_by_ticker: dict[str, bool | None] = {}
     _payout_ratio_by_ticker: dict[str, float | None] = {}
+    # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
+    # Rule 18 observability-first) — per-ticker security_type label collected
+    # as a zero-cost side-channel in the Step 8 loop.  Derives from a pure
+    # cache-read off ``yfinance_info/<ticker>.json``; the ``quote_type`` key
+    # is written during ``fetch_yfinance_exchange``'s live fast_info call
+    # (earlier in the same ticker iteration — no new network round-trips).
+    # Post-loop: aggregate ``security_type_coverage_pct`` from the non-None
+    # values (same formula as ``dividend_coverage_pct`` / ``exchange_coverage_pct``).
+    _security_type_by_ticker: dict[str, str | None] = {}
     # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
     # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
     # so the delta (flat-10% vs per-sector) is observable before the flag
@@ -2551,6 +2561,23 @@ def run_weekly_compute() -> int:
         _dividend_yield_pct_by_ticker[ticker] = _dy_pct
         _pays_dividend_by_ticker[ticker] = _pays_div
         _payout_ratio_by_ticker[ticker] = _pr
+
+        # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
+        # Rule 18 observability-first) — pure cache-read; no new network call.
+        # The ``yfinance_info/<ticker>.json`` cache was already populated
+        # (with quote_type) by ``fetch_yfinance_exchange`` earlier in this
+        # loop iteration.  Wrapped in try/except so any unexpected failure
+        # is non-fatal — field remains None and the cron continues unchanged.
+        # Rankings/scores/vetoes are NOT touched.
+        try:
+            _sec_type = fetch_yfinance_security_type(ticker)
+        except Exception as _sec_type_exc:  # noqa: BLE001
+            logger.debug(
+                "fetch_yfinance_security_type failed for %s (non-fatal): %s",
+                ticker, _sec_type_exc,
+            )
+            _sec_type = None
+        _security_type_by_ticker[ticker] = _sec_type
 
         # Issue #261 — multi_class_aggregate_shares_suspected annotate.
         # CIK-collision detector (precomputed before this loop) flags
@@ -2969,6 +2996,11 @@ def run_weekly_compute() -> int:
             # was unavailable or missing Close/Volume column (graceful
             # degradation per Rule 18).
             average_dollar_volume=adv_by_ticker.get(ticker),
+            # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
+            # Rule 18 observability-first). Display-only; does NOT influence
+            # composite score / risk_flags / recommendation / any defense flag.
+            # Defaults to None so legacy consumers are unaffected.
+            security_type=_security_type_by_ticker.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
         all_details.append(detail)  # Step 13.5 warehouse accumulator
@@ -3182,6 +3214,25 @@ def run_weekly_compute() -> int:
         dividend_coverage_pct if dividend_coverage_pct is not None else 0.0,
     )
 
+    # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
+    # Rule 18 observability-first) — aggregate coverage diagnostic after loop.
+    # Reuses the ``_coverage_pct`` helper (same formula as dividend / exchange).
+    # ``security_type`` is non-None whenever yfinance fast_info returned a
+    # ``quote_type`` and it was in the warm cache by the time the pure
+    # cache-read ran.  A high coverage % (expected ~95-99%) confirms the
+    # ``quote_type`` field is reliably populated; a low value signals the
+    # fast_info cache was cold.
+    security_type_coverage_pct = _coverage_pct(_security_type_by_ticker)
+    n_with_security_type = sum(
+        1 for v in _security_type_by_ticker.values() if v is not None
+    )
+    logger.info(
+        "Security-type coverage: %d / %d (%.1f%%)",
+        n_with_security_type,
+        len(_security_type_by_ticker),
+        security_type_coverage_pct if security_type_coverage_pct is not None else 0.0,
+    )
+
     # PR-A2 — Rule 18 observability: exchange-resolution coverage across the
     # universe (display-only fields). Watch this for >= 1 cron before PR-B
     # wires the frontend country/exchange chips (observability-before-wiring).
@@ -3388,6 +3439,10 @@ def run_weekly_compute() -> int:
         # Rule 18 observability-first). Aggregated from the Step 8 per-ticker
         # loop; None on failure or empty universe.
         dividend_coverage_pct=dividend_coverage_pct,
+        # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
+        # Rule 18 observability-first). Aggregated from the Step 8 per-ticker
+        # loop; None on failure or empty universe.
+        security_type_coverage_pct=security_type_coverage_pct,
         shares_fallback_triggered_count=shares_fallback_triggered_count,
         shares_fallback_too_low_count=shares_fallback_too_low_count,
         shares_fallback_dimensional_override_count=(
