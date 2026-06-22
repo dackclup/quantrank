@@ -48,30 +48,40 @@ import json
 from typing import Any
 
 from compute.output.schemas import DataQuality, PillarScores, RawMetrics, StockDetail, StockSummary
+from compute.valuation.ensemble import METHOD_NAMES
 from compute.warehouse.flag_registry import (
     KNOWN_RISK_FLAGS,
     KNOWN_VALUATION_WARNINGS,
 )
 
-# Known scalar keys in the fair_price dict (order is stable for column naming).
-# These are the keys emitted by compute.valuation.ensemble.ensemble_result_to_dict.
-# Unknown keys land only in fair_price_json, not as fp_<key> columns.
-_FP_SCALAR_KEYS: tuple[str, ...] = (
+# Genuinely top-level scalar keys in the fair_price dict.
+# These map directly to fp_<key> columns as-is.
+# Source: EnsembleResult fields that are NOT the nested `methods` dict.
+_FP_TOP_LEVEL_SCALAR_KEYS: tuple[str, ...] = (
     "median",
     "max",
     "low",
     "high",
     "mos_pct",
     "median_trimmed",
-    "methods_applicable",
-    # Per-method estimate columns (METHOD_NAMES tuple from ensemble.py):
-    "graham",
-    "multiples_pe",
-    "multiples_pb",
-    "multiples_ev_ebitda",
-    "rim",
-    "dcf",
-    "methods_excluded_from_median",
+    "methods_excluded_from_median",  # list → json-encoded
+)
+
+# The count of non-outlier applicable methods sits at
+# fair_price["valuation_methods_applicable"] (NOT "methods_applicable").
+# We extract it as fp_methods_applicable to keep the column name stable.
+_FP_METHODS_APPLICABLE_KEY = "valuation_methods_applicable"
+
+# Per-method columns: sourced from fair_price["methods"][<name>]["value"].
+# Uses the canonical METHOD_NAMES tuple from ensemble.py (not a hard-coded copy)
+# so the list stays in sync when methods are added/removed.
+_FP_METHOD_NAMES: tuple[str, ...] = METHOD_NAMES
+
+# Combined stable key set exposed for tests / schema check (column name ordering).
+_FP_SCALAR_KEYS: tuple[str, ...] = (
+    *_FP_TOP_LEVEL_SCALAR_KEYS,
+    "methods_applicable",       # → populated from valuation_methods_applicable
+    *_FP_METHOD_NAMES,
 )
 
 # StockDetail fields that should be skipped in the flat scalar pass because
@@ -191,8 +201,9 @@ def flatten_stock(
     fp: dict | None = detail.fair_price
     # Keep full json for unrestricted downstream access.
     row["fair_price_json"] = _json_encode(fp)
-    # Known scalar keys → fp_<key> columns.
-    for key in _FP_SCALAR_KEYS:
+
+    # 6a. Genuinely top-level scalar keys → fp_<key>.
+    for key in _FP_TOP_LEVEL_SCALAR_KEYS:
         if fp is not None and key in fp:
             val = fp[key]
             # methods_excluded_from_median is a list → json-encode it.
@@ -201,6 +212,25 @@ def flatten_stock(
             row[f"fp_{key}"] = val
         else:
             row[f"fp_{key}"] = None
+
+    # 6b. valuation_methods_applicable (top-level int count) → fp_methods_applicable.
+    row["fp_methods_applicable"] = (
+        fp.get(_FP_METHODS_APPLICABLE_KEY) if fp is not None else None
+    )
+
+    # 6c. Per-method values: nested at fair_price["methods"][<name>]["value"].
+    methods_dict: dict | None = fp.get("methods") if fp is not None else None
+    for method in _FP_METHOD_NAMES:
+        if methods_dict is not None and method in methods_dict:
+            method_entry = methods_dict[method]
+            # method_entry is a dict (from JSON) or FairPriceMethodResult dataclass.
+            if isinstance(method_entry, dict):
+                row[f"fp_{method}"] = method_entry.get("value")
+            else:
+                # Dataclass / Pydantic model: attribute access.
+                row[f"fp_{method}"] = getattr(method_entry, "value", None)
+        else:
+            row[f"fp_{method}"] = None
 
     # --- 7. risk_flags: dual bool columns + raw json ---
     rf_set: set[str] = set(detail.risk_flags)

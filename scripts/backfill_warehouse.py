@@ -264,11 +264,17 @@ def _write_backfill_partition(
 
     Idempotent — overwrites if the partition already exists.
 
+    Uses ``build_locked_schema`` from ``compute.warehouse.writer`` to apply
+    the same dtype-lock as the forward-path writer, so all-null numeric
+    columns land as DOUBLE (not INTEGER) and nullable-bool fields like
+    ``pays_dividend`` land as BOOL regardless of whether any row is non-null.
+
     Returns the number of rows written.
     """
     import pandas as pd
-    import pyarrow as pa
     import pyarrow.parquet as pq
+
+    from compute.warehouse.writer import build_locked_schema
 
     if not rows:
         logger.warning("_write_backfill_partition: no rows for %s — skipping", run_date)
@@ -283,8 +289,10 @@ def _write_backfill_partition(
         for col in sorted_cols:
             row.setdefault(col, None)
 
+    import pyarrow as pa
+
     df = pd.DataFrame(rows, columns=sorted_cols)
-    table = pa.Table.from_pandas(df, preserve_index=False)
+    table = pa.Table.from_pandas(df, schema=build_locked_schema(df), preserve_index=False)
 
     year_str = str(run_date.year)
     iso_str = run_date.isoformat()

@@ -33,6 +33,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    import pandas as pd
+    import pyarrow as pa
+
     from compute.output.schemas import Metadata, StockDetail, StockSummary
 
 from compute.warehouse.flatten import flatten_stock
@@ -42,6 +45,84 @@ logger = logging.getLogger(__name__)
 # Parquet compression codec.  zstd gives the best size/speed ratio for
 # our row-count (~900 rows per snapshot is tiny; metadata columns dominate).
 _PARQUET_COMPRESSION = "zstd"
+
+# Nullable-bool fields typed by NAME rather than value inspection.
+# These are ``bool | None`` Pydantic fields on StockDetail that flatten_stock
+# emits into the row dict.  When all rows in a snapshot have None for such a
+# field (e.g. pays_dividend on a universe with no dividend data yet), the
+# value-inspection branch in build_locked_schema would infer float64 instead
+# of bool — corrupting the schema the moment the first non-None value lands.
+# Listing them by name avoids that flip.  Add any future ``bool | None``
+# StockDetail fields here when they are added to schemas.py.
+_NULLABLE_BOOL_COLUMNS_BY_NAME: frozenset[str] = frozenset(
+    {
+        "pays_dividend",
+    }
+)
+
+
+def build_locked_schema(df: pd.DataFrame) -> pa.Schema:
+    """Build a stable PyArrow schema for a warehouse snapshot / backfill DataFrame.
+
+    Resolves a pyarrow type for every column in ``df``, producing a Schema
+    that can be passed to ``pa.Table.from_pandas(..., schema=schema)`` so
+    that the resulting Parquet file has deterministic dtypes across runs,
+    even when some columns are entirely null in a given snapshot.
+
+    Type-resolution priority (per column):
+      1. ``flag_*`` / ``warn_*`` → ``bool`` (always non-null in live rows;
+         nullable in pit_replay rows where forward-only flags are None).
+      2. ``*_json`` → ``large_string`` (nullable str).
+      3. Column name is in ``_NULLABLE_BOOL_COLUMNS_BY_NAME`` → ``bool``
+         (covers ``bool | None`` fields like ``pays_dividend`` where
+         value-inspection fails when all rows are null).
+      4. pandas bool dtype → ``bool``.
+      5. object dtype with ≥ 1 non-null value, all Python bools → ``bool``.
+      6. integer or float dtype → ``float64``.
+      7. object dtype, all-null → ``float64`` (unknown numeric; cast to
+         DOUBLE so the schema is stable if real values land later).
+      8. everything else → ``large_string`` (str / mixed catch-all).
+
+    Parameters
+    ----------
+    df:
+        The snapshot DataFrame.  Its columns must already be in the desired
+        stable order before calling this function.
+
+    Returns
+    -------
+    pa.Schema
+        A fully typed pyarrow schema with one field per column of ``df``.
+    """
+    import pandas as pd
+    import pyarrow as pa
+
+    pa_fields: list[pa.Field] = []
+    for col in df.columns:
+        s = df[col]
+        if col.startswith("flag_") or col.startswith("warn_"):
+            pa_type = pa.bool_()
+        elif col.endswith("_json"):
+            pa_type = pa.large_string()
+        elif col in _NULLABLE_BOOL_COLUMNS_BY_NAME:
+            pa_type = pa.bool_()
+        elif pd.api.types.is_bool_dtype(s):
+            pa_type = pa.bool_()
+        elif s.dtype == object:
+            non_null = s.dropna()
+            if len(non_null) > 0 and all(isinstance(v, bool) for v in non_null):
+                pa_type = pa.bool_()
+            elif s.isna().all():
+                pa_type = pa.float64()
+            else:
+                pa_type = pa.large_string()
+        elif pd.api.types.is_integer_dtype(s) or pd.api.types.is_float_dtype(s):
+            pa_type = pa.float64()
+        else:
+            pa_type = pa.large_string()
+        pa_fields.append(pa.field(col, pa_type))
+
+    return pa.schema(pa_fields)
 
 
 def _build_summary_index(summaries: list[StockSummary]) -> dict[str, StockSummary]:
@@ -118,7 +199,19 @@ def write_run_snapshot(
 
     # --- 3. Build DataFrame + PyArrow Table ---
     df = pd.DataFrame(rows, columns=sorted_cols)
-    table = pa.Table.from_pandas(df, preserve_index=False)
+
+    # Cast all-null (or mixed-numeric) columns to float64 so that columns
+    # which happen to be all-null in this snapshot (e.g. pillar_sentiment,
+    # pillar_ml, fp_dcf when the relevant Phase is not yet wired) are written
+    # as DOUBLE rather than INTEGER.  Without this, pandas infers int64 for
+    # all-null columns and the parquet schema flips to DOUBLE once real values
+    # land — breaking any typed consumer that read the first snapshot.
+    #
+    # ``build_locked_schema`` is the single source of truth for parquet column
+    # dtypes — it is also called by the backfill writer so both paths share
+    # the same dtype discipline.
+    pa_schema = build_locked_schema(df)
+    table = pa.Table.from_pandas(df, schema=pa_schema, preserve_index=False)
 
     # --- 4. Write snapshot partition (overwrite if exists) ---
     year_str = str(run_date.year)
