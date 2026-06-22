@@ -118,7 +118,51 @@ def write_run_snapshot(
 
     # --- 3. Build DataFrame + PyArrow Table ---
     df = pd.DataFrame(rows, columns=sorted_cols)
-    table = pa.Table.from_pandas(df, preserve_index=False)
+
+    # Cast all-null (or mixed-numeric) columns to float64 so that columns
+    # which happen to be all-null in this snapshot (e.g. pillar_sentiment,
+    # pillar_ml, fp_dcf when the relevant Phase is not yet wired) are written
+    # as DOUBLE rather than INTEGER.  Without this, pandas infers int64 for
+    # all-null columns and the parquet schema flips to DOUBLE once real values
+    # land — breaking any typed consumer that read the first snapshot.
+    # Boolean (flag_* / warn_*) and string / object columns are left as-is.
+    #
+    # Type-resolution priority (per column):
+    #   1. flag_* / warn_* → bool (always non-null in live rows)
+    #   2. *_json → large_string (nullable str)
+    #   3. pandas bool dtype → bool
+    #   4. object dtype whose non-null values are all Python bools
+    #      (nullable bool | None fields like pays_dividend) → bool
+    #   5. integer or float dtype → float64
+    #   6. all-null object dtype (unknown future numeric) → float64
+    #   7. everything else → large_string (str / mixed catch-all)
+    pa_fields: list[pa.Field] = []
+    for col in sorted_cols:
+        s = df[col]
+        if col.startswith("flag_") or col.startswith("warn_"):
+            pa_type = pa.bool_()
+        elif col.endswith("_json"):
+            pa_type = pa.large_string()
+        elif pd.api.types.is_bool_dtype(s):
+            pa_type = pa.bool_()
+        elif s.dtype == object:
+            non_null = s.dropna()
+            if len(non_null) > 0 and all(isinstance(v, bool) for v in non_null):
+                pa_type = pa.bool_()
+            elif s.isna().all():
+                pa_type = pa.float64()
+            else:
+                pa_type = pa.large_string()
+        elif pd.api.types.is_integer_dtype(s) or pd.api.types.is_float_dtype(s):
+            pa_type = pa.float64()
+        else:
+            pa_type = pa.large_string()
+        pa_fields.append(pa.field(col, pa_type))
+
+    # Build a typed PyArrow schema and cast the DataFrame columns to match.
+    # This is the single source of truth for parquet column dtypes.
+    pa_schema = pa.schema(pa_fields)
+    table = pa.Table.from_pandas(df, schema=pa_schema, preserve_index=False)
 
     # --- 4. Write snapshot partition (overwrite if exists) ---
     year_str = str(run_date.year)

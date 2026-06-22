@@ -182,7 +182,16 @@ class TestFlattenStock:
             assert col in row, f"Missing {col}"
 
     def test_fp_columns_present_when_fair_price_set(self):
-        """R3: fp_<key> columns present and populated from fair_price dict."""
+        """R3: fp_<key> columns present and populated from the real nested
+        fair_price structure: top-level scalars + nested methods dict.
+
+        The real fair_price dict (from compute.valuation.ensemble) has:
+          - Top-level: median, max, low, high, mos_pct, median_trimmed,
+            methods_excluded_from_median, valuation_methods_applicable
+          - Nested: methods[<name>] = {"value": ..., "applicable": ..., ...}
+        Per-method fp_<name> columns come from methods[<name>]["value"].
+        fp_methods_applicable comes from valuation_methods_applicable.
+        """
         from compute.warehouse.flatten import _FP_SCALAR_KEYS, flatten_stock
         fp = {
             "median": 120.0,
@@ -191,14 +200,32 @@ class TestFlattenStock:
             "high": 135.0,
             "mos_pct": 20.0,
             "median_trimmed": 121.0,
-            "methods_applicable": 6,
-            "graham": 110.0,
+            "methods_excluded_from_median": [],
+            "valuation_methods_applicable": 4,
+            "methods": {
+                "graham": {"value": 110.0, "applicable": True, "reason": None, "tier_used": None},
+                "multiples_pe": {"value": 90.0, "applicable": True, "reason": None, "tier_used": "sub_industry"},
+                "multiples_pb": {"value": 85.0, "applicable": True, "reason": None, "tier_used": "sub_industry"},
+                "multiples_ev_ebitda": {"value": None, "applicable": False, "reason": "excluded", "tier_used": None},
+                "rim": {"value": 105.0, "applicable": True, "reason": None, "tier_used": None},
+                "dcf": {"value": None, "applicable": False, "reason": "excluded", "tier_used": None},
+            },
         }
         detail = _make_detail(fair_price=fp)
         row = flatten_stock(detail, None)
+        # Top-level scalars
         assert row["fp_median"] == 120.0
+        assert row["fp_mos_pct"] == 20.0
+        # Per-method values from nested methods dict
         assert row["fp_graham"] == 110.0
-        # Keys not in fp dict → None
+        assert row["fp_multiples_pe"] == 90.0
+        assert row["fp_rim"] == 105.0
+        # Non-applicable methods have value=None → column is None
+        assert row["fp_multiples_ev_ebitda"] is None
+        assert row["fp_dcf"] is None
+        # fp_methods_applicable from valuation_methods_applicable (not methods_applicable)
+        assert row["fp_methods_applicable"] == 4
+        # All expected fp_* columns present
         for key in _FP_SCALAR_KEYS:
             col = f"fp_{key}"
             assert col in row, f"Missing {col}"
@@ -578,3 +605,256 @@ class TestSkipEnvVar:
                 "1", "true", "yes"
             )
             assert is_skipped, f"QR_SKIP_WAREHOUSE={val!r} should trigger skip"
+
+
+# ---------------------------------------------------------------------------
+# R11 — fp_* columns from nested fair_price["methods"] dict (Defect-1 fix)
+# ---------------------------------------------------------------------------
+
+class TestFlattenFpNestedMethods:
+    """R11: per-method fair_price columns sourced from fair_price["methods"][name]["value"].
+
+    Validates both:
+    - The nested methods dict extraction (Defect 1 fix).
+    - fp_methods_applicable comes from valuation_methods_applicable, not
+      a non-existent top-level "methods_applicable" key.
+    """
+
+    def _make_real_fp(self) -> dict:
+        """Build a fair_price dict with the real production structure."""
+        return {
+            "median": 100.0,
+            "max": 150.0,
+            "low": 80.0,
+            "high": 200.0,
+            "mos_pct": 30.0,
+            "median_trimmed": 95.0,
+            "methods_excluded_from_median": [],
+            "valuation_warnings": ["value_trap_risk"],
+            "valuation_methods_applicable": 3,
+            "methods": {
+                "graham": {
+                    "value": 120.0,
+                    "applicable": True,
+                    "reason": None,
+                    "tier_used": None,
+                },
+                "multiples_pe": {
+                    "value": 95.0,
+                    "applicable": True,
+                    "reason": None,
+                    "tier_used": "sub_industry",
+                },
+                "multiples_pb": {
+                    "value": 85.0,
+                    "applicable": True,
+                    "reason": None,
+                    "tier_used": "sub_industry",
+                },
+                "multiples_ev_ebitda": {
+                    "value": None,
+                    "applicable": False,
+                    "reason": "sector_excluded_financials",
+                    "tier_used": None,
+                },
+                "rim": {
+                    "value": None,
+                    "applicable": False,
+                    "reason": "value_trap_risk_roe_below_cost_of_equity",
+                    "tier_used": None,
+                },
+                "dcf": {
+                    "value": None,
+                    "applicable": False,
+                    "reason": "sector_excluded_financials",
+                    "tier_used": None,
+                },
+            },
+        }
+
+    def test_per_method_values_extracted_from_nested_dict(self):
+        """R11: fp_graham/fp_multiples_pe/etc. read from methods[name]['value']."""
+        from compute.warehouse.flatten import flatten_stock
+        fp = self._make_real_fp()
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+
+        assert row["fp_graham"] == 120.0, f"fp_graham={row['fp_graham']}, expected 120.0"
+        assert row["fp_multiples_pe"] == 95.0
+        assert row["fp_multiples_pb"] == 85.0
+
+    def test_non_applicable_methods_are_none(self):
+        """R11: methods with value=None → fp_* column is None."""
+        from compute.warehouse.flatten import flatten_stock
+        fp = self._make_real_fp()
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+
+        assert row["fp_multiples_ev_ebitda"] is None
+        assert row["fp_rim"] is None
+        assert row["fp_dcf"] is None
+
+    def test_fp_methods_applicable_from_valuation_methods_applicable(self):
+        """R11: fp_methods_applicable populated from valuation_methods_applicable (int count)."""
+        from compute.warehouse.flatten import flatten_stock
+        fp = self._make_real_fp()
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+
+        assert row["fp_methods_applicable"] == 3
+
+    def test_fp_methods_applicable_none_when_key_absent(self):
+        """R11: fp_methods_applicable is None when valuation_methods_applicable absent."""
+        from compute.warehouse.flatten import flatten_stock
+        fp = {
+            "median": 50.0,
+            "max": 60.0,
+            "low": 40.0,
+            "high": 70.0,
+            "mos_pct": 10.0,
+            "median_trimmed": 51.0,
+            "methods_excluded_from_median": [],
+            # No valuation_methods_applicable key
+            "methods": {
+                "graham": {"value": 55.0, "applicable": True, "reason": None, "tier_used": None},
+                "multiples_pe": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "multiples_pb": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "multiples_ev_ebitda": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "rim": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "dcf": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+            },
+        }
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+        assert row["fp_methods_applicable"] is None
+
+    def test_top_level_scalars_still_extracted(self):
+        """R11: median/max/low/high/mos_pct/median_trimmed still come from top-level."""
+        from compute.warehouse.flatten import flatten_stock
+        fp = self._make_real_fp()
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+
+        assert row["fp_median"] == 100.0
+        assert row["fp_max"] == 150.0
+        assert row["fp_low"] == 80.0
+        assert row["fp_high"] == 200.0
+        assert row["fp_mos_pct"] == 30.0
+        assert row["fp_median_trimmed"] == 95.0
+
+    def test_fair_price_json_still_complete(self):
+        """R11: fair_price_json carries the full dict including nested methods."""
+        from compute.warehouse.flatten import flatten_stock
+        fp = self._make_real_fp()
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+
+        decoded = json.loads(row["fair_price_json"])
+        assert "methods" in decoded
+        assert decoded["methods"]["graham"]["value"] == 120.0
+
+    def test_all_fp_columns_present(self):
+        """R11: all expected fp_* columns appear in the row."""
+        from compute.warehouse.flatten import _FP_SCALAR_KEYS, flatten_stock
+        fp = self._make_real_fp()
+        row = flatten_stock(_make_detail(fair_price=fp), None)
+        for key in _FP_SCALAR_KEYS:
+            col = f"fp_{key}"
+            assert col in row, f"Missing column {col}"
+
+
+# ---------------------------------------------------------------------------
+# R12 — all-null numeric columns write as DOUBLE/float64 in parquet (Defect-2 fix)
+# ---------------------------------------------------------------------------
+
+class TestWriterNumericDtypes:
+    """R12: numeric columns that are all-null in a snapshot round-trip as float,
+    not integer, in the parquet file.  This ensures schema stability across
+    runs where e.g. pillar_sentiment / pillar_ml (Phase-5 not yet wired)
+    or fp_dcf (sector excluded) are all-null for every row.
+    """
+
+    def test_all_null_numeric_column_writes_as_float(self, tmp_path):
+        """R12: pillar_sentiment/pillar_ml (always None in synthetic rows)
+        must be DOUBLE in parquet, not INT/BIGINT."""
+        import pyarrow.parquet as pq
+
+        from compute.warehouse.writer import write_run_snapshot
+
+        # Build one row where pillar_sentiment and pillar_ml are None
+        # (the default in _make_pillar_scores above, which leaves them out).
+        detail = _make_detail("NULL_TEST")
+        summary = _make_summary("NULL_TEST")
+        meta = _make_metadata()
+        run_date = date(2026, 6, 21)
+
+        write_run_snapshot([detail], [summary], meta, run_date, tmp_path)
+        part_file = (
+            tmp_path / "snapshots" / "year=2026" / "run_date=2026-06-21" / "part-0.parquet"
+        )
+        table = pq.read_table(part_file)
+        schema_dict = {field.name: field.type for field in table.schema}
+
+        import pyarrow as pa
+
+        # pillar_sentiment and pillar_ml are set to 50.0 in _make_pillar_scores
+        # so they are non-null; we need a column that IS all-null.
+        # composite_score_adjusted is None in our synthetic StockDetail.
+        # It's a float|None field — must come out as DOUBLE.
+        for col_name in ("composite_score_adjusted", "beneish_m_score", "dechow_f_score"):
+            if col_name in schema_dict:
+                col_type = schema_dict[col_name]
+                assert pa.types.is_floating(col_type), (
+                    f"{col_name} dtype={col_type} — expected float64/DOUBLE, "
+                    f"got {col_type} (integer schema drift defect)"
+                )
+
+    def test_all_null_fp_dcf_writes_as_float(self, tmp_path):
+        """R12: fp_dcf column (all-null when fair_price.methods.dcf.value is None)
+        must be DOUBLE in parquet, not INT/BIGINT."""
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+
+        from compute.warehouse.writer import write_run_snapshot
+
+        # Use a fair_price where dcf value is None (common for financial-sector stocks).
+        fp = {
+            "median": 50.0,
+            "max": 60.0,
+            "low": 40.0,
+            "high": 70.0,
+            "mos_pct": 10.0,
+            "median_trimmed": 50.0,
+            "methods_excluded_from_median": [],
+            "valuation_methods_applicable": 1,
+            "methods": {
+                "graham": {"value": 55.0, "applicable": True, "reason": None, "tier_used": None},
+                "multiples_pe": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "multiples_pb": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "multiples_ev_ebitda": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "rim": {"value": None, "applicable": False, "reason": "x", "tier_used": None},
+                "dcf": {"value": None, "applicable": False, "reason": "sector_excluded_financials", "tier_used": None},
+            },
+        }
+        detail = _make_detail("FP_DCF_NULL", fair_price=fp)
+        summary = _make_summary("FP_DCF_NULL")
+        meta = _make_metadata()
+        run_date = date(2026, 6, 21)
+
+        write_run_snapshot([detail], [summary], meta, run_date, tmp_path)
+        part_file = (
+            tmp_path / "snapshots" / "year=2026" / "run_date=2026-06-21" / "part-0.parquet"
+        )
+        table = pq.read_table(part_file)
+        schema_dict = {field.name: field.type for field in table.schema}
+
+        # fp_dcf is None → must write as DOUBLE not INT.
+        assert "fp_dcf" in schema_dict, "fp_dcf column missing from parquet"
+        col_type = schema_dict["fp_dcf"]
+        assert pa.types.is_floating(col_type), (
+            f"fp_dcf dtype={col_type} — expected DOUBLE, got {col_type}"
+        )
+
+        # fp_graham has a real value (55.0) — must also be float.
+        col_type_g = schema_dict["fp_graham"]
+        assert pa.types.is_floating(col_type_g), (
+            f"fp_graham dtype={col_type_g} — expected DOUBLE"
+        )
+
+        # Confirm the real fp_graham value round-trips correctly.
+        col_vals = table.column("fp_graham").to_pylist()
+        assert col_vals[0] == 55.0, f"fp_graham round-tripped as {col_vals[0]}, expected 55.0"

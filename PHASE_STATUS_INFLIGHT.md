@@ -6144,3 +6144,38 @@ across all 6 design sections; 2 deferred optional nits: over-broad `tabular-nums
 no `title` on the `"—"` state). Closes the Dividend half of CLAUDE.md §Next deliverable 5.
 
 ---
+
+## PR (compute) — warehouse flatten: populate per-method fp_* + lock numeric dtype (in flight, 2026-06-22)
+
+Two real warehouse defects found by querying a REAL SP1500 snapshot (1504 names, flattened from the
+committed production JSON) via DuckDB — the kind of bug only a real-data query surfaces.
+
+**Defect 1 — per-method `fp_*` + `fp_methods_applicable` were ALL-NULL (flatten bug).** `flatten.py`'s
+`_FP_SCALAR_KEYS` assumed `graham`/`multiples_pe`/`multiples_pb`/`multiples_ev_ebitda`/`rim`/`dcf` +
+`methods_applicable` lived at the TOP LEVEL of the `fair_price` dict. The real shape nests per-method
+values under `fair_price["methods"][<name>]["value"]`, and the count key is
+`valuation_methods_applicable`. So the six SQL-friendly per-method columns + `fp_methods_applicable`
+came out NULL for every row — the columnar per-method fair-price research the warehouse advertises was
+unusable (the data only survived in the `fair_price_json` blob). Fix: split `_FP_SCALAR_KEYS` into
+top-level scalars / the nested per-method set (sourced from `METHOD_NAMES` in `ensemble.py`) /
+the `valuation_methods_applicable → fp_methods_applicable` remap; section 6 of `flatten_stock` now
+reads the nested `methods[*]["value"]`. Column NAME SET unchanged (still 128). Real-data proof:
+`fp_graham` 0→916, `fp_dcf` 0→780, `fp_rim` 0→627, `fp_multiples_pe` 0→1318, `fp_methods_applicable`
+0→1497 non-null; ABR shows `fp_graham=19.46`/`fp_multiples_pe=5.64`/`fp_dcf=NaN` (DCF sector-excluded
+for financials) / `fp_methods_applicable=3`.
+
+**Defect 2 — all-null numeric columns inferred parquet INTEGER (unstable dtype).** Columns all-null in
+a snapshot (`pillar_sentiment`/`pillar_ml` — Phase 5 unwired — and any still-null `fp_*`) wrote as
+parquet INTEGER, then would re-infer DOUBLE once real values land — a dtype flip that could break a
+typed consumer. Fix: `writer.py` builds an EXPLICIT pyarrow schema before `Table.from_pandas`
+(`flag_*`/`warn_*`→bool, `*_json`→large_string, numeric/all-null-numeric→float64). Real-data proof:
+`pillar_sentiment`/`pillar_ml`/`fp_dcf`/`fp_graham` all land DOUBLE.
+
+Tests: `tests/test_warehouse/test_warehouse.py` gains `TestFlattenFpNestedMethods` (nested extraction,
+non-applicable→None, methods_applicable remap, absent-key→None, top-level scalars intact,
+`fair_price_json` complete) + `TestWriterNumericDtypes` (all-null numeric round-trips DOUBLE) — 121
+warehouse tests pass. Schema triple UNTOUCHED; rankings/scores unaffected (offline transform fix).
+`warehouse_schema.json` still 128 cols, in sync. Verify: ruff clean · 121 warehouse tests · real-data
+duckdb proof. Provenance: the "test analyst against the real DB" probe (owner request 2026-06-22).
+
+---
