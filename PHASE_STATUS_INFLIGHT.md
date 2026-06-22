@@ -6142,5 +6142,24 @@ static pages (full sp1500) · `vitest run` 179/179 (+14 `formatDividendYield` as
 Gate: frontend-builder (BUILT-CLEAN) + frontend-design-reviewer (PASS-WITH-NITS — diff clean
 across all 6 design sections; 2 deferred optional nits: over-broad `tabular-nums` harmless +
 no `title` on the `"—"` state). Closes the Dividend half of CLAUDE.md §Next deliverable 5.
+## PR #TBD — feat(compute): Bonferroni multi-test shadow counter (#542, Slice 8) (in flight, 2026-06-22)
+
+**Branch**: `claude/slice8-bonferroni-shadow`
+**Type**: feat(compute) — schema `0.10.29-phase8pilot` → `0.10.30-phase8pilot`. Additive PATCH bump; backward-compatible. SHADOW / OBSERVABILITY-ONLY. Live composite scores, risk_flags, rankings, and vetoes are BYTE-IDENTICAL.
+
+**What**: Slice 8 acceptance criterion "Bonferroni adjustments documented and applied" (WORKFLOW.md §8.6). Ships the shadow counter infrastructure — observability-first, NOT the live threshold promotion.
+
+**Three new `Metadata` fields** (all `int | None = None`, nullable on legacy snapshots pre-0.10.30):
+- `bonferroni_shadow_flip_count` — tickers where live Beneish threshold (−2.22) fires but the provisional Bonferroni-tightened threshold (−1.94) does NOT. These are the false positives the tighter threshold would suppress.
+- `bonferroni_shadow_live_fire_count` — tickers with M-score > −2.22 (matches the existing `beneish_high` annotate count; surfaced for self-contained shadow report).
+- `bonferroni_shadow_provisional_fire_count` — tickers with M-score > −1.94 (provisional Bonferroni threshold, PROVISIONAL pending empirical SD from real sp1500 cron). Always ≤ live_fire_count.
+
+**Sign correction** (WORKFLOW.md §8.6, 2026-06-19): −2.50 was WRONG (looser than −2.22, flags more names). Tighter FWER control moves the cutoff UP toward 0 (less negative). Provisional −1.94 derived from Beneish 1999 Table 3 SD ≈ 1.8 + Bonferroni z* ≈ 4.01, rounded conservatively. Exact value DEFERRED pending live sp1500 cron empirical SD.
+
+**Constants** (in `compute/scoring/bonferroni_shadow.py`): `BONFERRONI_M = 1500` · `BONFERRONI_ALPHA = 0.05` · `BONFERRONI_ALPHA_STAR ≈ 3.33e-5` · `BENEISH_BONFERRONI_PROVISIONAL = -1.94`. Reads `beneish_m_scores` already computed in main.py Step 5 — zero new computation. NEVER blocks the cron (try/except → None).
+
+**Files**: `compute/scoring/bonferroni_shadow.py` (new) · `compute/output/schemas.py` · `compute/config.py` · `compute/main.py` · `frontend/lib/types.ts` · `frontend/lib/schema-snapshot.json` (snapshot regenerated) · `tests/test_config.py` (schema pin updated) · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gates**: methodology-scientist ratification of m/α + the provisional −1.94 threshold · quantrank-reviewer (opus) · schema-sentinel (triple). DO NOT MERGE before methodology-scientist RATIFY-SHADOW on the first sp1500 cron's `bonferroni_shadow_flip_count`.
 
 ---

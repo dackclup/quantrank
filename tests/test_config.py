@@ -164,11 +164,27 @@ def test_schema_version_pinned():
       zero new network round-trips.  Graceful degradation to None when the
       price DataFrame is unavailable or missing Close/Volume column.
 
-    Prior version (0.10.28-phase8pilot): S&P 1500 Slice 2 smallcap probe.
+    Bonferroni shadow (0.10.30-phase8pilot, issue #542, Slice 8,
+    Rule 18 observability-before-wiring) — SHADOW / OBSERVABILITY-ONLY.
+    Adds three additive nullable ``Metadata`` fields for the Bonferroni
+    multi-test shadow counter.  Live scores, flags, and rankings are
+    byte-identical.  Methodology-scientist must review first cron counts
+    before any threshold promotion.
+    - ``Metadata.bonferroni_shadow_flip_count: int | None`` — tickers where
+      live (-2.22) fires but provisional Bonferroni-tightened (-1.94) does
+      not (false positives the tighter threshold would suppress).
+    - ``Metadata.bonferroni_shadow_live_fire_count: int | None`` — tickers
+      with Beneish M-score > -2.22 (live threshold) on this run.
+    - ``Metadata.bonferroni_shadow_provisional_fire_count: int | None`` —
+      tickers with M-score > -1.94 (provisional Bonferroni threshold).
+    Invariant: provisional <= live; live - provisional = flip_count.
+
+    Prior version (0.10.29-phase8pilot): S&P 1500 Slice 4 ADV annotate.
+    Before that (0.10.28-phase8pilot): S&P 1500 Slice 2 smallcap probe.
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.29-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.30-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

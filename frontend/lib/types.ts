@@ -484,6 +484,21 @@ export type Metadata = {
   // near-zero (large-caps clear $5M/day comfortably); designed for
   // S&P 1500 small-cap exposure.
   low_liquidity_annotate_count?: number | null;
+  // Bonferroni multi-test shadow counter (issue #542, Slice 8,
+  // 0.10.30-phase8pilot, Rule 18 observability-before-wiring).
+  // SHADOW / OBSERVABILITY-ONLY — live scores, flags, rankings are
+  // byte-identical. Methodology-scientist must review first cron's counts
+  // before any threshold is promoted. All 3 nullable: absent / null on
+  // legacy snapshots pre-0.10.30 or when the Beneish pass failed.
+  //
+  // `bonferroni_shadow_flip_count` — tickers where live (-2.22) fires but
+  // the provisional Bonferroni-tightened threshold (-1.94) does NOT.
+  // `bonferroni_shadow_live_fire_count` — tickers with M > -2.22 (live).
+  // `bonferroni_shadow_provisional_fire_count` — tickers with M > -1.94.
+  // Invariant: provisional <= live; live - provisional = flip_count.
+  bonferroni_shadow_flip_count?: number | null;
+  bonferroni_shadow_live_fire_count?: number | null;
+  bonferroni_shadow_provisional_fire_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

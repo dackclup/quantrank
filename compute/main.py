@@ -111,6 +111,7 @@ from compute.output.writer import (
     write_stock_history,
 )
 from compute.scoring.beneish import BeneishResult, compute_beneish
+from compute.scoring.bonferroni_shadow import compute_bonferroni_shadow
 from compute.scoring.composite import (
     build_sector_pillar_baselines,
     compute_composite,
@@ -3078,6 +3079,27 @@ def run_weekly_compute() -> int:
         )
         median_trim_delta_count = None
 
+    # Issue #542 Slice-8 Bonferroni shadow counter (0.10.30-phase8pilot, Rule 18).
+    # Reads beneish_m_scores already computed in Step 5 — zero new computation.
+    # Wrapped in try/except so a bug never blocks the cron — all 3 counters fall
+    # to None on failure (backward-compatible with legacy consumers).
+    bonferroni_shadow_flip_count: int | None = None
+    bonferroni_shadow_live_fire_count: int | None = None
+    bonferroni_shadow_provisional_fire_count: int | None = None
+    try:
+        (
+            bonferroni_shadow_flip_count,
+            bonferroni_shadow_live_fire_count,
+            bonferroni_shadow_provisional_fire_count,
+        ) = compute_bonferroni_shadow(beneish_m_scores)
+    except Exception as _bonf_exc:  # noqa: BLE001
+        logger.warning(
+            "bonferroni_shadow computation failed (non-fatal, #542): %s", _bonf_exc
+        )
+        bonferroni_shadow_flip_count = None
+        bonferroni_shadow_live_fire_count = None
+        bonferroni_shadow_provisional_fire_count = None
+
     # PR-1 cross-source corruption shadow (0.10.26-phase8pilot, Rule 18).
     # Aggregates the per-ticker grade results into the 4 new Metadata counters.
     # Uses the delta dict already populated in Step 8, plus the yf_market_cap
@@ -3484,6 +3506,14 @@ def run_weekly_compute() -> int:
         # no tickers fired); None semantics would indicate the counter
         # was never reached (shouldn't happen in production).
         low_liquidity_annotate_count=low_liquidity_annotate_count,
+        # Issue #542 Slice-8 Bonferroni shadow counter (0.10.30-phase8pilot,
+        # Rule 18 observability-before-wiring). SHADOW / OBSERVABILITY-ONLY —
+        # live scores, flags, rankings are byte-identical. Methodology-scientist
+        # must review first cron's counts before any threshold is promoted.
+        # None on failure (graceful-degradation) or pre-0.10.30 legacy snapshots.
+        bonferroni_shadow_flip_count=bonferroni_shadow_flip_count,
+        bonferroni_shadow_live_fire_count=bonferroni_shadow_live_fire_count,
+        bonferroni_shadow_provisional_fire_count=bonferroni_shadow_provisional_fire_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

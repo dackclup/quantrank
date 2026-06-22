@@ -77,6 +77,21 @@
       "required": false,
       "default": null
     },
+    "bonferroni_shadow_flip_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "bonferroni_shadow_live_fire_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "bonferroni_shadow_provisional_fire_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "c_suite_unusual_sell_firing_count": {
       "type": "int | None",
       "required": false,

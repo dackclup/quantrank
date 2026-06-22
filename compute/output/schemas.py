@@ -718,6 +718,49 @@ class Metadata(BaseModel):
     # the flag is designed for S&P 1500 small-cap exposure where
     # micro-cap / thinly-traded names may appear.
     low_liquidity_annotate_count: int | None = None
+    # Bonferroni multi-test shadow counter (issue #542, Slice 8,
+    # 0.10.30-phase8pilot, Rule 18 observability-before-wiring).
+    #
+    # Background: expanding from ~500 (S&P 500) to ~1500 (S&P 1500) triples
+    # the multiple-comparison burden. Tighter FWER control (Bonferroni:
+    # α* = α/m = 0.05/1500 ≈ 3.33e-5) TIGHTENS the Beneish M-Score cutoff
+    # — moves it UP toward 0 (less negative), NOT down (WORKFLOW.md §8.6
+    # sign correction 2026-06-19). The current live threshold is −2.22
+    # (Beneish 1999); the provisional Bonferroni-tightened threshold is
+    # −1.94 (PROVISIONAL — must be re-derived from empirical sp1500 SD).
+    #
+    # These 3 fields are SHADOW / OBSERVABILITY-ONLY. They do NOT change
+    # the live ``beneish_high`` flag, the composite score, the vetoes, or
+    # the rankings. Methodology-scientist must review the first cron's
+    # counts before any threshold is promoted to the live layer.
+    #
+    # ``bonferroni_shadow_flip_count`` — tickers where the flag state
+    # DIFFERS between the two thresholds. Since the provisional is
+    # stricter (−1.94 > −2.22), flips are always: live fires, provisional
+    # does NOT. A larger value = more false positives the tighter threshold
+    # would suppress from the annotate cohort. Zero means the two
+    # thresholds agree for the whole universe (all live-fires also exceed
+    # the tighter threshold). Methodology-scientist gate: this count +
+    # the live_fire and provisional_fire counts combined tell whether
+    # the provisional −1.94 is well-calibrated for the sp1500 universe.
+    #
+    # ``bonferroni_shadow_live_fire_count`` — tickers with Beneish
+    # M-score > −2.22 (the live threshold) on this cron run. Matches
+    # the universe-wide count of ``beneish_high`` annotates. Surfaced
+    # here so the shadow report is self-contained.
+    #
+    # ``bonferroni_shadow_provisional_fire_count`` — tickers with M-score
+    # > −1.94 (the provisional Bonferroni threshold). Always ≤
+    # bonferroni_shadow_live_fire_count (provisional is stricter).
+    # The difference between live and provisional counts =
+    # bonferroni_shadow_flip_count.
+    #
+    # All 3 default to None so legacy snapshots (pre-0.10.30) deserialize
+    # cleanly under extra="forbid". None when the Beneish pre-compute pass
+    # was skipped or failed (non-fatal).
+    bonferroni_shadow_flip_count: int | None = None
+    bonferroni_shadow_live_fire_count: int | None = None
+    bonferroni_shadow_provisional_fire_count: int | None = None
 
 
 class RawMetrics(BaseModel):
