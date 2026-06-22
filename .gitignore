@@ -233,6 +233,9 @@ models/
 # a CI/release artifact, NOT committed — it writes elsewhere / is not git-added.
 !data/warehouse/_manifest.parquet
 !data/warehouse/snapshots/**/*.parquet
+# SEC filing pointer index (Slice 1) — forward partitions committed alongside
+# snapshots so the filing panel accumulates in-repo (same pattern as snapshots).
+!data/warehouse/filing_index/**/*.parquet
 .DS_Store
 # Phase-8 scout raw outputs (only report.md gets committed later)
 scout_out/

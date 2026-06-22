@@ -38,6 +38,7 @@ if TYPE_CHECKING:
 
     from compute.output.schemas import Metadata, StockDetail, StockSummary
 
+from compute.warehouse.filing_index import FILING_INDEX_COLUMNS
 from compute.warehouse.flatten import flatten_stock
 
 logger = logging.getLogger(__name__)
@@ -298,3 +299,96 @@ def _update_manifest(
     table = pa.Table.from_pandas(new_df, preserve_index=False)
     pq.write_table(table, manifest_path, compression=_PARQUET_COMPRESSION)
     logger.info("warehouse: manifest updated → %s (%d runs)", manifest_path, len(new_df))
+
+
+# ---------------------------------------------------------------------------
+# Filing index writer
+# ---------------------------------------------------------------------------
+
+def write_filing_index_partition(
+    rows: list[dict],
+    run_date: date,
+    warehouse_dir: Path,
+) -> int:
+    """Write one run_date's filing-index rows to the Hive-partitioned store.
+
+    Partition layout mirrors the snapshot writer::
+
+        <warehouse_dir>/filing_index/year=<YYYY>/run_date=<ISO>/part-0.parquet
+
+    Write is atomic: rows are written to a ``.tmp`` file then ``os.replace``d
+    into the final path so a partial write never leaves a corrupt partition.
+    The partition is overwritten idempotently on re-run.
+
+    Parameters
+    ----------
+    rows:
+        List of row dicts from ``filing_index.fetch_filing_index_rows``.
+        Each dict must contain the keys declared in
+        ``filing_index.FILING_INDEX_COLUMNS``.  Extra keys are silently
+        carried through; missing keys are filled with ``None``.
+    run_date:
+        Logical run date.  Drives the partition path.
+    warehouse_dir:
+        Root of the warehouse on disk (typically ``config.WAREHOUSE_DIR``).
+        Created if absent.
+
+    Returns
+    -------
+    int
+        Number of rows written.  0 when ``rows`` is empty (no file written).
+
+    Raises
+    ------
+    Any exception from pyarrow / pandas / filesystem propagates to the caller
+    (``scripts/backfill_filing_index.py`` wraps each ticker in try/except).
+    """
+    import os as _os
+
+    import pandas as pd
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    if not rows:
+        logger.warning("write_filing_index_partition: no rows for %s — skipping", run_date)
+        return 0
+
+    # Stable column ordering: FILING_INDEX_COLUMNS first (canonical), then
+    # any extra columns in sorted order so the schema is deterministic.
+    known_extra = sorted(
+        {k for row in rows for k in row} - set(FILING_INDEX_COLUMNS)
+    )
+    sorted_cols = list(FILING_INDEX_COLUMNS) + known_extra
+
+    # Normalise rows so every row has every column (None for absent keys).
+    for row in rows:
+        for col in sorted_cols:
+            row.setdefault(col, None)
+
+    df = pd.DataFrame(rows, columns=sorted_cols)
+
+    # Filing-index schema: all columns are string | None (filing metadata is
+    # uniformly text).  PyArrow large_string is forward-safe for long URLs.
+    pa_fields = [pa.field(col, pa.large_string()) for col in sorted_cols]
+    pa_schema = pa.schema(pa_fields)
+    table = pa.Table.from_pandas(df, schema=pa_schema, preserve_index=False)
+
+    year_str = str(run_date.year)
+    iso_str = run_date.isoformat()
+    partition_dir = (
+        warehouse_dir / "filing_index" / f"year={year_str}" / f"run_date={iso_str}"
+    )
+    partition_dir.mkdir(parents=True, exist_ok=True)
+    part_path = partition_dir / "part-0.parquet"
+    tmp_path = part_path.with_suffix(".parquet.tmp")
+
+    pq.write_table(table, tmp_path, compression=_PARQUET_COMPRESSION)
+    _os.replace(tmp_path, part_path)
+
+    logger.info(
+        "warehouse filing_index: wrote %d rows → %s (%.1f KB)",
+        len(rows),
+        part_path,
+        part_path.stat().st_size / 1024,
+    )
+    return len(rows)
