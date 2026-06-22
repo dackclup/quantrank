@@ -563,3 +563,149 @@ def test_CS_DIV8B_skip_branch_clamps_gt100_and_passes_normal(
     )
     assert pays_n is True, f"pays_dividend must be True for yield 2.67, got {pays_n}"
     assert pr_n == pytest.approx(0.73)
+
+
+# ---------------------------------------------------------------------------
+# CS_DIV9 — payout_ratio > 20 clamp (sp1500 data-quality fix)
+#
+# First sp1500 cron (commit 177485d16) surfaced tickers with implausible
+# payout_ratio values: SLG=153.75 (15375%), indicating yfinance is returning
+# a percent-format value instead of the documented 0-1 fraction for companies
+# with negative/near-zero earnings.
+#
+# Guard: any payout_ratio > 20.0 is discarded to None (logs a warning).
+# Ceiling 20.0 is conservative: a legitimate REIT at 150% payout = 1.5;
+# only the percent-format >2000% garbage is cut. Same pattern as the
+# dividend_yield_pct > 100 guard added in #533.
+#
+# CS_DIV9A — live path (_yf_info_fetch): payout_ratio=153.75 → None;
+#             normal value 1.5 (e.g. REIT) passes through.
+#
+# CS_DIV9B — cache-read path (_dividend_cache_read): stale file with
+#             153.75 → payout_ratio=None; normal 0.73 passes through
+#             (boundary-correct guard); dividend_yield_pct unaffected.
+#
+# CS_DIV9C — QR_SKIP_CROSS_SOURCE=1 force-hit branch: implausible value
+#             clamped; normal value and pays_dividend both correct.
+# ---------------------------------------------------------------------------
+
+
+def test_CS_DIV9A_live_path_clamps_implausible_payout_ratio(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """_yf_info_fetch: payout_ratio=153.75 (SLG-style) → None; 1.5 (REIT) passes through.
+
+    Locks in the >20 guard added to _yf_info_fetch for the payout_ratio field.
+    A percent-format value like 153.75 (15375% payout) must be discarded;
+    a legitimate high-payout REIT ratio of 1.5 (150%) must pass through.
+    """
+    monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
+
+    # --- case 1: implausible percent-format value (SLG: 153.75) → clamped ---
+    slg_info = {
+        "marketCap": 4e9,
+        "sharesOutstanding": 1.75e8,
+        "dividendYield": 10.5,  # 10.5% yield — plausible
+        "payoutRatio": 153.75,  # percent-format bug: should be 1.5375
+    }
+    with patch("yfinance.Ticker", return_value=_make_ticker_mock(slg_info)):
+        _, _, _, payout_ratio = _yf_info_fetch("SLG")
+    assert payout_ratio is None, (
+        f"payout_ratio=153.75 is implausible (>20) and must be discarded, got {payout_ratio}"
+    )
+
+    # --- case 2: normal high REIT payout ratio 1.5 (150%) → passes through ---
+    reit_info = {
+        "marketCap": 8e9,
+        "sharesOutstanding": 5e8,
+        "dividendYield": 5.0,
+        "payoutRatio": 1.5,  # 150% payout — high but real (REIT distributes >100% of GAAP income)
+    }
+    with patch("yfinance.Ticker", return_value=_make_ticker_mock(reit_info)):
+        _, _, _, payout_ratio_reit = _yf_info_fetch("O")
+    assert payout_ratio_reit == pytest.approx(1.5), (
+        f"payout_ratio=1.5 (150% REIT) must pass through unclamped, got {payout_ratio_reit}"
+    )
+
+
+def test_CS_DIV9B_cache_read_clamps_gt20_and_passes_normal(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """_dividend_cache_read: stale file 153.75 → None; normal 0.73 passes through.
+
+    Locks in the >20 clamp added to _dividend_cache_read. A stale cache file
+    written when yfinance returned a percent-format payout_ratio must never
+    surface an implausible value on a warm TTL-gated cache hit.
+    dividend_yield_pct is returned correctly regardless.
+    """
+    monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
+
+    cache_file = tmp_path / "SLG.json"
+
+    # --- case 1: implausible stale value → clamped; yield unaffected ---
+    cache_file.write_text(
+        json.dumps({"market_cap": 4e9, "dividend_yield_pct": 10.5, "payout_ratio": 153.75}),
+        encoding="utf-8",
+    )
+    dy_kept, pr_clamped = _dividend_cache_read("SLG")
+    assert pr_clamped is None, (
+        f"payout_ratio=153.75 must be clamped to None by _dividend_cache_read, got {pr_clamped}"
+    )
+    assert dy_kept == pytest.approx(10.5), (
+        f"dividend_yield_pct must still be returned after payout clamp, got {dy_kept}"
+    )
+
+    # --- case 2: normal value 0.73 passes through ---
+    cache_file.write_text(
+        json.dumps({"market_cap": 4e9, "dividend_yield_pct": 2.67, "payout_ratio": 0.73}),
+        encoding="utf-8",
+    )
+    dy_normal, pr_normal = _dividend_cache_read("SLG")
+    assert pr_normal == pytest.approx(0.73), (
+        f"Normal payout_ratio=0.73 must pass through unclamped, got {pr_normal}"
+    )
+    assert dy_normal == pytest.approx(2.67)
+
+
+def test_CS_DIV9C_skip_branch_clamps_gt20_and_passes_normal(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """QR_SKIP_CROSS_SOURCE=1 branch: payout_ratio=153.75 → None; 0.73 passes through.
+
+    Locks in the >20 clamp in the QR_SKIP_CROSS_SOURCE force-hit branch of
+    fetch_yfinance_dividend. When the escape hatch is active a stale cache file
+    with an implausible payout must still be clamped. dividend_yield_pct and
+    pays_dividend must be unaffected by the payout clamp.
+    """
+    monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
+    monkeypatch.setenv("QR_SKIP_CROSS_SOURCE", "1")
+
+    cache_file = tmp_path / "SLG.json"
+
+    # --- case 1: implausible stale payout → clamped; yield + pays_dividend correct ---
+    cache_file.write_text(
+        json.dumps({"market_cap": 4e9, "dividend_yield_pct": 10.5, "payout_ratio": 153.75}),
+        encoding="utf-8",
+    )
+    dy, pays, pr = fetch_yfinance_dividend("SLG")
+    assert pr is None, (
+        f"QR_SKIP branch: payout_ratio=153.75 must be clamped to None, got {pr}"
+    )
+    assert dy == pytest.approx(10.5), (
+        f"dividend_yield_pct must be unaffected by payout clamp, got {dy}"
+    )
+    assert pays is True, (
+        f"pays_dividend must be True (yield 10.5 > 0) regardless of payout clamp, got {pays}"
+    )
+
+    # --- case 2: normal payout 0.73 passes through; pays_dividend=True ---
+    cache_file.write_text(
+        json.dumps({"market_cap": 4e9, "dividend_yield_pct": 2.67, "payout_ratio": 0.73}),
+        encoding="utf-8",
+    )
+    dy_n, pays_n, pr_n = fetch_yfinance_dividend("SLG")
+    assert pr_n == pytest.approx(0.73), (
+        f"Normal payout_ratio=0.73 must pass through unclamped in QR_SKIP branch, got {pr_n}"
+    )
+    assert dy_n == pytest.approx(2.67)
+    assert pays_n is True

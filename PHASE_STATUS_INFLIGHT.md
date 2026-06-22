@@ -5984,5 +5984,37 @@ noted in the per-job budget comment only.
 **Gate**: security-reviewer pass on the workflow diff (CLAUDE.md routing: non-trivial edit to
 `.github/workflows/*` → `security-reviewer`). DRAFT PR — do NOT merge or mark ready until
 that review clears.
+## PR #554 (compute) — payout_ratio format-reversion guard (in flight, 2026-06-21)
+
+**Branch**: `claude/sp1500-dataquality-fixes`
+**Type**: fix(ingest) — one data-quality bug fix surfaced by the first production sp1500 cron
+(commit `177485d16`); NO schema bump; rankings and composite scores are byte-identical.
+
+**Scope (narrowed per quantrank-reviewer FIX-AND-RE-REVIEW):** Originally this PR included two
+fixes — the payout_ratio guard (approved) and a `_balance_sheet_closure_check` in
+`fundamentals.py` (removed). The balance-sheet check had false-positive risk on real thin
+insurance equity (EQH), nulled the wrong component for GPK, had only 2/4 cache paths wired,
+and zero direct tests. Its real remedy is a separate upstream edgartools XBRL-context fix being
+routed to edgar-debugger. The PR is now a single-fix, clean scope.
+
+**Fix — payout_ratio > 20 clamp in `compute/ingest/cross_source.py`.**
+yfinance occasionally returns `payoutRatio` in percent-format for companies with negative /
+near-zero earnings (observed: SLG=153.75 on the first sp1500 cron, meaning 15,375% payout).
+The field is documented as a 0-1 fraction; `> 20` (i.e. > 2,000%) is structurally impossible.
+Guard ceiling 20.0 chosen conservatively: a real REIT at 1.5 (150%) passes through; only garbage
+values are discarded. Mirrors exactly the `dividend_yield_pct > 100.0` guard added in PR #533.
+Applied to all three extraction paths: `_yf_info_fetch` (live), `_dividend_cache_read`
+(TTL-gated), and `fetch_yfinance_dividend` QR_SKIP branch. Three new offline tests CS_DIV9A/B/C
+verify each path.
+
+**Deferred:** `_balance_sheet_closure_check` REMOVED from this PR per opus review.
+The XBRL dimensional-context issue (HASI/LGIH/GPK equity/liabilities corruption) is escalated
+to `edgar-debugger` for a proper upstream edgartools fix before any in-process accounting-identity
+correction lands.
+
+**Schema triple**: UNTOUCHED (`schemas.py` / `types.ts` / `schema-snapshot.json` unchanged).
+**Rule 16 (annotate-before-veto)**: N/A — no new flags.
+**Rule 18 (observability-before-wiring)**: N/A — no new external data sources.
+Verify: `ruff check .` clean · `pytest tests/test_ingest/test_cross_source_dividend.py -m "not network"` all passing (CS_DIV9A/B/C green).
 
 ---
