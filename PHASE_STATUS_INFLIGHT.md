@@ -6243,3 +6243,21 @@ regen, BUILT-CLEAN) + schema-sentinel (triple lockstep PASS). Follow-up: PR-2 wi
 `HeroAttributeTiles` "Type" tile after ≥ 1 sp1500 cron confirms `security_type_coverage_pct`.
 
 ---
+
+## PR #TBD — ci(frontend): bump CI Node 20 → 22 (pairs @types/node 26 #560, in flight, 2026-06-22)
+
+ci(frontend): bump the `Frontend (build)` job's `setup-node` pin from Node 20 to
+Node 22 in `.github/workflows/ci.yml`. Node 20 reached end-of-life 2026-04-30, and
+Dependabot PR #560 (`@types/node` 25.9.3 → 26.0.0) ships type definitions that
+describe the Node 22+ API surface — keeping CI on Node 20 while the types describe
+22 is the inconsistency the dependency-auditor flagged. Bumping CI to 22 aligns the
+runtime with the type surface and clears an already-EOL LTS line. NO schema bump;
+defense layer UNCHANGED; no compute/scoring/frontend-source change — workflow-only.
+The `Unit tests (vitest)` + `Build (static export)` steps validate the bump on the
+new runner. Sequencing: this PR merges first, then #560 (@types/node 26) merges on
+top so the type bump never lands ahead of the runtime it describes. Chore-PR review
+batch (this session): #559/#557/#556 already merged green; #561 (vitest 2→4) closed
+(required `vite ^6` peer the project doesn't carry); #558 (pytest-cov <8) simulate
+re-run pending.
+
+---
