@@ -6346,3 +6346,49 @@ Verify: ruff clean · `schema_check` IN SYNC · `pytest tests/test_valuation/ -m
 populated / N3 preservation invariant). Gate: compute-builder BUILT-CLEAN.
 
 ---
+
+## PR #566 — fix(ingest): MC / pure-advisory IB revenue+shares extraction (in flight, 2026-06-22)
+
+Closes the #566 data-quality gap surfaced by the first full sp1500 cron (#123, commit
+`364ad003`) post-cron audit: MC (Moelis, sp600) rendered a `lean_bullish` recommendation with
+`market_cap=null` + `fair_price=null` because BOTH `revenue` and `shares_outstanding` came back
+null, and `fundamentals_unavailable` does not fire (8 other metrics present, so the snapshot is
+non-null). Root cause (edgar-debugger): pure-advisory investment banks tag fee revenue under the
+ASC 942 broker-dealer concept `us-gaap:NoninterestIncome` — absent from `_TTM_REVENUE_TAGS` — and
+the per-filing XBRL shares fallback was gated on `revenue>0`, so a revenue-null snapshot never
+recovered shares.
+
+Two surgical ingest changes in `compute/ingest/fundamentals.py` (no schema change, no scoring
+change, no new flag):
+1. Add `us-gaap:NoninterestIncome` + `us-gaap:BrokerageCommissionsRevenue` as a NEW
+   **fallback-only** chain `_TTM_REVENUE_ADVISORY_FALLBACK_TAGS` (deliberately NOT in the
+   MAX-of-fresh `_TTM_REVENUE_TAGS`). New `_resolve_ttm_revenue` helper: standard chain via
+   MAX-of-fresh FIRST; consult the ASC 942 fallback ONLY when no standard concept resolves a
+   fresh value. **Precedence carve-out per methodology-scientist RATIFY-WITH-CONDITIONS (#571):**
+   `NoninterestIncome` is a COMPONENT of `RevenuesNetOfInterestExpense` and exceeds the
+   consolidated total whenever NetInterestIncome < 0 (net-interest-negative diversified banks,
+   e.g. GS/MS/SCHW/RJF in an inverted-curve year) — an unguarded MAX chain would SILENTLY inflate
+   their revenue + contaminate the value pillar / sector-peer fair-price median. Fallback-only
+   confines the recovery to PURE-advisory filers (MC/EVR/HLI/PJT/LAZ) that tag revenue exclusively
+   under the ASC 942 concept. Adversarial test pin added (consolidated 30B + larger NoninterestIncome
+   50B → consolidated wins). `_TTM_REVENUE_TAGS` unchanged (OilAndGasRevenue-is-last preserved).
+2. Drop the revenue condition from the per-filing XBRL shares-fallback guard:
+   `revenue>0 AND total_assets>0` → `total_assets>0` ALONE, so a revenue-null-but-asset-present
+   snapshot (the MC case) still reaches the shares fallback. Revenue presence is irrelevant to
+   recovering shares; `total_assets>0` still blocks firing on a fully-empty/corrupt snapshot
+   (assets=0 → no fire). (The two `test_fallback_does_not_fire_when_too_low_but_*` tests in
+   `test_fundamentals.py` pinned the old AND-gate — the `revenue_zero` one is repurposed to assert
+   the fallback now FIRES (the MC case); the `assets_zero` one is unchanged and still green.)
+
+Blast radius (data-correctness improvement): EVR / HLI / PJT / LAZ and other pure-advisory
+Financials that previously missed revenue. OUT OF SCOPE (deferred): the methodology-gated
+annotate-before-veto guard for the "scoreable-but-shares-null" case (#566 item 3), MC
+`MULTI_CLASS_SHARE_ALLOWLIST` (needs a live multi-class probe). Tests: new offline
+`tests/test_ingest/test_advisory_revenue_tag.py` (tag-presence guard + advisory-only filer
+resolves revenue + diversified-bank-consolidated-wins no-regression + OilAndGasRevenue-last
+invariant). Local verify: `ruff check .` clean; full pytest deferred to CI (local env lacks
+pandas). Real confirmation is the next sp1500 cron repopulating MC with non-null market_cap +
+fair-price. Gate: orchestrator inline (compute-builder hit a session limit); recommend
+quantrank-reviewer + methodology-scientist review on the MAX-of-fresh blast radius before merge.
+
+---

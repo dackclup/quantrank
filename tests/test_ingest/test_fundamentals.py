@@ -265,11 +265,15 @@ def test_fallback_boundary_at_100001_does_not_fire():
 # ---------------------------------------------------------------------------
 
 
-def test_fallback_does_not_fire_when_too_low_but_revenue_zero():
-    """primary=2542 (below floor) but revenue=0 → gate blocks fallback.
+def test_fallback_fires_when_too_low_and_revenue_zero_but_assets_present():
+    """#566 — primary=2542 (below floor), revenue=0, but total_assets>0 → the
+    fallback now FIRES.
 
-    The condition is: (primary is None OR too_low) AND revenue>0 AND assets>0.
-    When revenue=0 the gate is False; no fallback call.
+    The gate was relaxed from ``too_low AND revenue>0 AND assets>0`` to
+    ``too_low AND assets>0``: revenue presence is irrelevant to recovering
+    shares. This is exactly the pure-advisory IB (MC) scenario — the revenue
+    tag missed (revenue=None/0) but the balance sheet is present, so the
+    per-filing XBRL shares fallback must still run.
     """
     from compute.ingest.fundamentals import _build_snapshot
 
@@ -279,18 +283,19 @@ def test_fallback_does_not_fire_when_too_low_but_revenue_zero():
         total_assets=10_000_000_000.0,
     )
     company = _make_company_stub(facts)
+    fallback_return = 57_000_000.0
 
     with (
         patch("compute.ingest.fundamentals.Company", return_value=company),
         patch(
             "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=fallback_return,
         ) as mock_fallback,
     ):
         snapshot = _build_snapshot("FAKE", "0000000001")
 
-    mock_fallback.assert_not_called()
-    # snapshot.shares_outstanding remains the raw (implausibly low) primary value
-    assert snapshot.shares_outstanding == 2_542.0
+    mock_fallback.assert_called_once()
+    assert snapshot.shares_outstanding == fallback_return
 
 
 def test_fallback_does_not_fire_when_too_low_but_assets_zero():
