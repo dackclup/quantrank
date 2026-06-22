@@ -6158,10 +6158,18 @@ recovered shares.
 
 Two surgical ingest changes in `compute/ingest/fundamentals.py` (no schema change, no scoring
 change, no new flag):
-1. Add `us-gaap:NoninterestIncome` + `us-gaap:BrokerageCommissionsRevenue` to `_TTM_REVENUE_TAGS`
-   (inserted before `SalesRevenueNet`/`OilAndGasRevenue`; the OilAndGasRevenue-is-last invariant
-   is preserved). TTM selector is MAX-of-fresh / order-independent, so a diversified bank's larger
-   consolidated `RevenuesNetOfInterestExpense` still wins — no regression.
+1. Add `us-gaap:NoninterestIncome` + `us-gaap:BrokerageCommissionsRevenue` as a NEW
+   **fallback-only** chain `_TTM_REVENUE_ADVISORY_FALLBACK_TAGS` (deliberately NOT in the
+   MAX-of-fresh `_TTM_REVENUE_TAGS`). New `_resolve_ttm_revenue` helper: standard chain via
+   MAX-of-fresh FIRST; consult the ASC 942 fallback ONLY when no standard concept resolves a
+   fresh value. **Precedence carve-out per methodology-scientist RATIFY-WITH-CONDITIONS (#571):**
+   `NoninterestIncome` is a COMPONENT of `RevenuesNetOfInterestExpense` and exceeds the
+   consolidated total whenever NetInterestIncome < 0 (net-interest-negative diversified banks,
+   e.g. GS/MS/SCHW/RJF in an inverted-curve year) — an unguarded MAX chain would SILENTLY inflate
+   their revenue + contaminate the value pillar / sector-peer fair-price median. Fallback-only
+   confines the recovery to PURE-advisory filers (MC/EVR/HLI/PJT/LAZ) that tag revenue exclusively
+   under the ASC 942 concept. Adversarial test pin added (consolidated 30B + larger NoninterestIncome
+   50B → consolidated wins). `_TTM_REVENUE_TAGS` unchanged (OilAndGasRevenue-is-last preserved).
 2. Drop the revenue condition from the per-filing XBRL shares-fallback guard:
    `revenue>0 AND total_assets>0` → `total_assets>0` ALONE, so a revenue-null-but-asset-present
    snapshot (the MC case) still reaches the shares fallback. Revenue presence is irrelevant to

@@ -812,15 +812,6 @@ _TTM_REVENUE_TAGS: list[str] = [
     # consolidated revenue net of interest expense under this concept.
     # Without it, pure banks ship with revenue=None.
     "us-gaap:RevenuesNetOfInterestExpense",
-    # Pure-advisory investment banks / broker-dealers (Moelis MC, Evercore
-    # EVR, Houlihan Lokey HLI, PJT, Lazard LAZ) have negligible interest
-    # income and tag consolidated fee revenue under the ASC 942 broker-dealer
-    # concept rather than any `Revenues*` concept. Without these they ship
-    # with revenue=None (#566). MAX-of-fresh is ORDER-INDEPENDENT (largest
-    # fresh value wins), so this can't override a diversified bank's larger
-    # consolidated `RevenuesNetOfInterestExpense`.
-    "us-gaap:NoninterestIncome",
-    "us-gaap:BrokerageCommissionsRevenue",
     "us-gaap:SalesRevenueNet",
     # E&P / oil-and-gas filers (APA, COP, OXY, etc.) tag consolidated
     # revenue under this sector-specific concept rather than the generic
@@ -831,6 +822,23 @@ _TTM_REVENUE_TAGS: list[str] = [
     # (Issue #385; co-report behavior pinned by
     # tests/test_ingest/test_oil_gas_revenue.py::test_ttm_co_reporter_max_wins)
     "us-gaap:OilAndGasRevenue",
+]
+# #566 / #571 — ASC 942 broker-dealer FEE-revenue concepts, used FALLBACK-ONLY
+# (deliberately NOT in the MAX-of-fresh `_TTM_REVENUE_TAGS` chain above).
+# `us-gaap:NoninterestIncome` is a COMPONENT of a bank's
+# `RevenuesNetOfInterestExpense` (= NetInterestIncome + NoninterestIncome), so it
+# EXCEEDS the consolidated total exactly when NetInterestIncome < 0 (interest
+# expense > interest income) — a real, non-pathological case for net-interest-
+# negative diversified banks/brokers (e.g. GS/MS/SCHW/RJF in an inverted-curve
+# year). If these were in the MAX chain they would SILENTLY inflate such a
+# filer's revenue (and contaminate the value pillar + sector-peer fair-price
+# median). Consulted ONLY when no standard concept above resolves a fresh value
+# (see `_resolve_ttm_revenue`), so the recovery is confined to PURE-advisory
+# filers (MC/EVR/HLI/PJT/LAZ) that tag revenue EXCLUSIVELY under the ASC 942
+# concept. (methodology-scientist RATIFY-WITH-CONDITIONS, #571.)
+_TTM_REVENUE_ADVISORY_FALLBACK_TAGS: list[str] = [
+    "us-gaap:NoninterestIncome",
+    "us-gaap:BrokerageCommissionsRevenue",
 ]
 _TTM_NET_INCOME_TAGS: list[str] = [
     "us-gaap:NetIncomeLoss",
@@ -893,6 +901,33 @@ def _try_ttm_max_fresh(
     if not candidates:
         return None, None, None
     return max(candidates, key=lambda c: c[0])
+
+
+def _resolve_ttm_revenue(
+    facts,
+    *,
+    today: date | None = None,
+) -> tuple[float | None, date | None, date | None]:
+    """Two-tier TTM revenue resolution (#566 / #571).
+
+    The standard revenue concepts in ``_TTM_REVENUE_TAGS`` are tried FIRST via
+    MAX-of-fresh. Only when NONE of them resolves a fresh value do we consult
+    the ASC 942 broker-dealer fee concepts in
+    ``_TTM_REVENUE_ADVISORY_FALLBACK_TAGS``. This precedence carve-out keeps a
+    present consolidated bank total (``Revenues`` / ``RevenuesNetOfInterestExpense``)
+    always winning, so ``us-gaap:NoninterestIncome`` can never silently inflate a
+    net-interest-negative diversified bank's revenue (it would exceed the
+    consolidated total whenever interest expense > interest income). The recovery
+    is confined to pure-advisory filers (MC/EVR/HLI/PJT/LAZ) that tag revenue
+    EXCLUSIVELY under the ASC 942 concept. See the
+    ``_TTM_REVENUE_ADVISORY_FALLBACK_TAGS`` comment for the full rationale.
+    """
+    val, filed, pe = _try_ttm_max_fresh(facts, _TTM_REVENUE_TAGS, today=today)
+    if val is None:
+        val, filed, pe = _try_ttm_max_fresh(
+            facts, _TTM_REVENUE_ADVISORY_FALLBACK_TAGS, today=today
+        )
+    return val, filed, pe
 
 
 def _fetch_shares_from_per_filing_xbrl(
@@ -1172,7 +1207,7 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
     # edgartools' get_ttm_revenue() / get_ttm_net_income() helpers — see
     # _try_ttm_max_fresh() docstring for the NVDA + AVB regression cases
     # this guards against (audit #5 — pre-v1.0 stop-the-line, 2026-05).
-    revenue_val, revenue_filed, revenue_pe = _try_ttm_max_fresh(facts, _TTM_REVENUE_TAGS)
+    revenue_val, revenue_filed, revenue_pe = _resolve_ttm_revenue(facts)
     if revenue_pe is not None:
         period_dates.append(revenue_pe)
     snapshot_dates.append(revenue_filed)
