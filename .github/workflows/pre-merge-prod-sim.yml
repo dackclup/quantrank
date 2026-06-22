@@ -191,7 +191,7 @@ jobs:
     # asserts sim_timeout >= cron_timeout — bump this in lockstep with the cron.
     timeout-minutes: 270
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"

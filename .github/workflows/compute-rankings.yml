@@ -188,7 +188,7 @@ jobs:
     #   5,400 GitHub Actions minutes/month.
     timeout-minutes: 270
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v6
