@@ -6466,5 +6466,42 @@ Merged since the last Mode C:
   `v2.0.0-phase8` tag (DRAFT PR; HOLD the tag until ≥1 green scheduled sp1500
   cron). Deferred post-v2.0: `low_liquidity` annotate→veto promotion (#544,
   KEEP-ANNOTATE for v2.0) + Bonferroni provisional-threshold re-derivation (#542).
+## PR (roadmap-restructure) — chronological tags + Lane A/B + §Current-state reconcile (in flight, 2026-06-22)
+
+Docs-only roadmap restructure on branch `claude/roadmap-restructure-2lane`. NO code /
+schema / workflow change. Built on a 100%-verified fact sweep (git tags + live GitHub
+issues + `compute/config.py` SCHEMA_VERSION) — the prior `PHASE_STATUS.md` §Current
+state was ~2 schema bumps stale (read 0.10.29; real is `0.10.31-phase8pilot`).
+
+Three structural fixes to the "version-leapfrog + jumping-around" friction the owner
+flagged:
+1. **Tags decoupled from phase numbers → chronological.** Next tag = `v2.0` regardless
+   of phase; `v1.1.0-phase4` is declared RETIRED/superseded (it sits below the live
+   `v1.4` because Phase 4.5/4.6 were tagged first while Phase 4's factor-integration
+   gate stayed open-ended) — its #113/#120 work lands in the then-current tag when the
+   cron IC clears. `v1.5.0` folded into the Q3 evidence harvest.
+2. **Two-lane §Next deliverables.** Lane A = Ship-now (deterministic: #569/#567/#568/
+   #574/#550/#551/#259/#478/#41/#455/#137); Lane B = Evidence-gated (#544/#581/#130/
+   #454/#484/#461/#562/#113/#120/#122/#260/#563/#579) carrying a data-ready date, OFF
+   the tag critical path.
+3. **One evidence checkpoint** — the Lane-B cohort items converge on the Q3 2026-08-19
+   audit (#130) as a single harvest, not scattered "rate-after-1-cron" blockers.
+
+Edits: `PHASE_STATUS.md` §Next deliverables (full 2-lane rewrite + release ladder +
+phase-position) + §Current state (schema 0.10.29→0.10.31 reconcile + date + merged-
+since-#534 list) + retired the stale 2026-06-10 inline Open-issues snapshot (GitHub is
+canonical); CLAUDE.md + AGENTS.md schema headlines reconciled to 0.10.31 (lockstep);
+housekeeping: closed #541 + #543 (work merged via #565/#578 + #549 but never closed).
+Verify: docs-only diff; CLAUDE.md + AGENTS.md both moved (lockstep). Gate: docs-reviewer
++ orchestrator; DRAFT PR for review before merge.
+
+**Rebase reconciliation (2026-06-22, vs `origin/main`):** rebased after **#577 cut
+`v2.0.0-phase8`** + #580 (SEC filing-index Slice 1) landed. Two reconciles folded in:
+(1) the §Next-deliverables Release ladder updated from "next = v2.0" → **"v2.0.0-phase8
+SHIPPED (#577) · next = v2.1"** (v2.0 is no longer the upcoming tag); (2) the CLAUDE.md
++ AGENTS.md schema-headline edits were SUPERSEDED by #577's fuller release reconcile
+(both already read `0.10.31`) — this PR keeps main's headlines, dropping the redundant
+lighter edit. The 2-lane backlog + retire-v1.1 + §Current-state reconcile remain this
+PR's substance.
 
 ---

@@ -6,11 +6,11 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
-| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; **PR #112 (Phase 4h)** shipped OSAP signal replication + PBO/DSR gate + Path-b 50/50 blend (schema bump `0.8.0-phase4.5f` → `0.9.0-phase4h`, no new veto — annotate-only blend, Top-5 still ranks raw composite per Rule 16); **Phase 4h.2 Part 1** (PR #118 merged) shipped observability follow-up — schema PATCH bump `0.9.0-phase4h` → `0.9.1-phase4h.2`; 2 new optional `Metadata` fields surface (a) silent-drop list (78/100 manifest entries missing from dataset) + (b) per-signal `OsapGateDiagnostic`. Part 2 opens after ≥1 week of production diagnostic data; **Phase 4i scout (JKP)** shipped via PR #114 (CC BY-NC 4.0 — license-review-required for integration PR per #115); **Phase 4j scout (Qlib Alpha158)** shipped via PR #119 — `pyqlib` MIT-licensed install + 158-feature manifest + 6 offline tests, NO `@network` test (Qlib's data pipeline is local-bin only — no remote CDN to hit, structurally different from 4h/4i); **Phase 4k scout (IPCA)** shipped via PR #121 — `ipca` MIT-licensed install + 8-method `INSTRUMENTED_PCA_PUBLIC_API` drift detector + 6 offline tests, NO `@network` test (IPCA is pure sklearn-style local computation, 4th distinct structural shape: panel decomposition into Gamma + Factors); all 4 factor scouts now done → eligible for v1.1.0-phase4 tag readiness audit (gated on 4h.2 Part 2 / 4i.1 / 4j.1 / 4k.1 integration PRs); **Phase 4h.2 Part 2 merged via PR #124 (2026-05-19)** — multi-port OSAP adapter (`compute/features/osap_replicate.py::compute_long_short_returns` per-signal `min(port)`/`max(port)` inference, recovering ~56 quintile / tercile signals that the 0.9.0–0.9.1 hardcoded port=01/10 filter silently dropped) + new `Metadata.osap_signals_dropped_no_long_short` field closing the 100-signal accounting equation + schema PATCH bump `0.9.1-phase4h.2` → `0.9.2-phase4h.2`; PR 4b §3 IC-decay output deferred to Phase 5; **v1.1 tag gate RE-SCOPED 2026-06-10** — 4j.1 observability DONE (#426), 4i.1 (JKP) **dropped from the hard gate** (license #115 unresolved since 2026-05-14; WORKFLOW fallback clause invoked), 4k.1 (IPCA) additive/non-blocking; new gate = 4h.1 full OSAP replication (#113) + the 4j.2 Qlib blend decision on ≥ 1 cron of `alpha158_*` IC evidence (§Next deliverables item 5) |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → ~~v1.1~~ (**v1.1 RETIRED** — see §Next deliverables Release ladder; the #113/#120 work lands in the then-current tag) | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; **PR #112 (Phase 4h)** shipped OSAP signal replication + PBO/DSR gate + Path-b 50/50 blend (schema bump `0.8.0-phase4.5f` → `0.9.0-phase4h`, no new veto — annotate-only blend, Top-5 still ranks raw composite per Rule 16); **Phase 4h.2 Part 1** (PR #118 merged) shipped observability follow-up — schema PATCH bump `0.9.0-phase4h` → `0.9.1-phase4h.2`; 2 new optional `Metadata` fields surface (a) silent-drop list (78/100 manifest entries missing from dataset) + (b) per-signal `OsapGateDiagnostic`. Part 2 opens after ≥1 week of production diagnostic data; **Phase 4i scout (JKP)** shipped via PR #114 (CC BY-NC 4.0 — license-review-required for integration PR per #115); **Phase 4j scout (Qlib Alpha158)** shipped via PR #119 — `pyqlib` MIT-licensed install + 158-feature manifest + 6 offline tests, NO `@network` test (Qlib's data pipeline is local-bin only — no remote CDN to hit, structurally different from 4h/4i); **Phase 4k scout (IPCA)** shipped via PR #121 — `ipca` MIT-licensed install + 8-method `INSTRUMENTED_PCA_PUBLIC_API` drift detector + 6 offline tests, NO `@network` test (IPCA is pure sklearn-style local computation, 4th distinct structural shape: panel decomposition into Gamma + Factors); all 4 factor scouts now done → eligible for v1.1.0-phase4 tag readiness audit (gated on 4h.2 Part 2 / 4i.1 / 4j.1 / 4k.1 integration PRs); **Phase 4h.2 Part 2 merged via PR #124 (2026-05-19)** — multi-port OSAP adapter (`compute/features/osap_replicate.py::compute_long_short_returns` per-signal `min(port)`/`max(port)` inference, recovering ~56 quintile / tercile signals that the 0.9.0–0.9.1 hardcoded port=01/10 filter silently dropped) + new `Metadata.osap_signals_dropped_no_long_short` field closing the 100-signal accounting equation + schema PATCH bump `0.9.1-phase4h.2` → `0.9.2-phase4h.2`; PR 4b §3 IC-decay output deferred to Phase 5; **v1.1 tag gate RE-SCOPED 2026-06-10** — 4j.1 observability DONE (#426), 4i.1 (JKP) **dropped from the hard gate** (license #115 unresolved since 2026-05-14; WORKFLOW fallback clause invoked), 4k.1 (IPCA) additive/non-blocking; new gate = 4h.1 full OSAP replication (#113) + the 4j.2 Qlib blend decision on ≥ 1 cron of `alpha158_*` IC evidence (§Next deliverables item 5) |
 | **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ✅ **DONE 2026-05-17** — **tag [`v1.2.0-phase4.5`](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) cut** at commit `6d414a9b`. 6 sub-PRs (#89/#90/#91 + #93 + #95 + #97 + #100). Active vetoes **5 → 7**; defense layer **9 → 17** (= 7 vetoes + 10 annotates). 4.5f adds `manipulation_index` (0-100 rollup) + `composite_score_adjusted` (soft penalty, max 10 pts, informational only) + `ManipulationRiskCard` UI + schema bump **`0.7.1-phase4g` → `0.8.0-phase4.5f`**. Production verified run #51 (`b1588b2a`, 5m14s warm-cache): card fires on 158/502 (31.5%); HIGH band 2 (SMCI=84 · WAT=64), MODERATE 60, LOW 96. 4.5e Form-4 insider clustering **deferred to v1.3.0** — reserved-slot weights already declared in `FLAG_WEIGHTS`. |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started — **GATED (re-scope 2026-06-10)** on (a) the Phase 7.0c PIT veto-replay verdict + (b) the data-integrity hardening sprint (§Next deliverables items 1 + 3) + (c) a Supabase client-wiring pre-PR |
 | 6 | Sentiment v2 (FinBERT + 8-K + Lazy Prices; **Whisper deferred → Phase 6.1**, re-scope 2026-06-10) | ⚪ not started — TEXT-ONLY scope locked, §6.0 priority order (Lazy Prices → 8-K → FinBERT); Whisper needs Modal paid infra + ~250m ≈ the 240m cron ceiling |
-| 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
+| 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → ~~v1.5~~ (**v1.5 FOLDED** into the Q3 evidence harvest — see §Next deliverables Release ladder) | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
 | 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)** · **#486 precache-900 Phase A (edgar_form4 fast→slow-text + universe dispatch input)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron flip → midcaps live · **precache-900 Phase B — DONE 2026-06-16 (#492)**: cache-v9-fast→cache-v10-fast bump in all 4 workflows, cron-default flip sp500→sp900, sim QR_UNIVERSE=sp900 explicit, sp400/sp900 universe parquets added to fast path blocks; cron now ranks S&P 900 by default · **#493 multi-index membership (Dow 30 / NDX 100 overlap tabs, schema 0.10.23) — DONE 2026-06-17** · **#494 Russell 1000 (RUI) overlap tab via market-cap proxy, NO schema bump — DONE 2026-06-17**; overlap tabs data-active (first sp900 cron post-#494 `768c35f16` carries russell1000/dow30/ndx tags). **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 (`MidcapChip` + per-index SPX/MID/ALL tabs) + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18 green). **S&P 1500 cutover underway 2026-06-20** — Slices **1** (scout #514) · **2** (sp1500 seam + smallcap coverage probe, schema 0.10.28, #519) · **4** (`low_liquidity` <$5M ADV annotate, schema 0.10.29, defense 35→36, #527) · **5** (precache `cache-v11-fast` cold-seed + sp1500 dispatch, cron default unchanged, #520) **MERGED**; Slice **3** (Bonferroni shadow) **DEFERRED** to the Slice-8 calibration; first manual `QR_UNIVERSE=sp1500` run committed `chore: update rankings` (label `SP1500-probe`) populating the `smallcap_*` coverage Metadata. **Slice 6 (SmallcapChip + SML tab — frontend-only) MERGED (#531)**. **Slice 7 (cron-default flip sp900→sp1500) MERGED 2026-06-21 (#534 squash `8301b82cb`)** — weekday cron + Saturday precache now default `QR_UNIVERSE=sp1500`; `pre-merge-prod-sim.yml` pinned to sp1500; `compute/main.py` sp600 probe-only filter lifted → full ~1504 names ranked; `Metadata.universe` = `"SP1500"`; cohort-size recompute gate widened to `in ("sp900","sp1500")`; NO schema bump (stays 0.10.29); defense UNCHANGED at 36; validation 1504 names / cold ~174 min (< 240 ceiling) / warm ~45 min (< 90) / smallcap coverage 99.67% / null 0.33% / cik 100%; opus cohort-gate + security workflow review PASSED. **Next = Slice 8 (v2.0 — gated on ≥ 1-2 green sp1500 crons: Bonferroni shadow calibration + virtualized 1500-row table + liquidity-veto promotion decision)**. RUT/RUA/COMP remain SOON pending new small-cap / broad ingest; SML tab data-active once sp600 lands in `rankings.json` |
 
 ## Current state (2026-06-22)
@@ -20,7 +20,7 @@
 | Schema | **`0.10.31-phase8pilot`** (#565 squash `2c9dc1371`, merged 2026-06-22 — S&P 1500 cutover Slice 8 / roadmap 7b: Security-type (Type) HeroAttributeTile ingest PR-1 (issue #541): `StockDetail.security_type` from yfinance `fast_info.quote_type` + `Metadata.security_type_coverage_pct` coverage canary; obs-first Rule 18, NO UI wiring; rankings byte-identical; defense UNCHANGED at 36; +17 tests). Prior **`0.10.30-phase8pilot`** (#564 squash `62dbf4f89`, merged 2026-06-22 — Slice 8 Bonferroni multi-test shadow counter (issue #542): 3 new `Metadata.bonferroni_shadow_*` fields; `compute/scoring/bonferroni_shadow.py`; `m = valid_count`; provisional threshold −1.94 placeholder; SHADOW/OBSERVABILITY-ONLY — live scores/rankings byte-identical; defense UNCHANGED at 36; 20 tests). Prior **`0.10.29-phase8pilot`** (#527 squash `2e45a33bf`, merged 2026-06-20 — S&P 1500 cutover Slice 4: `low_liquidity` ANNOTATE flag (<$5M trailing-30d ADV, Amihud 2002; rank-neutral — `valuation_warnings`, not `risk_flags`) + `compute_average_dollar_volume()` + `StockDetail.average_dollar_volume` + `Metadata.low_liquidity_annotate_count`; defense 35→36; rankings/scores byte-identical; dormant on sp900, lights up on sp600). Prior **`0.10.28-phase8pilot`** (#519 squash `5e49dca0a`, merged 2026-06-20 — S&P 1500 cutover Slice 2: `sp1500` universe seam + `_run_smallcap_coverage_probe`; 3 new `Metadata.smallcap_*` fields; sp600 PROBE-ONLY (label `SP1500-probe`, NOT ranked); defense UNCHANGED at 35). Prior **`0.10.27-phase8pilot`** (#512 squash `78fd608423`, merged 2026-06-20 — Dividend signal PR-1: 3 new `StockDetail` dividend fields (`dividend_yield_pct`/`pays_dividend`/`payout_ratio`) + `Metadata.dividend_coverage_pct` coverage canary; `_yf_info_fetch` 2→4-tuple; rankings byte-identical; defense UNCHANGED at 35). Prior **`0.10.26-phase8pilot`** (#501 squash `72ee8667d`, merged 2026-06-19 — cross-source share-count-corruption SHADOW observability PR-1: 4 new `Metadata.cross_source_corruption_*` fields; `grade_cross_source_corruption` + dual-ratio corroboration; MUTATES NOTHING, rankings byte-identical; defense layer UNCHANGED at 35). Prior **`0.10.25-phase8pilot`** (#499 squash `816cda0ea`, merged 2026-06-18 — `post_split_share_lag` HYBRID defense: Tier-1 CORRECT annotate + Tier-2 veto `post_split_share_lag_unreconciled` + folded leg-3 override (direct yfinance `sharesOutstanding`); new `compute/ingest/splits.py`; `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` counters; defense 34→35). Prior **`0.10.24-phase8pilot`** (#496/PR-A, trimmed-median shadow diagnostic #177) · **`0.10.23-phase8pilot`** (#493 + #494 — additive `index_memberships: list[str]`; Dow 30 / NDX 100 overlap tabs; #494 appends `"russell1000"` via market-cap proxy, NO schema bump). Prior #487 OZK/PBF flip-blocker (`0.10.22`, `fundamentals_unavailable` direct veto). Cron default `sp1500` (since #534 2026-06-21 — Slice 7 cron flip; ranks full ~1504 names; prior `sp900` since #492 2026-06-16). Lineage: 0.10.18 #456 → 0.10.21 #482 → 0.10.22 #487 → 0.10.23 #493 → 0.10.24 #496 → 0.10.25 #499 → 0.10.26 #501 → 0.10.27 #512 → 0.10.28 #519 → 0.10.29 #527 → 0.10.30 #564 → 0.10.31 #565. Full table: SKILL.md §schema-version) |
 | Defense layer | **36 declared boolean flags** (9 active vetoes incl. `fundamentals_unavailable` #487 + `post_split_share_lag_unreconciled` #499 + 27 annotates incl. the paired `post_split_share_lag` #499 + `low_liquidity` #527 + reserved slots; ~28 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **9** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` · `fundamentals_unavailable` · `post_split_share_lag_unreconciled` |
-| Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `a820caee` (Phase 4.6 honest re-validation harness). **v2.0.0-phase8 release PR pending** — all Phase 8 acceptance gates met; `release-captain` owns the cut (HOLD until ≥1 green scheduled sp1500 cron) |
+| Latest release tag | **`v2.0.0-phase8`** — SHIPPED via #577 (2026-06-22); the S&P 1500 universe cutover release (502→~1504 production expansion). Prior: [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `a820caee` (Phase 4.6 honest re-validation harness) |
 | Post-tag production patches | PR #292 → #302 cluster (2026-05-28/29) — list relocated to §Chronological history |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
 | Production run | `65bfd335` (2026-06-11 cron — FIRST run on the #458 cache-v7 family; RATIFY-B manifest verification pending on this artifact). Prior validated baseline: `368dccd9` cron Run #71 (detail relocated to §Chronological history) |
@@ -30,94 +30,97 @@
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
-- **v2.0 release PR** (`claude/release-v2.0.0-phase8`) — `pyproject` 1.4.0→2.0.0 + `docs/release-notes/v2.0.0-phase8.md` + this Mode C doc reconciliation; all Phase 8 WORKFLOW.md acceptance gates met; `release-captain` owns the `v2.0.0-phase8` tag (DRAFT; HOLD the tag until ≥1 green scheduled sp1500 cron). `low_liquidity` veto promotion (#544, KEEP-ANNOTATE for v2.0) + Bonferroni provisional-threshold re-derivation (#542) deferred post-v2.0.
-- **Merged since last Mode C** (#538 reconciled 0.10.29 / Slice 7, 2026-06-21): **#565** (Security-type ingest PR-1, schema 0.10.30→**0.10.31**) · **#564** (Bonferroni shadow, schema 0.10.29→**0.10.30**) · **#548** (infinite-scroll table, §8.3 gate) · **#549** (Dividend tile PR-2) · **#539/#547/#570** (research warehouse Slices 1/2 + dtype fix) · **#552** (drop free-text post-split warning) · **#553** (timeout 240→270) · **#554** (payout_ratio guard) · **#555** (XBRL balance-tag fix HASI/LGIH/GPK) · **#537** (Sold rows) · **#533** (dividend ×100 fix) · **#546** (docs roadmap groom) · **#556/#557/#559/#560/#575** (dependabot + CI Node 20→22).
+- **In flight: this roadmap-restructure docs PR** (`claude/roadmap-restructure-2lane`, 2026-06-22 — chronological tags decoupled from phase numbers + Lane A/B §Next-deliverables rewrite + §Current-state reconcile; docs-only). **`v2.0.0-phase8` SHIPPED via #577** (+ #580 SEC filing-index Slice 1) — the prior "v2.0 release PR in flight" note is retired; the §Next-deliverables Release ladder now reads "v2.0.0 shipped · next = v2.1".
+- **Merged since last Mode C** (#538 reconciled 0.10.29 / Slice 7, 2026-06-21): **#577** (v2.0.0-phase8 release) · **#580** (SEC filing-index Slice 1) · **#565** (Security-type ingest PR-1, schema 0.10.30→**0.10.31**) · **#564** (Bonferroni shadow, schema 0.10.29→**0.10.30**) · **#548** (infinite-scroll table) · **#549** (Dividend tile PR-2) · **#571** (MC advisory ingest fix) · **#573** (valuation null-guard) · **#578** (Type tile) · **#539/#547/#570** (research warehouse Slices 1/2 + dtype) · **#552/#553/#554/#555** (ingest/ci fixes) · **#537/#533/#546** · **#556/#557/#559/#560/#575** (dependabot + CI Node 20→22).
 
-**Next deliverables** (re-scoped 2026-06-11; prior items 1-2 — 7.0c gate (a)
-+ issue #441 — are DONE, closed entries relocated to §Chronological history):
+**Next deliverables** (RE-STRUCTURED 2026-06-22 — verified against git tags + live
+GitHub issues + `compute/config.py` `SCHEMA_VERSION`). Three structural changes fix
+the "version-leapfrog + jumping-around" friction:
 
-1. **Data-integrity hardening sprint (~1-2w)** — close the silent share-count /
-   extraction corruption cluster before any new ML/factor work trains on the
-   composite: #248 (V shares ~4× off, NO veto fired) · #374 (warm-cache
-   per-class bypass — source fix #456 + cache-v7 #458 landed, verification on
-   the 2026-06-11 artifact pending) · #376 (BF-B) · #379 (GEV spinoff) · #375
-   (SNDK reverse-split) · #247/#289 (NVR DQIC gap / empty fair price). **Phase
-   5 entry gate (b)**. Closed by #485: #385 (APA OilAndGasRevenue + cache-v9) ·
-   #261 (CLOSE-AS-CORRECT via #456).
-2. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — UNBLOCKED (#287
-   PR B merged as #431); needs ≥ 1 cron's `form4_rule10b5_one_excluded_count`
-   confirming the Aboody et al. 2010 §3.2 −30..−45% band + ≥ 4 crons
-   accumulating ahead of the Q3 2026-08-19 cohort audit; vesting-residual risk
-   still argues against full 10.0 restoration.
-3. **v1.1.0-phase4 tag — RE-GATED** — JKP 4i.1 dropped from the hard gate
-   (license #115); gate = OSAP 4h.1 (#113) + the 4j.2 Qlib blend decision on
-   ≥ 1 real cron of `Metadata.alpha158_*` IC evidence (PBO ≤ 0.5 + DSR > 0);
-   4k.1 IPCA (#122) additive, non-blocking.
-4. **Phase 5 — ML meta-learner** (~10-12w; the #75 IC-decay writer now ships
-   observability-first — Phase 5's walk-forward monthly-IC panel makes its
-   `alert` meaningful) — GATED on item 1 + the 7.0c composite-signal
-   follow-through + a Supabase
-   client-wiring pre-PR (CLAUDE.md §Connectors). Entry gates: WORKFLOW.md
-   §Phase 5.
-5. **Stock-attribute data — Dividend + Security-type tiles** (display-only,
-   parallel-safe; fill the two reserved `HeroAttributeTiles` slots, never touch
-   ranking/scoring/defense; one MINOR schema bump per signal;
-   observability-before-wiring `Metadata.*_coverage_pct` cron first):
-   - **7a. Dividend signal** — add a `dividend` block to the per-stock schema
-     (Pydantic `StockDetail` + TS `types.ts` + snapshot, the triple-lockstep).
-     Source: yfinance already in the stack — `yf.Ticker(t).info["dividendYield"]`
-     / `["payoutRatio"]` (the `Ticker.info` API surface already used by
-     `compute/ingest/cross_source.py:129` for `marketCap` + cached under
-     `YFINANCE_INFO_CACHE_DIR`; dividend ingest extends that SAME pattern —
-     `prices.py` only does `yf.download()` OHLCV, so it's the wrong anchor),
-     no new dependency. Ship the diagnostic `Metadata.dividend_coverage_pct`
-     FIRST (observability-before-wiring, Rule 18) — confirm the field
-     populates on a real cron before the `HeroAttributeTiles` "Dividend" tile
-     reads it. Fields to consider: `dividend_yield_pct`, `pays_dividend: bool`,
-     optional `payout_ratio`. Tile auto-promotes out of the reserved state
-     once `value` is non-null. **Methodology note**: dividend yield is
-     descriptive metadata, NOT a new scoring pillar or veto — keep it out of
-     the composite unless a separate `financial-engineer` +
-     `methodology-scientist` design says otherwise.
-   - **7b. Security-type signal** — the `Type` tile (Common stock / ADR /
-     REIT / etc.). Source: yfinance `yf.Ticker(t).fast_info.quote_type`
-     (NOT `.info["quoteType"]` — that key is retired into `fast_info` on
-     current yfinance; and `.info["legalType"]` is funds-only, `None` for
-     equities — don't use it), AND for ADR/foreign-issuer detection the SEC
-     route `dei:DocumentType == "20-F"` in the XBRL filing (the standard
-     foreign-private-issuer annual-report form) or the EDGAR submissions JSON
-     `entityType` field (already fetched by `compute/ingest/sec_health.py`).
-     The universe is S&P 500 so ADRs are rare but present. Same schema-triple
-     + observability-first discipline. Smaller than 7a (a categorical label,
-     no numeric).
-   Both are **annotate/display-only** — they fill the two reserved
-   `HeroAttributeTiles` slots, they do NOT touch ranking, scoring, or the
-   defense layer. Sequence each behind a `Metadata.*_coverage_pct` diagnostic
-   cron before flipping the tile to read live data (the Phase 4h → 4h.2
-   observability-before-wiring precedent). Schema bumps: one MINOR per signal.
-   Display-only, parallel-safe — proceeds alongside items 1-3.
-   **Status (2026-06-21)**: 7a data + observability legs MERGED (#512 fields
-   + `Metadata.dividend_coverage_pct`; #533 fixed the `×100` double-scaling +
-   added a `>100` reversion guard). Tracked: **#543** (7a tile wiring — gated
-   on ≥ 1 post-#533 sp1500 cron of CORRECTED `dividend_coverage_pct`) ·
-   **#541** (7b Security-type obs-first ingest PR-1).
-6. **S&P 1500 cutover — Slice 8 / v2.0** (the active universe step) — compute
-   layer COMPLETE (Slices 1/2/4/5/6/7 merged; the weekday cron ranks the full
-   ~1504 names since #534). The hardening tail is tracked by **epic #545** →
-   **#540** (frontend: virtualize the ~1500-row ranking table for mobile — the
-   open WORKFLOW.md acceptance gate) · **#542** (Bonferroni multi-test shadow
-   counter — Slice 3, deferred) · **#544** (`low_liquidity` annotate → veto
-   promotion decision — gated on ≥ 1 sp600 cron firing-rate data + methodology
-   ratification). Exit → `v2.0.x` tag after ≥ 1-2 green sp1500 crons.
-7. **v1.5.0 release tag** — gated on item 2 (cluster weight promotion)
-   landing + post-revert cron data accumulating ahead of the Q3 2026-08-19
-   cohort audit; or a `v1.4.x` patch sooner if a structural fix lands alone.
+- **Tags are now CHRONOLOGICAL, decoupled from phase numbers.** The next tag is
+  **v2.0** regardless of phase; then v2.1, v2.2 … No more phase-pinned tags (that is
+  what stranded v1.1 below the live v1.4 — see Release ladder).
+- **Two lanes.** Ship-now (deterministic, implement-and-done) flows continuously and
+  cuts tags on cadence. Evidence-gated (waits on ≥N crons / firing-rate / IC / a
+  cohort audit / methodology ratification) is OFF the tag critical path — it carries a
+  data-ready date, not effort.
+- **One evidence checkpoint.** The evidence-gated items converge on the **Q3 cohort
+  audit (2026-08-19, #130)** as a single "evidence harvest" rather than a dozen
+  scattered "rate-after-1-cron" blockers.
 
-Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = 7.1 (gated on the 7.0c
-baseline + a longer fit window) · Phase 8 = staged S&P 900 pilot (#249
-pre-cache DONE — #468) — detail in WORKFLOW.md.
+GitHub Issues is the canonical open-issue tracker (30 open as of 2026-06-22); the
+buckets below are the routing view, not an exhaustive copy.
 
-**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) — CLOSED #485 · #261 (multi-class overcount) — CLOSE-AS-CORRECT #485 · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer — CLOSED, wired 2026-06-13 §3). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) — CLOSED #485 · #208 — CLOSED #485 / #218 / #377 — CLOSED #485 / #378 — CLOSED #485 (test + verify-helper gaps) · #249 DONE (#468, 2026-06-12 — precache-edgar.yml operational; first Saturday run verified 2026-06-13) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
+### Lane A — Ship-now (deterministic, no data dependency)
+- **Data-quality ingest fixes** — **#569** (BKNG shares-path form-type filter — apply
+  the #485/#555 `_try_balance_tags` pattern to the shares path) · **#567** (NE Noble
+  CIK remap to the post-bankruptcy entity) · **#568** (POOL ledger ADD-without-REMOVE
+  + 2016-18 band overage — **decision-gated FIRST** on the owner's POOL S&P-500
+  membership call, THEN a deterministic CSV patch) ·
+  **#574** (ZeroDivisionError in `cash_conversion_cycle` on denormal revenue) ·
+  **#562**'s deterministic leg (post-split timing; the gated design leg is Lane B).
+- **Frontend polish** — **#550** (`universeLabel()` SP1500 mapping) · **#551** (a11y
+  skip-link to the "Load more" button).
+- **Refactor / ops** — **#259** (extract `run_weekly_compute` → `compute/orchestrator/`)
+  · **#478** (IC-decay monitor `fetch-depth: 0`) · **#41** (Next.js 14.2 → 16 CVE bump)
+  · **#455** (CIK-level dedup at pick time — Phase 7.1 item but deterministic) ·
+  **#137** (vendor 9arm-skills — blocked on an *external* LICENSE, not on data).
+
+### Lane B — Evidence-gated (data-ready date, NOT effort; harvest at 2026-08-19 unless noted)
+- **#544** — `low_liquidity` annotate → veto promotion. Firing data now EXISTS —
+  `Metadata.low_liquidity_annotate_count = 5` on the first full sp1500 cron #123
+  (commit `364ad003`): BFS · CPF · CENT · SMP · SBSI, all sp600, all rank-neutral
+  (post-cron audit, 2026-06-22). Needs methodology RATIFY-SHADOW. **This is the only
+  Slice-8 / v2.0 gate left** — can be decided at/just before the Q3 audit.
+- **#581** — security_type coverage stuck ~40% (warm-cache `quote_type`); verify over
+  the next 1-2 scheduled sp1500 crons.
+- **Quarterly cohort cluster (all → 2026-08-19)** — **#130** (recurring fire-rate
+  review) · **#454** (Sloan-accruals veto net-drag disposition) · **#484**
+  (`multi_class_aggregate_shares_suspected` relabel) · **#461** (Iteration-2 analysis
+  record / V55 band) · **#562** (post-split reconciliation timing — design after
+  multi-cron observation).
+- **Factor track / the retired v1.1 work** — **#113** (OSAP 4h.1 full replication) +
+  **#120** (Qlib 4j.2 blend decision) gated on ≥ 1 cron of `Metadata.alpha158_*` IC
+  (PBO ≤ 0.5 + DSR > 0); **#122** (IPCA 4k.1) additive/non-blocking; **#115** (JKP 4i.1)
+  dropped on the license. Lands in whatever tag is current when the IC clears.
+- **Roadmap-far** — **#260** (TMCS, Phase-6-gated) · **#563** (warehouse auto-backfill
+  epic, Slice 4+) · **#579** (Hybrid SEC filing archive — Phase-6 foundation; a
+  build/no-build *decision* gate, not a data gate).
+
+### Release ladder (chronological)
+- **Latest tag: `v2.0.0-phase8`** (SHIPPED via #577, 2026-06-22) — the S&P 1500
+  universe cutover release (the 502→~1504 production expansion + Slice 8 #540/#542 +
+  display tiles #549/#578 + warehouse #539/#547 + data-integrity #555/#571/#573). Prior
+  tag: `v1.4.0-phase4.6` (2026-05-27, commit `bbca9cac`).
+- **Next tag: `v2.1`** — post-v2.0 hardening (NO phase pin). Rolls in the **#544**
+  `low_liquidity` veto decision (KEEP-ANNOTATE through v2.0; promote at/after the Q3
+  audit) + the **#542** Bonferroni provisional-threshold re-derivation + the Lane-A
+  frontend polish (#550/#551) + whatever Lane-A data-quality fixes (#567/#568/#569/#574)
+  land. Cut by `release-captain` on cadence.
+- **`v1.1.0-phase4` — RETIRED / superseded** (NEVER cut; 1.1 sits *below* the live
+  1.4 because Phase 4.5/4.6 were tagged first while Phase 4's factor-integration gate
+  stayed open-ended). It will NOT get a back-numbered tag — the OSAP/Qlib blend work
+  (#113/#120) lands in the then-current tag (likely a v2.x) when the cron IC evidence
+  clears. Kept here for lineage only.
+- **`v1.5.0` — folded** into the Q3 evidence harvest: the cluster-weight-promotion
+  work (Phase 4.5e PR 5; #287 PR B merged as #431) + the Q3-cohort disposition roll
+  into a v2.x rather than a back-numbered v1.5.
+
+### Phase position
+Phases 0-3 (v1.0) · 4.5 (v1.2/1.3) · 4.6 (v1.4) · 7.0 (AI-pick home) · 8 cutover (cron
+ranks 1504) all DONE. **Phase 4** (factor → the retired v1.1) is the lone still-open
+classic phase — its scouts (4h/4i/4j/4k) + 4h/4h.2 shipped, only the cron-IC-gated
+full integrations remain (Lane B). **Phase 5** (ML meta-learner) — foundation now
+exists (research warehouse Slice 1+2, #539/#547); still gated on the data-integrity
+Lane-A sweep + a Supabase client-wiring pre-PR. Phase 6 = TEXT-ONLY (#579 archive is
+its foundation) · Phase 7.1 = regime/portfolio (gated on a longer fit window).
+Detail in WORKFLOW.md.
+
+**Open issues** — the canonical live list is **GitHub Issues** (30 open as of
+2026-06-22); see the Lane A / Lane B buckets above for the routing view. (The former
+inline 2026-06-10 snapshot was retired in the 2026-06-22 restructure — most of its
+entries are CLOSED, e.g. the #485 data-integrity cluster + #441 MAD close-out; the
+closed-PR prose lives in §Chronological history.)
 
 ---
 
