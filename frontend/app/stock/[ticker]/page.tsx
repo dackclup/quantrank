@@ -295,6 +295,7 @@ export default function StockDetailPage({
         sector={detail.sector}
         dividendYieldPct={detail.dividend_yield_pct}
         paysDividend={detail.pays_dividend}
+        securityType={detail.security_type}
       />
 
       <section aria-label={`Price history for ${detail.ticker}`}>

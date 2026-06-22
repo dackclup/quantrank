@@ -6285,3 +6285,34 @@ workflow-only. Follow-up: a `docs/GOTCHAS.md` entry for the Dependabot
 secret-isolation vs fork-guard mismatch may land in a later housekeeping pass.
 
 ---
+
+## PR (frontend) — Security-type "Type" HeroAttributeTile wiring PR-2 (in flight, 2026-06-22)
+
+UI follow-up (PR-2) to the security-type ingest #565 (issue #541) — mirrors the Dividend
+tile PR-2 (#549). The stock-detail hero's 4-tile grid had tile #4 (Type) as the last
+hardcoded "Coming soon" placeholder; it now shows `StockDetail.security_type` via a new
+`formatSecurityType(securityType)` helper in `frontend/lib/format.ts`: the label verbatim
+(`"Common stock"` / `"ETF"` / `"Fund"` / …, already mapped server-side by `_QUOTE_TYPE_LABEL`)
+when present, `"—"` (em-dash) when null/empty. Tile #4 always renders FILLED now — the
+"Coming soon" reserved state is no longer used by any tile, so the **4-tile hero grid
+(Size / Sector / Dividend / Type) is complete**.
+
+No `tabular-nums` (prose label, not numeric — unlike the Dividend tile). `securityType` prop
+added; `app/stock/[ticker]/page.tsx` passes `detail.security_type`. Frontend-only — NO schema
+change (the field exists from #565, schema `0.10.31-phase8pilot`; `types.ts`/snapshot
+untouched). +8 vitest assertions (187/187).
+
+Ships after cron #125 (sp1500, committed 2026-06-22) confirmed the Rule-18 gate:
+`Metadata.security_type_coverage_pct = 40.09%` populates with CORRECT values (603 tickers
+`"Common stock"`, the EQUITY→label mapping verified). Coverage is ~40% on the first cron
+(warm-cache `quote_type` accumulation — the field is only captured on a fresh `_yf_fast_exchange`
+fetch); `"—"` is the honest no-data state and climbs over future crons. (If coverage proves
+stuck on the mtime-reset GHA cache, a `cache-v11-fast` key bump is the lever — tracked as a
+follow-up, does NOT block the tile.)
+
+Verify: `tsc --noEmit` clean · `next build` 1512 static pages · `vitest run` 187/187 (+8
+`formatSecurityType`). Gate: frontend-builder (BUILT-CLEAN) + frontend-design-reviewer (pending).
+Closes the Display-tiles (7b) UI half of CLAUDE.md §Next deliverable 5 — both hero tiles
+(Dividend 7a + Type 7b) now live.
+
+---

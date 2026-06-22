@@ -11,7 +11,9 @@
 //   3. Dividend          — LIVE (PR-2, schema 0.10.27+): yield%/None/— from
 //      detail.dividend_yield_pct + detail.pays_dividend. Always FILLED state
 //      (never "Coming soon") — see formatDividendYield in lib/format.ts.
-//   4. Type              — PLACEHOLDER, "Coming soon" reserved state
+//   4. Type              — LIVE (PR-2, schema 0.10.31+): label verbatim or "—"
+//      from detail.security_type. Always FILLED state (never "Coming soon") —
+//      see formatSecurityType in lib/format.ts. Coverage ~60% and growing.
 //
 // Info tiles, NOT filters (this is a single-stock detail page — nothing to
 // filter). Pure server component (computation + markup, no hooks). lucide-react
@@ -20,7 +22,7 @@
 
 import { Building2, Coins, Layers, ScrollText } from 'lucide-react';
 import type { JSX } from 'react';
-import { formatDividendYield } from '@/lib/format';
+import { formatDividendYield, formatSecurityType } from '@/lib/format';
 
 function capTierLabel(marketCap: number | null): string | null {
   if (marketCap == null) return null;
@@ -100,6 +102,7 @@ export function HeroAttributeTiles({
   sector,
   dividendYieldPct,
   paysDividend,
+  securityType,
 }: {
   marketCap: number | null;
   sector: string | null;
@@ -108,6 +111,10 @@ export function HeroAttributeTiles({
   // Three display states: payer "2.67%" · non-payer "None" · unavailable "—".
   dividendYieldPct: number | null;
   paysDividend: boolean | null;
+  // Type tile — data from StockDetail (schema 0.10.31+).
+  // Server-side `_QUOTE_TYPE_LABEL` already maps to display-ready text
+  // (e.g. "Common stock", "ETF", "Fund"). null → "—" (no data yet).
+  securityType: string | null;
 }) {
   return (
     // `<section>` + sr-only heading completes the document outline (every
@@ -135,14 +142,17 @@ export function HeroAttributeTiles({
         caption="Dividend"
         value={formatDividendYield(dividendYieldPct, paysDividend)}
       />
-      {/* Reserved for a future security-type signal — Common stock / ADR /
-          etc. (the analog of the reference app's "Common · หุ้นสามัญ" tile).
-          QuantRank has no security-type field in the schema yet, so it shows
-          the "Coming soon" reserved state for now. */}
+      {/* Type tile — LIVE (schema 0.10.31+). formatSecurityType resolves to
+          the server-mapped label verbatim ("Common stock" / "ETF" / …) or
+          "—" for tickers with no data yet (~40% of universe as of the first
+          sp1500 crons; climbs over future crons as the yfinance_info cache
+          warms). All branches return a non-null string so the tile always
+          renders FILLED — the "Coming soon" reserved era is over for this tile,
+          completing the 4-tile hero grid (all tiles live). */}
       <Tile
         icon={<ScrollText className={ICON_CLS} strokeWidth={1.75} />}
         caption="Type"
-        value={null}
+        value={formatSecurityType(securityType)}
       />
     </section>
   );
