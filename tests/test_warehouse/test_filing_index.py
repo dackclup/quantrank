@@ -522,3 +522,240 @@ class TestURLHelpers:
 
         assert _build_primary_doc_url("0001234567-26-000001", None) is None
         assert _build_primary_doc_url("0001234567-26-000001", "") is None
+
+
+# ---------------------------------------------------------------------------
+# FI16 — form_types=None fetches with a None form (all-forms branch)
+# ---------------------------------------------------------------------------
+
+class TestFetchAllFormsBranch:
+    """FI16: form_types=None passes a single None form to get_filings()
+    (the ``forms_to_fetch = [None]`` branch in fetch_filing_index_rows).
+    """
+
+    def test_fi16_form_types_none_calls_get_filings_without_form(self, monkeypatch):
+        """FI16: when form_types=None, get_filings is called once with no form= kwarg."""
+        import sys
+
+        import compute.warehouse.filing_index as fi_mod
+
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", True)
+
+        filing = _fake_filing(form="DEF 14A", accession_no="0001111111-26-000099")
+        mock_filings_obj = _fake_filings_obj([filing])
+        mock_company_instance = MagicMock()
+        mock_company_instance.get_filings = MagicMock(return_value=mock_filings_obj)
+        mock_company_cls = MagicMock(return_value=mock_company_instance)
+
+        fake_edgar = _make_edgar_module(mock_company_cls)
+        monkeypatch.setitem(sys.modules, "edgar", fake_edgar)
+
+        rows = fi_mod.fetch_filing_index_rows("AAPL", cik="0000320193", form_types=None)
+
+        # get_filings should have been called once with NO form= argument.
+        call_args_list = mock_company_instance.get_filings.call_args_list
+        assert len(call_args_list) == 1
+        # The all-forms path calls company.get_filings() with no keyword args.
+        _, kwargs = call_args_list[0]
+        assert "form" not in kwargs, "form_types=None should call get_filings() with no form= kwarg"
+
+        assert isinstance(rows, list)
+        assert all("accession" in r for r in rows)
+
+    def test_fi16_form_types_none_returns_rows(self, monkeypatch):
+        """FI16: form_types=None still returns valid rows from the mocked response."""
+        import sys
+
+        import compute.warehouse.filing_index as fi_mod
+
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", True)
+
+        filing = _fake_filing(form="SC 13G", accession_no="0001111111-26-000100")
+        mock_filings_obj = _fake_filings_obj([filing])
+        mock_company_instance = MagicMock()
+        mock_company_instance.get_filings = MagicMock(return_value=mock_filings_obj)
+        mock_company_cls = MagicMock(return_value=mock_company_instance)
+
+        fake_edgar = _make_edgar_module(mock_company_cls)
+        monkeypatch.setitem(sys.modules, "edgar", fake_edgar)
+
+        rows = fi_mod.fetch_filing_index_rows("MSFT", cik="0000789019", form_types=None)
+
+        assert len(rows) == 1
+        assert rows[0]["ticker"] == "MSFT"
+        assert rows[0]["form_type"] == "SC 13G"
+
+
+# ---------------------------------------------------------------------------
+# FI17 — _ensure_edgar_identity when set_identity raises
+# ---------------------------------------------------------------------------
+
+class TestEnsureEdgarIdentitySetIdentityRaises:
+    """FI17: _ensure_edgar_identity returns False when set_identity raises."""
+
+    def test_fi17_set_identity_exception_returns_false(self, monkeypatch):
+        """FI17: if edgar.set_identity raises, _ensure_edgar_identity returns False."""
+        import sys
+        import types as _types
+
+        import compute.warehouse.filing_index as fi_mod
+
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", False)
+        monkeypatch.setenv("EDGAR_USER_AGENT", "Test User test@example.com")
+
+        # Inject an edgar module whose set_identity raises.
+        fake_edgar = _types.ModuleType("edgar")
+        def _bad_set_identity(ua: str) -> None:
+            raise RuntimeError("simulated set_identity failure")
+        fake_edgar.set_identity = _bad_set_identity  # type: ignore[attr-defined]
+        monkeypatch.setitem(sys.modules, "edgar", fake_edgar)
+
+        result = fi_mod._ensure_edgar_identity()
+
+        assert result is False
+        # _IDENTITY_SET must remain False — we did NOT succeed.
+        assert fi_mod._IDENTITY_SET is False
+
+        # Cleanup: reset module state for subsequent tests.
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", False)
+
+
+# ---------------------------------------------------------------------------
+# FI18 — head() raises / head returns None (per-form continue branches)
+# ---------------------------------------------------------------------------
+
+class TestHeadBranchGracefulDegradation:
+    """FI18: graceful degradation when filings_obj.head() raises or returns None."""
+
+    def test_fi18_head_raises_continues_to_next_form(self, monkeypatch):
+        """FI18: if head() raises, the form loop continues and returns [] for that form."""
+        import sys
+
+        import compute.warehouse.filing_index as fi_mod
+
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", True)
+
+        # One form where head() raises; confirm we still return empty list (no crash).
+        mock_filings_obj = MagicMock()
+        mock_filings_obj.head = MagicMock(side_effect=RuntimeError("head() exploded"))
+        mock_company_instance = MagicMock()
+        mock_company_instance.get_filings = MagicMock(return_value=mock_filings_obj)
+        mock_company_cls = MagicMock(return_value=mock_company_instance)
+
+        fake_edgar = _make_edgar_module(mock_company_cls)
+        monkeypatch.setitem(sys.modules, "edgar", fake_edgar)
+
+        rows = fi_mod.fetch_filing_index_rows(
+            "AAPL", cik="0000320193", form_types=frozenset({"10-K"})
+        )
+        assert rows == [], "head() raising should degrade to [] not crash"
+
+    def test_fi18_head_returns_none_continues(self, monkeypatch):
+        """FI18: if head() returns None, the form loop continues gracefully."""
+        import sys
+
+        import compute.warehouse.filing_index as fi_mod
+
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", True)
+
+        mock_filings_obj = MagicMock()
+        mock_filings_obj.head = MagicMock(return_value=None)
+        mock_company_instance = MagicMock()
+        mock_company_instance.get_filings = MagicMock(return_value=mock_filings_obj)
+        mock_company_cls = MagicMock(return_value=mock_company_instance)
+
+        fake_edgar = _make_edgar_module(mock_company_cls)
+        monkeypatch.setitem(sys.modules, "edgar", fake_edgar)
+
+        rows = fi_mod.fetch_filing_index_rows(
+            "AAPL", cik="0000320193", form_types=frozenset({"10-K"})
+        )
+        assert rows == [], "head() returning None should degrade to [] not crash"
+
+
+# ---------------------------------------------------------------------------
+# FI19 — run_filing_index_backfill dry_run=True (no Parquet written)
+# ---------------------------------------------------------------------------
+
+class TestRunFilingIndexBackfillDryRun:
+    """FI19: run_filing_index_backfill(dry_run=True) enumerates rows but writes nothing.
+
+    The backfill script lazily imports ``write_filing_index_partition`` from
+    ``compute.warehouse.writer``, which in turn imports ``flatten_stock`` from
+    ``compute.warehouse.flatten``, which imports pydantic at module load time.
+    Since the test-runner Python has no pydantic, we stub the writer import via
+    ``sys.modules`` before the lazy import executes — the same technique used in
+    FI8 for the ``edgar`` module.  The stub records whether ``write_filing_index_partition``
+    was called so we can assert dry_run skipped it.
+    """
+
+    def test_fi19_dry_run_returns_summary_no_file(self, tmp_path, monkeypatch):
+        """FI19: dry_run=True returns a valid summary dict and never calls the writer."""
+        import sys
+        import types as _types
+
+        import compute.warehouse.filing_index as fi_mod
+
+        # Make identity succeed so fetch_filing_index_rows doesn't short-circuit.
+        monkeypatch.setattr(fi_mod, "_IDENTITY_SET", True)
+
+        # Inject a fake edgar module so fetch_filing_index_rows can run.
+        filings = [
+            _fake_filing(form="10-K", accession_no="0001111111-26-000001"),
+            _fake_filing(form="10-Q", accession_no="0001111111-26-000002"),
+        ]
+        mock_filings_obj = _fake_filings_obj(filings)
+        mock_company_instance = MagicMock()
+        mock_company_instance.get_filings = MagicMock(return_value=mock_filings_obj)
+        mock_company_cls = MagicMock(return_value=mock_company_instance)
+
+        fake_edgar = _make_edgar_module(mock_company_cls)
+        monkeypatch.setitem(sys.modules, "edgar", fake_edgar)
+
+        # Stub out compute.warehouse.writer so pydantic/pyarrow are never needed.
+        writer_calls: list[tuple] = []
+
+        def _fake_write(rows, run_date, warehouse_dir):
+            writer_calls.append((rows, run_date, warehouse_dir))
+            return len(rows)
+
+        fake_writer_mod = _types.ModuleType("compute.warehouse.writer")
+        fake_writer_mod.write_filing_index_partition = _fake_write  # type: ignore[attr-defined]
+        monkeypatch.setitem(sys.modules, "compute.warehouse.writer", fake_writer_mod)
+
+        # Also stub config so the import inside run_filing_index_backfill works.
+        import types as _types2
+        fake_config = _types2.ModuleType("compute.config")
+        fake_config.EDGAR_MAX_WORKERS = 2  # type: ignore[attr-defined]
+        fake_config.WAREHOUSE_DIR = tmp_path / "warehouse"  # type: ignore[attr-defined]
+        monkeypatch.setitem(sys.modules, "compute.config", fake_config)
+
+        # Import after stubs are in place so lazy imports inside the function resolve correctly.
+        import scripts.backfill_filing_index as bfi_mod
+
+        monkeypatch.setattr(
+            bfi_mod,
+            "_load_universe",
+            lambda universe: [("AAPL", "0000320193"), ("MSFT", "0000789019")],
+        )
+
+        out_dir = tmp_path / "warehouse"
+        result = bfi_mod.run_filing_index_backfill(
+            universe="sp500",
+            run_date=__import__("datetime").date(2026, 6, 22),
+            out_dir=out_dir,
+            dry_run=True,
+        )
+
+        # Summary dict must have the required keys.
+        assert "n_tickers" in result
+        assert "n_filings" in result
+        assert "skipped" in result
+        assert "wall_clock_seconds" in result
+        assert result["n_tickers"] == 2
+
+        # dry_run=True must NEVER call write_filing_index_partition.
+        assert writer_calls == [], (
+            "dry_run=True must not call write_filing_index_partition; "
+            f"got {len(writer_calls)} call(s)"
+        )

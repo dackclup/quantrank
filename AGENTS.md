@@ -716,6 +716,11 @@ export function FairPriceCard(props) {  // no types
     `backfill-warehouse.yml`) writes `row_provenance="pit_replay"` rows to
     the gitignored `data/warehouse/backfill/` (CI artifact, never committed;
     SP500-only history; the 11 `FORWARD_ONLY_FLAGS` are NULL not False).
+  - `QR_SKIP_FILING_INDEX=1` — skips the SEC filing pointer index
+    backfill run (`scripts/backfill_filing_index.py:73`); the module is
+    NOT yet wired into the weekday cron (Slice 1 — cron wiring deferred
+    until the ~1500-ticker EDGAR enumeration cost is measured, issue
+    #579). Writes committed `data/warehouse/filing_index/` partitions.
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
 - Frontend telemetry: TWO cookieless Vercel-edge client-side beacons —

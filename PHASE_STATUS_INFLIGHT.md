@@ -6420,13 +6420,19 @@ snapshots). +27 offline tests (`tests/test_warehouse/test_filing_index.py`).
 NO schema-triple bump (warehouse is its own guard); defense layer UNCHANGED at 36;
 rankings/scores/flags BYTE-IDENTICAL (no compute/main.py wiring). Verify: ruff
 whole-repo `pass` · offline pytest `27 passed` (filing index) / `148 passed`
-(full warehouse suite) · main schema triple in-sync. KNOWN pre-existing (NOT this
-PR): `warehouse_schema_check` reports a latent `security_type` flat-column drift
-from #541 (the snapshot baseline `warehouse_schema.json` was never regenerated when
-`StockDetail.security_type` landed) — out of scope here, tracked as a #541 follow-up;
-`warehouse_schema_check` is a dev-time guard, NOT a CI gate, so it does not block
-merge. Next slices (gated on owner object-store decision in #579): Layer 2 lazy
-full-text archive + Layer 3 PIT-freeze, then weekday-cron wiring after the EDGAR
-cost is measured.
+(full warehouse suite) · main schema triple in-sync. PR-review gate (this session,
+pre-Mark-Ready): quantrank-reviewer (opus) READY-TO-PUSH, no FAIL · security-reviewer
+PASS on all security surfaces (no secrets, EDGAR identity/rate-limit clean, gitignore
+scoped, nothing ships to Vercel) · test-engineer COVERAGE-GAPS-FILLED (+6 graceful-
+degradation / dry-run tests → 33 offline) · phase-coordinator Mode B doc-lockstep.
+FOLLOW-UP edits folded in this PR per the gate: (1) CLAUDE.md §Layout + §Commands +
+§Gotchas and AGENTS.md §Security-considerations document the new `filing_index`
+module + `QR_SKIP_FILING_INDEX` opt-out (closes the security-reviewer doc FAIL +
+Mode B lockstep); (2) the pre-existing #541 `security_type` flat-column drift in
+`warehouse_schema.json` was regenerated (`--update`, +1 line) so the warehouse guard
+is GREEN end-to-end (was short-circuiting red before the filing-index check) —
+`filing_index_schema.json` baseline unchanged. Next slices (gated on owner
+object-store decision in #579): Layer 2 lazy full-text archive + Layer 3 PIT-freeze,
+then weekday-cron wiring after the EDGAR cost is measured.
 
 ---
