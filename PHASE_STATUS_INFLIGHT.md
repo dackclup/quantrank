@@ -6016,5 +6016,37 @@ correction lands.
 **Rule 16 (annotate-before-veto)**: N/A — no new flags.
 **Rule 18 (observability-before-wiring)**: N/A — no new external data sources.
 Verify: `ruff check .` clean · `pytest tests/test_ingest/test_cross_source_dividend.py -m "not network"` all passing (CS_DIV9A/B/C green).
+## PR #TBD — fix(ingest): XBRL balance-sheet context mis-pick (HASI/LGIH/GPK) (in flight, 2026-06-21)
+
+`compute/ingest/fundamentals.py` `_try_balance_tags` was a single `get_fact(tag)` call that used
+edgartools' default `max(all_facts, key=(filing_date, period_end))` sort — allowing a more-recently-
+filed 8-K / S-3 / S-4 event fact to beat the real 10-K consolidated balance-sheet value.  Three
+confirmed victims on the first sp1500 production cron: HASI `stockholders_equity` $1,000 (S-3
+preferred-share tranche vs. real ~$2-3B), LGIH `stockholders_equity` $25.2M (duration Q-change
+vs. real >$2B cumulative), GPK `total_liabilities` $10.8M (8-K event vs. real >$8B consolidated).
+
+**Fix** (`_try_balance_tags` replacement via edgar-debugger spec): walks `EntityFacts.get_all_facts()`
+(public API, not private `_fact_index`) and applies a three-tier selection:
+  Tier 1 — `period_type=='instant'` + form in `_BALANCE_SHEET_FORM_TYPES` (10-K/10-Q/20-F family;
+             excludes 8-K/S-type) + `unit=='USD'`
+  Tier 2 — `period_type=='instant'` + `unit=='USD'` (drop form-type; odd-filer safety net)
+  Tier 3 — raw `get_fact()` (original behavior, last resort)
+Within each tier, sort key is `(period_end DESC, filing_date tiebreaker)` — inverted from
+`get_fact`'s `(filing_date, period_end)` so 8-K event facts filed more recently than the 10-K
+no longer win.  `getattr` with safe defaults on every fact attribute so a future edgartools
+shape change degrades gracefully (returns None, never raises into the cron).
+
+New module-level constant `_BALANCE_SHEET_FORM_TYPES: Final[frozenset[str]]` + drift-guard
+manifest tuples `_FINANCIAL_FACT_REQUIRED_ATTRS` / `_ENTITY_FACTS_REQUIRED_ATTRS` (mirroring the
+`_FORM4_REQUIRED_ATTRS` hasattr pattern in `form4_insider.py`) + module-load check via
+`edgar.entity.models.FinancialFact` + `edgar.entity.EntityFacts`.  `_try_balance_tags_most_recent`
+(shares path) left AS-IS.  No schema bump (pure ingest-logic fix; same fields, correct values).
+
+offline + `@network` regression tests in `tests/test_ingest/test_fundamentals_balance_tag_fix.py` (HASI `stockholders_equity > 2e9`, LGIH `stockholders_equity > 2e9`,
+GPK `total_liabilities > 8e9`) for `--run-network` confirmation.  Verify: ruff clean ·
+`pytest tests/test_ingest/test_fundamentals*.py -m "not network"` = 53 passed.
+
+**Gate:** quantrank-reviewer (opus, core ingest change) + `--run-network` confirmation before
+marking ready.  Schema triple: UNTOUCHED.  Rankings/scores: CORRECTED (HASI/LGIH/GPK fix).
 
 ---
