@@ -141,6 +141,25 @@ env:
   # entirely — semantically identical to a cold-cache fetch failure
   # which the call site already handles).
   QR_SKIP_CROSS_SOURCE: "1"
+  # 2026-06-22 (PR #558 triage — the 6th loop) — pre-merge-prod-sim
+  # also skips the SEC API health probe. Dependabot PRs run on a
+  # same-repo branch (the `head.repo.full_name == github.repository`
+  # fork guard at the job `if:` PASSES — Dependabot PRs are not forks),
+  # but since GitHub's 2021 Dependabot secret-isolation change they
+  # cannot read repository secrets: `secrets.EDGAR_USER_AGENT` expands
+  # to an empty string. `run_weekly_compute` opens with a SEC health
+  # probe (`assert_sec_api_usable`) that hard-aborts immediately when
+  # the user-agent is empty → RuntimeError → exit 1 → COMPUTE_OUTCOME
+  # =failure in ~90s, on ANY Dependabot PR that touches a `paths:`
+  # trigger file (e.g. `pyproject.toml`). The probe is meaningless for
+  # the simulate job anyway — it runs against synthetic/cached data
+  # with the five skip vars above, never a live SEC fetch. Wired in
+  # `compute/ingest/sec_health.py` (`QR_SKIP_SEC_HEALTH` short-circuits
+  # the probe to a healthy `error="skipped"` result). Surfaced by the
+  # #558 pytest-cov bump whose `simulate` failed twice (re-run identical)
+  # despite the dep being `[dev]`-only and never installed by the job's
+  # `.[factors]` install.
+  QR_SKIP_SEC_HEALTH: "1"
 
 permissions:
   contents: read
