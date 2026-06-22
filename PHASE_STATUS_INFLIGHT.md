@@ -6261,3 +6261,27 @@ batch (this session): #559/#557/#556 already merged green; #561 (vitest 2→4) c
 re-run pending.
 
 ---
+
+## PR #TBD — ci(simulate): skip SEC health probe on Dependabot PRs via QR_SKIP_SEC_HEALTH (in flight, 2026-06-22)
+
+ci(simulate): add `QR_SKIP_SEC_HEALTH: "1"` to the `env:` block of
+`.github/workflows/pre-merge-prod-sim.yml`, alongside the five existing skip
+vars (`FORM4_FETCH_SKIP` + `QR_SKIP_TIER2` + `QR_SKIP_FUNDAMENTALS` +
+`QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE`). Fixes a pre-existing infra gap surfaced
+by the #558 pytest-cov bump: Dependabot PRs pass the job's
+`head.repo.full_name == github.repository` fork guard (they are not forks) but,
+since GitHub's 2021 Dependabot secret-isolation change, cannot read repository
+secrets — `secrets.EDGAR_USER_AGENT` expands to empty. `run_weekly_compute`
+opens with a SEC health probe (`assert_sec_api_usable`) that hard-aborts on an
+empty user-agent → RuntimeError → exit 1 → `COMPUTE_OUTCOME=failure` in ~90s, on
+ANY Dependabot PR touching a `paths:` trigger file (e.g. `pyproject.toml`). The
+probe is meaningless for simulate (synthetic/cached data, never a live SEC
+fetch), so `QR_SKIP_SEC_HEALTH` (the documented `sec_health.py` escape hatch)
+short-circuits it to a healthy `error="skipped"` result. ci-triage-engineer
+classified #558's double `simulate` failure as infra-pre-existing, NOT caused by
+the dep (which is `[dev]`-only, never installed by the job's `.[factors]`
+install); #558 was merged as-is. NO schema bump; defense layer UNCHANGED;
+workflow-only. Follow-up: a `docs/GOTCHAS.md` entry for the Dependabot
+secret-isolation vs fork-guard mismatch may land in a later housekeeping pass.
+
+---
