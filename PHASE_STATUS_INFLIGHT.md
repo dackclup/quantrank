@@ -6154,12 +6154,17 @@ no `title` on the `"—"` state). Closes the Dividend half of CLAUDE.md §Next d
 - `bonferroni_shadow_live_fire_count` — tickers with M-score > −2.22 (matches the existing `beneish_high` annotate count; surfaced for self-contained shadow report).
 - `bonferroni_shadow_provisional_fire_count` — tickers with M-score > −1.94 (provisional Bonferroni threshold, PROVISIONAL pending empirical SD from real sp1500 cron). Always ≤ live_fire_count.
 
-**Sign correction** (WORKFLOW.md §8.6, 2026-06-19): −2.50 was WRONG (looser than −2.22, flags more names). Tighter FWER control moves the cutoff UP toward 0 (less negative). Provisional −1.94 derived from Beneish 1999 Table 3 SD ≈ 1.8 + Bonferroni z* ≈ 4.01, rounded conservatively. Exact value DEFERRED pending live sp1500 cron empirical SD.
+**Sign correction** (WORKFLOW.md §8.6, 2026-06-19): −2.50 was WRONG (looser than −2.22, flags more names). Tighter FWER control moves the cutoff UP toward 0 (less negative). Provisional −1.94 is an ARBITRARY PLACEHOLDER between live −2.22 and soft-veto −1.78; exact value DEFERRED to re-derivation from empirical sp1500 M-score SD.
 
-**Constants** (in `compute/scoring/bonferroni_shadow.py`): `BONFERRONI_M = 1500` · `BONFERRONI_ALPHA = 0.05` · `BONFERRONI_ALPHA_STAR ≈ 3.33e-5` · `BENEISH_BONFERRONI_PROVISIONAL = -1.94`. Reads `beneish_m_scores` already computed in main.py Step 5 — zero new computation. NEVER blocks the cron (try/except → None).
+**methodology-scientist REVISE applied (2026-06-22)**:
+- Fix 1 — `m = valid_count` (data-driven): removed the hardcoded `BONFERRONI_M = 1500` and `BONFERRONI_ALPHA_STAR` module-level constants. `compute_bonferroni_shadow()` now counts valid (non-None) M-scores at runtime and uses `α* = 0.05 / valid_count`. Controls the per-ticker family-wise false-flag rate across the N valid Beneish M-score decisions for THIS cron run (distinct from Harvey-Liu-Zhu multi-SIGNAL FWER). `valid_count == 0` → returns (0, 0, 0) gracefully, no ZeroDivisionError. `alpha_star` is logged per run for methodology-scientist re-derivation.
+- Fix 2 — false derivation removed: the `−1.94 ← −4.84 + z*×1.8` formula in the original docstring was methodologically unsound (−4.84 is the regression intercept, not a distribution mean; 1.8 is not a Beneish 1999 pooled-M SD; and the computation yields ≈ −1.81 not −1.94). The formula is DELETED. The threshold is now documented honestly as an arbitrary placeholder strictly between −2.22 and −1.78, with re-derivation explicitly DEFERRED to the empirical sp1500 M-score SD after ≥1 real cron.
+- 20 new offline tests in `tests/test_scoring/test_bonferroni_shadow.py` covering the m=valid_count semantics, flip-count invariants, zone classification, and valid_count=0 graceful path.
 
-**Files**: `compute/scoring/bonferroni_shadow.py` (new) · `compute/output/schemas.py` · `compute/config.py` · `compute/main.py` · `frontend/lib/types.ts` · `frontend/lib/schema-snapshot.json` (snapshot regenerated) · `tests/test_config.py` (schema pin updated) · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+**Constants** (in `compute/scoring/bonferroni_shadow.py`): `BONFERRONI_ALPHA = 0.05` · `BENEISH_BONFERRONI_PROVISIONAL = -1.94` · `BENEISH_LIVE_THRESHOLD = -2.22`. `m` = data-driven `valid_count`, NOT frozen 1500. Reads `beneish_m_scores` already computed in main.py Step 5 — zero new computation. NEVER blocks the cron (try/except → None).
 
-**Gates**: methodology-scientist ratification of m/α + the provisional −1.94 threshold · quantrank-reviewer (opus) · schema-sentinel (triple). DO NOT MERGE before methodology-scientist RATIFY-SHADOW on the first sp1500 cron's `bonferroni_shadow_flip_count`.
+**Files**: `compute/scoring/bonferroni_shadow.py` (new) · `compute/output/schemas.py` · `compute/config.py` · `compute/main.py` · `frontend/lib/types.ts` · `frontend/lib/schema-snapshot.json` (snapshot regenerated) · `tests/test_config.py` (schema pin updated) · `tests/test_scoring/test_bonferroni_shadow.py` (new, 20 tests) · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gates**: methodology-scientist re-confirm of m=valid_count + placeholder labeling + provisional −1.94 · quantrank-reviewer (opus) · schema-sentinel (triple). DO NOT MERGE before methodology-scientist RATIFY-SHADOW on the first sp1500 cron's `bonferroni_shadow_flip_count`.
 
 ---

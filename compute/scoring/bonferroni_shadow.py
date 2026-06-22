@@ -12,9 +12,9 @@ meaning we accept far more false positives at scale without adjustment.
 
 The control target is **FWER via Bonferroni**, NOT FDR (Benjamini-Hochberg).
 Bonferroni: adjusted α* = α / m.  For the Beneish M-Score specifically the
-per-test threshold is the current −2.22 (M-score z-distribution; higher =
-more suspicious).  Tighter FWER control TIGHTENS that threshold — moves it
-UP toward 0 (less negative), narrowing the flag cohort.
+per-test threshold is the current −2.22 (M-score; higher = more suspicious).
+Tighter FWER control TIGHTENS that threshold — moves it UP toward 0 (less
+negative), narrowing the flag cohort.
 
 This module computes a **shadow count only** — it does NOT change the live
 threshold, the live flags, the composite score, or any veto.  It answers:
@@ -29,11 +29,14 @@ LOOSER (flags a superset, MORE names) — that is the wrong direction for
 tighter FWER control.  Tighter control means a HIGHER cutoff (closer to 0).
 
 The provisional Bonferroni-tightened threshold implemented here is
-``BENEISH_BONFERRONI_PROVISIONAL`` = −1.94.  This value is explicitly
-PROVISIONAL — WORKFLOW.md §8.6 states it must be re-derived from the
-empirical M-score distribution on a real ≥1 sp1500 cron (need the SD to
-map a Bonferroni-adjusted z → M-score units).  The constant is named
-_PROVISIONAL to make its deferral status obvious.
+``BENEISH_BONFERRONI_PROVISIONAL`` = −1.94.  This value is an ARBITRARY
+PLACEHOLDER chosen to fall strictly between the live annotate threshold
+(−2.22) and the soft-veto threshold (−1.78) in ``beneish.py``.  It is NOT
+derived from a formula — the correct derivation requires the empirical
+standard deviation of the M-score distribution on a real sp1500 cron run,
+which is not yet available.  The exact value is EXPLICITLY DEFERRED to
+re-derivation once the first real sp1500 cron produces the empirical
+M-score SD.  Cite: Beneish 1999 (FAJ); Bonferroni FWER correction.
 
 The shadow count answers whether the provisional threshold is directionally
 calibrated: if it fires on significantly FEWER tickers than the live −2.22
@@ -41,25 +44,28 @@ threshold, the tightening is working as expected.  Methodology-scientist
 must review the first cron's shadow count before the threshold is promoted
 to the live scoring layer.
 
-m and α values (from WORKFLOW.md §8.6 + Harvey-Liu-Zhu 2016 anchor)
---------------------------------------------------------------------
-m = 1500 (universe size at the S&P 1500 scale; FWER budgeted per-run
-    not per-signal since Beneish fires as a single composite score).
-    Exact universe size (~1504) rounded to 1500 — conservative (larger m
-    → stricter threshold; the ±4 difference is negligible: α/1500 vs
-    α/1504 are equal at this precision).
-α = 0.05 (conventional per-test significance level).
-α* = α / m = 0.05 / 1500 ≈ 3.33e-5 (Bonferroni-adjusted per-test α).
+m and α (data-driven, NOT universe-size constant)
+-------------------------------------------------
+``m`` is the number of hypothesis TESTS in this family — the number of
+tickers with a valid (non-None) Beneish M-score on this cron run.  This
+controls the per-ticker family-wise false-flag rate across the N valid
+Beneish M-score decisions for THIS run (distinct from Harvey-Liu-Zhu 2016
+multi-SIGNAL control, which uses a different ``m`` concept across signals,
+not tickers).
 
-The mapping α* → M-score cutoff requires the empirical SD of the M-score
-distribution, which is data-driven (not available offline).  The provisional
-−1.94 is a placeholder derived from the assumption that the M-score is
-approximately normally distributed with SD ~ 1.8 (Beneish 1999 Table 3),
-so z* = norm.ppf(1 − α*) ≈ norm.ppf(1 − 3.33e-5) ≈ 4.01,
-M_threshold = intercept + z* × SD ≈ −4.84 + 4.01 × 1.8 ≈ −1.81,
-rounded conservatively to −1.94 (stays between the live annotate at −2.22
-and the existing soft-veto threshold at −1.78 per beneish.py).
-DEFERRED: exact value = live-cron re-derivation (needs empirical SD).
+Concretely: ``m = valid_count`` (non-None M-scores); ``α* = 0.05 / m``.
+This makes the correction data-driven rather than frozen at an assumed
+universe size.  On a warm sp1500 cron ``m ≈ 1400-1500``; on sp500-only
+runs ``m ≈ 450-500``.  The FWER being controlled is: "across the m binary
+flag decisions on THIS run, at most 5% chance of at least one false positive
+flag due to M-score threshold alone".
+
+The computed ``alpha_star`` is logged for each run and deferred to the
+methodology-scientist for threshold re-derivation.  It is NOT stored in
+Metadata (the 3 Metadata fields are the flip/live/provisional counts).
+
+Edge cases: ``valid_count == 0`` → returns (0, 0, 0) gracefully, no
+division by zero.
 
 This entire module is OBSERVABILITY-ONLY.  It reads ``beneish_m_scores``
 (already computed in main.py Step 5) and emits counts.  No scoring
@@ -74,24 +80,27 @@ from typing import Final
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Constants — WORKFLOW.md §8.6 anchors (reproduce exactly, no re-derivation)
+# Constants
 # ---------------------------------------------------------------------------
-
-# Universe size used as m in the Bonferroni correction (S&P 1500 scale).
-# Per WORKFLOW.md §8.6: "~1500 stocks (~3× the multiple-comparison burden)".
-BONFERRONI_M: Final[int] = 1500
 
 # Conventional per-test significance level.
 BONFERRONI_ALPHA: Final[float] = 0.05
 
-# Bonferroni-adjusted per-test significance level: α* = α / m.
-BONFERRONI_ALPHA_STAR: Final[float] = BONFERRONI_ALPHA / BONFERRONI_M  # ≈ 3.33e-5
-
-# PROVISIONAL Bonferroni-tightened Beneish M-score threshold.
-# MUST be TIGHTER (closer to 0 / less negative) than the live BENEISH_THRESHOLD
-# (−2.22) — tighter FWER control NARROWS the flag cohort.
-# See module docstring for derivation.  DEFERRED pending empirical SD from
-# the first real sp1500 cron.
+# PROVISIONAL Beneish M-score threshold for the Bonferroni shadow counter.
+#
+# This is an ARBITRARY PLACEHOLDER chosen to sit strictly between:
+#   - the live annotate threshold: BENEISH_LIVE_THRESHOLD = −2.22 (beneish.py)
+#   - the soft-veto threshold:     −1.78 (beneish.py)
+# so that ``provisional ⊆ live`` and the flip count (live_fire − provisional_fire)
+# is well-defined.
+#
+# The threshold is LESS NEGATIVE than the live −2.22 (closer to 0 = stricter
+# FWER control, narrower flag cohort).
+#
+# DEFERRED: the exact value requires re-derivation from the empirical sp1500
+# M-score standard deviation on a real cron run (WORKFLOW.md §8.6).  Do NOT
+# dress this in a formula that has not been verified on real data.
+# Named _PROVISIONAL to make its deferral status obvious in call sites.
 BENEISH_BONFERRONI_PROVISIONAL: Final[float] = -1.94
 
 # Live Beneish threshold — mirrored here so the comparison is self-contained.
@@ -106,6 +115,14 @@ def compute_bonferroni_shadow(
 
     This function is SHADOW-ONLY.  It does NOT modify any flag, score, or
     veto.  All returned values are diagnostic counters for Metadata only.
+
+    ``m`` for the Bonferroni correction is the number of tickers with a
+    valid (non-None) M-score on THIS run — the number of hypothesis tests
+    actually performed.  ``α* = 0.05 / valid_count`` is computed
+    data-driven.  This controls the per-ticker family-wise false-flag rate
+    across the N valid Beneish M-score decisions for this cron
+    (distinct from Harvey-Liu-Zhu multi-SIGNAL FWER, which uses a
+    different m).  Cite: Beneish 1999; Bonferroni FWER.
 
     Parameters
     ----------
@@ -122,11 +139,12 @@ def compute_bonferroni_shadow(
 
         shadow_flip_count
             Tickers where the flag state DIFFERS between the two thresholds.
-            Since the provisional threshold is STRICTER, this is always the
-            count of live-true / provisional-false tickers: stocks that fire
-            under the current −2.22 cutoff but would NOT fire under the
-            Bonferroni-tightened −1.94.  The provisional cannot fire when
-            the live does not (−1.94 > −2.22 → M > −1.94 ⟹ M > −2.22).
+            Since the provisional threshold is STRICTER (−1.94 > −2.22),
+            this is always the count of live-true / provisional-false
+            tickers: stocks that fire under the current −2.22 cutoff but
+            would NOT fire under the Bonferroni-tightened −1.94.
+            The provisional cannot fire when the live does not
+            (−1.94 > −2.22 → M > −1.94 ⟹ M > −2.22).
             A larger value indicates more false positives the tighter
             threshold would suppress.
 
@@ -161,16 +179,32 @@ def compute_bonferroni_shadow(
         if live_fires != provisional_fires:
             shadow_flip_count += 1
 
-    logger.info(
-        "[bonferroni_shadow #542] valid_m_scores=%d "
-        "live_fire=%d (>%.2f) provisional_fire=%d (>%.2f) "
-        "shadow_flip=%d (PROVISIONAL threshold; OBSERVABILITY-ONLY)",
-        valid_count,
-        live_fire_count,
-        BENEISH_LIVE_THRESHOLD,
-        provisional_fire_count,
-        BENEISH_BONFERRONI_PROVISIONAL,
-        shadow_flip_count,
-    )
+    # m = valid_count (hypothesis tests actually performed this run).
+    # α* = 0.05 / valid_count (data-driven Bonferroni correction).
+    # Edge case: valid_count == 0 → α* undefined; log 0 counts and return.
+    if valid_count > 0:
+        alpha_star = BONFERRONI_ALPHA / valid_count
+        logger.info(
+            "[bonferroni_shadow #542] valid_m_scores=%d "
+            "m=%d alpha_star=%.6e "
+            "live_fire=%d (>%.2f) provisional_fire=%d (>%.2f) "
+            "shadow_flip=%d "
+            "(FWER-controlled per-ticker flag rate; PROVISIONAL threshold; "
+            "OBSERVABILITY-ONLY; threshold re-derivation DEFERRED to "
+            "empirical sp1500 cron SD)",
+            valid_count,
+            valid_count,
+            alpha_star,
+            live_fire_count,
+            BENEISH_LIVE_THRESHOLD,
+            provisional_fire_count,
+            BENEISH_BONFERRONI_PROVISIONAL,
+            shadow_flip_count,
+        )
+    else:
+        logger.info(
+            "[bonferroni_shadow #542] valid_m_scores=0 — no valid Beneish "
+            "M-scores; returning (0, 0, 0) (OBSERVABILITY-ONLY)",
+        )
 
     return (shadow_flip_count, live_fire_count, provisional_fire_count)
