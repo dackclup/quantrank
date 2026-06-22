@@ -99,7 +99,7 @@ jobs:
     # (actions/cache post-job save only runs on job SUCCESS).
     timeout-minutes: 270
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
