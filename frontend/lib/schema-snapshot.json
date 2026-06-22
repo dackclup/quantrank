@@ -367,6 +367,11 @@
       "required": false,
       "default": false
     },
+    "security_type_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "share_count_extraction_missing_count": {
       "type": "int | None",
       "required": false,
@@ -821,6 +826,11 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "security_type": {
+      "type": "str | None",
+      "required": false,
+      "default": null
     },
     "tangible_book_value": {
       "type": "float | None",

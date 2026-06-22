@@ -321,12 +321,19 @@ def test_fetch_yfinance_exchange_cache_hit_no_live_fetch(
 def test_fetch_yfinance_exchange_cache_miss_calls_live_and_writes_cache(
     tmp_path: Path, monkeypatch
 ) -> None:
-    """Cache miss → live fetch → result written back to cache."""
+    """Cache miss → live fetch → result written back to cache.
+
+    Security-type PR-1 (0.10.30-phase8pilot): _yf_fast_exchange now returns
+    a 2-tuple (exchange_code, quote_type) so both fields can be captured in
+    one fast_info call.  Updated to return ("NYQ", None) — quote_type is None
+    when yfinance doesn't include it; the cache must contain "exchange"="NYQ"
+    but NOT a "quote_type" key.
+    """
     monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
     monkeypatch.delenv("QR_SKIP_CROSS_SOURCE", raising=False)
 
     with patch(
-        "compute.ingest.cross_source._yf_fast_exchange", return_value="NYQ"
+        "compute.ingest.cross_source._yf_fast_exchange", return_value=("NYQ", None)
     ) as mock_fetch:
         result = fetch_yfinance_exchange("JPM")
 
@@ -334,6 +341,10 @@ def test_fetch_yfinance_exchange_cache_miss_calls_live_and_writes_cache(
     mock_fetch.assert_called_once_with("JPM")
     written = json.loads((tmp_path / "JPM.json").read_text())
     assert written["exchange"] == "NYQ"
+    # quote_type=None must NOT be written to the cache (key stays absent).
+    assert "quote_type" not in written, (
+        "quote_type=None must not produce a 'quote_type' key in the cache file"
+    )
 
 
 def test_fetch_yfinance_exchange_live_failure_returns_none(
@@ -357,11 +368,17 @@ def test_fetch_yfinance_exchange_live_failure_returns_none(
 def test_fetch_yfinance_exchange_live_returns_none_not_written(
     tmp_path: Path, monkeypatch
 ) -> None:
-    """If live fetch returns None (yfinance gap), nothing is cached and None returned."""
+    """If live fetch returns (None, None) (yfinance gap), nothing is cached and None returned.
+
+    Security-type PR-1 (0.10.30-phase8pilot): _yf_fast_exchange now returns
+    a 2-tuple (exchange_code, quote_type).  When both elements are None
+    (exchange code absent from yfinance), the behaviour is unchanged:
+    no cache file is written and fetch_yfinance_exchange returns None.
+    """
     monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
     monkeypatch.delenv("QR_SKIP_CROSS_SOURCE", raising=False)
 
-    with patch("compute.ingest.cross_source._yf_fast_exchange", return_value=None):
+    with patch("compute.ingest.cross_source._yf_fast_exchange", return_value=(None, None)):
         result = fetch_yfinance_exchange("BRK-A")
 
     assert result is None

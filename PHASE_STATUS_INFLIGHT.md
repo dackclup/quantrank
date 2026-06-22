@@ -6205,3 +6205,41 @@ duckdb proof. Provenance: the "test analyst against the real DB" probe (owner re
 **Follow-on (review WARN#1):** the dtype-lock is extracted into a shared `build_locked_schema(df)` helper in `writer.py`, applied in BOTH `write_run_snapshot` and `scripts/backfill_warehouse.py::_write_backfill_partition` (so the gitignored backfill artifact gets the same float64/bool discipline), and `pays_dividend` is locked to `bool` BY NAME (stable even when all-null). Forward output byte-unchanged (fp_graham still 916 non-null); 121 warehouse tests pass.
 
 ---
+
+## PR (compute+frontend) — Security-type (Type) HeroAttributeTile signal (7b) ingest PR-1 (in flight, 2026-06-22)
+
+Issue #541. Second of the two reserved `HeroAttributeTiles` display slots (the Dividend
+tile 7a shipped via #512/#533/#549). Observability-first ingest PR-1 (Rule 18): adds the
+field + diagnostic coverage canary, **NO UI wiring** (a later PR-2 promotes the "Type" tile
+out of its "Coming soon" placeholder once the canary confirms). Display-only descriptive
+metadata — does NOT touch ranking, scoring, pillars, or the defense layer.
+
+Schema triple (one additive bump `0.10.30`→`0.10.31-phase8pilot`):
+- `StockDetail.security_type: str | None` — categorical label (`"Common stock"` / `"ETF"` /
+  `"Fund"` / …) from yfinance `fast_info.quote_type`, mapped via `_QUOTE_TYPE_LABEL` in
+  `cross_source.py` (unknown codes pass through verbatim, forward-safe).
+- `Metadata.security_type_coverage_pct: float | None` — Rule-18 coverage canary, modeled
+  exactly on `dividend_coverage_pct`.
+- `compute/config.py` `SCHEMA_VERSION` bump; `types.ts` + `schema-snapshot.json` mirrored;
+  `schema_check` IN SYNC.
+
+Ingest: extends the warm `yfinance_info` cache surface (same pattern as the #512 dividend
+cache-read; zero new round-trips). `fetch_yfinance_security_type` pure cache-read;
+`_yf_fast_exchange` widened to a 2-tuple `(exchange_code, quote_type)` (single caller
+`fetch_yfinance_exchange` updated). `compute/main.py` Step-8 per-ticker populate + post-loop
+coverage aggregation (mirrors dividend). Graceful try/except → `None` at every call site.
+
+HONEST LIMIT — **ADR detection is `TODO(#541 PR-1b)`**: yfinance returns `EQUITY` for most
+ADRs; the SEC override (`dei:DocumentType == "20-F"` OR EDGAR submissions-JSON `entityType`
+= foreign private issuer) is deferred because `sec_health.py` doesn't cache the submissions
+JSON (clean wiring needs a new round-trip / cache surface). PR-1 ships yfinance `quote_type`
+as the primary signal with the override hook commented in `_QUOTE_TYPE_LABEL`.
+
+Verify: ruff clean · `schema_check` IN SYNC · `tsc --noEmit` clean · `next build` 1512 static
+pages · full offline pytest 2774 passed / 10 skipped (env-gated) / 0 failed (+17 new
+`test_cross_source_security_type.py` CS_ST1–CS_ST10 + version-string updates in test_config /
+test_warehouse). Gates: compute-builder (BUILT-CLEAN) + frontend-builder (types.ts + snapshot
+regen, BUILT-CLEAN) + schema-sentinel (triple lockstep PASS). Follow-up: PR-2 wires the
+`HeroAttributeTiles` "Type" tile after ≥ 1 sp1500 cron confirms `security_type_coverage_pct`.
+
+---
