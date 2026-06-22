@@ -721,13 +721,14 @@ class Metadata(BaseModel):
     # Bonferroni multi-test shadow counter (issue #542, Slice 8,
     # 0.10.30-phase8pilot, Rule 18 observability-before-wiring).
     #
-    # Background: expanding from ~500 (S&P 500) to ~1500 (S&P 1500) triples
-    # the multiple-comparison burden. Tighter FWER control (Bonferroni:
-    # α* = α/m = 0.05/1500 ≈ 3.33e-5) TIGHTENS the Beneish M-Score cutoff
+    # Background: expanding the universe raises the multiple-comparison
+    # burden. Tighter FWER control (Bonferroni: α* = α/m = 0.05/valid_count,
+    # where valid_count = the number of non-None Beneish M-scores THIS cron —
+    # data-driven, NOT a hardcoded 1500) TIGHTENS the Beneish M-Score cutoff
     # — moves it UP toward 0 (less negative), NOT down (WORKFLOW.md §8.6
     # sign correction 2026-06-19). The current live threshold is −2.22
     # (Beneish 1999); the provisional Bonferroni-tightened threshold is
-    # −1.94 (PROVISIONAL — must be re-derived from empirical sp1500 SD).
+    # −1.94 (PROVISIONAL placeholder — must be re-derived from empirical sp1500 SD).
     #
     # These 3 fields are SHADOW / OBSERVABILITY-ONLY. They do NOT change
     # the live ``beneish_high`` flag, the composite score, the vetoes, or
