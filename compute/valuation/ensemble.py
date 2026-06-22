@@ -566,6 +566,24 @@ def compute_fair_price_ensemble(
     ):
         valuation_warnings.append("value_trap_risk")
 
+    n_applicable = _count_applicable_non_outliers(methods, extreme_warnings)
+
+    # EQH-class guard: when every applicable method is an outlier (or no
+    # method applied at all), valuation_methods_applicable == 0 means there
+    # is no trustworthy point estimate.  Emitting the outlier-derived median
+    # and MoS would produce absurd display values (e.g. −2942%).  Null both
+    # fields to align with the existing Tier-1 "null on corrupt inputs"
+    # philosophy (CLAUDE.md §Valuation) and with median_trimmed (which is
+    # already None in this case — < 2 non-extreme survivors).
+    # All other fields (per-method values, extreme_* warnings,
+    # valuation_methods_applicable itself, low/high/max) are preserved
+    # unchanged so the UI can still surface the individual method outputs
+    # and their extreme-estimate annotations.
+    if n_applicable == 0:
+        aggregates = dict(aggregates)  # copy so we don't mutate the caller's dict
+        aggregates["median"] = None
+        aggregates["mos_pct"] = None
+
     return (
         EnsembleResult(
             methods=methods,
@@ -575,9 +593,7 @@ def compute_fair_price_ensemble(
             high=aggregates["high"],
             mos_pct=aggregates["mos_pct"],
             valuation_warnings=valuation_warnings,
-            valuation_methods_applicable=_count_applicable_non_outliers(
-                methods, extreme_warnings
-            ),
+            valuation_methods_applicable=n_applicable,
             # Issue #177 PR-A — shadow trimmed fields (diagnostic-only).
             # median_trimmed and methods_excluded_from_median are written to
             # the per-stock JSON for post-cron audit but do NOT feed mos_pct

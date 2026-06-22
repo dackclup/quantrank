@@ -6316,3 +6316,33 @@ Closes the Display-tiles (7b) UI half of CLAUDE.md §Next deliverable 5 — both
 (Dividend 7a + Type 7b) now live.
 
 ---
+
+## PR (TBD) — fix(valuation): null median/mos_pct when valuation_methods_applicable == 0 (in flight, 2026-06-22)
+
+EQH-class fair-price display fix. When **every** applicable fair-price method is itself flagged
+`extreme_*_estimate` (so `valuation_methods_applicable == 0`), the untrimmed `median` was still
+populated from the outlier values and `mos_pct` computed off it — producing absurd display
+values (EQH = Equitable Holdings rendered `mos_pct = −2942.42%` on `/stock/EQH`: GAAP equity
+$273M on $310B assets, AOCI-compressed insurance book; sole applicable method `multiples_pb`
+gave $1.50 vs $45.50 market, correctly flagged `extreme_multiples_pb_estimate`). Found by the
+stock-detail-auditor during the post-#570 warehouse-probe follow-up.
+
+Fix (`compute/valuation/ensemble.py`): when `n_applicable == 0`, null `aggregates["median"]` +
+`aggregates["mos_pct"]` before `EnsembleResult` construction — a Tier-1-style "null on corrupt
+inputs rather than print garbage" guard, aligning the LIVE fields with `median_trimmed` (already
+`None` at < 2 non-extreme survivors). **All other fields preserved** (per-method `value`s,
+`extreme_*` warnings, `valuation_methods_applicable` itself, `low`/`high`/`max`) so the UI still
+surfaces individual method outputs + their extreme annotations. **Display-only, ZERO scoring
+impact** — `composite.py`/`pillars.py` never read `mos_pct`/`fair_price.median` (grep-proven);
+`recommendation.py`/`loss_chance.py` accept `mos_pct` but already handle `None` gracefully.
+**Schema triple UNTOUCHED** (`median`/`mos_pct` already `float | None`; `schema_check` IN SYNC).
+The EMBC 2/3-extreme case (`valuation_methods_applicable == 1`, median still on the PE outlier)
+is the separate #177 trimmed-median question — explicitly OUT OF SCOPE. Deeper methodology
+follow-ups (P/B applicability guard for AOCI-compressed insurance equity + `EXTREME_MAJORITY_
+THRESHOLD` for sub-6 method pools) tracked in issue **#572** for the Q3 2026-08-19 cohort audit.
+
+Verify: ruff clean · `schema_check` IN SYNC · `pytest tests/test_valuation/ -m "not network"`
+241 passed (+3 new `test_ensemble.py` section-N tests: N1 EQH-exact regression / N2 control
+populated / N3 preservation invariant). Gate: compute-builder BUILT-CLEAN.
+
+---
