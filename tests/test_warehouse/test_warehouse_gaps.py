@@ -1,7 +1,13 @@
 """Gap-fill tests for compute.warehouse — PR #539 coverage review.
 
 These tests extend the 35 existing tests in test_warehouse.py to close
-the gaps identified in the PR-#539 coverage audit:
+the gaps identified in the PR-#539 coverage audit.
+
+G7  build_locked_schema dtype discipline:
+    - all-null numeric column → float64
+    - pays_dividend (by-name nullable-bool) → bool whether all-null or mixed
+    - backfill-path round-trip: _write_backfill_partition with all-null
+      numeric and all-null pays_dividend preserves float64 / bool dtypes
 
   G1  graceful-degradation: writer raises on bad path; cron guard swallows it
   G2  flatten edge cases: all-null PillarScores; fair_price empty dict vs None;

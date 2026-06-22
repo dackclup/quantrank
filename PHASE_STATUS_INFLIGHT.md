@@ -6178,4 +6178,6 @@ warehouse tests pass. Schema triple UNTOUCHED; rankings/scores unaffected (offli
 `warehouse_schema.json` still 128 cols, in sync. Verify: ruff clean · 121 warehouse tests · real-data
 duckdb proof. Provenance: the "test analyst against the real DB" probe (owner request 2026-06-22).
 
+**Follow-on (review WARN#1):** the dtype-lock is extracted into a shared `build_locked_schema(df)` helper in `writer.py`, applied in BOTH `write_run_snapshot` and `scripts/backfill_warehouse.py::_write_backfill_partition` (so the gitignored backfill artifact gets the same float64/bool discipline), and `pays_dividend` is locked to `bool` BY NAME (stable even when all-null). Forward output byte-unchanged (fp_graham still 916 non-null); 121 warehouse tests pass.
+
 ---
