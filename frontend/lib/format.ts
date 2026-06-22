@@ -74,6 +74,20 @@ export function formatDividendYield(
   return `${dividendYieldPct.toFixed(2)}%`;
 }
 
+// formatSecurityType — display helper for the Type tile (tile #4).
+//
+//   Present (non-empty string): return the label verbatim — the server-side
+//     `_QUOTE_TYPE_LABEL` map already produces display-ready text
+//     (e.g. "Common stock", "ETF", "Fund", "Index"). No further mapping needed.
+//   Unavailable (null or empty string): return "—" (em-dash), the standard
+//     missing-data convention. Coverage is ~60% right now and climbs over
+//     future crons; "—" is the honest "no data yet" state, consistent with
+//     formatFairPrice / formatMosPct / the Dividend tile null branch.
+export function formatSecurityType(securityType: string | null): string {
+  if (!securityType || securityType.trim() === '') return '—';
+  return securityType;
+}
+
 export function mosColorClass(mos: number | null): string {
   if (mos === null || Number.isNaN(mos)) return 'text-slate-400';
   if (mos >= 20) return 'text-emerald-700';

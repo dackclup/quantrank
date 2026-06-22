@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { formatMosPct, formatFairPrice, mosColorClass, formatDividendYield } from './format';
+import { formatMosPct, formatFairPrice, mosColorClass, formatDividendYield, formatSecurityType } from './format';
 
 // ---------------------------------------------------------------------------
 // formatMosPct
@@ -288,5 +288,55 @@ describe('formatDividendYield — payer (yield > 0)', () => {
     // A non-null positive yield should still render as a payer even without
     // the boolean.
     expect(formatDividendYield(3.14, null)).toBe('3.14%');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// formatSecurityType — two display states
+// ---------------------------------------------------------------------------
+//
+// Mirrors the HeroAttributeTiles "Type" tile contract:
+//   - Present (non-empty string)  → label verbatim ("Common stock", "ETF", …)
+//   - Unavailable (null or "")    → "—"
+//
+// The server-side `_QUOTE_TYPE_LABEL` map already produces display-ready text;
+// no further mapping is done here (pass-through by design).
+// ---------------------------------------------------------------------------
+
+describe('formatSecurityType — unavailable inputs', () => {
+  it('returns em-dash for null', () => {
+    expect(formatSecurityType(null)).toBe('—');
+  });
+
+  it('returns em-dash for empty string', () => {
+    expect(formatSecurityType('')).toBe('—');
+  });
+
+  it('returns em-dash for whitespace-only string', () => {
+    expect(formatSecurityType('   ')).toBe('—');
+  });
+});
+
+describe('formatSecurityType — label passthrough', () => {
+  it('returns "Common stock" verbatim (the most common label)', () => {
+    expect(formatSecurityType('Common stock')).toBe('Common stock');
+  });
+
+  it('returns "ETF" verbatim', () => {
+    expect(formatSecurityType('ETF')).toBe('ETF');
+  });
+
+  it('returns "Fund" verbatim', () => {
+    expect(formatSecurityType('Fund')).toBe('Fund');
+  });
+
+  it('returns "Index" verbatim', () => {
+    expect(formatSecurityType('Index')).toBe('Index');
+  });
+
+  it('passes through an unknown yfinance code verbatim (forward-safe)', () => {
+    // Codes not in _QUOTE_TYPE_LABEL pass through unchanged server-side.
+    // The helper should not swallow them either.
+    expect(formatSecurityType('CRYPTOCURRENCY')).toBe('CRYPTOCURRENCY');
   });
 });
