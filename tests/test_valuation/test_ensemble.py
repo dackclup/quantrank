@@ -1612,3 +1612,181 @@ def test_ensemble_result_dict_includes_trimmed_fields():
     d2 = ensemble_result_to_dict(er_collapsed)
     assert d2["median_trimmed"] is None
     assert d2["methods_excluded_from_median"] == ["dcf"]
+
+
+# -- N. EQH-class guard: zero-applicable-non-extreme → median/mos_pct null ----
+#
+# Defect surfaced by stock-detail audit on ticker EQH (Equitable Holdings,
+# Financials).  The only applicable method was ``multiples_pb``, which
+# subsequently fired ``extreme_multiples_pb_estimate`` because the derived
+# value was below the 0.2× current-price floor.  ``valuation_methods_applicable``
+# was correctly reported as 0, but the untrimmed ``median`` was still populated
+# (the single-method ``applicable_values`` list had one entry, so
+# ``statistics.median`` ran) and ``mos_pct`` was computed off it — producing a
+# spurious −2942% display value.
+#
+# Fix (compute/valuation/ensemble.py): when ``n_applicable == 0``, null both
+# ``median`` and ``mos_pct`` in the aggregates dict before constructing the
+# ``EnsembleResult``.  All other fields — per-method values, extreme_*
+# warnings, ``valuation_methods_applicable`` itself, ``low``/``high``/``max``
+# — are preserved unchanged.
+
+# Synthetic scenario that mirrors EQH:
+#
+# Sector = Financials:
+#   - ``dcf``              → sector_excluded_financials
+#   - ``multiples_ev_ebitda`` → sector_excluded_financials
+#
+# historical_metrics missing / non-positive:
+#   - ``graham``           → non_positive_eps_3y_avg  (no eps_3y_avg provided)
+#   - ``rim``              → insufficient_history_for_roe (no avg_3y_roe)
+#
+# net_income <= 0:
+#   - ``multiples_pe``     → non_positive_or_missing_eps_ttm
+#
+# ``multiples_pb`` APPLICABLE, value = bvps_reported × peer_pb_median
+#   = (equity / shares) × peer_pb = (10 / 1) × 1.5 = 15.0.
+#
+# EQH-class guard trigger:
+#   current_price = 200 → low_floor = 0.2 × 200 = 40 > 15 → EXTREME.
+#   valuation_methods_applicable == 0 → median + mos_pct should be None.
+#
+# Control path (same setup, current_price = 10):
+#   low_floor = 0.2 × 10 = 2 < 15 → NOT extreme.
+#   valuation_methods_applicable == 1 → median + mos_pct should be populated.
+
+
+def _make_eqh_peers() -> dict[str, dict[str, float | None]]:
+    """8 synthetic peers with pb_reported so compute_peer_medians resolves."""
+    return {
+        f"PEER{i}": {"pb_reported": 1.5}
+        for i in range(8)
+    }
+
+
+def _make_eqh_peer_panels() -> dict[str, dict[str, list[str]]]:
+    """Broad peer panel keyed so _convert_peer_panel maps to PeerTierUsed.BROAD."""
+    peers = [f"PEER{i}" for i in range(8)]
+    return {"pb": {"broad": peers}}
+
+
+def _make_eqh_snap() -> FundamentalsSnapshot:
+    """Financials-sector snap with positive book equity but no earnings."""
+    return FundamentalsSnapshot(
+        ticker="EQH",
+        cik="0000000099",
+        stockholders_equity=10.0,
+        shares_outstanding=1.0,
+        # net_income absent or negative → multiples_pe skips
+        net_income=None,
+        goodwill=0.0,
+        intangibles_net=0.0,
+        latest_period_end=date(2025, 12, 31),
+        latest_filed_date=date(2026, 2, 14),
+    )
+
+
+def test_N1_zero_applicable_nulls_median_and_mos_pct():
+    """EQH defect regression: sole applicable method extreme → median + mos_pct None."""
+    snap = _make_eqh_snap()
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="EQH",
+        snap=snap,
+        sector="Financials",
+        sub_industry=None,
+        industry=None,
+        # current_price 200: multiples_pb = 15 < 0.2 × 200 = 40 → extreme
+        current_price=200.0,
+        filing_lag_days_value=30,
+        peer_panels=_make_eqh_peer_panels(),
+        universe_metrics=_make_eqh_peers(),
+        historical_metrics={},
+    )
+    assert risk_flags == []
+
+    # The guard must null both fields.
+    assert result.median is None, (
+        f"Expected median=None when valuation_methods_applicable==0; got {result.median}"
+    )
+    assert result.mos_pct is None, (
+        f"Expected mos_pct=None when valuation_methods_applicable==0; got {result.mos_pct}"
+    )
+
+    # Applicability count must be exactly 0.
+    assert result.valuation_methods_applicable == 0
+
+    # The per-method ``multiples_pb`` entry must still have its value
+    # (the guard only nulls the aggregate, not the per-method output).
+    assert result.methods["multiples_pb"].applicable is True
+    assert result.methods["multiples_pb"].value == pytest.approx(15.0)
+
+    # The extreme warning must still be emitted.
+    assert "extreme_multiples_pb_estimate" in result.valuation_warnings
+
+    # median_trimmed is also None (< 2 survivors — existing behaviour, unchanged).
+    assert result.median_trimmed is None
+
+
+def test_N2_one_clean_method_still_populates_median_and_mos_pct():
+    """Control: same scenario but current_price low → multiples_pb in band
+    → valuation_methods_applicable == 1 → median + mos_pct populated."""
+    snap = _make_eqh_snap()
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="EQH",
+        snap=snap,
+        sector="Financials",
+        sub_industry=None,
+        industry=None,
+        # current_price 10: multiples_pb = 15 > 0.2 × 10 = 2 → NOT extreme
+        current_price=10.0,
+        filing_lag_days_value=30,
+        peer_panels=_make_eqh_peer_panels(),
+        universe_metrics=_make_eqh_peers(),
+        historical_metrics={},
+    )
+    assert risk_flags == []
+
+    # At least one clean method → median and mos_pct must be non-None.
+    assert result.median is not None, (
+        "Expected median populated when ≥1 non-extreme method exists"
+    )
+    assert result.mos_pct is not None, (
+        "Expected mos_pct populated when ≥1 non-extreme method exists"
+    )
+    assert result.valuation_methods_applicable == 1
+
+    # multiples_pb should not be flagged extreme.
+    assert "extreme_multiples_pb_estimate" not in result.valuation_warnings
+
+    # median == multiples_pb value (the sole applicable method).
+    assert result.median == pytest.approx(15.0)
+
+
+def test_N3_zero_applicable_preserves_low_high_max_and_warnings():
+    """Guard only nulls median + mos_pct; low/high/max and warnings stay intact."""
+    snap = _make_eqh_snap()
+    result, _risk = compute_fair_price_ensemble(
+        ticker="EQH",
+        snap=snap,
+        sector="Financials",
+        sub_industry=None,
+        industry=None,
+        current_price=200.0,
+        filing_lag_days_value=30,
+        peer_panels=_make_eqh_peer_panels(),
+        universe_metrics=_make_eqh_peers(),
+        historical_metrics={},
+    )
+    # max is None when no non-outlier values exist (existing _aggregate_methods
+    # behaviour: max = max(non_outlier_values) if non_outlier_values else None).
+    # low/high carry the raw applicable value (the extreme one).
+    assert result.low == pytest.approx(15.0), (
+        f"Expected low=15.0 (the single applicable value); got {result.low}"
+    )
+    assert result.high == pytest.approx(15.0), (
+        f"Expected high=15.0 (the single applicable value); got {result.high}"
+    )
+    # The extreme warning is intact.
+    assert "extreme_multiples_pb_estimate" in result.valuation_warnings
+    # valuation_methods_applicable is 0 and unchanged by the guard.
+    assert result.valuation_methods_applicable == 0
