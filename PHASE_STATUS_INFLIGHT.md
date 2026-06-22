@@ -6083,3 +6083,38 @@ docstring/doc accuracy); schema triple untouched. Verify: ruff clean · `pytest 
 901 passed · grep confirms it was the only free-text `valuation_warnings` emitter in `compute/`.
 
 ---
+
+## PR #540 — frontend(perf): infinite-scroll the ~1500-row ranking table (in flight, 2026-06-21)
+
+S&P 1500 cutover Slice 8 acceptance gate (epic #545). Slice 7 (#534) flipped the
+cron to `sp1500` so production `rankings.json` now carries ~1504 names; the
+ranking table's Prev/Next pagination (50 rows/page, ~30 pages) was the open
+"handles 1500 rows smoothly on mobile" gate in WORKFLOW.md.
+
+Change (frontend-only, `RankingTable.tsx`): replace Prev/Next pagination with an
+**IntersectionObserver-based infinite-scroll append** — `WINDOW_SIZE = 50` rows
+on first paint, a zero-height bottom sentinel grows `visibleCount` by 50 each time
+it enters the viewport (`rootMargin: 200px`), plus a "Showing X of N" `aria-live`
+progress indicator. Rows are **append-only** (never unmounted) so the a11y tree,
+keyboard nav, and FLIP `prevPos` map are all preserved.
+
+Deliberately NOT true DOM-windowing (`@tanstack/react-virtual`): true windowing
+unmounts off-screen rows, which conflicts with the search-scoped FLIP reshuffle
+(it measures surviving-row positions across the full visible set) and would need
+both the desktop `<table>` + mobile `<ul>` paths virtualized. For ~1500 lightweight
+rows the real-world win is marginal; true windowing is deferred to a profiling-gated
+follow-up (noted on #540).
+
+FLIP-search-scoped invariant preserved: `filterKey = search` gates `useFlip`;
+scroll-driven `visibleCount` changes `orderKey` (silent re-baseline) but not
+`filterKey`, so no FLIP fires on scroll — only on a search keystroke. Per-index
+tabs (SPX/MID/SML/ALL/DJI/NDX/RUI) reset the window via the `data`-keyed effect;
+the warm "no matches" empty-state is now gated on `visibleRows.length === 0`.
+
+Schema triple UNTOUCHED (frontend-only); rankings/scores/flags unaffected; schema
+stays `0.10.29-phase8pilot`, defense layer 36. Verify: `tsc --noEmit` clean ·
+`next build` clean (909 static pages, identical count). Gates: frontend-builder
+(built) + frontend-design-reviewer (in progress) + Playwright/expert-user spot-check
+of mobile scroll smoothness + FLIP-on-search (deferred to preview).
+
+---
