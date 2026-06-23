@@ -646,14 +646,20 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             </>
           )}
         </p>
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
-          <span className="w-4 shrink-0">#</span>
-          <span className="shrink-0">Status</span>
+        {/* Grid header + rows share a common template:
+            Mobile (6 tracks, sector hidden): [1.25rem auto 1fr 3.25rem 2.75rem 4.5rem]
+            sm+ (7 tracks, sector visible):   [1.25rem auto auto 1fr 3.25rem 2.75rem 4.5rem]
+            Column order (DOM): # · Status · Ticker · Sector · Score · Weight · Change.
+            The Sector cell carries `hidden sm:block`; a display:none grid child is
+            not placed, so mobile's 6 visible cells map cleanly to the 6 mobile tracks. */}
+        <div className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <span>#</span>
+          <span>Status</span>
           <span>Ticker</span>
-          <span className="hidden sm:inline">Sector</span>
-          <span className="ml-auto w-14 shrink-0 text-right">Score</span>
-          <span className="w-12 shrink-0 text-right">Weight</span>
-          <span className="w-20 shrink-0 text-right">Change</span>
+          <span className="hidden sm:block">Sector</span>
+          <span className="text-right">Score</span>
+          <span className="text-right">Weight</span>
+          <span className="text-right">Change</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
           {weightSortedHoldings.map((h, i) => {
@@ -664,8 +670,8 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             // it disagrees with the portfolio sense and HoldingsTimeline.
             const isHeld = priorHeldSet.has(h.ticker);
             return (
-              <li key={h.ticker} className="flex items-center gap-3 py-2">
-                <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+              <li key={h.ticker} className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] py-2">
+                <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
                 {/* Status chip — portfolio sense: Held = in prior quarter's basket,
@@ -696,17 +702,17 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 >
                   {h.ticker}
                 </Link>
-                <span className="hidden sm:inline">
+                <span className="hidden sm:block">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
+                <span className="text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
                   {h.composite_score.toFixed(1)}
                 </span>
-                <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {weightLabels[i]}
                 </span>
                 {(() => { const ch = weightChange(h.weight, data.priorWeights[h.ticker]); return (
-                  <span className={`w-20 shrink-0 text-right font-mono text-xs tabular-nums ${ch.tone}`}>
+                  <span className={`text-right font-mono text-xs tabular-nums ${ch.tone}`}>
                     {ch.arrow} {ch.text}
                   </span>
                 ); })()}
@@ -728,9 +734,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {soldRows.map((s, j) => (
             <li
               key={s.ticker}
-              className={`flex items-center gap-3 py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
+              className={`grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
             >
-              <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+              <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                 {weightSortedHoldings.length + j + 1}
               </span>
               {/* Sold chip — negative/red tone matching design-system Negative row
@@ -754,7 +760,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               >
                 {s.ticker}
               </Link>
-              <span className="hidden sm:inline">
+              <span className="hidden sm:block">
                 {s.sector ? <SectorChip sector={s.sector} /> : null}
               </span>
               {/* Score cell: show the sold stock's CURRENT composite score from
@@ -764,14 +770,14 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   (pre-full_ranked artifacts). Weight shows 0.0%: sold names carry
                   no weight in the current basket. Muted tone preserved so the
                   sold row stays visually de-emphasized vs active holdings. */}
-              <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
+              <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 {isFinite_(data.latestScores[s.ticker]) ? data.latestScores[s.ticker].toFixed(1) : '—'}
               </span>
-              <span className="w-12 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
+              <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 0.0%
               </span>
               {(() => { const ch = weightChange(0, data.priorWeights[s.ticker]); return (
-                <span className={`w-20 shrink-0 text-right font-mono text-xs tabular-nums ${ch.tone}`}>
+                <span className={`text-right font-mono text-xs tabular-nums ${ch.tone}`}>
                   {ch.arrow} {ch.text}
                 </span>
               ); })()}
