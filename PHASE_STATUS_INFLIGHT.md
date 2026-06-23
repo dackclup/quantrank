@@ -6583,3 +6583,31 @@ CI run is the live validation that every pinned SHA resolves. Lockstep: this ent
 Gate: security-reviewer (workflow-wide pin) before Mark-Ready; DRAFT PR.
 
 ---
+
+## PR (claude/sp1500-frontend-polish) — SP1500 universe label + a11y skip-link (#550, #551) (in flight, 2026-06-23)
+
+Two small frontend polish fixes, NO schema change, NO compute change.
+
+**Issue #550 — `universeLabel()` missing SP1500 case** (`frontend/lib/visual.ts` line ~228):
+`universeLabel()` had no case for `SP1500` / `SP1500-probe`, so the live
+`Metadata.universe = "SP1500"` heading rendered the raw string "SP1500 ranking".
+Fix: `if (universe.startsWith('SP1500')) return 'S&P 1500';` inserted BEFORE the SP500 check
+to avoid any startsWith/substring ordering pitfall. Covers both `SP1500` (live cron since
+Slice 7 #534) and `SP1500-probe` (Slice-2 label from manual dispatch runs).
+
+**Issue #551 — a11y skip-link to the "Load more" button** (`frontend/components/RankingTable.tsx`):
+With ~1500 rows split into 50-row batches, a keyboard user must Tab through every row link
+before reaching the "Show 50 more" button (WCAG 2.4.1 Bypass Blocks violation). Fix:
+(1) A `sr-only` skip-link "Skip to load more" appears on `:focus-visible` between the search
+toolbar and the first row, focusing `loadMoreButtonRef.current` via `onClick` — no visible
+chrome unless the link has keyboard focus. (2) The load-more `<div>` gains `id="ranking-load-more"`,
+`role="region"`, and `aria-label="Load more stocks"` so screen-reader users can jump to it
+directly from the landmarks list (JAWS/NVDA "R" key). Both are gated on `hasMore` (no-ops
+when all rows are shown). The button receives `ref={loadMoreButtonRef}`. No design-system
+tokens added; `sr-only` + `focus:not-sr-only` is Tailwind built-in; the focused skip-link
+uses the emerald-700 border + emerald-800 text (LedgerCraft brand positive) with paired
+`dark:` variants.
+
+Frontend-only, NO schema bump, defense layer UNCHANGED at 36. Lockstep: this entry.
+
+---

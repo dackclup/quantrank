@@ -555,6 +555,14 @@ describe('universeLabel', () => {
     expect(universeLabel('SP900')).toBe('All US stocks');
   });
 
+  it('maps "SP1500" → "S&P 1500"', () => {
+    expect(universeLabel('SP1500')).toBe('S&P 1500');
+  });
+
+  it('maps "SP1500-probe" → "S&P 1500"', () => {
+    expect(universeLabel('SP1500-probe')).toBe('S&P 1500');
+  });
+
   it('passes through an unknown code unchanged (forward-compat fallback)', () => {
     expect(universeLabel('SP400')).toBe('SP400');
     expect(universeLabel('CUSTOM')).toBe('CUSTOM');
