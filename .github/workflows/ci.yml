@@ -29,7 +29,7 @@ jobs:
       # still reports green; only the heavy Pytest step is gated. ruff + the
       # doc/model/schema guards keep running (cheap, and the doc-test-count
       # guard must run precisely when docs change). Always-on for `main` push.
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
         id: changes
         with:
           filters: |
@@ -72,7 +72,7 @@ jobs:
       - uses: actions/checkout@v7
       # Skip the npm build on PRs that touch no frontend paths. Job always
       # runs (required check stays green); only the build steps are gated.
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
         id: changes
         with:
           filters: |
