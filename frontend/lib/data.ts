@@ -55,6 +55,16 @@ function round2(v: number | null | undefined): number | null {
   return Math.round(v * 100) / 100;
 }
 
+// Basket weights need finer precision than the 2dp money/price fields. The
+// "Current picks" card apportions them to a 0.1%-resolution display that must
+// sum to exactly 100%, so rounding a weight to 2dp here (0.207 -> 0.21) would
+// pre-corrupt the basket sum to ~1.01 before the display layer ever sees it.
+// 6dp keeps the raw inverse-vol weights summing to 1.0 for the apportionment.
+function roundWeight(v: number | null | undefined): number | null {
+  if (v === null || v === undefined || Number.isNaN(v)) return null;
+  return Math.round(v * 1e6) / 1e6;
+}
+
 function lastFinite(arr: (number | null)[]): number | null {
   for (let i = arr.length - 1; i >= 0; i -= 1) {
     const v = arr[i];
@@ -180,7 +190,7 @@ export function getAiPickData(): AiPickData | null {
         composite_score: round2(h.composite_score) ?? h.composite_score,
         // Use null (not 0) when weight is missing so the display renders "—"
         // (em-dash) rather than "0.0%" — mirrors the slider branch's treatment.
-        weight: round2(adaptiveWeights[h.ticker] ?? null),
+        weight: roundWeight(adaptiveWeights[h.ticker] ?? null),
       }));
 
     // V55 HOLD-BAND (STATE 1) — detected when the latest rebalance carries
@@ -231,7 +241,7 @@ export function getAiPickData(): AiPickData | null {
               ticker,
               sector: sectorByTicker[ticker] ?? '',
               composite_score: round2(score) ?? score,
-              weight: round2(bw),
+              weight: roundWeight(bw),
               // A name is "carried" when its score is below composite_min but
               // still above hold_band_min — held for stability, not a new entry.
               carried,

@@ -6783,9 +6783,18 @@ target honestly tracks the finite-weight sum). Wired in BOTH branches (adaptive
 (already literal '—'). Verified the apportionment yields exactly 100.0% on all
 40 rebalances.
 
-SCOPE: `frontend/components/AiPickPortfolio.tsx`. NO schema change (triple
-untouched). Defense layer UNCHANGED at 36. Verified: `tsc --noEmit` clean +
-`next build` (1512 static pages).
+ROOT CAUSE (2nd commit): the real corruption was UPSTREAM in `frontend/lib/data.ts`
+— the adaptive `weight` field was passed through `round2` (2dp: 0.207 -> 0.21),
+so the basket already summed to ~1.01 before the display layer saw it, and the
+Hamilton helper faithfully reproduced that 1.01 (showed 21.0/10.0/... = 101.0%).
+Fix: a new `roundWeight` helper (6dp) replaces `round2` on the two adaptive
+weight assignments (latest-holdings + band-book), keeping the raw inverse-vol
+weights summing to 1.0 so the apportionment lands on exactly 100.0%. Verified
+OLD path 101.0% vs NEW path 100.0% on the latest basket; 0/40 rebalances drift.
+
+SCOPE: `frontend/components/AiPickPortfolio.tsx` + `frontend/lib/data.ts`. NO
+schema change (triple untouched). Defense layer UNCHANGED at 36. Verified:
+`tsc --noEmit` clean + `next build` (1512 static pages).
 
 Lockstep: this entry.
 
