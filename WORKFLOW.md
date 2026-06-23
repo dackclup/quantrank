@@ -1305,7 +1305,7 @@ positives without proportional true positives.
 - [x] **Bonferroni shadow counter documented and merged — DONE (#564, schema `0.10.30`, 2026-06-22): 3 `Metadata.bonferroni_shadow_*` observability counters; `m = valid_count`; provisional threshold −1.94 is a PLACEHOLDER — re-derivation from the empirical sp1500 M-score SD DEFERRED post-v2.0**
 - [ ] **Liquidity backstop excludes <$5M ADV stocks** (KEEP-ANNOTATE for v2.0 — `low_liquidity` #527 annotate is the shipped form; veto promotion (issue #544) deferred post-v2.0, gated on ≥ 1 sp600 cron firing-rate data + methodology ratification)
 - [x] **Defense set FROZEN at 36 for v2.0 — no new flags added unless rotation criteria met (low_liquidity #527 was the last; Bonferroni/Security-type adds are observability-only Metadata, not flags)**
-- [ ] **v2.0 tag pushed** (all other gates met; `release-captain` owns the `v2.0.0-phase8` cut — HOLD until ≥1 green scheduled sp1500 cron)
+- [x] **v2.0 tag pushed — DONE: `v2.0.0-phase8` PUBLISHED 2026-06-23 at `8c89a5af0` ("Set as latest"; release PR #577 + the green scheduled sp1500 cron it gated on — Section A-L 12/12, Bonferroni shadow counters populated, defense 36). The S&P 1500 cutover epic is COMPLETE.**
 
 ---
 
