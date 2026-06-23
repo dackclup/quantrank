@@ -737,14 +737,14 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   the latest rebalance's full_ranked array — same semantics as
                   the Held/New rows (which show composite_score from last.holdings).
                   Falls back to em-dash when the ticker is absent from full_ranked
-                  (pre-full_ranked artifacts). Weight stays em-dash: sold names
-                  carry no weight in the current basket. Muted tone preserved so
-                  the sold row stays visually de-emphasized vs active holdings. */}
+                  (pre-full_ranked artifacts). Weight shows 0.0%: sold names carry
+                  no weight in the current basket. Muted tone preserved so the
+                  sold row stays visually de-emphasized vs active holdings. */}
               <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 {isFinite_(data.latestScores[s.ticker]) ? data.latestScores[s.ticker].toFixed(1) : '—'}
               </span>
               <span className="w-12 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                —
+                0.0%
               </span>
             </li>
           ))}
