@@ -774,6 +774,23 @@ class Metadata(BaseModel):
     bonferroni_shadow_flip_count: int | None = None
     bonferroni_shadow_live_fire_count: int | None = None
     bonferroni_shadow_provisional_fire_count: int | None = None
+    # Issue #587 (0.10.32-phase8pilot) — Rule 18 observability counter for the
+    # ``extreme_estimate_majority`` low-applicability floor (RE-BASE-WITH-FLOOR,
+    # methodology-scientist ratified). Counts tickers where the annotate fired
+    # EXCLUSIVELY via the low-applicability floor (n_applicable ≤
+    # EXTREME_MAJORITY_LOWAPP_MAX = 3 AND n_extreme ≥
+    # EXTREME_MAJORITY_LOWAPP_MIN = 2 AND strict-majority) but NOT via the
+    # baseline 3-of-6 rule (n_extreme < EXTREME_MAJORITY_THRESHOLD = 3). This
+    # is the delta between the new and old firing populations — pre-measured at
+    # 16 tickers on cron 8c89a5af0 (GFF, SMTC, DD, NRG, LGIH, GEV, BILL, TTWO,
+    # HASI, HIMS, CRWD, MSGS, NABL, CHTR, COKE, EMBC). Annotate-only; defense
+    # layer UNCHANGED at 36. Nullable on legacy snapshots (pre-0.10.32); None
+    # when the Step-8 ensemble loop was skipped or failed.
+    # Note: this delta is ⊆ extreme_estimate_majority_count EXCEPT on a ticker
+    # that both fires the floor AND is Tier-2-vetoed (e.g. post_split_share_lag_
+    # unreconciled) — the veto nulls the ensemble after the warning was captured,
+    # so the total still counts it but this delta does not. ~0 expected overlap.
+    extreme_estimate_majority_lowapp_count: int | None = None
 
 
 class RawMetrics(BaseModel):

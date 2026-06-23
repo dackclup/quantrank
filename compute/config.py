@@ -49,7 +49,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.31-phase8pilot"
+SCHEMA_VERSION: str = "0.10.32-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -233,6 +233,39 @@ EXTREME_ESTIMATE_LOW: float = 0.2
 # breakdown-point rationale (per methodology-scientist Mode B,
 # 2026-05-21).
 EXTREME_MAJORITY_THRESHOLD: int = 3
+
+# Issue #587 — low-applicability floor for ``extreme_estimate_majority``
+# (RE-BASE-WITH-FLOOR, methodology-scientist ratified, 0.10.32-phase8pilot).
+#
+# The S&P 1500 small-cap cutover exposed a false-negative dead-zone: a
+# ticker with only 2-3 applicable ensemble methods can have a strict
+# majority (≥ 2 of 3) be extreme without reaching the 3-of-6 absolute
+# threshold (e.g., GFF MoS −1143.9%: 2 extreme of 3 applicable → silent).
+#
+# ``EXTREME_MAJORITY_LOWAPP_MAX``: the n_applicable ceiling that enables
+# the floor regime. Set to 3 (same as EXTREME_MAJORITY_THRESHOLD) so the
+# new behaviour is strictly confined to tickers with ≤ 3 applicable
+# methods — i.e., only the low-applicability tail that is invisible to
+# the existing 3-of-6 rule. S&P 500 stocks (typically 5-6 applicable
+# methods) are byte-identical.
+#
+# ``EXTREME_MAJORITY_LOWAPP_MIN``: the minimum n_extreme to fire in the
+# low-applicability regime. Set to 2 (GUT-FEEL, inherits the Huber 1981
+# §1.4 breakdown-point provenance tier of the parent threshold — this is
+# a low-applicability RECALIBRATION, not a new literature cutoff). The
+# floor kills the 1-of-2 false-positive: a single extreme of 2 applicable
+# is not an n=2-median breakdown event; 2 of 2 or 2 of 3 IS majority.
+#
+# The strict-majority guard (``n_extreme > n_applicable - n_extreme``) is
+# the firing gate in the low-applicability regime, ensuring ≥ 50%+1 of
+# applicable methods are extreme. Combined with LOWAPP_MIN, this aligns
+# the live annotate with the already-shipped ``median_trimmed`` shadow's
+# applicable-based majority logic.
+#
+# Ship annotate-first behind the Q3 2026-08-19 cohort-audit
+# pre-registration. Defense layer unchanged at 36 (annotate-only).
+EXTREME_MAJORITY_LOWAPP_MAX: int = 3
+EXTREME_MAJORITY_LOWAPP_MIN: int = 2
 
 # Data-quality sanity ceiling. Used by Site-1 (input-level) check at
 # `compute/scoring/risk_overlay.py::_data_quality_input_corruption` —

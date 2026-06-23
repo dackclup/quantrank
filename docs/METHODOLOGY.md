@@ -407,27 +407,55 @@ composite.
   legitimately uncomputable TBVPS still degrades to a null fair-price
   rather than a Top-5 ban. Promotion to veto deferred to the Q3
   2026-08-19 cohort audit after firing-rate confirmation.
-- `extreme_estimate_majority` _(Issue #177)_ — ≥
-  `config.EXTREME_MAJORITY_THRESHOLD = 3` of the 6 fair-price methods
-  fired `extreme_*_estimate` (Defense #4 5×/0.2× per-method outlier
-  guard) on this ticker. The ensemble's median is a 50% trimmed
-  estimator over 6 samples and tolerates only ⌊5/2⌋ = 2 outliers
-  before degrading (Huber 1981 *Robust Statistics* §1.4 breakdown-
-  point); at 3+ outliers the median collapses toward the low-cluster
-  (Damodaran 2019 *Investment Valuation* 3rd ed. Ch. 18 — discard
-  methods whose inputs fall outside their domain of applicability).
+- `extreme_estimate_majority` _(Issue #177 + Issue #587 RE-BASE-WITH-FLOOR)_
+  — fires when a majority of applicable ensemble methods are extreme
+  (Defense #4 5×/0.2× per-method outlier guard). Two firing branches:
+
+  **Baseline (3-of-6 rule):** ≥ `config.EXTREME_MAJORITY_THRESHOLD = 3` of
+  the 6 fair-price methods fired `extreme_*_estimate`. The ensemble's
+  median is a 50% trimmed estimator over 6 samples and tolerates only
+  ⌊5/2⌋ = 2 outliers before degrading (Huber 1981 *Robust Statistics*
+  §1.4 breakdown-point); at 3+ outliers the median collapses toward the
+  low-cluster (Damodaran 2019 *Investment Valuation* 3rd ed. Ch. 18 —
+  discard methods whose inputs fall outside their domain of applicability).
   APP/DDOG/AXON/TSLA pattern from the 2026-05-14 cron: 4-5 methods
   extreme-low against the current price, ensemble median ~$36 vs
-  current ~$482 — the per-method warnings already surface but the
-  median itself is hard to interpret. Annotate-only **for this PR**;
-  the actual median-exclusion logic + a
-  `fair_price.methods_excluded_from_median: list[str]` field land in
-  a follow-up PR after ≥ 1 cron's firing-rate observation. Threshold
-  provenance: GUT-FEEL with Huber 1981 breakdown-point rationale
-  (per methodology-scientist Mode B, 2026-05-21). The 5×/0.2× per-
-  method bands themselves are GUT-FEEL only — a separate
-  recalibration PR (RIM-specific or per-cohort) is queued for the Q3
-  2026-08-19 quarterly cohort audit.
+  current ~$482.
+
+  **Low-applicability floor** _(Issue #587, 0.10.32-phase8pilot,
+  methodology-scientist RE-BASE-WITH-FLOOR ratified)_: in the
+  low-applicability regime (n_applicable ≤
+  `config.EXTREME_MAJORITY_LOWAPP_MAX = 3`, the S&P 1500 small-cap tail),
+  also fires when `n_extreme ≥ config.EXTREME_MAJORITY_LOWAPP_MIN = 2`
+  AND n_extreme is a strict majority of applicable methods
+  (`n_extreme > n_applicable − n_extreme`). This closes the false-negative
+  dead-zone exposed by the S&P 1500 cutover: GFF (MoS −1143.9%) and SMTC
+  (−938.7%) each had 2 of 3 applicable methods extreme — a breakdown
+  event by applicable-based majority logic, but invisible to the 3-of-6
+  baseline rule. The `n_extreme ≥ 2` floor kills the 1-of-2 false-positive
+  (one extreme of two applicable is not an n=2-median breakdown event per
+  Huber 1981 §1.4). The `n_applicable ≤ 3` ceiling confines the new
+  behaviour to the low-applicability tail so S&P 500 tickers (5-6
+  applicable) remain byte-identical. Provenance: GUT-FEEL with Huber 1981
+  §1.4 breakdown-point rationale — low-applicability RECALIBRATION, not a
+  new literature cutoff. Aligns the live annotate with the already-shipped
+  `median_trimmed` shadow's applicable-based majority logic. Delta measured
+  on cron 8c89a5af0: 56 → 72 fires, 16-ticker delta (GFF, SMTC, DD, NRG,
+  LGIH, GEV, BILL, TTWO, HASI, HIMS, CRWD, MSGS, NABL, CHTR, COKE, EMBC).
+  Veto promotion deferred to Q3 2026-08-19 cohort audit.
+
+  `n_applicable` in the firing condition = total count of methods with
+  `applicable=True` AND `value is not None` (includes outliers). This is
+  the correct denominator for the breakdown-point arithmetic — the
+  applicable-method count is the relevant sample size N for Huber §1.4,
+  not the fixed 6-method total (which treats inapplicable methods as
+  contributing to robustness when they cannot).
+
+  Annotate-only per Rule 16; the actual median-exclusion logic +
+  `fair_price.methods_excluded_from_median` field land in a follow-up PR
+  after ≥ 1 cron's firing-rate observation. The 5×/0.2× per-method bands
+  themselves are GUT-FEEL only — a separate recalibration PR is queued
+  for the Q3 2026-08-19 quarterly cohort audit.
 - `multi_class_aggregate_shares_suspected` _(Issue #261 PR-A, PR #264)_
   — fires when two or more S&P 500 tickers share the same CIK AND each
   ticker's `market_cap > 10%` of universe-median

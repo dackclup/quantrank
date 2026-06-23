@@ -42,6 +42,7 @@ from compute.valuation.ensemble import (
     _bvps_reported,
     _classify_outliers,
     _count_applicable_non_outliers,
+    _extreme_majority_fires,
     _net_debt,
     compute_fair_price_ensemble,
     ensemble_result_to_dict,
@@ -1790,3 +1791,384 @@ def test_N3_zero_applicable_preserves_low_high_max_and_warnings():
     assert "extreme_multiples_pb_estimate" in result.valuation_warnings
     # valuation_methods_applicable is 0 and unchanged by the guard.
     assert result.valuation_methods_applicable == 0
+
+
+# -- K. issue #587 — extreme_estimate_majority low-applicability floor --------
+#
+# RE-BASE-WITH-FLOOR (0.10.32-phase8pilot): the S&P 1500 small-cap cutover
+# exposed a false-negative dead-zone where tickers with ≤ 3 applicable
+# ensemble methods can have a strict majority be extreme without reaching the
+# 3-of-6 baseline threshold (e.g., GFF MoS −1143.9%: 2 extreme of 3
+# applicable → silent under the prior rule).
+#
+# Two-tier coverage:
+#
+#   A. Predicate pins — ``_extreme_majority_fires(n_extreme, n_applicable)``
+#      directly (pure function exported from ensemble.py for this purpose).
+#      Each case maps to a specific branch of the firing logic.
+#
+#   B. Integration pins — full ``compute_fair_price_ensemble``, asserting
+#      both the ``extreme_estimate_majority`` warning presence/absence AND
+#      the new ``EnsembleResult.extreme_majority_lowapp`` boolean.
+#
+# Naming: tests K10+ (K1-K9 cover the prior majority logic from issue #177).
+#
+# Config anchors:
+#   EXTREME_MAJORITY_THRESHOLD    = 3   (baseline 3-of-6 rule)
+#   EXTREME_MAJORITY_LOWAPP_MAX   = 3   (n_applicable ceiling for floor)
+#   EXTREME_MAJORITY_LOWAPP_MIN   = 2   (min n_extreme for floor)
+#
+# ``n_applicable`` inside _extreme_majority_fires = total methods with
+# ``applicable=True AND value is not None`` INCLUDING outliers.
+# This is NOT the same as ``valuation_methods_applicable`` (which counts
+# only non-outlier survivors).
+
+
+# -- K-predicate. Direct predicate pins ----------------------------------------
+
+
+def test_K10_pred_two_of_three_applicable_extreme_fires():
+    """2-of-3 applicable extreme → strict majority, floor fires.
+
+    The GFF/SMTC motivating case: n_applicable=3, n_extreme=2.
+    Floor check: n_applicable(3) ≤ LOWAPP_MAX(3) AND n_extreme(2) ≥ LOWAPP_MIN(2)
+    AND n_extreme(2) > n_applicable(3) - n_extreme(2) = 1 → True.
+    """
+    assert _extreme_majority_fires(n_extreme=2, n_applicable=3) is True
+
+
+def test_K10_pred_two_of_two_all_extreme_fires():
+    """2-of-2 applicable all extreme → floor fires (unanimous).
+
+    n_applicable=2, n_extreme=2:
+    Floor: 2 ≤ 3 AND 2 ≥ 2 AND 2 > 0 → True.
+    """
+    assert _extreme_majority_fires(n_extreme=2, n_applicable=2) is True
+
+
+def test_K11_pred_one_of_two_does_not_fire():
+    """1-of-2 applicable extreme → below LOWAPP_MIN floor, flag silent.
+
+    This is the KEY 1-of-2 false-positive guard: one extreme of two
+    applicable is not a median-breakdown event (Huber 1981 §1.4 n=2 case).
+    n_extreme(1) < LOWAPP_MIN(2) → floor branch skipped.
+    Baseline also silent: n_extreme(1) < THRESHOLD(3).
+    """
+    assert _extreme_majority_fires(n_extreme=1, n_applicable=2) is False
+
+
+def test_K11_pred_one_of_three_does_not_fire():
+    """1-of-3 applicable extreme → below LOWAPP_MIN AND not majority, silent."""
+    assert _extreme_majority_fires(n_extreme=1, n_applicable=3) is False
+
+
+def test_K11_pred_two_of_four_floor_excluded_by_cap():
+    """n_applicable=4 > LOWAPP_MAX(3) → floor branch excluded; baseline not met.
+
+    2-of-4 doesn't reach THRESHOLD(3) AND n_applicable(4) > LOWAPP_MAX(3)
+    so the floor is NOT active. Flag silent.
+    """
+    assert _extreme_majority_fires(n_extreme=2, n_applicable=4) is False
+
+
+def test_K12_pred_three_of_four_baseline_fires():
+    """n_extreme=3 ≥ THRESHOLD(3) → baseline rule fires regardless of applicable count."""
+    assert _extreme_majority_fires(n_extreme=3, n_applicable=4) is True
+
+
+def test_K12_pred_three_of_six_baseline_fires():
+    """Classic S&P 500 scenario: 3-of-6 fires the baseline rule."""
+    assert _extreme_majority_fires(n_extreme=3, n_applicable=6) is True
+
+
+def test_K12_pred_two_of_six_baseline_silent():
+    """2-of-6 with n_applicable=6 > LOWAPP_MAX → both branches silent."""
+    assert _extreme_majority_fires(n_extreme=2, n_applicable=6) is False
+
+
+# -- K-integration. Full compute_fair_price_ensemble pins ----------------------
+#
+# Fixture strategy for K10: Financials sector excludes dcf + multiples_ev_ebitda.
+# Excluding multiples_pe (net_income=None) + RIM (value_trap: roe < ke) leaves
+# exactly 2 applicable methods: graham + multiples_pb. Setting current_price=1.0
+# with large tbvps forces both above the 5×$1=$5 band → 2 extreme of 2 applicable.
+# → _extreme_majority_fires(2, 2) = True; extreme_majority_lowapp = True.
+#
+# Fixture strategy for K11: same sector + method constraints, but current_price
+# raised so only graham remains extreme while multiples_pb lands in-band.
+# → _extreme_majority_fires(1, 2) = False; extreme_majority_lowapp = False.
+#
+# Fixture strategy for K12: reuse K7-style low-price scenario (IT sector) where
+# ≥3 of the applicable methods are extreme → baseline rule fires → flag fires
+# BUT extreme_majority_lowapp = False (fires via baseline, not floor).
+
+
+def _make_snap_financials_lowapp() -> FundamentalsSnapshot:
+    """Financials-sector snapshot for low-applicability floor integration tests.
+
+    Design: large book equity, no earnings (multiples_pe skips), low roe
+    so value_trap fires (rim skips). In Financials, dcf + multiples_ev_ebitda
+    are sector-excluded. That leaves exactly 2 methods: graham + multiples_pb.
+
+    Numbers:
+      stockholders_equity = 1000.0, shares_outstanding = 1.0
+      → bvps_reported = $1000, tbvps ≈ $990 (goodwill=10, intangibles=0)
+      → graham(eps=2.0, tbvps=990) = √(22.5×2×990) = √44550 ≈ 211
+      → multiples_pb(bvps=1000, peer_pb=1.0) = $1000
+
+    With current_price=1.0:  band = [$0.20, $5.00]
+      graham ≈ $211 → EXTREME
+      multiples_pb = $1000 → EXTREME
+    → n_applicable=2, n_extreme=2 → floor fires → extreme_majority_lowapp=True
+
+    With current_price=220.0: band = [$44.00, $1100.00]
+      graham ≈ $211 → in band (211 < 1100 AND 211 > 44)
+      multiples_pb = $1000 → in band (1000 < 1100 AND 1000 > 44)
+    → n_extreme=0 → neither branch fires → extreme_majority_lowapp=False
+    """
+    return FundamentalsSnapshot(
+        ticker="GFF",
+        cik="0000000587",
+        stockholders_equity=1000.0,
+        shares_outstanding=1.0,
+        net_income=None,         # → multiples_pe skips (no positive TTM EPS)
+        goodwill=10.0,
+        intangibles_net=0.0,
+        latest_period_end=date(2025, 12, 31),
+        latest_filed_date=date(2026, 2, 14),
+    )
+
+
+def _make_financials_pb_peers() -> tuple[
+    dict[str, dict[str, list[str]]],
+    dict[str, dict[str, float | None]],
+]:
+    """Financials P/B peer panel: 10 sector peers at pb=1.0 (≥ MULTIPLES_MIN_PEERS=8).
+
+    We use sector (not broad) to avoid the BROAD_EX_FIN_UTIL exclusion
+    that blocks Financials stocks from the broad tier.
+    """
+    peer_tickers = [f"FIN{i}" for i in range(10)]
+    peer_panels = {"pb": {"sector": peer_tickers}}
+    universe_metrics = {t: {"pb_reported": 1.0} for t in peer_tickers}
+    return peer_panels, universe_metrics
+
+
+def test_K10_integration_two_of_two_applicable_floor_fires():
+    """Integration: 2-of-2 applicable extreme → annotate fires via floor.
+
+    Financials sector + net_income=None + roe<ke:
+      dcf excluded (sector), multiples_ev_ebitda excluded (sector),
+      multiples_pe skips (no positive net_income), rim skips (value_trap).
+    Only graham + multiples_pb applicable.
+    current_price=1.0 makes both estimates extreme (> $5).
+
+    Expected:
+      'extreme_estimate_majority' IN valuation_warnings
+      extreme_majority_lowapp == True (fired via floor, not baseline 3-of-6)
+    """
+    snap = _make_snap_financials_lowapp()
+    peer_panels, universe_metrics = _make_financials_pb_peers()
+
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="GFF",
+        snap=snap,
+        sector="Financials",
+        sub_industry=None,
+        industry=None,
+        current_price=1.0,   # 5× = $5; both graham≈$211 and pb=$1000 → EXTREME
+        filing_lag_days_value=30,
+        peer_panels=peer_panels,
+        universe_metrics=universe_metrics,
+        historical_metrics={
+            "GFF": {
+                "eps_3y_avg": 2.0,         # graham applicable
+                "avg_3y_roe": 0.05,        # < Ke=0.10 → value_trap → rim SKIPS
+                "fcf_5y": [100.0] * 5,
+            },
+        },
+    )
+
+    assert risk_flags == []
+
+    # 2 extreme warnings expected (graham + multiples_pb).
+    extreme_flags = [
+        w for w in result.valuation_warnings
+        if w.startswith("extreme_") and w.endswith("_estimate")
+    ]
+    assert len(extreme_flags) == 2, (
+        f"Expected exactly 2 extreme warnings; got {extreme_flags}. "
+        "Check that Financials excludes dcf/ev_ebitda, net_income=None "
+        "excludes multiples_pe, and roe<ke triggers rim value_trap skip."
+    )
+
+    # The majority annotate must fire (floor path: 2-of-2).
+    assert "extreme_estimate_majority" in result.valuation_warnings, (
+        "extreme_estimate_majority must fire when 2-of-2 applicable methods "
+        "are extreme (low-applicability floor: n_applicable=2 ≤ LOWAPP_MAX=3, "
+        "n_extreme=2 ≥ LOWAPP_MIN=2, and 2 > 0 strict majority)."
+    )
+
+    # The new floor-path sentinel: fires via low-app floor, not baseline 3-of-6.
+    assert result.extreme_majority_lowapp is True, (
+        "extreme_majority_lowapp must be True when the annotate fires via the "
+        "low-applicability floor (n_extreme < THRESHOLD=3) rather than baseline."
+    )
+
+
+def test_K11_integration_one_of_two_applicable_does_not_fire():
+    """Integration: 1-of-2 applicable extreme → FP guard holds, annotate silent.
+
+    Same Financials setup as K10 (2 applicable: graham + multiples_pb),
+    but current_price=100.0 so only multiples_pb is extreme:
+      5× = $500 → graham≈$211 IN BAND (211 < 500 AND 211 > 20)
+      multiples_pb = bvps(1000) × peer_pb(1.0) = $1000 → EXTREME (1000 > 500)
+    → n_extreme=1, n_applicable=2 → _extreme_majority_fires(1, 2) = False.
+
+    This is the exact 1-of-2 false-positive guard from the issue #587 spec:
+    LOWAPP_MIN=2 blocks the annotate when only 1 of 2 applicable methods
+    are extreme (a single extreme of two is NOT a median-breakdown event).
+
+    Expected:
+      'extreme_estimate_majority' NOT in valuation_warnings
+      extreme_majority_lowapp == False
+    """
+    snap = _make_snap_financials_lowapp()
+    peer_panels, universe_metrics = _make_financials_pb_peers()
+
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="GFF",
+        snap=snap,
+        sector="Financials",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,  # 5× = $500; graham=$211 in band, pb=$1000 EXTREME
+        filing_lag_days_value=30,
+        peer_panels=peer_panels,
+        universe_metrics=universe_metrics,
+        historical_metrics={
+            "GFF": {
+                "eps_3y_avg": 2.0,
+                "avg_3y_roe": 0.05,    # rim skips (value_trap)
+                "fcf_5y": [100.0] * 5,
+            },
+        },
+    )
+
+    assert risk_flags == []
+
+    # Exactly 1 extreme warning (multiples_pb only).
+    extreme_flags = [
+        w for w in result.valuation_warnings
+        if w.startswith("extreme_") and w.endswith("_estimate")
+    ]
+    assert len(extreme_flags) == 1, (
+        f"Expected exactly 1 extreme warning; got {extreme_flags}. "
+        "current_price=100 → band=[$20, $500]; graham≈$211 in band, "
+        "multiples_pb=$1000 above band."
+    )
+    assert "extreme_multiples_pb_estimate" in result.valuation_warnings
+
+    # FP guard: 1-of-2 does NOT fire the majority annotate.
+    assert "extreme_estimate_majority" not in result.valuation_warnings, (
+        "extreme_estimate_majority must NOT fire when only 1-of-2 applicable "
+        "methods is extreme. LOWAPP_MIN=2 is the guard: n_extreme(1) < LOWAPP_MIN(2) "
+        "→ floor branch skipped; baseline also silent (n_extreme=1 < THRESHOLD=3)."
+    )
+    assert result.extreme_majority_lowapp is False, (
+        "extreme_majority_lowapp must be False when the annotate does not fire."
+    )
+
+
+def test_K12_integration_baseline_path_not_attributed_to_floor():
+    """Integration: ≥3 extreme of ≥4 applicable → baseline rule fires; lowapp=False.
+
+    Proves the S&P 500 / large-cap path is byte-identical: when the baseline
+    3-of-6 rule fires (n_extreme ≥ THRESHOLD=3), the annotate emits BUT
+    extreme_majority_lowapp is False (not attributed to the floor).
+
+    Reuses K7's low-price IT-sector fixture (current_price=2.0, peer_pb supplied)
+    which reliably produces ≥3 extreme flags across 4+ applicable methods.
+    """
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=2.0,    # same as K7 — ≥3 methods extreme
+        filing_lag_days_value=30,
+        peer_panels={
+            "pe": {},
+            "pb": {"sub_industry": ["PEER1", "PEER2", "PEER3"]},
+            "ev_ebitda": {},
+        },
+        universe_metrics={
+            "PEER1": {"pb_reported": 1.0},
+            "PEER2": {"pb_reported": 1.0},
+            "PEER3": {"pb_reported": 1.0},
+        },
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.5,
+                "avg_3y_roe": 0.15,
+                "fcf_5y": [100.0] * 5,
+            },
+        },
+    )
+
+    # Must have ≥ THRESHOLD extreme flags (same assertion as K7).
+    extreme_flags = [
+        w for w in result.valuation_warnings
+        if w.startswith("extreme_") and w.endswith("_estimate")
+    ]
+    assert len(extreme_flags) >= config.EXTREME_MAJORITY_THRESHOLD, (
+        f"K12 fixture did not produce ≥ {config.EXTREME_MAJORITY_THRESHOLD} "
+        f"extreme flags; got {extreme_flags}. Re-tune fixture or consult K7."
+    )
+
+    # Annotate fires (as in K7).
+    assert "extreme_estimate_majority" in result.valuation_warnings
+
+    # KEY K12 assertion: baseline path → NOT attributed to the low-app floor.
+    assert result.extreme_majority_lowapp is False, (
+        "extreme_majority_lowapp must be False when the annotate fires via the "
+        "baseline 3-of-6 rule (n_extreme ≥ THRESHOLD=3). The S&P 500 / large-cap "
+        "scoring path must be byte-identical — the floor adds no attribution for "
+        "tickers where the baseline already fires."
+    )
+
+
+def test_K12_integration_no_fire_lowapp_false():
+    """Sanity: extreme_majority_lowapp is False when the annotate does NOT fire.
+
+    The field defaults to False and must never be True without the annotate.
+    Uses K8's scenario (reasonable IT stock, ≥1 method in-band, < THRESHOLD extreme).
+    """
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,   # same as K8 — no majority extreme
+        filing_lag_days_value=30,
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.5,
+                "avg_3y_roe": 0.15,
+                "fcf_5y": [80.0, 90.0, 100.0, 110.0, 120.0],
+            },
+        },
+    )
+
+    assert "extreme_estimate_majority" not in result.valuation_warnings
+    # When annotate is silent, the lowapp sentinel must also be False.
+    assert result.extreme_majority_lowapp is False, (
+        "extreme_majority_lowapp must be False when extreme_estimate_majority "
+        "is absent from valuation_warnings."
+    )
