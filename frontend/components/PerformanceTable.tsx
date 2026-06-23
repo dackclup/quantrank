@@ -165,7 +165,7 @@ export function PerformanceTable({
         base: (s) => navAtOrBefore(dates, s, subtractYears(lastDate, 10)),
       },
       {
-        label: 'Max',
+        label: 'Total return',
         // Since inception — anchor on the first finite NAV in the series.
         base: (s) => {
           for (let i = 0; i < s.length; i += 1) { if (isFin(s[i])) return s[i] as number; }

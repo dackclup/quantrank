@@ -6875,3 +6875,13 @@ information and competed visually with the colored Return column. Changes:
 Lockstep: this entry.
 
 ---
+
+### Follow-up 2 — Performance table "Max" → "Total return" (2026-06-23)
+
+Renamed the trailing-period `PerformanceTable` since-inception row label from
+`Max` to `Total return` (clearer — that row IS the full-window total return).
+Label-string only; no logic / type / schema change.
+
+Lockstep: this entry.
+
+---
