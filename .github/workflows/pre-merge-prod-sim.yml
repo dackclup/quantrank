@@ -215,8 +215,8 @@ jobs:
     # asserts sim_timeout >= cron_timeout — bump this in lockstep with the cron.
     timeout-minutes: 270
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -253,7 +253,7 @@ jobs:
       # is run-id-unique, so the sim grabs the latest prior text snapshot by
       # the `cache-v5-text-<os>-` prefix, exactly as the cron itself does.)
       - name: Restore fast caches (fundamentals / prices / form4 — from weekly cron)
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/fundamentals
@@ -272,7 +272,7 @@ jobs:
             cache-v11-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap — from weekly cron)
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/edgar_10k_text
@@ -340,7 +340,7 @@ jobs:
 
       - name: Upload PR-branch compute output
         if: steps.compute.outcome == 'success'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: pr-${{ github.event.pull_request.number }}-compute-output
           path: frontend/public/data/
@@ -353,7 +353,7 @@ jobs:
       # (PR 1 fell through silently on red checks).
       - name: Post or update PR comment
         if: ${{ !cancelled() }}
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           COMPUTE_OUTCOME: ${{ steps.compute.outcome }}
           DIFF_OUTCOME: ${{ steps.diff.outcome }}

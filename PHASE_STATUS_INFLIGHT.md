@@ -6557,3 +6557,29 @@ CI-only, no code/schema/compute change. YAML validated. Lockstep: this entry. Ga
 #583 security review already cleared dorny/paths-filter; this is its recommended pin.
 
 ---
+
+## PR (ci-sha-pin-actions) — SHA-pin all remaining first-party actions/* (in flight, 2026-06-22)
+
+Completes the uniform SHA-pin hardening (follow-up to #584 which pinned the third-party
+dorny/paths-filter). Pins all 25 remaining `actions/*` `uses:` across the 8 workflows to
+verified commit SHAs (`@vN` → `@<40-hex> # vN`), so the OpenSSF "pinned-dependencies"
+posture is uniform across the whole workflow set:
+
+- `actions/checkout@v7`        → `9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0`  (v7.0.0, ×7)
+- `actions/setup-python@v6`    → `a309ff8b426b58ec0e2a45f0f869d46889d02405`  (v6.2.0, ×6)
+- `actions/setup-node@v6`      → `48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e`  (v6.4.0, ×1)
+- `actions/cache@v5` + `/restore@v5` → `27d5ce7f107fe9357f9df03efb73ab90386fccae` (v5.0.5, ×8)
+- `actions/upload-artifact@v7` → `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`  (v7.0.1, ×2)
+- `actions/github-script@v9`   → `3a2844b7e9c422d3c10d287c895573f7108da1b3`  (v9.0.0, ×1)
+
+Every SHA was **cross-verified from TWO independent github.com HTML pages** (`commits/<tag>`
+top commit + the `releases`/`tags` page) — api.github.com is 403 in this env so the
+double-page agreement substitutes for the authoritative ref JSON (one mis-read outlier on
+setup-node was caught and discarded). The `# vN` trailing comments keep Dependabot's
+`github-actions` ecosystem able to bump every pin.
+
+CI-only, no code/schema/compute change; YAML validated (`yaml.safe_load` all 8). The PR's own
+CI run is the live validation that every pinned SHA resolves. Lockstep: this entry.
+Gate: security-reviewer (workflow-wide pin) before Mark-Ready; DRAFT PR.
+
+---

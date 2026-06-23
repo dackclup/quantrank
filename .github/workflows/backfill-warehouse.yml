@@ -41,8 +41,8 @@ jobs:
     # all-or-none (a timeout uploads nothing).
     timeout-minutes: 300
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -61,7 +61,7 @@ jobs:
       # so this SUBSET bundle never poisons the cron's exact quarter key; restore
       # borrows the cron's v11-fast family via restore-keys.
       - name: Restore compute caches
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/fundamentals_history
@@ -97,7 +97,7 @@ jobs:
           du -sh data/warehouse/backfill 2>/dev/null || echo "  (no backfill output)"
 
       - name: Upload warehouse-backfill artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: warehouse-backfill-${{ steps.quarter.outputs.q }}
           path: data/warehouse/backfill/

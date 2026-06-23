@@ -23,7 +23,7 @@ jobs:
     name: Python (lint + test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       # Skip the ~20-min pytest on PRs that change no Python-relevant paths
       # (docs-only / frontend-only). The job ALWAYS runs so the required check
       # still reports green; only the heavy Pytest step is gated. ruff + the
@@ -39,7 +39,7 @@ jobs:
               - 'tools/**'
               - 'pyproject.toml'
               - '.github/workflows/ci.yml'
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -69,7 +69,7 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       # Skip the npm build on PRs that touch no frontend paths. Job always
       # runs (required check stays green); only the build steps are gated.
       - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
@@ -79,7 +79,7 @@ jobs:
             fe:
               - 'frontend/**'
               - '.github/workflows/ci.yml'
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         with:
           node-version: "22"
