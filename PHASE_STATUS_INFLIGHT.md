@@ -6732,3 +6732,30 @@ offline). Verified: `ruff check .` clean · ingest suite 638 passed · full offl
 2855 passed, 0 failures.
 
 ---
+
+## PR (claude/annual-returns-layout-566vaf) — AI-pick home layout: full-width Current picks + Annual returns | Total return grid (in flight, 2026-06-23)
+
+Frontend-only layout restructure of the AI-pick home (`AiPickPortfolio.tsx`,
+both the adaptive and the legacy slider branch, applied symmetrically). The
+"Current picks" card is lifted OUT of the 2-col grid it previously shared with
+`AnnualReturnsTable` and now renders FULL-WIDTH on top. Below it, a new
+`md:grid-cols-2` returns grid pairs `AnnualReturnsTable` (left) with a new
+`TotalReturnTable` (right). New vertical order per branch: headline/chart card
+→ Current picks (full width) → Annual returns | Total return → HoldingsTimeline
+→ footer CTA/disclaimer.
+
+New component `frontend/components/TotalReturnTable.tsx` structurally mirrors
+`AnnualReturnsTable` (same Props, helpers, design tokens) but its per-year value
+is CUMULATIVE total return since inception (`NAV(year-end) / NAV(inception) − 1`)
+instead of year-over-year, and its footer row is "TOTAL" (full-window
+`lastFin / firstFin − 1`) instead of "CAGR". All figures derive in-browser from
+the same NAV series the page already ships — no schema/compute change.
+
+SCOPE: `frontend/components/AiPickPortfolio.tsx` + new
+`frontend/components/TotalReturnTable.tsx`. NO schema change (triple untouched).
+Defense layer UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build`
+(1512 static pages).
+
+Lockstep: this entry.
+
+---

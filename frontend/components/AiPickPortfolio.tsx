@@ -6,6 +6,7 @@ import { flagLabel } from '@/lib/flag-labels';
 
 import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
+import { TotalReturnTable } from './TotalReturnTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
 import { Chip } from './Chip';
@@ -539,11 +540,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </div>
       </div>
 
-      {/* Current basket + calendar-year returns — side-by-side on desktop
-          (2-col grid, items-start so unequal-height cards top-align), stacking
-          to a single column on mobile (H-6). */}
-      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
-      {/* Current picks — adaptive basket */}
+      {/* Current picks — adaptive basket, full-width above the returns grid. */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
         <div className="mb-1 flex items-baseline justify-between gap-2">
           <h2
@@ -717,16 +714,30 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </ol>
       </div>
 
-      {/* Annual returns — derived from the adaptive net series */}
-      <AnnualReturnsTable
-        dates={dates}
-        portfolio={adaptive.net}
-        benchmark={benchmark[bench] ?? []}
-        portfolioLabel={portfolioLabel}
-        benchmarkLabel={benchLabel}
-        vetoLayerReplayed={vetoLayerReplayed}
-        vetoesNotReplayed={vetoesNotReplayed}
-      />
+      {/* Annual returns | Total return — side-by-side on desktop (2-col grid,
+          items-start so unequal-height cards top-align), stacking to a single
+          column on mobile. Sits below the full-width Current picks card. */}
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+        {/* Annual returns — derived from the adaptive net series */}
+        <AnnualReturnsTable
+          dates={dates}
+          portfolio={adaptive.net}
+          benchmark={benchmark[bench] ?? []}
+          portfolioLabel={portfolioLabel}
+          benchmarkLabel={benchLabel}
+          vetoLayerReplayed={vetoLayerReplayed}
+          vetoesNotReplayed={vetoesNotReplayed}
+        />
+        {/* Cumulative total return — same series as AnnualReturnsTable */}
+        <TotalReturnTable
+          dates={dates}
+          portfolio={adaptive.net}
+          benchmark={benchmark[bench] ?? []}
+          portfolioLabel={portfolioLabel}
+          benchmarkLabel={benchLabel}
+          vetoLayerReplayed={vetoLayerReplayed}
+          vetoesNotReplayed={vetoesNotReplayed}
+        />
       </div>
 
       {timeline.length > 0 && (
@@ -1018,11 +1029,7 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         </div>
       </div>
 
-      {/* Current basket + calendar-year returns — side-by-side on desktop
-          (2-col grid, items-start so unequal-height cards top-align), stacking
-          to a single column on mobile (H-6). */}
-      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
-      {/* Current picks */}
+      {/* Current picks — full-width above the returns grid. */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
         <div className="mb-1 flex items-baseline justify-between gap-2">
           <h2 className="font-slab text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
@@ -1086,22 +1093,31 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         </ol>
       </div>
 
-      {/* Rotation history — every quarterly rebalance's holdings at the current
-          basket size (entered/exited vs the prior quarter). The data the user
-          asked to see: "what was held 5 years ago + how it rotated", not "today's
-          picks back-projected". Reactive to the count slider. */}
-      {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row,
-          derived in-browser from the selected count's net NAV vs the chosen
-          index (reactive to the slider + benchmark picker; no schema change). */}
-      <AnnualReturnsTable
-        dates={dates}
-        portfolio={netByCount[countKey] ?? []}
-        benchmark={benchmark[bench] ?? []}
-        portfolioLabel={portfolioLabel}
-        benchmarkLabel={benchLabel}
-        vetoLayerReplayed={vetoLayerReplayed}
-        vetoesNotReplayed={vetoesNotReplayed}
-      />
+      {/* Annual returns | Total return — side-by-side on desktop (2-col grid,
+          items-start so unequal-height cards top-align), stacking to a single
+          column on mobile. Sits below the full-width Current picks card.
+          Both tables are reactive to the count slider + benchmark picker. */}
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+        {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row */}
+        <AnnualReturnsTable
+          dates={dates}
+          portfolio={netByCount[countKey] ?? []}
+          benchmark={benchmark[bench] ?? []}
+          portfolioLabel={portfolioLabel}
+          benchmarkLabel={benchLabel}
+          vetoLayerReplayed={vetoLayerReplayed}
+          vetoesNotReplayed={vetoesNotReplayed}
+        />
+        {/* Cumulative total return — same series as AnnualReturnsTable */}
+        <TotalReturnTable
+          dates={dates}
+          portfolio={netByCount[countKey] ?? []}
+          benchmark={benchmark[bench] ?? []}
+          portfolioLabel={portfolioLabel}
+          benchmarkLabel={benchLabel}
+          vetoLayerReplayed={vetoLayerReplayed}
+          vetoesNotReplayed={vetoesNotReplayed}
+        />
       </div>
 
       {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
