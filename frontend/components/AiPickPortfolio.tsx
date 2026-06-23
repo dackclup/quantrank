@@ -39,6 +39,33 @@ function isFinite_(v: number | null | undefined): v is number {
   return v !== null && v !== undefined && !Number.isNaN(v);
 }
 
+// Largest-remainder (Hamilton) apportionment so the DISPLAYED 1-decimal weight
+// percentages sum to exactly the basket total (100.0% for a normalized
+// inverse-vol book). Raw weights sum to 1.0, but independent toFixed(1) rounding
+// drifts the visible column to 99.9 / 100.1 / 100.2% — this removes that drift.
+// Non-finite weights render '—' and are excluded from the apportionment; the
+// target total honestly tracks the finite-weight sum (so a genuinely <100% book
+// would still show <100%, just without per-row rounding noise).
+function apportionWeightLabels(weights: (number | null | undefined)[]): string[] {
+  const labels = weights.map(() => '—');
+  const finiteIdx: number[] = [];
+  weights.forEach((w, i) => { if (isFinite_(w)) finiteIdx.push(i); });
+  if (finiteIdx.length === 0) return labels;
+  const sumFinite = finiteIdx.reduce((s, i) => s + (weights[i] as number), 0);
+  const target = Math.round(sumFinite * 1000);              // tenths of a percent (1000 = 100.0%)
+  const tenths = finiteIdx.map((i) => (weights[i] as number) * 1000);
+  const floors = tenths.map((t) => Math.floor(t));
+  const used = floors.reduce((s, f) => s + f, 0);
+  let remaining = Math.max(0, target - used);               // +0.1% units left to distribute
+  const order = floors
+    .map((_, k) => k)
+    .sort((a, b) => (tenths[b] - floors[b]) - (tenths[a] - floors[a])); // largest fractional remainder first
+  const add = floors.map(() => 0);
+  for (let k = 0; k < order.length && remaining > 0; k += 1) { add[order[k]] = 1; remaining -= 1; }
+  finiteIdx.forEach((i, k) => { labels[i] = `${((floors[k] + add[k]) / 10).toFixed(1)}%`; });
+  return labels;
+}
+
 function money$(v: number | null): string {
   if (v === null) return '—';
   const abs = Math.abs(v);
@@ -79,6 +106,24 @@ function pctStr(v: number | null): string {
 function toneClass(v: number | null): string {
   if (v === null) return 'text-slate-500 dark:text-slate-400';
   return v >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
+}
+
+// Relative weight change vs the prior quarter for the Current-picks "Change"
+// column. New (no prior weight) = +100%, Sold (no current weight) = −100%,
+// otherwise (cur−prior)/prior. Arrow + signed text + 3-way tone.
+function weightChange(current: number | null | undefined, prior: number | null | undefined) {
+  const c = isFinite_(current) ? current : 0;
+  const p = isFinite_(prior) ? prior : 0;
+  const POS = 'text-emerald-700 dark:text-emerald-300';
+  const NEG = 'text-rose-700 dark:text-rose-300';
+  const NEU = 'text-slate-500 dark:text-slate-400';
+  if (p === 0 && c > 0) return { arrow: '↑', text: '100.00%', tone: POS };
+  if (c === 0 && p > 0) return { arrow: '↓', text: '−100.00%', tone: NEG };
+  if (p === 0) return { arrow: '→', text: '0.00%', tone: NEU };
+  const rel = ((c - p) / p) * 100;
+  if (rel > 0) return { arrow: '↑', text: `${rel.toFixed(2)}%`, tone: POS };
+  if (rel < 0) return { arrow: '↓', text: `−${Math.abs(rel).toFixed(2)}%`, tone: NEG };
+  return { arrow: '→', text: '0.00%', tone: NEU };
 }
 
 // ---------------------------------------------------------------------------
@@ -240,6 +285,13 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         return 0;            // both non-finite → preserve original order
       }),
     [displayHoldings],
+  );
+
+  // Hamilton apportionment: displayed 1-decimal weight labels summing to
+  // exactly the basket total (removes per-row toFixed(1) rounding drift).
+  const weightLabels = useMemo(
+    () => apportionWeightLabels(weightSortedHoldings.map((h) => h.weight)),
+    [weightSortedHoldings],
   );
 
   // SOLD rows — tickers in the prior quarter's basket that are NOT in the
@@ -594,13 +646,20 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             </>
           )}
         </p>
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
-          <span className="w-4 shrink-0">#</span>
-          <span className="shrink-0">Status</span>
+        {/* Grid header + rows share a common template:
+            Mobile (6 tracks, sector hidden): [1.25rem auto 1fr 3.25rem 2.75rem 4.5rem]
+            sm+ (7 tracks, sector visible):   [1.25rem auto auto 1fr 3.25rem 2.75rem 4.5rem]
+            Column order (DOM): # · Status · Ticker · Sector · Score · Weight · Change.
+            The Sector cell carries `hidden sm:block`; a display:none grid child is
+            not placed, so mobile's 6 visible cells map cleanly to the 6 mobile tracks. */}
+        <div className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <span>#</span>
+          <span>Status</span>
           <span>Ticker</span>
-          <span className="hidden sm:inline">Sector</span>
-          <span className="ml-auto w-14 shrink-0 text-right">Score</span>
-          <span className="w-12 shrink-0 text-right">Weight</span>
+          <span className="hidden sm:block">Sector</span>
+          <span className="text-right">Score</span>
+          <span className="text-right">Weight</span>
+          <span className="text-right">Change</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
           {weightSortedHoldings.map((h, i) => {
@@ -611,8 +670,8 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             // it disagrees with the portfolio sense and HoldingsTimeline.
             const isHeld = priorHeldSet.has(h.ticker);
             return (
-              <li key={h.ticker} className="flex items-center gap-3 py-2">
-                <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+              <li key={h.ticker} className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] py-2">
+                <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
                 {/* Status chip — portfolio sense: Held = in prior quarter's basket,
@@ -643,15 +702,21 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 >
                   {h.ticker}
                 </Link>
-                <span className="hidden sm:inline">
+                <span className="hidden sm:block">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
+                <span className="text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
                   {h.composite_score.toFixed(1)}
                 </span>
-                <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                  {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}
+                <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                  {weightLabels[i]}
                 </span>
+                {(() => { const ch = weightChange(h.weight, data.priorWeights[h.ticker]); return (
+                  <span className={`flex items-center justify-between gap-1 font-mono text-xs tabular-nums ${ch.tone}`}>
+                    <span aria-hidden="true">{ch.arrow}</span>
+                    <span>{ch.text}</span>
+                  </span>
+                ); })()}
               </li>
             );
           })}
@@ -670,9 +735,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {soldRows.map((s, j) => (
             <li
               key={s.ticker}
-              className={`flex items-center gap-3 py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
+              className={`grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
             >
-              <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+              <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                 {weightSortedHoldings.length + j + 1}
               </span>
               {/* Sold chip — negative/red tone matching design-system Negative row
@@ -696,19 +761,28 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               >
                 {s.ticker}
               </Link>
-              <span className="hidden sm:inline">
+              <span className="hidden sm:block">
                 {s.sector ? <SectorChip sector={s.sector} /> : null}
               </span>
-              {/* Score and weight unavailable for sold names — the timeline
-                  carries only ticker+sector per quarter (no score/weight).
-                  Render em dashes in tabular-nums right-aligned cells to
-                  preserve column alignment. */}
-              <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                —
+              {/* Score cell: show the sold stock's CURRENT composite score from
+                  the latest rebalance's full_ranked array — same semantics as
+                  the Held/New rows (which show composite_score from last.holdings).
+                  Falls back to em-dash when the ticker is absent from full_ranked
+                  (pre-full_ranked artifacts). Weight shows 0.0%: sold names carry
+                  no weight in the current basket. Muted tone preserved so the
+                  sold row stays visually de-emphasized vs active holdings. */}
+              <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
+                {isFinite_(data.latestScores[s.ticker]) ? data.latestScores[s.ticker].toFixed(1) : '—'}
               </span>
-              <span className="w-12 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                —
+              <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
+                0.0%
               </span>
+              {(() => { const ch = weightChange(0, data.priorWeights[s.ticker]); return (
+                <span className={`flex items-center justify-between gap-1 font-mono text-xs tabular-nums ${ch.tone}`}>
+                  <span aria-hidden="true">{ch.arrow}</span>
+                  <span>{ch.text}</span>
+                </span>
+              ); })()}
             </li>
           ))}
         </ol>
@@ -825,6 +899,13 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         .slice(0, count)
         .sort((a, b) => (weights[b.ticker] ?? 0) - (weights[a.ticker] ?? 0))
     : [];
+
+  // Hamilton apportionment: displayed 1-decimal weight labels summing to
+  // exactly the basket total (removes per-row toFixed(1) rounding drift).
+  const weightLabels = useMemo(
+    () => apportionWeightLabels(holdings.map((h) => weights[h.ticker])),
+    [holdings, weights],
+  );
 
   // P/L since the holding's entry: walk the timeline backward while the ticker
   // stays inside the top-`count` slice — the streak start IS count-dependent (a
@@ -1062,7 +1143,6 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         </div>
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {
-            const w = weights[h.ticker];
             const pl = plSince[h.ticker] ?? { pct: null, date: null };
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
@@ -1079,7 +1159,7 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
                   <SectorChip sector={h.sector} />
                 </span>
                 <span className="ml-auto w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                  {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
+                  {weightLabels[i]}
                 </span>
                 <span className={`w-14 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
                   {pctStr(pl.pct)}

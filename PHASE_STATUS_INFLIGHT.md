@@ -6765,3 +6765,54 @@ Defense layer UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build`
 Lockstep: this entry.
 
 ---
+
+## PR (claude/annual-returns-layout-566vaf) — Current picks weight column sums to exactly 100% (Hamilton apportionment) (in flight, 2026-06-23)
+
+Frontend-only display fix. The AI-pick home "Current picks" table rendered each
+holding's weight with an independent `(weight * 100).toFixed(1)` — the raw
+inverse-vol weights sum to exactly 1.0, but per-row 1-decimal rounding drifts
+the VISIBLE column to 99.9 / 100.1 / 100.2% (21 of 40 backtest rebalances),
+which reads as "~101%". The data was always correct; only the rendering drifted.
+
+Fix: a module-level `apportionWeightLabels(weights)` helper in
+`AiPickPortfolio.tsx` applies largest-remainder (Hamilton) apportionment to
+tenths-of-a-percent so the displayed labels sum to exactly the basket total
+(100.0% for a normalized book; non-finite weights render '—' and are excluded,
+target honestly tracks the finite-weight sum). Wired in BOTH branches (adaptive
+`weightSortedHoldings` + slider `holdings`) via a `useMemo`. Sold rows untouched
+(already literal '—'). Verified the apportionment yields exactly 100.0% on all
+40 rebalances.
+
+ROOT CAUSE (2nd commit): the real corruption was UPSTREAM in `frontend/lib/data.ts`
+— the adaptive `weight` field was passed through `round2` (2dp: 0.207 -> 0.21),
+so the basket already summed to ~1.01 before the display layer saw it, and the
+Hamilton helper faithfully reproduced that 1.01 (showed 21.0/10.0/... = 101.0%).
+Fix: a new `roundWeight` helper (6dp) replaces `round2` on the two adaptive
+weight assignments (latest-holdings + band-book), keeping the raw inverse-vol
+weights summing to 1.0 so the apportionment lands on exactly 100.0%. Verified
+OLD path 101.0% vs NEW path 100.0% on the latest basket; 0/40 rebalances drift.
+
+SOLD-ROW SCORE (3rd commit): the Current-picks "Sold" rows showed `—` for score;
+they now show the rotated-out name's CURRENT composite score (consistent with the
+Held/New rows). New frontend-only `AiPickData.latestScores: Record<string, number>`
+(built from the latest rebalance's `full_ranked` in `data.ts`); the adaptive
+Sold row reads `data.latestScores[ticker].toFixed(1)` (em-dash fallback). Weight
+cell stays `0.0%` (sold names have no weight). `AiPickData` is a frontend-only
+view model — NOT the Pydantic↔TS↔snapshot triple, so no schema_check.
+
+WEIGHT-CHANGE COLUMN (later commit): a new "Change" column after Weight shows the
+relative weight delta vs the PRIOR quarter — New = ↑100.00% (emerald), Sold =
+↓−100.00% (rose), Held = ↑/↓ (cur−prior)/prior (emerald/rose), no-change = →0.00%
+(slate). New frontend-only `AiPickData.priorWeights: Record<string, number>` (from
+the second-to-last rebalance's `band_weights`/`weights_by_count`) + a `weightChange`
+helper in `AiPickPortfolio.tsx`, rendered on both holding + sold rows (adaptive
+branch only). Mobile note: the extra `w-20` column is tight at ~360px (sector
+already hidden on mobile); revisit width/format if it crowds.
+
+SCOPE: `frontend/components/AiPickPortfolio.tsx` + `frontend/lib/data.ts` +
+`frontend/lib/types.ts`. NO schema change (triple untouched). Defense layer
+UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build` (1512 static pages).
+
+Lockstep: this entry.
+
+---

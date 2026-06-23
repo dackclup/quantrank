@@ -55,6 +55,16 @@ function round2(v: number | null | undefined): number | null {
   return Math.round(v * 100) / 100;
 }
 
+// Basket weights need finer precision than the 2dp money/price fields. The
+// "Current picks" card apportions them to a 0.1%-resolution display that must
+// sum to exactly 100%, so rounding a weight to 2dp here (0.207 -> 0.21) would
+// pre-corrupt the basket sum to ~1.01 before the display layer ever sees it.
+// 6dp keeps the raw inverse-vol weights summing to 1.0 for the apportionment.
+function roundWeight(v: number | null | undefined): number | null {
+  if (v === null || v === undefined || Number.isNaN(v)) return null;
+  return Math.round(v * 1e6) / 1e6;
+}
+
 function lastFinite(arr: (number | null)[]): number | null {
   for (let i = arr.length - 1; i >= 0; i -= 1) {
     const v = arr[i];
@@ -180,7 +190,7 @@ export function getAiPickData(): AiPickData | null {
         composite_score: round2(h.composite_score) ?? h.composite_score,
         // Use null (not 0) when weight is missing so the display renders "—"
         // (em-dash) rather than "0.0%" — mirrors the slider branch's treatment.
-        weight: round2(adaptiveWeights[h.ticker] ?? null),
+        weight: roundWeight(adaptiveWeights[h.ticker] ?? null),
       }));
 
     // V55 HOLD-BAND (STATE 1) — detected when the latest rebalance carries
@@ -231,7 +241,7 @@ export function getAiPickData(): AiPickData | null {
               ticker,
               sector: sectorByTicker[ticker] ?? '',
               composite_score: round2(score) ?? score,
-              weight: round2(bw),
+              weight: roundWeight(bw),
               // A name is "carried" when its score is below composite_min but
               // still above hold_band_min — held for stability, not a new entry.
               carried,
@@ -254,6 +264,33 @@ export function getAiPickData(): AiPickData | null {
       latestHoldings: adaptiveHoldings,
       ...bandFields,
     };
+  }
+
+  // Build a map of current composite scores from the latest rebalance's
+  // full_ranked array — covers ALL ranked tickers (including sold names) so
+  // the "Current picks" Sold rows can display the score the rotated-out stock
+  // carries NOW, consistent with Held/New rows (which show composite_score
+  // from last.holdings). Falls back to an empty map on pre-full_ranked artifacts.
+  const latestScores: Record<string, number> = {};
+  const fullRanked = (last as unknown as { full_ranked?: Array<{ ticker: string; composite_score: number }> }).full_ranked ?? [];
+  for (const r of fullRanked) {
+    latestScores[r.ticker] = r.composite_score;
+  }
+
+  // Build a map of the PRIOR rebalance's per-ticker basket weights — used by the
+  // Current-picks "Change" column in the adaptive branch to show relative weight
+  // deltas vs the previous quarter. Empty on the very first rebalance (no prior).
+  const priorWeights: Record<string, number> = {};
+  if (rebalances.length >= 2) {
+    const prv = rebalances[rebalances.length - 2] as unknown as {
+      band_weights?: Record<string, number>;
+      weights_by_count?: Record<string, Record<string, number>>;
+      adaptive_count?: number;
+    };
+    const pw = prv.band_weights
+      ?? (prv.adaptive_count != null ? prv.weights_by_count?.[String(prv.adaptive_count)] : undefined)
+      ?? {};
+    for (const [t, w] of Object.entries(pw)) priorWeights[t] = w;
   }
 
   return {
@@ -300,6 +337,8 @@ export function getAiPickData(): AiPickData | null {
     })),
     entryCloses,
     lastCloses,
+    latestScores,
+    priorWeights,
     // Caption-branching fields — forwarded from meta so sub-components
     // (AnnualReturnsTable / AiPickPortfolio) don't receive the full meta
     // object. Names-only from vetoes_not_replayed; reason is artifact-only.
