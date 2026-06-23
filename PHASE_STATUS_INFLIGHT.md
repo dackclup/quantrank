@@ -6792,9 +6792,17 @@ weight assignments (latest-holdings + band-book), keeping the raw inverse-vol
 weights summing to 1.0 so the apportionment lands on exactly 100.0%. Verified
 OLD path 101.0% vs NEW path 100.0% on the latest basket; 0/40 rebalances drift.
 
-SCOPE: `frontend/components/AiPickPortfolio.tsx` + `frontend/lib/data.ts`. NO
-schema change (triple untouched). Defense layer UNCHANGED at 36. Verified:
-`tsc --noEmit` clean + `next build` (1512 static pages).
+SOLD-ROW SCORE (3rd commit): the Current-picks "Sold" rows showed `—` for score;
+they now show the rotated-out name's CURRENT composite score (consistent with the
+Held/New rows). New frontend-only `AiPickData.latestScores: Record<string, number>`
+(built from the latest rebalance's `full_ranked` in `data.ts`); the adaptive
+Sold row reads `data.latestScores[ticker].toFixed(1)` (em-dash fallback). Weight
+cell stays `—` (sold names have no weight). `AiPickData` is a frontend-only view
+model — NOT the Pydantic↔TS↔snapshot triple, so no schema_check.
+
+SCOPE: `frontend/components/AiPickPortfolio.tsx` + `frontend/lib/data.ts` +
+`frontend/lib/types.ts`. NO schema change (triple untouched). Defense layer
+UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build` (1512 static pages).
 
 Lockstep: this entry.
 

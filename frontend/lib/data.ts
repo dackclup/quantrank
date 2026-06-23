@@ -266,6 +266,17 @@ export function getAiPickData(): AiPickData | null {
     };
   }
 
+  // Build a map of current composite scores from the latest rebalance's
+  // full_ranked array — covers ALL ranked tickers (including sold names) so
+  // the "Current picks" Sold rows can display the score the rotated-out stock
+  // carries NOW, consistent with Held/New rows (which show composite_score
+  // from last.holdings). Falls back to an empty map on pre-full_ranked artifacts.
+  const latestScores: Record<string, number> = {};
+  const fullRanked = (last as unknown as { full_ranked?: Array<{ ticker: string; composite_score: number }> }).full_ranked ?? [];
+  for (const r of fullRanked) {
+    latestScores[r.ticker] = r.composite_score;
+  }
+
   return {
     meta,
     dates: nav.dates,
@@ -310,6 +321,7 @@ export function getAiPickData(): AiPickData | null {
     })),
     entryCloses,
     lastCloses,
+    latestScores,
     // Caption-branching fields — forwarded from meta so sub-components
     // (AnnualReturnsTable / AiPickPortfolio) don't receive the full meta
     // object. Names-only from vetoes_not_replayed; reason is artifact-only.

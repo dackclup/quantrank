@@ -1158,6 +1158,10 @@ export type AiPickData = {
   // Names of vetoes excluded from the replay (only meaningful when
   // vetoLayerReplayed=true; undefined on old artifacts).
   vetoesNotReplayed: { name: string }[] | undefined;
+  // Current composite score per ticker from the latest rebalance's full ranking
+  // (last.full_ranked) — lets the Current-picks "Sold" rows show the score the
+  // rotated-out name carries NOW, consistent with the Held/New rows.
+  latestScores: Record<string, number>;
   // Phase 7.0 ADAPTIVE — non-null when the artifact carries nav.adaptive.
   // null when the artifact predates the adaptive rule contract (backward-compat
   // fallback: render the slider UI exactly as today).

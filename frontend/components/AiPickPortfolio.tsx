@@ -733,12 +733,15 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="hidden sm:inline">
                 {s.sector ? <SectorChip sector={s.sector} /> : null}
               </span>
-              {/* Score and weight unavailable for sold names — the timeline
-                  carries only ticker+sector per quarter (no score/weight).
-                  Render em dashes in tabular-nums right-aligned cells to
-                  preserve column alignment. */}
+              {/* Score cell: show the sold stock's CURRENT composite score from
+                  the latest rebalance's full_ranked array — same semantics as
+                  the Held/New rows (which show composite_score from last.holdings).
+                  Falls back to em-dash when the ticker is absent from full_ranked
+                  (pre-full_ranked artifacts). Weight stays em-dash: sold names
+                  carry no weight in the current basket. Muted tone preserved so
+                  the sold row stays visually de-emphasized vs active holdings. */}
               <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                —
+                {isFinite_(data.latestScores[s.ticker]) ? data.latestScores[s.ticker].toFixed(1) : '—'}
               </span>
               <span className="w-12 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 —
