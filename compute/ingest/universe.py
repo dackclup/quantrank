@@ -288,6 +288,19 @@ def _resolve_cik_for_midcap(ticker: str) -> str | None:
     an HTTP call (``get_entity_submissions``).  Therefore ``midcap_cik_
     resolution_pct`` is trustworthy on the first sp900 run; no burst risk.
     """
+    # Issue #567 — check the config-level override FIRST so that post-bankruptcy
+    # or post-merger entities with stale CIKs in edgartools' bundled
+    # company_tickers.parquet are corrected before the edgartools lookup.
+    # The override is keyed by uppercase ticker and verified against the live
+    # SEC company_tickers.json before it is added to TICKER_CIK_OVERRIDES.
+    override = config.TICKER_CIK_OVERRIDES.get(ticker.upper())
+    if override:
+        logger.debug(
+            "[cik-override] Using config override CIK %s for %s (edgartools lookup skipped)",
+            override, ticker,
+        )
+        return override
+
     try:
         from edgar import Company as _Company  # noqa: PLC0415
         # Identity-ordering race: _resolve_cik_for_midcap is the ONLY sp900
