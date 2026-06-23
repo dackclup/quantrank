@@ -6885,3 +6885,15 @@ Label-string only; no logic / type / schema change.
 Lockstep: this entry.
 
 ---
+
+### Follow-up 3 — Performance "Total return" highlighted footer (2026-06-23)
+
+Broke the since-inception "Total return" row out of the trailing `<tbody>`
+into a highlighted `<tfoot>` — `border-t-2 border-slate-200 bg-slate-50
+dark:border-slate-700 dark:bg-slate-800/50`, uppercase label, bold portfolio
+value — mirroring AnnualReturnsTable's CAGR footer so the two side-by-side
+cards read as a family. Presentation only; row values unchanged.
+
+Lockstep: this entry.
+
+---
