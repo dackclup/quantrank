@@ -34,6 +34,7 @@ import concurrent.futures as _cf
 import logging
 import math
 import os
+import statistics
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -2246,6 +2247,10 @@ def run_weekly_compute() -> int:
     # See compute/scoring/cost_of_equity.py for the Damodaran 2019 table.
     value_trap_risk_count_without_sector_coe: int = 0
     value_trap_risk_count_with_sector_coe: int = 0
+    # Two-factor value_trap_risk shadow counter (0.10.32-phase8pilot, Rule 18).
+    # Shadow gate: fires iff (a) live ROE≤Ke fires AND (b) eps_ttm > 0 AND
+    # (c) ticker P/E < sector-peer median P/E.  Live warnings are UNCHANGED.
+    value_trap_risk_two_factor_shadow_count: int = 0
     # Issue #67 follow-up (0.10.10-phase4.6) — per-sector breakdown of the
     # same counts, keyed by GICS sector name. Methodology-scientist Q2
     # verdict 2026-05-28 (deferred from PR #294) requested this for
@@ -2841,6 +2846,49 @@ def run_weekly_compute() -> int:
             value_trap_risk_count_with_sector_coe_by_sector[sector] = (
                 value_trap_risk_count_with_sector_coe_by_sector.get(sector, 0) + 1
             )
+
+        # Two-factor value_trap_risk shadow gate (0.10.32-phase8pilot, Rule 18).
+        # SHADOW ONLY — live valuation_warnings are NOT touched here.
+        # Gate: (a) live ROE≤Ke skip fires (reuse _rim_sector from above, which
+        # uses the same sector Ke the live path uses post-USE_SECTOR_COE flip)
+        # AND (b) eps_ttm > 0 (positive earnings, P/E is defined)
+        # AND (c) ticker P/E < sector-peer median P/E from universe_metrics.
+        # Loss-making firms (eps_ttm ≤ 0) are EXEMPT — does NOT count.
+        if (
+            not _rim_sector.applicable
+            and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
+            and snap is not None
+        ):
+            # Derive eps_ttm exactly as the ensemble does (NI_TTM / shares_out).
+            _shadow_eps_ttm: float | None = None
+            if (
+                snap.net_income is not None
+                and snap.shares_outstanding is not None
+                and snap.shares_outstanding > 0
+                and snap.net_income > 0
+            ):
+                _shadow_eps_ttm = snap.net_income / snap.shares_outstanding
+
+            if _shadow_eps_ttm is not None and _shadow_eps_ttm > 0 and current_price > 0:
+                _shadow_pe_ttm = current_price / _shadow_eps_ttm
+                # Sector-peer median P/E: built from universe_metrics (the same
+                # dict that feeds compute_fair_price_ensemble's multiples_pe peer
+                # walk). Use all ticker P/E values in the same sector panel
+                # (excluding the target ticker itself), same as the ensemble's
+                # sector-tier fallback. Reuse sector_panel already built above.
+                # NOTE: sector_panel is only defined when snap is not None (inner
+                # if-block above). We are inside that block so it is in scope.
+                _sector_pe_values: list[float] = [
+                    float(universe_metrics[t]["pe_ttm"])
+                    for t in sector_panel
+                    if t in universe_metrics
+                    and universe_metrics[t].get("pe_ttm") is not None
+                    and universe_metrics[t]["pe_ttm"] > 0  # type: ignore[operator]
+                ]
+                if _sector_pe_values:
+                    _sector_median_pe = statistics.median(_sector_pe_values)
+                    if _shadow_pe_ttm < _sector_median_pe:
+                        value_trap_risk_two_factor_shadow_count += 1
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
@@ -3592,6 +3640,13 @@ def run_weekly_compute() -> int:
         # NABL, CHTR, COKE, EMBC) on cron 8c89a5af0. Annotate-only; defense
         # layer UNCHANGED at 36.
         extreme_estimate_majority_lowapp_count=extreme_estimate_majority_lowapp_count,
+        # Two-factor value_trap_risk shadow counter (0.10.33-phase8pilot, Rule 18).
+        # SHADOW / OBSERVABILITY-ONLY — live scores, flags, rankings are byte-identical.
+        # Counts tickers satisfying: (a) ROE≤Ke fires AND (b) eps_ttm > 0 AND
+        # (c) ticker P/E < sector-peer median P/E.  Methodology-scientist gate:
+        # review the ratio of this count to value_trap_risk_count_with_sector_coe
+        # before wiring the second-leg into the live warning path.
+        value_trap_risk_two_factor_shadow_count=value_trap_risk_two_factor_shadow_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

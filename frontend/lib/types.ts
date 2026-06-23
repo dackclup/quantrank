@@ -513,6 +513,13 @@ export type Metadata = {
   // delta: 16 tickers on cron 8c89a5af0. Annotate-only; defense layer
   // UNCHANGED at 36. Null on legacy snapshots (pre-0.10.32).
   extreme_estimate_majority_lowapp_count?: number | null;
+  // `value_trap_risk_two_factor_shadow_count` — SHADOW (issue #586,
+  // 0.10.33-phase8pilot, Rule 18). Counts tickers satisfying the
+  // methodology-ratified two-factor LSV gate: (a) live ROE<=Ke fires AND
+  // (b) eps_ttm > 0 AND (c) ticker P/E < sector-peer median P/E. Live
+  // `value_trap_risk` emission is UNCHANGED (single-leg); this only measures
+  // the would-be two-factor firing rate before the gated flip.
+  value_trap_risk_two_factor_shadow_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

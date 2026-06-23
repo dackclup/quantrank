@@ -254,19 +254,45 @@ def check_rim_applicability(
     cost_of_equity: float = config.COST_OF_EQUITY,
 ) -> MethodApplicability:
     """RIM: any sector OK (book equity meaningful for Financials & Utilities),
-    but ROE must exceed cost of equity (else value_trap_risk).
+    but ROE must exceed cost of equity (else RIM skips as a value_trap_risk).
 
-    The ROE-vs-Ke gate is the canonical Penman 2013 RIM condition: a firm
-    earning < cost of capital destroys value with each marginal investment,
-    so its terminal-residual-income-based fair value is fictitious. The
-    skip reason is exactly ``value_trap_risk_roe_below_cost_of_equity`` so
-    Step 5 ensemble can append the corresponding warning.
+    **RIM METHOD-SKIP GATE (Penman 2013)**
+    The ``avg_3y_roe <= cost_of_equity`` check is the canonical Penman 2013
+    *Accounting for Value* condition: a firm earning less than its cost of
+    capital destroys value with each marginal investment, so its terminal
+    residual-income-based fair value is fictitious.  The skip reason string
+    is ``"value_trap_risk_roe_below_cost_of_equity"`` so the Step-5 ensemble
+    layer (``compute/valuation/ensemble.py``) can pattern-match on it.
 
-    Issue #11 fix: ``avg_3y_roe is None`` skips under the distinct
-    ``insufficient_history_for_roe`` reason — the ensemble does NOT
-    append the spurious ``value_trap_risk`` warning for those cases.
-    "Missing input" is not the same signal as "real value trap"
-    (firm has structurally low ROE).
+    **LIVE WARNING (legacy single-leg gate)**
+    When the ensemble sees the skip reason above, it appends ``"value_trap_risk"``
+    to ``valuation_warnings``.  This is the **single-leg** gate: it fires on
+    ``ROE ≤ Ke`` alone, regardless of whether the stock's P/E is cheap relative
+    to sector peers.
+
+    **SHADOW TWO-FACTOR GATE (methodology-scientist RATIFY-WITH-AMENDMENT,
+    LSV 1994 "Contrarian Investment" §3, gated flip deferred to ≥1 cron)**
+    The ratified amendment adds a second leg to the WARNING (not to the RIM
+    skip): the ``value_trap_risk`` annotate should fire only when BOTH
+    ``ROE ≤ Ke`` AND the stock's trailing P/E is below its sector-peer median
+    P/E (i.e., the market already prices it cheaply relative to peers,
+    consistent with the contrarian value-trap definition).  A firm with
+    ``ROE ≤ Ke`` but a PREMIUM P/E vs. sector peers may be a growth company
+    priced for future ROE expansion, not a classic value trap.  Loss-making
+    firms (``eps_ttm ≤ 0``) are EXEMPT — P/E is undefined, so the second leg
+    cannot fire.
+
+    The two-factor gate is NOT live yet: ``compute/main.py`` computes it in
+    parallel as a SHADOW counter (``Metadata.value_trap_risk_two_factor_shadow_count``,
+    0.10.32-phase8pilot) so the first sp1500 cron's firing rate can be confirmed
+    before the live warning is gated on the second leg.  The live
+    ``valuation_warnings`` append path in ``ensemble.py`` is UNCHANGED this PR.
+
+    **Issue #11 fix**
+    ``avg_3y_roe is None`` skips under the distinct ``"insufficient_history_for_roe"``
+    reason — the ensemble does NOT append the spurious ``value_trap_risk`` warning
+    for those cases.  "Missing input" is not the same signal as "structurally
+    low ROE" (a real value trap).
     """
     if avg_3y_roe is None:
         return _skip("insufficient_history_for_roe")
