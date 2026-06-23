@@ -99,8 +99,8 @@ jobs:
     # (actions/cache post-job save only runs on job SUCCESS).
     timeout-minutes: 270
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -131,7 +131,7 @@ jobs:
       # and seeds the cache so Slice 7 (the cron-default flip) has a warm bundle.
       # Do NOT bump the slow-text bundle key — it is run-id-keyed and always saves.
       - name: Restore fast caches (fundamentals / prices)
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/fundamentals
@@ -149,7 +149,7 @@ jobs:
             cache-v11-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/edgar_10k_text

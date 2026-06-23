@@ -188,10 +188,10 @@ jobs:
     #   5,400 GitHub Actions minutes/month.
     timeout-minutes: 270
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -246,7 +246,7 @@ jobs:
       #     warm correctly once the sp1500 dispatch or Slice 7 cron-default flip
       #     fires. The cron default STAYS sp900 — same mechanism as v9→v10 (#492).
       - name: Restore fast caches (fundamentals / prices)
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/fundamentals
@@ -273,7 +273,7 @@ jobs:
       # quarter-rollover cold run. Smaller bundle (no fundamentals weight) also
       # saves more reliably. Bump to text-v6 on a cache-schema change.
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: |
             compute/cache/edgar_10k_text
