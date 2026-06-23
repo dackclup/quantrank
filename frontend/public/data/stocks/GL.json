@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 13358781367.003006,
   "current_price": 172.05,
-  "rank": 280,
+  "rank": 281,
   "composite_score": 58.69,
   "pillar_scores": {
     "quality": 61.23,
     "value": 49.93,
     "growth": 51.66,
-    "momentum": 73.05,
-    "health": 56.49,
+    "momentum": 73.0,
+    "health": 56.5,
     "profitability": 55.66,
-    "technical": 65.4,
-    "risk": 70.16,
+    "technical": 65.41,
+    "risk": 70.17,
     "sentiment": null,
     "ml": null
   },
@@ -113,7 +113,9 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster"
+  ],
   "has_history": true,
   "tangible_book_value": 72.04800334178374,
   "tier2_events": {
@@ -127,22 +129,22 @@
     "label": "Financials median (n=256)",
     "values": {
       "Quality": 50.2,
-      "Value": 52.05,
+      "Value": 52.07,
       "Growth": 50.2,
-      "Momentum": 56.74,
-      "Health": 55.33,
+      "Momentum": 56.72,
+      "Health": 55.35,
       "Profitability": 49.54,
-      "Technical": 55.67,
-      "Risk": 61.87
+      "Technical": 55.73,
+      "Risk": 61.91
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 42.14055440619417,
+  "loss_chance_pct": 42.14272310563918,
   "price_change_1d_pct": 0.7555,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.69,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 58.19,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -158,7 +160,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -201,7 +203,7 @@
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 23,
-    "latest_filing_date": "2026-06-15",
+    "latest_filing_date": "2026-06-22",
     "fetch_status": "ok"
   },
   "cross_source_delta": 5.464345288175885e-09,
