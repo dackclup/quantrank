@@ -54,19 +54,27 @@ def cash_conversion_cycle(snap: FundamentalsSnapshot) -> float:
     if snap.revenue in (None, 0):
         return float("nan")
     cogs = snap.cost_of_revenue if snap.cost_of_revenue not in (None, 0) else snap.revenue
+    daily_revenue = snap.revenue / 365
+    if not daily_revenue:
+        # revenue so small it underflows to 0.0 (e.g. 5e-324 / 365) — not computable
+        return float("nan")
+    daily_cogs = cogs / 365
+    if not daily_cogs:
+        # cogs (or revenue fallback) underflows to 0.0 — not computable
+        return float("nan")
     dso = (
-        snap.accounts_receivable / (snap.revenue / 365)
+        snap.accounts_receivable / daily_revenue
         if snap.accounts_receivable is not None
         else None
     )
     dio = (
-        snap.inventory / (cogs / 365)
-        if snap.inventory is not None and cogs not in (None, 0)
+        snap.inventory / daily_cogs
+        if snap.inventory is not None
         else None
     )
     dpo = (
-        snap.accounts_payable / (cogs / 365)
-        if snap.accounts_payable is not None and cogs not in (None, 0)
+        snap.accounts_payable / daily_cogs
+        if snap.accounts_payable is not None
         else None
     )
     parts = [p for p in (dso, dio, dpo) if p is not None]

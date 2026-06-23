@@ -34,7 +34,7 @@ import math
 
 import pandas as pd
 import pytest
-from hypothesis import given
+from hypothesis import example, given
 from hypothesis import strategies as st
 
 from compute.features import growth, health, profitability, quality, value
@@ -339,6 +339,15 @@ def test_return_on_assets_never_raises(
     assert _is_valid_result(result)
 
 
+@example(
+    # Falsifying example from issue #574: denormal revenue underflows
+    # cogs/365 to 0.0 → ZeroDivisionError on the DSO leg before the guard.
+    revenue=5e-324,
+    accounts_receivable=None,
+    inventory=0.0,
+    accounts_payable=None,
+    cost_of_revenue=None,
+)
 @given(
     revenue=_optional_float,
     accounts_receivable=_optional_float,

@@ -6663,3 +6663,25 @@ uses the emerald-700 border + emerald-800 text (LedgerCraft brand positive) with
 Frontend-only, NO schema bump, defense layer UNCHANGED at 36. Lockstep: this entry.
 
 ---
+
+## PR (fix/ccc-zerodiv-guard) — guard cash_conversion_cycle denormal-COGS divide-by-zero (issue #574, in flight, 2026-06-23)
+
+Bug: `compute/features/profitability.py::cash_conversion_cycle` divided by
+`snap.revenue / 365` on the DSO leg without guarding against IEEE-754 underflow.
+A denormal `revenue=5e-324` causes `revenue / 365 → 0.0` → `ZeroDivisionError`.
+The COGS fallback to revenue means the same underflow could hit the DIO/DPO legs too.
+
+Fix: compute `daily_revenue = snap.revenue / 365` and `daily_cogs = cogs / 365` once
+each; guard both with `if not <daily>: return float("nan")` (falsy catches 0.0 / underflow).
+Normal-path semantics are byte-identical. Regression pinned as an explicit `@example` on
+the existing Hypothesis test `test_cash_conversion_cycle_never_raises` (issue #574 falsifying
+example: `revenue=5e-324, accounts_receivable=None, inventory=0.0, accounts_payable=None,
+cost_of_revenue=None`) so CI finds it from a cold Hypothesis DB.
+
+SCOPE: `compute/features/profitability.py` (observability factor layer, Rule 18 — NOT
+production scoring, NOT the defense layer). `tests/test_features/test_features_none_propagation.py`
+(pinned regression). NO schema change. Defense layer UNCHANGED at 36.
+
+Lockstep: this entry.
+
+---
