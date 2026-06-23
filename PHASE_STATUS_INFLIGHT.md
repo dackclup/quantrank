@@ -6765,3 +6765,28 @@ Defense layer UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build`
 Lockstep: this entry.
 
 ---
+
+## PR (claude/annual-returns-layout-566vaf) — Current picks weight column sums to exactly 100% (Hamilton apportionment) (in flight, 2026-06-23)
+
+Frontend-only display fix. The AI-pick home "Current picks" table rendered each
+holding's weight with an independent `(weight * 100).toFixed(1)` — the raw
+inverse-vol weights sum to exactly 1.0, but per-row 1-decimal rounding drifts
+the VISIBLE column to 99.9 / 100.1 / 100.2% (21 of 40 backtest rebalances),
+which reads as "~101%". The data was always correct; only the rendering drifted.
+
+Fix: a module-level `apportionWeightLabels(weights)` helper in
+`AiPickPortfolio.tsx` applies largest-remainder (Hamilton) apportionment to
+tenths-of-a-percent so the displayed labels sum to exactly the basket total
+(100.0% for a normalized book; non-finite weights render '—' and are excluded,
+target honestly tracks the finite-weight sum). Wired in BOTH branches (adaptive
+`weightSortedHoldings` + slider `holdings`) via a `useMemo`. Sold rows untouched
+(already literal '—'). Verified the apportionment yields exactly 100.0% on all
+40 rebalances.
+
+SCOPE: `frontend/components/AiPickPortfolio.tsx`. NO schema change (triple
+untouched). Defense layer UNCHANGED at 36. Verified: `tsc --noEmit` clean +
+`next build` (1512 static pages).
+
+Lockstep: this entry.
+
+---

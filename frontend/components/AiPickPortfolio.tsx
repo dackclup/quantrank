@@ -39,6 +39,33 @@ function isFinite_(v: number | null | undefined): v is number {
   return v !== null && v !== undefined && !Number.isNaN(v);
 }
 
+// Largest-remainder (Hamilton) apportionment so the DISPLAYED 1-decimal weight
+// percentages sum to exactly the basket total (100.0% for a normalized
+// inverse-vol book). Raw weights sum to 1.0, but independent toFixed(1) rounding
+// drifts the visible column to 99.9 / 100.1 / 100.2% — this removes that drift.
+// Non-finite weights render '—' and are excluded from the apportionment; the
+// target total honestly tracks the finite-weight sum (so a genuinely <100% book
+// would still show <100%, just without per-row rounding noise).
+function apportionWeightLabels(weights: (number | null | undefined)[]): string[] {
+  const labels = weights.map(() => '—');
+  const finiteIdx: number[] = [];
+  weights.forEach((w, i) => { if (isFinite_(w)) finiteIdx.push(i); });
+  if (finiteIdx.length === 0) return labels;
+  const sumFinite = finiteIdx.reduce((s, i) => s + (weights[i] as number), 0);
+  const target = Math.round(sumFinite * 1000);              // tenths of a percent (1000 = 100.0%)
+  const tenths = finiteIdx.map((i) => (weights[i] as number) * 1000);
+  const floors = tenths.map((t) => Math.floor(t));
+  const used = floors.reduce((s, f) => s + f, 0);
+  let remaining = Math.max(0, target - used);               // +0.1% units left to distribute
+  const order = floors
+    .map((_, k) => k)
+    .sort((a, b) => (tenths[b] - floors[b]) - (tenths[a] - floors[a])); // largest fractional remainder first
+  const add = floors.map(() => 0);
+  for (let k = 0; k < order.length && remaining > 0; k += 1) { add[order[k]] = 1; remaining -= 1; }
+  finiteIdx.forEach((i, k) => { labels[i] = `${((floors[k] + add[k]) / 10).toFixed(1)}%`; });
+  return labels;
+}
+
 function money$(v: number | null): string {
   if (v === null) return '—';
   const abs = Math.abs(v);
@@ -240,6 +267,13 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         return 0;            // both non-finite → preserve original order
       }),
     [displayHoldings],
+  );
+
+  // Hamilton apportionment: displayed 1-decimal weight labels summing to
+  // exactly the basket total (removes per-row toFixed(1) rounding drift).
+  const weightLabels = useMemo(
+    () => apportionWeightLabels(weightSortedHoldings.map((h) => h.weight)),
+    [weightSortedHoldings],
   );
 
   // SOLD rows — tickers in the prior quarter's basket that are NOT in the
@@ -650,7 +684,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   {h.composite_score.toFixed(1)}
                 </span>
                 <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                  {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}
+                  {weightLabels[i]}
                 </span>
               </li>
             );
@@ -825,6 +859,13 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         .slice(0, count)
         .sort((a, b) => (weights[b.ticker] ?? 0) - (weights[a.ticker] ?? 0))
     : [];
+
+  // Hamilton apportionment: displayed 1-decimal weight labels summing to
+  // exactly the basket total (removes per-row toFixed(1) rounding drift).
+  const weightLabels = useMemo(
+    () => apportionWeightLabels(holdings.map((h) => weights[h.ticker])),
+    [holdings, weights],
+  );
 
   // P/L since the holding's entry: walk the timeline backward while the ticker
   // stays inside the top-`count` slice — the streak start IS count-dependent (a
@@ -1062,7 +1103,6 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         </div>
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {
-            const w = weights[h.ticker];
             const pl = plSince[h.ticker] ?? { pct: null, date: null };
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
@@ -1079,7 +1119,7 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
                   <SectorChip sector={h.sector} />
                 </span>
                 <span className="ml-auto w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                  {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
+                  {weightLabels[i]}
                 </span>
                 <span className={`w-14 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
                   {pctStr(pl.pct)}
