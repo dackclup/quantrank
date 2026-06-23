@@ -498,8 +498,11 @@ verdict (#453): **the veto layer does NOT rescue returns**
 (drawdown-year protection only; bite is 97% `sloan_accruals_top_decile`
 on structural compounders — disposition routed to issue #454 for the Q3
 2026-08-19 cohort audit). Latest release tag
+[**`v2.0.0-phase8`**](https://github.com/dackclup/quantrank/releases/tag/v2.0.0-phase8)
+(published 2026-06-23 at `8c89a5af0`, "Set as latest") — the S&P 1500 universe
+cutover release (502 → ~1504 production expansion; release PR #577). Prior
 [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6)
-(2026-05-27) — Phase 4.6 honest re-validation harness.
+(2026-05-27 at `a820caee`) — Phase 4.6 honest re-validation harness.
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
@@ -548,7 +551,7 @@ PHASE_STATUS.md):
   the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
   pilot — **3a integration slice merged 2026-06-15 (#482)** ·
   **precache-900 Phase A merged (#486)**; #249 pre-cache DONE (#468),
-  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). **S&P 1500 cutover — Slices 1/2/4/5/6/7 MERGED (#514/#519/#527/#520/#531/#534); Slice 3 (Bonferroni shadow) DEFERRED to Slice-8 calibration. The weekday cron now ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534, 2026-06-21).** **Slice 8 ALL ACCEPTANCE GATES MET 2026-06-22** — Bonferroni shadow #564 (schema `0.10.30`) · infinite-scroll table #548 (epic #545 §8.3 frontend gate) · Dividend tile #549 · Security-type ingest #565 (schema `0.10.31`) · research warehouse Slices 1/2 (#539/#547/#570) · data-integrity hardening (#552/#553/#554/#555) all MERGED. **v2.0 tag pending** (`release-captain` owns the `v2.0.0-phase8` cut; HOLD until ≥1 green scheduled sp1500 cron). Open deferred (post-v2.0): `low_liquidity` annotate→veto promotion (#544, KEEP-ANNOTATE for v2.0) + Bonferroni provisional-threshold re-derivation (#542, needs empirical sp1500 M-score SD). Detail in WORKFLOW.md.
+  #467 scout done; **precache-900 Phase B merged (#492, 2026-06-16 — cron now defaults `sp900`)**; **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18). **S&P 1500 cutover — Slices 1/2/4/5/6/7 MERGED (#514/#519/#527/#520/#531/#534); Slice 3 (Bonferroni shadow) DEFERRED to Slice-8 calibration. The weekday cron now ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534, 2026-06-21).** **Slice 8 ALL ACCEPTANCE GATES MET 2026-06-22** — Bonferroni shadow #564 (schema `0.10.30`) · infinite-scroll table #548 (epic #545 §8.3 frontend gate) · Dividend tile #549 · Security-type ingest #565 (schema `0.10.31`) · research warehouse Slices 1/2 (#539/#547/#570) · data-integrity hardening (#552/#553/#554/#555) all MERGED. **`v2.0.0-phase8` tag PUBLISHED 2026-06-23** at `8c89a5af0` ("Set as latest"; release PR #577 + the green scheduled sp1500 cron it gated on — Section A-L 12/12, Bonferroni shadow counters live=86/prov=47/flip=39, defense 36). The S&P 1500 cutover epic is COMPLETE. Open deferred (post-v2.0): `low_liquidity` annotate→veto promotion (#544, KEEP-ANNOTATE for v2.0) + Bonferroni provisional-threshold re-derivation (#542, needs empirical sp1500 M-score SD). Detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
