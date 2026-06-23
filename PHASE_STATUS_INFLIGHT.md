@@ -6685,3 +6685,50 @@ production scoring, NOT the defense layer). `tests/test_features/test_features_n
 Lockstep: this entry.
 
 ---
+
+## PR (ingest-cik-shares-fix) — NE stale-CIK override + shares-path form-type filter (in flight, 2026-06-23)
+
+Two compute/ingest data-quality fixes on one branch (issues #567 + #569). NO schema change.
+Defense layer UNCHANGED at 36. Rankings/scores/flags unaffected until NE is re-fetched on
+the next cron with the corrected CIK.
+
+**Fix 1 (#567) — NE stale-CIK override:**
+edgartools' bundled `company_tickers.parquet` maps ticker `NE` to the pre-bankruptcy Noble
+Corp entity (CIK 1458891, last 10-Q 2020-06-30). The current Noble Corporation plc
+(post-2021 Ch.11 + Maersk Drilling merger) is CIK 0001895262, verified against live SEC
+`company_tickers.json` + `data.sec.gov/submissions/CIK0001895262.json` (10-K filed 2026-02-12).
+
+Three-part fix: (a) `compute/config.py` — new `TICKER_CIK_OVERRIDES: dict[str, str]` dict
+near `MULTI_CLASS_OVERCOUNT_ALLOWLIST`, with `"NE": "0001895262"` as the anchor entry.
+(b) `compute/ingest/universe.py::_resolve_cik_for_midcap` — checks the override FIRST,
+before the edgartools `Company(ticker)` lookup; returns the override CIK directly when
+present (edgartools call skipped entirely for NE). (c) `compute/ingest/fundamentals.py::
+fetch_fundamentals` — applies `config.TICKER_CIK_OVERRIDES.get(ticker.upper(), cik) or cik`
+immediately after `_require_identity()` so that a stale CIK passed in from the universe
+layer is corrected before the cache-load, filing-precheck, and `_build_snapshot` call.
+
+FUN and SMC were NOT added — those need separate live verification (deferred to follow-up).
+
+**Fix 2 (#569) — shares-path form-type filter:**
+`_try_balance_tags_most_recent` previously used a bare `facts.get_fact(tag)` with no
+form-type filter — the same sort-key trap PR #555 fixed for USD balance items in
+`_try_balance_tags`. The fix mirrors the REAL `get_all_facts()` API used by `_try_balance_tags`
+(confirmed in the installed edgartools; NOT the pseudocode `get_all_facts()` the debugger
+assumed — it IS the public API). Three-tier structure:
+  Tier 1 — `_BALANCE_SHEET_FORM_TYPES` + unit `"shares"` + most-recent `period_end` wins
+  Tier 2 — unit `"shares"`, any form-type (odd-filer safety net)
+  Tier 3 — original `get_fact()` fallback (backward-compat; only fires if Tier 1+2 are empty)
+
+BKNG CAVEAT: BKNG's ~774M shares come from a DEI tag in a valid **10-Q** filing (which
+passes the form filter). This fix does NOT change BKNG — its post-split count is defended by
+the existing `post_split_share_lag` veto (#499). Do NOT add a per-ticker guard here.
+
+This PR closes the 8-K/S-type/DEI cover-page contaminant gap for OTHER tickers (e.g. where
+an 8-K cover-page `EntityCommonStockSharesOutstanding` fact filed more recently would have
+previously won by recency over the consolidated 10-Q value).
+
+New test file: `tests/test_ingest/test_cik_override_and_shares_filter.py` (17 tests, all
+offline). Verified: `ruff check .` clean · ingest suite 638 passed · full offline suite
+2855 passed, 0 failures.
+
+---

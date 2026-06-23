@@ -730,7 +730,7 @@ def _try_balance_tags_most_recent(
     facts, tags: list[str]
 ) -> tuple[float | None, date | None, date | None]:
     """Like ``_try_balance_tags`` but picks the candidate concept with the
-    most recent ``period_end`` across the entire chain.
+    most recent ``period_end`` ACROSS the entire chain, with form-type filtering.
 
     Workaround for stale DEI cover-page facts (audit #6): the ``dei:Entity
     CommonStockSharesOutstanding`` tag holds the most-recent value for
@@ -741,14 +741,120 @@ def _try_balance_tags_most_recent(
     can't distinguish "current DEI" from "stale DEI" — has to pick by
     date instead.
 
+    Issue #569 — form-type filter for the shares path (mirrors the fix
+    applied to ``_try_balance_tags`` in PR #555 / issue #569).  The same
+    sort-key trap that lets 8-K / S-type / DEI cover-page USD-balance facts
+    beat 10-K/10-Q values also applies to share counts: 8-K cover-page
+    ``EntityCommonStockSharesOutstanding`` facts can carry a post-split count
+    filed very recently, beating the consolidated 10-Q/10-K count by recency.
+
+    The fix uses ``get_all_facts()`` (same public API as ``_try_balance_tags``)
+    with a Tier-1 filter: ``_BALANCE_SHEET_FORM_TYPES`` + unit ``"shares"``.
+    Tier 2 relaxes the form-type constraint (shares unit only).
+    Tier 3 falls back to the original ``get_fact()`` behavior to ensure
+    regression-safety: a ticker that ONLY reports shares via an 8-K cover page
+    still resolves rather than returning None.
+
+    IMPORTANT: This filter closes the 8-K/S-type contaminant gap for OTHER
+    tickers, but will NOT change BKNG specifically — BKNG's ~774M share count
+    comes from a cover-page DEI tag in a valid 10-Q filing (both 10-K and 10-Q
+    pass the form filter), and the post-split count wins by recency.  BKNG is
+    defended by the existing ``post_split_share_lag`` veto, not by this filter.
+    Do NOT add a per-ticker guard here.
+
     Use this for any balance concept where multiple alternative tags
     have different reporting cadences (shares_outstanding is the
     canonical case).
     """
+    # ------------------------------------------------------------------ #
+    # Collect all share-unit candidates via get_all_facts() (public API). #
+    # ------------------------------------------------------------------ #
+    all_candidates: list[object] = []
+    has_get_all_facts = False
+    get_all = getattr(facts, "get_all_facts", None)
+    if get_all is not None:
+        try:
+            all_facts_list = list(get_all())
+            has_get_all_facts = True
+            for f in all_facts_list:
+                if getattr(f, "concept", None) in tags:
+                    all_candidates.append(f)
+        except Exception:  # noqa: BLE001
+            has_get_all_facts = False
+
+    if has_get_all_facts and all_candidates:
+        # ---------------------------------------------------------------- #
+        # Tier 1: consolidated form + shares unit                           #
+        # ---------------------------------------------------------------- #
+        tier1: list[object] = []
+        for f in all_candidates:
+            ft = getattr(f, "form_type", None)
+            ut = getattr(f, "unit", None)
+            pe = getattr(f, "period_end", None)
+            if ft in _BALANCE_SHEET_FORM_TYPES and ut == "shares" and pe is not None:
+                tier1.append(f)
+
+        if tier1:
+            best = max(
+                tier1,
+                key=lambda f: (
+                    getattr(f, "period_end", None) or date.min,
+                    getattr(f, "filing_date", None) or date.min,
+                ),
+            )
+            val = getattr(best, "value", None)
+            if val is not None:
+                try:
+                    v = float(val)
+                    if v > 0:
+                        return (
+                            v,
+                            getattr(best, "period_end", None),
+                            getattr(best, "filing_date", None),
+                        )
+                except (TypeError, ValueError):
+                    pass
+
+        # ---------------------------------------------------------------- #
+        # Tier 2: shares unit, any form (relax form-type constraint)        #
+        # ---------------------------------------------------------------- #
+        tier2: list[object] = []
+        for f in all_candidates:
+            ut = getattr(f, "unit", None)
+            pe = getattr(f, "period_end", None)
+            if ut == "shares" and pe is not None:
+                tier2.append(f)
+
+        if tier2:
+            best = max(
+                tier2,
+                key=lambda f: (
+                    getattr(f, "period_end", None) or date.min,
+                    getattr(f, "filing_date", None) or date.min,
+                ),
+            )
+            val = getattr(best, "value", None)
+            if val is not None:
+                try:
+                    v = float(val)
+                    if v > 0:
+                        return (
+                            v,
+                            getattr(best, "period_end", None),
+                            getattr(best, "filing_date", None),
+                        )
+                except (TypeError, ValueError):
+                    pass
+
+    # ------------------------------------------------------------------ #
+    # Tier 3 / fallback: original get_fact() behavior — ensures no        #
+    # regression for tickers that only report shares via non-standard     #
+    # form types or where get_all_facts() is unavailable.                 #
+    # ------------------------------------------------------------------ #
     candidates: list[tuple[float, date, date | None]] = []
     for tag in tags:
         f = facts.get_fact(tag)
-        if f is None or f.value is None or f.period_end is None:
+        if f is None or getattr(f, "value", None) is None or getattr(f, "period_end", None) is None:
             continue
         try:
             v = float(f.value)
@@ -756,11 +862,11 @@ def _try_balance_tags_most_recent(
             continue
         if v <= 0:
             continue
-        candidates.append((v, f.period_end, f.filing_date))
+        candidates.append((v, f.period_end, getattr(f, "filing_date", None)))
     if not candidates:
         return None, None, None
-    best = max(candidates, key=lambda c: c[1])
-    return best
+    best_tuple = max(candidates, key=lambda c: c[1])
+    return best_tuple
 
 
 def _try_ttm_tags(facts, tags: list[str]) -> tuple[float | None, date | None]:
@@ -1672,6 +1778,13 @@ def fetch_fundamentals(
         )
 
     _require_identity()
+
+    # Issue #567 — correct stale CIKs from edgartools' bundled parquet for
+    # post-restructuring entities (e.g. NE → Noble Corp plc post-Ch.11 merger).
+    # The override is applied here so that a wrong cik passed in from the universe
+    # layer (which resolves via edgartools' bundled company_tickers.parquet) is
+    # corrected before the cache lookup, filing-precheck, and _build_snapshot call.
+    cik = config.TICKER_CIK_OVERRIDES.get(ticker.upper(), cik) or cik
 
     cached = _load_cached(cik) if cik else None
     if cached is not None and _is_fresh(cached, today=today):

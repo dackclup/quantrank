@@ -407,6 +407,22 @@ MULTI_CLASS_OVERCOUNT_ALLOWLIST: dict[str, str] = {
     "GOOG":  "goog:CapitalClassCMember",     # Alphabet Class C — filer-specific namespace (gotcha)
 }
 
+# Ticker→CIK overrides for post-restructuring entities where edgartools'
+# bundled company_tickers.parquet still maps the ticker to the PRE-bankruptcy
+# CIK. Each entry MUST be verified against the live SEC
+# https://www.sec.gov/files/company_tickers.json before adding.
+# Format: ticker (uppercase) → 10-digit zero-padded CIK string.
+#
+# Expansion gate: add a new entry ONLY after live confirmation against both
+# company_tickers.json and data.sec.gov/submissions/CIK<ID>.json that the
+# new CIK carries current 10-K/10-Q filings under the expected ticker.
+# FUN and SMC were NOT added (need separate live verification — issue #567).
+TICKER_CIK_OVERRIDES: dict[str, str] = {
+    "NE": "0001895262",  # Noble Corp plc (post-2021 Ch.11 + Maersk Drilling merger).
+                         # Old entity CIK 1458891 (last 10-Q 2020-06-30) must NOT be used.
+                         # Source: SEC company_tickers.json, verified 2026-06-23 (issue #567).
+}
+
 # Sector-multiples peer-group floor; below this fall back to global median + flag.
 MULTIPLES_MIN_PEERS: int = 8
 
