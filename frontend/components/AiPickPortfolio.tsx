@@ -108,6 +108,24 @@ function toneClass(v: number | null): string {
   return v >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
 }
 
+// Relative weight change vs the prior quarter for the Current-picks "Change"
+// column. New (no prior weight) = +100%, Sold (no current weight) = −100%,
+// otherwise (cur−prior)/prior. Arrow + signed text + 3-way tone.
+function weightChange(current: number | null | undefined, prior: number | null | undefined) {
+  const c = isFinite_(current) ? current : 0;
+  const p = isFinite_(prior) ? prior : 0;
+  const POS = 'text-emerald-700 dark:text-emerald-300';
+  const NEG = 'text-rose-700 dark:text-rose-300';
+  const NEU = 'text-slate-500 dark:text-slate-400';
+  if (p === 0 && c > 0) return { arrow: '↑', text: '100.00%', tone: POS };
+  if (c === 0 && p > 0) return { arrow: '↓', text: '−100.00%', tone: NEG };
+  if (p === 0) return { arrow: '→', text: '0.00%', tone: NEU };
+  const rel = ((c - p) / p) * 100;
+  if (rel > 0) return { arrow: '↑', text: `${rel.toFixed(2)}%`, tone: POS };
+  if (rel < 0) return { arrow: '↓', text: `−${Math.abs(rel).toFixed(2)}%`, tone: NEG };
+  return { arrow: '→', text: '0.00%', tone: NEU };
+}
+
 // ---------------------------------------------------------------------------
 // Shared chart-view builder — used by both adaptive + slider branches.
 // ---------------------------------------------------------------------------
@@ -635,6 +653,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span className="hidden sm:inline">Sector</span>
           <span className="ml-auto w-14 shrink-0 text-right">Score</span>
           <span className="w-12 shrink-0 text-right">Weight</span>
+          <span className="w-20 shrink-0 text-right">Change</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
           {weightSortedHoldings.map((h, i) => {
@@ -686,6 +705,11 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {weightLabels[i]}
                 </span>
+                {(() => { const ch = weightChange(h.weight, data.priorWeights[h.ticker]); return (
+                  <span className={`w-20 shrink-0 text-right font-mono text-xs tabular-nums ${ch.tone}`}>
+                    {ch.arrow} {ch.text}
+                  </span>
+                ); })()}
               </li>
             );
           })}
@@ -746,6 +770,11 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="w-12 shrink-0 text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 0.0%
               </span>
+              {(() => { const ch = weightChange(0, data.priorWeights[s.ticker]); return (
+                <span className={`w-20 shrink-0 text-right font-mono text-xs tabular-nums ${ch.tone}`}>
+                  {ch.arrow} {ch.text}
+                </span>
+              ); })()}
             </li>
           ))}
         </ol>

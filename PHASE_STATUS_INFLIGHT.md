@@ -6797,8 +6797,17 @@ they now show the rotated-out name's CURRENT composite score (consistent with th
 Held/New rows). New frontend-only `AiPickData.latestScores: Record<string, number>`
 (built from the latest rebalance's `full_ranked` in `data.ts`); the adaptive
 Sold row reads `data.latestScores[ticker].toFixed(1)` (em-dash fallback). Weight
-cell stays `—` (sold names have no weight). `AiPickData` is a frontend-only view
-model — NOT the Pydantic↔TS↔snapshot triple, so no schema_check.
+cell stays `0.0%` (sold names have no weight). `AiPickData` is a frontend-only
+view model — NOT the Pydantic↔TS↔snapshot triple, so no schema_check.
+
+WEIGHT-CHANGE COLUMN (later commit): a new "Change" column after Weight shows the
+relative weight delta vs the PRIOR quarter — New = ↑100.00% (emerald), Sold =
+↓−100.00% (rose), Held = ↑/↓ (cur−prior)/prior (emerald/rose), no-change = →0.00%
+(slate). New frontend-only `AiPickData.priorWeights: Record<string, number>` (from
+the second-to-last rebalance's `band_weights`/`weights_by_count`) + a `weightChange`
+helper in `AiPickPortfolio.tsx`, rendered on both holding + sold rows (adaptive
+branch only). Mobile note: the extra `w-20` column is tight at ~360px (sector
+already hidden on mobile); revisit width/format if it crowds.
 
 SCOPE: `frontend/components/AiPickPortfolio.tsx` + `frontend/lib/data.ts` +
 `frontend/lib/types.ts`. NO schema change (triple untouched). Defense layer

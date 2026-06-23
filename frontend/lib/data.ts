@@ -277,6 +277,22 @@ export function getAiPickData(): AiPickData | null {
     latestScores[r.ticker] = r.composite_score;
   }
 
+  // Build a map of the PRIOR rebalance's per-ticker basket weights — used by the
+  // Current-picks "Change" column in the adaptive branch to show relative weight
+  // deltas vs the previous quarter. Empty on the very first rebalance (no prior).
+  const priorWeights: Record<string, number> = {};
+  if (rebalances.length >= 2) {
+    const prv = rebalances[rebalances.length - 2] as unknown as {
+      band_weights?: Record<string, number>;
+      weights_by_count?: Record<string, Record<string, number>>;
+      adaptive_count?: number;
+    };
+    const pw = prv.band_weights
+      ?? (prv.adaptive_count != null ? prv.weights_by_count?.[String(prv.adaptive_count)] : undefined)
+      ?? {};
+    for (const [t, w] of Object.entries(pw)) priorWeights[t] = w;
+  }
+
   return {
     meta,
     dates: nav.dates,
@@ -322,6 +338,7 @@ export function getAiPickData(): AiPickData | null {
     entryCloses,
     lastCloses,
     latestScores,
+    priorWeights,
     // Caption-branching fields — forwarded from meta so sub-components
     // (AnnualReturnsTable / AiPickPortfolio) don't receive the full meta
     // object. Names-only from vetoes_not_replayed; reason is artifact-only.
