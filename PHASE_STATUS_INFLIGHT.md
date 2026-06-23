@@ -6733,26 +6733,32 @@ offline). Verified: `ruff check .` clean · ingest suite 638 passed · full offl
 
 ---
 
-## PR (claude/annual-returns-layout-566vaf) — AI-pick home layout: full-width Current picks + Annual returns | Total return grid (in flight, 2026-06-23)
+## PR (claude/annual-returns-layout-566vaf) — AI-pick home layout: full-width Current picks + Annual returns | Performance grid (in flight, 2026-06-23)
 
 Frontend-only layout restructure of the AI-pick home (`AiPickPortfolio.tsx`,
 both the adaptive and the legacy slider branch, applied symmetrically). The
 "Current picks" card is lifted OUT of the 2-col grid it previously shared with
 `AnnualReturnsTable` and now renders FULL-WIDTH on top. Below it, a new
 `md:grid-cols-2` returns grid pairs `AnnualReturnsTable` (left) with a new
-`TotalReturnTable` (right). New vertical order per branch: headline/chart card
-→ Current picks (full width) → Annual returns | Total return → HoldingsTimeline
+`PerformanceTable` (right). New vertical order per branch: headline/chart card
+→ Current picks (full width) → Annual returns | Performance → HoldingsTimeline
 → footer CTA/disclaimer.
 
-New component `frontend/components/TotalReturnTable.tsx` structurally mirrors
-`AnnualReturnsTable` (same Props, helpers, design tokens) but its per-year value
-is CUMULATIVE total return since inception (`NAV(year-end) / NAV(inception) − 1`)
-instead of year-over-year, and its footer row is "TOTAL" (full-window
-`lastFin / firstFin − 1`) instead of "CAGR". All figures derive in-browser from
-the same NAV series the page already ships — no schema/compute change.
+New component `frontend/components/PerformanceTable.tsx` (a Seeking-Alpha-style
+trailing-period table) structurally mirrors `AnnualReturnsTable` (same Props,
+helpers, design tokens) but shows 9 TRAILING-PERIOD returns — 1M / 3M / 6M / 9M
+/ YTD / 1Y / 3Y / 5Y / 10Y — for the portfolio vs the benchmark. Each window =
+`lastFin(series) / navAtOrBefore(window-start) − 1` (UTC-safe `setUTCMonth` /
+`setUTCFullYear` date math; YTD base = prior year-end NAV, falling back to
+inception when history starts in the current year). Windows that predate
+inception (e.g. 10Y on a ~9.9y backtest) render "—" honestly, no clamping. No
+CAGR/TOTAL footer row. All figures derive in-browser from the same NAV series
+the page already ships — no schema/compute change. (An intermediate
+`TotalReturnTable` cumulative-per-year variant was built then replaced by this
+Performance table in the same branch before merge.)
 
 SCOPE: `frontend/components/AiPickPortfolio.tsx` + new
-`frontend/components/TotalReturnTable.tsx`. NO schema change (triple untouched).
+`frontend/components/PerformanceTable.tsx`. NO schema change (triple untouched).
 Defense layer UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build`
 (1512 static pages).
 

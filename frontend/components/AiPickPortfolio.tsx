@@ -6,7 +6,7 @@ import { flagLabel } from '@/lib/flag-labels';
 
 import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
-import { TotalReturnTable } from './TotalReturnTable';
+import { PerformanceTable } from './PerformanceTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
 import { Chip } from './Chip';
@@ -714,7 +714,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         </ol>
       </div>
 
-      {/* Annual returns | Total return — side-by-side on desktop (2-col grid,
+      {/* Annual returns | Performance — side-by-side on desktop (2-col grid,
           items-start so unequal-height cards top-align), stacking to a single
           column on mobile. Sits below the full-width Current picks card. */}
       <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
@@ -728,8 +728,8 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           vetoLayerReplayed={vetoLayerReplayed}
           vetoesNotReplayed={vetoesNotReplayed}
         />
-        {/* Cumulative total return — same series as AnnualReturnsTable */}
-        <TotalReturnTable
+        {/* Performance — trailing-period returns, same series as AnnualReturnsTable */}
+        <PerformanceTable
           dates={dates}
           portfolio={adaptive.net}
           benchmark={benchmark[bench] ?? []}
@@ -1093,7 +1093,7 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         </ol>
       </div>
 
-      {/* Annual returns | Total return — side-by-side on desktop (2-col grid,
+      {/* Annual returns | Performance — side-by-side on desktop (2-col grid,
           items-start so unequal-height cards top-align), stacking to a single
           column on mobile. Sits below the full-width Current picks card.
           Both tables are reactive to the count slider + benchmark picker. */}
@@ -1108,8 +1108,8 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
           vetoLayerReplayed={vetoLayerReplayed}
           vetoesNotReplayed={vetoesNotReplayed}
         />
-        {/* Cumulative total return — same series as AnnualReturnsTable */}
-        <TotalReturnTable
+        {/* Performance — trailing-period returns, same series as AnnualReturnsTable */}
+        <PerformanceTable
           dates={dates}
           portfolio={netByCount[countKey] ?? []}
           benchmark={benchmark[bench] ?? []}
