@@ -712,8 +712,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   {weightLabels[i]}
                 </span>
                 {(() => { const ch = weightChange(h.weight, data.priorWeights[h.ticker]); return (
-                  <span className={`text-right font-mono text-xs tabular-nums ${ch.tone}`}>
-                    {ch.arrow} {ch.text}
+                  <span className={`flex items-center justify-between gap-1 font-mono text-xs tabular-nums ${ch.tone}`}>
+                    <span aria-hidden="true">{ch.arrow}</span>
+                    <span>{ch.text}</span>
                   </span>
                 ); })()}
               </li>
@@ -777,8 +778,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 0.0%
               </span>
               {(() => { const ch = weightChange(0, data.priorWeights[s.ticker]); return (
-                <span className={`text-right font-mono text-xs tabular-nums ${ch.tone}`}>
-                  {ch.arrow} {ch.text}
+                <span className={`flex items-center justify-between gap-1 font-mono text-xs tabular-nums ${ch.tone}`}>
+                  <span aria-hidden="true">{ch.arrow}</span>
+                  <span>{ch.text}</span>
                 </span>
               ); })()}
             </li>
