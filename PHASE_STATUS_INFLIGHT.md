@@ -6816,3 +6816,84 @@ UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build` (1512 static page
 Lockstep: this entry.
 
 ---
+
+## PR — Current-picks adaptive branch: Score column → Return column (in flight, 2026-06-23)
+
+**Branch**: `claude/current-picks-return-calc-h48u3x`
+**Type**: feat(frontend) — display-only; no schema change, no compute change.
+
+Replaces the Score column in the adaptive branch (`AiPickAdaptiveBranch`) of
+the "Current picks" table with a Return column showing each holding's total
+return since it entered the basket. The slider branch (`AiPickSliderBranch`)
+already has a Return column and is unchanged.
+
+**Changes**:
+- `frontend/components/AiPickPortfolio.tsx`: header label "Score"→"Return";
+  Return track widened 3.25rem→4.25rem in BOTH the header grid and every `<li>`
+  (held/new AND sold rows, both mobile 6-track and sm+ 7-track templates);
+  new `adaptivePlSince` `useMemo` keyed on `[timeline, weightSortedHoldings,
+  soldRows, data.entryCloses, data.lastCloses]` — for held/new rows walks
+  timeline backward via `heldSetForEntry()` to find the streak-start index
+  (entry→today), for sold rows walks backward within the prior basket to find
+  the streak-start index then compares to the sell rebalance close (entry→exit);
+  Return cell renders `pctStr` + `toneClass` with `font-semibold` matching the
+  slider branch; sold-row Return cell carries full emerald/rose tone (it is the
+  row's headline). Caption `<p>` appended: "Return = total return since each
+  holding entered the basket (sold names: through their exit rebalance)." The
+  now-unused `data.latestScores[s.ticker]` read on sold rows is removed (the
+  field itself remains in `AiPickData` as it may be used elsewhere).
+- `frontend/lib/data.ts`: extends `entryCloses`/`lastCloses` price-coverage loop
+  to include the prior rebalance's basket tickers (via the same
+  `band_weights`/`weights_by_count` derivation as the `priorWeights` block),
+  so sold-ticker return through their exit date is computable. Additive — existing
+  held-ticker behavior is byte-identical. Guard: only runs when `rebalances.length >= 2`.
+
+**Schema triple**: untouched. `entryCloses`/`lastCloses`/`latestScores`/
+`priorWeights` are frontend-only view-model fields on `AiPickData`, NOT part of
+the Pydantic↔TS↔snapshot triple. No `schema_check` run required.
+
+Rankings/scores/defense layer: byte-identical (display-only change).
+
+**Follow-up (2026-06-23) — UI declutter on same branch**: Removed the
+redundant "Change" column (arrows + ±100% text) from the adaptive "Current
+picks" table — the Status chip (New/Held/Sold) already conveys the same
+information and competed visually with the colored Return column. Changes:
+- Dropped the trailing `_4.5rem` Change track from all three grid containers
+  (header, held/new `<li>`, sold `<li>`); mobile is now 5-track, sm+ 6-track.
+- Removed the `<span className="text-right">Change</span>` header cell.
+- Removed the Change-IIFE trailing cell from both held/new and sold `<li>`s.
+- Removed the now-unused `weightChange` helper function (and its doc comment)
+  after confirming zero remaining references (`grep weightChange` → 0 hits).
+- Trimmed the picks-card caption `<p>`: removed the score-threshold `isBand ?
+  (...) : (...)` clause (redundant with the larger basket-rule paragraph
+  above); kept the "AI-sized basket — N stocks this quarter,
+  inverse-volatility weighted." opener, the "Top sector: X — n of N." clause,
+  and the "Return = total return..." sentence.
+- No schema change; `data.priorWeights` field in `AiPickData` / `data.ts`
+  untouched (view-model field, harmless now unreferenced in this component).
+
+Lockstep: this entry.
+
+---
+
+### Follow-up 2 — Performance table "Max" → "Total return" (2026-06-23)
+
+Renamed the trailing-period `PerformanceTable` since-inception row label from
+`Max` to `Total return` (clearer — that row IS the full-window total return).
+Label-string only; no logic / type / schema change.
+
+Lockstep: this entry.
+
+---
+
+### Follow-up 3 — Performance "Total return" highlighted footer (2026-06-23)
+
+Broke the since-inception "Total return" row out of the trailing `<tbody>`
+into a highlighted `<tfoot>` — `border-t-2 border-slate-200 bg-slate-50
+dark:border-slate-700 dark:bg-slate-800/50`, uppercase label, bold portfolio
+value — mirroring AnnualReturnsTable's CAGR footer so the two side-by-side
+cards read as a family. Presentation only; row values unchanged.
+
+Lockstep: this entry.
+
+---

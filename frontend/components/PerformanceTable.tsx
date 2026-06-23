@@ -6,7 +6,10 @@ import { flagLabel } from '@/lib/flag-labels';
 // Seeking-Alpha-style "Performance" table: trailing-period returns for the
 // portfolio vs the benchmark. Structurally mirrors AnnualReturnsTable (same
 // Props, helpers, and design tokens) so the two tables read as siblings
-// side-by-side. NO tfoot/CAGR/TOTAL footer row — periods speak for themselves.
+// side-by-side. The since-inception "Total return" row is broken out into a
+// highlighted <tfoot> (border-t-2 + bg-slate-50, bold portfolio value) so it
+// reads as the summary line — visually paired with AnnualReturnsTable's CAGR
+// footer (the two cards sit side-by-side).
 
 interface Props {
   dates: string[];
@@ -165,7 +168,7 @@ export function PerformanceTable({
         base: (s) => navAtOrBefore(dates, s, subtractYears(lastDate, 10)),
       },
       {
-        label: 'Max',
+        label: 'Total return',
         // Since inception — anchor on the first finite NAV in the series.
         base: (s) => {
           for (let i = 0; i < s.length; i += 1) { if (isFin(s[i])) return s[i] as number; }
@@ -185,6 +188,12 @@ export function PerformanceTable({
 
   if (rows.length === 0) return null;
 
+  // Split the since-inception "Total return" row out of the trailing rows so it
+  // can render as a highlighted footer (mirrors AnnualReturnsTable's CAGR tfoot).
+  // It is always the last window in the memo's row list.
+  const trailingRows = rows.slice(0, -1);
+  const totalRow = rows[rows.length - 1];
+
   return (
     <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
       <h2 className="mb-1 font-slab text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
@@ -203,7 +212,7 @@ export function PerformanceTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-          {rows.map((r) => (
+          {trailingRows.map((r) => (
             <tr key={r.label}>
               <th
                 scope="row"
@@ -220,6 +229,25 @@ export function PerformanceTable({
             </tr>
           ))}
         </tbody>
+        {/* Total return (since inception) — highlighted summary footer, paired
+            visually with AnnualReturnsTable's CAGR tfoot (same border-t-2 +
+            bg-slate-50 + bold portfolio value treatment). */}
+        <tfoot>
+          <tr className="border-t-2 border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50">
+            <th
+              scope="row"
+              className="py-2 text-left text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-600 dark:text-slate-300"
+            >
+              {totalRow.label}
+            </th>
+            <td className={`py-2 text-right font-mono text-base font-bold tabular-nums ${tone(totalRow.portfolio)}`}>
+              {pct2(totalRow.portfolio)}
+            </td>
+            <td className={`py-2 text-right font-mono font-semibold tabular-nums ${tone(totalRow.benchmark)}`}>
+              {pct2(totalRow.benchmark)}
+            </td>
+          </tr>
+        </tfoot>
       </table>
 
       <p className="mt-2 text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
