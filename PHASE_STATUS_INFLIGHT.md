@@ -6505,3 +6505,33 @@ lighter edit. The 2-lane backlog + retire-v1.1 + §Current-state reconcile remai
 PR's substance.
 
 ---
+
+## PR (ci-efficiency) — GitHub Actions efficiency pass (in flight, 2026-06-22)
+
+CI-only workflow efficiency pass (no compute/frontend/schema change), from a read-only
+`general-purpose` audit of `.github/workflows/`. Headline waste removed: a version/dep/docs
+PR could trigger the `pre-merge-prod-sim` `simulate` job (paths included `pyproject.toml`),
+which then ran a COLD sp1500 compute ~204 min; and `ci.yml` ran the full ~20-min pytest on
+every PR regardless of changed paths.
+
+Changes:
+1. **`pre-merge-prod-sim.yml`** — drop `pyproject.toml` from the `on.pull_request.paths`
+   trigger. The sim is informational-only + NOT a required check, so a version/dep bump no
+   longer pays a ~200-min cold sim.
+2. **`ci.yml`** — (a) add a workflow-level `concurrency` group (`cancel-in-progress` on PR
+   refs only) so re-pushes cancel stale ~20-min runs instead of stacking; (b) add
+   `dorny/paths-filter@v3` to BOTH jobs with a **job-internal skip** — the job always runs
+   (required check stays green) but the heavy steps are gated: pytest skips when no
+   `compute/**`/`tests/**`/`tools/**`/`pyproject.toml` change (ruff + the doc/model/schema
+   guards STILL run, so the doc-test-count guard fires on doc edits), and the frontend
+   vitest+build skip when no `frontend/**` change; (c) `pytest -v` → `pytest -q`; (d) add
+   `cache: npm` to the frontend `setup-node`.
+3. **`compute-monthly.yml`** — disable the no-op monthly `schedule:` (keep `workflow_dispatch`)
+   + drop the unused `pip install`; **`manual-trigger.yml`** — drop the unused `pip install`
+   (both are Phase-0 echo-only stubs).
+
+New third-party action: `dorny/paths-filter@v3` (widely-used, reputable) — flagged for
+`security-reviewer`. YAML validated (`yaml.safe_load` all four). Lockstep: this entry.
+Gate: security-reviewer (workflow + new action) before Mark-Ready; DRAFT PR.
+
+---

@@ -32,7 +32,12 @@ on:
       - "compute/valuation/**"
       - "compute/output/schemas.py"
       - "compute/main.py"
-      - "pyproject.toml"
+      # NOTE: `pyproject.toml` was REMOVED from this list (2026-06-22) — a
+      # version bump / dev-dep bump / release-PR pyproject edit must NOT trigger
+      # a ~200-min cold sp1500 simulation. The sim is informational-only and NOT
+      # a required check, so skipping it on a non-compute change is safe; offline
+      # pytest + the next scheduled cron catch any real regression. If a RUNTIME
+      # dependency edit ever needs simulating, re-run this workflow manually.
 
 # Latest push on a PR cancels any in-flight simulation for the same PR.
 # A 15-min compute against a stale revision is dead weight.
