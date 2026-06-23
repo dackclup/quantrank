@@ -2179,6 +2179,14 @@ def run_weekly_compute() -> int:
     # cron's firing rate (gates the follow-up median-exclusion PR per
     # methodology-scientist Mode B 2026-05-21) is visible at-a-glance.
     extreme_estimate_majority_count: int = 0
+    # Issue #587 (0.10.32-phase8pilot) — Rule 18 delta counter for the
+    # low-applicability floor recalibration. Counts tickers that fire
+    # ``extreme_estimate_majority`` via the new low-applicability floor ONLY
+    # (n_applicable ≤ LOWAPP_MAX AND n_extreme ≥ LOWAPP_MIN AND strict-majority)
+    # but would NOT have fired under the old 3-of-6 baseline rule. This is
+    # the delta population (pre-measured: 16 tickers on cron 8c89a5af0).
+    # Relies on EnsembleResult.extreme_majority_lowapp set in the ensemble.
+    extreme_estimate_majority_lowapp_count: int = 0
     # Issue #248 PR2a (0.10.3-phase4.5e) — Rule 18 observability for the
     # cross-source market-cap validator. Counter + histogram + per-ticker
     # delta all populated from the validator's tuple-return refactor
@@ -2744,6 +2752,12 @@ def run_weekly_compute() -> int:
         # the follow-up median-exclusion PR).
         if "extreme_estimate_majority" in valuation_warnings:
             extreme_estimate_majority_count += 1
+        # Issue #587 — low-applicability floor delta counter.
+        # Increments only when the annotate fired via the new floor AND
+        # NOT the old 3-of-6 baseline. Relies on ensemble.extreme_majority_lowapp
+        # set by _extreme_majority_fires() in the ensemble module.
+        if ensemble is not None and ensemble.extreme_majority_lowapp:
+            extreme_estimate_majority_lowapp_count += 1
 
         # Phase 4.5e PR 3 — Form-4 insider-cluster annotates.
         #
@@ -3569,6 +3583,15 @@ def run_weekly_compute() -> int:
         bonferroni_shadow_flip_count=bonferroni_shadow_flip_count,
         bonferroni_shadow_live_fire_count=bonferroni_shadow_live_fire_count,
         bonferroni_shadow_provisional_fire_count=bonferroni_shadow_provisional_fire_count,
+        # Issue #587 (0.10.32-phase8pilot) — Rule 18 observability counter for
+        # the low-applicability floor delta (RE-BASE-WITH-FLOOR recalibration).
+        # Counts tickers firing ``extreme_estimate_majority`` EXCLUSIVELY via the
+        # new floor (n_applicable ≤ 3 AND n_extreme ≥ 2 AND strict-majority)
+        # but NOT via the old 3-of-6 baseline. Pre-measured delta: 16 tickers
+        # (GFF, SMTC, DD, NRG, LGIH, GEV, BILL, TTWO, HASI, HIMS, CRWD, MSGS,
+        # NABL, CHTR, COKE, EMBC) on cron 8c89a5af0. Annotate-only; defense
+        # layer UNCHANGED at 36.
+        extreme_estimate_majority_lowapp_count=extreme_estimate_majority_lowapp_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

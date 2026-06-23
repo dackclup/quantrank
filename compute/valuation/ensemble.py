@@ -95,6 +95,15 @@ class EnsembleResult:
     # ``[0, len(METHOD_NAMES)]``; ``0`` means every method either
     # skipped or produced an outlier estimate.
     valuation_methods_applicable: int = 0
+    # Issue #587 (0.10.32-phase8pilot) — signals whether the
+    # ``extreme_estimate_majority`` annotate fired via the low-applicability
+    # floor (n_applicable ≤ EXTREME_MAJORITY_LOWAPP_MAX) rather than the
+    # baseline 3-of-6 rule. False (or True only alongside
+    # ``extreme_estimate_majority`` in valuation_warnings) is the annotate-
+    # only path — this boolean is the per-ticker signal that main.py
+    # aggregates into ``Metadata.extreme_estimate_majority_lowapp_count``.
+    # Always False when ``extreme_estimate_majority`` did not fire.
+    extreme_majority_lowapp: bool = False
     # Issue #177 PR-A (0.10.24-phase8pilot) — shadow two-regime trimmed
     # median (DIAGNOSTIC-ONLY; does NOT feed mos_pct or any live path).
     # Huber 1981 §1.4 breakdown-point: the even-n median of 6 methods
@@ -180,6 +189,52 @@ def _count_applicable_non_outliers(
         for name, r in methods.items()
         if r.applicable and r.value is not None and name not in outlier_names
     )
+
+
+def _extreme_majority_fires(n_extreme: int, n_applicable: int) -> bool:
+    """Determine whether ``extreme_estimate_majority`` should fire.
+
+    Issue #587 (0.10.32-phase8pilot) — RE-BASE-WITH-FLOOR recalibration.
+    Methodology-scientist ratified. Annotate-only per Rule 16.
+
+    Two firing branches (OR logic):
+
+    **Baseline (3-of-6 rule):** ``n_extreme >= EXTREME_MAJORITY_THRESHOLD``
+      The ensemble's median tolerates ⌊5/2⌋ = 2 outliers before degrading
+      (Huber 1981 §1.4 breakdown-point). When 3+ of the 6 methods are
+      extreme, the median has passed its breakdown point.
+
+    **Low-applicability floor:** ``n_applicable <= EXTREME_MAJORITY_LOWAPP_MAX
+      AND n_extreme >= EXTREME_MAJORITY_LOWAPP_MIN
+      AND n_extreme > n_applicable - n_extreme``
+      In the low-applicability regime (≤ 3 methods applicable — the S&P 1500
+      small-cap tail), fire when a *strict majority* of applicable methods
+      are extreme AND at least 2 are extreme. The ``n_extreme >= 2`` floor
+      kills the 1-of-2 false-positive (one extreme of two applicable is not
+      an n=2-median breakdown event — Huber 1981 §1.4 provenance tier).
+      The ``n_applicable <= 3`` ceiling confines new behaviour to the
+      low-applicability tail so S&P 500 tickers (5-6 applicable) are
+      byte-identical.
+
+    ``n_applicable`` = total count of methods with ``applicable == True``
+    AND ``value is not None`` (includes outliers). This is NOT the same as
+    ``valuation_methods_applicable`` (which counts only non-outlier
+    survivors).
+
+    Callable standalone so test-engineer can pin the predicate directly
+    without constructing a full ensemble fixture.
+    """
+    # Baseline 3-of-6 rule (unchanged from Issue #177).
+    if n_extreme >= config.EXTREME_MAJORITY_THRESHOLD:
+        return True
+    # Low-applicability floor (Issue #587 RE-BASE-WITH-FLOOR).
+    if (
+        n_applicable <= config.EXTREME_MAJORITY_LOWAPP_MAX
+        and n_extreme >= config.EXTREME_MAJORITY_LOWAPP_MIN
+        and n_extreme > n_applicable - n_extreme
+    ):
+        return True
+    return False
 
 
 def _aggregate_methods(
@@ -545,19 +600,39 @@ def compute_fair_price_ensemble(
     )
     valuation_warnings.extend(extreme_warnings)
 
-    # Issue #177 — extreme_estimate_majority annotate. The median is a
-    # 50% trimmed estimator over 6 methods, so it tolerates ⌊5/2⌋ = 2
-    # outliers before degrading (Huber 1981 §1.4 breakdown-point). When
-    # ≥ EXTREME_MAJORITY_THRESHOLD of the 6 fire extreme_*_estimate, the
-    # median has passed its breakdown point and collapses toward the
-    # low-cluster — Damodaran 2019 Ch. 18 calls for discarding methods
-    # whose inputs fall outside their domain in this case. Annotate-only
-    # this PR per Rule 16 + portable-annotate-before-veto; the actual
-    # median-exclusion + ``fair_price.methods_excluded_from_median``
-    # field lands in a follow-up PR after ≥ 1 cron's firing-rate
-    # observation (per methodology-scientist Mode B, 2026-05-21).
-    if len(extreme_warnings) >= config.EXTREME_MAJORITY_THRESHOLD:
+    # Issue #177 / #587 — extreme_estimate_majority annotate.
+    # Issue #177: The median is a 50% trimmed estimator over 6 methods,
+    # so it tolerates ⌊5/2⌋ = 2 outliers before degrading (Huber 1981
+    # §1.4 breakdown-point). When ≥ EXTREME_MAJORITY_THRESHOLD of the 6
+    # fire extreme_*_estimate, the median has passed its breakdown point —
+    # Damodaran 2019 Ch. 18 calls for discarding methods whose inputs fall
+    # outside their domain. Annotate-only per Rule 16 + portable-annotate-
+    # before-veto.
+    #
+    # Issue #587 RE-BASE-WITH-FLOOR (0.10.32-phase8pilot): the S&P 1500
+    # small-cap cutover exposed a false-negative dead-zone — tickers with
+    # ≤ 3 applicable methods can have a strict majority extreme without
+    # reaching 3-of-6. The low-applicability floor fires when n_applicable
+    # ≤ EXTREME_MAJORITY_LOWAPP_MAX (3) AND n_extreme ≥
+    # EXTREME_MAJORITY_LOWAPP_MIN (2) AND n_extreme > n_applicable −
+    # n_extreme (strict majority). Methodology-scientist ratified.
+    # Defense layer UNCHANGED at 36 (annotate-only, no new flag).
+    #
+    # n_applicable_total = total methods with applicable=True AND value
+    # is not None INCLUDING outliers. = n_extreme + non-outlier-applicable.
+    # Computed here so _extreme_majority_fires() has the full denominator.
+    n_applicable_non_outlier = _count_applicable_non_outliers(methods, extreme_warnings)
+    _n_extreme = len(extreme_warnings)
+    n_applicable_total = _n_extreme + n_applicable_non_outlier
+
+    extreme_majority_lowapp: bool = False
+    if _extreme_majority_fires(_n_extreme, n_applicable_total):
         valuation_warnings.append("extreme_estimate_majority")
+        # Track whether this fire came exclusively from the low-applicability
+        # floor (not the baseline 3-of-6 rule). Used by main.py to populate
+        # Metadata.extreme_estimate_majority_lowapp_count (Rule-18 counter).
+        if _n_extreme < config.EXTREME_MAJORITY_THRESHOLD:
+            extreme_majority_lowapp = True
 
     # RIM value_trap_risk warning.
     if (
@@ -566,7 +641,7 @@ def compute_fair_price_ensemble(
     ):
         valuation_warnings.append("value_trap_risk")
 
-    n_applicable = _count_applicable_non_outliers(methods, extreme_warnings)
+    n_applicable = n_applicable_non_outlier
 
     # EQH-class guard: when every applicable method is an outlier (or no
     # method applied at all), valuation_methods_applicable == 0 means there
@@ -594,6 +669,7 @@ def compute_fair_price_ensemble(
             mos_pct=aggregates["mos_pct"],
             valuation_warnings=valuation_warnings,
             valuation_methods_applicable=n_applicable,
+            extreme_majority_lowapp=extreme_majority_lowapp,
             # Issue #177 PR-A — shadow trimmed fields (diagnostic-only).
             # median_trimmed and methods_excluded_from_median are written to
             # the per-stock JSON for post-cron audit but do NOT feed mos_pct
@@ -678,6 +754,7 @@ __all__ = [
     "EnsembleResult",
     "FairPriceMethodResult",
     "METHOD_NAMES",
+    "_extreme_majority_fires",  # exported for direct test-pinning (issue #587)
     "compute_fair_price_ensemble",
     "ensemble_result_to_dict",
     "filing_lag_days",  # re-exported for caller convenience

@@ -505,6 +505,14 @@ export type Metadata = {
   bonferroni_shadow_flip_count?: number | null;
   bonferroni_shadow_live_fire_count?: number | null;
   bonferroni_shadow_provisional_fire_count?: number | null;
+  // Issue #587 (0.10.32-phase8pilot) — Rule 18 observability counter for
+  // the `extreme_estimate_majority` low-applicability floor delta
+  // (RE-BASE-WITH-FLOOR recalibration). Counts tickers firing the annotate
+  // exclusively via the new floor (n_applicable ≤ 3 AND n_extreme ≥ 2 AND
+  // strict-majority) but NOT via the old 3-of-6 baseline. Pre-measured
+  // delta: 16 tickers on cron 8c89a5af0. Annotate-only; defense layer
+  // UNCHANGED at 36. Null on legacy snapshots (pre-0.10.32).
+  extreme_estimate_majority_lowapp_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

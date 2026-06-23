@@ -185,7 +185,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.31-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.32-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

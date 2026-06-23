@@ -6581,5 +6581,57 @@ setup-node was caught and discarded). The `# vN` trailing comments keep Dependab
 CI-only, no code/schema/compute change; YAML validated (`yaml.safe_load` all 8). The PR's own
 CI run is the live validation that every pinned SHA resolves. Lockstep: this entry.
 Gate: security-reviewer (workflow-wide pin) before Mark-Ready; DRAFT PR.
+## PR #587 — `extreme_estimate_majority` low-applicability floor (issue #587, in flight 2026-06-23)
+
+**Branch:** `claude/issue-587-extreme-majority-floor`
+**Schema:** `0.10.31-phase8pilot` → **`0.10.32-phase8pilot`**
+**Rule 16 invariant:** annotate-only — no composite change, no veto, no Top-5 suppression
+**Defense layer:** UNCHANGED at 36
+
+**Summary:** RE-BASE-WITH-FLOOR recalibration of the `extreme_estimate_majority` annotate.
+The S&P 1500 small-cap cutover exposed a false-negative dead-zone: tickers with ≤ 3
+applicable ensemble methods could have a strict majority be extreme (GFF MoS −1143.9% /
+SMTC −938.7%: 2 of 3 applicable) without reaching the 3-of-6 baseline threshold.
+
+**Changes (compute/** only, per ownership contract):**
+- `compute/config.py` — 2 new constants (`EXTREME_MAJORITY_LOWAPP_MAX=3` /
+  `EXTREME_MAJORITY_LOWAPP_MIN=2`) + schema version bump to `0.10.32-phase8pilot`
+- `compute/valuation/ensemble.py` — new `_extreme_majority_fires(n_extreme, n_applicable) -> bool`
+  pure helper (directly pinnable by test-engineer); `EnsembleResult.extreme_majority_lowapp: bool`
+  per-ticker signal; firing site updated to use the helper (OR logic: baseline 3-of-6 OR
+  low-applicability floor)
+- `compute/output/schemas.py` — new `Metadata.extreme_estimate_majority_lowapp_count: int | None`
+  (Rule-18 counter for floor-only delta fires)
+- `compute/main.py` — counter init + per-ticker increment + Metadata wiring
+- `frontend/lib/types.ts` — mirror `extreme_estimate_majority_lowapp_count?: number | null`
+- `frontend/lib/schema-snapshot.json` — regenerated via `--update-snapshot`
+- `docs/METHODOLOGY.md` — `extreme_estimate_majority` section expanded with floor rationale
+- `SKILL.md` — `0.10.32-phase8pilot` row added to schema-version table
+- `tests/test_config.py` — schema version pin updated to `0.10.32-phase8pilot`
+
+**Replay validation (cron 8c89a5af0 ground truth):**
+- Old-rule fires: 56 ✓
+- New-rule fires: 72 ✓
+- Floor-only delta: 16 ✓ (GFF, SMTC, DD, NRG, LGIH, GEV, BILL, TTWO, HASI, HIMS,
+  CRWD, MSGS, NABL, CHTR, COKE, EMBC — exact match)
+
+**Verify:** ruff PASS · pytest offline PASS (K1-K9 green; `test_C1_alpha158` is a
+pre-existing Hypothesis DeadlineExceeded timing flake — fails identically on pre-change
+`main`) · schema_check PASS (IN SYNC)
+
+**Coverage needed (for test-engineer):**
+- Pin `_extreme_majority_fires(2, 3)` → True (2-of-3 strict-majority floor)
+- Pin `_extreme_majority_fires(2, 2)` → True (2-of-2 all-extreme)
+- Pin `_extreme_majority_fires(1, 2)` → False (1-of-2, below LOWAPP_MIN=2)
+- Pin `_extreme_majority_fires(1, 3)` → False (1-of-3, below LOWAPP_MIN=2 AND not majority)
+- Pin `_extreme_majority_fires(2, 4)` → False (floor excluded: n_applicable=4 > LOWAPP_MAX=3)
+- Pin `_extreme_majority_fires(3, 4)` → True (baseline 3-of-6 rule still fires regardless of n_applicable)
+- Integration: full ensemble with 2-of-3-applicable extreme → `extreme_estimate_majority` fires + `extreme_majority_lowapp=True`
+- Integration: full ensemble with 1-of-3-applicable extreme → flag silent
+- Integration: full ensemble with 3-of-6-applicable extreme → flag fires + `extreme_majority_lowapp=False` (baseline, not floor)
+- `EnsembleResult.extreme_majority_lowapp` is False when flag did not fire
+- Metadata counter increments only for floor-only fires, not baseline fires
+
+**Next:** test-engineer for K10+ coverage, then quantrank-reviewer for gate.
 
 ---
