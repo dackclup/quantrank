@@ -6535,3 +6535,25 @@ New third-party action: `dorny/paths-filter@v3` (widely-used, reputable) — fla
 Gate: security-reviewer (workflow + new action) before Mark-Ready; DRAFT PR.
 
 ---
+
+## PR (ci-sha-pin) — SHA-pin the third-party dorny/paths-filter action (in flight, 2026-06-22)
+
+CI hardening follow-up to #583 (the `security-reviewer` GO-WITH-CONDITIONS recommendation).
+SHA-pins the ONE genuinely third-party action — `dorny/paths-filter` — in both `ci.yml`
+jobs: `@v3` → `@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3`. The SHA was
+cross-verified from two independent GitHub HTML pages (the `releases/tag/v3` page + the
+`commits/v3` page both report `d1c1ffe…` = "Update CHANGELOG for v3.0.3", 2026-03-12);
+api.github.com is 403 in the CI env so the authoritative JSON ref wasn't available — the
+double-page cross-check is the substitute. The `# v3.0.3` trailing comment keeps Dependabot's
+`github-actions` ecosystem able to bump the pin.
+
+SCOPE: only the third-party action is pinned. The first-party `actions/*` actions
+(checkout/setup-python/setup-node/cache/upload-artifact/github-script) stay on Dependabot-managed
+`@vN` tags — same GitHub org as the runner, low supply-chain risk, and the reviewer-endorsed
+"consistent posture". (Pinning those too is deferred — it needs authoritative SHA resolution the
+403'd env can't provide reliably; a future `gh`/API-enabled chore can do the uniform set.)
+
+CI-only, no code/schema/compute change. YAML validated. Lockstep: this entry. Gate: the prior
+#583 security review already cleared dorny/paths-filter; this is its recommended pin.
+
+---
