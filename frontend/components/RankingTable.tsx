@@ -305,7 +305,7 @@ export default function RankingTable({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="relative space-y-3">
       {/* Toolbar: inline search + result count. */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[12.5rem] max-w-xs flex-1">
@@ -348,7 +348,7 @@ export default function RankingTable({
       {hasMore && (
         <a
           href="#ranking-load-more"
-          className="sr-only focus:not-sr-only focus:absolute focus:z-10 focus:inline-flex focus:min-h-[44px] focus:items-center focus:rounded-sm focus:border focus:border-emerald-700 focus:bg-white focus:px-3 focus:py-1.5 focus:text-sm focus:font-medium focus:text-emerald-800 focus:shadow-sm dark:focus:border-emerald-600 dark:focus:bg-slate-900 dark:focus:text-emerald-300"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-30 focus:inline-flex focus:min-h-[44px] focus:items-center focus:rounded-sm focus:border focus:border-emerald-700 focus:bg-white focus:px-3 focus:py-1.5 focus:text-sm focus:font-medium focus:text-emerald-800 focus:shadow-sm dark:focus:border-emerald-600 dark:focus:bg-slate-900 dark:focus:text-emerald-300"
           onClick={(e) => {
             e.preventDefault();
             loadMoreButtonRef.current?.focus();
@@ -487,6 +487,7 @@ export default function RankingTable({
           id="ranking-load-more"
           role="region"
           aria-label="Load more stocks"
+          tabIndex={-1}
           className="flex justify-center"
         >
           <button
