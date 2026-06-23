@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+# Cancel a superseded in-progress run on a new push to the SAME PR ref, so
+# rapid re-pushes don't stack multiple ~20-min Python runs. Never cancel a
+# `main`-push run (post-merge verification must always complete).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 permissions:
   contents: read
 
@@ -17,6 +24,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # Skip the ~20-min pytest on PRs that change no Python-relevant paths
+      # (docs-only / frontend-only). The job ALWAYS runs so the required check
+      # still reports green; only the heavy Pytest step is gated. ruff + the
+      # doc/model/schema guards keep running (cheap, and the doc-test-count
+      # guard must run precisely when docs change). Always-on for `main` push.
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            code:
+              - 'compute/**'
+              - 'tests/**'
+              - 'tools/**'
+              - 'pyproject.toml'
+              - '.github/workflows/ci.yml'
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
@@ -34,7 +56,11 @@ jobs:
       - name: Schema snapshot guard
         run: python -m compute.output.schema_check
       - name: Pytest
-        run: pytest -v
+        if: github.ref == 'refs/heads/main' || steps.changes.outputs.code == 'true'
+        run: pytest -q
+      - name: Pytest skipped (no Python-relevant changes)
+        if: github.ref != 'refs/heads/main' && steps.changes.outputs.code != 'true'
+        run: echo "No compute/tests/tools/pyproject changes in this PR — skipping pytest."
 
   frontend:
     name: Frontend (build)
@@ -44,12 +70,30 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v7
+      # Skip the npm build on PRs that touch no frontend paths. Job always
+      # runs (required check stays green); only the build steps are gated.
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            fe:
+              - 'frontend/**'
+              - '.github/workflows/ci.yml'
       - uses: actions/setup-node@v6
+        if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
       - name: Install
+        if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         run: npm ci --no-audit --no-fund
       - name: Unit tests (vitest)
+        if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         run: npm run test:unit
       - name: Build (static export)
+        if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         run: npm run build
+      - name: Frontend skipped (no frontend changes)
+        if: github.ref != 'refs/heads/main' && steps.changes.outputs.fe != 'true'
+        run: echo "No frontend/** changes in this PR — skipping vitest + build."
