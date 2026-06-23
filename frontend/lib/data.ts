@@ -149,19 +149,44 @@ export function getAiPickData(): AiPickData | null {
   const last = rebalances[rebalances.length - 1];
 
   // P/L-since-entry support: adjusted close at every rebalance date (index-
-  // aligned with `timeline`) + the latest close, for the CURRENTLY-held tickers
-  // only. Sourced from the per-ticker price-history files the stock-detail
-  // chart already ships (yfinance auto-adjusted closes → split + dividend
-  // adjusted, i.e. total-return basis, same as the NAV lines).
+  // aligned with `timeline`) + the latest close. Covers both the CURRENTLY-held
+  // tickers (last.holdings) AND the PRIOR rebalance's basket tickers so that
+  // sold-row return (entry→sell-date) can be computed even when a ticker has
+  // since dropped out of last.holdings. Sourced from the per-ticker price-history
+  // files the stock-detail chart already ships (yfinance auto-adjusted closes →
+  // split + dividend adjusted, i.e. total-return basis, same as the NAV lines).
   const rebalanceDates = rebalances.map((r) => r.date);
   const entryCloses: Record<string, (number | null)[]> = {};
   const lastCloses: Record<string, number | null> = {};
-  for (const h of last.holdings) {
-    const hist = readPriceHistory(h.ticker);
-    entryCloses[h.ticker] = hist
+
+  // Derive the prior basket's tickers (mirrors the priorWeights block below).
+  const priorBasketTickers: string[] = rebalances.length >= 2
+    ? (() => {
+        const prv = rebalances[rebalances.length - 2] as unknown as {
+          band_weights?: Record<string, number>;
+          weights_by_count?: Record<string, Record<string, number>>;
+          adaptive_count?: number;
+        };
+        const pw = prv.band_weights
+          ?? (prv.adaptive_count != null ? prv.weights_by_count?.[String(prv.adaptive_count)] : undefined)
+          ?? {};
+        return Object.keys(pw);
+      })()
+    : [];
+
+  // Union of current holdings + prior basket tickers — additive; existing
+  // held-ticker behavior is byte-identical.
+  const priceTickerSet = new Set([
+    ...last.holdings.map((h) => h.ticker),
+    ...priorBasketTickers,
+  ]);
+
+  for (const ticker of priceTickerSet) {
+    const hist = readPriceHistory(ticker);
+    entryCloses[ticker] = hist
       ? rebalanceDates.map((d) => closeOnOrAfter(hist, d))
       : rebalanceDates.map(() => null);
-    lastCloses[h.ticker] = hist ? round2(lastFinite(hist.closes)) : null;
+    lastCloses[ticker] = hist ? round2(lastFinite(hist.closes)) : null;
   }
 
   // Phase 7.0 ADAPTIVE — resolve when the artifact carries nav.adaptive AND

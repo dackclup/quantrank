@@ -6816,3 +6816,44 @@ UNCHANGED at 36. Verified: `tsc --noEmit` clean + `next build` (1512 static page
 Lockstep: this entry.
 
 ---
+
+## PR — Current-picks adaptive branch: Score column → Return column (in flight, 2026-06-23)
+
+**Branch**: `claude/current-picks-return-calc-h48u3x`
+**Type**: feat(frontend) — display-only; no schema change, no compute change.
+
+Replaces the Score column in the adaptive branch (`AiPickAdaptiveBranch`) of
+the "Current picks" table with a Return column showing each holding's total
+return since it entered the basket. The slider branch (`AiPickSliderBranch`)
+already has a Return column and is unchanged.
+
+**Changes**:
+- `frontend/components/AiPickPortfolio.tsx`: header label "Score"→"Return";
+  Return track widened 3.25rem→4.25rem in BOTH the header grid and every `<li>`
+  (held/new AND sold rows, both mobile 6-track and sm+ 7-track templates);
+  new `adaptivePlSince` `useMemo` keyed on `[timeline, weightSortedHoldings,
+  soldRows, data.entryCloses, data.lastCloses]` — for held/new rows walks
+  timeline backward via `heldSetForEntry()` to find the streak-start index
+  (entry→today), for sold rows walks backward within the prior basket to find
+  the streak-start index then compares to the sell rebalance close (entry→exit);
+  Return cell renders `pctStr` + `toneClass` with `font-semibold` matching the
+  slider branch; sold-row Return cell carries full emerald/rose tone (it is the
+  row's headline). Caption `<p>` appended: "Return = total return since each
+  holding entered the basket (sold names: through their exit rebalance)." The
+  now-unused `data.latestScores[s.ticker]` read on sold rows is removed (the
+  field itself remains in `AiPickData` as it may be used elsewhere).
+- `frontend/lib/data.ts`: extends `entryCloses`/`lastCloses` price-coverage loop
+  to include the prior rebalance's basket tickers (via the same
+  `band_weights`/`weights_by_count` derivation as the `priorWeights` block),
+  so sold-ticker return through their exit date is computable. Additive — existing
+  held-ticker behavior is byte-identical. Guard: only runs when `rebalances.length >= 2`.
+
+**Schema triple**: untouched. `entryCloses`/`lastCloses`/`latestScores`/
+`priorWeights` are frontend-only view-model fields on `AiPickData`, NOT part of
+the Pydantic↔TS↔snapshot triple. No `schema_check` run required.
+
+Rankings/scores/defense layer: byte-identical (display-only change).
+
+Lockstep: this entry.
+
+---

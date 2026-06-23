@@ -313,6 +313,49 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
     return soldTickers.map((ticker) => ({ ticker, sector: sectorByTicker[ticker] ?? '' }));
   }, [timeline, priorHeldSet, displayHoldings]);
 
+  // Per-holding total return since entry (for both held/new AND sold rows).
+  // Mirrors the slider branch's plSince logic but uses heldSetForEntry()
+  // for the adaptive membership test instead of count-slicing.
+  //
+  // Held/New: streak-start index is the earliest rebalance where the ticker
+  // was already in the basket; entry close = close at that rebalance;
+  // pct = (lastClose / entryClose - 1) * 100.
+  //
+  // Sold: streak-start index within the PRIOR basket membership;
+  // sellIdx = timeline.length - 1 (latest rebalance, the one it left);
+  // pct = (closeAtSell / entryClose - 1) * 100.
+  const adaptivePlSince = useMemo((): Record<string, number | null> => {
+    const result: Record<string, number | null> = {};
+
+    // Held/New rows — current basket members
+    for (const h of weightSortedHoldings) {
+      const t = h.ticker;
+      let idx = timeline.length - 1;
+      while (idx > 0 && heldSetForEntry(timeline[idx - 1]).has(t)) idx -= 1;
+      const entry = data.entryCloses[t]?.[idx] ?? null;
+      const lastC = data.lastCloses[t] ?? null;
+      result[t] = entry !== null && lastC !== null && entry !== 0
+        ? (lastC / entry - 1) * 100
+        : null;
+    }
+
+    // Sold rows — rotated-out names (streak within the prior basket)
+    const sellIdx = timeline.length - 1;
+    for (const s of soldRows) {
+      const t = s.ticker;
+      let idx = sellIdx;
+      // Walk back through the PRIOR basket to find the streak start
+      while (idx > 0 && heldSetForEntry(timeline[idx - 1]).has(t)) idx -= 1;
+      const entry = data.entryCloses[t]?.[idx] ?? null;
+      const atSell = data.entryCloses[t]?.[sellIdx] ?? null;
+      result[t] = entry !== null && atSell !== null && entry !== 0
+        ? (atSell / entry - 1) * 100
+        : null;
+    }
+
+    return result;
+  }, [timeline, weightSortedHoldings, soldRows, data.entryCloses, data.lastCloses]);
+
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
   const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
   const netReturn   = view.periodPortfolio;
@@ -645,19 +688,21 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="font-mono tabular-nums">{displayCount}</span>.
             </>
           )}
+          {' '}Return = total return since each holding entered the basket (sold names: through their exit rebalance).
         </p>
         {/* Grid header + rows share a common template:
-            Mobile (6 tracks, sector hidden): [1.25rem auto 1fr 3.25rem 2.75rem 4.5rem]
-            sm+ (7 tracks, sector visible):   [1.25rem auto auto 1fr 3.25rem 2.75rem 4.5rem]
-            Column order (DOM): # · Status · Ticker · Sector · Score · Weight · Change.
+            Mobile (6 tracks, sector hidden): [1.25rem auto 1fr 4.25rem 2.75rem 4.5rem]
+            sm+ (7 tracks, sector visible):   [1.25rem auto auto 1fr 4.25rem 2.75rem 4.5rem]
+            Column order (DOM): # · Status · Ticker · Sector · Return · Weight · Change.
             The Sector cell carries `hidden sm:block`; a display:none grid child is
-            not placed, so mobile's 6 visible cells map cleanly to the 6 mobile tracks. */}
-        <div className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+            not placed, so mobile's 6 visible cells map cleanly to the 6 mobile tracks.
+            Return track widened to 4.25rem so "−12.4%" fits cleanly. */}
+        <div className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem_4.5rem] border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span>#</span>
           <span>Status</span>
           <span>Ticker</span>
           <span className="hidden sm:block">Sector</span>
-          <span className="text-right">Score</span>
+          <span className="text-right">Return</span>
           <span className="text-right">Weight</span>
           <span className="text-right">Change</span>
         </div>
@@ -670,7 +715,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             // it disagrees with the portfolio sense and HoldingsTimeline.
             const isHeld = priorHeldSet.has(h.ticker);
             return (
-              <li key={h.ticker} className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] py-2">
+              <li key={h.ticker} className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem_4.5rem] py-2">
                 <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
@@ -705,8 +750,11 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="hidden sm:block">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className="text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
-                  {h.composite_score.toFixed(1)}
+                {/* Return cell — total return since entry (entry→today).
+                    Uses adaptivePlSince, precomputed per-ticker via heldSetForEntry
+                    streak walk. font-semibold matches the slider branch's Return cell. */}
+                <span className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(adaptivePlSince[h.ticker] ?? null)}`}>
+                  {pctStr(adaptivePlSince[h.ticker] ?? null)}
                 </span>
                 <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {weightLabels[i]}
@@ -735,7 +783,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {soldRows.map((s, j) => (
             <li
               key={s.ticker}
-              className={`grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_3.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_3.25rem_2.75rem_4.5rem] py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
+              className={`grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem_4.5rem] py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
             >
               <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                 {weightSortedHoldings.length + j + 1}
@@ -764,15 +812,12 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="hidden sm:block">
                 {s.sector ? <SectorChip sector={s.sector} /> : null}
               </span>
-              {/* Score cell: show the sold stock's CURRENT composite score from
-                  the latest rebalance's full_ranked array — same semantics as
-                  the Held/New rows (which show composite_score from last.holdings).
-                  Falls back to em-dash when the ticker is absent from full_ranked
-                  (pre-full_ranked artifacts). Weight shows 0.0%: sold names carry
-                  no weight in the current basket. Muted tone preserved so the
-                  sold row stays visually de-emphasized vs active holdings. */}
-              <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                {isFinite_(data.latestScores[s.ticker]) ? data.latestScores[s.ticker].toFixed(1) : '—'}
+              {/* Return cell — total return from entry → sell rebalance (entry→exit).
+                  Uses adaptivePlSince, computed via the streak-within-prior-basket
+                  walk in the useMemo above. Full emerald/rose tone so the return is
+                  the row's headline even though ticker/sector stay muted. */}
+              <span className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(adaptivePlSince[s.ticker] ?? null)}`}>
+                {pctStr(adaptivePlSince[s.ticker] ?? null)}
               </span>
               <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 0.0%
