@@ -223,6 +223,12 @@ def _extreme_majority_fires(n_extreme: int, n_applicable: int) -> bool:
 
     Callable standalone so test-engineer can pin the predicate directly
     without constructing a full ensemble fixture.
+
+    Precondition (guaranteed by the call site, not enforced here):
+    ``n_extreme <= n_applicable`` — the extreme count is a subset of the
+    applicable-with-value methods. The degenerate ``n_extreme > n_applicable``
+    is unreachable from production and would spuriously satisfy the
+    strict-majority test; do not call this helper with such inputs.
     """
     # Baseline 3-of-6 rule (unchanged from Issue #177).
     if n_extreme >= config.EXTREME_MAJORITY_THRESHOLD:

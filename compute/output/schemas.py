@@ -786,6 +786,10 @@ class Metadata(BaseModel):
     # HASI, HIMS, CRWD, MSGS, NABL, CHTR, COKE, EMBC). Annotate-only; defense
     # layer UNCHANGED at 36. Nullable on legacy snapshots (pre-0.10.32); None
     # when the Step-8 ensemble loop was skipped or failed.
+    # Note: this delta is ⊆ extreme_estimate_majority_count EXCEPT on a ticker
+    # that both fires the floor AND is Tier-2-vetoed (e.g. post_split_share_lag_
+    # unreconciled) — the veto nulls the ensemble after the warning was captured,
+    # so the total still counts it but this delta does not. ~0 expected overlap.
     extreme_estimate_majority_lowapp_count: int | None = None
 
 
