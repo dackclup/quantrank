@@ -225,6 +225,9 @@ export function mosVisualFraction(mos: number | null | undefined): number | null
 // this function (PR 4 rework, 2026-06-16). Falls back to the raw code for any
 // future code not yet listed here (forward-compatible).
 export function universeLabel(universe: string): string {
+  // SP1500 check FIRST — startsWith covers both 'SP1500' (live) and
+  // 'SP1500-probe' (Slice-2 label) without falling through to SP500 substring.
+  if (universe.startsWith('SP1500')) return 'S&P 1500';
   if (universe === 'SP500') return 'S&P 500';
   if (universe === 'SP900') return 'All US stocks';
   return universe;

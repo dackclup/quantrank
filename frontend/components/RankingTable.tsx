@@ -175,6 +175,10 @@ export default function RankingTable({
   // (the search string) — the gate in useFlip stays closed on a load-more
   // event, so the FLIP reshuffle slide never fires on scroll. Only a
   // search-text change opens the gate. ✓
+  // Ref for the "Show N more" button — targeted by the a11y skip-link so
+  // keyboard users can bypass the ~50 row tab-stops per batch (WCAG 2.4.1).
+  const loadMoreButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const loadMore = useCallback(() => {
     setVisibleCount((c) => Math.min(c + WINDOW_SIZE, sorted.length));
@@ -333,6 +337,27 @@ export default function RankingTable({
         </div>
       </div>
 
+      {/* A11y skip-link (WCAG 2.4.1 Bypass Blocks). Keyboard users tab through
+          ~50 stock-row links per batch before reaching the "Show N more" button.
+          This visually-hidden link appears on :focus-visible and moves focus
+          directly to the load-more control, bypassing the row tab-stop sequence.
+          Hidden when hasMore is false (all rows shown — nothing to skip to).
+          The link is sr-only at rest (off-screen, never visible by default);
+          it pops into view only on keyboard focus via the global :focus-visible
+          ring in globals.css + the sr-only-until-focus pattern. */}
+      {hasMore && (
+        <a
+          href="#ranking-load-more"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-10 focus:inline-flex focus:min-h-[44px] focus:items-center focus:rounded-sm focus:border focus:border-emerald-700 focus:bg-white focus:px-3 focus:py-1.5 focus:text-sm focus:font-medium focus:text-emerald-800 focus:shadow-sm dark:focus:border-emerald-600 dark:focus:bg-slate-900 dark:focus:text-emerald-300"
+          onClick={(e) => {
+            e.preventDefault();
+            loadMoreButtonRef.current?.focus();
+          }}
+        >
+          Skip to load more
+        </a>
+      )}
+
       {/* Desktop table (lg+). Portrait tablets (md→lg, 768–1023px) fall back
           to the card list below: the 6-col table needs ~700px but the md
           content area is only ~530px beside the sidebar. */}
@@ -455,8 +480,17 @@ export default function RankingTable({
             the FLIP reshuffle gate stays closed (search-scoped invariant
             is preserved, same as the scroll-triggered path). */}
       {hasMore && (
-        <div className="flex justify-center">
+        /* role="region" + aria-label makes the load-more area a named landmark
+           so screen-reader users can jump to it directly from the landmarks
+           list (JAWS / NVDA "R" key). The id matches the skip-link href above. */
+        <div
+          id="ranking-load-more"
+          role="region"
+          aria-label="Load more stocks"
+          className="flex justify-center"
+        >
           <button
+            ref={loadMoreButtonRef}
             type="button"
             onClick={loadMore}
             className="inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
