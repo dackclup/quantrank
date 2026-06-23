@@ -108,24 +108,6 @@ function toneClass(v: number | null): string {
   return v >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
 }
 
-// Relative weight change vs the prior quarter for the Current-picks "Change"
-// column. New (no prior weight) = +100%, Sold (no current weight) = −100%,
-// otherwise (cur−prior)/prior. Arrow + signed text + 3-way tone.
-function weightChange(current: number | null | undefined, prior: number | null | undefined) {
-  const c = isFinite_(current) ? current : 0;
-  const p = isFinite_(prior) ? prior : 0;
-  const POS = 'text-emerald-700 dark:text-emerald-300';
-  const NEG = 'text-rose-700 dark:text-rose-300';
-  const NEU = 'text-slate-500 dark:text-slate-400';
-  if (p === 0 && c > 0) return { arrow: '↑', text: '100.00%', tone: POS };
-  if (c === 0 && p > 0) return { arrow: '↓', text: '−100.00%', tone: NEG };
-  if (p === 0) return { arrow: '→', text: '0.00%', tone: NEU };
-  const rel = ((c - p) / p) * 100;
-  if (rel > 0) return { arrow: '↑', text: `${rel.toFixed(2)}%`, tone: POS };
-  if (rel < 0) return { arrow: '↓', text: `−${Math.abs(rel).toFixed(2)}%`, tone: NEG };
-  return { arrow: '→', text: '0.00%', tone: NEU };
-}
-
 // ---------------------------------------------------------------------------
 // Shared chart-view builder — used by both adaptive + slider branches.
 // ---------------------------------------------------------------------------
@@ -653,33 +635,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
             {displayCount}
           </span>{' '}
-          {displayCount === 1 ? 'stock' : 'stocks'} this quarter, inverse-volatility weighted.{' '}
-          {isBand ? (
-            <>
-              Every pick scoring{' '}
-              <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> enters;
-              holdings stay while{' '}
-              <span className="font-mono tabular-nums">≥{holdBandMin!.toFixed(0)}</span>{' '}
-              (min <span className="font-mono tabular-nums">{rule.min_picks}</span>
-              {rule.max_picks === null ? (
-                <>, no cap).</>
-              ) : (
-                <>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).</>
-              )}
-
-            </>
-          ) : (
-            <>
-              Every pick scoring{' '}
-              <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> is
-              included (min <span className="font-mono tabular-nums">{rule.min_picks}</span>
-              {rule.max_picks === null ? (
-                <>, no cap).</>
-              ) : (
-                <>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).</>
-              )}
-            </>
-          )}
+          {displayCount === 1 ? 'stock' : 'stocks'} this quarter, inverse-volatility weighted.
           {topSector && (
             <>
               {' '}Top sector:{' '}
@@ -691,20 +647,19 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {' '}Return = total return since each holding entered the basket (sold names: through their exit rebalance).
         </p>
         {/* Grid header + rows share a common template:
-            Mobile (6 tracks, sector hidden): [1.25rem auto 1fr 4.25rem 2.75rem 4.5rem]
-            sm+ (7 tracks, sector visible):   [1.25rem auto auto 1fr 4.25rem 2.75rem 4.5rem]
-            Column order (DOM): # · Status · Ticker · Sector · Return · Weight · Change.
+            Mobile (5 tracks, sector hidden): [1.25rem auto 1fr 4.25rem 2.75rem]
+            sm+ (6 tracks, sector visible):   [1.25rem auto auto 1fr 4.25rem 2.75rem]
+            Column order (DOM): # · Status · Ticker · Sector · Return · Weight.
             The Sector cell carries `hidden sm:block`; a display:none grid child is
-            not placed, so mobile's 6 visible cells map cleanly to the 6 mobile tracks.
+            not placed, so mobile's 5 visible cells map cleanly to the 5 mobile tracks.
             Return track widened to 4.25rem so "−12.4%" fits cleanly. */}
-        <div className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem_4.5rem] border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+        <div className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem] border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span>#</span>
           <span>Status</span>
           <span>Ticker</span>
           <span className="hidden sm:block">Sector</span>
           <span className="text-right">Return</span>
           <span className="text-right">Weight</span>
-          <span className="text-right">Change</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
           {weightSortedHoldings.map((h, i) => {
@@ -715,7 +670,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             // it disagrees with the portfolio sense and HoldingsTimeline.
             const isHeld = priorHeldSet.has(h.ticker);
             return (
-              <li key={h.ticker} className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem_4.5rem] py-2">
+              <li key={h.ticker} className="grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem] py-2">
                 <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                   {i + 1}
                 </span>
@@ -759,12 +714,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {weightLabels[i]}
                 </span>
-                {(() => { const ch = weightChange(h.weight, data.priorWeights[h.ticker]); return (
-                  <span className={`flex items-center justify-between gap-1 font-mono text-xs tabular-nums ${ch.tone}`}>
-                    <span aria-hidden="true">{ch.arrow}</span>
-                    <span>{ch.text}</span>
-                  </span>
-                ); })()}
               </li>
             );
           })}
@@ -783,7 +732,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {soldRows.map((s, j) => (
             <li
               key={s.ticker}
-              className={`grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem_4.5rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem_4.5rem] py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
+              className={`grid items-center gap-2 grid-cols-[1.25rem_auto_1fr_4.25rem_2.75rem] sm:grid-cols-[1.25rem_auto_auto_1fr_4.25rem_2.75rem] py-2${j === 0 ? ' border-t border-t-slate-300 dark:border-t-slate-600' : ''}`}
             >
               <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
                 {weightSortedHoldings.length + j + 1}
@@ -822,12 +771,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 0.0%
               </span>
-              {(() => { const ch = weightChange(0, data.priorWeights[s.ticker]); return (
-                <span className={`flex items-center justify-between gap-1 font-mono text-xs tabular-nums ${ch.tone}`}>
-                  <span aria-hidden="true">{ch.arrow}</span>
-                  <span>{ch.text}</span>
-                </span>
-              ); })()}
             </li>
           ))}
         </ol>

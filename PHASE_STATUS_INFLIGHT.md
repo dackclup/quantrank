@@ -6854,6 +6854,24 @@ the Pydantic↔TS↔snapshot triple. No `schema_check` run required.
 
 Rankings/scores/defense layer: byte-identical (display-only change).
 
+**Follow-up (2026-06-23) — UI declutter on same branch**: Removed the
+redundant "Change" column (arrows + ±100% text) from the adaptive "Current
+picks" table — the Status chip (New/Held/Sold) already conveys the same
+information and competed visually with the colored Return column. Changes:
+- Dropped the trailing `_4.5rem` Change track from all three grid containers
+  (header, held/new `<li>`, sold `<li>`); mobile is now 5-track, sm+ 6-track.
+- Removed the `<span className="text-right">Change</span>` header cell.
+- Removed the Change-IIFE trailing cell from both held/new and sold `<li>`s.
+- Removed the now-unused `weightChange` helper function (and its doc comment)
+  after confirming zero remaining references (`grep weightChange` → 0 hits).
+- Trimmed the picks-card caption `<p>`: removed the score-threshold `isBand ?
+  (...) : (...)` clause (redundant with the larger basket-rule paragraph
+  above); kept the "AI-sized basket — N stocks this quarter,
+  inverse-volatility weighted." opener, the "Top sector: X — n of N." clause,
+  and the "Return = total return..." sentence.
+- No schema change; `data.priorWeights` field in `AiPickData` / `data.ts`
+  untouched (view-model field, harmless now unreferenced in this component).
+
 Lockstep: this entry.
 
 ---
