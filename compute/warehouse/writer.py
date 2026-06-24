@@ -251,13 +251,20 @@ def _update_manifest(
     ``<warehouse_dir>/_manifest.parquet`` with one row per run_date.
     On re-run the existing row is replaced (idempotent).
 
-    Manifest columns (stable set):
+    Manifest columns (stable set — backward-compat; new columns are additive):
         run_date: str (ISO)
         schema_version: str
         universe: str
         row_count: int
         part_path: str  (relative to warehouse_dir, POSIX)
+        metadata_json: str  (json-encoded full Metadata model — Gap 1)
+            Forward-safe: new Metadata fields flow through automatically
+            without needing a column-list edit on each schema bump.
+            Added additively so readers of old manifests can simply
+            expect the column to be absent and degrade to None.
     """
+    import json
+
     import pandas as pd
     import pyarrow as pa
     import pyarrow.parquet as pq
@@ -265,12 +272,24 @@ def _update_manifest(
     manifest_path = warehouse_dir / "_manifest.parquet"
     iso_str = run_date.isoformat()
 
+    # json-encode the full Metadata for forward-safe run-level capture (Gap 1).
+    try:
+        metadata_json_str: str | None = json.dumps(meta.model_dump(mode="json"))
+    except Exception as _enc_exc:  # noqa: BLE001
+        logger.warning(
+            "warehouse manifest: metadata serialisation failed (%s); "
+            "metadata_json will be null for this run",
+            _enc_exc,
+        )
+        metadata_json_str = None
+
     new_row = {
         "run_date": iso_str,
         "schema_version": meta.version,
         "universe": meta.universe,
         "row_count": row_count,
         "part_path": part_path.relative_to(warehouse_dir).as_posix(),
+        "metadata_json": metadata_json_str,
     }
 
     if manifest_path.exists():

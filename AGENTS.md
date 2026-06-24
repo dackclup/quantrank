@@ -710,8 +710,16 @@ export function FairPriceCard(props) {  // no types
     cross-source validation loop
     (`compute/ingest/cross_source.py:fetch_yfinance_market_cap`)
   - `QR_SKIP_WAREHOUSE=1` — skips the research-warehouse per-run PIT
-    snapshot write (`compute/main.py` Step 13.5;
-    `compute/warehouse/writer.py`); try/except non-fatal regardless.
+    snapshot write AND the portfolio/AI-pick capture (`compute/main.py`
+    Step 13.5 + 13.5b; `compute/warehouse/writer.py` +
+    `portfolio_writer.py`); try/except non-fatal regardless. The snapshot
+    `_manifest.parquet` now carries the full run-level `Metadata` as a
+    `metadata_json` string column (additive; inline scalar columns
+    retained; forward-safe). The portfolio writer persists the home
+    AI-pick artifact `backtest_pit.json` into committed
+    `data/warehouse/portfolio/year=/run_date=/part-0.parquet` +
+    `portfolio_manifest.parquet` (write-only offline research store —
+    static site never reads it from here; absent artifact → 0 rows).
     The Slice-2 max-history BACKFILL (`scripts/backfill_warehouse.py` +
     `backfill-warehouse.yml`) writes `row_provenance="pit_replay"` rows to
     the gitignored `data/warehouse/backfill/` (CI artifact, never committed;

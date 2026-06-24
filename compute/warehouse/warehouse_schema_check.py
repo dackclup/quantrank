@@ -53,6 +53,10 @@ from compute.warehouse.flag_registry import (
     KNOWN_VALUATION_WARNINGS,
 )
 from compute.warehouse.flatten import flatten_stock
+from compute.warehouse.portfolio_writer import (
+    PORTFOLIO_MANIFEST_COLUMNS,
+    PORTFOLIO_PARTITION_COLUMNS,
+)
 
 SNAPSHOT_PATH: Path = config.PROJECT_ROOT / "data" / "warehouse" / "warehouse_schema.json"
 
@@ -60,6 +64,14 @@ SNAPSHOT_PATH: Path = config.PROJECT_ROOT / "data" / "warehouse" / "warehouse_sc
 # Parquet schema — NOT part of the Pydantic↔TS↔snapshot triple).
 FILING_INDEX_SNAPSHOT_PATH: Path = (
     config.PROJECT_ROOT / "data" / "warehouse" / "filing_index_schema.json"
+)
+
+# Separate snapshot for the portfolio writer column sets (Gap 2).
+PORTFOLIO_PARTITION_SNAPSHOT_PATH: Path = (
+    config.PROJECT_ROOT / "data" / "warehouse" / "portfolio_partition_schema.json"
+)
+PORTFOLIO_MANIFEST_SNAPSHOT_PATH: Path = (
+    config.PROJECT_ROOT / "data" / "warehouse" / "portfolio_manifest_schema.json"
 )
 
 
@@ -278,6 +290,135 @@ def _write_filing_index_snapshot(columns: dict[str, str]) -> None:
     )
 
 
+def derive_portfolio_partition_columns() -> dict[str, str]:
+    """Return {column_name: dtype_hint} for the portfolio holdings partition.
+
+    All column types are derived from ``PORTFOLIO_PARTITION_COLUMNS`` in
+    ``portfolio_writer.py`` so the drift guard tracks changes there.
+    """
+    dtype_map: dict[str, str] = {}
+    for col in sorted(PORTFOLIO_PARTITION_COLUMNS):
+        if col.endswith("_json"):
+            dtype_map[col] = "str | None"
+        elif col in ("run_date", "rebalance_date", "ticker", "sector"):
+            dtype_map[col] = "str | None"
+        else:
+            # numeric (weight_default, composite_score, sigma_90d, mos_pct,
+            # adaptive_count) → float | None
+            dtype_map[col] = "float | None"
+    return dtype_map
+
+
+def derive_portfolio_manifest_columns() -> dict[str, str]:
+    """Return {column_name: dtype_hint} for the portfolio manifest Parquet.
+
+    All column types are derived from ``PORTFOLIO_MANIFEST_COLUMNS`` in
+    ``portfolio_writer.py``.
+    """
+    dtype_map: dict[str, str] = {}
+    for col in sorted(PORTFOLIO_MANIFEST_COLUMNS):
+        if col.endswith("_json") or col in ("run_date", "artifact_path"):
+            dtype_map[col] = "str | None"
+        else:
+            # rebalance_count → float | None (stored as float64 for nullable safety)
+            dtype_map[col] = "float | None"
+    return dtype_map
+
+
+def _load_portfolio_snapshot(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        print(f"ERROR: could not read portfolio snapshot {path}: {exc}", file=sys.stderr)
+        return {}
+
+
+def _write_portfolio_snapshot(path: Path, columns: dict[str, str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    snapshot = {"columns": columns}
+    path.write_text(
+        json.dumps(snapshot, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(f"Portfolio snapshot written to {path} ({len(columns)} columns)")
+
+
+def _check_portfolio_schema_file(
+    path: Path,
+    derive_fn,
+    label: str,
+    *,
+    update: bool = False,
+) -> int:
+    """Generic check/update for a single portfolio snapshot JSON.
+
+    Returns 0 on success/in-sync, 1 on drift, 2 on unexpected error.
+    """
+    try:
+        columns = derive_fn()
+    except Exception as exc:  # noqa: BLE001
+        print(f"ERROR: failed to derive {label} columns: {exc}", file=sys.stderr)
+        return 2
+
+    if update:
+        _write_portfolio_snapshot(path, columns)
+        return 0
+
+    snapshot = _load_portfolio_snapshot(path)
+    committed_cols: dict[str, str] = snapshot.get("columns", {})
+
+    added = {k: v for k, v in columns.items() if k not in committed_cols}
+    removed = {k: v for k, v in committed_cols.items() if k not in columns}
+    changed = {
+        k: (committed_cols[k], columns[k])
+        for k in columns
+        if k in committed_cols and columns[k] != committed_cols[k]
+    }
+
+    if not added and not removed and not changed:
+        print(f"OK: {label} schema in sync ({len(columns)} columns, {path})")
+        return 0
+
+    print(f"DRIFT: {label} column schema has changed.", file=sys.stderr)
+    if added:
+        print(f"  Added ({len(added)}): {sorted(added)}", file=sys.stderr)
+    if removed:
+        print(f"  Removed ({len(removed)}): {sorted(removed)}", file=sys.stderr)
+    if changed:
+        for col, (old, new) in sorted(changed.items()):
+            print(f"  Changed dtype: {col}: {old!r} → {new!r}", file=sys.stderr)
+    print(
+        "\nFix: run `python -m compute.warehouse.warehouse_schema_check --update` "
+        f"to regenerate {path}, then commit the diff.",
+        file=sys.stderr,
+    )
+    return 1
+
+
+def check_portfolio_schema(*, update: bool = False) -> int:
+    """Verify or regenerate the portfolio writer column snapshots.
+
+    Checks both the holdings partition schema and the portfolio manifest schema.
+
+    Returns 0 if both are in sync, 1 if either drifts, 2 on unexpected error.
+    """
+    rc_partition = _check_portfolio_schema_file(
+        PORTFOLIO_PARTITION_SNAPSHOT_PATH,
+        derive_portfolio_partition_columns,
+        "portfolio_partition",
+        update=update,
+    )
+    rc_manifest = _check_portfolio_schema_file(
+        PORTFOLIO_MANIFEST_SNAPSHOT_PATH,
+        derive_portfolio_manifest_columns,
+        "portfolio_manifest",
+        update=update,
+    )
+    return max(rc_partition, rc_manifest)
+
+
 def check_filing_index_schema(*, update: bool = False) -> int:
     """Verify or regenerate the filing-index column snapshot.
 
@@ -376,6 +517,8 @@ def main(argv: list[str] | None = None) -> int:
         _write_snapshot(columns)
         # Also regenerate the filing-index snapshot on --update.
         check_filing_index_schema(update=True)
+        # Also regenerate the portfolio writer snapshots on --update.
+        check_portfolio_schema(update=True)
         return 0
 
     # Compare against committed snapshot.
@@ -394,7 +537,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"OK: warehouse schema in sync ({len(columns)} columns, {SNAPSHOT_PATH})")
         # Also verify the filing-index snapshot is in sync.
         fi_rc = check_filing_index_schema(update=False)
-        return fi_rc
+        # Also verify the portfolio writer snapshots are in sync.
+        po_rc = check_portfolio_schema(update=False)
+        return max(fi_rc, po_rc)
 
     print("DRIFT: warehouse flat-column schema has changed.", file=sys.stderr)
     if added:

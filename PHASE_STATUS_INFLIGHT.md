@@ -6937,3 +6937,48 @@ fires ×2 / S3 premium-P/E or empty-panel does-not-fire ×3 / S4 live single-leg
 data-scientist evidence + compute-builder BUILT-CLEAN; quantrank-reviewer at the push gate.
 
 ---
+
+## PR (TBD) — feat(compute): warehouse coverage extension — full Metadata + AI-pick portfolio capture (in flight, 2026-06-24)
+
+Branch `claude/warehouse-home-ai-data-353brg`. Closes two confirmed warehouse coverage
+gaps surfaced by a data-pipeline audit (the warehouse captured per-ticker rankings/scoring
+in full but persisted only 5 manifest fields and ZERO portfolio/AI-pick state). Extends
+`compute/warehouse/` in two directions:
+
+1. **Full-run Metadata persistence** — `_manifest.parquet` now stores the complete
+   run-level `Metadata` as an additive `metadata_json` string column
+   (`model_dump(mode="json")`). The prior inline scalar columns are retained; the JSON
+   blob is forward-safe (future `Metadata` fields flow through with no column-list edit);
+   serialization failure degrades to `None` + warning. `warehouse_schema_check.py` +
+   the regenerated `warehouse_schema.json` baseline track the new column.
+
+2. **AI-pick portfolio artifact capture** — new `compute/warehouse/portfolio_writer.py`
+   reads the home AI-pick artifact `frontend/public/data/portfolio/backtest_pit.json` at
+   Step 13.5b and writes per-rebalance×holding rows (incl. `weight_default` +
+   `holding_json`/`rebalance_json` blobs) into a committed Hive partition
+   `data/warehouse/portfolio/year=/run_date=/part-0.parquet` + a flat
+   `portfolio_manifest.parquet` (run-level meta/nav blobs). `.gitignore` whitelists both;
+   guarded by `warehouse_schema_check.py`'s own `portfolio_partition_schema.json` (11 cols)
+   + `portfolio_manifest_schema.json` (5 cols) baselines. Write-only/offline research store
+   — the static site NEVER reads it from the warehouse. Absent/malformed artifact degrades
+   to 0 rows (never raises); `QR_SKIP_WAREHOUSE=1` skips it alongside the snapshot; the
+   Step-13.5b try/except keeps it non-fatal so it never blocks the cron.
+
+Schema triple (`schemas.py` / `types.ts` / `schema-snapshot.json`) UNTOUCHED — the
+warehouse is guarded by its own drift checker, not the Pydantic↔TS↔snapshot triple.
+Defense layer UNCHANGED at 36. NO schema-version bump (warehouse is not the Pydantic
+triple). Rankings/scores/flags BYTE-IDENTICAL (write-only observability extension).
+21 new tests (`tests/test_warehouse/test_warehouse_new_gaps.py`: M1-M4 manifest metadata,
+P1-P13 portfolio writer + graceful no-op + drift).
+
+Lockstep: this entry + CLAUDE.md §Gotchas warehouse bullet (manifest-Metadata +
+portfolio-capture sentences appended) + AGENTS.md `QR_SKIP_WAREHOUSE=1` block (mirror)
+updated in parallel.
+
+Verify: ruff clean · `pytest -m "not network"` 2901 passed / 10 skipped (pre-existing
+network skips) · `python -m compute.warehouse.warehouse_schema_check` IN SYNC (warehouse
+129 / filing_index 10 / portfolio_partition 11 / portfolio_manifest 5). Gate:
+quantrank-reviewer READY-TO-PUSH (6/6 invariants, 0 FAIL, 4 non-blocking WARN);
+phase-coordinator Mode B lockstep satisfied by this entry + the two doc diffs.
+
+---
