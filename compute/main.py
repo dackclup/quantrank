@@ -3693,6 +3693,31 @@ def run_weekly_compute() -> int:
                 _wh_exc,
             )
 
+        # --- Step 13.5b — Portfolio / AI-pick warehouse capture (Gap 2).
+        # Reads backtest_pit.json (written earlier in the cron by the PIT-backtest
+        # refresh) and persists its basket composition into
+        # data/warehouse/portfolio/year=<YYYY>/run_date=<ISO>/part-0.parquet
+        # plus a portfolio_manifest.parquet with json-encoded meta/nav blobs.
+        # Graceful: absent artifact → log warning + return 0 (never blocks cron).
+        try:
+            from compute.warehouse.portfolio_writer import write_portfolio_snapshot
+
+            _wh_portfolio_count = write_portfolio_snapshot(
+                run_date=now.date(),
+                warehouse_dir=config.WAREHOUSE_DIR,
+            )
+            logger.info(
+                "Research warehouse portfolio: wrote %d holding rows (run_date=%s)",
+                _wh_portfolio_count,
+                now.date().isoformat(),
+            )
+        except Exception as _wh_po_exc:  # noqa: BLE001
+            logger.warning(
+                "Research warehouse portfolio write failed (non-fatal — cron continues); "
+                "portfolio snapshot skipped. Error: %s",
+                _wh_po_exc,
+            )
+
     # Best-effort RSS memory log (psutil is not a hard requirement; production
     # still runs without it).
     try:

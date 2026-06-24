@@ -236,6 +236,12 @@ models/
 # SEC filing pointer index (Slice 1) — forward partitions committed alongside
 # snapshots so the filing panel accumulates in-repo (same pattern as snapshots).
 !data/warehouse/filing_index/**/*.parquet
+# Portfolio / AI-pick warehouse (Gap 2) — per-run holding rows + portfolio manifest.
+# Forward partitions and the flat manifest are COMMITTED so the basket-composition
+# panel accumulates in-repo (same pattern as snapshots + filing_index).
+# Backfill-only artifacts (data/warehouse/backfill/) stay ignored per *.parquet above.
+!data/warehouse/portfolio/**/*.parquet
+!data/warehouse/portfolio_manifest.parquet
 .DS_Store
 # Phase-8 scout raw outputs (only report.md gets committed later)
 scout_out/
