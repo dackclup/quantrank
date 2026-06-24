@@ -126,6 +126,12 @@ closed-PR prose lives in §Chronological history.)
 
 ## Chronological history
 
+## 2026-06-24 — frontend home UX: Current-picks Return column + Performance Total-return footer (#596)
+
+Schema now **`0.10.33-phase8pilot`** on `main` (`compute/config.py`) — bumped by two intervening compute PRs, both annotate/shadow-only with defense UNCHANGED at 36: **#590** (`0.10.32`, squash `54cb5bcb`, issue #587 — Rule-18 counter `Metadata.extreme_estimate_majority_lowapp_count` for the `extreme_estimate_majority` low-applicability floor, RE-BASE-WITH-FLOOR) then **#588** (`0.10.33`, squash `d3058434`, issue #586 — two-factor `value_trap_risk` shadow counter `Metadata.value_trap_risk_two_factor_shadow_count`, LSV 1994 second leg; live `valuation_warnings` BYTE-IDENTICAL). Those two get their own full §entry at the next complete Mode C — anchored here only for the current-schema record (Minimal reconciliation scope).
+
+- **#596** (squash `ca4b95a5`): feat(frontend): **Current-picks Return column + Performance Total-return footer** — frontend-only, display-only. The adaptive "Current picks" table replaces the **Score** column with a **Return** column (total return since entry; held/new = entry→today, sold = entry→exit) and drops the redundant **Change** column + arrows + the now-unused `weightChange` helper. `PerformanceTable`'s since-inception row renamed "Max"→"Total return" and broken into a highlighted `<tfoot>` (`border-t-2` + `bg-slate-50`, bold portfolio value) mirroring `AnnualReturnsTable`'s CAGR footer. `frontend/lib/data.ts` extends the `entryCloses`/`lastCloses` price-coverage loop to prior-basket tickers so sold-row return (entry→exit) is computable. `entryCloses`/`lastCloses`/`latestScores`/`priorWeights` are frontend-only view-model fields — NOT the Pydantic↔TS↔snapshot triple. Rankings/scores/flags byte-identical; defense UNCHANGED at 36; NO schema change from #596 itself. tsc + next build clean.
+
 ## 2026-06-22 — S&P 1500 cutover Slice 8 complete; schema 0.10.31; v2.0-ready
 
 All Phase 8 acceptance criteria (WORKFLOW.md §8 checklist) are met. The Slice 8 hardening cluster landed in a batch merge 2026-06-22, closing the last open gates before the `v2.0.0-phase8` tag. Two additive schema bumps (#564 Bonferroni 0.10.29→0.10.30, #565 Security-type 0.10.30→0.10.31) plus a set of no-schema-bump frontend / ingest / warehouse / CI merges.
