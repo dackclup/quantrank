@@ -6897,3 +6897,43 @@ cards read as a family. Presentation only; row values unchanged.
 Lockstep: this entry.
 
 ---
+
+## PR (TBD) — feat(compute): value_trap_risk two-factor LSV shadow counter (in flight, 2026-06-23)
+
+Issue #586 PR-1 (shadow). The live `value_trap_risk` annotate over-fires on **36.4%** of the
+S&P 1500 (`Metadata.value_trap_risk_count_with_sector_coe = 548`) vs a < 10% academic band,
+because it fires on a SINGLE leg — Penman 2013 `avg_3y_roe <= Ke` (a RIM-applicability condition
+*misnamed* as an LSV value-trap signal). The over-fire is dominated by loss-making / pre-revenue
+growth (IT 50% / Health Care 50% fire rate) whose ROE is structurally negative — the opposite of
+an LSV cheap-and-deteriorating trap. methodology-scientist RATIFY-WITH-AMENDMENT: add the LSV 1994
+"cheap" leg — emit the warning only when ROE<=Ke AND trailing P/E (eps_ttm>0) is below the stock's
+sector-peer median P/E; loss-making/undefined-P/E firms are EXEMPT. data-scientist measured the
+two-factor P/E gate at ~10.2%; literature-searcher confirmed AF-2013 ("Devil in HML's Details")
+carries zero value-trap content (drop from the SKILL.md anchor) and LSV-1994 substantiates a
+5-12% tail band.
+
+This PR ships OBSERVABILITY-ONLY (Rule 18): new `Metadata.value_trap_risk_two_factor_shadow_count:
+int | None` counts the two-factor gate WITHOUT touching live emission — live `valuation_warnings`
+for every ticker is BYTE-IDENTICAL (the shadow gate is a strict subset of the live single-leg
+count). Schema bump `0.10.31` -> `0.10.32-phase8pilot` (schema triple in lockstep:
+schemas.py + types.ts + snapshot regen, `schema_check` IN SYNC). `check_rim_applicability`
+docstring rewritten to separate the (unchanged) Penman RIM method-skip from the legacy single-leg
+warning and the shadow two-factor gate. The RIM method-skip at `<= Ke` is UNCHANGED (correct
+Penman). Defense layer UNCHANGED at 36 (shadow counter, not a flag).
+
+Rollout gate: a follow-up PR-2 flips the live emission to the two-factor gate ONLY after >=1
+sp1500 cron confirms the shadow count lands in the 5-12% band (75-180 names), and reconciles the
+quarterly-cohort-audit SKILL.md + docs/METHODOLOGY.md to a single LSV-1994 anchor + 5-12% band
+(dropping the unsubstantiated Asness-Frazzini 2013 cite). Warehouse `flatten.py` ROE-trajectory
+diagnostics (`diag_avg_3y_roe` / `diag_roe_3y_slope` / `diag_pe_ttm` / `diag_sector_median_pe`)
+were SCOPED OUT of PR-1 (all-None stubs would land an unstable NoneType warehouse dtype — same
+class as the #570 dtype-lock fix); they ship in the wiring PR with real float64 values.
+
+Verify: ruff clean · `schema_check` IN SYNC · `tsc --noEmit` clean · `pytest tests/test_valuation/
+tests/test_warehouse/ tests/test_config.py tests/test_output/test_schema_check.py -m "not network"`
+446 passed (+13 new `test_value_trap_shadow.py`: S1 loss-maker-exempt ×4 / S2 cheap-below-hurdle
+fires ×2 / S3 premium-P/E or empty-panel does-not-fire ×3 / S4 live single-leg warning unchanged
+×4). Gates: methodology-scientist RATIFY-WITH-AMENDMENT + literature-searcher CITATION-CONFIRMED +
+data-scientist evidence + compute-builder BUILT-CLEAN; quantrank-reviewer at the push gate.
+
+---

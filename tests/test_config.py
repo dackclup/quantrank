@@ -164,6 +164,21 @@ def test_schema_version_pinned():
       zero new network round-trips.  Graceful degradation to None when the
       price DataFrame is unavailable or missing Close/Volume column.
 
+    value_trap_risk two-factor shadow counter (0.10.33-phase8pilot, issue #586,
+    Rule 18 observability-before-wiring) — adds one additive nullable field:
+    - ``Metadata.value_trap_risk_two_factor_shadow_count: int | None`` — counts
+      tickers satisfying the methodology-ratified two-factor LSV gate (live
+      ROE<=Ke AND eps_ttm > 0 AND ticker P/E < sector-peer median P/E).  SHADOW
+      ONLY: the live ``value_trap_risk`` warning still emits on the single-leg
+      ROE<=Ke condition; scores/flags/rankings byte-identical.  Methodology
+      gate: confirm the shadow firing rate lands in the 5-12% LSV band on >=1
+      sp1500 cron before flipping the live emission to the second leg.
+
+    Prior version (0.10.32-phase8pilot, issue #587): ``extreme_estimate_majority``
+    low-applicability floor shadow counter (``Metadata.extreme_estimate_majority_
+    lowapp_count``) — RE-BASE-WITH-FLOOR recalibration; annotate-only, defense
+    layer UNCHANGED at 36.
+
     Security-type signal PR-1 (0.10.31-phase8pilot, roadmap item #5 / 7b,
     Rule 18 observability-first) — adds two additive nullable fields:
     - ``Metadata.security_type_coverage_pct: float | None`` — % of the ranked
@@ -185,7 +200,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.32-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.33-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

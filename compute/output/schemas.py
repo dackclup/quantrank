@@ -791,6 +791,37 @@ class Metadata(BaseModel):
     # unreconciled) — the veto nulls the ensemble after the warning was captured,
     # so the total still counts it but this delta does not. ~0 expected overlap.
     extreme_estimate_majority_lowapp_count: int | None = None
+    # Two-factor value_trap_risk shadow counter (issue #586 RATIFY-WITH-AMENDMENT,
+    # 0.10.33-phase8pilot, Rule 18 observability-before-wiring).
+    #
+    # Background: the LIVE ``value_trap_risk`` warning fires whenever RIM is
+    # skipped under the Penman 2013 ``ROE ≤ Ke`` condition (single-leg gate).
+    # The methodology-scientist RATIFY-WITH-AMENDMENT verdict adds a SECOND LEG
+    # (LSV 1994 "Contrarian Investment" §3): the P/E must also be below the
+    # stock's sector-peer median P/E.  A firm with ROE < Ke but a premium P/E
+    # relative to its sector peers is NOT a classic value trap — it may be a
+    # growth company priced above peers with sub-hurdle trailing ROE.
+    #
+    # This counter measures the universe-wide two-factor firing rate WITHOUT
+    # changing any live emission.  The shadow gate fires iff:
+    #   (a) the live single-leg condition fires  (ROE ≤ Ke)
+    #   AND
+    #   (b) eps_ttm > 0 (positive trailing earnings, so P/E is defined)
+    #   AND
+    #   (c) P/E (= current_price / eps_ttm) < sector-peer median P/E
+    # A loss-making / pre-revenue growth stock (eps_ttm ≤ 0, P/E undefined)
+    # is EXEMPT from the two-factor gate and does NOT count.
+    #
+    # Live ``valuation_warnings`` content for every ticker is byte-identical
+    # to pre-0.10.33: the old single-leg ``value_trap_risk`` still emits on
+    # the ``ROE ≤ Ke`` condition alone.  The shadow counter is the ONLY change.
+    #
+    # Nullable on legacy snapshots (pre-0.10.33).  None when the per-stock
+    # loop was skipped or failed.  Zero is a valid value (counter ran,
+    # no tickers fired the two-factor gate).  Methodology-scientist gate:
+    # the ratio of this counter to ``value_trap_risk_count_with_sector_coe``
+    # measures the incremental specificity gain from the second leg.
+    value_trap_risk_two_factor_shadow_count: int | None = None
 
 
 class RawMetrics(BaseModel):
