@@ -809,11 +809,16 @@ class Metadata(BaseModel):
     # A loss-making / pre-revenue growth stock (eps_ttm ≤ 0, P/E undefined)
     # is EXEMPT from the two-factor gate and does NOT emit the warning.
     #
-    # This counter now equals the live warning count (it was formerly a shadow
-    # counter that diverged from the live single-leg count).  It is kept for
-    # one additional cron as a structural cross-check — the difference between
-    # this value and ``value_trap_risk_count_with_sector_coe`` should be ~0
-    # after the flip (both count the same two-factor firings now).
+    # This counter now equals the LIVE ``value_trap_risk`` warning count
+    # (the two-factor firings, ~155 on the first sp1500 cron).  It is kept for
+    # one additional cron as a structural cross-check.  NOTE: it does NOT
+    # equal ``value_trap_risk_count_with_sector_coe`` (~548) — that field is
+    # the Issue-#67 SINGLE-LEG RIM-skip diagnostic (counts every ROE ≤ Ke
+    # firm under the sector CoE, the Penman superset), which is a STRICT
+    # SUPERSET of this two-factor count.  The expected gap is ~393 (the
+    # single-leg-only firms the LSV cheap leg now exempts — predominantly
+    # loss-making / above-median-P/E growth names), NOT ~0.  A post-cron
+    # auditor cross-checking these two counters should expect that ~393 delta.
     #
     # Nullable on legacy snapshots (pre-0.10.33).  None when the per-stock
     # loop was skipped or failed.  Zero is a valid value (no tickers fired).

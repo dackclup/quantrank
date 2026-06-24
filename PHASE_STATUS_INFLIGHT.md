@@ -7044,6 +7044,11 @@ Schema `0.10.33` → `0.10.34-phase8pilot` (version-only bump, NO new field; tri
 the emitted two-factor warning (155); NOT renamed (the #67 CoE-effect diagnostic is still
 meaningful). Defense layer UNCHANGED at 36 (value_trap_risk was already an annotate; this changes
 WHICH gate triggers it, not its annotate status). RANK / scores unaffected (annotate, rank-neutral).
+RIPPLE (intended, rank-neutral): `value_trap_risk` feeds `VALUE_TRAP_PENALTY` into
+`derive_loss_chance`, so the ~393 stocks dropping out of the firing set lose that penalty → their
+displayed `loss_chance_pct` shifts down this cron (`loss_chance_pct` is display-derived;
+`composite_score` is pre-computed and unaffected). Post-cron `stock-detail-auditor` should treat
+this one-time `loss_chance_pct` shift as the expected flip effect, NOT data drift.
 
 Docs reconciled (methodology-scientist RATIFY-WITH-AMENDMENT + literature-searcher
 CITATION-CONFIRMED): `quarterly-cohort-audit/SKILL.md` anchor → LSV-1994 + Penman-2013, band →

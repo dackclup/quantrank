@@ -2868,6 +2868,15 @@ def run_weekly_compute() -> int:
         # value_trap_risk_two_factor_shadow_count is kept for one additional
         # cron as a structural cross-check (it now equals the live count);
         # documented in Metadata.value_trap_risk_two_factor_shadow_count docstring.
+        #
+        # RIPPLE: value_trap_risk feeds VALUE_TRAP_PENALTY into derive_loss_chance
+        # (scoring/loss_chance.py), so the ~393 stocks that DROP out of the firing
+        # set under the two-factor gate also LOSE that loss-chance penalty — their
+        # displayed loss_chance_pct shifts down this cron. Intended + rank-neutral
+        # (loss_chance_pct is display-derived; composite_score is passed in
+        # pre-computed and is unaffected). A post-cron stock-detail-auditor should
+        # treat this one-time loss_chance_pct shift as the expected flip effect,
+        # NOT data drift.
         if (
             not _rim_sector.applicable
             and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
