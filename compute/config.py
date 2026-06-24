@@ -596,18 +596,33 @@ INTEGER_RATIO_TOLERANCE: float = POST_SPLIT_RATIO_TOLERANCE  # 0.10
 
 # --- S&P 1500 Slice 4: ADV liquidity backstop (annotate-first, defense 36) ---
 # Ships as ANNOTATE ONLY per Rule 16 / ``portable-annotate-before-veto``.
-# Veto promotion requires ≥ 1 cron of firing-rate data + methodology ratification
-# (WORKFLOW.md §8.6 "Liquidity backstop").
+# PRE-REGISTERED PROMOTION PLAN (issue #544, methodology-scientist RATIFY-WITH-
+# CONDITIONS 2026-06-23): keep this $5M ``ADV_FLOOR_USD`` as the ANNOTATE cutoff
+# and add a SEPARATE, stricter ``ADV_VETO_FLOOR_USD = 3_000_000`` veto floor at
+# the Q3 2026-08-19 cohort audit. NOT WIRED YET — this is a docs-only pre-
+# registration; the live veto constant + cautious/Top-5 suppression land in the
+# Q3 promotion PR. A $3M veto flips only the genuinely un-tradeable tail
+# (BFS/CENT/SBSI) to ``cautious`` while $4.6-5.0M names keep the softer $5M
+# annotate. Promotion is gated on acceptance bands B1-B5 (docs/METHODOLOGY.md
+# §low_liquidity): firing rate ∈ [3,15], ≤30% population churn, ZERO fired names
+# in rank ≤ 10 / the AI-pick basket (HARD gate), ADV coverage ≥ 99%, ≥ 8 sp1500
+# crons (5 observed 2026-06-23, set {BFS,CENT,CPF,SBSI,SMP}, 0% churn). The veto
+# is an INVESTABILITY filter, NOT an alpha claim — illiquidity carries a return
+# PREMIUM (Amihud 2002), so the hard-suppress means "un-tradeable for this
+# audience", an owner-policy call ratified for Q3 (WORKFLOW.md §8.6).
 #
 # Academic anchor: Amihud 2002 *J. Financial Markets* "Illiquidity and stock
 # returns" — dollar volume (price × shares) IS the denominator of the Amihud
 # ILLIQ ratio, so this guard sits squarely in the illiquidity-premium family
 # (see also Amihud-Mendelson 1986; Kyle 1985 price-impact). The $5M/day figure
 # is a CALIBRATION CONVENTION at the conservative end of the institutional
-# ADDV-floor band ($1M-$5M), NOT a cutoff lifted from any paper table — it is
-# to be empirically RE-DERIVED from the realized sp600 ADV distribution at veto
-# promotion (methodology-scientist RATIFY-SHADOW, S&P 1500 Slice 4). Below this
-# scale, market-impact noise dominates any fundamental signal.
+# ADDV-floor band ($1M-$5M), NOT a cutoff lifted from any paper table. It was
+# RE-DERIVED 2026-06-23 from the realized sp600 ADV distribution (n=602:
+# p0.5≈$4.64M, p1≈$5.05M, p2.5≈$6.30M, median≈$31.5M) — the $5M annotate sits at
+# ≈ sp600 p0.8, and the pre-registered $3M veto floor matches the natural break
+# below the BFS/CENT/SBSI cluster (methodology-scientist RATIFY-WITH-CONDITIONS,
+# issue #544, S&P 1500 Slice 4). Below this scale, market-impact noise dominates
+# any fundamental signal.
 #
 # ``ADV_FLOOR_USD``: minimum acceptable 30-day mean dollar volume.
 # ``ADV_LOOKBACK_DAYS``: trailing trading-day window for the mean.

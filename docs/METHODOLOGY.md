@@ -193,12 +193,36 @@ composite.
   *J. Financial Markets* (dollar volume is the ILLIQ denominator;
   Amihud-Mendelson 1986, Kyle 1985 price-impact). The $5M figure is a
   calibration convention at the conservative end of the institutional
-  ADDV-floor band — NOT a paper-table cutoff; to be empirically
-  re-derived from the realized sp600 ADV distribution before any veto
-  promotion. Dormant (~0 fires) on the current sp900 universe; lights up
-  on S&P 600 small-caps. Annotate-only (in `valuation_warnings`, not
-  `risk_flags`): rank-neutral, no `cautious`, no Top-5 suppression, no
-  `manipulation_index` weight. methodology-scientist RATIFY-SHADOW.
+  ADDV-floor band — NOT a paper-table cutoff. Annotate-only (in
+  `valuation_warnings`, not `risk_flags`): rank-neutral, no `cautious`,
+  no Top-5 suppression, no `manipulation_index` weight. Fires on ~5 sp600
+  small-caps per sp1500 cron (the cron default flipped to sp1500
+  2026-06-21); was dormant on the prior sp900 universe.
+
+  **Pre-registered annotate→veto promotion (issue #544, methodology-scientist
+  RATIFY-WITH-CONDITIONS 2026-06-23 — DOCS-ONLY, not yet wired).** The $5M
+  `ADV_FLOOR_USD` annotate cutoff was re-derived against the realized sp600
+  ADV distribution (n=602: p0.5 ≈ $4.64M, p1 ≈ $5.05M, p2.5 ≈ $6.30M, median
+  ≈ $31.5M; the $5M floor sits at ≈ sp600 p0.8). Promotion plan: keep $5M as
+  the broad **annotate** and add a separate, stricter **veto** floor
+  `ADV_VETO_FLOOR_USD = $3M` at the **Q3 2026-08-19 cohort audit** — a $3M
+  veto flips only the genuinely un-tradeable tail (BFS/CENT/SBSI) to
+  `cautious` + Top-5 suppression, while the $4.6-5.0M band (SMP/CPF) retains
+  the softer annotate. The veto is an **investability filter, NOT an alpha
+  claim** — illiquidity carries a return *premium* (Amihud 2002), so the
+  hard-suppress asserts "un-tradeable for this audience", an owner-policy
+  decision (sign-off required, not a silent auto-promote). Acceptance bands
+  the promotion must clear (lock before 2026-08-19):
+  - **B1 · Firing rate** — sp1500 `low_liquidity_annotate_count` ∈ [3, 15]
+    (≤ 1.0% of sp1500 / ≤ 2.5% of sp600). Observed: 5 (0.33%).
+  - **B2 · Population stability** — fired-set ticker churn ≤ 30% cron-over-cron.
+    Observed: 0% across 5 sp1500 crons ({BFS, CENT, CPF, SBSI, SMP}).
+  - **B3 · Top-N blast radius** — ZERO fired names within rank ≤ 10 OR in the
+    AI-pick basket at promotion (HARD gate). Observed: 0 (closest BFS, rank 257).
+  - **B4 · Coverage** — `average_dollar_volume` non-null ≥ 99% of sp1500.
+    Observed: 99.93% (1503/1504).
+  - **B5 · Cron count** — ≥ 8 full-sp1500 crons of firing data at promotion.
+    Observed: 5 as of 2026-06-23 (~3 more weekday crons → mid-July).
 - `value_trap_risk` — RIM was skipped because ROE < cost of equity
 - `extreme_<method>_estimate` — one of the 6 methods (`graham`,
   `multiples_pe`, `multiples_pb`, `multiples_ev_ebitda`, `rim`, `dcf`)

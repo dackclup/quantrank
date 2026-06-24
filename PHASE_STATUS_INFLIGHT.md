@@ -6982,3 +6982,39 @@ quantrank-reviewer READY-TO-PUSH (6/6 invariants, 0 FAIL, 4 non-blocking WARN);
 phase-coordinator Mode B lockstep satisfied by this entry + the two doc diffs.
 
 ---
+
+---
+
+## PR (low-liquidity-preregister) — pre-register the `low_liquidity` annotate→veto promotion plan (issue #544, DOCS-ONLY, in flight, 2026-06-23)
+
+methodology-scientist evaluated #544 and returned **RATIFY-WITH-CONDITIONS**:
+the promotion gate is satisfied (5 full-sp1500 crons of firing data,
+`low_liquidity_annotate_count`=5 stable, set {BFS,CENT,CPF,SBSI,SMP}, 0% churn,
+blast radius = 5 deep-table names changing ZERO badges) but a low-ADV veto
+suppresses names that carry an Amihud-2002 illiquidity *premium*, so it is an
+**investability-policy** veto requiring owner sign-off — NOT a silent
+auto-promote. Owner chose **pre-register now, promote at the Q3 2026-08-19
+cohort audit**.
+
+This PR is **DOCS-ONLY** — it changes NO scoring, adds NO live veto constant,
+mutates NO rankings. It records the pre-registered plan + acceptance bands so
+the Q3 promotion has a clean ratification record:
+
+- `docs/METHODOLOGY.md` §low_liquidity — full pre-registration block: re-derived
+  sp600 ADV distribution (p0.5≈$4.64M / p1≈$5.05M / p2.5≈$6.30M; $5M floor at
+  ≈ sp600 p0.8), the annotate-$5M / veto-$3M two-tier design, and acceptance
+  bands B1-B5.
+- `compute/config.py` — ADV provenance comment updated from "RATIFY-SHADOW /
+  to-be-re-derived" to the ratified pre-registration (still annotate-only; the
+  live `ADV_VETO_FLOOR_USD` constant + cautious/Top-5 wiring land in the Q3 PR).
+- CLAUDE.md + AGENTS.md §Gotchas / deferred — lockstep note on the pre-registered
+  plan.
+
+Acceptance bands a future PROMOTE must clear (locked here): **B1** firing ∈
+[3,15] · **B2** ≤30% population churn · **B3** ZERO fired in rank ≤ 10 / AI-pick
+basket (HARD gate) · **B4** ADV coverage ≥ 99% · **B5** ≥ 8 sp1500 crons (5
+observed). Veto cutoff at promotion: `ADV_VETO_FLOOR_USD = $3M` (flips only the
+BFS/CENT/SBSI tail; $4.6-5.0M band keeps the $5M annotate).
+
+NO schema change. Defense layer UNCHANGED at 36 (the veto does not exist yet).
+Lockstep: this entry + CLAUDE.md + AGENTS.md substance diffs. Gate: docs-reviewer.
