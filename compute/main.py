@@ -2847,47 +2847,65 @@ def run_weekly_compute() -> int:
                 value_trap_risk_count_with_sector_coe_by_sector.get(sector, 0) + 1
             )
 
-        # Two-factor value_trap_risk shadow gate (0.10.32-phase8pilot, Rule 18).
-        # SHADOW ONLY — live valuation_warnings are NOT touched here.
-        # Gate: (a) live ROE≤Ke skip fires (reuse _rim_sector from above, which
-        # uses the same sector Ke the live path uses post-USE_SECTOR_COE flip)
-        # AND (b) eps_ttm > 0 (positive earnings, P/E is defined)
-        # AND (c) ticker P/E < sector-peer median P/E from universe_metrics.
-        # Loss-making firms (eps_ttm ≤ 0) are EXEMPT — does NOT count.
+        # Two-factor value_trap_risk LIVE gate (issue #586 PR-2, 0.10.34-phase8pilot).
+        # FLIPPED from SHADOW to LIVE: the first sp1500 cron confirmed
+        # value_trap_risk_two_factor_shadow_count = 155 (10.3% of 1504),
+        # squarely in the methodology-ratified 5-12% LSV band.  Acceptance
+        # gate cleared; the two-factor gate is now the live emission.
+        #
+        # The warning is emitted HERE (main.py), NOT in ensemble.py, because
+        # the P/E cross-sectional comparison requires sector_panel +
+        # universe_metrics which are only in scope in this per-ticker loop.
+        # ensemble.py no longer appends "value_trap_risk" (PR-2 change).
+        #
+        # Gate (identical to the former shadow gate):
+        #   (a) live ROE≤Ke skip fires (reuses _rim_sector from above, same
+        #       sector Ke as the live path post-USE_SECTOR_COE flip)
+        #   (b) eps_ttm > 0 (positive earnings, P/E defined)
+        #   (c) ticker P/E < sector-peer median P/E from universe_metrics
+        # Loss-making firms (eps_ttm ≤ 0) are EXEMPT — does NOT emit.
+        #
+        # value_trap_risk_two_factor_shadow_count is kept for one additional
+        # cron as a structural cross-check (it now equals the live count);
+        # documented in Metadata.value_trap_risk_two_factor_shadow_count docstring.
         if (
             not _rim_sector.applicable
             and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
             and snap is not None
         ):
             # Derive eps_ttm exactly as the ensemble does (NI_TTM / shares_out).
-            _shadow_eps_ttm: float | None = None
+            _vtr_eps_ttm: float | None = None
             if (
                 snap.net_income is not None
                 and snap.shares_outstanding is not None
                 and snap.shares_outstanding > 0
                 and snap.net_income > 0
             ):
-                _shadow_eps_ttm = snap.net_income / snap.shares_outstanding
+                _vtr_eps_ttm = snap.net_income / snap.shares_outstanding
 
-            if _shadow_eps_ttm is not None and _shadow_eps_ttm > 0 and current_price > 0:
-                _shadow_pe_ttm = current_price / _shadow_eps_ttm
-                # Sector-peer median P/E: built from universe_metrics (the same
-                # dict that feeds compute_fair_price_ensemble's multiples_pe peer
-                # walk). Use all ticker P/E values in the same sector panel
-                # (excluding the target ticker itself), same as the ensemble's
-                # sector-tier fallback. Reuse sector_panel already built above.
-                # NOTE: sector_panel is only defined when snap is not None (inner
-                # if-block above). We are inside that block so it is in scope.
-                _sector_pe_values: list[float] = [
+            if _vtr_eps_ttm is not None and _vtr_eps_ttm > 0 and current_price > 0:
+                _vtr_pe_ttm = current_price / _vtr_eps_ttm
+                # Sector-peer median P/E: all tickers in the same sector panel
+                # (excluding the target ticker itself) with a positive P/E.
+                # Uses universe_metrics (same dict that feeds the multiples_pe
+                # peer walk in compute_fair_price_ensemble).
+                # NOTE: sector_panel is only defined when snap is not None (the
+                # enclosing if-block). We are inside that block so it is in scope.
+                _vtr_sector_pe_values: list[float] = [
                     float(universe_metrics[t]["pe_ttm"])
                     for t in sector_panel
                     if t in universe_metrics
                     and universe_metrics[t].get("pe_ttm") is not None
                     and universe_metrics[t]["pe_ttm"] > 0  # type: ignore[operator]
                 ]
-                if _sector_pe_values:
-                    _sector_median_pe = statistics.median(_sector_pe_values)
-                    if _shadow_pe_ttm < _sector_median_pe:
+                if _vtr_sector_pe_values:
+                    _vtr_sector_median_pe = statistics.median(_vtr_sector_pe_values)
+                    if _vtr_pe_ttm < _vtr_sector_median_pe:
+                        # Live emission — two-factor gate satisfied.
+                        if "value_trap_risk" not in valuation_warnings:
+                            valuation_warnings.append("value_trap_risk")
+                        # Shadow counter now equals the live count; kept for one
+                        # more cron as a structural cross-check.
                         value_trap_risk_two_factor_shadow_count += 1
 
         # Price history JSON (sliced from already-fetched prices, no new

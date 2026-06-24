@@ -418,8 +418,10 @@ def compute_fair_price_ensemble(
     3. Per-method computation (6 methods).
     4. Defense #4 outlier guard — annotates valuation_warnings;
        outlier methods excluded from max but kept in median.
-    5. RIM value_trap_risk — annotates valuation_warnings if RIM
-       skipped on ROE<Ke.
+    5. RIM value_trap_risk — MOVED to compute/main.py (Step 8 per-ticker
+       loop, PR-2 #586).  Two-factor LSV gate requires sector-peer P/E
+       context not available in this pure-function layer.  This step is
+       a no-op: no "value_trap_risk" append happens here.
     """
     lag_status: LagStatus = stale_filing_status(filing_lag_days_value, hard_days=hard_stale_days)
 
@@ -641,11 +643,19 @@ def compute_fair_price_ensemble(
             extreme_majority_lowapp = True
 
     # RIM value_trap_risk warning.
-    if (
-        not rim_app.applicable
-        and rim_app.reason == "value_trap_risk_roe_below_cost_of_equity"
-    ):
-        valuation_warnings.append("value_trap_risk")
+    # FLIPPED to the two-factor LSV gate (issue #586 PR-2, 0.10.34-phase8pilot).
+    # The single-leg gate (ROE≤Ke alone) was the legacy behaviour; the live
+    # emission now requires BOTH legs:
+    #   (a) RIM skips under avg_3y_roe <= Ke (Penman 2013 value-trap condition)
+    #   AND (b) eps_ttm > 0 AND ticker P/E < sector-peer median P/E
+    #           (LSV 1994 "Contrarian Investment" §3 cheap-relative-to-peers leg)
+    # Loss-making / undefined-P/E firms are EXEMPT (leg b cannot fire when
+    # eps_ttm <= 0).
+    # The emission is now handled in compute/main.py (Step 8 per-ticker loop),
+    # where sector_panel + universe_metrics are already in scope from the
+    # two-factor shadow gate block that shipped in PR-1.  This function no
+    # longer appends "value_trap_risk" — the ensemble layer is the wrong place
+    # for a cross-sectional P/E comparison that requires sector-peer context.
 
     n_applicable = n_applicable_non_outlier
 

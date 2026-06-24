@@ -7018,3 +7018,42 @@ BFS/CENT/SBSI tail; $4.6-5.0M band keeps the $5M annotate).
 
 NO schema change. Defense layer UNCHANGED at 36 (the veto does not exist yet).
 Lockstep: this entry + CLAUDE.md + AGENTS.md substance diffs. Gate: docs-reviewer.
+
+---
+
+## PR (TBD) — feat(compute): value_trap_risk two-factor LSV gate LIVE flip (#586 PR-2) (in flight, 2026-06-24)
+
+Issue #586 PR-2 (LIVE flip). PR-1 (#588, schema 0.10.33) shipped the two-factor gate as a SHADOW
+counter; the first sp1500 cron (d4da17e3, 2026-06-24) confirmed the acceptance gate —
+`value_trap_risk_two_factor_shadow_count = 155` (10.3% of 1504), squarely in the
+methodology-ratified **5-12% LSV band**. This PR FLIPS the live emission from the single-leg
+Penman gate (ROE≤Ke alone, ~548/36.4%) to the two-factor LSV gate (~155/10.3%).
+
+New live gate: `value_trap_risk` fires iff (a) RIM skips on `avg_3y_roe ≤ Ke` (Penman 2013) AND
+(b) `eps_ttm > 0` AND ticker P/E < sector-peer median P/E (LSV 1994 cheap leg); loss-making /
+undefined-P/E firms are EXEMPT. The RIM **method-skip** at `≤ Ke` is UNCHANGED (correct Penman) —
+only the user-facing WARNING emission gets the second leg. Emission MOVED from `ensemble.py`
+(pure-function layer, no sector-peer P/E context) to `compute/main.py` Step-8 per-ticker loop
+(where `sector_panel` + `universe_metrics` are in scope; appends to the same `valuation_warnings`
+local that every other annotate uses, before StockDetail construction — dedup-guarded).
+
+Schema `0.10.33` → `0.10.34-phase8pilot` (version-only bump, NO new field; triple in sync).
+`value_trap_risk_two_factor_shadow_count` is KEPT for one more cron as a structural cross-check
+(it now equals the live count; docstring updated). `value_trap_risk_count_with_sector_coe` /
+`_without_sector_coe` stay the Issue-#67 single-leg RIM-skip diagnostic (548/616) — distinct from
+the emitted two-factor warning (155); NOT renamed (the #67 CoE-effect diagnostic is still
+meaningful). Defense layer UNCHANGED at 36 (value_trap_risk was already an annotate; this changes
+WHICH gate triggers it, not its annotate status). RANK / scores unaffected (annotate, rank-neutral).
+
+Docs reconciled (methodology-scientist RATIFY-WITH-AMENDMENT + literature-searcher
+CITATION-CONFIRMED): `quarterly-cohort-audit/SKILL.md` anchor → LSV-1994 + Penman-2013, band →
+5-12%, drop Asness-Frazzini 2013 ("Devil in HML's Details" — no value-trap content);
+`docs/METHODOLOGY.md` cohort-audit entry + the `value_trap_risk` skip-reason line updated to the
+two-factor gate.
+
+Verify: ruff clean · `schema_check` IN SYNC · `pytest tests/test_valuation/ tests/test_config.py
+-m "not network"` 282 passed (test_E2 inverted to assert ensemble silence; S4 class → post-flip
+ensemble-silence tests; test_config pin 0.10.34). Gates: compute-builder BUILT-CLEAN;
+quantrank-reviewer at the push gate. Acceptance: shadow 10.3% ∈ 5-12% (PR-1 cron d4da17e3).
+
+---

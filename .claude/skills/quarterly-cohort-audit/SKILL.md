@@ -78,7 +78,7 @@ Per-flag expected fire-rate bands (S&P 500 cohort, ~502 stocks):
 | `dechow_manipulation_veto` | Dechow 2011 F-score | 1-5% | Healthy in band |
 | `beneish_high` | Beneish 1999 (annotate tier) | 5-15% (looser threshold) | Healthy |
 | `dechow_high` | Dechow 2011 (annotate tier) | 5-15% | Healthy |
-| `value_trap_risk` | Asness-Frazzini 2013 + project synthesis | < 10% expected | **Currently 35% on S&P 500** — issue #11 (`_avg_3y_roe` denominator bug; epic #150 Phase 2.6) |
+| `value_trap_risk` | Lakonishok-Shleifer-Vishny 1994 (cheap-multiple leg) + Penman 2013 (ROE≤Ke quality screen) | 5-12% expected | **Two-factor LSV gate live (#586 PR-2, 0.10.34)** — 10.3% on first sp1500 cron (was 35% single-leg ROE≤Ke). Asness-Frazzini 2013 ("Devil in HML's Details") DROPPED — confirmed no value-trap content (literature-searcher) |
 | `goodwill_heavy` | Internal (Gu-Lev 2011 motivated) | 10-25% (S&P 500 has many large goodwill writedowns) | Healthy |
 | `rem_suspect` | Roychowdhury 2006 | 3-10% | Healthy |
 | `manipulation_triple_flag` | Project rollup | < 1% (high-bar) | Healthy if < 2% |

@@ -49,7 +49,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.33-phase8pilot"
+SCHEMA_VERSION: str = "0.10.34-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI

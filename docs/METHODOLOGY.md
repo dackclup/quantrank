@@ -223,7 +223,10 @@ composite.
     Observed: 99.93% (1503/1504).
   - **B5 · Cron count** — ≥ 8 full-sp1500 crons of firing data at promotion.
     Observed: 5 as of 2026-06-23 (~3 more weekday crons → mid-July).
-- `value_trap_risk` — RIM was skipped because ROE < cost of equity
+- `value_trap_risk` — RIM skipped because ROE < cost of equity (Penman
+  2013) AND trailing P/E below the sector-peer median (LSV 1994 cheap
+  leg) — two-factor gate live since #586 PR-2; loss-making /
+  undefined-P/E firms are EXEMPT
 - `extreme_<method>_estimate` — one of the 6 methods (`graham`,
   `multiples_pe`, `multiples_pb`, `multiples_ev_ebitda`, `rim`, `dcf`)
   produced an outlier value outside the `[0.2×, 5×]` band of current
@@ -723,15 +726,24 @@ false-positive suppression.
 Quarterly cohort audit (issue #130, last refresh 2026-05-21 from
 2026-05-20 production cron):
 
-- `value_trap_risk` **35.06% → 35.1%** fire rate. Issue #11 closed via
-  PR #166 (2026-05-21) — the `_avg_3y_roe` legacy single-period
-  fallback was removed and `insufficient_history_for_roe` skip reason
-  added so the ensemble no longer emits spurious value_trap_risk
-  warnings when RIM is skipped for missing data. Net firing rate
-  stayed roughly flat → confirms the bulk of the 35% is genuine value-
-  trap signal, not denominator bias. Still above Lakonishok-Shleifer-
-  Vishny 1994 expected 15-25% band — φ-redundancy check with
-  `goodwill_heavy` (Q3 2026-08-19 audit).
+- `value_trap_risk` — **TWO-FACTOR LSV gate live since #586 PR-2
+  (`0.10.34-phase8pilot`)**. The legacy single-leg gate (RIM skip on
+  `avg_3y_roe ≤ Ke` alone, Penman 2013) over-fired at **35.06% → 36.4%**
+  on the S&P 1500 — a data-scientist probe (#586) showed the over-fire
+  was dominated by loss-making IT/HC growth names (ROE structurally
+  negative, the opposite of an LSV cheap-and-deteriorating trap). The
+  ratified amendment adds the **LSV 1994 "cheap" leg**: the warning now
+  fires iff `ROE ≤ Ke` (Penman quality screen, the RIM method-skip is
+  UNCHANGED) **AND** trailing P/E (`eps_ttm > 0`) is below the sector-peer
+  median P/E; loss-making / undefined-P/E firms are **EXEMPT**. First
+  sp1500 cron (shadow-confirmed in PR-1 #588, flipped live in PR-2):
+  **10.3%** (155/1504), squarely in the reconciled **5-12% LSV-1994
+  band** (the prior "15-25%" figure was the single-leg tolerance and is
+  superseded). **Asness-Frazzini 2013** ("The Devil in HML's Details")
+  was confirmed (literature-searcher) to carry **no value-trap content**
+  and is dropped from the anchor list. φ(`value_trap_risk` ×
+  `goodwill_heavy`) = 0.059 → the multiple leg adds orthogonal
+  information, not goodwill redundancy (Q3 2026-08-19 audit re-confirms).
 - `going_concern_disclosure` **1.0%** fire rate on 2026-05-20 cron
   (within Mayew 2015 expected 1-3% band, down from 10.8% pre-Phase-4h).
   Mechanism not yet code-confirmed — issue #16 negation-lookbehind may
