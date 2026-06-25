@@ -7136,3 +7136,39 @@ Mode B LOCKSTEP-SATISFIED.
 
 Lockstep: this entry + CLAUDE.md §Commands (2 new rows) + §Gotchas warehouse bullet
 (`run_metadata/` store sentence) + AGENTS.md `QR_SKIP_WAREHOUSE` block mirror.
+
+---
+
+## PR (TBD) — fix(warehouse): backfill_warehouse_metadata robustness polish (in flight, 2026-06-25)
+
+Branch `claude/warehouse-metadata-backfill-polish` (off origin/main with the merged #603).
+Three non-blocking WARNs quantrank-reviewer raised on #603's
+`scripts/backfill_warehouse_metadata.py` — SCRIPTS/TESTS-ONLY logic polish, no schema triple
+change, no warehouse column change, no cron wiring, no frontend. Defense layer UNCHANGED at 36.
+
+1. **Partial-success exit code** — `main()` now returns exit 1 when the run summary's
+   `errors > 0` (was always 0, so a partially-failed history backfill looked fully green in
+   CI). Emits a prominent `logger.error("PARTIAL FAILURE — N written, M errors ...")` before
+   exit. Happy path (`errors == 0`) → exit 0 UNCHANGED; the pre-existing fatal-exception path
+   still returns 1. Exit 1 is a pure CI signal — already-written partitions persist (no
+   rollback); an idempotent re-run re-attempts exactly the failed commits.
+2. **Empty-string `version` diagnostic** — a PRESENT-but-empty `version` key now logs a
+   `WARNING` before storing `schema_version=None`; an ABSENT key stays silently None (the
+   documented default). Guard: `if "version" in meta_dict and not _raw_version`.
+3. **Full-string `last_update_utc` validation** — `_derive_run_date` was slicing `[:10]` then
+   `date.fromisoformat`, so `"2026-06-24Tgarbage"` passed. Now validates the FULL string via
+   `datetime.fromisoformat(last_update)` → `.date().isoformat()` (Python 3.11 handles a
+   trailing `Z`), falling back to the committer-date path (log upgraded debug→warning) on a
+   malformed full value. Import swap `from datetime import date` → `datetime` (no other
+   runtime `date` use in the file). Return contract (ISO date string) preserved.
+
+7 new tests (`tests/test_warehouse/test_backfill_metadata.py` BM16-BM18: partial/all-error
+exit + happy-path exit 0 · empty-version warning + None / absent-key silent · malformed-full-UTC
+fallback + valid-value + date-only no-regression).
+
+Schema triple UNTOUCHED. Verify: ruff clean · `pytest tests/test_warehouse/test_backfill_metadata.py
+-m "not network"` 37 passed · `warehouse_schema_check` 5/5 IN SYNC (no column change). Gates:
+compute-builder BUILT-CLEAN; quantrank-reviewer READY-TO-PUSH (3/3 fixes correct, 0 FAIL,
+idempotence + import-swap regression-checked). Lockstep: this entry only (the §Commands backfill
+row + warehouse §Gotchas description are UNCHANGED — internal robustness, no behavior the docs
+describe changed).
