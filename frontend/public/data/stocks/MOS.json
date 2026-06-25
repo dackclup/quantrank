@@ -5,19 +5,19 @@
   "industry": "Fertilizers & Agricultural Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6754241185.0,
-  "current_price": 21.25,
+  "market_cap": 6630281187.838196,
+  "current_price": 20.86,
   "rank": 1490,
-  "composite_score": 30.67,
+  "composite_score": 30.24,
   "pillar_scores": {
     "quality": 18.83,
-    "value": 54.11,
+    "value": 54.33,
     "growth": 29.55,
-    "momentum": 16.76,
-    "health": 38.16,
+    "momentum": 15.38,
+    "health": 38.15,
     "profitability": 19.05,
-    "technical": 34.54,
-    "risk": 21.11,
+    "technical": 28.78,
+    "risk": 20.83,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 317846644.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6754241185.0,
-    "pe_ratio_ttm": 95.264332651622,
+    "market_cap": 6630281187.838196,
+    "pe_ratio_ttm": 93.51595469447385,
     "goodwill": 988900000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 4.5389161091308905,
+        "value": 4.682646354993007,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.09816697978381,
+        "value": 105.62706388798506,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 34.731685949477416,
+        "value": 35.43473325030499,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,20 @@
         "tier_used": null
       }
     },
-    "median": 34.731685949477416,
-    "max": 106.09816697978381,
-    "low": 4.5389161091308905,
-    "high": 106.09816697978381,
-    "mos_pct": 38.81667584202104,
+    "median": 35.43473325030499,
+    "max": 38.3063708319312,
+    "low": 4.682646354993007,
+    "high": 105.62706388798506,
+    "mos_pct": 41.131204620618895,
     "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 5,
-    "median_trimmed": 34.731685949477416,
-    "methods_excluded_from_median": []
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 30.28525772687557,
+    "methods_excluded_from_median": [
+      "multiples_pb"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,12 +105,13 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
     "value_trap_risk",
     "restatement_history"
   ],
@@ -124,22 +128,22 @@
     "label": "Materials median (n=77)",
     "values": {
       "Quality": 49.35,
-      "Value": 51.08,
+      "Value": 50.22,
       "Growth": 45.13,
-      "Momentum": 51.65,
-      "Health": 52.94,
+      "Momentum": 49.67,
+      "Health": 52.92,
       "Profitability": 54.11,
-      "Technical": 47.12,
-      "Risk": 46.96
+      "Technical": 45.46,
+      "Risk": 47.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.080584204866646,
-  "price_change_1d_pct": -3.4091,
+  "loss_chance_pct": 38.482297215105085,
+  "price_change_1d_pct": -1.8353,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 30.17,
+  "composite_score_adjusted": 29.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.26,
+  "osap_blended_score": 41.05,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,16 +199,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 17,
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.196734768363176e-08,
+  "cross_source_delta": 4.2474524686638385e-09,
   "dividend_yield_pct": 4.14,
   "pays_dividend": true,
   "payout_ratio": 6.2857,
-  "average_dollar_volume": 221146758.39662552,
+  "average_dollar_volume": 215297573.34526747,
   "security_type": null
 }
