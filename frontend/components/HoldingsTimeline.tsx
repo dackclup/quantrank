@@ -191,7 +191,7 @@ export function HoldingsTimeline({
                 aria-expanded={isExpanded}
                 aria-controls={drawerId}
                 onClick={() => toggleRow(row.date)}
-                className="press group flex w-full min-h-[44px] items-start gap-x-3 py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 dark:focus-visible:ring-emerald-400"
+                className="press flex w-full min-h-[44px] items-start gap-x-3 py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 dark:focus-visible:ring-emerald-400"
               >
                 {/* Date + sub-labels (left column — fixed width to match the
                     old grid 5.5rem column) */}
@@ -251,7 +251,7 @@ export function HoldingsTimeline({
                 id={drawerId}
                 role="region"
                 aria-labelledby={headerId}
-                className={`grid transition-[grid-template-rows] duration-200 ease-in-out motion-safe:duration-200 motion-reduce:duration-0${isExpanded ? ' grid-rows-[1fr]' : ' grid-rows-[0fr]'}`}
+                className={`grid transition-[grid-template-rows] duration-200 ease-in-out motion-reduce:duration-0${isExpanded ? ' grid-rows-[1fr]' : ' grid-rows-[0fr]'}`}
               >
                 <div className="overflow-hidden">
                   <QuarterDrawer
