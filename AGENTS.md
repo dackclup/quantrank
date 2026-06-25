@@ -724,6 +724,14 @@ export function FairPriceCard(props) {  // no types
     `backfill-warehouse.yml`) writes `row_provenance="pit_replay"` rows to
     the gitignored `data/warehouse/backfill/` (CI artifact, never committed;
     SP500-only history; the 11 `FORWARD_ONLY_FLAGS` are NULL not False).
+    **Historical run-metadata store** (`scripts/backfill_warehouse_metadata.py`,
+    one-shot): committed `data/warehouse/run_metadata/year=/run_date=/part-0.parquet`
+    materialized from git history of `metadata.json` (4 run_dates); guarded by
+    `warehouse_schema_check.py` + `data/warehouse/run_metadata_schema.json` (own
+    baseline, NOT the Pydantic↔TS↔snapshot triple). `scripts/backfill_warehouse_portfolio.py`
+    (one-shot) is a thin wrapper reusing `portfolio_writer.write_portfolio_snapshot`
+    to materialize `data/warehouse/portfolio/` immediately from the committed
+    `backtest_pit.json` artifact.
   - `QR_SKIP_FILING_INDEX=1` — skips the SEC filing pointer index
     backfill run (`scripts/backfill_filing_index.py:73`); the module is
     NOT yet wired into the weekday cron (Slice 1 — cron wiring deferred

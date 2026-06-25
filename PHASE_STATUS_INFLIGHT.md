@@ -7093,3 +7093,46 @@ scrape, confirming the sp500 path is fresh).
 Verify: `scripts/verify_membership_ledger.py` exit 0 (CLEAN) · ruff clean · ADD/REMOVE balanced.
 
 ---
+
+## PR (TBD) — feat(warehouse): historical run-metadata + portfolio backfill scripts (in flight, 2026-06-24)
+
+Branch `claude/warehouse-backfill-history` (based on origin/main with the merged PR #597).
+Two MANUAL one-shot historical backfills for the research warehouse — COMPUTE/SCRIPTS-ONLY,
+no schema triple change, no cron wiring, no frontend change. Closes the historical-coverage
+half of the warehouse gap PR #597 opened forward (PR #597 captured Metadata + portfolio
+going forward only).
+
+1. **`scripts/backfill_warehouse_metadata.py`** replays the git history of
+   `frontend/public/data/metadata.json` (~9 commits → 4 unique run_dates) into a NEW
+   COMMITTED dedicated store `data/warehouse/run_metadata/year=/run_date=/part-0.parquet`
+   (cols: `run_date` / `schema_version` / `universe` / `source_commit` /
+   `row_provenance="metadata_backfill"` / `metadata_json` verbatim-from-git-show). A
+   SEPARATE store from `_manifest.parquet` (historical runs have no committed snapshot
+   partition — injecting phantom manifest rows would mislead readers). Idempotent
+   (disk-discovery dedup; same-day → newest-commit-first wins). Guarded by a new
+   `data/warehouse/run_metadata_schema.json` baseline via `warehouse_schema_check.py`'s
+   new `check_run_metadata_schema()` (folded into `main()` --update/verify `max(...)`).
+   `.gitignore` whitelists `!data/warehouse/run_metadata/**/*.parquet`.
+
+2. **`scripts/backfill_warehouse_portfolio.py`** is a thin wrapper REUSING PR #597's
+   `compute/warehouse/portfolio_writer.write_portfolio_snapshot` to materialize the
+   committed `data/warehouse/portfolio/` partition (800 rows = 40 rebalances × 20 holdings,
+   2016→2026) + `portfolio_manifest.parquet` NOW from the already-committed
+   `backtest_pit.json`, rather than waiting for the next cron. No new warehouse module; the
+   #597 writer + its schema guards + gitignore whitelists are reused as-is.
+
+Committed artifacts are REPRODUCIBLE from committed sources (git history / backtest_pit.json),
+NOT fabricated scoring data. Schema triple (`schemas.py` / `types.ts` / `schema-snapshot.json`)
+UNTOUCHED. Rankings/scores/flags BYTE-IDENTICAL. Defense UNCHANGED at 36. NO schema-version
+bump. 26 new tests (`tests/test_warehouse/test_backfill_metadata.py`, BM1-BM15).
+
+Verify: ruff clean · `pytest -m "not network"` 2926 passed / 10 skipped (1 pre-existing
+alpha158 Hypothesis-deadline flake, unrelated) · `warehouse_schema_check` IN SYNC (6/6:
+warehouse 129 / filing_index 10 / portfolio_partition 11 / portfolio_manifest 5 /
+run_metadata 6). Gates: compute-builder BUILT-CLEAN; quantrank-reviewer FIX-AND-RE-REVIEW
+→ FIXED (reverted a stray synthetic clobber of the live `_manifest.parquet` + 2026-06-24
+snapshot back to HEAD's real 1504-row data; added this lockstep entry); phase-coordinator
+Mode B LOCKSTEP-SATISFIED.
+
+Lockstep: this entry + CLAUDE.md §Commands (2 new rows) + §Gotchas warehouse bullet
+(`run_metadata/` store sentence) + AGENTS.md `QR_SKIP_WAREHOUSE` block mirror.

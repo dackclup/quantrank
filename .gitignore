@@ -242,6 +242,9 @@ models/
 # Backfill-only artifacts (data/warehouse/backfill/) stay ignored per *.parquet above.
 !data/warehouse/portfolio/**/*.parquet
 !data/warehouse/portfolio_manifest.parquet
+# Run-level metadata history backfill (Task 1) — one row per historical cron run,
+# committed so the metadata panel accumulates in-repo alongside snapshots.
+!data/warehouse/run_metadata/**/*.parquet
 .DS_Store
 # Phase-8 scout raw outputs (only report.md gets committed later)
 scout_out/

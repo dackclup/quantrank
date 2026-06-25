@@ -57,6 +57,7 @@ from compute.warehouse.portfolio_writer import (
     PORTFOLIO_MANIFEST_COLUMNS,
     PORTFOLIO_PARTITION_COLUMNS,
 )
+from scripts.backfill_warehouse_metadata import RUN_METADATA_COLUMNS
 
 SNAPSHOT_PATH: Path = config.PROJECT_ROOT / "data" / "warehouse" / "warehouse_schema.json"
 
@@ -72,6 +73,11 @@ PORTFOLIO_PARTITION_SNAPSHOT_PATH: Path = (
 )
 PORTFOLIO_MANIFEST_SNAPSHOT_PATH: Path = (
     config.PROJECT_ROOT / "data" / "warehouse" / "portfolio_manifest_schema.json"
+)
+
+# Separate snapshot for the run_metadata history backfill column set (Task 1).
+RUN_METADATA_SNAPSHOT_PATH: Path = (
+    config.PROJECT_ROOT / "data" / "warehouse" / "run_metadata_schema.json"
 )
 
 
@@ -419,6 +425,105 @@ def check_portfolio_schema(*, update: bool = False) -> int:
     return max(rc_partition, rc_manifest)
 
 
+# ---------------------------------------------------------------------------
+# Run-metadata schema derivation + check (Task 1)
+# ---------------------------------------------------------------------------
+
+def derive_run_metadata_columns() -> dict[str, str]:
+    """Return {column_name: dtype_hint} for the run_metadata history backfill partition.
+
+    All run_metadata columns are ``str | None`` (run-level metadata is uniformly
+    textual: ISO dates, version strings, commit SHAs, JSON blobs).  The canonical
+    column set is ``RUN_METADATA_COLUMNS`` from
+    ``scripts.backfill_warehouse_metadata``.
+
+    Sorted alphabetically for stable JSON output.
+    """
+    return {col: "str | None" for col in sorted(RUN_METADATA_COLUMNS)}
+
+
+def _load_run_metadata_snapshot() -> dict[str, Any]:
+    if not RUN_METADATA_SNAPSHOT_PATH.exists():
+        return {}
+    try:
+        return json.loads(RUN_METADATA_SNAPSHOT_PATH.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        print(
+            f"ERROR: could not read run_metadata snapshot {RUN_METADATA_SNAPSHOT_PATH}: {exc}",
+            file=sys.stderr,
+        )
+        return {}
+
+
+def _write_run_metadata_snapshot(columns: dict[str, str]) -> None:
+    RUN_METADATA_SNAPSHOT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    snapshot = {"columns": columns}
+    RUN_METADATA_SNAPSHOT_PATH.write_text(
+        json.dumps(snapshot, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(
+        f"Run-metadata snapshot written to {RUN_METADATA_SNAPSHOT_PATH} "
+        f"({len(columns)} columns)"
+    )
+
+
+def check_run_metadata_schema(*, update: bool = False) -> int:
+    """Verify or regenerate the run_metadata history-backfill column snapshot.
+
+    Returns 0 on success, 1 on drift, 2 on unexpected error.
+
+    Separated from the main snapshot check because the run_metadata schema is
+    independent of the Pydantic↔TS↔snapshot triple and has its own snapshot
+    file (``data/warehouse/run_metadata_schema.json``).
+    """
+    try:
+        columns = derive_run_metadata_columns()
+    except Exception as exc:  # noqa: BLE001
+        print(
+            f"ERROR: failed to derive run_metadata columns: {exc}",
+            file=sys.stderr,
+        )
+        return 2
+
+    if update:
+        _write_run_metadata_snapshot(columns)
+        return 0
+
+    snapshot = _load_run_metadata_snapshot()
+    committed_cols: dict[str, str] = snapshot.get("columns", {})
+
+    added = {k: v for k, v in columns.items() if k not in committed_cols}
+    removed = {k: v for k, v in committed_cols.items() if k not in columns}
+    changed = {
+        k: (committed_cols[k], columns[k])
+        for k in columns
+        if k in committed_cols and columns[k] != committed_cols[k]
+    }
+
+    if not added and not removed and not changed:
+        print(
+            f"OK: run_metadata schema in sync "
+            f"({len(columns)} columns, {RUN_METADATA_SNAPSHOT_PATH})"
+        )
+        return 0
+
+    print("DRIFT: run_metadata column schema has changed.", file=sys.stderr)
+    if added:
+        print(f"  Added ({len(added)}): {sorted(added)}", file=sys.stderr)
+    if removed:
+        print(f"  Removed ({len(removed)}): {sorted(removed)}", file=sys.stderr)
+    if changed:
+        for col, (old, new) in sorted(changed.items()):
+            print(f"  Changed dtype: {col}: {old!r} → {new!r}", file=sys.stderr)
+    print(
+        "\nFix: run `python -m compute.warehouse.warehouse_schema_check --update` "
+        "to regenerate data/warehouse/run_metadata_schema.json, then commit the diff.",
+        file=sys.stderr,
+    )
+    return 1
+
+
 def check_filing_index_schema(*, update: bool = False) -> int:
     """Verify or regenerate the filing-index column snapshot.
 
@@ -519,6 +624,8 @@ def main(argv: list[str] | None = None) -> int:
         check_filing_index_schema(update=True)
         # Also regenerate the portfolio writer snapshots on --update.
         check_portfolio_schema(update=True)
+        # Also regenerate the run_metadata history-backfill snapshot on --update.
+        check_run_metadata_schema(update=True)
         return 0
 
     # Compare against committed snapshot.
@@ -539,7 +646,9 @@ def main(argv: list[str] | None = None) -> int:
         fi_rc = check_filing_index_schema(update=False)
         # Also verify the portfolio writer snapshots are in sync.
         po_rc = check_portfolio_schema(update=False)
-        return max(fi_rc, po_rc)
+        # Also verify the run_metadata history-backfill snapshot is in sync.
+        rm_rc = check_run_metadata_schema(update=False)
+        return max(fi_rc, po_rc, rm_rc)
 
     print("DRIFT: warehouse flat-column schema has changed.", file=sys.stderr)
     if added:
