@@ -1098,6 +1098,17 @@ export type AiPickTimelineEntry = {
   // re-inferring from scores. Absent on pre-band artifacts and on legs with no
   // carry names.
   bandCarryNames?: string[];
+  // Build-time-precomputed weight per ticker for this quarter's drawer detail
+  // table. Keys = tickers in the held set + exited names. Values are 0-1 raw
+  // weights (6dp, same precision as the Current picks card). Null when the
+  // weight was unavailable (missing inverse-vol). Absent on legacy artifacts.
+  weightByTicker?: Record<string, number | null>;
+  // Build-time-precomputed return per ticker for this quarter's drawer detail
+  // table. For held names: total return from streak-start entry through this
+  // quarter's rebalance date (historical analog of Current picks' "since entry").
+  // For exited names: entry→exit return, measured to this rebalance's close.
+  // Null when price history was unavailable. Absent on legacy artifacts.
+  returnByTicker?: Record<string, number | null>;
 };
 
 // Adaptive-mode view model — present when the artifact carries nav.adaptive.

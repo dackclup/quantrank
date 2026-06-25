@@ -318,6 +318,129 @@ export function getAiPickData(): AiPickData | null {
     for (const [t, w] of Object.entries(pw)) priorWeights[t] = w;
   }
 
+  // ---------------------------------------------------------------------------
+  // Build-time precompute: per-quarter weightByTicker + returnByTicker for the
+  // Rotation history expandable drawer detail table. These are additive fields
+  // on each AiPickTimelineEntry — the drawer degrades gracefully to '—' on
+  // legacy artifacts that predate this contract.
+  //
+  // Natural held set mirrors HoldingsTimeline's per-entry slice logic so the
+  // drawer's Status/held-set always agrees with the header summary row:
+  //   • band_book present & non-empty → that exact array
+  //   • else adaptive_count present   → holdings[:adaptive_count]
+  //   • else band_held_count present  → holdings[:band_held_count]
+  //   • else                          → all holdings tickers (slider mode)
+  //
+  // Returns: for held tickers: streak-start → this quarter's rebalance.
+  //          for exited names: streak-start → exit rebalance (entry→exit).
+  // ---------------------------------------------------------------------------
+
+  // Helper: compute the natural held set for a raw rebalance.
+  const naturalHeldTickers = (r: typeof rebalances[number]): string[] => {
+    if (Array.isArray(r.band_book) && r.band_book.length > 0) {
+      return r.band_book as string[];
+    }
+    const sc = r.band_held_count ?? r.adaptive_count;
+    return sc !== undefined
+      ? r.holdings.slice(0, sc).map((h) => h.ticker)
+      : r.holdings.map((h) => h.ticker);
+  };
+
+  // Pre-derive held sets for every rebalance (avoids O(n^2) re-computation).
+  const naturalHeldPerRebalance: string[][] = rebalances.map(naturalHeldTickers);
+
+  // Build union of all tickers that ever appear in any held set or exit at any
+  // rebalance — so we only need one fs read per ticker across the full history.
+  const drawerTickerSet = new Set<string>();
+  for (const held of naturalHeldPerRebalance) {
+    held.forEach((t) => drawerTickerSet.add(t));
+  }
+  for (let i = 1; i < rebalances.length; i += 1) {
+    const curSet = new Set(naturalHeldPerRebalance[i]);
+    for (const t of naturalHeldPerRebalance[i - 1]) {
+      if (!curSet.has(t)) drawerTickerSet.add(t);
+    }
+  }
+
+  // Read price history once per drawer ticker (fs.readFileSync — build-time only).
+  const drawerHistory: Record<string, PriceHistoryFile | null> = {};
+  for (const ticker of drawerTickerSet) {
+    drawerHistory[ticker] = readPriceHistory(ticker);
+  }
+
+  // Closes-at-rebalance for all drawer tickers, index-aligned with rebalances.
+  const drawerClosesAtRebalance: Record<string, (number | null)[]> = {};
+  for (const ticker of drawerTickerSet) {
+    const hist = drawerHistory[ticker];
+    drawerClosesAtRebalance[ticker] = hist
+      ? rebalanceDates.map((d) => closeOnOrAfter(hist, d))
+      : rebalanceDates.map(() => null);
+  }
+
+  // Pre-build Set-per-rebalance for O(1) membership check in the streak walk.
+  const naturalHeldSets: Set<string>[] = naturalHeldPerRebalance.map(
+    (tickers) => new Set(tickers),
+  );
+
+  // Per-rebalance drawer data: weightByTicker + returnByTicker.
+  const drawerDataPerRebalance = rebalances.map((r, i) => {
+    const heldTickers = naturalHeldPerRebalance[i];
+    const heldSet = naturalHeldSets[i];
+    const prevHeld = i > 0 ? naturalHeldPerRebalance[i - 1] : [];
+
+    // Weights — mirror the priorWeights derivation: prefer band_weights, then
+    // weights_by_count[adaptive_count], then empty (no weights available).
+    const rRaw = r as unknown as {
+      band_weights?: Record<string, number>;
+      weights_by_count?: Record<string, Record<string, number>>;
+      adaptive_count?: number;
+    };
+    const weights: Record<string, number> = rRaw.band_weights
+      ?? (rRaw.adaptive_count != null
+        ? rRaw.weights_by_count?.[String(rRaw.adaptive_count)]
+        : undefined)
+      ?? {};
+    const weightByTicker: Record<string, number | null> = {};
+    for (const t of heldTickers) {
+      weightByTicker[t] = roundWeight(weights[t] ?? null);
+    }
+    // Exited names had weight in the prior quarter; record 0 here (out of basket).
+    const exitedTickers = prevHeld.filter((t) => !heldSet.has(t));
+    for (const t of exitedTickers) {
+      weightByTicker[t] = 0;
+    }
+
+    // Returns — streak-start walk using the pre-built sets.
+    const returnByTicker: Record<string, number | null> = {};
+    for (const t of heldTickers) {
+      let streakStart = i;
+      while (streakStart > 0 && naturalHeldSets[streakStart - 1].has(t)) {
+        streakStart -= 1;
+      }
+      const entryClose = drawerClosesAtRebalance[t]?.[streakStart] ?? null;
+      const thisClose = drawerClosesAtRebalance[t]?.[i] ?? null;
+      returnByTicker[t] =
+        entryClose !== null && thisClose !== null && entryClose !== 0
+          ? round2((thisClose / entryClose - 1) * 100)
+          : null;
+    }
+    // Exited names — streak-start within the prior membership (i-1).
+    for (const t of exitedTickers) {
+      let streakStart = i - 1;
+      while (streakStart > 0 && naturalHeldSets[streakStart - 1].has(t)) {
+        streakStart -= 1;
+      }
+      const entryClose = drawerClosesAtRebalance[t]?.[streakStart] ?? null;
+      const exitClose = drawerClosesAtRebalance[t]?.[i] ?? null;
+      returnByTicker[t] =
+        entryClose !== null && exitClose !== null && entryClose !== 0
+          ? round2((exitClose / entryClose - 1) * 100)
+          : null;
+    }
+
+    return { weightByTicker, returnByTicker };
+  });
+
   return {
     meta,
     dates: nav.dates,
@@ -342,13 +465,14 @@ export function getAiPickData(): AiPickData | null {
     // carries are present). HoldingsTimeline prefers bandHeldCount over
     // adaptiveCount when both are present.
     //
-    // `bandBook` carries the EXACT held set for band rebalances
-    // (r.band_book from the raw artifact). The band book is NOT a prefix of
-    // `holdings` — HoldingsTimeline must use it directly when present instead
-    // of slicing holdings[:sliceCount]. Sectors are resolved from r.holdings.
-    // `bandCarryNames` carries r.band_carry_names when present so the
-    // timeline can tag carried tickers without re-inferring from scores.
-    timeline: rebalances.map((r) => ({
+    // `bandBook` carries the EXACT held set for band rebalances (r.band_book
+    // from the raw artifact). HoldingsTimeline uses it directly when present
+    // instead of slicing holdings[:sliceCount]. Sectors from r.holdings.
+    // `bandCarryNames` carries r.band_carry_names for carried-ticker tagging.
+    //
+    // `weightByTicker` / `returnByTicker` — build-time-precomputed per-quarter
+    // data for the expandable drawer detail table (additive, absent on legacy).
+    timeline: rebalances.map((r, i) => ({
       date: r.date,
       holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
       ...(typeof r.adaptive_count === 'number' ? { adaptiveCount: r.adaptive_count } : {}),
@@ -359,6 +483,7 @@ export function getAiPickData(): AiPickData | null {
       ...(Array.isArray(r.band_carry_names) && r.band_carry_names.length > 0
         ? { bandCarryNames: r.band_carry_names as string[] }
         : {}),
+      ...drawerDataPerRebalance[i],
     })),
     entryCloses,
     lastCloses,
