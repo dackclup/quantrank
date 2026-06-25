@@ -7305,3 +7305,60 @@ required (frontend view-layer perf, no new convention). Gate: frontend-design-re
 vercel-preview-auditor + expert-user-explorer.
 
 ---
+
+## PR — fix(frontend): AI-pick Return column history-cap for long-tenure holdings (2026-06-25)
+
+**Branch**: `claude/aipick-sold-return-history-cap`
+**Type**: fix(frontend) — display-only bug fix; no schema change, no compute change.
+
+**Bug**: In `AiPickAdaptiveBranch`, the `adaptivePlSince` useMemo computed per-holding
+total return by walking the timeline to find the streak-start index, then reading
+`entryCloses[t][streakStartIdx]`. When a holding's tenure predates the 5-year
+price-history window (KLAC: streak started at a 2020 rebalance, but its
+`stocks/history/KLAC.json` starts 2021-06-17), `entryCloses['KLAC'][streakStartIdx]`
+was `null` → `entry = null` → `pct = null` → the Return cell rendered "—" for a
+stock that is fully held, has real returns, and just has a long tenure. Symmetric
+bug existed for sold rows.
+
+**Fix**: After finding `streakStart`, advance `entryIdx` forward (`streakStart + 1`,
+`+2`, …) to the FIRST index where `entryCloses[t][entryIdx]` is non-null. Use that
+close as the entry. Track `capped = entryIdx > streakStart` and `sinceDate =
+timeline[entryIdx].date`. Genuine no-data (no non-null close anywhere in the range)
+keeps `pct = null` (still "—" — correct). Applied symmetrically to both the held/new
+loop and the sold loop.
+
+**Return shape change**: `adaptivePlSince` widened from
+`Record<string, number | null>` to
+`Record<string, { pct: number | null; sinceDate: string | null; capped: boolean }>`.
+All render call sites updated to read `.pct`.
+
+**SR-accessibility (SKILL.md Rule 10 — color never the sole signal)**:
+When `capped=true`, the Return `<span>` carries an `aria-label` reading
+`"<pct> — return measured from <sinceDate>, the start of available price history;
+the holding's full tenure began earlier"`. A small (`text-[10px]`) `<span aria-hidden="true">`
+below the pct reads `"since YYYY-MM"` so a sighted user also sees the partial-tenure
+affordance without relying on a mouse-only `title=`. Paired
+`text-slate-400 dark:text-slate-500` (secondary muted tone per design system).
+
+**Files changed** (`frontend/` only):
+- `frontend/components/AiPickPortfolio.tsx` — `adaptivePlSince` useMemo +
+  both Return-cell render blocks (held/new + sold).
+- `PHASE_STATUS_INFLIGHT.md` — this entry.
+
+**Invariants preserved**: non-capped rows are byte-identical in their pct value
+(advancing `entryIdx` by 0 when `entryCloses[t][streakStart]` is non-null leaves
+all existing tickers unchanged); total-return footer (in `PerformanceTable`) does
+not consume `adaptivePlSince`; sold-row 0.0% weight column untouched; sort/order
+of rows untouched; slider branch (`AiPickSliderBranch`) untouched.
+
+**No schema change**: `entryCloses`/`lastCloses` are frontend-only view-model fields.
+Defense layer UNCHANGED at 36. Rankings byte-identical.
+
+**Note for test-engineer**: the history-cap forward-scan is a pure function over an
+array-with-nulls — a good unit test candidate (no JSDOM or React render needed).
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS (1512 static pages, 0 new
+errors) · schema triple UNTOUCHED. Lockstep: this entry. Gate: frontend-design-reviewer
++ vercel-preview-auditor + expert-user-explorer.
+
+---
