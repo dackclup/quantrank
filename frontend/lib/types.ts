@@ -520,6 +520,24 @@ export type Metadata = {
   // `value_trap_risk` emission is UNCHANGED (single-leg); this only measures
   // the would-be two-factor firing rate before the gated flip.
   value_trap_risk_two_factor_shadow_count?: number | null;
+  // Proposal F — IC half-life monitor (Proposal F 2026-06-24, Rule 18
+  // observability-before-wiring, SHADOW / OBSERVABILITY-ONLY).
+  // NEVER feeds scoring, vetoes, rankings, or composite score. Defense layer
+  // UNCHANGED at 36. Both fields null on legacy snapshots (pre-0.10.34) or
+  // when QR_SKIP_DECAY_MONITOR=1 / catastrophic failure.
+  //
+  // `pillar_ic_half_life_months` — per-pillar fitted IC decay half-life in
+  // months (McLean-Pontiff 2016 JF §3 + Di Mascio 2022 SSRN 4023689 §4).
+  // Winner selected by R² between exponential and power-law fit. Per-pillar
+  // None when fewer than 12 monthly IC observations exist (all None on launch
+  // day) OR both curve fits failed to produce a positive half-life. Outer
+  // dict None when the half-life computation was skipped or failed.
+  pillar_ic_half_life_months?: Record<string, number | null> | null;
+  // `pillar_ic_decay_fit_model` — per-pillar winning decay model name
+  // ("exponential" or "power"). Per-pillar None when the corresponding
+  // pillar_ic_half_life_months entry is None. Outer dict mirrors the outer-
+  // None semantics of the half-life field.
+  pillar_ic_decay_fit_model?: Record<string, string | null> | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

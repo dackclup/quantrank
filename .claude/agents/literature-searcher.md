@@ -51,6 +51,8 @@ location instead:
 - **Huber 1981** *Robust Statistics* §1.4 — breakdown point
 - **Penman 2013** *Financial Statement Analysis & Sec. Valuation* — earnings quality
 - **Roychowdhury-Donelson-McInnis-Mergenthaler 2013** *Accounting Review* — REM follow-on
+- **McLean-Pontiff 2016** *J. Finance* 71(1), 5-32 — mclean_pontiff_decay: 97 anomalies decay 26% OOS + 32% post-publication — IC-decay monitor + Proposal F half-life anchor
+- **Di Mascio 2022** SSRN Working Paper 4023689 — power-law alpha-decay fits (Proposal F companion): power-law R² 0.48 > exponential 0.43 across 80 factors
 
 If you're asked for a NEW paper not on this list, that's your real
 work. Run the retrieval per Step 2.

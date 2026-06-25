@@ -792,6 +792,16 @@ claiming much more is almost certainly overfit. We validate via PBO
 - Marginal AAER capture < 5% beyond 4 fraud signals — defense set freezes at v1.0;
   rotate (don't stack) post-v2.0
 
+**Anchor: `mclean_pontiff_decay`** — McLean, R.D. and Pontiff, J. (2016). "Does Academic
+Research Destroy Stock Return Predictability?" *Journal of Finance* 71(1), 5-32.
+97 published anomalies: alpha decays 26% out-of-sample + an additional 32% post-publication
+(58% cumulative). Governs the IC-decay monitor (`compute/validation/ic_decay.py`) and the
+Proposal F IC half-life fitting (`Metadata.pillar_ic_half_life_months`). Also the comparison
+anchor for the Di Mascio (2022) power-law model selected in Proposal F: Di Mascio, A. (2022).
+"The Decay of Factor Alpha." SSRN Working Paper 4023689 §4 — power-law fits explain alpha decay
+slightly better than exponential (median adj-R² 0.48 vs 0.43 across 80 factors). Promoted from
+inline §"Realistic expectations" prose to this canonical anchor 2026-06-24 (Proposal F).
+
 ---
 
 **Reminder**: this is a research / educational tool. Not investment advice. See

@@ -164,6 +164,11 @@ def test_schema_version_pinned():
       zero new network round-trips.  Graceful degradation to None when the
       price DataFrame is unavailable or missing Close/Volume column.
 
+    IC half-life monitor (0.10.35-phase8pilot, Proposal F, issue #604) — two
+    additive nullable ``Metadata`` fields (``pillar_ic_half_life_months`` /
+    ``pillar_ic_decay_fit_model``); SHADOW / OBSERVABILITY-ONLY (Rule 18),
+    live rankings/scores byte-identical, defense layer UNCHANGED at 36.
+
     value_trap_risk two-factor LIVE gate flip (0.10.34-phase8pilot, issue #586
     PR-2) — NO new schema fields (only version bump).  The LIVE
     ``value_trap_risk`` warning is flipped from the single-leg ROE<=Ke gate
@@ -205,7 +210,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.34-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.35-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

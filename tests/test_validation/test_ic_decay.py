@@ -493,3 +493,325 @@ def test_main_wiring_exception_sets_decay_report_url_none(monkeypatch, tmp_path)
 
     assert decay_report_url is None
     assert not _decay_report_path.exists()
+
+
+# ===========================================================================
+# Proposal F — IC half-life fitting (2026-06-24)
+#
+# Tests anchor:
+#   - MIN_HALF_LIFE_FIT_MONTHS constant == 12 (Di Mascio 2022 §4 floor)
+#   - Preliminary gate: n < 12 → preliminary=True, half_life=None, no fit
+#   - Boundary: n=11 preliminary, n=12 fits (not preliminary)
+#   - Exponential recovery: pure exp decay series → exp model wins, hl ≈ ln2/λ
+#   - Power-law win: power-law decay profile → power model wins
+#   - Degenerate: constant-IC series → (None, None, None, False), no raise
+#   - build_pillar_half_lives: empty → {}; malformed → never raises
+#   - Metadata schema round-trip for both new fields
+# ===========================================================================
+
+from compute.validation.ic_decay import (  # noqa: E402
+    MIN_HALF_LIFE_FIT_MONTHS,
+    PillarHalfLife,
+    build_pillar_half_lives,
+    fit_pillar_half_life,
+)
+
+
+def _half_life_series(
+    values: list[float],
+    pillar: str = "value",
+) -> pd.DataFrame:
+    """Build a single-pillar monthly IC panel (same shape as _series())."""
+    return pd.DataFrame(
+        {
+            "pillar": [pillar] * len(values),
+            "year_month": pd.date_range("2020-01-01", periods=len(values), freq="MS"),
+            "monthly_ic": values,
+        }
+    )
+
+
+# ---------------------------------------------------------------------------
+# Constant pin for the preliminary gate floor
+# ---------------------------------------------------------------------------
+
+def test_min_half_life_fit_months_is_12() -> None:
+    """Di Mascio (2022) SSRN 4023689 §4 fits decay curves on panels of
+    >= 12 monthly observations; we adopt the same floor.  Changing this
+    requires a methodology-scientist ruling -- pin it to catch silent drift."""
+    assert MIN_HALF_LIFE_FIT_MONTHS == 12
+
+
+# ---------------------------------------------------------------------------
+# Preliminary gate: n < 12 -> preliminary=True, half_life=None
+# ---------------------------------------------------------------------------
+
+def test_fit_half_life_preliminary_when_eleven_observations() -> None:
+    """n=11 (< MIN_HALF_LIFE_FIT_MONTHS=12) -> preliminary=True, no fit."""
+    hist = _half_life_series([0.04] * 11)
+    result = fit_pillar_half_life(hist)
+    assert isinstance(result, PillarHalfLife)
+    assert result.preliminary is True
+    assert result.half_life_months is None
+    assert result.fit_model is None
+    assert result.r_squared is None
+
+
+def test_fit_half_life_not_preliminary_at_boundary_twelve() -> None:
+    """n=12 (== MIN_HALF_LIFE_FIT_MONTHS) -> preliminary=False (fit attempted)."""
+    import math
+    lam = 0.05
+    ic_values = [0.20 * math.exp(-lam * t) for t in range(12)]
+    hist = _half_life_series(ic_values)
+    result = fit_pillar_half_life(hist)
+    assert result.preliminary is False
+
+
+def test_fit_half_life_missing_columns_returns_preliminary() -> None:
+    """DataFrame missing required columns -> preliminary=True, no exception."""
+    bad_df = pd.DataFrame({"foo": [1, 2, 3], "bar": [4, 5, 6]})
+    result = fit_pillar_half_life(bad_df)
+    assert result.preliminary is True
+    assert result.half_life_months is None
+
+
+# ---------------------------------------------------------------------------
+# Exponential recovery: lambda=0.05 -> half-life ~= ln(2)/0.05 ~= 13.86 months
+# ---------------------------------------------------------------------------
+
+def test_fit_half_life_exponential_recovery() -> None:
+    """Pure exponential series IC(t)=0.20*exp(-0.05t) with n=24 points.
+
+    compute-builder verified: lambda=0.05 -> expected half-life = ln(2)/0.05
+    ~= 13.86 months, R^2 ~= 1.000.  The fitted value must be within +-0.5
+    months of the known analytic answer, and the winning model must be
+    'exponential'.
+    """
+    import math
+
+    lam = 0.05
+    ic0 = 0.20
+    n = 24
+    ic_values = [ic0 * math.exp(-lam * t) for t in range(n)]
+    hist = _half_life_series(ic_values)
+
+    result = fit_pillar_half_life(hist)
+
+    expected_hl = math.log(2.0) / lam  # ~= 13.863 months
+    assert result.preliminary is False
+    assert result.half_life_months is not None
+    assert result.half_life_months == pytest.approx(expected_hl, abs=0.5)
+    assert result.fit_model == "exponential"
+    assert result.r_squared is not None
+    # R^2 of a log-linear fit on a pure exponential should be extremely high.
+    assert result.r_squared > 0.99
+
+
+def test_fit_half_life_exponential_r_squared_near_one() -> None:
+    """R^2 ~= 1.000 on a noise-free exponential series (Di Mascio anchor)."""
+    import math
+
+    lam = 0.05
+    ic_values = [0.20 * math.exp(-lam * t) for t in range(36)]
+    hist = _half_life_series(ic_values)
+    result = fit_pillar_half_life(hist)
+    assert result.r_squared is not None
+    assert result.r_squared == pytest.approx(1.0, abs=0.01)
+
+
+# ---------------------------------------------------------------------------
+# Power-law win: IC(t) = A * (t+1)^(-beta) -- power model should beat exponential
+# ---------------------------------------------------------------------------
+
+def test_fit_half_life_power_law_wins() -> None:
+    """Power-law decay series: IC(t) = 0.30 * (t+1)^(-0.8).
+
+    A power-law curve fits a log-linear regression in ln(t) exactly, so
+    the power model's R^2 should be ~1.0 on this synthetic series.  By
+    contrast, an exponential fit on a power-law curve is imperfect, so
+    the power model should win by R^2 and 'fit_model' should be 'power'.
+
+    The production code defines half-life as t* = 2^(1/beta) in the
+    1-shifted t-space where IC(t_shifted=1) = A.  For beta=0.8:
+    t* = 2^(1.25) ~= 2.378.  We use a loose tolerance (+-0.5 months).
+    """
+
+    beta = 0.8
+    a = 0.30
+    n = 30  # enough to beat the preliminary gate and the exponential fit
+    ic_values = [a * (t + 1) ** (-beta) for t in range(n)]
+    hist = _half_life_series(ic_values)
+
+    result = fit_pillar_half_life(hist)
+
+    assert result.preliminary is False
+    assert result.fit_model == "power"
+    assert result.half_life_months is not None
+    # Production formula: half_life = 2^(1/beta) in 1-shifted t space
+    expected_hl = 2.0 ** (1.0 / beta)  # ~= 2.378 months
+    assert result.half_life_months == pytest.approx(expected_hl, abs=0.5)
+    assert result.r_squared is not None
+    assert result.r_squared > 0.99
+
+
+# ---------------------------------------------------------------------------
+# Degenerate: constant IC -> both fits degenerate, returns clean None result
+# ---------------------------------------------------------------------------
+
+def test_fit_half_life_constant_ic_returns_none_cleanly() -> None:
+    """Constant-IC series (all 0.04) -> no detectable decay.
+
+    Exponential log-linearisation slope = 0 -> lambda = 0 (not a valid
+    decay) -> None.  Power-law similarly yields beta = 0 -> None.
+    The function must return (None, None, None, False) without raising.
+    """
+    ic_values = [0.04] * 24  # constant, well above the preliminary gate
+    hist = _half_life_series(ic_values)
+    result = fit_pillar_half_life(hist)
+
+    assert result.preliminary is False  # enough observations
+    assert result.half_life_months is None
+    assert result.fit_model is None
+    assert result.r_squared is None
+
+
+def test_fit_half_life_all_zero_ic_returns_none_cleanly() -> None:
+    """All-zero IC (no positive values to fit) -> returns None cleanly."""
+    ic_values = [0.0] * 24
+    hist = _half_life_series(ic_values)
+    result = fit_pillar_half_life(hist)
+
+    assert result.preliminary is False
+    assert result.half_life_months is None
+
+
+def test_fit_half_life_growing_ic_returns_none() -> None:
+    """Monotonically increasing IC (lambda < 0) -> no decay half-life -> None."""
+    import math
+
+    # Growing signal: exp(+0.05*t) -> fitted lambda = -0.05 < 0 -> no half-life
+    ic_values = [0.05 * math.exp(0.05 * t) for t in range(24)]
+    hist = _half_life_series(ic_values)
+    result = fit_pillar_half_life(hist)
+
+    assert result.half_life_months is None
+
+
+# ---------------------------------------------------------------------------
+# build_pillar_half_lives: empty input + graceful never-raises contract
+# ---------------------------------------------------------------------------
+
+def test_build_pillar_half_lives_empty_input_returns_empty_dict() -> None:
+    """Empty pillar_histories dict -> empty result dict, no exception."""
+    result = build_pillar_half_lives({})
+    assert result == {}
+
+
+def test_build_pillar_half_lives_returns_entry_per_pillar() -> None:
+    """Two pillars in input -> two entries in output dict."""
+    import math
+
+    lam = 0.05
+    ic_vals = [0.20 * math.exp(-lam * t) for t in range(24)]
+    hist_a = _half_life_series(ic_vals, pillar="value")
+    hist_b = _half_life_series(ic_vals, pillar="quality")
+
+    result = build_pillar_half_lives({"value": hist_a, "quality": hist_b})
+    assert set(result.keys()) == {"value", "quality"}
+    assert all(isinstance(v, PillarHalfLife) for v in result.values())
+
+
+def test_build_pillar_half_lives_never_raises_on_malformed_input() -> None:
+    """Malformed / partial DataFrame -> never raises, returns None half-life."""
+    bad_df = pd.DataFrame({"garbage": [1, 2, 3]})
+    result = build_pillar_half_lives({"value": bad_df})
+    assert "value" in result
+    assert result["value"].half_life_months is None
+
+
+def test_build_pillar_half_lives_injects_pillar_column_if_missing() -> None:
+    """DataFrame without 'pillar' column -> function injects it, still works."""
+    import math
+
+    lam = 0.05
+    ic_vals = [0.20 * math.exp(-lam * t) for t in range(24)]
+    # Drop the 'pillar' column to simulate a raw IC frame.
+    hist_no_pillar = pd.DataFrame(
+        {
+            "year_month": pd.date_range("2020-01-01", periods=24, freq="MS"),
+            "monthly_ic": ic_vals,
+        }
+    )
+    result = build_pillar_half_lives({"value": hist_no_pillar})
+    assert "value" in result
+    # fit should succeed since build_pillar_half_lives injects the pillar column.
+    assert result["value"].preliminary is False
+
+
+# ---------------------------------------------------------------------------
+# Metadata schema round-trip for the two new Proposal F fields
+# ---------------------------------------------------------------------------
+
+def test_metadata_pillar_ic_half_life_fields_round_trip() -> None:
+    """Metadata with both new Proposal F fields serializes + validates cleanly.
+
+    Both fields default to None (backward-compatible).  A populated dict
+    with some per-pillar None entries must also round-trip without error.
+    """
+    from compute.output.schemas import Metadata
+
+    base = {
+        "version": "0.10.34-phase8pilot",
+        "last_update_utc": "2026-06-25T22:00:00Z",
+        "next_update_utc": "2026-07-02T22:00:00Z",
+        "universe": "SP1500",
+        "universe_size": 1504,
+        "compute_run_id": "test-run-01",
+        "git_commit": "abc1234def5678901234567890123456789012ab",
+    }
+
+    # --- outer None (skipped / not computed) ---
+    meta_none = Metadata(**base)
+    assert meta_none.pillar_ic_half_life_months is None
+    assert meta_none.pillar_ic_decay_fit_model is None
+
+    # --- populated dict with some per-pillar None entries ---
+    half_life_map: dict[str, float | None] = {
+        "value": 13.86,
+        "quality": None,  # fit failed for this pillar
+        "momentum": 18.5,
+    }
+    fit_model_map: dict[str, str | None] = {
+        "value": "exponential",
+        "quality": None,
+        "momentum": "power",
+    }
+    meta_pop = Metadata(
+        **base,
+        pillar_ic_half_life_months=half_life_map,
+        pillar_ic_decay_fit_model=fit_model_map,
+    )
+    dumped = meta_pop.model_dump()
+    restored = Metadata.model_validate(dumped)
+    assert restored.pillar_ic_half_life_months == half_life_map
+    assert restored.pillar_ic_decay_fit_model == fit_model_map
+    # Per-pillar None survives the round-trip.
+    assert restored.pillar_ic_half_life_months["quality"] is None
+    assert restored.pillar_ic_decay_fit_model["quality"] is None
+
+
+def test_metadata_pillar_ic_fields_default_to_none() -> None:
+    """Both new Proposal F Metadata fields default to None -- backward-compat."""
+    from compute.output.schemas import Metadata
+
+    meta = Metadata(
+        version="0.10.34-phase8pilot",
+        last_update_utc="2026-06-25T22:00:00Z",
+        next_update_utc="2026-07-02T22:00:00Z",
+        universe="SP500",
+        universe_size=503,
+        compute_run_id="local",
+        git_commit="a" * 40,
+    )
+    assert meta.pillar_ic_half_life_months is None
+    assert meta.pillar_ic_decay_fit_model is None
