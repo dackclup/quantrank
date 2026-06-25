@@ -737,8 +737,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                     streak walk. font-semibold matches the slider branch's Return cell.
                     When capped=true the holding's streak predates the price-history
                     window (e.g. KLAC 2020 entry / history starts 2021). The aria-label
-                    exposes this to screen readers; the "since YYYY" caption gives a
-                    visual affordance without relying on color alone (SKILL.md Rule 10). */}
+                    exposes this to screen readers (SR-only; no visible sub-caption). */}
                 {(() => {
                   const pl = adaptivePlSince[h.ticker] ?? { pct: null, sinceDate: null, capped: false };
                   return (
@@ -749,11 +748,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                         : undefined}
                     >
                       {pctStr(pl.pct)}
-                      {pl.capped && pl.sinceDate && (
-                        <span className="block font-mono text-[10px] font-normal tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">
-                          since {pl.sinceDate.slice(0, 7)}
-                        </span>
-                      )}
                     </span>
                   );
                 })()}
@@ -812,7 +806,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   walk in the useMemo above. Full emerald/rose tone so the return is
                   the row's headline even though ticker/sector stay muted.
                   capped=true means the streak predates the price-history window;
-                  aria-label exposes partial-return context to screen readers. */}
+                  aria-label exposes partial-return context to screen readers (SR-only). */}
               {(() => {
                 const pl = adaptivePlSince[s.ticker] ?? { pct: null, sinceDate: null, capped: false };
                 return (
@@ -823,11 +817,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                       : undefined}
                   >
                     {pctStr(pl.pct)}
-                    {pl.capped && pl.sinceDate && (
-                      <span className="block font-mono text-[10px] font-normal tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">
-                        since {pl.sinceDate.slice(0, 7)}
-                      </span>
-                    )}
                   </span>
                 );
               })()}

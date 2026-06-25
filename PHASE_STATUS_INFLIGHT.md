@@ -7362,3 +7362,32 @@ errors) · schema triple UNTOUCHED. Lockstep: this entry. Gate: frontend-design-
 + vercel-preview-auditor + expert-user-explorer.
 
 ---
+
+## PR (TBD) — chore(frontend): drop visible "since YYYY-MM" sub-caption from capped Return cells (2026-06-25)
+
+Owner request to remove the visible `since YYYY-MM` sub-caption that PR #611 added below
+capped Return cells in the adaptive branch `AiPickPortfolio` "Current picks" table. The
+caption was a `<span class="block font-mono text-[10px] ... aria-hidden="true">since {sinceDate.slice(0,7)}</span>`
+rendered under the return percentage when `pl.capped === true` (holdings whose streak
+predates the price-history window, e.g. KLAC entering in 2020 with history only from 2021).
+
+**What changed**: both Return-cell render blocks in `AiPickAdaptiveBranch` — the held/new
+row (~line 752) and the sold row (~line 826) — have the visible sub-caption `<span>`
+removed. The IIFE structure, the `aria-label` (partial-tenure note for screen readers),
+and the `{pctStr(pl.pct)}` display are all retained unchanged. The `adaptivePlSince` shape
+`{ pct, sinceDate, capped }` is also unchanged — the aria-label still reads `sinceDate`
+and `capped` for AT users.
+
+**Net effect**: a capped row now looks visually identical to a normal row (just the %
+number). Screen-reader users still receive the honest partial-tenure context via the
+`aria-label`. The history-cap return-computation logic introduced in #611 is UNTOUCHED —
+KLAC still shows +474.1% (or whatever the current return is), just without the visible
+"since 2021-08" line below it.
+
+**No schema change**: frontend view-layer only. Defense layer UNCHANGED at 36.
+Rankings byte-identical. `AiPickSliderBranch` untouched.
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS · schema triple UNTOUCHED.
+Gate: frontend-design-reviewer + vercel-preview-auditor.
+
+---
