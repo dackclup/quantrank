@@ -7423,3 +7423,47 @@ after 5-tuple unpack fix) · schema_check N/A
 (no tracked schema change). Branch: `claude/position-returns-shadow`.
 
 ---
+## PR #607 — feat(compute): Market-regime diagnostic (Proposal D, in flight, 2026-06-25)
+
+Branch `claude/fund-performance-rankings-f8x4o1`. Second implementation slice
+of the legendary-fund deep-research 6-proposal program (methodology-scientist
+RATIFY-SHADOW, concur with rejection-as-tilt). Adds a write-only market-regime
+diagnostic to `Metadata`, computed from the price frames already fetched in
+Step 1 (NO new data source, NO new network call).
+
+SHADOW / OBSERVABILITY-ONLY (Rule 18) with a hard Welch-Goyal 2008 rejection-
+as-tilt constraint: the regime fields MUST NEVER be read by scoring, composite,
+pillar computation, veto/flag logic, fair-price, `select_picks`, or the weights.
+The financial-engineer explicitly rejected regime as a basket/scoring tilt
+because equity-premium predictors fail OOS (Welch-Goyal 2008 *RFS* 21(4),
+1455-1508 Table 3). The diagnostic seeds a future Phase-7 Student-t HMM —
+the breadth field will be ONE feature in that multi-year panel, evaluated
+rigorously OOS before any tilt is authorized.
+
+Live rankings/scores/flags BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+- `compute/scoring/regime.py` — new module: `compute_market_regime(prices_by_ticker)`
+  pure function; takes price DataFrames already loaded in Step 1; excludes
+  tickers with < 200 bars from denominator; returns `(breadth_pct, regime_state)`;
+  docstring carries the full Welch-Goyal rejection rationale + HMM forward motivation;
+  try/except is at the main.py call-site (module itself is clean / unit-testable)
+- `compute/output/schemas.py` — `Metadata.market_breadth_above_200dma_pct:
+  float | None = None` + `Metadata.market_regime_state: str | None = None`
+  (both optional, default None; hard-constraint comment in docstring)
+- `compute/config.py` — schema `0.10.35` → `0.10.36-phase8pilot` +
+  `REGIME_RISK_ON_THRESHOLD = 60.0` + `REGIME_RISK_OFF_THRESHOLD = 40.0`
+  (Tier-3 gut-feel calibration, documented as such)
+- `compute/main.py` — write-only wiring after the `pillar_ic_half_life` block,
+  try/except non-fatal (never blocks the cron); `prices_by_ticker` reused from
+  Step 1 (zero extra I/O); import of `compute_market_regime` at top-level
+- `docs/METHODOLOGY.md` — Proposal D section: Welch-Goyal anchor, Kacperczyk-
+  Van Nieuwerburgh-Veldkamp 2014 forward motivation, Tier-3 threshold docs
+- `frontend/lib/{types.ts,schema-snapshot.json}` — schema-triple mirror
+  NEEDED (frontend-builder task)
+- Tests needed (test-engineer task): pure `compute_market_regime` unit tests
+  (above/below/neutral classification, < 200 bars exclusion, all-empty frames
+  → None/None, Close vs Adj Close column detection, try/except non-fatal path)
+
+Lockstep: this entry + CLAUDE.md + AGENTS.md §Phase status in-flight update.
+Schema triple: 2 new fields added → TS mirror NEEDED. Gate: quantrank-reviewer
+at Draft→Ready.

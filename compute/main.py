@@ -157,6 +157,7 @@ from compute.scoring.multi_class_shares import (
 )
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
+from compute.scoring.regime import compute_market_regime
 from compute.scoring.rem import compute_rem_flags
 from compute.scoring.restatement_filings import (
     check_late_filing,
@@ -3488,6 +3489,29 @@ def run_weekly_compute() -> int:
             pillar_ic_half_life_months = None
             pillar_ic_decay_fit_model = None
 
+    # Proposal D — market-regime diagnostic (Rule 18 observability-before-wiring).
+    # Reuses prices_by_ticker from Step 1 — NO new network call, NO new data source.
+    # WRITE-ONLY / OBSERVABILITY-ONLY — feeds ONLY the Metadata constructor below.
+    # NEVER read by scoring, flags, composite, valuation, or select_picks.
+    # Rejection rationale: Welch-Goyal 2008 *RFS* 21(4) shows equity-premium
+    # predictors fail OOS; breadth is a PLACEHOLDER FEATURE for Phase-7 HMM.
+    # Wrapped in try/except so any failure degrades gracefully to None (never
+    # blocks the cron). Rankings/scores/flags are byte-identical.
+    market_breadth_above_200dma_pct: float | None = None
+    market_regime_state: str | None = None
+    try:
+        market_breadth_above_200dma_pct, market_regime_state = compute_market_regime(
+            prices_by_ticker
+        )
+    except Exception as _regime_exc:  # noqa: BLE001
+        logger.warning(
+            "market_regime diagnostic failed (non-fatal — cron continues); "
+            "market_breadth_above_200dma_pct → None. Error: %s",
+            _regime_exc,
+        )
+        market_breadth_above_200dma_pct = None
+        market_regime_state = None
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -3762,6 +3786,15 @@ def run_weekly_compute() -> int:
         # Co-located with QR_SKIP_DECAY_MONITOR guard (see block above).
         pillar_ic_half_life_months=pillar_ic_half_life_months or None,
         pillar_ic_decay_fit_model=pillar_ic_decay_fit_model or None,
+        # Proposal D — market-regime diagnostic (0.10.36-phase8pilot, Rule 18).
+        # WRITE-ONLY / OBSERVABILITY-ONLY — live scores, flags, rankings are
+        # byte-identical.  Defense layer UNCHANGED at 36.
+        # Breadth: % of the ranked universe whose latest close > 200-day SMA.
+        # Regime label: "risk_on" / "neutral" / "risk_off" (Tier-3 thresholds,
+        # REGIME_RISK_ON_THRESHOLD=60% / REGIME_RISK_OFF_THRESHOLD=40%).
+        # Rejection-as-tilt: Welch-Goyal 2008 *RFS* 21(4) — no tilt, ever.
+        market_breadth_above_200dma_pct=market_breadth_above_200dma_pct,
+        market_regime_state=market_regime_state,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

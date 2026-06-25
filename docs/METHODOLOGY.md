@@ -804,5 +804,44 @@ inline §"Realistic expectations" prose to this canonical anchor 2026-06-24 (Pro
 
 ---
 
+## Proposal D — Market-regime diagnostic (WRITE-ONLY, SHADOW / Rule 18)
+
+Added 2026-06-25. Schema `0.10.36-phase8pilot`. Two new `Metadata` fields:
+`market_breadth_above_200dma_pct` (float | None) and `market_regime_state` (str | None).
+
+**What it is.** The breadth signal: percentage of the ranked universe (S&P 1500) whose latest
+close is above its own 200-day simple moving average. Tickers with fewer than 200 trading-day bars
+are excluded from the denominator. The regime label derives from the breadth % via Tier-3
+threshold constants in `compute/config.py` (`REGIME_RISK_ON_THRESHOLD = 60%` /
+`REGIME_RISK_OFF_THRESHOLD = 40%`): breadth ≥ 60% → `"risk_on"`, ≤ 40% → `"risk_off"`,
+else `"neutral"`.
+
+**Why it exists.** The legendary-fund deep-research program (6 proposals) identified
+regime-conditional skill as a documented phenomenon (Kacperczyk, Van Nieuwerburgh, and Veldkamp
+2014, "Time-Varying Fund Manager Skill," *Journal of Finance* 69(4), 1455-1484) worth seeding for
+a future Phase-7 Student-t Hidden Markov Model (HMM) regime-classifier. The HMM design requires
+a multi-year labeled panel of regime states; this breadth field is the first observable to
+materialize into that panel.
+
+**Why it is NOT wired into scoring (Welch-Goyal 2008 rejection-as-tilt).** The financial-engineer
+explicitly REJECTED market-regime state as a basket or scoring tilt. Academic anchor: Welch, I.
+and Goyal, A. (2008). "A Comprehensive Look at the Empirical Performance of Equity Premium
+Prediction." *Review of Financial Studies* 21(4), 1455-1508. Their Table 3 shows that essentially
+every equity-premium predictor (valuation ratios, yield spreads, technical indicators, breadth
+metrics) fails out-of-sample: Campbell-Thompson OOS R² < 0 for nearly all predictors tested.
+Using a single breadth reading to tilt the basket would reduce to disguised market timing with
+no OOS support. The regime diagnostic is WRITE-ONLY in this PR and in all future PRs until a
+full Phase-7 HMM evaluation clears the OOS R² / DSR gate.
+
+**Thresholds (Tier-3 gut-feel calibration).** No academic paper pins exact breadth cutoffs for
+regime classification. The 60%/40% split is a conventional technical-analysis "breadth thrust"
+level, NOT derived from any peer-reviewed table. Named constants in `compute/config.py` so
+recalibration is a visible diff. Recalibrate at Phase-7 HMM design time from empirical data.
+
+**Defense layer unchanged at 36.** This is a Metadata-only addition — no new `risk_flags`,
+`valuation_warnings` literal, veto, or annotate. Rankings/scores/flags are byte-identical.
+
+---
+
 **Reminder**: this is a research / educational tool. Not investment advice. See
 the disclaimer in the [README](../README.md).

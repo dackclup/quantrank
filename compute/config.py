@@ -49,7 +49,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.35-phase8pilot"
+SCHEMA_VERSION: str = "0.10.36-phase8pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -796,3 +796,22 @@ assert len(OSAP_SIGNALS_100) == 100, (
 assert len(set(OSAP_SIGNALS_100)) == 100, (
     "OSAP_SIGNALS_100 contains duplicate signal names"
 )
+
+# --- Proposal D: Market-regime diagnostic (WRITE-ONLY / OBSERVABILITY-ONLY) ---
+# Computed from prices_by_ticker already loaded in Step 1 — NO new data source.
+# SHADOW / Rule 18 — NEVER feeds scoring, vetoes, composite, or select_picks.
+# Rejection rationale: Welch-Goyal 2008 *RFS* 21(4), 1455-1508 — equity-premium
+# predictors fail OOS; breadth is a PLACEHOLDER FEATURE for Phase-7 HMM, not a
+# validated regime classifier.  These thresholds are TIER-3 GUT-FEEL CALIBRATION
+# (no paper pins exact breadth cutoffs); they are named constants so any future
+# recalibration is a visible diff rather than a magic-number hunt.
+#
+# Breadth >= REGIME_RISK_ON_THRESHOLD  → "risk_on"  (broad market participation)
+# Breadth <= REGIME_RISK_OFF_THRESHOLD → "risk_off" (broad deterioration)
+# else                                 → "neutral"
+#
+# Round numbers (60% / 40%) are conventional technical-analysis "breadth thrust"
+# levels — NOT anchored to any peer-reviewed table.  Recalibrate at Phase-7 HMM
+# design time when an empirical panel of regime labels is available.
+REGIME_RISK_ON_THRESHOLD: float = 60.0   # breadth_pct >= 60% → risk_on  (Tier-3)
+REGIME_RISK_OFF_THRESHOLD: float = 40.0  # breadth_pct <= 40% → risk_off (Tier-3)
