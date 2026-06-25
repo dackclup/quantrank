@@ -164,15 +164,20 @@ def test_schema_version_pinned():
       zero new network round-trips.  Graceful degradation to None when the
       price DataFrame is unavailable or missing Close/Volume column.
 
-    value_trap_risk two-factor shadow counter (0.10.33-phase8pilot, issue #586,
-    Rule 18 observability-before-wiring) — adds one additive nullable field:
-    - ``Metadata.value_trap_risk_two_factor_shadow_count: int | None`` — counts
-      tickers satisfying the methodology-ratified two-factor LSV gate (live
-      ROE<=Ke AND eps_ttm > 0 AND ticker P/E < sector-peer median P/E).  SHADOW
-      ONLY: the live ``value_trap_risk`` warning still emits on the single-leg
-      ROE<=Ke condition; scores/flags/rankings byte-identical.  Methodology
-      gate: confirm the shadow firing rate lands in the 5-12% LSV band on >=1
-      sp1500 cron before flipping the live emission to the second leg.
+    value_trap_risk two-factor LIVE gate flip (0.10.34-phase8pilot, issue #586
+    PR-2) — NO new schema fields (only version bump).  The LIVE
+    ``value_trap_risk`` warning is flipped from the single-leg ROE<=Ke gate
+    to the methodology-ratified two-factor LSV gate (first sp1500 cron
+    confirmed shadow count = 155 / 10.3% of 1504, squarely in the 5-12%
+    LSV 1994 band).  The live warning now fires iff: (a) ROE<=Ke AND (b)
+    eps_ttm > 0 AND (c) ticker P/E < sector-peer median P/E.  Loss-making
+    firms are EXEMPT.  ``value_trap_risk_two_factor_shadow_count`` now equals
+    the live count; kept for one more cron as a structural cross-check.
+    Expected live count ~155 (was ~548 under single-leg).
+
+    Prior version (0.10.33-phase8pilot, issue #586 PR-1): two-factor shadow
+    counter (``Metadata.value_trap_risk_two_factor_shadow_count``); SHADOW
+    ONLY; live single-leg emission byte-identical.
 
     Prior version (0.10.32-phase8pilot, issue #587): ``extreme_estimate_majority``
     low-applicability floor shadow counter (``Metadata.extreme_estimate_majority_
@@ -200,7 +205,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.33-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.34-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

@@ -307,6 +307,16 @@ def test_D2_goodwill_heavy_not_appended_when_clean_balance():
 
 
 # -- E. RIM value_trap_risk warning ------------------------------------------
+#
+# Issue #586 PR-2 (0.10.34-phase8pilot): the live ``value_trap_risk`` warning
+# was MOVED from the ensemble layer to compute/main.py where sector-peer P/E
+# context is available.  The ensemble NEVER emits ``value_trap_risk`` now —
+# regardless of ROE vs Ke.  The RIM METHOD-SKIP still fires inside the ensemble
+# on the single-leg ROE≤Ke condition (unchanged per Penman 2013); only the
+# user-facing WARNING emission moved.
+#
+# test_E2 is updated to reflect the two-factor flip: ensemble does NOT emit
+# the warning (ROE≤Ke alone is no longer sufficient); main.py's gate does.
 
 def test_E1_rim_applicable_no_value_trap_warning():
     # ROE > Ke → RIM computes; no value_trap_risk warning.
@@ -334,7 +344,19 @@ def test_E1_rim_applicable_no_value_trap_warning():
     assert result.methods["rim"].applicable is True
 
 
-def test_E2_rim_value_trap_warning_when_roe_below_ke():
+def test_E2_ensemble_does_not_emit_value_trap_warning_two_factor_flip():
+    """Issue #586 PR-2 — the ensemble layer NEVER emits ``value_trap_risk``
+    after the two-factor flip.  The RIM METHOD-SKIP still fires on the
+    single-leg ROE≤Ke condition (Penman 2013 correct; unchanged), but the
+    user-facing WARNING emission moved to compute/main.py where sector-peer
+    P/E context is available.
+
+    Pre-flip (single-leg) behavior: ensemble appended ``value_trap_risk``
+    whenever ROE≤Ke regardless of P/E.
+    Post-flip (two-factor): ensemble NEVER appends ``value_trap_risk``; the
+    warning is conditionally appended by the main.py per-ticker loop only
+    when leg (b) also fires (cheap P/E vs sector peers).
+    """
     snap = _make_snap_full()
     result, _r = compute_fair_price_ensemble(
         ticker="TST",
@@ -349,12 +371,14 @@ def test_E2_rim_value_trap_warning_when_roe_below_ke():
         historical_metrics={
             "TST": {
                 "eps_3y_avg": 2.0,
-                "avg_3y_roe": 0.05,  # < Ke=0.10 → value-trap-risk
+                "avg_3y_roe": 0.05,  # < Ke=0.10 → RIM skips on ROE≤Ke
                 "fcf_5y": [100.0] * 5,
             },
         },
     )
-    assert "value_trap_risk" in result.valuation_warnings
+    # Post-flip: ensemble does NOT emit the warning (moved to main.py).
+    assert "value_trap_risk" not in result.valuation_warnings
+    # RIM method-skip still fires — the Penman 2013 method exclusion is unchanged.
     assert result.methods["rim"].applicable is False
     assert (
         result.methods["rim"].reason == "value_trap_risk_roe_below_cost_of_equity"

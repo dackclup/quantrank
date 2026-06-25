@@ -264,29 +264,32 @@ def check_rim_applicability(
     is ``"value_trap_risk_roe_below_cost_of_equity"`` so the Step-5 ensemble
     layer (``compute/valuation/ensemble.py``) can pattern-match on it.
 
-    **LIVE WARNING (legacy single-leg gate)**
-    When the ensemble sees the skip reason above, it appends ``"value_trap_risk"``
-    to ``valuation_warnings``.  This is the **single-leg** gate: it fires on
-    ``ROE ≤ Ke`` alone, regardless of whether the stock's P/E is cheap relative
-    to sector peers.
+    **LIVE WARNING — two-factor LSV gate (flipped to live, issue #586 PR-2,
+    0.10.34-phase8pilot)**
+    The methodology-scientist RATIFY-WITH-AMENDMENT verdict (LSV 1994
+    "Contrarian Investment" §3) added a second leg to the WARNING (not to the
+    RIM skip).  ``"value_trap_risk"`` now fires only when BOTH legs are true:
 
-    **SHADOW TWO-FACTOR GATE (methodology-scientist RATIFY-WITH-AMENDMENT,
-    LSV 1994 "Contrarian Investment" §3, gated flip deferred to ≥1 cron)**
-    The ratified amendment adds a second leg to the WARNING (not to the RIM
-    skip): the ``value_trap_risk`` annotate should fire only when BOTH
-    ``ROE ≤ Ke`` AND the stock's trailing P/E is below its sector-peer median
-    P/E (i.e., the market already prices it cheaply relative to peers,
-    consistent with the contrarian value-trap definition).  A firm with
-    ``ROE ≤ Ke`` but a PREMIUM P/E vs. sector peers may be a growth company
-    priced for future ROE expansion, not a classic value trap.  Loss-making
-    firms (``eps_ttm ≤ 0``) are EXEMPT — P/E is undefined, so the second leg
-    cannot fire.
+      (a) ``ROE ≤ Ke`` (Penman 2013 condition — RIM skips above with reason
+          ``"value_trap_risk_roe_below_cost_of_equity"``)
+      (b) ``eps_ttm > 0`` AND ticker trailing P/E **<** sector-peer median P/E
+          (the stock is already cheap relative to sector peers, consistent with
+          the contrarian value-trap definition in LSV 1994 §3)
 
-    The two-factor gate is NOT live yet: ``compute/main.py`` computes it in
-    parallel as a SHADOW counter (``Metadata.value_trap_risk_two_factor_shadow_count``,
-    0.10.32-phase8pilot) so the first sp1500 cron's firing rate can be confirmed
-    before the live warning is gated on the second leg.  The live
-    ``valuation_warnings`` append path in ``ensemble.py`` is UNCHANGED this PR.
+    A firm with ``ROE ≤ Ke`` but a **premium P/E** vs. sector peers is NOT
+    a classic value trap — it may be a growth company priced for future ROE
+    expansion.  Loss-making firms (``eps_ttm ≤ 0``) are **EXEMPT** — P/E is
+    undefined, so the second leg cannot fire.
+
+    The gate is implemented in ``compute/main.py`` (Step 8 per-ticker loop),
+    where ``sector_panel`` and ``universe_metrics`` are already in scope.
+    ``compute/valuation/ensemble.py`` no longer appends the warning — the
+    cross-sectional P/E comparison requires sector-peer context unavailable
+    inside the pure-function ensemble layer.
+
+    The shadow counter ``Metadata.value_trap_risk_two_factor_shadow_count``
+    (shipped in PR-1, 0.10.33-phase8pilot) now equals the live count and is
+    kept for one more cron as a structural cross-check.
 
     **Issue #11 fix**
     ``avg_3y_roe is None`` skips under the distinct ``"insufficient_history_for_roe"``

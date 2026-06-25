@@ -791,36 +791,37 @@ class Metadata(BaseModel):
     # unreconciled) — the veto nulls the ensemble after the warning was captured,
     # so the total still counts it but this delta does not. ~0 expected overlap.
     extreme_estimate_majority_lowapp_count: int | None = None
-    # Two-factor value_trap_risk shadow counter (issue #586 RATIFY-WITH-AMENDMENT,
-    # 0.10.33-phase8pilot, Rule 18 observability-before-wiring).
+    # Two-factor value_trap_risk gate counter (issue #586 PR-2,
+    # 0.10.34-phase8pilot).
     #
-    # Background: the LIVE ``value_trap_risk`` warning fires whenever RIM is
-    # skipped under the Penman 2013 ``ROE ≤ Ke`` condition (single-leg gate).
-    # The methodology-scientist RATIFY-WITH-AMENDMENT verdict adds a SECOND LEG
-    # (LSV 1994 "Contrarian Investment" §3): the P/E must also be below the
-    # stock's sector-peer median P/E.  A firm with ROE < Ke but a premium P/E
-    # relative to its sector peers is NOT a classic value trap — it may be a
-    # growth company priced above peers with sub-hurdle trailing ROE.
+    # PR-1 (0.10.33-phase8pilot) shipped this as a SHADOW counter while the
+    # two-factor gate was observability-only.  The first sp1500 cron confirmed
+    # 155 firings (10.3% of 1504) — squarely in the methodology-ratified 5-12%
+    # LSV 1994 band.  PR-2 FLIPS the live emission to the two-factor gate.
     #
-    # This counter measures the universe-wide two-factor firing rate WITHOUT
-    # changing any live emission.  The shadow gate fires iff:
-    #   (a) the live single-leg condition fires  (ROE ≤ Ke)
+    # As of 0.10.34-phase8pilot, the LIVE ``value_trap_risk`` warning fires iff:
+    #   (a) RIM skips under avg_3y_roe ≤ Ke  (Penman 2013 condition)
     #   AND
     #   (b) eps_ttm > 0 (positive trailing earnings, so P/E is defined)
     #   AND
     #   (c) P/E (= current_price / eps_ttm) < sector-peer median P/E
+    #       (LSV 1994 "Contrarian Investment" §3 cheap-relative-to-peers leg)
     # A loss-making / pre-revenue growth stock (eps_ttm ≤ 0, P/E undefined)
-    # is EXEMPT from the two-factor gate and does NOT count.
+    # is EXEMPT from the two-factor gate and does NOT emit the warning.
     #
-    # Live ``valuation_warnings`` content for every ticker is byte-identical
-    # to pre-0.10.33: the old single-leg ``value_trap_risk`` still emits on
-    # the ``ROE ≤ Ke`` condition alone.  The shadow counter is the ONLY change.
+    # This counter now equals the LIVE ``value_trap_risk`` warning count
+    # (the two-factor firings, ~155 on the first sp1500 cron).  It is kept for
+    # one additional cron as a structural cross-check.  NOTE: it does NOT
+    # equal ``value_trap_risk_count_with_sector_coe`` (~548) — that field is
+    # the Issue-#67 SINGLE-LEG RIM-skip diagnostic (counts every ROE ≤ Ke
+    # firm under the sector CoE, the Penman superset), which is a STRICT
+    # SUPERSET of this two-factor count.  The expected gap is ~393 (the
+    # single-leg-only firms the LSV cheap leg now exempts — predominantly
+    # loss-making / above-median-P/E growth names), NOT ~0.  A post-cron
+    # auditor cross-checking these two counters should expect that ~393 delta.
     #
     # Nullable on legacy snapshots (pre-0.10.33).  None when the per-stock
-    # loop was skipped or failed.  Zero is a valid value (counter ran,
-    # no tickers fired the two-factor gate).  Methodology-scientist gate:
-    # the ratio of this counter to ``value_trap_risk_count_with_sector_coe``
-    # measures the incremental specificity gain from the second leg.
+    # loop was skipped or failed.  Zero is a valid value (no tickers fired).
     value_trap_risk_two_factor_shadow_count: int | None = None
 
 
