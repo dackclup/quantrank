@@ -99,16 +99,36 @@ export default function RankingTable({
   // committed in the RankingView FilterDrawer and arrive pre-applied in `data`.
   const [search, setSearch] = useState('');
 
-  // Defer the 1504-row search filter so keystrokes stay responsive (INP fix).
-  // `search` updates immediately (controls the <input> value) — typing feels
-  // instant. `deferredSearch` is React's low-priority copy: the expensive
-  // `filtered` useMemo and the FLIP reshuffle run at lower priority so the
-  // keystroke itself is never blocked. React 18 ships useDeferredValue.
+  // Ref for the uncontrolled search <input>. Used to programmatically reset
+  // the DOM value when the "Clear search" button fires (the React state reset
+  // alone is insufficient for an uncontrolled input — the browser owns the
+  // displayed value, so we must also clear input.value directly).
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Defer the 1504-row search filter so keystrokes stay responsive.
+  // The <input> is now UNCONTROLLED (no `value` binding) — the browser owns
+  // the displayed text, so every keystroke commits at the DOM level instantly,
+  // zero React render on the critical path. `setSearch` is pushed through
+  // startTransition (see onChange below), making `search` itself a low-priority
+  // state update. `deferredSearch` is a second-level deferral: the expensive
+  // `filtered` useMemo and the FLIP reshuffle run even lower priority, exactly
+  // when the scheduler has idle time. React 18 ships both primitives.
+  //
+  // Why keep useDeferredValue when setSearch is already in a transition?
+  // The transition ensures the browser scheduler can interrupt `setSearch`
+  // commits; useDeferredValue ensures the expensive filter memo runs at the
+  // scheduler's absolute lowest priority (may trail even normal transitions).
+  // The combination is harmless (additive deferral, no tearing risk on an
+  // uncontrolled input) and keeps `deferredSearch` as the stable anchor for
+  // the FLIP filterKey and window-reset effects — the invariant those effects
+  // depend on is "fires exactly when filtered rows actually commit", and
+  // `deferredSearch` guarantees that regardless of how `setSearch` was called.
   const deferredSearch = useDeferredValue(search);
 
   // startTransition wraps the column-sort state updates so the 1504-row
   // re-sort is interruptible / low-priority. The click feedback (the arrow
   // icon swap) remains immediate; only the expensive sort computation yields.
+  // Also used for search onChange (see above).
   const [, startTransition] = useTransition();
 
   // Sort state — controlled when the parent passes sortKey/sortDir/onSortChange
@@ -131,7 +151,8 @@ export default function RankingTable({
   // Free-text search over ticker + company name. Empty query passes everything.
   // Keyed off deferredSearch (not the immediate `search`) so the 1504-row
   // filter runs at low priority — the keystroke commits first, then this memo
-  // re-runs. The <input value> stays on `search` so typing is never blocked.
+  // re-runs. The <input> is uncontrolled so its displayed text is never
+  // blocked by React scheduling.
   const filtered = useMemo(() => {
     const q = deferredSearch.trim().toLowerCase();
     if (!q) return data;
@@ -231,6 +252,8 @@ export default function RankingTable({
   // have already moved by the time useFlip fires, so the FLIP measures the
   // real old→new positions. Opening on `search` (immediate) would fire the
   // gate one React batch early, before filtered changes, giving stale positions.
+  // This invariant is preserved by the uncontrolled-input refactor: `deferredSearch`
+  // still trails `search` by exactly one scheduler yield, same as before.
   const orderKey = visibleRows.map((r) => r.ticker).join(',');
   const filterKey = deferredSearch;
   const tbodyFlipRef = useFlip<HTMLTableSectionElement>(orderKey, filterKey);
@@ -342,12 +365,29 @@ export default function RankingTable({
       {/* Toolbar: inline search + result count. */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[12.5rem] max-w-xs flex-1">
+          {/*
+            UNCONTROLLED input (no `value` binding) — the browser owns the
+            displayed text so keystrokes commit at the DOM level instantly,
+            zero React render per character on the interaction's critical path.
+            This removes the CONTROLLED-input re-render that was the root cause
+            of the 208ms first-keystroke INP at 4× CPU throttle.
+
+            onChange pushes the value into React state via startTransition so
+            `setSearch` is low-priority and can be interrupted — the filter
+            memo + FLIP reshuffle both depend on `deferredSearch` which trails
+            even further, keeping all expensive work off the critical path.
+
+            `inputRef` is used by "Clear search" to reset the DOM value
+            synchronously alongside the React state reset (an uncontrolled
+            input does not reflect state resets in the DOM automatically).
+          */}
           <input
+            ref={inputRef}
             type="search"
             placeholder="Search ticker or name…"
             aria-label="Search by ticker or company name"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            defaultValue=""
+            onChange={(e) => startTransition(() => setSearch(e.target.value))}
             className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-500 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-400 dark:focus:border-slate-500 dark:focus:ring-slate-500"
           />
           <svg
@@ -591,7 +631,15 @@ export default function RankingTable({
               {search && (
                 <button
                   type="button"
-                  onClick={() => setSearch('')}
+                  onClick={() => {
+                    // Uncontrolled input: must reset both the DOM value (browser-
+                    // owned) and the React state. The DOM reset makes the input
+                    // appear empty immediately; the React state reset clears
+                    // `search` → `deferredSearch` → filtered rows via the normal
+                    // deferred path. Both are required; either alone is incomplete.
+                    if (inputRef.current) inputRef.current.value = '';
+                    startTransition(() => setSearch(''));
+                  }}
                   className="inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                 >
                   Clear search

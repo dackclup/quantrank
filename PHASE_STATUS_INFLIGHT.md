@@ -7242,3 +7242,66 @@ a synchronous unit test; that limitation is documented in the test file header.
 - `PHASE_STATUS_INFLIGHT.md` (this entry)
 
 **Test results**: 189 baseline → 240 total (+51). `tsc --noEmit` clean. No new devDependency added.
+
+## perf(frontend): RankingTable search input uncontrolled (in flight, 2026-06-25)
+
+**Branch**: `claude/rankingtable-search-uncontrolled`
+**Type**: perf(frontend) — VIEW-LAYER ONLY. No schema change. Schema triple untouched.
+Defense layer UNCHANGED at 36. Rankings/scores/flags BYTE-IDENTICAL. No new dependency.
+No design-token/visual change.
+
+**Motivation**: PR #608 shipped `useDeferredValue(search)` + `useTransition`-wrapped `onSort`,
+bringing desktop INP from 496ms → 360ms. Playwright re-profile (1440×900, 4× CPU throttle)
+pinned the remaining 208ms to the SEARCH FIRST-KEYSTROKE. Root cause: the search `<input>`
+was CONTROLLED (`value={search}`), so every keystroke triggered a synchronous React re-render
+of the input + toolbar on the interaction's critical path. `useDeferredValue` already deferred
+the 1504-row filter but could not defer the controlled-input's own re-render. Desktop INP
+target is < 200ms ("Good").
+
+**Change** (`frontend/components/RankingTable.tsx` only):
+
+1. **Uncontrolled input**: removed `value={search}` binding. The browser now owns the
+   displayed text; keystrokes commit at the DOM level instantly, zero React render per
+   character on the critical path. Added `ref={inputRef}` (for programmatic reset) and
+   `defaultValue=""`.
+
+2. **Deferred setSearch**: `onChange` pushes the value into React state via `startTransition`:
+   `onChange={(e) => startTransition(() => setSearch(e.target.value))}`. This is safe and was
+   NOT safe while controlled — because the visible input value is DOM-owned, deferring
+   `setSearch` no longer makes typing feel stuck. The keystroke commits at the browser level
+   instantly; only the filter state update is low-priority.
+
+3. **useDeferredValue retained**: `deferredSearch = useDeferredValue(search)` is kept.
+   `setSearch` inside `startTransition` makes `search` already low-priority, but
+   `deferredSearch` is an additive second deferral (harmless) that keeps the FLIP `filterKey`
+   and window-reset effects anchored to `deferredSearch` — the invariant those effects depend
+   on is "fires exactly when filtered rows actually commit to the DOM", which `deferredSearch`
+   guarantees independently of how `setSearch` was called.
+
+4. **FLIP invariant preserved**: `filterKey = deferredSearch`. The FLIP gate opens exactly
+   when deferred filtered rows commit; `filterKey` is never `search` (immediate). Scroll /
+   sort / load-more do NOT change `filterKey` — the search-scoped FLIP invariant is intact.
+
+5. **Clear-search wired through ref**: the empty-state "Clear search" button now resets both
+   the DOM value (`inputRef.current.value = ''`) AND the React state
+   (`startTransition(() => setSearch(''))`). Either alone is incomplete for an uncontrolled
+   input. The `{search && ...}` guard reads React state (still correct — `setSearch` still
+   populates `search`).
+
+**Invariants confirmed**:
+- Windowed infinite-scroll (WINDOW_SIZE=50), window-reset effects, `animateRows` entrance
+  gate, "X / N stocks" count denominator — all untouched.
+- Search filtering behavior identical (ticker + company-name, case-insensitive, empty → all).
+- `tabular-nums` and accessibility (`aria-label`, `type="search"`, `min-h-[44px]`) preserved.
+
+**Flag**: PR #609 (RankingTable vitest tests, not yet merged) also touches `RankingTable.tsx`.
+Whichever merges second needs a trivial rebase — the two diffs are non-overlapping (this PR
+edits state/hooks/input; #609 adds test files only, or if it patches imports those will rebase
+cleanly).
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS (1512 static pages, 0 new errors) ·
+schema triple UNTOUCHED. Lockstep: this entry. No CLAUDE.md/AGENTS.md substance change
+required (frontend view-layer perf, no new convention). Gate: frontend-design-reviewer +
+vercel-preview-auditor + expert-user-explorer.
+
+---
