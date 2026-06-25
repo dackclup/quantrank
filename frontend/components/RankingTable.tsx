@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { SearchX } from 'lucide-react';
 
 import { LossChanceBadge } from '@/components/LossChanceBadge';
@@ -99,6 +99,18 @@ export default function RankingTable({
   // committed in the RankingView FilterDrawer and arrive pre-applied in `data`.
   const [search, setSearch] = useState('');
 
+  // Defer the 1504-row search filter so keystrokes stay responsive (INP fix).
+  // `search` updates immediately (controls the <input> value) — typing feels
+  // instant. `deferredSearch` is React's low-priority copy: the expensive
+  // `filtered` useMemo and the FLIP reshuffle run at lower priority so the
+  // keystroke itself is never blocked. React 18 ships useDeferredValue.
+  const deferredSearch = useDeferredValue(search);
+
+  // startTransition wraps the column-sort state updates so the 1504-row
+  // re-sort is interruptible / low-priority. The click feedback (the arrow
+  // icon swap) remains immediate; only the expensive sort computation yields.
+  const [, startTransition] = useTransition();
+
   // Sort state — controlled when the parent passes sortKey/sortDir/onSortChange
   // (RankingView's sort-chip row), else internal (standalone fallback).
   const isSortControlled = sortKeyProp !== undefined && sortDirProp !== undefined && onSortChange !== undefined;
@@ -117,20 +129,24 @@ export default function RankingTable({
   const [visibleCount, setVisibleCount] = useState(WINDOW_SIZE);
 
   // Free-text search over ticker + company name. Empty query passes everything.
+  // Keyed off deferredSearch (not the immediate `search`) so the 1504-row
+  // filter runs at low priority — the keystroke commits first, then this memo
+  // re-runs. The <input value> stays on `search` so typing is never blocked.
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const q = deferredSearch.trim().toLowerCase();
     if (!q) return data;
     return data.filter(
       (row) => row.ticker.toLowerCase().includes(q) || row.name.toLowerCase().includes(q),
     );
-  }, [data, search]);
+  }, [data, deferredSearch]);
 
-  // Reset the window on a search change — the result set changes, so we
-  // re-start from the first WINDOW_SIZE rows (same reason the old code reset
-  // `page` to 1 on search change).
+  // Reset the window when the deferred filter result changes — the result set
+  // has updated, so re-start from the first WINDOW_SIZE rows. Keyed on
+  // deferredSearch (not `search`) so the reset fires exactly when filtered
+  // rows change, not one tick early while old results are still displayed.
   useEffect(() => {
     setVisibleCount(WINDOW_SIZE);
-  }, [search]);
+  }, [deferredSearch]);
 
   // Reset the window when the upstream (drawer) filter set changes the row
   // count. Keyed on `data` (a fresh array reference is produced on every
@@ -209,8 +225,14 @@ export default function RankingTable({
   // semantically correct ("the field responded"). `orderKey` re-runs the
   // measure on ANY order change (sort / scroll silently re-baseline); `filterKey`
   // is what GATES the play.
+  //
+  // filterKey is keyed on deferredSearch (not `search`) so the FLIP gate
+  // opens exactly when the deferred filtered rows actually commit — the rows
+  // have already moved by the time useFlip fires, so the FLIP measures the
+  // real old→new positions. Opening on `search` (immediate) would fire the
+  // gate one React batch early, before filtered changes, giving stale positions.
   const orderKey = visibleRows.map((r) => r.ticker).join(',');
-  const filterKey = search;
+  const filterKey = deferredSearch;
   const tbodyFlipRef = useFlip<HTMLTableSectionElement>(orderKey, filterKey);
   const cardsFlipRef = useFlip<HTMLUListElement>(orderKey, filterKey);
 
@@ -242,11 +264,20 @@ export default function RankingTable({
       ];
       nextDir = descByDefault.includes(key) ? 'desc' : 'asc';
     }
+    // Wrap state updates in a transition so the 1504-row re-sort runs at
+    // low priority (interruptible). The arrow-icon swap (driven by sortKey /
+    // sortDir reads at render time) stays immediate; only the expensive sorted
+    // useMemo + subsequent re-render yield to the browser. Desktop INP fix
+    // for the 232–280ms column-sort longtask.
     if (isSortControlled) {
-      onSortChange!(key, nextDir);
+      startTransition(() => {
+        onSortChange!(key, nextDir);
+      });
     } else {
-      setSortKeyInternal(key);
-      setSortDirInternal(nextDir);
+      startTransition(() => {
+        setSortKeyInternal(key);
+        setSortDirInternal(nextDir);
+      });
     }
   };
 

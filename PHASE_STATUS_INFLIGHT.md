@@ -7207,3 +7207,51 @@ deferred shrinkage composite (Proposal A) once ≥12 monthly IC points accrue.
 
 Lockstep: this entry + CLAUDE.md + AGENTS.md substance diffs. Schema triple in
 sync (schema_check ✓). Gate: quantrank-reviewer at Draft→Ready.
+
+## perf(frontend): RankingTable INP fix — defer search filter + sort transition (in flight, 2026-06-25)
+
+**Branch**: `claude/quantrank-speed-analysis-d4c8c9`
+**Type**: perf(frontend) — FRONTEND VIEW-LAYER ONLY. No schema change. No schema triple
+touched. Defense layer UNCHANGED at 36. Rankings/scores/flags BYTE-IDENTICAL. No new dependency.
+
+**Motivation**: Vercel Speed Insights field data shows desktop Real Experience Score = 82
+(Needs Improvement) vs mobile 95 (Great), dominated by INP = 496ms on desktop. A Playwright
+PerformanceObserver profile (1440×900, 4× CPU throttle) pinned the cause to
+`RankingTable.tsx`: search first keystroke = 416ms event / 352ms longtask (1504-row `filtered`
+useMemo + `sorted` useMemo + `useFlip` getBoundingClientRect measurement + `setVisibleCount`
+reset all running synchronously); column sort (Name/Sector/Price/Ticker) = 232–280ms. Target
+INP <200ms on desktop.
+
+**Two surgical changes to `frontend/components/RankingTable.tsx` only:**
+
+1. **Deferred search filter** (`useDeferredValue`): `search` state remains immediate — the
+   `<input value={search}>` stays controlled, so typing feels instant. `deferredSearch =
+   useDeferredValue(search)` is React 18's low-priority copy. The `filtered` useMemo,
+   the window-reset `useEffect`, and the FLIP `filterKey` all key off `deferredSearch`
+   (not `search`), so the 1504-row filter and the FLIP reshuffle run at lower priority
+   without blocking the keystroke event.
+
+   **FLIP search-scoped invariant preserved**: `filterKey = deferredSearch` means the FLIP
+   gate opens exactly when the deferred filtered rows actually commit to the DOM — `useFlip`
+   measures real old→new positions, not stale ones. Opening the gate on `search` (immediate)
+   would fire one React batch early before `filtered` updates, giving wrong positions.
+
+   **Window reset preserved**: `useEffect(() => setVisibleCount(WINDOW_SIZE), [deferredSearch])`
+   resets exactly when the filtered result changes, not prematurely.
+
+2. **Transition-wrapped column sort** (`useTransition`): `onSort` wraps both the controlled
+   (`onSortChange!(key, nextDir)`) and internal (`setSortKeyInternal` + `setSortDirInternal`)
+   paths in `startTransition(() => { ... })`. The sort arrow-icon swap (driven by `sortKey` /
+   `sortDir` reads at render time) is immediate; only the expensive 1504-row `sorted` useMemo
+   + re-render are deferred and interruptible. The `[sortKey, sortDir]` window-reset effect
+   is unchanged and still fires correctly.
+
+**Files**: `frontend/components/RankingTable.tsx` (import line + 2 new hooks + 5 targeted
+edits to existing state/memo/effect/handler blocks) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS (1510 pages, 0 new errors) · schema triple
+UNTOUCHED · no design-token/visual change. No vitest coverage exists for RankingTable (the
+suite covers lib utilities only) — deferred-search + transition behavior needs a
+React Testing Library or Playwright test (note for test-engineer).
+
+---
