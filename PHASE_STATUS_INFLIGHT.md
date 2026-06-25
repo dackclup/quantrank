@@ -7172,3 +7172,38 @@ compute-builder BUILT-CLEAN; quantrank-reviewer READY-TO-PUSH (3/3 fixes correct
 idempotence + import-swap regression-checked). Lockstep: this entry only (the §Commands backfill
 row + warehouse §Gotchas description are UNCHANGED — internal robustness, no behavior the docs
 describe changed).
+## PR #604 — feat(compute): IC half-life monitor (Proposal F, in flight, 2026-06-25)
+
+Branch `claude/fund-performance-rankings-f8x4o1`. First implementation slice
+of the legendary-fund deep-research 6-proposal program (methodology-scientist
+RATIFY-SHADOW). Extends `compute/validation/ic_decay.py` to fit a per-pillar IC
+decay half-life — fits BOTH an exponential and a power-law curve to |IC| over
+the monthly panel and reports the half-life of whichever has the better R²
+(Di Mascio 2022 found power-law fits alpha decay slightly better). Surfaced
+write-only as two new optional `Metadata` fields.
+
+SHADOW / OBSERVABILITY-ONLY (Rule 18): never feeds scoring, vetoes, rankings,
+or the composite. Live rankings/scores/flags BYTE-IDENTICAL. Defense layer
+UNCHANGED at 36. With the project's thin IC history every pillar fits `None`
+on launch day (honest preliminary gate at `MIN_HALF_LIFE_FIT_MONTHS=12`) — same
+posture as `bonferroni_shadow_*` / `cross_source_corruption_*`. Feeds the
+deferred shrinkage composite (Proposal A) once ≥12 monthly IC points accrue.
+
+- `compute/validation/ic_decay.py` — `fit_pillar_half_life` +
+  `build_pillar_half_lives` + `MIN_HALF_LIFE_FIT_MONTHS` + `PillarHalfLife`;
+  exp/power fits, graceful `None` on thin/degenerate series, never raises
+- `compute/output/schemas.py` — `Metadata.pillar_ic_half_life_months:
+  dict[str, float | None] | None` + `pillar_ic_decay_fit_model:
+  dict[str, str | None] | None` (both optional, default None)
+- `compute/main.py` — write-only wiring co-located with the
+  `QR_SKIP_DECAY_MONITOR` guard, try/except non-fatal (never blocks the cron)
+- `compute/config.py` — schema `0.10.34` → `0.10.35-phase8pilot`
+- `frontend/lib/{types.ts,schema-snapshot.json}` — schema-triple mirror
+- `docs/METHODOLOGY.md` + `.claude/agents/literature-searcher.md` —
+  McLean-Pontiff 2016 promoted from prose to a canonical anchor; Di Mascio 2022
+- tests — +17 (exp recovery λ=0.05→13.86m, power-law win, preliminary boundary
+  n=11/12, degenerate constant/zero/growing IC, `build_pillar_half_lives`
+  graceful contract, Metadata round-trip) + schema-version pin → 0.10.34
+
+Lockstep: this entry + CLAUDE.md + AGENTS.md substance diffs. Schema triple in
+sync (schema_check ✓). Gate: quantrank-reviewer at Draft→Ready.

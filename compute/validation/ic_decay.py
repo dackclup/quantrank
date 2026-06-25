@@ -80,7 +80,9 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime, timedelta
 from datetime import date as _date
 from pathlib import Path
+from typing import NamedTuple
 
+import numpy as np
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -100,6 +102,293 @@ IC_HORIZON_MONTHS: int = 6
 # Issue #75 §3 — bounded look-back for the cron call: 39 months so the
 # 36-month rolling window is fully populated while capping compute cost.
 IC_LOOKBACK_MONTHS: int = 39
+
+# Proposal F — IC half-life fitting.
+# Minimum observations required before attempting a curve fit.  Mirrors
+# MIN_HISTORY_MONTHS so the preliminary gate semantics are identical: when
+# n < MIN_HALF_LIFE_FIT_MONTHS the returned half-life is None.
+# Provenance: Di Mascio (2022) SSRN Working Paper 4023689 §4 fits alpha-decay
+# curves on panels of ≥ 12 monthly IC observations; we adopt the same floor so
+# the fit is not attempted on thin history.  Tier-3 citation: this module
+# (compute/validation/ic_decay.py), first added Proposal F 2026-06-24.
+MIN_HALF_LIFE_FIT_MONTHS: int = 12
+
+
+class PillarHalfLife(NamedTuple):
+    """Result of a per-pillar IC half-life fit.
+
+    Attributes
+    ----------
+    half_life_months:
+        Fitted half-life in months.  ``None`` when the pillar has fewer than
+        ``MIN_HALF_LIFE_FIT_MONTHS`` (12) observations (preliminary — never
+        fit on thin history; reuses the existing preliminary gate semantics).
+        Also ``None`` when both curve fits fail to converge or produce a
+        physically-meaningless result (e.g. negative half-life).
+    fit_model:
+        Which decay model produced the winning fit — ``"exponential"`` or
+        ``"power"`` — based on the higher R² value.  ``None`` when
+        ``half_life_months`` is ``None``.
+    r_squared:
+        R² of the winning fit.  ``None`` when ``half_life_months`` is
+        ``None``.
+    preliminary:
+        ``True`` when fewer than ``MIN_HALF_LIFE_FIT_MONTHS`` monthly
+        observations exist.  In that state ``half_life_months`` is always
+        ``None`` — the honest label when history is too thin.
+    """
+
+    half_life_months: float | None
+    fit_model: str | None
+    r_squared: float | None
+    preliminary: bool
+
+
+def _r_squared(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Coefficient of determination R² (pure numpy, no scipy dependency).
+
+    Returns the fraction of variance in ``y_true`` explained by ``y_pred``.
+    Returns ``0.0`` when the total variance is zero (constant signal).
+    """
+    ss_res = float(np.sum((y_true - y_pred) ** 2))
+    ss_tot = float(np.sum((y_true - np.mean(y_true)) ** 2))
+    if ss_tot == 0.0:
+        return 0.0
+    return 1.0 - ss_res / ss_tot
+
+
+def _fit_exponential_half_life(
+    t: np.ndarray, abs_ic: np.ndarray
+) -> tuple[float | None, float | None]:
+    """Fit |IC(t)| = A * exp(−λt) via log-linearisation and return
+    (half_life_months, r_squared).
+
+    The exponential model ``|IC| = A exp(−λt)`` is log-linearised to
+    ``ln(|IC|) = ln(A) − λt`` and solved by least-squares.
+
+    Provenance: McLean-Pontiff (2016) JF §3 characterises anomaly decay as
+    roughly exponential OOS and post-publication; Di Mascio (2022) SSRN
+    4023689 §4 also uses an exponential as the baseline model.
+
+    Returns ``(None, None)`` when:
+    - fewer than 2 valid points exist after filtering non-positive |IC|.
+    - the design matrix is ill-conditioned (near-zero denominator).
+    - the fitted λ ≤ 0 (growing signal — no decay half-life).
+    """
+    mask = abs_ic > 0
+    if mask.sum() < 2:
+        return None, None
+
+    t_ok = t[mask].astype(float)
+    y_ok = np.log(abs_ic[mask].astype(float))
+
+    # OLS: [ln(A), −λ] = (XᵀX)⁻¹ Xᵀy where X = [1, t].
+    n = len(t_ok)
+    sum_t = float(np.sum(t_ok))
+    sum_t2 = float(np.sum(t_ok ** 2))
+    sum_y = float(np.sum(y_ok))
+    sum_ty = float(np.sum(t_ok * y_ok))
+    denom = n * sum_t2 - sum_t ** 2
+    if abs(denom) < 1e-10:
+        return None, None
+
+    slope = (n * sum_ty - sum_t * sum_y) / denom  # = −λ
+    lam = -slope
+    if lam <= 0:
+        return None, None
+
+    half_life = math.log(2.0) / lam
+    intercept = (sum_y - slope * sum_t) / n  # = ln(A)
+    a = math.exp(intercept)
+
+    y_pred = a * np.exp(-lam * t[mask].astype(float))
+    r2 = _r_squared(abs_ic[mask].astype(float), y_pred)
+    return half_life, r2
+
+
+def _fit_power_half_life(
+    t: np.ndarray, abs_ic: np.ndarray
+) -> tuple[float | None, float | None]:
+    """Fit |IC(t)| = A * t^(−β) via log-linearisation and return
+    (half_life_months, r_squared).
+
+    The power-law model ``|IC| = A t^(−β)`` is log-linearised to
+    ``ln(|IC|) = ln(A) − β ln(t)`` and solved by least-squares over
+    ``t ≥ 1`` (month index starting from 1 so ln(t) is defined).
+
+    Provenance: Di Mascio (2022) SSRN Working Paper 4023689 §4 reports
+    power-law fits explain alpha-decay slightly better than exponential
+    (median adj-R² 0.48 vs 0.43 in their 80-factor panel).
+
+    Half-life is defined implicitly as the t* where |IC(t*)| = |IC(1)| / 2:
+        A * t*^(−β) = A / 2  →  t* = 2^(1/β).
+
+    Returns ``(None, None)`` when:
+    - fewer than 2 valid points exist after filtering t ≤ 0 and |IC| ≤ 0.
+    - the design matrix is ill-conditioned.
+    - β ≤ 0 (growing/flat signal — no decay half-life under power law).
+    """
+    # Shift t to 1-based so ln(t) is always defined for the first month.
+    t_shifted = t.astype(float) + 1.0
+    mask = (t_shifted > 0) & (abs_ic > 0)
+    if mask.sum() < 2:
+        return None, None
+
+    ln_t = np.log(t_shifted[mask])
+    ln_y = np.log(abs_ic[mask].astype(float))
+
+    n = len(ln_t)
+    sum_x = float(np.sum(ln_t))
+    sum_x2 = float(np.sum(ln_t ** 2))
+    sum_y = float(np.sum(ln_y))
+    sum_xy = float(np.sum(ln_t * ln_y))
+    denom = n * sum_x2 - sum_x ** 2
+    if abs(denom) < 1e-10:
+        return None, None
+
+    slope = (n * sum_xy - sum_x * sum_y) / denom  # = −β
+    beta = -slope
+    if beta <= 0:
+        return None, None
+
+    half_life = 2.0 ** (1.0 / beta)
+    intercept = (sum_y - slope * sum_x) / n
+    a = math.exp(intercept)
+
+    y_pred = a * t_shifted[mask] ** (-beta)
+    r2 = _r_squared(abs_ic[mask].astype(float), y_pred)
+    return half_life, r2
+
+
+def fit_pillar_half_life(pillar_history: pd.DataFrame) -> PillarHalfLife:
+    """Fit an IC decay half-life for a single pillar.
+
+    Given a pillar's monthly IC panel (same DataFrame shape as
+    :func:`check_pillar_decay` consumes: columns ``pillar``,
+    ``year_month``, ``monthly_ic``), fit BOTH an exponential decay model
+    AND a power-law decay model on the ``|IC|`` time series.  Return the
+    half-life from whichever has the higher R².
+
+    Di Mascio (2022) SSRN Working Paper 4023689 §4 found the power-law
+    fits alpha decay slightly better than exponential (median adj-R² 0.48
+    vs 0.43 across an 80-factor panel).  We evaluate both and pick the
+    winner empirically per-pillar.
+
+    **Preliminary gate**: when the pillar has fewer than
+    ``MIN_HALF_LIFE_FIT_MONTHS`` (12) observations, returns
+    ``PillarHalfLife(half_life_months=None, …, preliminary=True)``.
+    This is the honest expected outcome with ~1 week of git IC history
+    (``preliminary=True``, ``half_life_months=None``).
+
+    **Graceful degradation**: if both fits fail (non-positive half-life,
+    ill-conditioned matrix, or any exception), returns None half-life with
+    ``preliminary=False`` (enough data existed, but the fit failed).
+
+    Parameters
+    ----------
+    pillar_history:
+        DataFrame with columns ``pillar``, ``year_month``, ``monthly_ic``.
+        ``n_stocks`` is optional.
+
+    Returns
+    -------
+    PillarHalfLife
+    """
+    required_columns = {"pillar", "year_month", "monthly_ic"}
+    missing = required_columns - set(pillar_history.columns)
+    if missing:
+        return PillarHalfLife(
+            half_life_months=None,
+            fit_model=None,
+            r_squared=None,
+            preliminary=True,
+        )
+
+    df = pillar_history.copy()
+    df["year_month"] = pd.to_datetime(df["year_month"])
+    df = df.sort_values("year_month", kind="mergesort").reset_index(drop=True)
+    n = len(df)
+
+    if n < MIN_HALF_LIFE_FIT_MONTHS:
+        return PillarHalfLife(
+            half_life_months=None,
+            fit_model=None,
+            r_squared=None,
+            preliminary=True,
+        )
+
+    abs_ic = df["monthly_ic"].abs().to_numpy(dtype=float)
+    t = np.arange(n, dtype=float)
+
+    try:
+        exp_hl, exp_r2 = _fit_exponential_half_life(t, abs_ic)
+    except Exception as exc:  # noqa: BLE001
+        logger.debug("Exponential half-life fit failed for pillar: %s", exc)
+        exp_hl, exp_r2 = None, None
+
+    try:
+        pow_hl, pow_r2 = _fit_power_half_life(t, abs_ic)
+    except Exception as exc:  # noqa: BLE001
+        logger.debug("Power-law half-life fit failed for pillar: %s", exc)
+        pow_hl, pow_r2 = None, None
+
+    # Select the winning model by R².  On a tie (e.g. both None), neither wins.
+    if exp_r2 is not None and (pow_r2 is None or exp_r2 >= pow_r2):
+        return PillarHalfLife(
+            half_life_months=exp_hl,
+            fit_model="exponential" if exp_hl is not None else None,
+            r_squared=exp_r2 if exp_hl is not None else None,
+            preliminary=False,
+        )
+    if pow_r2 is not None and pow_hl is not None:
+        return PillarHalfLife(
+            half_life_months=pow_hl,
+            fit_model="power",
+            r_squared=pow_r2,
+            preliminary=False,
+        )
+
+    # Both fits failed or neither produced a valid half-life.
+    return PillarHalfLife(
+        half_life_months=None,
+        fit_model=None,
+        r_squared=None,
+        preliminary=False,
+    )
+
+
+def build_pillar_half_lives(
+    pillar_histories: dict[str, pd.DataFrame],
+) -> dict[str, PillarHalfLife]:
+    """Run :func:`fit_pillar_half_life` on every pillar.
+
+    Pure function — no I/O.  The caller supplies the per-pillar monthly
+    panel (same shape produced by :func:`pillar_entries_to_monthly_panel`).
+
+    Returns a dict mapping pillar name → :class:`PillarHalfLife`.  Missing
+    pillars (not in ``pillar_histories``) are absent from the result.
+    Never raises — any per-pillar exception is caught and logged; the
+    result for that pillar will have ``half_life_months=None``.
+    """
+    results: dict[str, PillarHalfLife] = {}
+    for pillar_name, hist in pillar_histories.items():
+        if "pillar" not in hist.columns:
+            hist = hist.assign(pillar=pillar_name)
+        try:
+            results[pillar_name] = fit_pillar_half_life(hist)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "Half-life fit failed for pillar=%s (non-fatal): %s",
+                pillar_name,
+                exc,
+            )
+            results[pillar_name] = PillarHalfLife(
+                half_life_months=None,
+                fit_model=None,
+                r_squared=None,
+                preliminary=False,
+            )
+    return results
 
 
 @dataclass
@@ -506,11 +795,15 @@ __all__ = [
     "IC_DECAY_THRESHOLD",
     "IC_HORIZON_MONTHS",
     "IC_LOOKBACK_MONTHS",
+    "MIN_HALF_LIFE_FIT_MONTHS",
     "MIN_HISTORY_MONTHS",
     "ICDecayReport",
+    "PillarHalfLife",
     "build_decay_report",
+    "build_pillar_half_lives",
     "check_all_pillars",
     "check_pillar_decay",
     "emit_decay_report",
+    "fit_pillar_half_life",
     "pillar_entries_to_monthly_panel",
 ]

@@ -3410,6 +3410,84 @@ def run_weekly_compute() -> int:
             )
             decay_report_url = None
 
+    # Proposal F — IC half-life monitor (Rule 18 observability-before-wiring).
+    # Co-located with the IC-decay monitor block above (both read the same
+    # ``panels`` produced by ``pillar_entries_to_monthly_panel``).
+    # SHADOW / OBSERVABILITY-ONLY — NEVER modifies scores, flags, vetoes, or
+    # rankings.  Skip-safe via QR_SKIP_DECAY_MONITOR=1 (reuses the same guard
+    # as the decay monitor — both are IC-history machinery; no separate env-var
+    # needed per the co-location decision 2026-06-24).
+    # On first cron with ~1 week of git IC history the expected outcome is
+    # all ``None`` (preliminary=True for every pillar) — identical posture to
+    # ``bonferroni_shadow_*`` / ``cross_source_corruption_*``.
+    pillar_ic_half_life_months: dict[str, float | None] | None = None
+    pillar_ic_decay_fit_model: dict[str, str | None] | None = None
+    if os.environ.get("QR_SKIP_DECAY_MONITOR", "").lower() not in ("1", "true", "yes"):
+        try:
+            from compute.validation.historical_ic import (
+                DEFAULT_PILLARS as _DEFAULT_PILLARS_HL,
+            )
+            from compute.validation.historical_ic import (
+                compute_historical_ic_report as _compute_ic_report_hl,
+            )
+            from compute.validation.ic_decay import (
+                IC_LOOKBACK_MONTHS as _IC_LOOKBACK_MONTHS_HL,
+            )
+            from compute.validation.ic_decay import (
+                build_pillar_half_lives,
+            )
+            from compute.validation.ic_decay import (
+                pillar_entries_to_monthly_panel as _panel_for_hl,
+            )
+
+            _hl_end = datetime.now(UTC).date()
+            _hl_start = _hl_end - timedelta(days=int(_IC_LOOKBACK_MONTHS_HL * 30.5))
+            try:
+                _hl_ic_report = _compute_ic_report_hl(
+                    start_date=_hl_start,
+                    end_date=_hl_end,
+                    horizon_months=6,
+                    pillars=_DEFAULT_PILLARS_HL,
+                )
+                _hl_entries = _hl_ic_report.entries
+            except Exception as _hl_ic_exc:  # noqa: BLE001
+                logger.debug(
+                    "IC half-life: historical_ic walk failed, degrading to empty: %s",
+                    _hl_ic_exc,
+                )
+                _hl_entries = []
+
+            _hl_panels = _panel_for_hl(_hl_entries)
+            _hl_results = build_pillar_half_lives(_hl_panels)
+            # Surface results: per-pillar half-life + winning model.
+            # Missing pillars (no history at all) map to None.
+            pillar_ic_half_life_months = {
+                p: _hl_results[p].half_life_months if p in _hl_results else None
+                for p in _DEFAULT_PILLARS_HL
+            }
+            pillar_ic_decay_fit_model = {
+                p: _hl_results[p].fit_model if p in _hl_results else None
+                for p in _DEFAULT_PILLARS_HL
+            }
+            logger.info(
+                "IC half-life monitor: fitted=%d pillars (non-None half-life), "
+                "preliminary=%d pillars",
+                sum(1 for v in pillar_ic_half_life_months.values() if v is not None),
+                sum(
+                    1
+                    for p in _DEFAULT_PILLARS_HL
+                    if p in _hl_results and _hl_results[p].preliminary
+                ),
+            )
+        except Exception as _hl_exc:  # noqa: BLE001
+            logger.warning(
+                "IC half-life monitor failed (non-fatal — cron continues); "
+                "pillar_ic_half_life_months → None. Error: %s",
+                _hl_exc,
+            )
+            pillar_ic_half_life_months = None
+            pillar_ic_decay_fit_model = None
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -3674,6 +3752,16 @@ def run_weekly_compute() -> int:
         # review the ratio of this count to value_trap_risk_count_with_sector_coe
         # before wiring the second-leg into the live warning path.
         value_trap_risk_two_factor_shadow_count=value_trap_risk_two_factor_shadow_count,
+        # Proposal F — IC half-life monitor (0.10.34-phase8pilot, Rule 18
+        # observability-before-wiring).  SHADOW / OBSERVABILITY-ONLY — live
+        # scores, flags, rankings are byte-identical; defense layer UNCHANGED at 36.
+        # Per-pillar fitted IC decay half-life (months) + winning model label.
+        # Expected launch-day value: all per-pillar entries → None (preliminary=True
+        # with ~1 week of git IC history — identical honest posture to
+        # bonferroni_shadow_* / cross_source_corruption_*).
+        # Co-located with QR_SKIP_DECAY_MONITOR guard (see block above).
+        pillar_ic_half_life_months=pillar_ic_half_life_months or None,
+        pillar_ic_decay_fit_model=pillar_ic_decay_fit_model or None,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

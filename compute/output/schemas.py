@@ -823,6 +823,36 @@ class Metadata(BaseModel):
     # Nullable on legacy snapshots (pre-0.10.33).  None when the per-stock
     # loop was skipped or failed.  Zero is a valid value (no tickers fired).
     value_trap_risk_two_factor_shadow_count: int | None = None
+    # Proposal F — IC half-life monitor (Proposal F 2026-06-24, Rule 18
+    # observability-before-wiring, SHADOW / OBSERVABILITY-ONLY).
+    #
+    # Per-pillar fitted IC decay half-life in months, derived by fitting BOTH an
+    # exponential decay model (McLean-Pontiff 2016 JF §3 characterisation) AND a
+    # power-law decay model (Di Mascio 2022 SSRN Working Paper 4023689 §4 found
+    # power-law fits alpha-decay slightly better — median adj-R² 0.48 vs 0.43
+    # across an 80-factor panel), then selecting the winner by R².
+    #
+    # ``pillar_ic_half_life_months`` — per-pillar dict mapping pillar name
+    # (``"value"``, ``"quality"``, …) to the half-life in months.  A value of
+    # ``None`` for a specific pillar means EITHER:
+    #   (a) Preliminary: fewer than MIN_HALF_LIFE_FIT_MONTHS (12) monthly
+    #       observations exist for that pillar — the honest expected outcome
+    #       with ~1 week of git IC history (all pillars → None on launch day),
+    #       or
+    #   (b) Both curve fits failed to produce a positive half-life.
+    # The outer dict itself is ``None`` when the half-life computation was
+    # skipped (QR_SKIP_DECAY_MONITOR=1) or failed catastrophically.
+    #
+    # ``pillar_ic_decay_fit_model`` — per-pillar dict mapping pillar name to the
+    # winning decay model (``"exponential"`` or ``"power"``).  ``None`` for a
+    # specific pillar when ``pillar_ic_half_life_months[pillar]`` is ``None``.
+    # The outer dict mirrors the outer-None semantics of the half-life field.
+    #
+    # NEVER feeds scoring, vetoes, rankings, or composite score.  Defense layer
+    # is UNCHANGED at 36.  Both fields default to None so legacy snapshots
+    # (pre-0.10.34) deserialize cleanly under extra="forbid".
+    pillar_ic_half_life_months: dict[str, float | None] | None = None
+    pillar_ic_decay_fit_model: dict[str, str | None] | None = None
 
 
 class RawMetrics(BaseModel):
