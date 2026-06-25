@@ -7305,3 +7305,41 @@ required (frontend view-layer perf, no new convention). Gate: frontend-design-re
 vercel-preview-auditor + expert-user-explorer.
 
 ---
+
+## PR #612 — feat(frontend): expandable per-quarter drawers in Rotation history (in flight, 2026-06-25)
+
+Makes each quarterly rebalance row in the AI-pick **Rotation history**
+(`HoldingsTimeline`) a clickable accordion that expands a slide-down **drawer**
+showing a **Current-picks-style detail table** for that quarter — columns
+**# · Status · Ticker · Sector · Return · Weight**. Status maps to the rotation's
+own diff (entered → New chip, held → Held chip, rotated-out → Sold chip), reusing
+the live Current-picks chip tones so the two tables read identically.
+
+**Data layer**: `data.ts::getAiPickData()` now precomputes, **at build time**,
+per-quarter `weightByTicker` / `returnByTicker` number maps and attaches them to
+each timeline entry (single price-history read per ticker across the timeline
+union; raw closes are NOT shipped — the client payload grows by only two number
+maps per quarter, staying far below the 1.3 MB raw artifact). Held-name return =
+total return since entry measured to that quarter's rebalance date (historical
+analog of Current picks' "return since entry"); sold-name return = entry → exit
+quarter.
+
+**Schema triple UNTOUCHED** — the additive `weightByTicker?` / `returnByTicker?`
+fields on `AiPickTimelineEntry` are a backtest view-model assembled in `data.ts`
+from the fs-read `backtest_pit.json`, NOT the Pydantic↔TS↔snapshot contract;
+`schema_check` confirmed in sync. Legacy slider-mode artifacts degrade gracefully
+(accordion still opens; Weight/Return render `—`).
+
+**Shared-helper hygiene**: extracted `apportionWeightLabels` / `pctStr` /
+`toneClass` from `AiPickPortfolio.tsx` into a new `frontend/lib/portfolio-format.ts`
+imported by both the Current-picks table and the drawer so they can't drift
+(behavior in `AiPickPortfolio.tsx` byte-identical). Defense layer UNCHANGED at 36;
+no scoring/compute touched. Lockstep: this entry (frontend view-layer feature, no
+new convention → no CLAUDE.md/AGENTS.md substance change required).
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS (1512 static pages) ·
+`schema_check` PASS (snapshot in sync) · `vitest run` PASS (260 tests, 6 files —
+20 new HoldingsTimeline cases). Gate: frontend-design-reviewer +
+vercel-preview-auditor before Mark-Ready.
+
+---
