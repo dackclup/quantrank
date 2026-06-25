@@ -82,6 +82,11 @@ from compute.portfolio.backtest import (
     quarterly_rebalance_dates,
 )
 from compute.portfolio.pit_fundamentals import pit_history_rows, pit_snapshot_fields
+from compute.portfolio.position_returns import (
+    compute_position_returns,
+    position_returns_to_dict,
+    reconciliation_errors,
+)
 from compute.portfolio.weights import (
     HIGH_CONVICTION_COMPOSITE_MIN,
     HIGH_CONVICTION_LOSS_CHANCE_MAX,
@@ -1515,7 +1520,7 @@ def run_backfill(
             }
         )
 
-    nav, _grid_monthly_by_config, _grid_month_labels, _grid_aligned_net, _grid_diagnostics = (
+    nav, _grid_monthly_by_config, _grid_month_labels, _grid_aligned_net, _grid_diagnostics, _nav_closes = (
         _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav, grid_legs)
     )
 
@@ -1692,6 +1697,45 @@ def run_backfill(
         "rebalances": rebalances_out,
         "nav": nav,
     }
+
+    # PR-1 (shadow/obs-first, Rule 18): per-position return attribution.
+    # Computes MWR / TWR / Carino-linked contribution for every holding that
+    # appears in band_legs_for_nav.  Emitted as:
+    #   payload["position_returns"]   — {ticker: {mwr_pct, twr_pct, contrib_nav_pts,
+    #                                             since_date, partial_history, legs_used}}
+    #   payload["meta"]["position_return_reconciliation_max_abs_error"]
+    #   payload["meta"]["position_return_twr_vs_clientside_max_abs_pp"]
+    # SHADOW-ONLY in PR-1: frontend does NOT read these fields until PR-2 adds a UI
+    # surface gated on ≥ 1 cron confirming the reconciliation counters.
+    # Graceful-degradation: any failure leaves the block absent rather than killing
+    # the backfill (Rule 18).
+    try:
+        _adaptive_net = nav.get("adaptive", {}).get("net", [])
+        _adaptive_dates = nav.get("dates", [])
+        _pos_returns = compute_position_returns(
+            band_legs_for_nav,
+            _nav_closes,
+            portfolio_nav_net=_adaptive_net,
+            portfolio_nav_dates=_adaptive_dates,
+        )
+        payload["position_returns"] = position_returns_to_dict(_pos_returns)
+        _carino_err, _pp_err = reconciliation_errors(
+            _pos_returns, _adaptive_net, _adaptive_dates, band_legs_for_nav
+        )
+        payload["meta"]["position_return_reconciliation_max_abs_error"] = _carino_err
+        payload["meta"]["position_return_twr_vs_clientside_max_abs_pp"] = _pp_err
+        logger.info(
+            "backfill: position_returns computed for %d tickers "
+            "(carino_err=%s, pp_err=%s)",
+            len(_pos_returns),
+            _carino_err,
+            _pp_err,
+        )
+    except Exception as _pr_exc:  # noqa: BLE001 — position return failure never kills the backfill
+        logger.warning(
+            "backfill: compute_position_returns failed: %s — position_returns will be absent",
+            _pr_exc,
+        )
 
     # Phase-A OOS-validation: compute DSR + walk-forward stability on the PRODUCED
     # artifact (no network calls, no artifact regeneration). Emit as meta.validation
@@ -1989,7 +2033,7 @@ def _assemble_nav(
     data_dir: Path,
     band_legs: list[tuple[str, dict[str, float]]] | None = None,
     grid_legs: dict[str, list[tuple[str, dict[str, float]]]] | None = None,
-) -> tuple[dict, dict[str, dict], list[str], dict[str, list[float | None]], dict]:
+) -> tuple[dict, dict[str, dict], list[str], dict[str, list[float | None]], dict, dict[str, dict[str, float]]]:
     """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
     Also computes monthly grid NAVs for the 12-config grid if ``grid_legs`` is provided.
 
@@ -2010,13 +2054,16 @@ def _assemble_nav(
 
     Returns
     -------
-    (nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics)
+    (nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, closes)
         nav               — the product NAV dict (``dates``, ``by_count``, ``adaptive``,
                            ``benchmark``, ``default_count``)
         monthly_by_config — ``{key: {net, gross, month_labels}}`` for each grid config
         all_month_labels  — union of month label strings (~118 entries)
         aligned_net       — ``{key: [float|None]}`` aligned to ``all_month_labels``
         grid_diagnostics  — observability block from ``_assemble_grid_navs``
+        closes            — ``{ticker: {date_iso: close}}`` shared price panel
+                           (returned for position_returns wiring; same series used by
+                           build_portfolio_nav — Condition C1)
 
     Backward-compat note: callers that do not use the grid return value (``_assemble_nav``
     called without ``grid_legs``) receive empty dicts/lists for the grid outputs.
@@ -2028,7 +2075,7 @@ def _assemble_nav(
         "adaptive": {},
         "default_count": DEFAULT_COUNT,
     }
-    empty_grid: tuple = ({}, [], {}, {})
+    empty_grid: tuple = ({}, [], {}, {}, {})
     if not rebalance_picks:
         return empty_nav, *empty_grid
 
@@ -2112,7 +2159,7 @@ def _assemble_nav(
             grid_legs, closes, dates, axis, expected_leg_count=expected_legs
         )
 
-    return nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics
+    return nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, closes
 
 
 def _benchmark_navs(portfolio_dates: list[str], data_dir: Path) -> dict[str, list]:
