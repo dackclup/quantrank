@@ -7255,3 +7255,29 @@ suite covers lib utilities only) — deferred-search + transition behavior needs
 React Testing Library or Playwright test (note for test-engineer).
 
 ---
+
+## perf(frontend): vercel.json immutable cache for /_next/static (in flight, 2026-06-25)
+
+**Branch**: `claude/quantrank-speed-analysis-d4c8c9` (same branch / PR #608 as the RankingTable INP fix — both are perf wins from the Speed Insights analysis)
+**Type**: perf(frontend) — DEPLOY-CONFIG ONLY. No schema change. Schema triple untouched.
+Defense layer UNCHANGED at 36. Rankings/scores/flags BYTE-IDENTICAL. No new dependency.
+
+**Motivation**: Vercel Speed Insights shows FCP ~2.15s (Needs Improvement) on both desktop
+and mobile. Lab probe of production found content-hashed assets under `/_next/static/` served
+with `Cache-Control: public, max-age=0, must-revalidate` — i.e. every repeat visit re-validates
+(304 round-trip) every asset. Root cause: the Vercel project framework preset is `null`
+(rootDirectory=`frontend`, `output: 'export'` static deploy), so Vercel's automatic Next.js
+immutable-asset caching is NOT applied.
+
+**Change**: new `frontend/vercel.json` with a `headers` rule mapping `/_next/static/(.*)` →
+`Cache-Control: public, max-age=31536000, immutable`. The filenames are content-hashed, so a
+1-year immutable cache is safe — a new build emits new hashed paths. HTML + `/data/*.json`
+(which change every cron) keep their default revalidate behavior — only the immutable hashed
+asset bundle is cached hard.
+
+**Verification**: `vercel.json` is validated as well-formed JSON; the header effect is verified
+on the preview deployment (curl the `/_next/static/*` Cache-Control header) after push — Vercel
+applies `headers` at the edge, not at `next build` time, so a local build does not exercise it.
+
+Lockstep: this entry. No CLAUDE.md/AGENTS.md substance change required (deploy-config only,
+no new convention). Gate: quantrank-reviewer at Draft→Ready.
