@@ -17,7 +17,7 @@
     "health": 32.06,
     "profitability": 30.06,
     "technical": 58.03,
-    "risk": 87.84,
+    "risk": 87.85,
     "sentiment": null,
     "ml": null
   },
@@ -111,7 +111,9 @@
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 15.547286824730223,
   "tier2_events": {
@@ -127,7 +129,7 @@
       "Quality": 49.3,
       "Value": 49.53,
       "Growth": 50.23,
-      "Momentum": 61.39,
+      "Momentum": 61.37,
       "Health": 27.05,
       "Profitability": 51.09,
       "Technical": 54.01,
@@ -137,7 +139,7 @@
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.18757770002176,
+  "loss_chance_pct": 54.18736992076644,
   "price_change_1d_pct": 2.9382,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 46.62,
@@ -202,7 +204,7 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.0789336404497295e-08,
+  "cross_source_delta": 0.07264336880642575,
   "dividend_yield_pct": 2.0,
   "pays_dividend": true,
   "payout_ratio": 1.6949,
