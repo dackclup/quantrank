@@ -265,10 +265,12 @@ export default function RankingTable({
       nextDir = descByDefault.includes(key) ? 'desc' : 'asc';
     }
     // Wrap state updates in a transition so the 1504-row re-sort runs at
-    // low priority (interruptible). The arrow-icon swap (driven by sortKey /
-    // sortDir reads at render time) stays immediate; only the expensive sorted
-    // useMemo + subsequent re-render yield to the browser. Desktop INP fix
-    // for the 232–280ms column-sort longtask.
+    // low priority (interruptible). The click is acknowledged immediately;
+    // the expensive sorted useMemo AND the arrow-icon indicator swap yield
+    // together at low priority (in controlled mode the arrow reads the
+    // parent's sortKey/sortDir props, which only update once the deferred
+    // onSortChange commits — single source of truth, no tearing). Desktop
+    // INP fix for the 232–280ms column-sort longtask.
     if (isSortControlled) {
       startTransition(() => {
         onSortChange!(key, nextDir);
