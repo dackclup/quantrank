@@ -682,3 +682,277 @@ class TestParquetColumnTypes:
                 f"Column {field.name!r} has type {field.type!r} "
                 "(expected large_string — all run_metadata columns are textual)"
             )
+
+
+# ---------------------------------------------------------------------------
+# BM16 — WARN 1: partial-success exit code
+# ---------------------------------------------------------------------------
+
+class TestPartialSuccessExitCode:
+    """BM16: partial failure (errors > 0, written > 0) → main() returns 1.
+
+    Covers WARN 1: a partially-failed backfill must NOT be silently green.
+    Policy: exit 0 only when errors == 0; exit 1 otherwise (even when some
+    commits wrote successfully).
+    """
+
+    def test_BM16_partial_failure_returns_exit_1(self, tmp_path):
+        """BM16: one commit good, one bad → main() returns 1 (not 0)."""
+        from scripts.backfill_warehouse_metadata import main
+
+        commits = _fake_commits()
+        sha_good = commits[0]["sha"]  # 2026-06-24
+        sha_bad = commits[1]["sha"]   # 2026-06-23
+
+        json_good = _make_metadata_json(last_update_utc="2026-06-24T09:00:00Z")
+        bad_json = "{ not valid json !!!"
+
+        with patch(
+            "scripts.backfill_warehouse_metadata._git_log_commits",
+            return_value=commits,
+        ), patch(
+            "scripts.backfill_warehouse_metadata._git_show_file",
+            side_effect=lambda sha, path: {sha_good: json_good, sha_bad: bad_json}.get(sha),
+        ), patch(
+            "compute.config.WAREHOUSE_DIR", tmp_path / "warehouse"
+        ):
+            rc = main(["--warehouse-dir", str(tmp_path / "warehouse")])
+
+        assert rc == 1, (
+            f"main() must return 1 on partial failure (errors > 0), got {rc}"
+        )
+
+    def test_BM16_all_errors_no_written_returns_exit_1(self, tmp_path):
+        """BM16: all commits fail (written=0, errors>0) → main() returns 1."""
+        from scripts.backfill_warehouse_metadata import main
+
+        commits = _fake_commits()
+
+        with patch(
+            "scripts.backfill_warehouse_metadata._git_log_commits",
+            return_value=commits,
+        ), patch(
+            "scripts.backfill_warehouse_metadata._git_show_file",
+            return_value=None,  # every git show fails
+        ):
+            rc = main(["--warehouse-dir", str(tmp_path / "warehouse")])
+
+        assert rc == 1, (
+            f"main() must return 1 when all commits fail, got {rc}"
+        )
+
+    def test_BM16_all_good_returns_exit_0(self, tmp_path):
+        """BM16: no errors → main() returns 0 (happy path unchanged)."""
+        from scripts.backfill_warehouse_metadata import main
+
+        commits = [_fake_commits()[0]]
+        raw_json = _make_metadata_json(last_update_utc="2026-06-24T09:00:00Z")
+
+        with patch(
+            "scripts.backfill_warehouse_metadata._git_log_commits",
+            return_value=commits,
+        ), patch(
+            "scripts.backfill_warehouse_metadata._git_show_file",
+            return_value=raw_json,
+        ):
+            rc = main(["--warehouse-dir", str(tmp_path / "warehouse")])
+
+        assert rc == 0, f"main() must return 0 when errors == 0, got {rc}"
+
+    def test_BM16_run_backfill_summary_reflects_partial(self, tmp_path):
+        """BM16: run_backfill_metadata summary has errors > 0 and written > 0 on partial failure."""
+        from scripts.backfill_warehouse_metadata import run_backfill_metadata
+
+        commits = _fake_commits()
+        sha_good = commits[0]["sha"]
+        sha_bad = commits[1]["sha"]
+
+        json_good = _make_metadata_json(last_update_utc="2026-06-24T09:00:00Z")
+        bad_json = "not-json"
+
+        with patch(
+            "scripts.backfill_warehouse_metadata._git_log_commits",
+            return_value=commits,
+        ), patch(
+            "scripts.backfill_warehouse_metadata._git_show_file",
+            side_effect=lambda sha, path: {sha_good: json_good, sha_bad: bad_json}.get(sha),
+        ):
+            result = run_backfill_metadata(warehouse_dir=tmp_path / "warehouse")
+
+        assert result["written"] == 1
+        assert result["errors"] == 1
+
+
+# ---------------------------------------------------------------------------
+# BM17 — WARN 2: present-but-empty version key → None + diagnostic
+# ---------------------------------------------------------------------------
+
+class TestEmptyVersionDiagnostic:
+    """BM17: version key present but empty/falsy → stored None + warning logged.
+
+    Covers WARN 2: distinguish absent key (silent None) from present-but-empty
+    (diagnostic warning, still stored as None).
+    """
+
+    def test_BM17_empty_string_version_stored_as_none(self, tmp_path):
+        """BM17: version="" → schema_version column is None in the written partition."""
+        import pyarrow.parquet as pq
+
+        from scripts.backfill_warehouse_metadata import run_backfill_metadata
+
+        # Build a metadata blob with version="" (present but empty).
+        meta = {
+            "version": "",
+            "last_update_utc": "2026-06-24T09:00:00Z",
+            "universe": "SP1500",
+        }
+        raw_json = json.dumps(meta)
+        commits = [_fake_commits()[0]]
+
+        wh_dir = tmp_path / "warehouse"
+
+        with patch(
+            "scripts.backfill_warehouse_metadata._git_log_commits",
+            return_value=commits,
+        ), patch(
+            "scripts.backfill_warehouse_metadata._git_show_file",
+            return_value=raw_json,
+        ):
+            result = run_backfill_metadata(warehouse_dir=wh_dir)
+
+        # Should write successfully (version empty is not a fatal error).
+        assert result["written"] == 1
+        assert result["errors"] == 0
+
+        part = (
+            wh_dir / "run_metadata" / "year=2026" / "run_date=2026-06-24" / "part-0.parquet"
+        )
+        row = pq.ParquetFile(str(part)).read().to_pydict()
+        assert row["schema_version"][0] is None, (
+            "schema_version must be None when version key is present but empty"
+        )
+
+    def test_BM17_empty_version_logs_warning(self, tmp_path, caplog):
+        """BM17: version="" → a WARNING is logged mentioning the run_date and sha."""
+        import logging
+
+        from scripts.backfill_warehouse_metadata import run_backfill_metadata
+
+        meta = {
+            "version": "",
+            "last_update_utc": "2026-06-24T09:00:00Z",
+            "universe": "SP1500",
+        }
+        raw_json = json.dumps(meta)
+        commits = [_fake_commits()[0]]
+
+        wh_dir = tmp_path / "warehouse"
+
+        with caplog.at_level(logging.WARNING, logger="scripts.backfill_warehouse_metadata"):
+            with patch(
+                "scripts.backfill_warehouse_metadata._git_log_commits",
+                return_value=commits,
+            ), patch(
+                "scripts.backfill_warehouse_metadata._git_show_file",
+                return_value=raw_json,
+            ):
+                run_backfill_metadata(warehouse_dir=wh_dir)
+
+        warning_texts = [r.message for r in caplog.records if r.levelno == logging.WARNING]
+        assert any("version" in t for t in warning_texts), (
+            f"Expected a warning about empty version, got: {warning_texts}"
+        )
+
+    def test_BM17_absent_version_key_silent_none(self, tmp_path, caplog):
+        """BM17: version key absent (not present) → None stored with NO diagnostic."""
+        import logging
+
+        from scripts.backfill_warehouse_metadata import run_backfill_metadata
+
+        meta = {
+            # NOTE: no "version" key at all
+            "last_update_utc": "2026-06-24T09:00:00Z",
+            "universe": "SP1500",
+        }
+        raw_json = json.dumps(meta)
+        commits = [_fake_commits()[0]]
+
+        wh_dir = tmp_path / "warehouse"
+
+        with caplog.at_level(logging.WARNING, logger="scripts.backfill_warehouse_metadata"):
+            with patch(
+                "scripts.backfill_warehouse_metadata._git_log_commits",
+                return_value=commits,
+            ), patch(
+                "scripts.backfill_warehouse_metadata._git_show_file",
+                return_value=raw_json,
+            ):
+                result = run_backfill_metadata(warehouse_dir=wh_dir)
+
+        # No warning about version (absent key is expected/silent).
+        version_warnings = [
+            r.message for r in caplog.records
+            if r.levelno == logging.WARNING and "version" in r.message
+        ]
+        assert not version_warnings, (
+            f"Absent version key must not produce a warning; got: {version_warnings}"
+        )
+        assert result["errors"] == 0
+
+
+# ---------------------------------------------------------------------------
+# BM18 — WARN 3: _derive_run_date with malformed-but-10-char-prefix-valid value
+# ---------------------------------------------------------------------------
+
+class TestDeriveRunDateFullValidation:
+    """BM18: _derive_run_date validates the FULL ISO datetime string, not just [:10].
+
+    Covers WARN 3: "2026-06-24Tgarbage" would pass the old [:10] slice check
+    but must now fall back to committer_date with a warning.
+    """
+
+    def test_BM18_garbage_suffix_falls_back_to_committer_date(self):
+        """BM18: '2026-06-24Tgarbage' → committer_date (the full value is invalid)."""
+        from scripts.backfill_warehouse_metadata import _derive_run_date
+
+        meta = {"last_update_utc": "2026-06-24Tgarbage"}
+        result = _derive_run_date(meta, "2026-06-25")
+        assert result == "2026-06-25", (
+            f"Expected fallback to committer_date '2026-06-25', got {result!r}"
+        )
+
+    def test_BM18_garbage_suffix_logs_warning(self, caplog):
+        """BM18: malformed full value → a WARNING is emitted (not just debug)."""
+        import logging
+
+        from scripts.backfill_warehouse_metadata import _derive_run_date
+
+        meta = {"last_update_utc": "2026-06-24Tgarbage"}
+        with caplog.at_level(logging.WARNING, logger="scripts.backfill_warehouse_metadata"):
+            _derive_run_date(meta, "2026-06-25")
+
+        warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+        assert warnings, "Expected a WARNING for malformed last_update_utc full value"
+        assert any("malformed" in r.message for r in warnings), (
+            f"Warning must mention 'malformed', got: {[r.message for r in warnings]}"
+        )
+
+    def test_BM18_valid_full_datetime_still_works(self):
+        """BM18: '2026-06-24T22:00:00Z' → '2026-06-24' (no regression for valid values)."""
+        from scripts.backfill_warehouse_metadata import _derive_run_date
+
+        meta = {"last_update_utc": "2026-06-24T22:00:00Z"}
+        result = _derive_run_date(meta, "2026-06-25")
+        assert result == "2026-06-24", (
+            f"Expected '2026-06-24' from valid ISO datetime, got {result!r}"
+        )
+
+    def test_BM18_date_only_still_works(self):
+        """BM18: date-only string '2026-06-22' still resolves correctly (no regression)."""
+        from scripts.backfill_warehouse_metadata import _derive_run_date
+
+        meta = {"last_update_utc": "2026-06-22"}
+        result = _derive_run_date(meta, "2026-06-23")
+        assert result == "2026-06-22", (
+            f"Expected '2026-06-22' from date-only value, got {result!r}"
+        )

@@ -56,7 +56,7 @@ import logging
 import os
 import subprocess
 import sys
-from datetime import date
+from datetime import datetime
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -163,15 +163,16 @@ def _derive_run_date(meta_dict: dict, committer_date_iso: str) -> str:
     """
     last_update = meta_dict.get("last_update_utc")
     if last_update and isinstance(last_update, str):
-        # Strip time component: "2026-06-24T22:00:00Z" → "2026-06-24"
-        date_part = last_update[:10]
+        # Validate the FULL value as a well-formed ISO datetime/date, then extract
+        # the date part.  Slicing only [:10] and calling date.fromisoformat on that
+        # prefix is too lenient — it would accept "2026-06-24Tgarbage" without error.
         try:
-            date.fromisoformat(date_part)  # validates format
-            return date_part
+            dt = datetime.fromisoformat(last_update)  # Python 3.11+: handles Z suffix
+            return dt.date().isoformat()
         except ValueError:
-            logger.debug(
-                "backfill_warehouse_metadata: malformed last_update_utc %r; "
-                "falling back to committer_date",
+            logger.warning(
+                "backfill_warehouse_metadata: malformed last_update_utc %r (full value "
+                "is not a valid ISO datetime); falling back to committer_date",
                 last_update,
             )
     return committer_date_iso
@@ -362,9 +363,20 @@ def run_backfill_metadata(
             continue
 
         # Build the row.
+        # Distinguish "version key absent" (silent None) from "version key present
+        # but empty/falsy" (log a warning, still store None).
+        _raw_version = meta_dict.get("version")
+        if "version" in meta_dict and not _raw_version:
+            logger.warning(
+                "backfill_warehouse_metadata: run_date=%s (sha=%s) has version key "
+                "present but empty/falsy (%r) — storing None",
+                run_date_str, sha[:12], _raw_version,
+            )
+        schema_version_value = _raw_version or None
+
         row: dict = {
             "run_date": run_date_str,
-            "schema_version": meta_dict.get("version") or None,
+            "schema_version": schema_version_value,
             "universe": meta_dict.get("universe") or None,
             "source_commit": sha,
             "row_provenance": "metadata_backfill",
@@ -454,8 +466,16 @@ def main(argv: list[str] | None = None) -> int:
         f"errors={result['errors']}"
     )
 
-    # Return 1 only on fatal / partial errors that produced zero output.
-    if result["errors"] > 0 and result["written"] == 0:
+    # Exit non-zero on ANY error, including partial-success cases where some
+    # commits wrote successfully but others failed.  A partially-failed history
+    # backfill must not look green in CI — the caller can re-run (idempotent).
+    # Policy: exit 0 only when errors == 0; exit 1 otherwise.
+    if result["errors"] > 0:
+        logger.error(
+            "backfill_warehouse_metadata: PARTIAL FAILURE — "
+            "%d written, %d errors (see warnings above for details)",
+            result["written"], result["errors"],
+        )
         return 1
     return 0
 
