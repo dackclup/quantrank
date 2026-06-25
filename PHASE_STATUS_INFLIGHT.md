@@ -7208,76 +7208,37 @@ deferred shrinkage composite (Proposal A) once ≥12 monthly IC points accrue.
 Lockstep: this entry + CLAUDE.md + AGENTS.md substance diffs. Schema triple in
 sync (schema_check ✓). Gate: quantrank-reviewer at Draft→Ready.
 
-## perf(frontend): RankingTable INP fix — defer search filter + sort transition (in flight, 2026-06-25)
-
-**Branch**: `claude/quantrank-speed-analysis-d4c8c9`
-**Type**: perf(frontend) — FRONTEND VIEW-LAYER ONLY. No schema change. No schema triple
-touched. Defense layer UNCHANGED at 36. Rankings/scores/flags BYTE-IDENTICAL. No new dependency.
-
-**Motivation**: Vercel Speed Insights field data shows desktop Real Experience Score = 82
-(Needs Improvement) vs mobile 95 (Great), dominated by INP = 496ms on desktop. A Playwright
-PerformanceObserver profile (1440×900, 4× CPU throttle) pinned the cause to
-`RankingTable.tsx`: search first keystroke = 416ms event / 352ms longtask (1504-row `filtered`
-useMemo + `sorted` useMemo + `useFlip` getBoundingClientRect measurement + `setVisibleCount`
-reset all running synchronously); column sort (Name/Sector/Price/Ticker) = 232–280ms. Target
-INP <200ms on desktop.
-
-**Two surgical changes to `frontend/components/RankingTable.tsx` only:**
-
-1. **Deferred search filter** (`useDeferredValue`): `search` state remains immediate — the
-   `<input value={search}>` stays controlled, so typing feels instant. `deferredSearch =
-   useDeferredValue(search)` is React 18's low-priority copy. The `filtered` useMemo,
-   the window-reset `useEffect`, and the FLIP `filterKey` all key off `deferredSearch`
-   (not `search`), so the 1504-row filter and the FLIP reshuffle run at lower priority
-   without blocking the keystroke event.
-
-   **FLIP search-scoped invariant preserved**: `filterKey = deferredSearch` means the FLIP
-   gate opens exactly when the deferred filtered rows actually commit to the DOM — `useFlip`
-   measures real old→new positions, not stale ones. Opening the gate on `search` (immediate)
-   would fire one React batch early before `filtered` updates, giving wrong positions.
-
-   **Window reset preserved**: `useEffect(() => setVisibleCount(WINDOW_SIZE), [deferredSearch])`
-   resets exactly when the filtered result changes, not prematurely.
-
-2. **Transition-wrapped column sort** (`useTransition`): `onSort` wraps both the controlled
-   (`onSortChange!(key, nextDir)`) and internal (`setSortKeyInternal` + `setSortDirInternal`)
-   paths in `startTransition(() => { ... })`. The sort arrow-icon swap (driven by `sortKey` /
-   `sortDir` reads at render time) is immediate; only the expensive 1504-row `sorted` useMemo
-   + re-render are deferred and interruptible. The `[sortKey, sortDir]` window-reset effect
-   is unchanged and still fires correctly.
-
-**Files**: `frontend/components/RankingTable.tsx` (import line + 2 new hooks + 5 targeted
-edits to existing state/memo/effect/handler blocks) · `PHASE_STATUS_INFLIGHT.md` (this).
-
-**Verify**: `tsc --noEmit` PASS · `next build` PASS (1510 pages, 0 new errors) · schema triple
-UNTOUCHED · no design-token/visual change. No vitest coverage exists for RankingTable (the
-suite covers lib utilities only) — deferred-search + transition behavior needs a
-React Testing Library or Playwright test (note for test-engineer).
-
 ---
 
-## perf(frontend): vercel.json immutable cache for /_next/static (in flight, 2026-06-25)
+## PR #609 — test(frontend): RankingTable interaction tests (in flight, 2026-06-25)
 
-**Branch**: `claude/quantrank-speed-analysis-d4c8c9` (same branch / PR #608 as the RankingTable INP fix — both are perf wins from the Speed Insights analysis)
-**Type**: perf(frontend) — DEPLOY-CONFIG ONLY. No schema change. Schema triple untouched.
-Defense layer UNCHANGED at 36. Rankings/scores/flags BYTE-IDENTICAL. No new dependency.
+**Branch**: `claude/rankingtable-interaction-test`
+**Type**: test-only — NO production code change; no schema bump; defense UNCHANGED at 36.
 
-**Motivation**: Vercel Speed Insights shows FCP ~2.15s (Needs Improvement) on both desktop
-and mobile. Lab probe of production found content-hashed assets under `/_next/static/` served
-with `Cache-Control: public, max-age=0, must-revalidate` — i.e. every repeat visit re-validates
-(304 round-trip) every asset. Root cause: the Vercel project framework preset is `null`
-(rootDirectory=`frontend`, `output: 'export'` static deploy), so Vercel's automatic Next.js
-immutable-asset caching is NOT applied.
+**Why**: PR #608 added `useDeferredValue(search)` + `useTransition`-wrapped `onSort`
+to `RankingTable.tsx` to fix a desktop INP regression on the 1504-row S&P 1500 table.
+`quantrank-reviewer` noted there was no test covering any RankingTable behaviour — the
+deferred-search + sort-transition + FLIP-gate timing logic is exactly the kind of thing
+a future refactor could silently break.
 
-**Change**: new `frontend/vercel.json` with a `headers` rule mapping `/_next/static/(.*)` →
-`Cache-Control: public, max-age=31536000, immutable`. The filenames are content-hashed, so a
-1-year immutable cache is safe — a new build emits new hashed paths. HTML + `/data/*.json`
-(which change every cron) keep their default revalidate behavior — only the immutable hashed
-asset bundle is cached hard.
+**Approach**: Pure-function verbatim-transcription pattern (same technique as
+`components/downsample.test.mjs`) — the search `filterRows` predicate and the sort
+`sortRows` comparator are lifted verbatim from the component's `useMemo` bodies and
+tested as standalone functions. `@testing-library/react` / jsdom were NOT added
+(vitest.config.ts sets `environment: 'node'`; adding RTL is a heavier dependency change
+that needs a separate security-reviewer gate). The concurrent-timing invariant ("typing is
+never swallowed") is a React runtime guarantee that cannot be deterministically asserted in
+a synchronous unit test; that limitation is documented in the test file header.
 
-**Verification**: `vercel.json` is validated as well-formed JSON; the header effect is verified
-on the preview deployment (curl the `/_next/static/*` Cache-Control header) after push — Vercel
-applies `headers` at the edge, not at `next build` time, so a local build does not exercise it.
+**Coverage added (51 new tests)**:
+- Group A: `filterRows` — empty/whitespace passthrough · ticker match (exact/lowercase/mixed-case/partial) · name match (substring/mid-word/multi-hit/uppercase) · no-match → empty array (empty-state) · union semantics (ticker-OR-name)
+- Group B: `sortRows` — numeric column rank asc/desc · composite_score desc + asc/desc toggle · string column name asc + asc/desc toggle · ticker asc · null values sort last (asc + desc + both-null stable)
+- Group C: `nextSortDir` — first-click default: asc for rank/ticker/name/sector/price; desc for composite_score/fair_price/margin_of_safety_pct · toggle: same-column asc→desc and desc→asc
+- Group D: WINDOW_SIZE constant (= 50) + visible-rows slice semantics (short list / long list / search-narrows / hasMore true/false)
+- Group E: filter → sort pipeline composition (filter then sort by name; filter then sort by score desc; empty filter still empty; single-row pipeline)
 
-Lockstep: this entry. No CLAUDE.md/AGENTS.md substance change required (deploy-config only,
-no new convention). Gate: quantrank-reviewer at Draft→Ready.
+**Files**:
+- `frontend/components/RankingTable.test.ts` (new — 51 tests)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Test results**: 189 baseline → 240 total (+51). `tsc --noEmit` clean. No new devDependency added.
