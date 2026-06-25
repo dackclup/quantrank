@@ -215,21 +215,19 @@ export function HoldingsTimeline({
                     labelClass="text-emerald-700 dark:text-emerald-400"
                     tickers={buys}
                     sectorByTicker={row.sectorByTicker}
-                    linked
                   />
                   <TimelineGroup
                     label="Hold"
                     labelClass="text-slate-500 dark:text-slate-400"
                     tickers={holds}
                     sectorByTicker={row.sectorByTicker}
-                    linked
                   />
                   <TimelineGroup
                     label="Sell"
                     labelClass="text-rose-600 dark:text-rose-400"
                     tickers={sells}
                     sectorByTicker={row.sectorByTicker}
-                    linked={false}
+                    muted
                   />
                   {buys.length === 0 && sells.length === 0 && !isInitial && (
                     <span className="text-xs text-slate-400 dark:text-slate-500">reweighted only</span>
@@ -434,18 +432,23 @@ function QuarterDrawer({
 // longer in the basket so they render dimmed; held/bought names link to the
 // stock detail page.
 // ---------------------------------------------------------------------------
+// The collapsed-row summary lives INSIDE the accordion `<button>`, so its
+// tickers are PLAIN TEXT — not links (interactive content can't nest inside a
+// button, and the row's only action is toggling the drawer). The clickable
+// ticker links live in the expanded QuarterDrawer instead. `muted` dims the
+// Sell group so the eye reads it as "out of basket" while Buy/Hold stay legible.
 function TimelineGroup({
   label,
   labelClass,
   tickers,
   sectorByTicker,
-  linked,
+  muted = false,
 }: {
   label: string;
   labelClass: string;
   tickers: string[];
   sectorByTicker: Record<string, string>;
-  linked: boolean;
+  muted?: boolean;
 }) {
   if (tickers.length === 0) return null;
   return (
@@ -454,24 +457,19 @@ function TimelineGroup({
         {label}
       </span>
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-        {tickers.map((t) => {
-          const sector = sectorByTicker[t];
-          return linked ? (
-            <Link
-              key={t}
-              href={`/stock/${t}/`}
-              title={sector}
-              aria-label={`${t}${sector ? `, ${sector} sector` : ''}`}
-              className="press inline-flex items-center font-mono text-sm font-semibold text-slate-700 hover:underline dark:text-slate-300"
-            >
-              {t}
-            </Link>
-          ) : (
-            <span key={t} className="font-mono text-sm font-semibold text-slate-400 dark:text-slate-500">
-              {t}
-            </span>
-          );
-        })}
+        {tickers.map((t) => (
+          <span
+            key={t}
+            title={sectorByTicker[t]}
+            className={`font-mono text-sm font-semibold ${
+              muted
+                ? 'text-slate-400 dark:text-slate-500'
+                : 'text-slate-700 dark:text-slate-300'
+            }`}
+          >
+            {t}
+          </span>
+        ))}
       </div>
     </div>
   );
