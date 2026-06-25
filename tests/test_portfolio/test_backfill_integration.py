@@ -2374,7 +2374,7 @@ def test_assemble_grid_navs_shares_price_panel(tmp_path) -> None:
         "55_1": [("2022-01-10", {"AAA": 0.6, "BBB": 0.4}), ("2022-03-14", {"AAA": 0.5, "BBB": 0.5})],
         "70_3": [("2022-01-10", {"AAA": 1.0})],
     }
-    nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics = bf._assemble_nav(
+    nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, *_ = bf._assemble_nav(
         rebalance_picks, prices_by_ticker, data_dir=tmp_path, grid_legs=grid_legs
     )
 

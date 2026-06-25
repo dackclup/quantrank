@@ -7362,3 +7362,64 @@ errors) · schema triple UNTOUCHED. Lockstep: this entry. Gate: frontend-design-
 + vercel-preview-auditor + expert-user-explorer.
 
 ---
+
+## PR (TBD) — feat(compute): position return attribution PR-1 shadow/obs-first (in flight, 2026-06-25)
+
+New pure module `compute/portfolio/position_returns.py` (mirrors `backtest.py`'s
+no-I/O, no-pandas, offline-testable contract) computing three return measures per
+holding in the Phase 7 PIT backtest:
+
+- **MWR (Modified Dietz)** — money-weighted return over actual rebalance cash flows
+  (CFA/GIPS standard estimator; the intended headline metric).
+- **TWR (chained geometric)** — `Π(p_{i+1}/p_i) − 1` over contiguous rebalance
+  sub-periods using the SAME adjusted-close series as `build_portfolio_nav`
+  (Condition C1: no raw/adjusted mixing).
+- **Contribution-to-NAV (Carino-linked)** — position P&L in NAV base-100 points,
+  Carino-linked so Σ(contributions) reconciles to portfolio NAV return (PR-1: always
+  `None` — the per-sub-period portfolio return wiring is deferred to PR-2).
+
+Edge-case contracts shipped: re-entry-after-gap uses current streak only; weight→0
+terminates the streak; null price at rebalance drops that leg (TWR) or is skipped
+gracefully (MWR); current holders mark to latest close; sold rows mark to
+exit-rebalance close.
+
+**Wiring** (`scripts/backfill_portfolio_pit.py`): `_assemble_nav` signature widened
+to a 6-tuple (added `closes` return value — same panel used by `build_portfolio_nav`,
+satisfying C1). Call site updated. `compute_position_returns` is called right after
+`_assemble_nav`, results emitted as `payload["position_returns"]` (shadow dict) plus
+two reconciliation counters on `payload["meta"]`:
+- `position_return_reconciliation_max_abs_error` (Carino: `None` in PR-1)
+- `position_return_twr_vs_clientside_max_abs_pp` (`None` in PR-1, stub ready for PR-2)
+
+**SHADOW-ONLY / Rule 18**: `payload["position_returns"]` is a new top-level key in
+`backtest_pit.json` with no frontend reader until PR-2.  The `_assemble_nav` change
+is backward-compatible (tuple position 5 = `closes`; existing callers unpack the
+first 5 positions and are unaffected).  Defense layer UNCHANGED at 36.  Rankings,
+NAV, and scores are byte-identical.
+
+**Schema triple**: untouched. `backtest_pit.json` is a raw dict outside the
+Pydantic↔TS↔snapshot triple; no `schemas.py` change.
+
+**Files changed (`compute/` only)**:
+- `compute/portfolio/position_returns.py` — NEW (pure module, ~450 lines)
+- `scripts/backfill_portfolio_pit.py` — import + `_assemble_nav` signature/return +
+  call-site unpack + position-returns wiring block after `_assemble_nav`
+
+**Tests**: 27 offline tests in `tests/test_portfolio/test_position_returns.py` covering:
+`_is_valid_price` · `_days_between` · `_carino_coefficient` (R=0, total-loss guard,
+small-R) · `_modified_dietz` (single-leg HPR, empty, zero-denom, ADD-then-gain
+cash-flow sign, TRIM-then-gain cash-flow sign) · `_extract_streaks`
+(continuous, sell-at-zero, re-entry gap) · multi-rebalance TWR 21% · null-mid-price
+partial_history=True · re-entry-current-streak · two-ticker compute · weight→0
+termination · empty band_legs · current-holder mark-to-latest-close · dict
+serialization keys · reconciliation_errors no-contrib.
+Note: `test_backfill_integration.py::test_assemble_grid_navs_shares_price_panel` had a
+CI-red regression (5-tuple unpack when `_assemble_nav` returns 6); fixed in the
+test-hardening commit by switching to `out, *_ = ...` style (matching the other callers
+in that file).
+
+**Verify**: ruff PASS · pytest offline (27 tests in test_position_returns.py, 0 regressions
+after 5-tuple unpack fix) · schema_check N/A
+(no tracked schema change). Branch: `claude/position-returns-shadow`.
+
+---
