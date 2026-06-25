@@ -125,6 +125,67 @@ def test_modified_dietz_zero_denominator():
     assert r is None
 
 
+def test_modified_dietz_add_then_gain_cash_flow_sign():
+    """ADD (weight increase) at rebalance → positive CF → MWR ≈ 13.33%.
+
+    Convention under test: cf = v_begin[leg_i] - flows[i-1].v_end.
+    When weight doubles at the same price (v_begin[1]=20 > flows[0].v_end=10),
+    cf is POSITIVE (contribution). The correct MWR ≈ 0.1333.
+
+    If someone flips the sign (cf = prior_end - new_begin = -10), the
+    denominator shrinks (5 vs 15) and the MWR balloons to ~4.4 — catastrophically
+    wrong.  This test locks the sign direction so that regression fails fast.
+
+    Derivation (all per-unit notional):
+        flows[0] = (10, 10, 1.0)  — leg 1: price flat, initial investment=10
+        flows[1] = (20, 22, 0.5)  — leg 2: ADD at same price (weight 0.1→0.2),
+                                           price then +10% → end=22
+        cf          = 20 - 10 = +10   (positive: new money deployed)
+        numerator   = 22 - 10 - 10 = 2
+        denominator = 10 + 0.5×10 = 15
+        MWR         = 2/15 ≈ 0.13333…
+    """
+    flows = [(10.0, 10.0, 1.0), (20.0, 22.0, 0.5)]
+    r = _modified_dietz(flows)
+    assert r is not None
+    # Correct sign: MWR ≈ 13.33%.
+    assert r == pytest.approx(2.0 / 15.0, rel=1e-9)
+    # Guard: a sign flip would produce ~4.4 (440%) — assert it stays < 1.0.
+    assert r < 1.0, "MWR > 100% on an ADD+gain streak — cash-flow sign likely flipped"
+
+
+def test_modified_dietz_trim_then_gain_cash_flow_sign():
+    """TRIM (weight decrease) at rebalance → negative CF → MWR ≈ 6.67%.
+
+    Convention under test: cf = v_begin[leg_i] - flows[i-1].v_end.
+    When weight halves at the same price (v_begin[1]=5 < flows[0].v_end=10),
+    cf is NEGATIVE (withdrawal). The correct MWR ≈ 0.0667 (positive).
+
+    If someone flips the sign (cf = prior_end - new_begin = +5), the
+    numerator becomes −9.5 and MWR ≈ −0.76 — spuriously NEGATIVE when the
+    underlying asset gained 10%.  This test catches that regression.
+
+    Derivation (all per-unit notional):
+        flows[0] = (10, 10, 1.0)  — leg 1: price flat, initial investment=10
+        flows[1] = (5,  5.5, 0.5) — leg 2: TRIM at same price (weight 0.2→0.1),
+                                            price then +10% → end=5.5
+        cf          = 5 - 10 = −5      (negative: capital withdrawn)
+        numerator   = 5.5 - 10 - (−5) = 0.5
+        denominator = 10 + 0.5×(−5)   = 7.5
+        MWR         = 0.5/7.5 ≈ 0.0667
+    """
+    flows = [(10.0, 10.0, 1.0), (5.0, 5.5, 0.5)]
+    r = _modified_dietz(flows)
+    assert r is not None
+    # Correct sign: MWR ≈ 6.67% — positive (the asset gained +10%).
+    assert r == pytest.approx(0.5 / 7.5, rel=1e-9)
+    # Guard: a sign flip would produce ≈ −0.76 — assert it stays positive.
+    assert r > 0.0, (
+        "MWR < 0 on a TRIM+gain streak where the asset gained — "
+        "cash-flow sign convention likely flipped (withdrawal should be negative CF)"
+    )
+
+
 # ---------------------------------------------------------------------------
 # _extract_streaks
 # ---------------------------------------------------------------------------

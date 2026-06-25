@@ -7405,16 +7405,21 @@ Pydantic↔TS↔snapshot triple; no `schemas.py` change.
 - `scripts/backfill_portfolio_pit.py` — import + `_assemble_nav` signature/return +
   call-site unpack + position-returns wiring block after `_assemble_nav`
 
-**Tests** (for test-engineer to expand): 46 offline tests in
-`tests/test_portfolio/test_position_returns.py` covering:
+**Tests**: 27 offline tests in `tests/test_portfolio/test_position_returns.py` covering:
 `_is_valid_price` · `_days_between` · `_carino_coefficient` (R=0, total-loss guard,
-small-R) · `_modified_dietz` (single-leg HPR, empty, zero-denom) · `_extract_streaks`
+small-R) · `_modified_dietz` (single-leg HPR, empty, zero-denom, ADD-then-gain
+cash-flow sign, TRIM-then-gain cash-flow sign) · `_extract_streaks`
 (continuous, sell-at-zero, re-entry gap) · multi-rebalance TWR 21% · null-mid-price
 partial_history=True · re-entry-current-streak · two-ticker compute · weight→0
 termination · empty band_legs · current-holder mark-to-latest-close · dict
 serialization keys · reconciliation_errors no-contrib.
+Note: `test_backfill_integration.py::test_assemble_grid_navs_shares_price_panel` had a
+CI-red regression (5-tuple unpack when `_assemble_nav` returns 6); fixed in the
+test-hardening commit by switching to `out, *_ = ...` style (matching the other callers
+in that file).
 
-**Verify**: ruff PASS · pytest offline (46 new + 0 regressions) · schema_check N/A
+**Verify**: ruff PASS · pytest offline (27 tests in test_position_returns.py, 0 regressions
+after 5-tuple unpack fix) · schema_check N/A
 (no tracked schema change). Branch: `claude/position-returns-shadow`.
 
 ---
