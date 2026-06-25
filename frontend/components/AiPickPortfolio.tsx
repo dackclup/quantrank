@@ -306,33 +306,60 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
   // Sold: streak-start index within the PRIOR basket membership;
   // sellIdx = timeline.length - 1 (latest rebalance, the one it left);
   // pct = (closeAtSell / entryClose - 1) * 100.
-  const adaptivePlSince = useMemo((): Record<string, number | null> => {
-    const result: Record<string, number | null> = {};
+  //
+  // History-cap: when entryCloses[t][streakStartIdx] is null (the holding's
+  // tenure predates the available price-history window — e.g. KLAC's streak
+  // starts at a 2020 rebalance but the history file starts 2021), we advance
+  // the entry index forward to the FIRST rebalance that carries a non-null
+  // close. pct is then the partial return since that capped date, not the full
+  // tenure. capped=true + sinceDate lets the render layer show an SR-accessible
+  // affordance so a sighted/screen-reader user understands the return is partial.
+  // Genuine no-data (no non-null close anywhere in the range) keeps pct=null.
+  const adaptivePlSince = useMemo((): Record<string, { pct: number | null; sinceDate: string | null; capped: boolean }> => {
+    const result: Record<string, { pct: number | null; sinceDate: string | null; capped: boolean }> = {};
 
     // Held/New rows — current basket members
     for (const h of weightSortedHoldings) {
       const t = h.ticker;
-      let idx = timeline.length - 1;
-      while (idx > 0 && heldSetForEntry(timeline[idx - 1]).has(t)) idx -= 1;
-      const entry = data.entryCloses[t]?.[idx] ?? null;
+      // Walk back to streak start (earliest rebalance the ticker was already present)
+      let streakStart = timeline.length - 1;
+      while (streakStart > 0 && heldSetForEntry(timeline[streakStart - 1]).has(t)) streakStart -= 1;
+      // Advance forward past any null-close rebalances at the start of the window
+      let entryIdx = streakStart;
+      const endIdx = timeline.length - 1;
+      while (entryIdx < endIdx && (data.entryCloses[t]?.[entryIdx] ?? null) === null) entryIdx += 1;
+      const entry = data.entryCloses[t]?.[entryIdx] ?? null;
       const lastC = data.lastCloses[t] ?? null;
-      result[t] = entry !== null && lastC !== null && entry !== 0
+      const pct = entry !== null && lastC !== null && entry !== 0
         ? (lastC / entry - 1) * 100
         : null;
+      result[t] = {
+        pct,
+        sinceDate: entry !== null ? (timeline[entryIdx]?.date ?? null) : null,
+        capped: entryIdx > streakStart,
+      };
     }
 
     // Sold rows — rotated-out names (streak within the prior basket)
     const sellIdx = timeline.length - 1;
     for (const s of soldRows) {
       const t = s.ticker;
-      let idx = sellIdx;
       // Walk back through the PRIOR basket to find the streak start
-      while (idx > 0 && heldSetForEntry(timeline[idx - 1]).has(t)) idx -= 1;
-      const entry = data.entryCloses[t]?.[idx] ?? null;
+      let streakStart = sellIdx;
+      while (streakStart > 0 && heldSetForEntry(timeline[streakStart - 1]).has(t)) streakStart -= 1;
+      // Advance forward past any null-close rebalances at the start of the window
+      let entryIdx = streakStart;
+      while (entryIdx < sellIdx && (data.entryCloses[t]?.[entryIdx] ?? null) === null) entryIdx += 1;
+      const entry = data.entryCloses[t]?.[entryIdx] ?? null;
       const atSell = data.entryCloses[t]?.[sellIdx] ?? null;
-      result[t] = entry !== null && atSell !== null && entry !== 0
+      const pct = entry !== null && atSell !== null && entry !== 0
         ? (atSell / entry - 1) * 100
         : null;
+      result[t] = {
+        pct,
+        sinceDate: entry !== null ? (timeline[entryIdx]?.date ?? null) : null,
+        capped: entryIdx > streakStart,
+      };
     }
 
     return result;
@@ -707,10 +734,29 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 </span>
                 {/* Return cell — total return since entry (entry→today).
                     Uses adaptivePlSince, precomputed per-ticker via heldSetForEntry
-                    streak walk. font-semibold matches the slider branch's Return cell. */}
-                <span className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(adaptivePlSince[h.ticker] ?? null)}`}>
-                  {pctStr(adaptivePlSince[h.ticker] ?? null)}
-                </span>
+                    streak walk. font-semibold matches the slider branch's Return cell.
+                    When capped=true the holding's streak predates the price-history
+                    window (e.g. KLAC 2020 entry / history starts 2021). The aria-label
+                    exposes this to screen readers; the "since YYYY" caption gives a
+                    visual affordance without relying on color alone (SKILL.md Rule 10). */}
+                {(() => {
+                  const pl = adaptivePlSince[h.ticker] ?? { pct: null, sinceDate: null, capped: false };
+                  return (
+                    <span
+                      className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}
+                      aria-label={pl.capped && pl.sinceDate
+                        ? `${pctStr(pl.pct)} — return measured from ${pl.sinceDate}, the start of available price history; the holding's full tenure began earlier`
+                        : undefined}
+                    >
+                      {pctStr(pl.pct)}
+                      {pl.capped && pl.sinceDate && (
+                        <span className="block font-mono text-[10px] font-normal tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">
+                          since {pl.sinceDate.slice(0, 7)}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })()}
                 <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {weightLabels[i]}
                 </span>
@@ -764,10 +810,27 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               {/* Return cell — total return from entry → sell rebalance (entry→exit).
                   Uses adaptivePlSince, computed via the streak-within-prior-basket
                   walk in the useMemo above. Full emerald/rose tone so the return is
-                  the row's headline even though ticker/sector stay muted. */}
-              <span className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(adaptivePlSince[s.ticker] ?? null)}`}>
-                {pctStr(adaptivePlSince[s.ticker] ?? null)}
-              </span>
+                  the row's headline even though ticker/sector stay muted.
+                  capped=true means the streak predates the price-history window;
+                  aria-label exposes partial-return context to screen readers. */}
+              {(() => {
+                const pl = adaptivePlSince[s.ticker] ?? { pct: null, sinceDate: null, capped: false };
+                return (
+                  <span
+                    className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}
+                    aria-label={pl.capped && pl.sinceDate
+                      ? `${pctStr(pl.pct)} — return measured from ${pl.sinceDate}, the start of available price history; the holding's full tenure began earlier`
+                      : undefined}
+                  >
+                    {pctStr(pl.pct)}
+                    {pl.capped && pl.sinceDate && (
+                      <span className="block font-mono text-[10px] font-normal tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">
+                        since {pl.sinceDate.slice(0, 7)}
+                      </span>
+                    )}
+                  </span>
+                );
+              })()}
               <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 0.0%
               </span>
