@@ -7062,3 +7062,34 @@ ensemble-silence tests; test_config pin 0.10.34). Gates: compute-builder BUILT-C
 quantrank-reviewer at the push gate. Acceptance: shadow 10.3% ∈ 5-12% (PR-1 cron d4da17e3).
 
 ---
+
+
+## PR (TBD) — fix(data): 2026-Q2 S&P 500 rebalance ledger + dual-class band widen (in flight, 2026-06-24)
+
+Post-cron data-pipeline audit (run d4da17e3) found the survivorship ledger
+(`data/sp500_membership_historical.csv`) failed `scripts/verify_membership_ledger.py` with two
+issues: (1) **POOL (Pool Corporation) ADD 2020-10-07 with no REMOVE** — flagged as an
+ADDED-in-window-never-removed-not-in-universe consistency violation (net +1 ADD/REMOVE imbalance,
+survivorship-bias exposure: the backtest counted POOL as an S&P 500 member through today); (2) a
+**507-stock band breach 2016-2018** (23 months out of the `BAND=(498,506)` ceiling).
+
+literature-searcher VERIFIED (S&P Dow Jones Indices, ann. 2026-06-05): the 2026-06-22 quarterly
+rebalance moved **POOL → S&P SmallCap 600** (market-cap decline) and removed **CPB (Campbell's)**,
+adding **MRVL (Marvell)** + **FLEX (Flex)**. This PR records the full size-neutral 6/22 rebalance
+(MRVL ADD + FLEX ADD + POOL REMOVE + CPB REMOVE, eff. 2026-06-22) — clearing the POOL consistency
+violation. The 507 breach is a REAL dual-class co-membership (Under Armour: UA Class C ADD
+2016-04-08 co-existed with the baseline UAA Class A until REMOVE 2022-06-21), NOT a ledger error;
+`BAND` ceiling widened `506 → 508` (one slot of headroom for the documented dual-class set
+GOOG/GOOGL · FOX/FOXA · NWS/NWSA · UA/UAA) with an inline rationale comment.
+
+`scripts/verify_membership_ledger.py` now exits 0 (RESULT: CLEAN; current universe 502, 489
+ledger events, monthly reconstruction in-band 498-508). Data/script-only — NO schema change, NO
+compute/scoring change, defense layer UNCHANGED at 36. KNOWN FOLLOW-UP (separate, self-healing):
+POOL moved INTO the S&P 600 on 2026-06-22 but does not yet appear in the cron's sp600 slice — the
+Wikipedia S&P 600 scrape / 7-day `universe_sp600` cache lags the just-executed rebalance; expected
+to self-heal on the next sp600 cache refresh (MRVL+FLEX were correctly picked up in the sp500
+scrape, confirming the sp500 path is fresh).
+
+Verify: `scripts/verify_membership_ledger.py` exit 0 (CLEAN) · ruff clean · ADD/REMOVE balanced.
+
+---

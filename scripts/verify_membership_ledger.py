@@ -38,7 +38,13 @@ from compute.ingest.historical_universe import (  # noqa: E402
 RANKINGS = ROOT / "frontend" / "public" / "data" / "rankings.json"
 ANCHOR = date(2026, 6, 3)        # metadata.json last_update_utc date
 WINDOW_START = date(2016, 6, 1)  # 10-year backtest window start
-BAND = (498, 506)                # S&P 500: ~500 companies, ~502-503 stocks
+BAND = (498, 508)                # S&P 500: ~500 companies, ~502-503 stocks;
+# ceiling 506 -> 508 (2026-06-24): the index legitimately peaks higher during
+# multi-pair dual-class eras. 2016-04..2018-09 reconstructs at 507 because Under
+# Armour Class C (UA, ADD 2016-04-08) co-existed with the baseline Class A (UAA,
+# REMOVE 2022-06-21) — a real co-membership, not a ledger error. 508 leaves one
+# slot of headroom for the documented dual-class set (GOOG/GOOGL, FOX/FOXA,
+# NWS/NWSA, UA/UAA, ...).
 
 
 def current_universe() -> frozenset[str]:
