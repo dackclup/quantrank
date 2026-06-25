@@ -853,6 +853,33 @@ class Metadata(BaseModel):
     # (pre-0.10.34) deserialize cleanly under extra="forbid".
     pillar_ic_half_life_months: dict[str, float | None] | None = None
     pillar_ic_decay_fit_model: dict[str, str | None] | None = None
+    # Proposal D — market-regime diagnostic (2026-06-25, Rule 18,
+    # WRITE-ONLY / OBSERVABILITY-ONLY).
+    #
+    # ``market_breadth_above_200dma_pct`` — the raw breadth signal: % of the
+    # ranked universe whose latest close is above its own 200-day simple moving
+    # average.  Tickers with fewer than 200 trading-day bars are excluded from
+    # the denominator (insufficient history for a valid SMA-200).  Range [0, 100].
+    # ``None`` when no eligible tickers were found (all frames empty or < 200 bars).
+    #
+    # ``market_regime_state`` — categorical label derived from the breadth %:
+    #   "risk_on"  (breadth >= config.REGIME_RISK_ON_THRESHOLD  = 60%)
+    #   "neutral"  (40% < breadth < 60%)
+    #   "risk_off" (breadth <= config.REGIME_RISK_OFF_THRESHOLD = 40%)
+    # The thresholds are TIER-3 GUT-FEEL CALIBRATION (no paper pins exact
+    # breadth cutoffs) — named in config.py so recalibration is a visible diff.
+    # ``None`` when ``market_breadth_above_200dma_pct`` is ``None``.
+    #
+    # HARD CONSTRAINT (Welch-Goyal 2008 rejection-as-tilt):
+    # These fields MUST NEVER be read by scoring, the composite, pillar
+    # computation, veto/flag logic, fair-price, ``select_picks``, or the
+    # weights.  They are computed once near the Metadata assembly and feed
+    # ONLY the Metadata constructor (write-only).  Rankings/scores/flags are
+    # byte-identical.  This diagnostic seeds a future Phase-7 Student-t HMM;
+    # see ``compute/scoring/regime.py`` for the full rationale.
+    # Defense layer UNCHANGED at 36.
+    market_breadth_above_200dma_pct: float | None = None
+    market_regime_state: str | None = None
 
 
 class RawMetrics(BaseModel):

@@ -538,6 +538,18 @@ export type Metadata = {
   // pillar_ic_half_life_months entry is None. Outer dict mirrors the outer-
   // None semantics of the half-life field.
   pillar_ic_decay_fit_model?: Record<string, string | null> | null;
+  // Proposal D — market-regime diagnostic (Rule 18 observability-before-wiring,
+  // SHADOW / OBSERVABILITY-ONLY, Welch-Goyal 2008 — rejected-as-tilt).
+  // Write-only; no UI consumer yet. Defense layer UNCHANGED.
+  // Both fields null on legacy snapshots (pre-0.10.36) or when the regime
+  // diagnostic was skipped or failed.
+  //
+  // `market_breadth_above_200dma_pct` — % of S&P 1500 universe trading above
+  // their 200-day moving average at compute time. Regime-state input signal.
+  market_breadth_above_200dma_pct?: number | null;
+  // `market_regime_state` — categorical label derived from breadth signal
+  // ("risk_on" / "neutral" / "risk_off"). Shadow / no scoring consumer.
+  market_regime_state?: string | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

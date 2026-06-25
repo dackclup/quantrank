@@ -164,6 +164,12 @@ def test_schema_version_pinned():
       zero new network round-trips.  Graceful degradation to None when the
       price DataFrame is unavailable or missing Close/Volume column.
 
+    Proposal D (0.10.36-phase8pilot, market-regime diagnostic, 2026-06-25) —
+    two additive nullable ``Metadata`` fields (``market_breadth_above_200dma_pct``
+    / ``market_regime_state``); WRITE-ONLY / OBSERVABILITY-ONLY (Rule 18,
+    Welch-Goyal 2008 rejection-as-tilt); seeds future Phase-7 Student-t HMM;
+    live rankings/scores/flags byte-identical; defense layer UNCHANGED at 36.
+
     IC half-life monitor (0.10.35-phase8pilot, Proposal F, issue #604) — two
     additive nullable ``Metadata`` fields (``pillar_ic_half_life_months`` /
     ``pillar_ic_decay_fit_model``); SHADOW / OBSERVABILITY-ONLY (Rule 18),
@@ -210,7 +216,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.35-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.36-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

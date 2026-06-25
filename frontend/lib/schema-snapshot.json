@@ -262,6 +262,16 @@
       "required": false,
       "default": null
     },
+    "market_breadth_above_200dma_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "market_regime_state": {
+      "type": "str | None",
+      "required": false,
+      "default": null
+    },
     "median_trim_delta_count": {
       "type": "int | None",
       "required": false,
