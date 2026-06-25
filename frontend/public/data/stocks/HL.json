@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 9738744398.587772,
   "current_price": 14.52,
-  "rank": 195,
-  "composite_score": 60.89,
+  "rank": 201,
+  "composite_score": 60.79,
   "pillar_scores": {
     "quality": 69.48,
-    "value": 46.97,
+    "value": 46.54,
     "growth": 79.22,
-    "momentum": 35.17,
-    "health": 89.4,
+    "momentum": 35.16,
+    "health": 89.41,
     "profitability": 77.92,
-    "technical": 26.4,
-    "risk": 47.59,
+    "technical": 26.38,
+    "risk": 47.58,
     "sentiment": null,
     "ml": null
   },
@@ -55,7 +55,7 @@
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 10.25797008929928,
+        "value": 9.786748949969153,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -85,11 +85,10 @@
     "high": 16.056571431936764,
     "mos_pct": -69.42899508916179,
     "valuation_warnings": [
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 9.413966033329451,
+    "median_trimmed": 9.178355463664388,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -114,7 +113,6 @@
   ],
   "valuation_warnings": [
     "extreme_dcf_estimate",
-    "value_trap_risk",
     "beneish_high"
   ],
   "has_history": true,
@@ -130,22 +128,22 @@
     "label": "Materials median (n=77)",
     "values": {
       "Quality": 49.35,
-      "Value": 50.22,
+      "Value": 50.0,
       "Growth": 45.13,
-      "Momentum": 49.67,
-      "Health": 52.92,
+      "Momentum": 49.63,
+      "Health": 52.93,
       "Profitability": 54.11,
-      "Technical": 45.46,
-      "Risk": 47.08
+      "Technical": 45.61,
+      "Risk": 47.09
     }
   },
   "beneish_m_score": 1.120459648121553,
   "dechow_f_score": 0.4530706395696295,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 63.555517967385484,
+  "loss_chance_pct": 61.60496954010085,
   "price_change_1d_pct": -3.6496,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 58.59,
+  "composite_score_adjusted": 58.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -193,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.37,
+  "osap_blended_score": 56.32,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -211,6 +209,6 @@
   "dividend_yield_pct": 0.1,
   "pays_dividend": true,
   "payout_ratio": 0.0217,
-  "average_dollar_volume": 342005097.713858,
+  "average_dollar_volume": 342873498.7692356,
   "security_type": null
 }

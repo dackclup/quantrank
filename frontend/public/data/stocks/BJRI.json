@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 1147944366.4315033,
   "current_price": 54.62,
-  "rank": 663,
-  "composite_score": 51.64,
+  "rank": 661,
+  "composite_score": 51.66,
   "pillar_scores": {
-    "quality": 55.86,
-    "value": 43.56,
-    "growth": 56.31,
-    "momentum": 66.88,
+    "quality": 55.68,
+    "value": 43.88,
+    "growth": 56.25,
+    "momentum": 66.89,
     "health": 26.06,
-    "profitability": 59.49,
-    "technical": 62.53,
+    "profitability": 59.57,
+    "technical": 62.47,
     "risk": 43.46,
     "sentiment": null,
     "ml": null
@@ -84,9 +84,7 @@
     "low": 16.877784371404452,
     "high": 205.95898725093767,
     "mos_pct": 10.665046950371977,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "valuation_methods_applicable": 5,
     "median_trimmed": 61.14068129810496,
     "methods_excluded_from_median": []
@@ -111,7 +109,6 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "value_trap_risk",
     "loss_avoidance_pattern",
     "insider_sell_cluster"
   ],
@@ -125,25 +122,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=194)",
+    "label": "Consumer Discretionary median (n=196)",
     "values": {
-      "Quality": 48.36,
-      "Value": 50.97,
-      "Growth": 49.39,
-      "Momentum": 42.94,
-      "Health": 42.54,
-      "Profitability": 50.28,
-      "Technical": 52.5,
-      "Risk": 40.83
+      "Quality": 48.31,
+      "Value": 50.81,
+      "Growth": 49.11,
+      "Momentum": 43.43,
+      "Health": 42.23,
+      "Profitability": 50.26,
+      "Technical": 52.66,
+      "Risk": 40.91
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 49.4460143796659,
+  "loss_chance_pct": 47.438194338646404,
   "price_change_1d_pct": 2.7464,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 50.64,
+  "composite_score_adjusted": 50.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -208,6 +205,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 22637150.32080396,
+  "average_dollar_volume": 22757312.497787476,
   "security_type": "Common stock"
 }

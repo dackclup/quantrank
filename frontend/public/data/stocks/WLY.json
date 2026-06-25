@@ -8,16 +8,16 @@
   "market_cap": 2357777095.0012207,
   "current_price": 44.28,
   "rank": 107,
-  "composite_score": 64.02,
+  "composite_score": 64.0,
   "pillar_scores": {
     "quality": 82.5,
     "value": 66.33,
     "growth": 54.0,
-    "momentum": 66.64,
-    "health": 24.19,
+    "momentum": 66.62,
+    "health": 24.22,
     "profitability": 76.0,
-    "technical": 45.71,
-    "risk": 49.92,
+    "technical": 45.26,
+    "risk": 49.91,
     "sentiment": null,
     "ml": null
   },
@@ -84,9 +84,7 @@
     "low": 35.91508287157449,
     "high": 91.2618819341145,
     "mos_pct": 26.734291301775148,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "valuation_methods_applicable": 4,
     "median_trimmed": 60.43754925197322,
     "methods_excluded_from_median": []
@@ -105,8 +103,8 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk",
-    "accruals_momentum_high"
+    "accruals_momentum_high",
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -121,22 +119,22 @@
     "label": "Communication Services median (n=50)",
     "values": {
       "Quality": 51.5,
-      "Value": 50.75,
+      "Value": 51.0,
       "Growth": 49.88,
-      "Momentum": 38.72,
-      "Health": 34.43,
+      "Momentum": 38.68,
+      "Health": 34.45,
       "Profitability": 53.33,
-      "Technical": 40.05,
-      "Risk": 40.82
+      "Technical": 39.91,
+      "Risk": 40.81
     }
   },
   "beneish_m_score": -2.4603154030719443,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 25.63316532134275,
+  "loss_chance_pct": 25.644780790389344,
   "price_change_1d_pct": 0.7738,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 63.52,
+  "composite_score_adjusted": 63.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.94,
+  "osap_blended_score": 57.92,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -198,9 +196,9 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 0.03613359005897739,
-  "dividend_yield_pct": 3.23,
+  "dividend_yield_pct": 3.21,
   "pays_dividend": true,
   "payout_ratio": 0.3413,
-  "average_dollar_volume": 19569131.128735986,
+  "average_dollar_volume": 19772929.75511767,
   "security_type": "Common stock"
 }

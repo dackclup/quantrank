@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 582608736.1641655,
   "current_price": 29.98,
-  "rank": 965,
+  "rank": 967,
   "composite_score": 46.61,
   "pillar_scores": {
     "quality": 36.56,
     "value": 75.52,
     "growth": 19.54,
-    "momentum": 15.88,
-    "health": 79.25,
+    "momentum": 15.86,
+    "health": 79.28,
     "profitability": 45.51,
     "technical": 62.8,
-    "risk": 32.8,
+    "risk": 32.77,
     "sentiment": null,
     "ml": null
   },
@@ -84,9 +84,7 @@
     "low": 23.87789933538479,
     "high": 80.54189806406488,
     "mos_pct": 42.17484079782878,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3,
     "median_trimmed": 51.845943800031314,
     "methods_excluded_from_median": []
@@ -108,10 +106,10 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk",
     "rem_suspect",
     "accruals_momentum_high",
-    "loss_avoidance_pattern"
+    "loss_avoidance_pattern",
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 16.004324959179492,
@@ -128,17 +126,17 @@
       "Quality": 49.14,
       "Value": 49.9,
       "Growth": 50.49,
-      "Momentum": 50.71,
-      "Health": 56.97,
+      "Momentum": 50.66,
+      "Health": 57.02,
       "Profitability": 49.31,
-      "Technical": 52.5,
-      "Risk": 51.04
+      "Technical": 52.23,
+      "Risk": 51.03
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4356460617722741,
   "recommendation": "neutral",
-  "loss_chance_pct": 28.931399432206785,
+  "loss_chance_pct": 28.93175188226451,
   "price_change_1d_pct": 4.0972,
   "manipulation_index": 18.0,
   "composite_score_adjusted": 44.81,
@@ -203,9 +201,9 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 5.4643592735628387e-08,
-  "dividend_yield_pct": 0.42,
+  "dividend_yield_pct": 0.4,
   "pays_dividend": true,
   "payout_ratio": 0.0553,
-  "average_dollar_volume": 10307364.168644207,
+  "average_dollar_volume": 10373344.151636759,
   "security_type": "Common stock"
 }
