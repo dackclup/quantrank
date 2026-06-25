@@ -651,6 +651,122 @@ def pillar_entries_to_monthly_panel(
 
 
 # ---------------------------------------------------------------------------
+# Issue #75 §3 / Proposal A #605 — shared IC git-walk helper
+# ---------------------------------------------------------------------------
+
+class _WalkICResult:
+    """Internal value object from :func:`walk_ic_history`."""
+
+    __slots__ = ("entries", "panels", "n_dates_with_ic")
+
+    def __init__(
+        self,
+        entries: list,
+        panels: dict[str, pd.DataFrame],
+        n_dates_with_ic: int,
+    ) -> None:
+        self.entries = entries
+        self.panels = panels
+        self.n_dates_with_ic = n_dates_with_ic
+
+
+def walk_ic_history(
+    *,
+    end_date: _date | None = None,
+    lookback_months: int = IC_LOOKBACK_MONTHS,
+    horizon_months: int = IC_HORIZON_MONTHS,
+) -> _WalkICResult:
+    """Walk the git IC history ONCE and return entries + monthly panels.
+
+    Proposal A #605 consolidation: both the IC-decay monitor and the IC
+    half-life monitor previously called ``compute_historical_ic_report``
+    independently, performing TWO git-walks over the same window.  This
+    helper performs ONE walk and returns the shared result so both can
+    consume it without re-reading git.
+
+    Additionally consumed by Proposal A's ``build_ic_weights`` (the
+    ``preliminary`` state of each :class:`ICDecayReport` is the gate for
+    the shrinkage weight).
+
+    This function NEVER raises — any failure in the historical-IC walk
+    (git, network, data) is caught and logged; the degraded result is
+    ``entries=[], panels={}, n_dates_with_ic=0``.  The caller's
+    downstream behaviour is byte-identical to the pre-#605 degraded path.
+
+    C5 binding condition: the wrapping try/except here guarantees that a
+    git failure → ``entries = []`` → ``build_ic_weights`` returns
+    ``degenerate=True`` → ``blend_weights`` returns ``w0`` → composite
+    is byte-identical.  The cron is NEVER blocked.
+
+    Parameters
+    ----------
+    end_date:
+        Last date for the IC window.  Defaults to today (UTC).
+    lookback_months:
+        Window size in months.  Default ``IC_LOOKBACK_MONTHS`` (39).
+    horizon_months:
+        Forward-return horizon in months.  Default ``IC_HORIZON_MONTHS`` (6).
+
+    Returns
+    -------
+    _WalkICResult
+        ``.entries`` — flat list of :class:`~compute.validation.historical_ic.PillarICEntry`.
+        ``.panels`` — per-pillar monthly panel dicts (same shape as
+        :func:`pillar_entries_to_monthly_panel` output).
+        ``.n_dates_with_ic`` — number of distinct dates that produced IC.
+    """
+    from compute.validation.historical_ic import (
+        DEFAULT_PILLARS,
+        compute_historical_ic_report,
+    )
+
+    if end_date is None:
+        end_date = datetime.now(UTC).date()
+    start_date = end_date - timedelta(days=int(lookback_months * 30.5))
+
+    entries: list = []
+    n_dates_with_ic: int = 0
+
+    # C5: try/except → degrade to empty on ANY git/network/data failure.
+    try:
+        report = compute_historical_ic_report(
+            start_date=start_date,
+            end_date=end_date,
+            horizon_months=horizon_months,
+            pillars=DEFAULT_PILLARS,
+        )
+        entries = report.entries
+        n_dates_with_ic = report.n_dates_with_ic
+        logger.info(
+            "walk_ic_history: walked %d commits, %d dates with IC",
+            report.n_dates_walked,
+            n_dates_with_ic,
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "walk_ic_history: compute_historical_ic_report failed — "
+            "degrading to empty entries. Error: %s",
+            exc,
+        )
+        entries = []
+        n_dates_with_ic = 0
+
+    # Resample to monthly panel.
+    panels: dict[str, pd.DataFrame] = {}
+    try:
+        panels = pillar_entries_to_monthly_panel(entries)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "walk_ic_history: pillar_entries_to_monthly_panel failed — "
+            "degrading to empty panels. Error: %s",
+            exc,
+        )
+        panels = {}
+
+    return _WalkICResult(entries=entries, panels=panels, n_dates_with_ic=n_dates_with_ic)
+
+
+# ---------------------------------------------------------------------------
 # Issue #75 §3 — high-level cron entry-point
 # ---------------------------------------------------------------------------
 
@@ -662,6 +778,17 @@ def build_decay_report(
     threshold: float = IC_DECAY_THRESHOLD,
     duration_months: int = IC_DECAY_DURATION_MONTHS,
     min_history_months: int = MIN_HISTORY_MONTHS,
+    # Proposal A #605 — backward-compatible injected-panels path.
+    # When ``panels`` is not None, the git-walk is SKIPPED and the
+    # caller-supplied monthly panel is used directly.  This allows the
+    # cron to call ``walk_ic_history`` ONCE and inject the result into
+    # both ``build_decay_report`` AND ``build_pillar_half_lives``,
+    # eliminating the duplicate git-walk that existed pre-#605.
+    # ALL existing callers pass panels=None (the default), so this is
+    # backward-compatible: existing behaviour is byte-identical.
+    panels: dict[str, pd.DataFrame] | None = None,
+    entries: list | None = None,
+    n_dates_with_ic: int | None = None,
 ) -> tuple[list[ICDecayReport], str, int]:
     """Compute IC-decay reports for all 10 canonical pillars.
 
@@ -686,50 +813,76 @@ def build_decay_report(
     This function NEVER raises — any failure in the historical_ic walk
     (git, network, data) is caught and logged; the honest degraded result
     (all pillars empty/preliminary) is returned.
+
+    Proposal A #605 backward-compatible injection path
+    ---------------------------------------------------
+    Pass ``panels=``, ``entries=``, ``n_dates_with_ic=`` from a prior
+    :func:`walk_ic_history` call to reuse the git-walk result (NO second
+    walk).  When any of these are ``None`` (the default), the function
+    self-walks exactly as before — existing callers and tests are
+    byte-identical.
     """
     from compute.validation.historical_ic import (
         DEFAULT_PILLARS,
         compute_historical_ic_report,
     )
 
-    if end_date is None:
-        end_date = datetime.now(UTC).date()
-    start_date = end_date - timedelta(days=int(lookback_months * 30.5))
+    # --- Determine panels / n_dates_with_ic ---------------------------------
+    # If the caller injected pre-computed panels (Proposal A #605 path),
+    # use them directly and skip the git-walk.  Otherwise self-walk.
+    if panels is not None:
+        # Injected-panels path: caller already walked; use as-is.
+        _panels: dict[str, pd.DataFrame] = panels
+        _n_dates: int = n_dates_with_ic if n_dates_with_ic is not None else 0
+        # Compute n_dates from entries if supplied and n_dates_with_ic not.
+        if n_dates_with_ic is None and entries is not None:
+            try:
+                _n_dates = len({e.date for e in entries})
+            except Exception:  # noqa: BLE001
+                _n_dates = 0
+    else:
+        # Self-walk path (legacy / existing callers).
+        if end_date is None:
+            end_date = datetime.now(UTC).date()
+        start_date = end_date - timedelta(days=int(lookback_months * 30.5))
 
-    # Attempt the git-walk + forward-return computation.
-    try:
-        report = compute_historical_ic_report(
-            start_date=start_date,
-            end_date=end_date,
-            horizon_months=horizon_months,
-            pillars=DEFAULT_PILLARS,
-        )
-        entries = report.entries
-        n_dates_with_ic = report.n_dates_with_ic
-        logger.info(
-            "IC-decay build: walked %d commits, %d dates with IC",
-            report.n_dates_walked,
-            n_dates_with_ic,
-        )
-    except Exception as exc:  # noqa: BLE001
-        logger.warning(
-            "IC-decay build: compute_historical_ic_report failed — "
-            "degrading to empty panel. Error: %s",
-            exc,
-        )
-        entries = []
-        n_dates_with_ic = 0
+        # Attempt the git-walk + forward-return computation.
+        try:
+            report = compute_historical_ic_report(
+                start_date=start_date,
+                end_date=end_date,
+                horizon_months=horizon_months,
+                pillars=DEFAULT_PILLARS,
+            )
+            _entries = report.entries
+            _n_dates = report.n_dates_with_ic
+            logger.info(
+                "IC-decay build: walked %d commits, %d dates with IC",
+                report.n_dates_walked,
+                _n_dates,
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "IC-decay build: compute_historical_ic_report failed — "
+                "degrading to empty panel. Error: %s",
+                exc,
+            )
+            _entries = []
+            _n_dates = 0
 
-    # Resample to monthly panel.
-    try:
-        panels = pillar_entries_to_monthly_panel(entries)
-    except Exception as exc:  # noqa: BLE001
-        logger.warning(
-            "IC-decay build: pillar_entries_to_monthly_panel failed — "
-            "degrading to empty panel. Error: %s",
-            exc,
-        )
-        panels = {}
+        # Resample to monthly panel.
+        try:
+            _panels = pillar_entries_to_monthly_panel(_entries)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "IC-decay build: pillar_entries_to_monthly_panel failed — "
+                "degrading to empty panel. Error: %s",
+                exc,
+            )
+            _panels = {}
+
+    panels = _panels
+    n_dates_with_ic_actual = _n_dates  # rename to avoid shadowing param
 
     # Run check_all_pillars over whatever panel we have.
     try:
@@ -771,7 +924,7 @@ def build_decay_report(
 
     # Compute top-level status.
     non_preliminary = [r for r in all_reports if not r.preliminary]
-    if not non_preliminary or n_dates_with_ic == 0:
+    if not non_preliminary or n_dates_with_ic_actual == 0:
         status = "insufficient_history"
     elif any(r.alert for r in non_preliminary):
         status = "alert"
@@ -784,10 +937,10 @@ def build_decay_report(
     logger.info(
         "IC-decay status=%s, n_dates_with_ic=%d, alerted_pillars=%s",
         status,
-        n_dates_with_ic,
+        n_dates_with_ic_actual,
         [r.pillar for r in all_reports if r.alert],
     )
-    return all_reports, status, n_dates_with_ic
+    return all_reports, status, n_dates_with_ic_actual
 
 
 __all__ = [
@@ -806,4 +959,5 @@ __all__ = [
     "emit_decay_report",
     "fit_pillar_half_life",
     "pillar_entries_to_monthly_panel",
+    "walk_ic_history",
 ]

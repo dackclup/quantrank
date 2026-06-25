@@ -170,6 +170,17 @@ def test_schema_version_pinned():
     Welch-Goyal 2008 rejection-as-tilt); seeds future Phase-7 Student-t HMM;
     live rankings/scores/flags byte-identical; defense layer UNCHANGED at 36.
 
+    Proposal A shrinkage composite (0.10.37-phase8pilot, issue #605, 2026-06-25)
+    — 6 additive nullable ``Metadata`` fields for the Timmermann (2006) +
+    Grinold-Kahn (2000) shrinkage weight-blending layer:
+    ``shrinkage_lambda`` / ``shrinkage_lambda_applied`` /
+    ``ic_weight_by_pillar`` / ``shrinkage_blended_weight_by_pillar`` /
+    ``n_preliminary_pillars`` / ``shrinkage_weights_degenerate``.
+    SHADOW / OBSERVABILITY-ONLY at launch (``SHRINKAGE_LAMBDA_PIN=1.0`` identity
+    guard); live rankings/composite byte-identical; defense UNCHANGED at 36.
+    Pin-lift gate requires A3-i/A3-ii OOS horse-race + methodology-scientist
+    RATIFY-PROCEED.
+
     IC half-life monitor (0.10.35-phase8pilot, Proposal F, issue #604) — two
     additive nullable ``Metadata`` fields (``pillar_ic_half_life_months`` /
     ``pillar_ic_decay_fit_model``); SHADOW / OBSERVABILITY-ONLY (Rule 18),
@@ -216,7 +227,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.36-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.37-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():
@@ -394,3 +405,97 @@ def test_post_split_constants_are_consistent():
     assert 0.0 < config.POST_SPLIT_RATIO_TOLERANCE < 1.0, (
         "POST_SPLIT_RATIO_TOLERANCE must be in (0, 1)"
     )
+
+
+# ---------------------------------------------------------------------------
+# Proposal A shrinkage composite (0.10.37-phase8pilot, issue #605).
+#
+# Six additive nullable Metadata fields for the Timmermann (2006) /
+# Grinold-Kahn (2000) shrinkage weight-blending layer.
+# All six default to None (backward-compatible with pre-0.10.37 JSON).
+# ---------------------------------------------------------------------------
+
+def test_shrinkage_metadata_fields_default_to_none():
+    """Proposal A (0.10.37-phase8pilot): the 6 new Metadata shrinkage fields
+    exist and default to None — backward-compatible with all pre-0.10.37
+    JSON artifacts (which have no shrinkage keys).
+
+    Fields:
+    - shrinkage_lambda: float | None
+    - shrinkage_lambda_applied: float | None
+    - ic_weight_by_pillar: dict[str, float] | None
+    - shrinkage_blended_weight_by_pillar: dict[str, float] | None
+    - n_preliminary_pillars: int | None
+    - shrinkage_weights_degenerate: bool | None
+    """
+    from compute.output.schemas import Metadata
+
+    # Minimal required Metadata construction (mirrors test_warehouse.py pattern)
+    m = Metadata(
+        version="0.10.37-phase8pilot",
+        last_update_utc="2026-06-25T22:00:00Z",
+        next_update_utc="2026-06-26T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-shrinkage-001",
+        git_commit="cafebabe",
+    )
+    assert m.shrinkage_lambda is None
+    assert m.shrinkage_lambda_applied is None
+    assert m.ic_weight_by_pillar is None
+    assert m.shrinkage_blended_weight_by_pillar is None
+    assert m.n_preliminary_pillars is None
+    assert m.shrinkage_weights_degenerate is None
+
+
+def test_shrinkage_metadata_fields_round_trip():
+    """Proposal A: Metadata serializes and deserializes the 6 new shrinkage
+    fields without data loss (Pydantic model_dump → model_validate round-trip).
+
+    Populated values:
+    - shrinkage_lambda = 1.0 (pin active)
+    - shrinkage_lambda_applied = 1.0 (same — pin overrides schedule)
+    - ic_weight_by_pillar = {"quality": 0.35, "value": 0.65}
+    - shrinkage_blended_weight_by_pillar = {"quality": 0.275, "value": 0.275, ...}
+    - n_preliminary_pillars = 8 (all preliminary at launch)
+    - shrinkage_weights_degenerate = True
+    """
+    from compute.output.schemas import Metadata
+
+    ic_w = {"quality": 0.35, "value": 0.65}
+    blended_w = {
+        "quality": 0.275,
+        "value": 0.225,
+        "growth": 0.125,
+        "momentum": 0.125,
+        "health": 0.100,
+        "profitability": 0.063,
+        "technical": 0.050,
+        "risk": 0.037,
+    }
+
+    m = Metadata(
+        version="0.10.37-phase8pilot",
+        last_update_utc="2026-06-25T22:00:00Z",
+        next_update_utc="2026-06-26T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-shrinkage-002",
+        git_commit="deadbeef",
+        shrinkage_lambda=1.0,
+        shrinkage_lambda_applied=1.0,
+        ic_weight_by_pillar=ic_w,
+        shrinkage_blended_weight_by_pillar=blended_w,
+        n_preliminary_pillars=8,
+        shrinkage_weights_degenerate=True,
+    )
+
+    payload = m.model_dump(mode="json")
+    m2 = Metadata.model_validate(payload)
+
+    assert m2.shrinkage_lambda == 1.0
+    assert m2.shrinkage_lambda_applied == 1.0
+    assert m2.ic_weight_by_pillar == ic_w
+    assert m2.shrinkage_blended_weight_by_pillar == blended_w
+    assert m2.n_preliminary_pillars == 8
+    assert m2.shrinkage_weights_degenerate is True

@@ -7467,3 +7467,61 @@ Live rankings/scores/flags BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
 Lockstep: this entry + CLAUDE.md + AGENTS.md §Phase status in-flight update.
 Schema triple: 2 new fields added → TS mirror NEEDED. Gate: quantrank-reviewer
 at Draft→Ready.
+
+---
+
+## PR — Proposal A: shrinkage composite (in flight, 2026-06-25)
+
+**Branch**: `claude/fund-performance-rankings-f8x4o1`
+**Schema**: `0.10.36` → `0.10.37-phase8pilot`
+**Type**: feat(compute) — observability-first (Rule 18). Identity-at-launch: rankings/scores/flags
+BYTE-IDENTICAL (SHRINKAGE_LAMBDA_PIN=1.0 + all pillars preliminary → blended_w == w0 → composite
+unchanged). Defense layer UNCHANGED at 36.
+
+**What ships:**
+
+- NEW `compute/scoring/shrinkage.py` — pure module (numpy/pandas only). Three functions:
+  `compute_shrinkage_lambda(n, τ=24)` = 1/(1+n/τ) clamped to [0,1]; `build_ic_weights(reports,
+  w0, active_pillars)` → (w_ic, preliminary_mask, degenerate) reading `ICDecayReport.preliminary`
+  (C1: never inline n<12); `blend_weights(w0, w_ic, λ, mask, lambda_pin=1.0)` with C-canary
+  assert sum==1.0 within 1e-9 before returning. Constants: `SHRINKAGE_TAU_MONTHS=24.0` (Tier-2/3
+  gut-feel, inert-at-launch, τ only bites once pin is lifted + pillar has ≥24mo) +
+  `SHRINKAGE_LAMBDA_PIN=1.0` (identity pin; None = engage schedule, gated on A3-i/A3-ii).
+
+- EDIT `compute/validation/ic_decay.py` — Proposal A #605 consolidation:
+  new `walk_ic_history(*, end_date, lookback_months, horizon_months)` → `_WalkICResult`
+  (entries, panels, n_dates_with_ic); ONE git-walk. `build_decay_report` gains a
+  backward-compatible injected-panels path (`panels=None` = self-walk; existing callers/tests
+  byte-identical). C5: walk_ic_history wraps the git call in try/except → degrade-to-empty
+  (never raises, cron never blocked).
+
+- EDIT `compute/main.py` — HOIST before line 1661 (Step 5 composite):
+  walk_ic_history → build_decay_report(panels=) → build_ic_weights → compute_shrinkage_lambda
+  → blend_weights → C-canary assert → `compute_composite(pillar_df, weights=_composite_weights)`.
+  Decay monitor + half-life monitor (#605) now consume `_ic_walk_result.panels` (DELETE
+  block-2 re-walk). QR_SKIP_DECAY_MONITOR guard covers all three.
+
+- EDIT `compute/output/schemas.py` — 6 additive `Metadata` fields (all `| None = None`):
+  `shrinkage_lambda`, `shrinkage_lambda_applied`, `ic_weight_by_pillar`,
+  `shrinkage_blended_weight_by_pillar`, `n_preliminary_pillars`, `shrinkage_weights_degenerate`.
+
+- EDIT `compute/config.py` — schema `0.10.36` → `0.10.37-phase8pilot`.
+
+- EDIT `docs/METHODOLOGY.md` — Proposal A section: Timmermann 2006 + Grinold-Kahn 2000 +
+  Ledoit-Wolf 2004 as principle. Pre-registered pin-lift gate A3-i (n ≥ 24mo) + A3-ii
+  (Timmermann OOS horse-race vs fixed-w0 on purged-embargo holdout; 1/N fallback if no gain).
+
+**Binding conditions met (methodology-scientist):**
+- C1: build_ic_weights reads `ICDecayReport.preliminary`, never inline n<12.
+- C2: τ docstring labels Tier-2/3 + inert-at-launch rationale + names Proposal-F follow-up.
+- C5: walk_ic_history try/except → degrade-to-empty → degenerate → w_ic=w0 → blend=w0.
+- C-canary: blend_weights asserts sum==1.0 within 1e-9 before returning.
+
+**Schema triple**: 6 new fields added → TS mirror NEEDED (frontend-builder task).
+**Tests needed** (test-engineer):
+  λ schedule (0→1.0, 24→0.5, 72→0.25, monotone, clamp); identity at λ=1; pin holds;
+  preliminary→1.0 override; w_IC sum-to-1; all-preliminary→identity+degenerate;
+  all-IC≤0→identity+degenerate; max(IC,0); end-to-end byte-identity compute_composite;
+  #605 injection-equivalence; Hypothesis property (non-neg, sum 1±1e-9, ==w0 when λ=1 or mask=all).
+
+**Gate**: quantrank-reviewer + schema-sentinel + test-engineer at Draft→Ready.
