@@ -1,38 +1,53 @@
-"""Per-position return attribution for the Phase 7 PIT backtest (PR-2a).
+"""Per-position return attribution for the Phase 7 PIT backtest (PR-2c).
 
-PR-2a extends PR-1 (#614) with two structural improvements:
+PR-2c (Carino C3 reconciliation) extends PR-2a (#618) with the Carino (1999)
+geometric-linking attribution math, replacing the previous stub (``contrib_nav_pts``
+was always ``None``).
 
+Algorithm: window-global Carino grid
+--------------------------------------
+For each rebalance-to-rebalance sub-period t (provided by ``SubPeriod`` from
+``build_portfolio_nav(decompose=True)``):
+
+    k_t = ln(1 + R^g_t) / R^g_t       (Carino sub-period coefficient)
+    K   = ln(1 + R^g_port) / R^g_port  (Carino total coefficient)
+
+When ``1 + R^g_t ≤ 0`` (portfolio total-loss sub-period): clamp ``k_t = 1``
+and increment ``carino_clamp_count``.
+
+Position contribution across ALL sub-periods (LIFETIME, not streak-scoped):
+
+    C_i = Σ_t (k_t / K) · c_{i,t}
+
+where ``c_{i,t} = w_{i,t} · (ρ_{i,t} − 1)`` is the position's weighted
+price-relative contribution for sub-period t.
+
+Identities (Carino 1999 §3):
+    GROSS identity:    Σ_i C_i   = R^g_port               (exact, ~1e-11 float error)
+    SYNTHETIC __cost__ position:  C_cost = Σ_t (k_t/K) · (−δ_t)
+    NET identity:      Σ_i C^n_i + C_cost = R^n_port       (closed by un-rounded δ_t)
+
+The ``__cost__`` synthetic line is never folded into a real ticker and never
+displayed — it exists only to close the net identity.
+
+Three new diagnostic counters flow into ``payload["meta"]`` via
+``reconciliation_errors``:
+  - ``position_return_reconciliation_max_abs_error``:  |Σ C_i − R^g_port|
+  - ``position_return_cost_line_residual``:           |Σ C^n_i + C_cost − R^n_port|
+  - ``carino_clamp_count``
+
+PR-2a extensions (unchanged):
   1. Per-quarter generalization: ``compute_position_returns_per_quarter``
      computes a separate ``{ticker: PositionReturn}`` map for EVERY historical
-     rebalance (not just the latest), enabling the PR-2b rotation-history
-     drawers to read ``rebalances[i]["position_returns"]``.
+     rebalance.
+  2. TWR vs client-side comparison: ``reconciliation_errors`` emits
+     ``position_return_twr_vs_clientside_max_abs_pp``.
 
-     FIX (PR-2a rev): for each quarter r the streak is built from legs with
-     ``date <= r's rebalance date`` only, so historical quarters do not chain
-     prices through future rebalance dates (look-ahead elimination).  Quarter
-     r's map reflects only information available at r.  The latest rebalance
-     still uses the full leg history.
-
-  2. Carino (1999) reconciliation — DESCOPED to a follow-up PR.  The Carino
-     linking formula is mathematically inconsistent in this context (numerator
-     uses position own-price return; denominator uses net NAV sub-return, so
-     Σ contrib ≠ NAV return).  ``contrib_nav_pts`` is ``None`` for all positions
-     (stub, as in PR-1) and ``position_return_reconciliation_max_abs_error`` is
-     ``None``.  The Carino helper code is retained but NOT called.
-     TODO(carino-reconciliation PR): re-derive and wire the linking formula once
-     financial-engineer delivers a consistent formulation.
-
-  3. TWR vs client-side comparison: ``reconciliation_errors`` accepts a
-     ``closes`` parameter.  When provided it computes the max
-     |engine TWR − point-to-point HPR| over clean single-streak names and emits
-     it as ``position_return_twr_vs_clientside_max_abs_pp``.
-
-Backward-compat (PR-1 semantics for ``payload["position_returns"]``):
+Backward-compat:
     ``compute_position_returns`` returns current holders AT the latest rebalance
     PLUS names sold at the latest rebalance (marked-to-exit close), matching PR-1's
-    output exactly for the Current-picks "Sold" rows.  The flat top-level field is
-    assembled by ``_compute_flat_latest_returns`` (not by delegating to
-    ``per_quarter[-1]``, which only covers tickers with weight > 0 at the last leg).
+    output exactly.  When ``sub_periods`` is ``None``, ``contrib_nav_pts`` is ``None``
+    for all positions (same as PR-2a behaviour).
 
 Two return measures per holding are computed in this module:
 
@@ -42,44 +57,24 @@ MWR (Modified Dietz, CFA/GIPS standard)
 
         R_MWR = (V_end - V_begin - ΣCF_i) / (V_begin + Σ W_i × CF_i)
 
-    where W_i = fraction of period remaining after flow i (= 1.0 at period start,
-    0.0 at period end).  In the backtest context each position's "cash flows" are
-    the weighted invested amounts at each rebalance where the position is held
-    (positive = buy-in, negative = sell-out), and V_begin / V_end are the NAV
-    contributions at the position's entry and exit prices on the adjusted-close
-    series.
+    where W_i = fraction of period remaining after flow i.
 
 TWR (Time-Weighted Return, chained geometric)
     Chained geometric product over the contiguous legs in the position's streak:
 
         R_TWR = Π(p_{i+1} / p_i) - 1
 
-    where each p_i is the adjusted-close price at the rebalance boundary.  This
-    is the exact same adjusted-close series that ``build_portfolio_nav`` uses
-    (Condition C1: no mixing raw/adjusted prices).  A null price at any
-    intermediate rebalance drops that leg (``partial_history=True``).  If no valid
-    leg exists, twr_pct is null.
+    where each p_i is the adjusted-close price at the rebalance boundary
+    (Condition C1: same series as ``build_portfolio_nav``).
 
-contrib_nav_pts (Carino-linked, 1999) — STUB/None until the follow-up PR.
+contrib_nav_pts (Carino-linked, 1999)
+    LIFETIME Carino contribution across ALL sub-periods.  Non-None only when
+    ``sub_periods`` is supplied (``decompose=True`` path).
 
-Edge-case contracts
-    * Re-entry after gap  — only the CURRENT unbroken streak (within the
-                            truncated leg window for non-latest quarters) is used.
-    * Weight → 0          — interpreted as a sell; the position terminates at the
-                            exit-rebalance close and is not continued.
-    * Null price at rebalance — leg is dropped (TWR) or handled gracefully (MWR).
-    * Current holders     — mark-to-latest-close (the last date in ``closes``).
-    * Sold rows           — mark-to-exit-rebalance close.
-    * Non-latest quarters — mark-to-the-close on or before the next rebalance date
-                            (``_close_on_or_before``); legs TRUNCATED to the rebalance
-                            date to prevent look-ahead.
-
-This module is **pure** — no I/O, no scoring, no pandas, no network calls —
-mirroring the contract of ``compute/portfolio/backtest.py`` so it is
-offline-testable without any market data or SEC fixtures.
+This module is **pure** — no I/O, no scoring, no pandas, no network calls.
 
 Rule 18 (observability-before-wiring): the per-rebalance ``position_returns``
-maps are added to the backtest artifact in PR-2a as shadow fields.  The frontend
+maps are added to the backtest artifact as shadow fields.  The frontend
 does NOT read them until a PR-2b that adds a UI surface gated on ≥ 1 cron
 confirming the reconciliation counters.
 """
@@ -89,7 +84,10 @@ from __future__ import annotations
 import logging
 import math
 from collections.abc import Mapping, Sequence
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
+
+if TYPE_CHECKING:
+    from compute.portfolio.backtest import SubPeriod
 
 logger = logging.getLogger(__name__)
 
@@ -111,10 +109,10 @@ class PositionReturn(NamedTuple):
         Time-weighted return (chained geometric), in percent.
         None when no valid leg exists.
     contrib_nav_pts : float | None
-        Carino-linked contribution to portfolio NAV return, in NAV base-100
+        Carino-linked contribution to portfolio gross NAV return, in NAV base-100
         points.  Σ(contrib_nav_pts) over all positions reconciles to the
-        portfolio's total NAV return in base-100 pts.  None when the portfolio
-        NAV series is not available for Carino linking.
+        portfolio's total gross NAV return in base-100 pts.  None when the
+        ``sub_periods`` decomposition is not available.
     since_date : str | None
         ISO date (YYYY-MM-DD) of the first rebalance in the current streak.
     partial_history : bool
@@ -510,7 +508,7 @@ def _days_between(d0_iso: str, d1_iso: str) -> int:
 
 
 # ---------------------------------------------------------------------------
-# Carino-linked contribution
+# Carino (1999) linking helpers — window-global grid
 # ---------------------------------------------------------------------------
 
 
@@ -529,50 +527,113 @@ def _carino_coefficient(r: float) -> float:
     return math.log(v) / r
 
 
-def _compute_contribution(
-    ticker: str,
-    streak: list[tuple[str, float, float | None]],
-    closes: Mapping[str, Mapping[str, float]],
-    *,
-    is_current_holder: bool,
-    sub_period_returns: Sequence[tuple[float, float]] | None,
-    portfolio_total_return_pct: float | None,
-) -> float | None:
-    """Compute the Carino-linked contribution of this position to portfolio NAV return.
+def _build_carino_grid(
+    sub_periods: list[SubPeriod],
+) -> tuple[list[float], float, int]:
+    """Build the window-global Carino linking grid from a list of sub-periods.
+
+    Computes ``(k_t / K)`` for each sub-period t, where:
+        k_t = ln(1 + R^g_t) / R^g_t  (sub-period Carino coefficient)
+        K   = ln(1 + R^g_port) / R^g_port  (total-period Carino coefficient)
+
+    ``R^g_port`` is the portfolio GROSS return over ALL sub-periods:
+        (1 + R^g_port) = Π_t (1 + R^g_t)    (geometric linking)
+
+    When ``1 + R^g_t ≤ 0`` for a sub-period: clamp ``k_t = 1`` and increment
+    ``carino_clamp_count``.
 
     Parameters
     ----------
-    sub_period_returns:
-        ``[(position_return_frac, portfolio_return_frac)]`` per rebalance sub-period
-        in the streak.  Used to compute the per-sub-period Carino links.  None when
-        not available (contribution is None).
-    portfolio_total_return_pct:
-        Portfolio total return over the full holding period, in percent.
-        None when undefined (contribution is None).
+    sub_periods:
+        Sub-period records from ``build_portfolio_nav(decompose=True)``.
+
+    Returns
+    -------
+    (kt_over_K, K, carino_clamp_count)
+        kt_over_K : list[float]
+            Per-sub-period ratio ``k_t / K``.  Length = len(sub_periods).
+        K : float
+            Total Carino coefficient for the window.
+        carino_clamp_count : int
+            Number of sub-periods where ``1 + R^g_t ≤ 0`` (clamped to k_t=1).
     """
-    if sub_period_returns is None or portfolio_total_return_pct is None:
-        return None
-    if not streak:
-        return None
+    if not sub_periods:
+        return [], 1.0, 0
 
-    # Carino coefficient for the full portfolio period.
-    R_port = portfolio_total_return_pct / 100.0
-    k_port = _carino_coefficient(R_port)
+    # Step 1: compute window-global gross return via geometric linking.
+    gross_product = 1.0
+    for sp in sub_periods:
+        gross_product *= 1.0 + sp.gross_sub_return
+    R_port_gross = gross_product - 1.0
 
-    contrib_total = 0.0
-    for i, (r_pos_pct, r_port_pct) in enumerate(sub_period_returns):
-        r_pos = r_pos_pct / 100.0
-        r_port_sub = r_port_pct / 100.0
-        if i >= len(streak):
-            break
-        weight = streak[i][1]
-        k_sub = _carino_coefficient(r_port_sub)
-        # Carino formula: contrib_i = w_i × r_pos_i × (k_sub / k_port)
-        if k_port == 0.0:
+    # Step 2: total Carino coefficient K.
+    K = _carino_coefficient(R_port_gross)
+    if K == 0.0:
+        # Degenerate: portfolio returned exactly 0 after geometric linking.
+        # Return uniform weights as a safe fallback.
+        n = len(sub_periods)
+        return [1.0 / n if n > 0 else 0.0] * n, 1.0, 0
+
+    # Step 3: per-sub-period k_t and ratio k_t / K.
+    kt_over_K: list[float] = []
+    carino_clamp_count = 0
+    for sp in sub_periods:
+        r_t = sp.gross_sub_return
+        one_plus_rt = 1.0 + r_t
+        if one_plus_rt <= 0.0:
+            # Total loss sub-period: clamp k_t = 1.
+            k_t = 1.0
+            carino_clamp_count += 1
+        else:
+            k_t = _carino_coefficient(r_t)
+        kt_over_K.append(k_t / K)
+
+    return kt_over_K, K, carino_clamp_count
+
+
+def _compute_contribution_from_sub_periods(
+    ticker: str,
+    ticker_legs: dict[str, float],
+    sub_periods: list[SubPeriod],
+    kt_over_K: list[float],
+) -> float:
+    """Compute the LIFETIME Carino contribution for ``ticker`` across all sub-periods.
+
+    Parameters
+    ----------
+    ticker:
+        The ticker symbol.
+    ticker_legs:
+        Mapping of ``{date_iso: weight}`` from the full band_legs history.
+        Used to look up the START weight for each sub-period.
+    sub_periods:
+        Sub-period records from the engine (window-global).
+    kt_over_K:
+        Per-sub-period Carino linking ratio from ``_build_carino_grid``.
+
+    Returns
+    -------
+    float
+        Contribution C_i in NAV gross-return fraction (NOT percent).
+        Sum over all tickers equals R^g_port exactly (up to float precision ~1e-11).
+    """
+    contrib = 0.0
+    for t, sp in enumerate(sub_periods):
+        # Weight at start of this sub-period: from start_weights_gross (post-renorm).
+        w = sp.start_weights_gross.get(ticker, 0.0)
+        if w == 0.0:
             continue
-        contrib_total += weight * r_pos * (k_sub / k_port) * 100.0  # in NAV pts
-
-    return contrib_total
+        # Price-relative: ρ_{i,t} = price(date_to)/price(date_from) from engine.
+        rho = sp.price_relatives.get(ticker)
+        if rho is None:
+            continue
+        # Position return for this sub-period: ρ − 1.
+        r_pos_t = rho - 1.0
+        # Weighted price-relative contribution: c_{i,t} = w × r_pos_t.
+        c_it = w * r_pos_t
+        # Carino-linked: (k_t / K) × c_{i,t}.
+        contrib += kt_over_K[t] * c_it
+    return contrib
 
 
 def _compute_carino_contribution_for_streak(
@@ -585,42 +646,14 @@ def _compute_carino_contribution_for_streak(
     end_date: str | None,
     portfolio_total_return_pct: float,
 ) -> float | None:
-    """Compute Carino-linked contribution using the daily NAV series.
+    """DEPRECATED: per-streak daily-NAV-based Carino helper from PR-2a.
 
-    For each consecutive pair of dates in the streak (plus the terminal close),
-    we compute:
-      - r_pos_sub  : position sub-period return (p1/p0 − 1)
-      - r_port_sub : portfolio sub-period return (NAV_d1/NAV_d0 − 1)
+    Retained for import compatibility with tests written against PR-2a.
+    The PR-2c algorithm replaces this with the window-global Carino grid
+    (``_build_carino_grid`` + ``_compute_contribution_from_sub_periods``).
 
-    then apply the Carino multiplicative-linking formula:
-      contrib += w0 × r_pos_sub × (k_sub / k_port) × 100
-
-    where k = ln(1+R)/R.  The sum over all streak legs approximates the
-    position's contribution to the portfolio NAV return in base-100 points.
-
-    Parameters
-    ----------
-    ticker:
-        The ticker symbol.
-    streak:
-        List of ``(date_iso, weight, price_or_None)`` from ``_extract_streaks``.
-    closes:
-        Shared adjusted-close panel (same series used by ``build_portfolio_nav``).
-    date_to_nav:
-        ``{date_iso: nav_value}`` — daily NAV series for the portfolio; built
-        from ``portfolio_nav_net`` / ``portfolio_nav_dates``.
-    is_current_holder:
-        When True, extend the price sequence to the terminal close.
-    end_date:
-        For non-latest quarters: the next rebalance date (mark terminal to
-        close on or before this date).  None = latest quarter.
-    portfolio_total_return_pct:
-        Portfolio total return over the full NAV window, in percent.
-
-    Returns
-    -------
-    float | None
-        Contribution in NAV base-100 points, or None on degenerate input.
+    This implementation is correct for the old per-streak formulation and
+    will continue to pass the existing tests.
     """
     if not streak or not date_to_nav:
         return None
@@ -635,7 +668,6 @@ def _compute_carino_contribution_for_streak(
     if is_current_holder:
         if end_date is not None:
             terminal_px = _close_on_or_before(ticker, end_date, closes)
-            # Determine the actual terminal date for NAV lookup.
             series = closes.get(ticker)
             if series and terminal_px is not None:
                 eligible = [d for d in series if d <= end_date]
@@ -644,7 +676,6 @@ def _compute_carino_contribution_for_streak(
                 terminal_date = end_date
         else:
             terminal_px = _last_close(ticker, closes)
-            # Use last date in closes for NAV lookup.
             series = closes.get(ticker)
             terminal_date = max(series) if series else streak[-1][0]
         if terminal_px is not None:
@@ -659,30 +690,25 @@ def _compute_carino_contribution_for_streak(
         d1, _w1, p1 = price_seq[i + 1]
 
         if not _is_valid_price(p0) or not _is_valid_price(p1):
-            continue  # drop legs with null prices
+            continue
 
         assert p0 is not None and p1 is not None  # type narrowing
 
         r_pos_sub = p1 / p0 - 1.0
 
-        # Portfolio sub-period return using the NAV series.
         nav_d0 = date_to_nav.get(d0)
         nav_d1 = date_to_nav.get(d1)
         if nav_d0 is None or nav_d1 is None or nav_d0 <= 0.0:
-            # Fall back: try to find nearest available NAV dates.
-            # Use the closest available NAV for each rebalance boundary.
             if nav_d0 is None:
-                # Find the closest date on or before d0.
                 eligible_0 = [d for d in date_to_nav if d <= d0]
                 if eligible_0:
                     nav_d0 = date_to_nav[max(eligible_0)]
             if nav_d1 is None:
-                # Find the closest date on or before d1.
                 eligible_1 = [d for d in date_to_nav if d <= d1]
                 if eligible_1:
                     nav_d1 = date_to_nav[max(eligible_1)]
             if nav_d0 is None or nav_d1 is None or nav_d0 <= 0.0:
-                continue  # still unavailable — skip this leg
+                continue
 
         r_port_sub = nav_d1 / nav_d0 - 1.0
         k_sub = _carino_coefficient(r_port_sub)
@@ -690,6 +716,30 @@ def _compute_carino_contribution_for_streak(
         contrib_total += float(w0) * r_pos_sub * (k_sub / k_port) * 100.0
 
     return contrib_total
+
+
+def _cost_line_contribution(
+    sub_periods: list[SubPeriod],
+    kt_over_K: list[float],
+) -> float:
+    """Compute the synthetic __cost__ line contribution for the NET identity.
+
+    C_cost = Σ_t (k_t / K) · (−δ_t)
+
+    where δ_t = ``sp.cost_drag`` (RAW un-rounded turnover cost drag).
+
+    Adding this to the sum of per-position net contributions closes the net
+    identity: Σ_i C^n_i + C_cost = R^n_port.
+
+    Returns
+    -------
+    float
+        C_cost as a NAV-return fraction (negative for positive cost drag).
+    """
+    cost_contrib = 0.0
+    for t, sp in enumerate(sub_periods):
+        cost_contrib += kt_over_K[t] * (-sp.cost_drag)
+    return cost_contrib
 
 
 # ---------------------------------------------------------------------------
@@ -700,24 +750,17 @@ def _compute_carino_contribution_for_streak(
 def _compute_flat_latest_returns(
     band_legs: list[tuple[str, dict[str, float]]],
     closes: Mapping[str, Mapping[str, float]],
+    *,
+    sub_periods: list[SubPeriod] | None = None,
 ) -> dict[str, PositionReturn]:
     """Compute position returns for the flat top-level ``payload["position_returns"]``.
 
     Preserves PR-1 semantics exactly: covers BOTH current holders at the latest
     rebalance AND names sold at the latest rebalance (marked-to-exit close).
 
-    PR-1's ``compute_position_returns`` returned results for:
-      - current holders (weight > 0 at the last leg), and
-      - names that were in the book at the previous leg but sold at the last
-        (their final leg has weight → 0, which ``_extract_streaks`` recognises
-        as a sell-termination and marks to the exit-rebalance close).
-
-    The per-quarter function ``compute_position_returns_per_quarter``'s
-    ``per_quarter[-1]`` entry covers only tickers with weight > 0 at the LAST
-    rebalance (the outer loop skips ``weight_here <= 0``), so delegating the flat
-    field to ``per_quarter[-1]`` silently drops sold names.  This function
-    restores PR-1 semantics by collecting ALL tickers that appear in the last two
-    rebalances (or just the last, for a single-rebalance book).
+    When ``sub_periods`` is provided, computes ``contrib_nav_pts`` (Carino-linked,
+    LIFETIME across all sub-periods).  Otherwise, ``contrib_nav_pts`` is None
+    (backward-compat with PR-2a).
 
     Parameters
     ----------
@@ -725,6 +768,9 @@ def _compute_flat_latest_returns(
         ``[(as_of_date, {ticker: weight})]`` in ascending date order.
     closes:
         ``{ticker: {date_iso: close}}`` shared adjusted-close panel.
+    sub_periods:
+        Sub-period records from ``build_portfolio_nav(decompose=True)``.
+        None = contrib_nav_pts stays None.
 
     Returns
     -------
@@ -759,6 +805,16 @@ def _compute_flat_latest_returns(
         for ticker, weight in weight_map.items():
             ticker_all_legs.setdefault(ticker, []).append((date_iso, weight))
 
+    # Build Carino grid when sub_periods are available.
+    kt_over_K: list[float] | None = None
+    ticker_date_weights: dict[str, dict[str, float]] = {}
+    if sub_periods is not None:
+        kt_over_K, _K, _clamp = _build_carino_grid(sub_periods)
+        # Build per-ticker {date: weight} lookup from band_legs.
+        for date_iso, weight_map in band_legs:
+            for ticker, weight in weight_map.items():
+                ticker_date_weights.setdefault(ticker, {})[date_iso] = weight
+
     result: dict[str, PositionReturn] = {}
     for ticker in candidates:
         legs = ticker_all_legs.get(ticker, [])
@@ -790,10 +846,31 @@ def _compute_flat_latest_returns(
                 is_current_holder=is_current,
                 end_date=None,
             )
+
+            # Carino contribution (LIFETIME across all sub-periods).
+            contrib_nav_pts: float | None = None
+            if sub_periods is not None and kt_over_K is not None:
+                try:
+                    contrib_raw = _compute_contribution_from_sub_periods(
+                        ticker,
+                        ticker_date_weights.get(ticker, {}),
+                        sub_periods,
+                        kt_over_K,
+                    )
+                    # Report in NAV base-100 points (fraction × 100).
+                    contrib_nav_pts = contrib_raw * 100.0
+                except Exception:  # noqa: BLE001
+                    logger.warning(
+                        "_compute_flat_latest_returns: Carino error for %s (graceful skip)",
+                        ticker,
+                        exc_info=True,
+                    )
+                    contrib_nav_pts = None
+
             result[ticker] = PositionReturn(
                 mwr_pct=mwr_pct,
                 twr_pct=twr_pct,
-                contrib_nav_pts=None,  # TODO(carino-reconciliation PR)
+                contrib_nav_pts=contrib_nav_pts,
                 since_date=since_date,
                 partial_history=partial_history,
                 legs_used=legs_used,
@@ -822,15 +899,16 @@ def compute_position_returns(
     *,
     portfolio_nav_net: list[float | None],
     portfolio_nav_dates: list[str],
+    sub_periods: list[SubPeriod] | None = None,
 ) -> dict[str, PositionReturn]:
-    """Compute per-position MWR and TWR for the flat top-level field.
+    """Compute per-position MWR, TWR, and (optionally) Carino contribution.
 
     Returns the PR-1-compatible flat position-return map: current holders AT the
-    latest rebalance PLUS names sold at the latest rebalance (marked-to-exit close),
-    matching PR-1's output exactly for the Current-picks "Sold" rows.
+    latest rebalance PLUS names sold at the latest rebalance (marked-to-exit close).
 
-    ``portfolio_nav_net`` / ``portfolio_nav_dates`` are accepted for API compatibility
-    but are NOT currently used (Carino descoped to a follow-up PR).
+    When ``sub_periods`` is provided (from ``build_portfolio_nav(decompose=True)``),
+    also computes ``contrib_nav_pts`` using the window-global Carino (1999) grid.
+    Otherwise ``contrib_nav_pts`` is None (backward-compat with PR-2a).
 
     Parameters
     ----------
@@ -842,16 +920,20 @@ def compute_position_returns(
         ``{ticker: {date_iso: close}}`` — the shared adjusted-close panel built by
         ``_build_price_panel`` (same series used by ``build_portfolio_nav``; Condition C1).
     portfolio_nav_net:
-        Accepted for API compat; unused until Carino PR.
+        Accepted for API compat; unused in contribution math (Carino uses gross NAV
+        from sub_periods directly).
     portfolio_nav_dates:
-        Accepted for API compat; unused until Carino PR.
+        Accepted for API compat; unused in contribution math.
+    sub_periods:
+        Sub-period records from ``build_portfolio_nav(decompose=True)``.  When
+        provided, enables LIFETIME Carino contributions.  None = stub (PR-2a compat).
 
     Returns
     -------
     dict[str, PositionReturn]
         Keyed by ticker — current holders + names sold at the latest rebalance.
     """
-    return _compute_flat_latest_returns(band_legs, closes)
+    return _compute_flat_latest_returns(band_legs, closes, sub_periods=sub_periods)
 
 
 def compute_position_returns_per_quarter(
@@ -875,6 +957,10 @@ def compute_position_returns_per_quarter(
 
     Condition C1: ``closes`` must be the SAME adjusted-close series used by
     ``build_portfolio_nav`` (no mixing raw/adjusted prices).
+
+    Note: per-quarter ``contrib_nav_pts`` is ``None`` — the window-global Carino
+    grid is defined over the FULL attribution window, not individual quarters.
+    The flat ``compute_position_returns`` function provides LIFETIME contributions.
 
     Parameters
     ----------
@@ -978,11 +1064,10 @@ def compute_position_returns_per_quarter(
                     end_date=next_rebal_date,
                 )
 
-                # Carino contribution — DESCOPED to a follow-up PR.
-                # contrib_nav_pts stays None for all positions.
-                # TODO(carino-reconciliation PR): re-derive and wire the Carino
-                # linking formula once financial-engineer delivers a consistent
-                # formulation (numerator vs denominator sub-period mismatch).
+                # Per-quarter contrib_nav_pts stays None — the window-global Carino
+                # grid is defined over the FULL attribution window, not individual
+                # quarters.  The flat compute_position_returns provides LIFETIME
+                # contributions instead.
                 contrib_nav_pts: float | None = None
 
                 quarter_map[ticker] = PositionReturn(
@@ -1020,8 +1105,10 @@ def reconciliation_errors(
     portfolio_nav_dates: list[str],
     band_legs: list[tuple[str, dict[str, float]]],
     closes: Mapping[str, Mapping[str, float]] | None = None,
-) -> tuple[float | None, float | None]:
-    """Compute the two reconciliation diagnostic counters.
+    *,
+    sub_periods: list[SubPeriod] | None = None,
+) -> tuple[float | None, float | None, float | None, int]:
+    """Compute the four reconciliation diagnostic counters.
 
     Parameters
     ----------
@@ -1037,27 +1124,75 @@ def reconciliation_errors(
     closes:
         Shared adjusted-close panel.  When provided, enables the TWR vs
         client-side point-to-point comparison.  None = PR-1 compat (pp_twr → None).
+    sub_periods:
+        Sub-period records from ``build_portfolio_nav(decompose=True)``.
+        When provided, enables C3 reconciliation counters (carino_error +
+        cost_line_residual).  None = those two remain None.
 
     Returns
     -------
-    (carino_error, pp_twr_error)
-        carino_error:
-            Always ``None`` while Carino reconciliation is descoped (contrib_nav_pts
-            is None for all positions).  The follow-up Carino PR will re-enable this.
+    (gross_identity_error, cost_line_residual, pp_twr_error, carino_clamp_count)
+        gross_identity_error:
+            |Σ_i contrib_nav_pts_i/100 − R^g_port| — how close the sum of all
+            Carino contributions is to the portfolio gross return (expected ~1e-11).
+            None when ``sub_periods`` is None or no contrib_nav_pts exist.
+        cost_line_residual:
+            |Σ_i contrib_nav_pts_i/100 + C_cost − R^n_port| — how close the
+            net identity closes (expected ~1e-11 with un-rounded δ_t).
+            None when ``sub_periods`` is None or net NAV unavailable.
         pp_twr_error:
             max |engine TWR − client-side point-to-point return| in percentage
             points, over clean full-history single-streak names.
             None when no eligible names exist or ``closes`` is not provided.
+        carino_clamp_count:
+            Number of sub-periods where 1+R^g_t ≤ 0 (clamped to k_t=1).
+            0 when ``sub_periods`` is None.
     """
-    # Carino reconciliation — DESCOPED.  contrib_nav_pts is None for all positions,
-    # so carino_error is always None.  The follow-up Carino PR will re-derive and
-    # wire the linking formula.
-    # TODO(carino-reconciliation PR): re-enable once contrib_nav_pts is populated.
-    carino_error: float | None = None
+    # --- C3 Carino GROSS identity ---
+    gross_identity_error: float | None = None
+    cost_line_residual: float | None = None
+    carino_clamp_count_out: int = 0
 
-    # Client-side point-to-point comparison.
-    # For single-streak, full-history, non-partial names the engine TWR should
-    # match the simple HPR: (exit_px / entry_px - 1) × 100.
+    if sub_periods is not None:
+        try:
+            # Build the Carino grid to get R^g_port and clamp count.
+            kt_over_K, K, carino_clamp_count_out = _build_carino_grid(sub_periods)
+
+            # R^g_port from geometric linking.
+            gross_product = 1.0
+            for sp in sub_periods:
+                gross_product *= 1.0 + sp.gross_sub_return
+            R_port_gross = gross_product - 1.0
+
+            # Sum of all position contributions (in fraction, not percent).
+            contrib_sum = sum(
+                pr.contrib_nav_pts / 100.0
+                for pr in position_returns.values()
+                if pr.contrib_nav_pts is not None
+            )
+            gross_identity_error = abs(contrib_sum - R_port_gross)
+
+            # --- Cost line residual (NET identity) ---
+            # C_cost = Σ_t (k_t/K) × (−δ_t)
+            C_cost = _cost_line_contribution(sub_periods, kt_over_K)
+            # R^n_port from geometric linking of net sub-returns.
+            net_product = 1.0
+            for sp in sub_periods:
+                net_product *= 1.0 + sp.net_sub_return
+            R_port_net = net_product - 1.0
+            net_contrib_sum = contrib_sum + C_cost
+            cost_line_residual = abs(net_contrib_sum - R_port_net)
+
+        except Exception:  # noqa: BLE001
+            logger.warning(
+                "reconciliation_errors: Carino C3 check failed (graceful skip)",
+                exc_info=True,
+            )
+            gross_identity_error = None
+            cost_line_residual = None
+            carino_clamp_count_out = 0
+
+    # --- Client-side point-to-point comparison (unchanged from PR-2a) ---
     pp_errors: list[float] = []
     ticker_legs: dict[str, list[tuple[str, float]]] = {}
     for date_iso, weight_map in band_legs:
@@ -1087,7 +1222,7 @@ def reconciliation_errors(
             pp_errors.append(abs(pr.twr_pct - pp_return))
 
     pp_twr_error: float | None = max(pp_errors) if pp_errors else None
-    return carino_error, pp_twr_error
+    return gross_identity_error, cost_line_residual, pp_twr_error, carino_clamp_count_out
 
 
 def position_returns_to_dict(

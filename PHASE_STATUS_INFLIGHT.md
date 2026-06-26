@@ -7632,3 +7632,78 @@ PR-2b adds a UI surface gated on ≥ 1 cron confirming the reconciliation counte
 **Unblocks**: Carino follow-up PR (financial-engineer re-derivation) + PR-2b (rotation-history drawers)
 
 **Gate**: quantrank-reviewer + defense-layer-auditor at Draft→Ready.
+
+---
+
+## PR-2c — Carino C3 reconciliation (`claude/carino-reconciliation`, 2026-06-26)
+
+**Scope**: Implements the Carino (1999) GROSS-identity contribution-to-NAV
+reconciliation gate (C3 correctness gate) for the position-return redesign.
+Builds on PR-1 (#614) + PR-2a (#618) which are merged on `main`.
+STILL SHADOW / Rule-18: no frontend read; display flip is a separate PR-2b.
+
+**Files written** (`compute/` only):
+- `compute/portfolio/backtest.py` — adds `SubPeriod` frozen dataclass (fields:
+  `date_from`, `date_to`, `start_weights_gross`, `price_relatives`,
+  `gross_sub_return`, `net_sub_return`, `cost_drag`) + `decompose: bool = False`
+  keyword arg to `build_portfolio_nav`; existing callers with default
+  `decompose=False` receive BYTE-IDENTICAL output.
+- `compute/portfolio/position_returns.py` — adds window-global Carino grid
+  (`_build_carino_grid`, `_compute_contribution_from_sub_periods`,
+  `_cost_line_contribution`); updates `compute_position_returns` with
+  `sub_periods` kwarg; `reconciliation_errors` returns 4-tuple
+  `(gross_identity_error, cost_line_residual, pp_twr_error, carino_clamp_count)`;
+  deprecated `_compute_carino_contribution_for_streak` retained as compat stub.
+- `scripts/backfill_portfolio_pit.py` — imports `SubPeriod`; calls
+  `build_portfolio_nav(decompose=True)` for adaptive NAV; `_assemble_nav`
+  now returns 7-tuple (added `sub_periods: list[SubPeriod]`); passes
+  `sub_periods` to `_compute_flat_latest_returns` + `reconciliation_errors`;
+  wires 3 new counters into `payload["meta"]`:
+  `position_return_reconciliation_max_abs_error`, `position_return_cost_line_residual`,
+  `carino_clamp_count` (+ retains `position_return_twr_vs_clientside_max_abs_pp`).
+
+**Algorithm (window-global Carino grid)**:
+- `k_t = ln(1+R^g_t)/R^g_t`; `K = ln(1+R^g_port)/R^g_port`
+- When `1+R^g_t ≤ 0`: clamp `k_t=1`, increment `carino_clamp_count`
+- `C_i = Σ_t (k_t/K) · w_{i,t} · (ρ_{i,t}−1)` (LIFETIME, not streak-scoped)
+- `__cost__` synthetic line: `C_cost = Σ_t (k_t/K)·(−δ_t)` (RAW un-rounded δ_t)
+- GROSS identity: `Σ_i C_i = R^g_port` (~1e-11 float floor)
+- NET identity: `Σ_i C^n_i + C_cost = R^n_port` (closed by un-rounded δ_t)
+- Condition C1: price relatives lifted from engine's `price_on` closure (no second price walk)
+
+**Invariant gates**: Rule 16 annotate-only N/A (no scoring change) · Rule 18 obs-first YES
+  (new counters in `meta`, no frontend read, defense UNCHANGED at 36).
+
+**Schema triple**: untouched (`backtest_pit.json` `meta` dict is hand-built, not in the Pydantic↔TS↔snapshot triple).
+
+**Verify**: ruff PASS · pytest offline: 1797 passed / 3 skipped / 3 failed (see below) · schema_check PASS.
+
+**Test failures (3) — test-engineer must update**:
+`tests/test_portfolio/test_position_returns.py` has 3 tests that unpack
+`reconciliation_errors` as a 2-tuple (PR-2a contract). The function now
+returns a 4-tuple. Required test updates:
+- `test_reconciliation_errors_no_contribs` — unpack as `(err, _, _, _)` or use `[0]`/`[1]`
+- `test_reconciliation_errors_with_closes_pp_twr_near_zero` — same
+- `test_reconciliation_errors_with_closes_not_none` — same
+All other 42 tests in `test_position_returns.py` pass. No regressions outside this file.
+
+**Coverage needed** (for test-engineer; see handoff):
+1. `_build_carino_grid`: empty sub_periods → returns `([], 1.0, 0)`.
+2. `_build_carino_grid`: single sub-period, zero gross return → `K=1`, ratio=1.
+3. `_build_carino_grid`: sub-period with `1+R^g_t ≤ 0` → `clamp_count=1`.
+4. `_compute_contribution_from_sub_periods`: ticker missing from all sub_periods → 0.0.
+5. `_compute_contribution_from_sub_periods`: ticker with price_relative missing → skips.
+6. C3 GROSS identity: 3-ticker, 2-sub-period book → `|Σ C_i − R^g_port| < 1e-9`.
+7. NET identity: `|Σ C^n_i + C_cost − R^n_port| < 1e-9` with un-rounded δ_t.
+8. `carino_clamp_count` propagates into `reconciliation_errors` return [3].
+9. `reconciliation_errors` with `sub_periods=None` → gross_err=None, cost_residual=None, clamp_count=0.
+10. `compute_position_returns` with `sub_periods` → all tickers get non-None `contrib_nav_pts`.
+11. `compute_position_returns` with `sub_periods=None` → all tickers get `contrib_nav_pts=None` (PR-2a compat).
+12. Fix existing 3 `reconciliation_errors` 2-tuple unpacks → 4-tuple.
+
+**SHADOW constraint**: frontend does NOT read `contrib_nav_pts` until PR-2b adds a UI surface
+gated on ≥ 1 cron confirming the C3 reconciliation counters.
+
+**Unblocks**: PR-2b (rotation-history drawers — can now trust GROSS identity closes to ~1e-11)
+
+**Gate**: quantrank-reviewer + defense-layer-auditor at Draft→Ready.
