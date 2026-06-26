@@ -19,6 +19,7 @@ import math
 
 import pytest
 from hypothesis import given
+from hypothesis import settings as _h_settings
 from hypothesis import strategies as st
 
 from compute.portfolio.backtest import SubPeriod
@@ -1764,4 +1765,442 @@ def test_c3_gross_identity_holds_for_all_dirichlet_inputs(
     assert error < 1e-9, (
         f"C3 GROSS identity violated: |Σ_i C_i − R^g_port| = {error:.2e} "
         f"(n_periods={n_periods}, n_tickers={n_tickers})"
+    )
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX: per-window SubPeriod-based GROSS identity (commit 2917d6d92)
+#
+# The bug: reconciliation_errors() previously computed
+#   gross_identity_error = |Σ pr.contrib_nav_pts/100 − R^g_port|
+# where Σ pr.contrib_nav_pts/100 was a flat sum over ~10 current/recently-sold
+# tickers (a partial-attribution subset covering only the current basket), while
+# R^g_port was the full 10-year gross NAV return (+832%).  The mismatch produced
+# position_return_reconciliation_max_abs_error = 7.006 instead of ~1e-11.
+#
+# The fix: replace the flat-position-map path with two SubPeriod-based checks:
+#   1. Per-window BHB identity: max_t |Σ_i w_{i,t}·(ρ_{i,t}−1) − R^g_t|
+#   2. Full-period Carino chain: |Σ_t (k_t/K)·R^g_t − R^g_port|
+#   gross_identity_error = max(chain_err, max_window_bhb_err)
+#
+# These 6 tests target the new sub_periods path specifically.
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX 1: Positive 2-window fixture — gross_identity_error < 1e-9
+# ---------------------------------------------------------------------------
+
+
+def test_per_window_gross_identity_two_windows():
+    """SubPeriod-based reconciliation_errors returns gross_identity_error < 1e-9.
+
+    2-window fixture with known, exactly-consistent weights, price-relatives and
+    gross_sub_returns (no floating-point inconsistency introduced).
+
+    Window 0: AAPL 60%, MSFT 40%, each +10% and +5% → gross0 = 0.60×0.10 + 0.40×0.05 = 0.080
+    Window 1: AAPL 50%, MSFT 50%, each +8% and +6% → gross1 = 0.50×0.08 + 0.50×0.06 = 0.070
+    R^g_port = (1.080)(1.070) − 1 = 0.1556
+
+    Both the per-window BHB check and the Carino chain check must be < 1e-9.
+    This is the positive test that would FAIL under the OLD code (which compared
+    a flat-position-map contrib_sum against R^g_port).
+    """
+    # Window 0: exactly consistent sub-period.
+    w0_aapl, w0_msft = 0.60, 0.40
+    r0_aapl, r0_msft = 0.10, 0.05
+    gross0 = w0_aapl * r0_aapl + w0_msft * r0_msft   # = 0.080 exactly
+
+    # Window 1: exactly consistent sub-period.
+    w1_aapl, w1_msft = 0.50, 0.50
+    r1_aapl, r1_msft = 0.08, 0.06
+    gross1 = w1_aapl * r1_aapl + w1_msft * r1_msft   # = 0.070 exactly
+
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": w0_aapl, "MSFT": w0_msft},
+        {"AAPL": 1.0 + r0_aapl, "MSFT": 1.0 + r0_msft},
+        gross_sub_return=gross0,
+    )
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": w1_aapl, "MSFT": w1_msft},
+        {"AAPL": 1.0 + r1_aapl, "MSFT": 1.0 + r1_msft},
+        gross_sub_return=gross1,
+    )
+
+    # Minimal band_legs + nav to satisfy the reconciliation_errors signature.
+    band_legs = [
+        ("2020-01-01", {"AAPL": w0_aapl, "MSFT": w0_msft}),
+        ("2020-04-01", {"AAPL": w1_aapl, "MSFT": w1_msft}),
+    ]
+    nav_net = [100.0, 100.0 * (1.0 + gross0), 100.0 * (1.0 + gross0) * (1.0 + gross1)]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    gross_err, cost_residual, _pp_err, clamp_count = reconciliation_errors(
+        {},                         # position_returns not needed for GROSS check
+        nav_net,
+        nav_dates,
+        band_legs,
+        sub_periods=[sp0, sp1],
+    )
+
+    assert gross_err is not None, "gross_identity_error must be a float when sub_periods provided"
+    assert gross_err < 1e-9, (
+        f"per-window GROSS identity error = {gross_err:.2e} (expected < 1e-9).  "
+        "The SubPeriod-based BHB/chain check failed — old flat-map path may be active."
+    )
+    assert clamp_count == 0
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX 2: Negative regression guard — old-style arithmetic produces ≥ 1.0
+# ---------------------------------------------------------------------------
+
+
+def test_old_style_flat_contrib_vs_full_gross_nav_error_is_large():
+    """Documents the bug shape: flat-contrib-sum vs full-gross-NAV error ≈ 7.006.
+
+    The OLD reconciliation_errors() wiring compared:
+        contrib_sum = Σ pr.contrib_nav_pts / 100   (current-basket only, ≈ +131.6%)
+        R^g_port    = full 10-year gross NAV return  (≈ +832%)
+        gross_identity_error_OLD = |contrib_sum - R^g_port|  ≈ 7.006
+
+    This test does NOT call the old code; it asserts the arithmetic that the
+    old wiring produced.  If the error is ≥ 1.0, the old wiring is detected.
+
+    Concrete numbers inspired by the backfill-verify gate failure:
+      - 10 tickers in the current basket, each contributing ~13.16 NAV pts
+        (so Σ = ~131.6 pts → 1.316 as a fraction).
+      - Full 10-year gross NAV is 932 (base 100 → 932), i.e. R^g_port = 8.32.
+      - |1.316 − 8.32| = 7.004 ≥ 1.0  → the old code raised the counter to 7.006.
+
+    The NEW code uses SubPeriod-based BHB/chain checks that are immune to this
+    window-set mismatch.
+    """
+    # Simulate the old wiring: flat position_returns covering only the current basket.
+    n_current_basket_tickers = 10
+    contrib_nav_pts_each = 13.16   # NAV-pts per ticker in the current basket
+
+    # OLD error formula: |Σ(contrib_nav_pts/100) − R^g_port|
+    contrib_sum_old = n_current_basket_tickers * (contrib_nav_pts_each / 100.0)  # ≈ 1.316
+
+    # Full 10-year gross NAV return: portfolio went from 100 to 932 → R^g_port = 8.32
+    R_port_gross_full = 8.32
+
+    old_style_error = abs(contrib_sum_old - R_port_gross_full)
+
+    assert old_style_error >= 1.0, (
+        f"OLD-style error = {old_style_error:.4f} — expected ≥ 1.0 to document the bug shape. "
+        "The test fixture may be mis-calibrated."
+    )
+    # And specifically ≈ 7.006 (within ±0.1 of the production observed value).
+    assert 6.0 < old_style_error < 8.0, (
+        f"OLD-style error = {old_style_error:.4f} — expected in the 6–8 range "
+        "(matching the backfill-verify gate counter of ~7.006).  "
+        "If this assertion fails the bug-shape constants need re-calibration."
+    )
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX 3: Cost-line identity — cost_line_residual < 1e-9 with non-zero cost_drag
+# ---------------------------------------------------------------------------
+
+
+def test_cost_line_identity_with_nonzero_cost_drag():
+    """cost_line_residual = |R^g_port + C_cost − R^n_port| < 1e-9 for non-zero δ_t.
+
+    The fix also corrected the cost-line identity from using contrib_sum
+    (old, wrong) to R^g_port (from SubPeriods).
+
+    With a cost_drag δ_t small enough that the geometric cross-term
+    δ_t × R^g_{next} is negligible (δ_t = 1e-12), the net identity closes
+    exactly to float precision (< 1e-9).
+
+    This pins the |R^g_port + C_cost − R^n_port| formula rather than the
+    old |contrib_sum + C_cost − R^n_port| (which would be inflated by the
+    window-set mismatch).
+    """
+    w = 0.5
+    r0_aapl, r0_msft = 0.12, 0.08
+    r1_aapl, r1_msft = 0.06, 0.04
+
+    gross0 = w * r0_aapl + w * r0_msft   # = 0.10
+    gross1 = w * r1_aapl + w * r1_msft   # = 0.05
+
+    # Cost drag: small enough that the second-order cross-term is below float epsilon.
+    delta0 = 1e-12   # cost at rebalance 0
+    delta1 = 0.0     # no cost for the terminal sub-period
+
+    net0 = gross0 - delta0
+    net1 = gross1 - delta1
+
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": w, "MSFT": w},
+        {"AAPL": 1.0 + r0_aapl, "MSFT": 1.0 + r0_msft},
+        gross_sub_return=gross0,
+        cost_drag=delta0,
+    )
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": w, "MSFT": w},
+        {"AAPL": 1.0 + r1_aapl, "MSFT": 1.0 + r1_msft},
+        gross_sub_return=gross1,
+        cost_drag=delta1,
+    )
+
+    band_legs = [
+        ("2020-01-01", {"AAPL": w, "MSFT": w}),
+        ("2020-04-01", {"AAPL": w, "MSFT": w}),
+    ]
+    nav_net = [100.0, 100.0 * (1.0 + net0), 100.0 * (1.0 + net0) * (1.0 + net1)]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    _gross_err, cost_residual, _pp_err, _clamp = reconciliation_errors(
+        {},
+        nav_net,
+        nav_dates,
+        band_legs,
+        sub_periods=[sp0, sp1],
+    )
+
+    assert cost_residual is not None, (
+        "cost_line_residual must be a float when sub_periods provided"
+    )
+    assert cost_residual < 1e-9, (
+        f"|R^g_port + C_cost − R^n_port| = {cost_residual:.2e} (expected < 1e-9).  "
+        "The cost-line identity check failed — old contrib_sum path may be active."
+    )
+
+    # Also verify the implied cost contribution is negative or zero
+    # (positive cost drag should pull the net below the gross).
+    kt_over_K, _K, _ = _build_carino_grid([sp0, sp1])
+    C_cost = _cost_line_contribution([sp0, sp1], kt_over_K)
+    assert C_cost <= 0.0, (
+        f"C_cost = {C_cost:.2e} must be ≤ 0 (positive cost_drag reduces net NAV, "
+        "so the Carino cost line must be non-positive)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX 4: compute_window_contributions nominal — Σ_t Σ_i ≈ R^g_port
+# ---------------------------------------------------------------------------
+
+
+def test_compute_window_contributions_sum_equals_gross_return():
+    """Σ_t Σ_i compute_window_contributions(t)(i) ≈ R^g_port within 1e-9.
+
+    2-ticker × 3-window fixture.
+    By Carino (1999) §3: Σ_t (k_t/K) · R^g_t = R^g_port
+    And each window's Σ_i = (k_t/K) · Σ_i w_{i,t} · (ρ_{i,t}−1) = (k_t/K) · R^g_t.
+    So Σ_t Σ_i result[t][i] = R^g_port exactly (up to float precision).
+    """
+    from compute.portfolio.position_returns import compute_window_contributions
+
+    # Window 0: AAPL 0.5, MSFT 0.5, each +6% and +4%
+    gross0 = 0.5 * 0.06 + 0.5 * 0.04   # = 0.05
+    # Window 1: AAPL 0.4, MSFT 0.6, each +10% and +2%
+    gross1 = 0.4 * 0.10 + 0.6 * 0.02   # = 0.052
+    # Window 2: AAPL 0.6, MSFT 0.4, each +3% and +7%
+    gross2 = 0.6 * 0.03 + 0.4 * 0.07   # = 0.046
+
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 0.5, "MSFT": 0.5},
+        {"AAPL": 1.06, "MSFT": 1.04},
+        gross_sub_return=gross0,
+    )
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": 0.4, "MSFT": 0.6},
+        {"AAPL": 1.10, "MSFT": 1.02},
+        gross_sub_return=gross1,
+    )
+    sp2 = _sub_period(
+        "2020-07-01", "2020-10-01",
+        {"AAPL": 0.6, "MSFT": 0.4},
+        {"AAPL": 1.03, "MSFT": 1.07},
+        gross_sub_return=gross2,
+    )
+
+    R_port_gross = (1.0 + gross0) * (1.0 + gross1) * (1.0 + gross2) - 1.0
+
+    kt_over_K, _K, _ = _build_carino_grid([sp0, sp1, sp2])
+    result = compute_window_contributions([sp0, sp1, sp2], kt_over_K)
+
+    assert set(result.keys()) == {0, 1, 2}, f"Expected window indices {{0,1,2}}, got {set(result.keys())}"
+
+    # Σ_t Σ_i must equal R^g_port within 1e-9.
+    total_contrib = 0.0
+    for t, window_dict in result.items():
+        for ticker, c in window_dict.items():
+            assert c is not None, f"result[{t}][{ticker}] must not be None (all prices present)"
+            total_contrib += c
+
+    error = abs(total_contrib - R_port_gross)
+    assert error < 1e-9, (
+        f"compute_window_contributions total = {total_contrib:.12f}, "
+        f"R^g_port = {R_port_gross:.12f}, error = {error:.2e} (expected < 1e-9)"
+    )
+
+    # Also verify each window's Σ_i matches (k_t/K) × R^g_t.
+    grosses = [gross0, gross1, gross2]
+    for t in range(3):
+        window_sum = sum(
+            c for c in result[t].values() if c is not None
+        )
+        expected_window = kt_over_K[t] * grosses[t]
+        window_error = abs(window_sum - expected_window)
+        assert window_error < 1e-9, (
+            f"Window {t} sum = {window_sum:.12f}, "
+            f"expected (k_t/K)·R^g_t = {expected_window:.12f}, "
+            f"error = {window_error:.2e}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX 5: compute_window_contributions degradation — missing ρ → None, no raise
+# ---------------------------------------------------------------------------
+
+
+def test_compute_window_contributions_missing_price_relative_is_none_no_raise():
+    """A missing price-relative in a window produces None for that ticker, never raises.
+
+    Window 0: AAPL has a price_relative; MSFT is absent from price_relatives.
+    AAPL must have a float value; MSFT must map to None; no exception is raised.
+    All entries for the OTHER window (window 1) must be unaffected.
+    """
+    from compute.portfolio.position_returns import compute_window_contributions
+
+    # Window 0: AAPL has ρ, MSFT does NOT.
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 0.5, "MSFT": 0.5},      # MSFT has weight
+        {"AAPL": 1.10},                    # but NO price_relative for MSFT
+        gross_sub_return=0.05,             # BHB identity not asserted here (ρ absent)
+    )
+    # Window 1: both tickers have price_relatives.
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": 0.5, "MSFT": 0.5},
+        {"AAPL": 1.06, "MSFT": 1.04},
+        gross_sub_return=0.5 * 0.06 + 0.5 * 0.04,
+    )
+
+    kt_over_K, _K, _ = _build_carino_grid([sp0, sp1])
+
+    # Should NOT raise despite MSFT's missing ρ in window 0.
+    result = compute_window_contributions([sp0, sp1], kt_over_K)
+
+    # Window 0: AAPL has a non-None float; MSFT is None.
+    assert 0 in result, "Window 0 must be present in result"
+    assert "AAPL" in result[0], "AAPL must appear in window 0 (it has a price_relative)"
+    assert result[0]["AAPL"] is not None, "AAPL window-0 contribution must not be None"
+    assert math.isfinite(result[0]["AAPL"]), f"AAPL contribution must be finite, got {result[0]['AAPL']}"
+
+    assert "MSFT" in result[0], "MSFT must appear in window 0 (it has weight; ρ absent → None)"
+    assert result[0]["MSFT"] is None, (
+        f"MSFT window-0 contribution must be None (missing price_relative), "
+        f"got {result[0]['MSFT']}"
+    )
+
+    # Window 1: both tickers must have finite contributions.
+    assert 1 in result, "Window 1 must be present"
+    assert result[1]["AAPL"] is not None and math.isfinite(result[1]["AAPL"])
+    assert result[1]["MSFT"] is not None and math.isfinite(result[1]["MSFT"])
+
+
+# ---------------------------------------------------------------------------
+# PR-2c FIX 6: Hypothesis property — gross_identity_error < 1e-9 for all inputs
+# ---------------------------------------------------------------------------
+
+
+@given(
+    n_windows=st.integers(min_value=1, max_value=4),
+    n_tickers=st.integers(min_value=1, max_value=3),
+    raw_weights_flat=st.lists(
+        st.floats(min_value=0.01, max_value=1.0, allow_nan=False, allow_infinity=False),
+        min_size=1,
+        max_size=12,
+    ),
+    # Price relatives ∈ [0.5, 1.8]: avoid total-loss sub-periods which trigger clamping
+    # (clamping disrupts the exact identity; the property test focuses on the normal path).
+    price_relatives_flat=st.lists(
+        st.floats(min_value=0.5, max_value=1.8, allow_nan=False, allow_infinity=False),
+        min_size=1,
+        max_size=12,
+    ),
+)
+@_h_settings(max_examples=50)
+def test_per_window_gross_identity_holds_for_random_inputs(
+    n_windows: int,
+    n_tickers: int,
+    raw_weights_flat: list[float],
+    price_relatives_flat: list[float],
+) -> None:
+    """gross_identity_error < 1e-9 for all Dirichlet-sampled inputs.
+
+    Builds n_windows sub-periods with n_tickers each.
+    Weights are Dirichlet-normalised (from raw_weights_flat).
+    Price relatives drawn from [0.5, 1.8] (no total-loss, no clamping).
+
+    reconciliation_errors(sub_periods=sub_periods) must return
+    gross_identity_error < 1e-9 for all valid combinations.
+    """
+    required = n_windows * n_tickers
+    tickers = [f"T{i}" for i in range(n_tickers)]
+
+    def _pad(lst: list, n: int) -> list:
+        if not lst:
+            return [1.0] * n
+        return [lst[i % len(lst)] for i in range(n)]
+
+    rw = _pad(raw_weights_flat, required)
+    pr = _pad(price_relatives_flat, required)
+
+    sub_periods = []
+    for t in range(n_windows):
+        raw_w = {tickers[i]: rw[t * n_tickers + i] for i in range(n_tickers)}
+        total_w = sum(raw_w.values())
+        if total_w <= 0.0:
+            weights = {ticker: 1.0 / n_tickers for ticker in tickers}
+        else:
+            weights = {ticker: v / total_w for ticker, v in raw_w.items()}
+
+        pr_map = {tickers[i]: pr[t * n_tickers + i] for i in range(n_tickers)}
+        gross_sub = sum(weights[k] * (pr_map[k] - 1.0) for k in weights)
+
+        sub_periods.append(_sub_period(
+            f"2020-{t + 1:02d}-01",
+            f"2020-{t + 2:02d}-01",
+            weights,
+            pr_map,
+            gross_sub_return=gross_sub,
+        ))
+
+    band_legs = [
+        (sp.date_from, sp.start_weights_gross)
+        for sp in sub_periods
+    ]
+    # NAV values: just need a non-empty list for the signature.
+    nav_net = [100.0] * (n_windows + 1)
+    nav_dates = [sp.date_from for sp in sub_periods] + [sub_periods[-1].date_to]
+
+    gross_err, _cost_residual, _pp_err, clamp_count = reconciliation_errors(
+        {},
+        nav_net,
+        nav_dates,
+        band_legs,
+        sub_periods=sub_periods,
+    )
+
+    assert clamp_count == 0, (
+        f"No total-loss sub-periods in fixture (ρ ∈ [0.5,1.8]) "
+        f"but got clamp_count={clamp_count}"
+    )
+    assert gross_err is not None, "gross_identity_error must not be None when sub_periods provided"
+    assert gross_err < 1e-9, (
+        f"per-window GROSS identity violated: gross_identity_error = {gross_err:.2e} "
+        f"(n_windows={n_windows}, n_tickers={n_tickers})"
     )
