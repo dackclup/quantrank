@@ -4,12 +4,14 @@ Covers:
 (a) Multi-rebalance holder with known prices → assert TWR, MWR correct.
 (b) Null intermediate price → partial_history=True, TWR drops that leg.
 (c) Re-entry after gap → only the current streak is used.
-(d) Carino identity: Σ contrib_nav_pts ≈ portfolio NAV total return in pts.
+(d) Carino descoped → contrib_nav_pts is None for all positions (PR-2a FIX-FIRST).
 (e) Weight → 0 terminates the streak.
 (f) Empty band_legs returns empty dict.
 (g) _days_between helper.
 (h) _carino_coefficient edge cases (R=0, R=-1).
 (i) position_returns_to_dict serialization.
+(j) Per-quarter PIT look-ahead fix: quarter-0 TWR != quarter-N TWR.
+(k) Flat field (compute_position_returns) covers sold-at-latest names.
 """
 from __future__ import annotations
 
@@ -571,9 +573,11 @@ def test_compute_position_returns_per_quarter_empty_input():
 
 
 def test_compute_position_returns_per_quarter_latest_compat():
-    """The last entry of per_quarter matches compute_position_returns output exactly.
+    """The flat field (compute_position_returns) covers current holders.
 
-    PR-1 backward compat: compute_position_returns delegates to per_quarter[-1].
+    FIX-FIRST update: compute_position_returns now uses _compute_flat_latest_returns
+    rather than delegating to per_quarter[-1].  For a fixture with no sold names the
+    two should agree on keys and return values (both mark to the same latest-close).
     """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.5}),
@@ -596,7 +600,8 @@ def test_compute_position_returns_per_quarter_latest_compat():
     assert len(per_quarter) == 3
     latest_from_per_quarter = per_quarter[-1]
 
-    # Every key and value must match.
+    # With no sold names at the latest rebalance, both sources should cover
+    # the same tickers and agree on TWR/MWR (both mark to the same latest-close).
     assert set(latest_flat.keys()) == set(latest_from_per_quarter.keys())
     for ticker, pr_flat in latest_flat.items():
         pr_pq = latest_from_per_quarter[ticker]
@@ -613,12 +618,14 @@ def test_compute_position_returns_per_quarter_latest_compat():
 
 
 def test_carino_identity_three_quarter_book():
-    """Σ(contrib_nav_pts) ≈ NAV_end − NAV_start (in base-100 points).
+    """contrib_nav_pts is None for all positions (Carino descoped to follow-up PR).
 
-    Uses two tickers held for 3 rebalances with clean prices.  The Carino
-    linking formula ensures the sum reconciles within a small absolute tolerance.
+    The Carino linking formula was descoped in PR-2a (FIX-FIRST) because the
+    numerator (position own-price return) and denominator (net NAV sub-return)
+    are inconsistent → Σ contrib ≠ NAV return.  Re-derivation is deferred to
+    a dedicated Carino PR by financial-engineer.
 
-    NAV: 100 → 105 → 112.  NAV return in pts = 12.
+    Until that PR lands, every PositionReturn must carry contrib_nav_pts=None.
     """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
@@ -629,35 +636,88 @@ def test_carino_identity_three_quarter_book():
         "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 121.0},
         "MSFT": {"2020-01-01": 200.0, "2020-04-01": 204.0, "2020-07-01": 206.0},
     }
-    # Build a synthetic NAV that tracks a 50/50 blend:
-    # Q1: AAPL +10%, MSFT +2% → port ~+6%  → NAV 100→106
-    # Q2: AAPL +10%, MSFT +1% → port ~+5.5% → NAV 106→111.8
-    # daily dates align exactly with rebalance dates for this test.
     nav_net = [100.0, 106.0, 111.8]
     nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
 
     per_quarter = compute_position_returns_per_quarter(
         band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
     )
-    # Use the LATEST quarter map (tickers are current holders → full NAV window).
-    latest_map = per_quarter[-1]
+    assert len(per_quarter) == 3
 
-    contribs = [
-        pr.contrib_nav_pts
-        for pr in latest_map.values()
-        if pr.contrib_nav_pts is not None
+    # All positions across all quarters must have contrib_nav_pts == None.
+    for quarter_map in per_quarter:
+        for ticker, pr in quarter_map.items():
+            assert pr.contrib_nav_pts is None, (
+                f"{ticker}: expected contrib_nav_pts=None (Carino descoped) "
+                f"but got {pr.contrib_nav_pts}"
+            )
+
+
+# ---------------------------------------------------------------------------
+# Per-quarter PIT look-ahead fix (Fix #3): quarter-0 TWR != quarter-N TWR
+# ---------------------------------------------------------------------------
+
+
+def test_per_quarter_pit_no_lookahead():
+    """Fix #3: historical quarter TWR differs from latest-quarter TWR.
+
+    For a ticker held across 3 rebalances with distinct prices, the TWR
+    computed for quarter-0 (using only legs up to 2020-01-01) must differ
+    from the TWR for quarter-2 (using all three legs) and from the TWR for
+    quarter-1 (using two legs).
+
+    Without the fix the code would use the full leg history for every quarter
+    (look-ahead), producing the same TWR for all three.  With the fix applied:
+      - quarter-0 has only 1 leg (entry at 2020-01-01, mark to 2020-04-01) →
+        TWR = 110/100 − 1 = 10%
+      - quarter-1 has 2 legs (entry at 2020-01-01, mark to 2020-07-01) →
+        TWR = (110/100) × (121/110) − 1 = 21%
+      - quarter-2 (latest) has 3 legs → same TWR = 21% (no additional leg in
+        our data, since latest-close matches 2020-07-01)
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5}),
     ]
-    # Both tickers should have a contrib when NAV is available.
-    assert len(contribs) >= 1, "No Carino contributions computed — check NAV/closes alignment"
+    # Prices at each rebalance boundary; no later-date closes beyond 2020-07-01.
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,
+            "2020-07-01": 121.0,
+        }
+    }
+    nav_net = [100.0, 106.0, 111.8]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
 
-    # Σ contrib should be within ~3 pts of NAV return (11.8 pts here).
-    nav_return_pts = nav_net[-1] - nav_net[0]
-    sigma_contrib = sum(contribs)
-    # Relative tolerance: allow up to ~25% error (Carino approximation over multi-leg).
-    assert abs(sigma_contrib - nav_return_pts) < abs(nav_return_pts) * 0.25 + 0.5, (
-        f"Carino reconciliation error too large: "
-        f"Σcontrib={sigma_contrib:.4f}, nav_return_pts={nav_return_pts:.4f}"
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
     )
+    assert len(per_quarter) == 3
+
+    twr_q0 = per_quarter[0]["AAPL"].twr_pct
+    twr_q1 = per_quarter[1]["AAPL"].twr_pct
+    twr_q2 = per_quarter[2]["AAPL"].twr_pct
+
+    assert twr_q0 is not None, "quarter-0 TWR should be computed"
+    assert twr_q1 is not None, "quarter-1 TWR should be computed"
+    assert twr_q2 is not None, "quarter-2 TWR should be computed"
+
+    # The key correctness signal: quarter-0 must NOT equal quarter-2.
+    # If look-ahead is present they would be equal (same full chain of legs).
+    assert twr_q0 != pytest.approx(twr_q2, rel=1e-6), (
+        f"quarter-0 TWR ({twr_q0:.4f}%) == quarter-2 TWR ({twr_q2:.4f}%): "
+        "look-ahead elimination (Fix #3) is NOT working"
+    )
+
+    # Spot-check expected values (single-leg quarter-0 vs two-leg quarter-1).
+    # quarter-0: AAPL held at 2020-01-01, mark to 2020-04-01 (next rebal).
+    #   TWR = 110/100 − 1 = 10%
+    assert twr_q0 == pytest.approx(10.0, abs=0.05), f"Unexpected quarter-0 TWR: {twr_q0}"
+
+    # quarter-1 (two legs, mark to 2020-07-01): (110/100)×(121/110)−1 = 21%
+    assert twr_q1 == pytest.approx(21.0, abs=0.05), f"Unexpected quarter-1 TWR: {twr_q1}"
 
 
 # ---------------------------------------------------------------------------

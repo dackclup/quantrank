@@ -7,24 +7,34 @@ PR-2a extends PR-1 (#614) with two structural improvements:
      rebalance (not just the latest), enabling the PR-2b rotation-history
      drawers to read ``rebalances[i]["position_returns"]``.
 
-  2. Carino (1999) reconciliation: ``contrib_nav_pts`` is now populated using
-     the daily NAV series (``portfolio_nav_net`` / ``portfolio_nav_dates``)
-     that ``_assemble_nav`` returns. The linking formula is:
+     FIX (PR-2a rev): for each quarter r the streak is built from legs with
+     ``date <= r's rebalance date`` only, so historical quarters do not chain
+     prices through future rebalance dates (look-ahead elimination).  Quarter
+     r's map reflects only information available at r.  The latest rebalance
+     still uses the full leg history.
 
-         contrib_i = Σ_legs  w_leg × r_pos_leg × (k_sub / k_port)
+  2. Carino (1999) reconciliation — DESCOPED to a follow-up PR.  The Carino
+     linking formula is mathematically inconsistent in this context (numerator
+     uses position own-price return; denominator uses net NAV sub-return, so
+     Σ contrib ≠ NAV return).  ``contrib_nav_pts`` is ``None`` for all positions
+     (stub, as in PR-1) and ``position_return_reconciliation_max_abs_error`` is
+     ``None``.  The Carino helper code is retained but NOT called.
+     TODO(carino-reconciliation PR): re-derive and wire the linking formula once
+     financial-engineer delivers a consistent formulation.
 
-     where k = ln(1+R)/R (Carino 1999), summed over each holding's streak
-     legs using the NAV sub-period returns as the denominator.  When
-     Σ(contrib_nav_pts) ≈ NAV_end − NAV_start (in base-100 points) the
-     reconciliation counter ``position_return_reconciliation_max_abs_error``
-     will be near zero — condition C3, verified post-merge via backfill dispatch.
+  3. TWR vs client-side comparison: ``reconciliation_errors`` accepts a
+     ``closes`` parameter.  When provided it computes the max
+     |engine TWR − point-to-point HPR| over clean single-streak names and emits
+     it as ``position_return_twr_vs_clientside_max_abs_pp``.
 
-  3. TWR vs client-side comparison: ``reconciliation_errors`` now accepts a
-     ``closes`` parameter (previously a TODO).  When provided it computes
-     the max |engine TWR − point-to-point HPR| over clean single-streak names
-     and emits it as ``position_return_twr_vs_clientside_max_abs_pp``.
+Backward-compat (PR-1 semantics for ``payload["position_returns"]``):
+    ``compute_position_returns`` returns current holders AT the latest rebalance
+    PLUS names sold at the latest rebalance (marked-to-exit close), matching PR-1's
+    output exactly for the Current-picks "Sold" rows.  The flat top-level field is
+    assembled by ``_compute_flat_latest_returns`` (not by delegating to
+    ``per_quarter[-1]``, which only covers tickers with weight > 0 at the last leg).
 
-Three return measures per holding are computed in this module:
+Two return measures per holding are computed in this module:
 
 MWR (Modified Dietz, CFA/GIPS standard)
     Money-weighted return over actual rebalance cash flows.  The Modified Dietz
@@ -50,24 +60,19 @@ TWR (Time-Weighted Return, chained geometric)
     intermediate rebalance drops that leg (``partial_history=True``).  If no valid
     leg exists, twr_pct is null.
 
-Contribution-to-NAV (Carino-linked, 1999)
-    Position P&L in NAV base-100 points, Carino-linked so the sum of all
-    per-position contributions reconciles to the portfolio NAV return:
-
-        contrib_i = Σ_legs  w_leg × r_pos_leg × (k_sub / k_port)
-
-    where k = ln(1+R)/R (the Carino linking coefficient, =1 at R=0).  This
-    avoids the arithmetic-compounding drift of a naive sum.
+contrib_nav_pts (Carino-linked, 1999) — STUB/None until the follow-up PR.
 
 Edge-case contracts
-    * Re-entry after gap  — only the CURRENT unbroken streak is used.
+    * Re-entry after gap  — only the CURRENT unbroken streak (within the
+                            truncated leg window for non-latest quarters) is used.
     * Weight → 0          — interpreted as a sell; the position terminates at the
                             exit-rebalance close and is not continued.
     * Null price at rebalance — leg is dropped (TWR) or handled gracefully (MWR).
     * Current holders     — mark-to-latest-close (the last date in ``closes``).
     * Sold rows           — mark-to-exit-rebalance close.
     * Non-latest quarters — mark-to-the-close on or before the next rebalance date
-                            (``_close_on_or_before``).
+                            (``_close_on_or_before``); legs TRUNCATED to the rebalance
+                            date to prevent look-ahead.
 
 This module is **pure** — no I/O, no scoring, no pandas, no network calls —
 mirroring the contract of ``compute/portfolio/backtest.py`` so it is
@@ -692,6 +697,125 @@ def _compute_carino_contribution_for_streak(
 # ---------------------------------------------------------------------------
 
 
+def _compute_flat_latest_returns(
+    band_legs: list[tuple[str, dict[str, float]]],
+    closes: Mapping[str, Mapping[str, float]],
+) -> dict[str, PositionReturn]:
+    """Compute position returns for the flat top-level ``payload["position_returns"]``.
+
+    Preserves PR-1 semantics exactly: covers BOTH current holders at the latest
+    rebalance AND names sold at the latest rebalance (marked-to-exit close).
+
+    PR-1's ``compute_position_returns`` returned results for:
+      - current holders (weight > 0 at the last leg), and
+      - names that were in the book at the previous leg but sold at the last
+        (their final leg has weight → 0, which ``_extract_streaks`` recognises
+        as a sell-termination and marks to the exit-rebalance close).
+
+    The per-quarter function ``compute_position_returns_per_quarter``'s
+    ``per_quarter[-1]`` entry covers only tickers with weight > 0 at the LAST
+    rebalance (the outer loop skips ``weight_here <= 0``), so delegating the flat
+    field to ``per_quarter[-1]`` silently drops sold names.  This function
+    restores PR-1 semantics by collecting ALL tickers that appear in the last two
+    rebalances (or just the last, for a single-rebalance book).
+
+    Parameters
+    ----------
+    band_legs:
+        ``[(as_of_date, {ticker: weight})]`` in ascending date order.
+    closes:
+        ``{ticker: {date_iso: close}}`` shared adjusted-close panel.
+
+    Returns
+    -------
+    dict[str, PositionReturn]
+        Keyed by ticker.  Empty when ``band_legs`` is empty.
+    """
+    if not band_legs:
+        return {}
+
+    last_weight_map = band_legs[-1][1]
+
+    # Candidates: tickers present at the last rebalance (current holders, weight > 0)
+    # PLUS tickers present at the prior rebalance with weight > 0 that now have
+    # weight == 0 at the last rebalance (sold at the latest rebalance = "Sold rows").
+    candidates: set[str] = set()
+    # Current holders.
+    for ticker, w in last_weight_map.items():
+        if w > 0.0:
+            candidates.add(ticker)
+    # Sold at latest rebalance: in prior leg with weight > 0, now weight == 0.
+    if len(band_legs) >= 2:
+        prev_weight_map = band_legs[-2][1]
+        for ticker, w_prev in prev_weight_map.items():
+            if w_prev > 0.0:
+                # Include if they now have weight 0 (sold) or are absent from the last map.
+                if last_weight_map.get(ticker, 0.0) <= 0.0:
+                    candidates.add(ticker)
+
+    # Build the full per-ticker legs list (all rebalances — same as per_quarter).
+    ticker_all_legs: dict[str, list[tuple[str, float]]] = {}
+    for date_iso, weight_map in band_legs:
+        for ticker, weight in weight_map.items():
+            ticker_all_legs.setdefault(ticker, []).append((date_iso, weight))
+
+    result: dict[str, PositionReturn] = {}
+    for ticker in candidates:
+        legs = ticker_all_legs.get(ticker, [])
+        try:
+            streaks = _extract_streaks(ticker, legs, closes)
+            if not streaks:
+                result[ticker] = PositionReturn(
+                    mwr_pct=None,
+                    twr_pct=None,
+                    contrib_nav_pts=None,
+                    since_date=None,
+                    partial_history=False,
+                    legs_used=0,
+                )
+                continue
+
+            streak = streaks[-1]
+
+            # Current holder iff weight > 0 at the LAST rebalance.
+            is_current = (last_weight_map.get(ticker, 0.0) > 0.0)
+
+            twr_pct, partial_history, legs_used, since_date = _compute_twr(
+                ticker, streak, closes,
+                is_current_holder=is_current,
+                end_date=None,  # flat field always marks to latest close for holders
+            )
+            mwr_pct = _compute_mwr(
+                ticker, streak, closes,
+                is_current_holder=is_current,
+                end_date=None,
+            )
+            result[ticker] = PositionReturn(
+                mwr_pct=mwr_pct,
+                twr_pct=twr_pct,
+                contrib_nav_pts=None,  # TODO(carino-reconciliation PR)
+                since_date=since_date,
+                partial_history=partial_history,
+                legs_used=legs_used,
+            )
+        except Exception:  # noqa: BLE001
+            logger.warning(
+                "_compute_flat_latest_returns: error for %s (graceful skip)",
+                ticker,
+                exc_info=True,
+            )
+            result[ticker] = PositionReturn(
+                mwr_pct=None,
+                twr_pct=None,
+                contrib_nav_pts=None,
+                since_date=None,
+                partial_history=True,
+                legs_used=0,
+            )
+
+    return result
+
+
 def compute_position_returns(
     band_legs: list[tuple[str, dict[str, float]]],
     closes: Mapping[str, Mapping[str, float]],
@@ -699,12 +823,14 @@ def compute_position_returns(
     portfolio_nav_net: list[float | None],
     portfolio_nav_dates: list[str],
 ) -> dict[str, PositionReturn]:
-    """Compute per-position MWR, TWR, and Carino-linked contribution.
+    """Compute per-position MWR and TWR for the flat top-level field.
 
-    Delegates to ``compute_position_returns_per_quarter`` and returns the
-    map for the LATEST rebalance quarter only.  This preserves byte-identical
-    output vs PR-1 for the ``payload["return_since_entry"]`` / Current-picks
-    numbers while the new per-quarter data feeds the rotation-history drawers.
+    Returns the PR-1-compatible flat position-return map: current holders AT the
+    latest rebalance PLUS names sold at the latest rebalance (marked-to-exit close),
+    matching PR-1's output exactly for the Current-picks "Sold" rows.
+
+    ``portfolio_nav_net`` / ``portfolio_nav_dates`` are accepted for API compatibility
+    but are NOT currently used (Carino descoped to a follow-up PR).
 
     Parameters
     ----------
@@ -716,27 +842,16 @@ def compute_position_returns(
         ``{ticker: {date_iso: close}}`` — the shared adjusted-close panel built by
         ``_build_price_panel`` (same series used by ``build_portfolio_nav``; Condition C1).
     portfolio_nav_net:
-        Daily net NAV series aligned to ``portfolio_nav_dates`` (the adaptive net).
+        Accepted for API compat; unused until Carino PR.
     portfolio_nav_dates:
-        ISO date strings for the NAV series (same contract as ``nav["dates"]``).
+        Accepted for API compat; unused until Carino PR.
 
     Returns
     -------
     dict[str, PositionReturn]
-        Keyed by ticker — the LATEST rebalance's position returns.
+        Keyed by ticker — current holders + names sold at the latest rebalance.
     """
-    if not band_legs:
-        return {}
-
-    all_quarters = compute_position_returns_per_quarter(
-        band_legs,
-        closes,
-        portfolio_nav_net=portfolio_nav_net,
-        portfolio_nav_dates=portfolio_nav_dates,
-    )
-    if not all_quarters:
-        return {}
-    return all_quarters[-1]
+    return _compute_flat_latest_returns(band_legs, closes)
 
 
 def compute_position_returns_per_quarter(
@@ -781,24 +896,9 @@ def compute_position_returns_per_quarter(
     if not band_legs:
         return []
 
-    # Build date_to_nav for Carino linking.
-    date_to_nav: dict[str, float] = {}
-    for d, v in zip(portfolio_nav_dates, portfolio_nav_net, strict=False):
-        if v is not None:
-            date_to_nav[d] = v
-
-    # Portfolio total return for the full NAV window (Carino denominator).
-    portfolio_total_return_pct: float | None = None
-    valid_nav = [
-        v for v in portfolio_nav_net if v is not None
-    ]
-    if len(valid_nav) >= 2:
-        nav_start = valid_nav[0]
-        nav_end = valid_nav[-1]
-        if nav_start and nav_start > 0:
-            portfolio_total_return_pct = (nav_end / nav_start - 1.0) * 100.0
-
     # Build the full per-ticker legs list (across ALL rebalances).
+    # For per-quarter computation we TRUNCATE this to legs with date <= rebal_date
+    # inside the loop to eliminate look-ahead (Fix #3 — per-quarter PIT look-ahead).
     ticker_all_legs: dict[str, list[tuple[str, float]]] = {}
     for date_iso, weight_map in band_legs:
         for ticker, weight in weight_map.items():
@@ -822,7 +922,16 @@ def compute_position_returns_per_quarter(
             if weight_here <= 0.0:
                 continue  # skip tickers with zero weight this rebalance
 
-            legs = ticker_all_legs.get(ticker, [])
+            # Fix #3 — PIT look-ahead elimination: truncate legs to those with
+            # date <= rebal_date so historical quarters do not chain prices through
+            # future rebalance dates.  The latest rebalance uses the full leg list
+            # (no truncation needed: it IS the last date).
+            all_legs = ticker_all_legs.get(ticker, [])
+            if is_last_rebal:
+                legs = all_legs
+            else:
+                legs = [(d, w) for d, w in all_legs if d <= rebal_date]
+
             try:
                 streaks = _extract_streaks(ticker, legs, closes)
                 if not streaks:
@@ -840,22 +949,19 @@ def compute_position_returns_per_quarter(
                 streak = streaks[-1]
 
                 # A ticker is a "current holder" at this rebalance when its streak
-                # is still open at this point, i.e. the streak started at or before
-                # this rebalance and hasn't been sold yet.  For non-latest quarters,
-                # is_current_holder=True iff the ticker is still in the book at the
-                # NEXT rebalance (meaning the streak continues past this quarter boundary).
+                # is still open at this point.  For non-latest quarters, is_current=True
+                # means the position is open at rebal_date (it has weight > 0 in the
+                # truncated legs); the terminal price marks to close on or before the
+                # NEXT rebalance date (not to latest-close, which would be look-ahead).
                 if is_last_rebal:
                     # Latest rebalance: current holder iff weight > 0 at last_rebal_date.
                     is_current = (
-                        legs and legs[-1][1] > 0.0 and legs[-1][0] == last_rebal_date
+                        all_legs and all_legs[-1][1] > 0.0 and all_legs[-1][0] == last_rebal_date
                     )
                 else:
-                    # Non-latest rebalance: "current" means the streak continues into
-                    # the next quarter — check if the ticker still has weight at the
-                    # next rebalance (or is still in the book past this quarter).
-                    # We mark it as current (open) since the streak includes this date
-                    # and may extend to the next rebalance.  The terminal price uses
-                    # end_date = next_rebal_date for mark-to-boundary.
+                    # Non-latest rebalance: "current" if the streak is open (not yet sold)
+                    # at rebal_date within the truncated leg window.  Terminal price marks
+                    # to close on or before next_rebal_date (not beyond).
                     is_current = True
 
                 # TWR
@@ -872,21 +978,12 @@ def compute_position_returns_per_quarter(
                     end_date=next_rebal_date,
                 )
 
-                # Carino contribution (PR-2a: now populated when NAV series available).
+                # Carino contribution — DESCOPED to a follow-up PR.
+                # contrib_nav_pts stays None for all positions.
+                # TODO(carino-reconciliation PR): re-derive and wire the Carino
+                # linking formula once financial-engineer delivers a consistent
+                # formulation (numerator vs denominator sub-period mismatch).
                 contrib_nav_pts: float | None = None
-                if portfolio_total_return_pct is not None and date_to_nav:
-                    try:
-                        contrib_nav_pts = _compute_carino_contribution_for_streak(
-                            ticker,
-                            streak,
-                            closes,
-                            date_to_nav=date_to_nav,
-                            is_current_holder=is_current,
-                            end_date=next_rebal_date,
-                            portfolio_total_return_pct=portfolio_total_return_pct,
-                        )
-                    except Exception:  # noqa: BLE001 — graceful degradation
-                        contrib_nav_pts = None
 
                 quarter_map[ticker] = PositionReturn(
                     mwr_pct=mwr_pct,
@@ -945,25 +1042,18 @@ def reconciliation_errors(
     -------
     (carino_error, pp_twr_error)
         carino_error:
-            max |Σ Carino-linked contrib_nav_pts − (NAV_end − NAV_start)| in NAV pts.
-            None when no contrib_nav_pts are available.
+            Always ``None`` while Carino reconciliation is descoped (contrib_nav_pts
+            is None for all positions).  The follow-up Carino PR will re-enable this.
         pp_twr_error:
             max |engine TWR − client-side point-to-point return| in percentage
             points, over clean full-history single-streak names.
             None when no eligible names exist or ``closes`` is not provided.
     """
-    # Carino reconciliation: Σ contribs should equal portfolio NAV return in base-100 pts.
+    # Carino reconciliation — DESCOPED.  contrib_nav_pts is None for all positions,
+    # so carino_error is always None.  The follow-up Carino PR will re-derive and
+    # wire the linking formula.
+    # TODO(carino-reconciliation PR): re-enable once contrib_nav_pts is populated.
     carino_error: float | None = None
-    contribs = [
-        pr.contrib_nav_pts
-        for pr in position_returns.values()
-        if pr.contrib_nav_pts is not None
-    ]
-    if contribs:
-        valid_nav = [v for v in portfolio_nav_net if v is not None]
-        if len(valid_nav) >= 2:
-            nav_return_pts = valid_nav[-1] - valid_nav[0]
-            carino_error = abs(sum(contribs) - nav_return_pts)
 
     # Client-side point-to-point comparison.
     # For single-streak, full-history, non-partial names the engine TWR should
