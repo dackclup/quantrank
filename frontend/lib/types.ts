@@ -581,6 +581,18 @@ export type Metadata = {
   // all IC <= 0 (Σraw == 0) → identity fallback to w0. Expected True at launch.
   // None when the shrinkage block was skipped or failed.
   shrinkage_weights_degenerate?: boolean | null;
+  // Proposal C-2 — MoS conviction tilt shadow canary (0.10.38-phase8pilot,
+  // Rule 18 observability-first). Graham-Dodd margin-of-safety tilt; the live
+  // AI-pick weights are byte-identical this slice (write-only diagnostic only).
+  // No UI consumer yet. Defense layer UNCHANGED at 36.
+  //
+  // `mos_tilt_shadow_max_delta_pp` — the maximum per-rebalance absolute weight
+  // delta (in percentage points) the shadow MoS-tilt would produce across ALL
+  // legs of the refreshed backtest_pit.json artifact. Populated by reading
+  // backtest_pit.json after the PIT-backtest refresh (same pattern as Step 13.5b);
+  // try/except → None. Rankings/scores/flags are byte-identical.
+  // Null on legacy snapshots (pre-0.10.38) or when backtest_pit.json is absent.
+  mos_tilt_shadow_max_delta_pp?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

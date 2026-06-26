@@ -292,6 +292,160 @@ def inverse_vol_weights(
     return {t: v / s for t, v in weights.items()} if s > 0 else {}
 
 
+# ── Proposal C-2 — MoS conviction tilt (shadow / observability-first) ────────
+# Constants for the MoS-conviction tilt function below.
+# ``MOS_TILT_KAPPA`` is a **Tier-2 gut-feel calibration** (disclosed).
+# Flip-gate (future PR): re-derive κ from the observed z(mos) distribution
+# on real cron data; confirm clip-bind rate ≤ ~5%; verify MAX_WEIGHT holds
+# post-renorm on every rebalance leg; OOS turnover check.
+MOS_TILT_KAPPA: float = 0.25
+MOS_TILT_CLIP_LO: float = 0.5
+MOS_TILT_CLIP_HI: float = 1.5
+
+
+def mos_conviction_tilt(
+    base_weights: dict[str, float],
+    mos_by_ticker: dict[str, float | None],
+    *,
+    kappa: float = MOS_TILT_KAPPA,
+    cap: float = MAX_WEIGHT,
+) -> dict[str, float]:
+    """Tilt inverse-vol weights toward higher-MoS holdings (Proposal C-2, SHADOW).
+
+    Computes a MoS-conviction multiplier for each holding in the book, scales
+    the base inverse-vol weights by that multiplier, renormalizes to sum 1.0,
+    and re-caps at ``cap`` using the SAME iterative pin-and-redistribute
+    routine used by ``inverse_vol_weights`` — NOT a naive clip-and-renorm
+    (which can re-breach the cap).
+
+    Tilt formula
+    ------------
+    1. Book-relative z-score: ``z_i = (mos_i − μ) / σ`` where μ and σ are the
+       mean and stdev of ``mos_pct`` over the **held book** (only names in
+       ``base_weights``), not the full universe.  ``mos_i is None → z_i = 0``
+       (neutral — the position receives no tilt, neither up nor down).
+    2. Multiplier: ``m_i = clip(1 + κ·z_i, MOS_TILT_CLIP_LO, MOS_TILT_CLIP_HI)``.
+    3. Provisional weight: ``w'_i = base_weights[i] · m_i``.
+    4. Renormalize: ``w''_i = w'_i / Σ w'``.
+    5. Re-cap at ``cap`` using the iterative pin-and-redistribute routine
+       (converges in ≤ n passes, same as ``inverse_vol_weights``).
+
+    Methodology citations
+    ---------------------
+    - Graham-Dodd "Security Analysis" (1934/1940 eds.) margin-of-safety
+      doctrine: a stock trading BELOW its intrinsic value provides a safety
+      margin that both reduces downside and creates an asymmetric return
+      profile.  ``mos_pct > 0`` signals the market price is below the
+      ensemble fair-value estimate; tilting toward higher MoS is a
+      price-discipline overlay on top of the composite ranking.
+    - Stevens 1946 "On the Theory of Scales of Measurement" (*Science* 103):
+      ``mos_pct`` is a **ratio-scale** cardinal quantity (% deviation from fair
+      value — has a natural zero and meaningful ratios), so z-scoring and linear
+      arithmetic on it are admissible.  This is the key distinction from
+      ``composite_score`` (an ordinal percentile rank — Stevens ordinal scale,
+      cardinal operations on it are a scale-type error per the module-level
+      docstring and Rule 16).  The MoS tilt is permitted precisely because
+      MoS is ratio-scale; any composite-proportional tilt is still forbidden.
+
+    Identity guards (test-pinnable)
+    --------------------------------
+    - σ_mos == 0 (all holdings have the same MoS) → all z_i = 0 → all m_i = 1
+      → renorm is identity → returns ``base_weights`` unchanged.
+    - All mos values are ``None`` → all z_i = 0 → same identity path.
+    - Single-name book (n=1) → stdev undefined (ddof=1 requires ≥ 2 points);
+      treated as σ=0 → identity.
+    - Empty ``base_weights`` → returns ``{}`` immediately.
+
+    SHADOW / observability-first (Rule 18)
+    ----------------------------------------
+    This function is NEVER called on the live NAV path.  The backfill script
+    invokes it AFTER ``band_weights_map = inverse_vol_weights(...)`` and emits
+    the tilted weights as ``rebalances[].mos_tilted_weights`` for diagnostics
+    only.  ``band_weights_map`` and all NAV math remain byte-identical.
+    Defense layer UNCHANGED at 36.  Rankings / scores / flags unaffected.
+
+    Parameters
+    ----------
+    base_weights:
+        Inverse-vol weights from ``inverse_vol_weights`` (sum 1.0, keys = book).
+    mos_by_ticker:
+        Per-ticker ``mos_pct`` (% margin of safety; positive = undervalued).
+        Keys need not cover the full book — missing keys are treated as ``None``.
+    kappa:
+        Tilt strength (gut-feel Tier-2, κ=0.25 → a 1σ-high-MoS name gets a
+        25% weight boost before renorm; 2σ clips at MOS_TILT_CLIP_HI=1.5×).
+    cap:
+        Single-name concentration cap (inherits ``MAX_WEIGHT=0.35``).
+    """
+    if not base_weights:
+        return {}
+
+    tickers = list(base_weights.keys())
+    n = len(tickers)
+
+    # Collect valid (non-None) MoS values for the book members.
+    mos_vals: list[float] = [
+        float(mos_by_ticker[t])
+        for t in tickers
+        if mos_by_ticker.get(t) is not None
+    ]
+
+    # Identity guard: σ=0 / all-None / 1-name → no tilt (test-pinnable).
+    if len(mos_vals) < 2:
+        return dict(base_weights)
+
+    mu = statistics.mean(mos_vals)
+    sigma = statistics.stdev(mos_vals)  # sample stdev (ddof=1)
+
+    if sigma == 0.0:
+        # All non-None MoS values are equal → z_i = 0 everywhere → identity.
+        return dict(base_weights)
+
+    # Compute per-ticker multipliers and provisional weights.
+    provisional: dict[str, float] = {}
+    for t in tickers:
+        mos_val = mos_by_ticker.get(t)
+        z = (float(mos_val) - mu) / sigma if mos_val is not None else 0.0
+        m = max(MOS_TILT_CLIP_LO, min(MOS_TILT_CLIP_HI, 1.0 + kappa * z))
+        provisional[t] = base_weights[t] * m
+
+    # Renormalize provisional weights to sum 1.0.
+    total = sum(provisional.values())
+    if total <= 0.0:
+        return dict(base_weights)  # degenerate (shouldn't happen; guard)
+    renormed = {t: v / total for t, v in provisional.items()}
+
+    # Re-cap at ``cap`` using the iterative pin-and-redistribute routine
+    # (reuses the SAME logic as ``inverse_vol_weights`` :277-290).
+    # Pinned names stay at ``cap``; residual redistributes pro-rata over
+    # the free names until none exceeds the cap.  Converges in ≤ n passes.
+    if n * cap < 1.0 - 1e-12:
+        # Cap infeasible (shouldn't happen for a valid portfolio) → equal wt.
+        return {t: 1.0 / n for t in tickers}
+
+    pinned: set[str] = set()
+    weights: dict[str, float] = {}
+    raw_renormed = renormed  # use renormed values as the "raw" input
+    for _ in range(n + 1):
+        free = [t for t in tickers if t not in pinned]
+        free_raw_total = sum(raw_renormed[t] for t in free)
+        remaining = 1.0 - len(pinned) * cap
+        weights = {t: cap for t in pinned}
+        for t in free:
+            weights[t] = (
+                raw_renormed[t] / free_raw_total * remaining
+                if free_raw_total > 0
+                else 0.0
+            )
+        newly = [t for t in free if weights[t] > cap + 1e-12]
+        if not newly:
+            break
+        pinned.update(newly)
+
+    s = sum(weights.values())
+    return {t: v / s for t, v in weights.items()} if s > 0 else dict(base_weights)
+
+
 def trailing_return_sigma(
     closes: Sequence[float | None], window: int = SIGMA_WINDOW_DAYS
 ) -> float | None:

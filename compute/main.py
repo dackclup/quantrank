@@ -3657,6 +3657,47 @@ def run_weekly_compute() -> int:
         market_breadth_above_200dma_pct = None
         market_regime_state = None
 
+    # --- Proposal C-2 — MoS tilt shadow canary (Rule 18 observability-first).
+    # Reads backtest_pit.json (written earlier in the cron by the PIT-backtest
+    # refresh) and extracts the maximum per-rebalance mos_tilt_max_abs_weight_delta_pp
+    # across ALL legs as the cross-universe canary for Metadata.
+    # Graceful: absent artifact / missing field → None (never blocks cron).
+    # HARD CONSTRAINT: this value MUST NEVER be read by scoring, composite,
+    # pillar, veto/flag, fair-price, select_picks, or inverse_vol_weights.
+    # Rankings/scores/flags are byte-identical.  Defense layer UNCHANGED at 36.
+    _mos_tilt_shadow_max_delta_pp: float | None = None
+    try:
+        import json as _json_mod
+
+        _pit_json_path = config.DATA_DIR / "portfolio" / "backtest_pit.json"
+        if _pit_json_path.exists():
+            with _pit_json_path.open("r", encoding="utf-8") as _pit_fh:
+                _pit_data = _json_mod.load(_pit_fh)
+            _per_leg_deltas: list[float] = [
+                float(rb["mos_tilt_max_abs_weight_delta_pp"])
+                for rb in _pit_data.get("rebalances", [])
+                if rb.get("mos_tilt_max_abs_weight_delta_pp") is not None
+            ]
+            if _per_leg_deltas:
+                _mos_tilt_shadow_max_delta_pp = round(max(_per_leg_deltas), 6)
+            logger.info(
+                "C-2 mos_tilt canary: max_delta_pp=%.6f across %d legs",
+                _mos_tilt_shadow_max_delta_pp or 0.0,
+                len(_per_leg_deltas),
+            )
+        else:
+            logger.debug(
+                "C-2 mos_tilt canary: backtest_pit.json not found at %s — "
+                "mos_tilt_shadow_max_delta_pp will be None",
+                _pit_json_path,
+            )
+    except Exception as _mos_tilt_exc:  # noqa: BLE001
+        logger.warning(
+            "C-2 mos_tilt canary read failed (non-fatal): %s — "
+            "mos_tilt_shadow_max_delta_pp → None",
+            _mos_tilt_exc,
+        )
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -3952,6 +3993,13 @@ def run_weekly_compute() -> int:
         shrinkage_blended_weight_by_pillar=_shrinkage_blended_weight_by_pillar,
         n_preliminary_pillars=_n_preliminary_pillars,
         shrinkage_weights_degenerate=_shrinkage_weights_degenerate,
+        # Proposal C-2 — MoS tilt shadow canary (0.10.38-phase8pilot, Rule 18).
+        # SHADOW / OBSERVABILITY-ONLY — live scores, flags, rankings are
+        # byte-identical.  None when backtest_pit.json is absent or the
+        # per-rebalance delta field is missing (first cron after a cold clone
+        # or when the backfill was not re-run since C-2 landed).
+        # Defense layer UNCHANGED at 36.
+        mos_tilt_shadow_max_delta_pp=_mos_tilt_shadow_max_delta_pp,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

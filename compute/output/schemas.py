@@ -931,6 +931,30 @@ class Metadata(BaseModel):
     # True (all pillars preliminary → Σraw = 0 → degenerate).  ``None`` when
     # the shrinkage block was skipped or failed.
     shrinkage_weights_degenerate: bool | None = None
+    # Proposal C-2 — MoS conviction tilt shadow canary (0.10.38-phase8pilot,
+    # Rule 18 observability-first).
+    #
+    # ``mos_tilt_shadow_max_delta_pp`` — the maximum per-rebalance
+    # ``max_t |mos_tilted_weight_t − base_weight_t| × 100`` across ALL
+    # rebalance legs in the refreshed ``backtest_pit.json`` artifact.
+    # This is a **cross-universe canary**: it answers "what is the largest
+    # single-name weight shift the MoS tilt would produce in any rebalance?"
+    # and lets the methodology-scientist calibrate whether κ=0.25 produces
+    # meaningful but bounded tilts before the flip-gate is considered.
+    #
+    # Populated by reading ``backtest_pit.json`` after the PIT-backtest refresh
+    # in ``compute/main.py`` (the same pattern as Step 13.5b), try/except → None.
+    #
+    # HARD CONSTRAINT: this field MUST NEVER be read by scoring, the composite,
+    # pillar computation, veto/flag logic, fair-price, ``select_picks``, or
+    # ``inverse_vol_weights``.  It is written to ``Metadata`` ONLY and feeds
+    # the diagnostic surface.  Rankings/scores/flags are byte-identical.
+    # Defense layer UNCHANGED at 36.
+    #
+    # Nullable on legacy snapshots (pre-0.10.38).  None when the
+    # ``backtest_pit.json`` artifact is absent (first cron after a cold clone,
+    # or when the backfill was not re-run since C-2 was landed).
+    mos_tilt_shadow_max_delta_pp: float | None = None
 
 
 class RawMetrics(BaseModel):
