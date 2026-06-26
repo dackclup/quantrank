@@ -13,14 +13,14 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → ~~v1.5~~ (**v1.5 FOLDED** into the Q3 evidence harvest — see §Next deliverables Release ladder) | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
 | 8 | Universe expansion (S&P 1500) | 🟡 IN PROGRESS — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first. Landed: #467 scout · #468 off-cycle pre-cache (#249, hard prerequisite — EDGAR ~1 req/s → cold 1500-ticker fundamentals ≈ 125m vs the 240m ceiling) · #479 obs probe · #480 dispatch input · **#482 integration slice (ranks all ~903 on `QR_UNIVERSE=sp900`)** · **#486 precache-900 Phase A (edgar_form4 fast→slow-text + universe dispatch input)**. Cron default stays `sp500` (gated); next = `universe: sp900` validation dispatch → precache-900 Phase B (cache-v10) + frontend PR 4 → one-line cron flip → midcaps live · **precache-900 Phase B — DONE 2026-06-16 (#492)**: cache-v9-fast→cache-v10-fast bump in all 4 workflows, cron-default flip sp500→sp900, sim QR_UNIVERSE=sp900 explicit, sp400/sp900 universe parquets added to fast path blocks; cron now ranks S&P 900 by default · **#493 multi-index membership (Dow 30 / NDX 100 overlap tabs, schema 0.10.23) — DONE 2026-06-17** · **#494 Russell 1000 (RUI) overlap tab via market-cap proxy, NO schema bump — DONE 2026-06-17**; overlap tabs data-active (first sp900 cron post-#494 `768c35f16` carries russell1000/dow30/ndx tags). **S&P 900 pilot milestone COMPLETE 2026-06-19** — frontend PR 4 (midcap badge) shipped #490 (`MidcapChip` + per-index SPX/MID/ALL tabs) + ≥ 2 green sp900 crons confirmed (3 scheduled crons 6/16-6/18 green). **S&P 1500 cutover underway 2026-06-20** — Slices **1** (scout #514) · **2** (sp1500 seam + smallcap coverage probe, schema 0.10.28, #519) · **4** (`low_liquidity` <$5M ADV annotate, schema 0.10.29, defense 35→36, #527) · **5** (precache `cache-v11-fast` cold-seed + sp1500 dispatch, cron default unchanged, #520) **MERGED**; Slice **3** (Bonferroni shadow) **DEFERRED** to the Slice-8 calibration; first manual `QR_UNIVERSE=sp1500` run committed `chore: update rankings` (label `SP1500-probe`) populating the `smallcap_*` coverage Metadata. **Slice 6 (SmallcapChip + SML tab — frontend-only) MERGED (#531)**. **Slice 7 (cron-default flip sp900→sp1500) MERGED 2026-06-21 (#534 squash `8301b82cb`)** — weekday cron + Saturday precache now default `QR_UNIVERSE=sp1500`; `pre-merge-prod-sim.yml` pinned to sp1500; `compute/main.py` sp600 probe-only filter lifted → full ~1504 names ranked; `Metadata.universe` = `"SP1500"`; cohort-size recompute gate widened to `in ("sp900","sp1500")`; NO schema bump (stays 0.10.29); defense UNCHANGED at 36; validation 1504 names / cold ~174 min (< 240 ceiling) / warm ~45 min (< 90) / smallcap coverage 99.67% / null 0.33% / cik 100%; opus cohort-gate + security workflow review PASSED. **Next = Slice 8 (v2.0 — gated on ≥ 1-2 green sp1500 crons: Bonferroni shadow calibration + virtualized 1500-row table + liquidity-veto promotion decision)**. RUT/RUA/COMP remain SOON pending new small-cap / broad ingest; SML tab data-active once sp600 lands in `rankings.json` |
 
-## Current state (2026-06-22)
+## Current state (2026-06-26)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.31-phase8pilot`** (#565 squash `2c9dc1371`, merged 2026-06-22 — S&P 1500 cutover Slice 8 / roadmap 7b: Security-type (Type) HeroAttributeTile ingest PR-1 (issue #541): `StockDetail.security_type` from yfinance `fast_info.quote_type` + `Metadata.security_type_coverage_pct` coverage canary; obs-first Rule 18, NO UI wiring; rankings byte-identical; defense UNCHANGED at 36; +17 tests). Prior **`0.10.30-phase8pilot`** (#564 squash `62dbf4f89`, merged 2026-06-22 — Slice 8 Bonferroni multi-test shadow counter (issue #542): 3 new `Metadata.bonferroni_shadow_*` fields; `compute/scoring/bonferroni_shadow.py`; `m = valid_count`; provisional threshold −1.94 placeholder; SHADOW/OBSERVABILITY-ONLY — live scores/rankings byte-identical; defense UNCHANGED at 36; 20 tests). Prior **`0.10.29-phase8pilot`** (#527 squash `2e45a33bf`, merged 2026-06-20 — S&P 1500 cutover Slice 4: `low_liquidity` ANNOTATE flag (<$5M trailing-30d ADV, Amihud 2002; rank-neutral — `valuation_warnings`, not `risk_flags`) + `compute_average_dollar_volume()` + `StockDetail.average_dollar_volume` + `Metadata.low_liquidity_annotate_count`; defense 35→36; rankings/scores byte-identical; dormant on sp900, lights up on sp600). Prior **`0.10.28-phase8pilot`** (#519 squash `5e49dca0a`, merged 2026-06-20 — S&P 1500 cutover Slice 2: `sp1500` universe seam + `_run_smallcap_coverage_probe`; 3 new `Metadata.smallcap_*` fields; sp600 PROBE-ONLY (label `SP1500-probe`, NOT ranked); defense UNCHANGED at 35). Prior **`0.10.27-phase8pilot`** (#512 squash `78fd608423`, merged 2026-06-20 — Dividend signal PR-1: 3 new `StockDetail` dividend fields (`dividend_yield_pct`/`pays_dividend`/`payout_ratio`) + `Metadata.dividend_coverage_pct` coverage canary; `_yf_info_fetch` 2→4-tuple; rankings byte-identical; defense UNCHANGED at 35). Prior **`0.10.26-phase8pilot`** (#501 squash `72ee8667d`, merged 2026-06-19 — cross-source share-count-corruption SHADOW observability PR-1: 4 new `Metadata.cross_source_corruption_*` fields; `grade_cross_source_corruption` + dual-ratio corroboration; MUTATES NOTHING, rankings byte-identical; defense layer UNCHANGED at 35). Prior **`0.10.25-phase8pilot`** (#499 squash `816cda0ea`, merged 2026-06-18 — `post_split_share_lag` HYBRID defense: Tier-1 CORRECT annotate + Tier-2 veto `post_split_share_lag_unreconciled` + folded leg-3 override (direct yfinance `sharesOutstanding`); new `compute/ingest/splits.py`; `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` counters; defense 34→35). Prior **`0.10.24-phase8pilot`** (#496/PR-A, trimmed-median shadow diagnostic #177) · **`0.10.23-phase8pilot`** (#493 + #494 — additive `index_memberships: list[str]`; Dow 30 / NDX 100 overlap tabs; #494 appends `"russell1000"` via market-cap proxy, NO schema bump). Prior #487 OZK/PBF flip-blocker (`0.10.22`, `fundamentals_unavailable` direct veto). Cron default `sp1500` (since #534 2026-06-21 — Slice 7 cron flip; ranks full ~1504 names; prior `sp900` since #492 2026-06-16). Lineage: 0.10.18 #456 → 0.10.21 #482 → 0.10.22 #487 → 0.10.23 #493 → 0.10.24 #496 → 0.10.25 #499 → 0.10.26 #501 → 0.10.27 #512 → 0.10.28 #519 → 0.10.29 #527 → 0.10.30 #564 → 0.10.31 #565. Full table: SKILL.md §schema-version) |
+| Schema | **`0.10.40-phase8pilot`** (#628 squash `eb20b005`, merged 2026-06-26 — Legendary-fund 6-proposal program FINAL slice / Proposal E: turnover/hysteresis diagnostic + liquidity capacity tilt SHADOW; 2 new `Metadata` fields `hysteresis_turnover_reduction_mean_pp` / `low_liquidity_held_count`; `book_turnover` + `liquidity_capacity_tilt` in `compute/portfolio/weights.py`; DEFENSE-PRECEDENCE ASSERTION over both `band_book` + `stateless_book`; live band 65/55 UNCHANGED, exit=60 SHADOW-only; SHADOW/OBSERVABILITY-ONLY — live rankings/NAV byte-identical; Garleanu-Pedersen 2013 + Novy-Marx-Velikov 2016 + Amihud 2002 anchor; defense UNCHANGED at 36). Prior chain (legendary-fund program, all SHADOW/obs-first, defense UNCHANGED at 36, byte-identical at launch): **`0.10.39`** (#624/C-1 high-conviction gate counters) ← **`0.10.38`** (#617 C-2 MoS conviction tilt) ← **`0.10.37`** (#615 Proposal A shrinkage composite, IDENTITY-AT-LAUNCH `SHRINKAGE_LAMBDA_PIN=1.0`) ← **`0.10.36`** (#607 Proposal D market-regime diagnostic, WRITE-ONLY) ← **`0.10.35`** (#604 Proposal F IC half-life monitor) ← **`0.10.34`** (#601 value-bump-only: two-factor `value_trap_risk` gate LIVE flip, NO new field). Prior **`0.10.31-phase8pilot`** (#565 squash `2c9dc1371`, merged 2026-06-22 — S&P 1500 cutover Slice 8 / roadmap 7b: Security-type (Type) HeroAttributeTile ingest PR-1 (issue #541): `StockDetail.security_type` from yfinance `fast_info.quote_type` + `Metadata.security_type_coverage_pct` coverage canary; obs-first Rule 18, NO UI wiring; rankings byte-identical; defense UNCHANGED at 36; +17 tests). Prior **`0.10.30-phase8pilot`** (#564 squash `62dbf4f89`, merged 2026-06-22 — Slice 8 Bonferroni multi-test shadow counter (issue #542): 3 new `Metadata.bonferroni_shadow_*` fields; `compute/scoring/bonferroni_shadow.py`; `m = valid_count`; provisional threshold −1.94 placeholder; SHADOW/OBSERVABILITY-ONLY — live scores/rankings byte-identical; defense UNCHANGED at 36; 20 tests). Prior **`0.10.29-phase8pilot`** (#527 squash `2e45a33bf`, merged 2026-06-20 — S&P 1500 cutover Slice 4: `low_liquidity` ANNOTATE flag (<$5M trailing-30d ADV, Amihud 2002; rank-neutral — `valuation_warnings`, not `risk_flags`) + `compute_average_dollar_volume()` + `StockDetail.average_dollar_volume` + `Metadata.low_liquidity_annotate_count`; defense 35→36; rankings/scores byte-identical; dormant on sp900, lights up on sp600). Prior **`0.10.28-phase8pilot`** (#519 squash `5e49dca0a`, merged 2026-06-20 — S&P 1500 cutover Slice 2: `sp1500` universe seam + `_run_smallcap_coverage_probe`; 3 new `Metadata.smallcap_*` fields; sp600 PROBE-ONLY (label `SP1500-probe`, NOT ranked); defense UNCHANGED at 35). Prior **`0.10.27-phase8pilot`** (#512 squash `78fd608423`, merged 2026-06-20 — Dividend signal PR-1: 3 new `StockDetail` dividend fields (`dividend_yield_pct`/`pays_dividend`/`payout_ratio`) + `Metadata.dividend_coverage_pct` coverage canary; `_yf_info_fetch` 2→4-tuple; rankings byte-identical; defense UNCHANGED at 35). Prior **`0.10.26-phase8pilot`** (#501 squash `72ee8667d`, merged 2026-06-19 — cross-source share-count-corruption SHADOW observability PR-1: 4 new `Metadata.cross_source_corruption_*` fields; `grade_cross_source_corruption` + dual-ratio corroboration; MUTATES NOTHING, rankings byte-identical; defense layer UNCHANGED at 35). Prior **`0.10.25-phase8pilot`** (#499 squash `816cda0ea`, merged 2026-06-18 — `post_split_share_lag` HYBRID defense: Tier-1 CORRECT annotate + Tier-2 veto `post_split_share_lag_unreconciled` + folded leg-3 override (direct yfinance `sharesOutstanding`); new `compute/ingest/splits.py`; `RawMetrics.shares_outstanding_pre_split_raw` + 3 `Metadata.*` counters; defense 34→35). Prior **`0.10.24-phase8pilot`** (#496/PR-A, trimmed-median shadow diagnostic #177) · **`0.10.23-phase8pilot`** (#493 + #494 — additive `index_memberships: list[str]`; Dow 30 / NDX 100 overlap tabs; #494 appends `"russell1000"` via market-cap proxy, NO schema bump). Prior #487 OZK/PBF flip-blocker (`0.10.22`, `fundamentals_unavailable` direct veto). Cron default `sp1500` (since #534 2026-06-21 — Slice 7 cron flip; ranks full ~1504 names; prior `sp900` since #492 2026-06-16). Lineage: 0.10.18 #456 → 0.10.21 #482 → 0.10.22 #487 → 0.10.23 #493 → 0.10.24 #496 → 0.10.25 #499 → 0.10.26 #501 → 0.10.27 #512 → 0.10.28 #519 → 0.10.29 #527 → 0.10.30 #564 → 0.10.31 #565. Full table: SKILL.md §schema-version) |
 | Defense layer | **36 declared boolean flags** (9 active vetoes incl. `fundamentals_unavailable` #487 + `post_split_share_lag_unreconciled` #499 + 27 annotates incl. the paired `post_split_share_lag` #499 + `low_liquidity` #527 + reserved slots; ~28 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **9** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` · `fundamentals_unavailable` · `post_split_share_lag_unreconciled` |
-| Latest release tag | [**`v2.0.0-phase8`**](https://github.com/dackclup/quantrank/releases/tag/v2.0.0-phase8) — PUBLISHED 2026-06-23 at `8c89a5af0` ("Set as latest"; release PR #577 merged 2026-06-22 + the green scheduled sp1500 cron it gated on — Section A-L 12/12, defense 36); the S&P 1500 universe cutover release (502→~1504 production expansion). Prior: [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `a820caee` (Phase 4.6 honest re-validation harness) |
+| Latest release tag | [**`v2.0.0-phase8`**](https://github.com/dackclup/quantrank/releases/tag/v2.0.0-phase8) — PUBLISHED 2026-06-23 at `8c89a5af0` ("Set as latest"; release PR #577 merged 2026-06-22 + the green scheduled sp1500 cron it gated on — Section A-L 12/12, defense 36); the S&P 1500 universe cutover release (502→~1504 production expansion). **The legendary-fund 6-proposal program (PRs #604/#607/#615/#617/#624/#628, schema 0.10.33→0.10.40) is POST-tag observability work** — all SHADOW/obs-first, byte-identical at launch; next tag = **v2.1** (deferred to the Q3 2026-08-19 cohort audit, where the pre-registered live-flip gates clear). Prior: [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `a820caee` (Phase 4.6 honest re-validation harness) |
 | Post-tag production patches | PR #292 → #302 cluster (2026-05-28/29) — list relocated to §Chronological history |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
 | Production run | `65bfd335` (2026-06-11 cron — FIRST run on the #458 cache-v7 family; RATIFY-B manifest verification pending on this artifact). Prior validated baseline: `368dccd9` cron Run #71 (detail relocated to §Chronological history) |
@@ -30,8 +30,11 @@
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
-- **In flight: this roadmap-restructure docs PR** (`claude/roadmap-restructure-2lane`, 2026-06-22 — chronological tags decoupled from phase numbers + Lane A/B §Next-deliverables rewrite + §Current-state reconcile; docs-only). **`v2.0.0-phase8` SHIPPED via #577** (+ #580 SEC filing-index Slice 1) — the prior "v2.0 release PR in flight" note is retired; the §Next-deliverables Release ladder now reads "v2.0.0 shipped · next = v2.1".
-- **Merged since last Mode C** (#538 reconciled 0.10.29 / Slice 7, 2026-06-21): **#577** (v2.0.0-phase8 release) · **#580** (SEC filing-index Slice 1) · **#565** (Security-type ingest PR-1, schema 0.10.30→**0.10.31**) · **#564** (Bonferroni shadow, schema 0.10.29→**0.10.30**) · **#548** (infinite-scroll table) · **#549** (Dividend tile PR-2) · **#571** (MC advisory ingest fix) · **#573** (valuation null-guard) · **#578** (Type tile) · **#539/#547/#570** (research warehouse Slices 1/2 + dtype) · **#552/#553/#554/#555** (ingest/ci fixes) · **#537/#533/#546** · **#556/#557/#559/#560/#575** (dependabot + CI Node 20→22).
+- **Nothing in flight.** The legendary-fund 6-proposal program
+  (`claude/fund-performance-rankings-f8x4o1`, PRs #604/#607/#615/#617/#624/#628)
+  merged complete 2026-06-26 (schema 0.10.33→0.10.40). Proposal B (PEG/GARP) was
+  REJECTED, not deferred (φ(PEG,P/E)=0.849 on sp1500 > 0.5 gate — double-loads P/E).
+  See §Chronological history 2026-06-26 for the full per-PR record.
 
 **Next deliverables** (RE-STRUCTURED 2026-06-22 — verified against git tags + live
 GitHub issues + `compute/config.py` `SCHEMA_VERSION`). Three structural changes fix
@@ -96,7 +99,14 @@ buckets below are the routing view, not an exhaustive copy.
   `low_liquidity` veto decision (KEEP-ANNOTATE through v2.0; promote at/after the Q3
   audit) + the **#542** Bonferroni provisional-threshold re-derivation + the Lane-A
   frontend polish (#550/#551) + whatever Lane-A data-quality fixes (#567/#568/#569/#574)
-  land. Cut by `release-captain` on cadence.
+  land. **The legendary-fund 6-proposal observability program (#604/#607/#615/#617/#624/#628,
+  schema 0.10.33→0.10.40) rolls into v2.1 scope** — all SHADOW/obs-first today; their
+  pre-registered LIVE-FLIP gates are Q3 2026-08-19 cohort-audit items: **Proposal A** —
+  A3-i (n ≥ 24 months/active pillar) + A3-ii (OOS horse-race on a purged-embargo holdout);
+  **Proposal C-2** — κ re-derive + clip-bind verification; **Proposal E** —
+  turnover-reduction ≥ 15pp over ≥ 4 live rebalances + methodology re-ratify of exit=60
+  (H-C freeze-lock). **Proposal B (PEG/GARP) is REJECTED, not deferred** (φ=0.849 > the 0.5
+  orthogonality gate). Cut by `release-captain` on cadence.
 - **`v1.1.0-phase4` — RETIRED / superseded** (NEVER cut; 1.1 sits *below* the live
   1.4 because Phase 4.5/4.6 were tagged first while Phase 4's factor-integration gate
   stayed open-ended). It will NOT get a back-numbered tag — the OSAP/Qlib blend work
@@ -125,6 +135,82 @@ closed-PR prose lives in §Chronological history.)
 ---
 
 ## Chronological history
+
+## 2026-06-26 — Legendary-fund 6-proposal program COMPLETE: schema 0.10.33→0.10.40
+
+The legendary-fund deep-research 6-proposal program (branch
+`claude/fund-performance-rankings-f8x4o1`) merged complete: 5 proposals shipped + 1
+rejected. Every shipped slice is SHADOW/observability-first (Rule 18) and BYTE-IDENTICAL
+at launch — live rankings/scores/flags/NAV unchanged; defense layer UNCHANGED at 36
+throughout. The artifact-vs-triple split (C-2: only the Metadata canary is in the
+Pydantic↔TS↔snapshot triple; the per-rebalance shadow exports live on free-form
+`backtest_pit.json`) is the reusable precedent established by this program. Pre-registered
+live-flip gates all target the Q3 2026-08-19 cohort audit.
+
+- **#601** (squash `67e0757b`, schema `0.10.33` → **`0.10.34-phase8pilot`**):
+  feat(compute): two-factor `value_trap_risk` gate LIVE flip — **version-bump-only, NO new
+  Metadata field** (the #588 shadow counter's two-factor LSV 1994 second leg promoted from
+  shadow to live emission). Defense UNCHANGED at 36.
+- **#604** (schema `0.10.34` → **`0.10.35-phase8pilot`**): feat(compute): **Proposal F IC
+  half-life monitor** — 2 new `Metadata` fields `pillar_ic_half_life_months` /
+  `pillar_ic_decay_fit_model`; SHADOW/OBSERVABILITY-ONLY; McLean-Pontiff 2016 + Di Mascio
+  2022 anchor; closed #605 via the `walk_ic_history` single git-walk (one walk feeds
+  decay-monitor + half-life monitor + shrinkage weights); feeds the deferred shrinkage
+  composite (Proposal A); +17 tests. Defense UNCHANGED at 36.
+- **#607** (schema `0.10.35` → **`0.10.36-phase8pilot`**): feat(compute): **Proposal D
+  market-regime diagnostic** — 2 new `Metadata` fields `market_breadth_above_200dma_pct:
+  float | None` + `market_regime_state: str | None`; WRITE-ONLY/SHADOW; Welch-Goyal 2008
+  reject-as-tilt (breadth-as-timing-tilt REJECTED — equity-premium predictors fail OOS);
+  reuses Step-1 prices (NO new data source); new `compute/scoring/regime.py`;
+  `REGIME_RISK_ON_THRESHOLD=60.0` / `REGIME_RISK_OFF_THRESHOLD=40.0` Tier-3 thresholds in
+  `config.py`. Defense UNCHANGED at 36.
+- **#615** (schema `0.10.36` → **`0.10.37-phase8pilot`**): feat(compute): **Proposal A
+  shrinkage composite** — 6 new `Metadata.shrinkage_*` fields (`shrinkage_lambda` /
+  `shrinkage_lambda_applied` / `ic_weight_by_pillar` / `shrinkage_blended_weight_by_pillar`
+  / `n_preliminary_pillars` / `shrinkage_weights_degenerate`); new
+  `compute/scoring/shrinkage.py`; `w = λ·w₀ + (1−λ)·w_IC` with `SHRINKAGE_LAMBDA_PIN=1.0`
+  IDENTITY-AT-LAUNCH (all pillars preliminary → blended_w == w₀ → composite byte-identical);
+  `shrinkage_blended_weight_by_pillar` is the byte-identity canary; pre-registered pin-lift
+  gate A3-i (n ≥ 24 months/pillar) + A3-ii (OOS horse-race on purged-embargo holdout, 1/N
+  prior if no gain); Timmermann 2006 + Grinold-Kahn 2000 + Ledoit-Wolf 2004 (as principle).
+  Defense UNCHANGED at 36.
+- **#617** (schema `0.10.37` → **`0.10.38-phase8pilot`**): feat(compute): **Proposal C-2
+  MoS conviction tilt SHADOW** — 1 new `Metadata` field `mos_tilt_shadow_max_delta_pp:
+  float | None` (the ONLY C-2 field in the schema triple); `mos_conviction_tilt()` pure
+  function in `compute/portfolio/weights.py` (`m = clip(1 + 0.25·z(mos), [0.5, 1.5])`);
+  SHADOW on `backtest_pit.json` artifact (the per-rebalance shadow exports stay on the
+  free-form artifact — the definitive ARTIFACT-VS-TRIPLE split + the precedent for C-1/E);
+  live `band_weights`/NAV BYTE-IDENTICAL; identity guards σ=0/all-None/1-name; Graham-Dodd
+  MoS doctrine + Stevens 1946 ratio-scale admissibility. Defense UNCHANGED at 36.
+- **#624** (schema `0.10.38` → **`0.10.39-phase8pilot`**): feat(compute): **Proposal C-1
+  high-conviction gate counters** — 3 new `Metadata` fields `high_conviction_count` /
+  `high_conviction_ex_loss_chance_count` / `high_conviction_below_floor`; PURELY ADDITIVE
+  OBSERVABILITY (the `gate="high_conviction"` is ALREADY the production selection driver in
+  the backfill); `high_conviction_ex_loss_chance_count` counts legs 1-4 only (leg 5 =
+  loss_chance ≤ 45 omitted) — the marginal-bite denominator `bite = ex_loss_chance_count −
+  hc_count`; rankings BYTE-IDENTICAL; pre-registered gate-flip condition: hc_count ≥ 7
+  across all crons+legs AND the marginal-bite read resolves the loss-chance leg (issue
+  #130). Defense UNCHANGED at 36.
+- **#628** (squash `eb20b005`, schema `0.10.39` → **`0.10.40-phase8pilot`**): feat(compute):
+  **Proposal E turnover/hysteresis + liquidity capacity tilt SHADOW** — FINAL slice; 2 new
+  `Metadata` fields `hysteresis_turnover_reduction_mean_pp` / `low_liquidity_held_count`;
+  `book_turnover` + `liquidity_capacity_tilt` pure functions in
+  `compute/portfolio/weights.py`; **DEFENSE-PRECEDENCE ASSERTION** over both `band_book` +
+  `stateless_book` (no active-veto ticker may appear in either book — AssertionError
+  surfaces, never silenced); live band 65/55 UNCHANGED, exit=60 SHADOW-only (H-C
+  freeze-lock); live NAV BYTE-IDENTICAL; Garleanu-Pedersen 2013 + Novy-Marx-Velikov 2016 +
+  Amihud 2002 anchor. Defense UNCHANGED at 36.
+- **Proposal B (PEG/GARP) — REJECTED** (evidence-based, no issue opened): φ(PEG, P/E)=0.849
+  on the sp1500 cross-section, well above the 0.5 orthogonality gate — PEG double-loads
+  the P/E already carried by the value pillar, so it adds no orthogonal signal. Rejected,
+  not deferred.
+
+**Adjacent non-program merges in the same window** (all NO-schema-bump except #601, which
+is the program's own first slice): **#602** (Q2 SP500 rebalance) · **#603/#606** (warehouse
+scripts) · **#608-#614** (frontend perf/test + per-holding MWR/TWR shadow) · **#618/#619**
+(per-quarter returns + Carino PR-2c) · **#621/#622** (`agent-output-verifier` seat +
+`verify-claims` UserPromptSubmit hook) · **#623** (MWR/Carino frontend) · **#625**
+(error-reduction tooling) · **#627** (gap-aware streak).
 
 ## 2026-06-24 — frontend home UX: Current-picks Return column + Performance Total-return footer (#596)
 

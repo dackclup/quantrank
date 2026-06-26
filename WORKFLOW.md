@@ -42,9 +42,9 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-22: schema `0.10.31-phase8pilot` (#565 squash `2c9dc1371` — Slice 8 Security-type ingest PR-1, defense UNCHANGED at 36; prior #564 `0.10.30` Bonferroni shadow, #527 `0.10.29` low_liquidity annotate, #519 `0.10.28` sp1500 seam + smallcap probe, #512 `0.10.27` Dividend PR-1). **Cron ranks the full S&P 1500 (~1504 names) by default since Slice 7 (#534 squash `8301b82cb`, 2026-06-21); Phase 8 acceptance gates met, v2.0 tag pending.** Full lineage: SKILL.md §schema-version. Defense
+schema PR; this prose stays stable). As of 2026-06-26: schema `0.10.40-phase8pilot` (#628 `eb20b005` — Proposal E, legendary-fund program complete; chain 0.10.33→0.10.40 across #601/#604/#607/#615/#617/#624/#628; defense UNCHANGED at 36). Cron ranks full S&P 1500 (~1504) by default. v2.0.0-phase8 SHIPPED 2026-06-23; legendary-fund program byte-identical at launch, live-flip gates target Q3 2026-08-19. Full lineage: SKILL.md §schema-version. Defense
 layer **36 declared** = 9 vetoes + 27 annotates; release tag
-[`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
+[`v2.0.0-phase8`](https://github.com/dackclup/quantrank/releases/tag/v2.0.0-phase8);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
 
