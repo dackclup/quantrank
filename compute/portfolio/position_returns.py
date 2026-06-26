@@ -566,13 +566,13 @@ def _build_carino_grid(
         gross_product *= 1.0 + sp.gross_sub_return
     R_port_gross = gross_product - 1.0
 
-    # Step 2: total Carino coefficient K.
+    # Step 2: total Carino coefficient K. K = ln(1+R)/R ∈ (0, 1] for all finite
+    # R > −1 (and the _carino_coefficient L'Hôpital limit gives K=1 at R=0), so K
+    # is never 0 — no uniform-weight fallback is added here on purpose: it would
+    # NOT preserve the Σ C_i = R^g_port identity. Should K somehow be 0 (it can't),
+    # the k_t/K below raises ZeroDivisionError, which the caller's try/except
+    # degrades to None — honest absence beats an identity-violating number.
     K = _carino_coefficient(R_port_gross)
-    if K == 0.0:
-        # Degenerate: portfolio returned exactly 0 after geometric linking.
-        # Return uniform weights as a safe fallback.
-        n = len(sub_periods)
-        return [1.0 / n if n > 0 else 0.0] * n, 1.0, 0
 
     # Step 3: per-sub-period k_t and ratio k_t / K.
     kt_over_K: list[float] = []

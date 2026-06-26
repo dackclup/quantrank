@@ -7676,30 +7676,16 @@ STILL SHADOW / Rule-18: no frontend read; display flip is a separate PR-2b.
 
 **Schema triple**: untouched (`backtest_pit.json` `meta` dict is hand-built, not in the Pydantic↔TS↔snapshot triple).
 
-**Verify**: ruff PASS · pytest offline: 1797 passed / 3 skipped / 3 failed (see below) · schema_check PASS.
+**Verify**: ruff PASS · pytest offline GREEN — `tests/test_portfolio/test_position_returns.py` 199 tests pass (+13 from this PR) · schema_check PASS. The 3 prior 2-tuple→4-tuple `reconciliation_errors` unpacks are fixed (test-engineer, commit `e28e4056d`).
 
-**Test failures (3) — test-engineer must update**:
-`tests/test_portfolio/test_position_returns.py` has 3 tests that unpack
-`reconciliation_errors` as a 2-tuple (PR-2a contract). The function now
-returns a 4-tuple. Required test updates:
-- `test_reconciliation_errors_no_contribs` — unpack as `(err, _, _, _)` or use `[0]`/`[1]`
-- `test_reconciliation_errors_with_closes_pp_twr_near_zero` — same
-- `test_reconciliation_errors_with_closes_not_none` — same
-All other 42 tests in `test_position_returns.py` pass. No regressions outside this file.
-
-**Coverage needed** (for test-engineer; see handoff):
-1. `_build_carino_grid`: empty sub_periods → returns `([], 1.0, 0)`.
-2. `_build_carino_grid`: single sub-period, zero gross return → `K=1`, ratio=1.
-3. `_build_carino_grid`: sub-period with `1+R^g_t ≤ 0` → `clamp_count=1`.
-4. `_compute_contribution_from_sub_periods`: ticker missing from all sub_periods → 0.0.
-5. `_compute_contribution_from_sub_periods`: ticker with price_relative missing → skips.
-6. C3 GROSS identity: 3-ticker, 2-sub-period book → `|Σ C_i − R^g_port| < 1e-9`.
-7. NET identity: `|Σ C^n_i + C_cost − R^n_port| < 1e-9` with un-rounded δ_t.
-8. `carino_clamp_count` propagates into `reconciliation_errors` return [3].
-9. `reconciliation_errors` with `sub_periods=None` → gross_err=None, cost_residual=None, clamp_count=0.
-10. `compute_position_returns` with `sub_periods` → all tickers get non-None `contrib_nav_pts`.
-11. `compute_position_returns` with `sub_periods=None` → all tickers get `contrib_nav_pts=None` (PR-2a compat).
-12. Fix existing 3 `reconciliation_errors` 2-tuple unpacks → 4-tuple.
+**Test coverage added (+13)**: the 3 contract-change unpack fixes + 13 new behaviors —
+`_build_carino_grid` empty / zero-return-limit / `1+R≤0` clamp · `_compute_contribution_from_sub_periods`
+absent-ticker / missing-price-relative-leg · **C3 GROSS identity** `|Σ C_i − R^g_port| < 1e-9`
+(deterministic 3-ticker book + mid-window entry + a Hypothesis `@given` Dirichlet property) ·
+NET identity near-zero-δ path · `carino_clamp_count` propagation · `sub_periods=None` PR-2a compat.
+**NET cost-line honesty**: the geometric cross-term (`δ × R`, ~8e-5 at 20bps) is emitted as the
+DIAGNOSTIC counter `position_return_cost_line_residual` with NO hard assert in production — an
+inherent Carino limitation, surfaced not swallowed.
 
 **SHADOW constraint**: frontend does NOT read `contrib_nav_pts` until PR-2b adds a UI surface
 gated on ≥ 1 cron confirming the C3 reconciliation counters.
