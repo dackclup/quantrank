@@ -8,10 +8,13 @@ and every agent file must carry valid model+effort frontmatter.
 
 from __future__ import annotations
 
+import re
 from dataclasses import replace
+from pathlib import Path
 
 from tools.check_agent_hook_consistency import (
     ANCHORS,
+    REPO_ROOT,
     GroundTruth,
     _parse_frontmatter,
     check_anchors,
@@ -91,3 +94,22 @@ def test_anchors_reference_valid_truth_keys() -> None:
     valid = set(GroundTruth.__dataclass_fields__)
     for anchor in ANCHORS:
         assert anchor.truth_key in valid, anchor
+
+
+def test_no_dead_anchors() -> None:
+    """Every anchor regex must match ≥1 line in its target file.
+
+    A dead anchor (one whose pattern never matches — e.g. broken by a `**`
+    bold marker, or aimed at a spelled-out number) silently guards nothing.
+    This is the regression guard for the two dead anchors quantrank-reviewer
+    caught in PR #625 (Error→regression ratchet).
+    """
+    dead: list[str] = []
+    for anchor in ANCHORS:
+        path = Path(REPO_ROOT) / anchor.file
+        if not path.exists():
+            continue
+        rx = re.compile(anchor.pattern)
+        if not any(rx.search(line) for line in path.read_text().splitlines()):
+            dead.append(f"{anchor.label} ({anchor.file}): pattern {anchor.pattern!r} matched nothing")
+    assert not dead, "dead anchors (guard nothing):\n" + "\n".join(dead)

@@ -199,7 +199,7 @@ class Anchor:
 ANCHORS: tuple[Anchor, ...] = (
     # --- agent count ---
     Anchor("CLAUDE.md", r"(\d+) project subagents in 5 tiers", "n_agents", "subagent count"),
-    Anchor("CLAUDE.md", r"orchestrator / tech lead\s*\n?\s*of the (\d+)-agent", "n_agents", "orchestrator N-agent team"),
+    Anchor("CLAUDE.md", r"orchestrator / tech lead\*\* of the (\d+)-agent", "n_agents", "orchestrator N-agent team"),
     Anchor("CLAUDE.md", r"`description:` fields of all (\d+) agents", "n_agents", "walk-all-N-agents"),
     Anchor("AGENTS.md", r"The (\d+) subagents under", "n_agents", "AGENTS subagent count"),
     Anchor("AGENTS.md", r"(\d+) agent prompts are kept tight", "n_agents", "AGENTS prompt-count"),
@@ -219,8 +219,12 @@ ANCHORS: tuple[Anchor, ...] = (
     Anchor("CLAUDE.md", r"(\d+) bash hooks wired by", "n_hooks", "CLAUDE hook count"),
     Anchor("CONTEXT.md", r"(\d+) hook scripts", "n_hooks", "CONTEXT hook count"),
     # --- coordination flows ---
+    # NOTE: the README intro phrases the flow count spelled-out ("Nine
+    # canonical flows"), so it is intentionally NOT anchored here (a \d+
+    # pattern can't match a word). The count is guarded numerically below
+    # AND is itself the ground-truth source (n_flows counts the "### Flow N"
+    # headers in README), so README is self-consistent by construction.
     Anchor("CLAUDE.md", r"(\d+) coordination flows", "n_flows", "CLAUDE flow count"),
-    Anchor(".claude/agents/README.md", r"(\d+) canonical flows codify", "n_flows", "README flow count"),
     Anchor("CONTEXT.md", r"(\d+) coordination flows", "n_flows", "CONTEXT flow count"),
 )
 
@@ -232,26 +236,14 @@ def check_anchors(truth: GroundTruth) -> list[str]:
         if not path.exists():
             continue
         expected = getattr(truth, anchor.truth_key)
-        rx = re.compile(anchor.pattern, re.MULTILINE)
-        found_any = False
+        rx = re.compile(anchor.pattern)
         for i, line in enumerate(path.read_text().splitlines(), start=1):
             for m in rx.finditer(line):
-                found_any = True
                 claimed = int(m.group(1))
                 if claimed != expected:
                     violations.append(
                         f"{anchor.file}:{i}: {anchor.label} says {claimed}, "
                         f"actual is {expected} — {line.strip()[:90]}"
-                    )
-        # A multi-line pattern (the orchestrator one) is checked over the
-        # whole file too, in case the number wraps across a line break.
-        if not found_any and "\n" in anchor.pattern.replace(r"\n", "\n"):
-            for m in rx.finditer(path.read_text()):
-                claimed = int(m.group(1))
-                if claimed != expected:
-                    violations.append(
-                        f"{anchor.file}: {anchor.label} says {claimed}, "
-                        f"actual is {expected} (multi-line match)"
                     )
     return violations
 

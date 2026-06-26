@@ -47,11 +47,12 @@ class Rung:
     cwd: Path = field(default=REPO_ROOT)
 
 
-def _changed_files(base: str) -> list[str]:
-    """Files changed vs ``base``…HEAD plus uncommitted working-tree edits.
+def _changed_files(base: str) -> list[str] | None:
+    """Files changed vs ``base``…HEAD plus uncommitted + untracked edits.
 
-    Degrades to an empty list (→ every conditional rung runs, fail-safe) if
-    git is unavailable or the base ref can't be resolved.
+    Returns ``None`` (NOT ``[]``) when git is unavailable or a ref can't be
+    resolved — the caller treats ``None`` as "couldn't determine → run every
+    conditional rung, fail-safe". An empty list means a genuine no-op diff.
     """
     files: set[str] = set()
     for args in (
@@ -68,7 +69,7 @@ def _changed_files(base: str) -> list[str]:
             )
             files.update(line for line in out.stdout.splitlines() if line)
         except (subprocess.CalledProcessError, FileNotFoundError):
-            return []  # can't determine diff → treat as "everything changed"
+            return None  # can't determine diff → fail-safe: run everything
     return sorted(files)
 
 
@@ -153,14 +154,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     base = _resolve_base(args.base)
-    # git_ok disambiguates "no diff" ([]) from "couldn't detect" (None →
-    # run every conditional rung, fail-safe).
-    try:
-        subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO_ROOT,
-                       capture_output=True, check=True)
-        changed: list[str] | None = _changed_files(base)
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        changed = None
+    # None → couldn't determine the diff → run every conditional rung
+    # (fail-safe); [] → genuine no-op diff; list → the changed surface.
+    changed = _changed_files(base)
 
     ladder = build_ladder(changed, args.all)
 
