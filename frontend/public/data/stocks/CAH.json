@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 55240434756.0,
   "current_price": 234.75,
-  "rank": 1135,
-  "composite_score": 43.53,
+  "rank": 1139,
+  "composite_score": 43.44,
   "pillar_scores": {
-    "quality": 18.53,
-    "value": 61.86,
-    "growth": 36.9,
-    "momentum": 53.09,
+    "quality": 18.41,
+    "value": 61.68,
+    "growth": 36.83,
+    "momentum": 53.08,
     "health": 50.39,
-    "profitability": 32.49,
-    "technical": 60.89,
-    "risk": 84.22,
+    "profitability": 32.39,
+    "technical": 60.88,
+    "risk": 84.21,
     "sentiment": null,
     "ml": null
   },
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 183.60547098918363,
+        "value": 183.24864731917026,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 234.0806145087648,
+        "value": 233.05007066759907,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 183.60547098918363,
-    "max": 234.0806145087648,
+    "median": 183.24864731917026,
+    "max": 233.05007066759907,
     "low": 129.23828709227283,
-    "high": 234.0806145087648,
-    "mos_pct": -27.8556672278188,
+    "high": 233.05007066759907,
+    "mos_pct": -28.10462911146521,
     "valuation_warnings": [
       "stale_filing_soft"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 183.60547098918363,
+    "median_trimmed": 183.24864731917026,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -106,8 +106,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "stale_filing_soft",
-    "rem_suspect"
+    "stale_filing_soft"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -119,32 +118,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=168)",
+    "label": "Health Care median (n=167)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.14,
-      "Growth": 49.11,
-      "Momentum": 44.0,
-      "Health": 57.37,
-      "Profitability": 48.51,
-      "Technical": 55.69,
-      "Risk": 42.16
+      "Value": 51.0,
+      "Growth": 49.1,
+      "Momentum": 44.74,
+      "Health": 57.35,
+      "Profitability": 48.6,
+      "Technical": 55.61,
+      "Risk": 42.23
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.98232030363054,
+  "loss_chance_pct": 55.11466825953843,
   "price_change_1d_pct": 0.7468,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 42.73,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 43.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -185,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.69,
+  "osap_blended_score": 47.65,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,7 +199,7 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 0.004717723405891437,
-  "dividend_yield_pct": 0.88,
+  "dividend_yield_pct": 0.87,
   "pays_dividend": true,
   "payout_ratio": 0.31190002,
   "average_dollar_volume": 509858678.74844766,
