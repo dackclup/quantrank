@@ -181,6 +181,21 @@ def test_schema_version_pinned():
     Pin-lift gate requires A3-i/A3-ii OOS horse-race + methodology-scientist
     RATIFY-PROCEED.
 
+    Proposal C-1 high-conviction gate counter (0.10.39-phase8pilot, 2026-06-26)
+    — 3 additive nullable ``Metadata`` fields for the marginal-bite denominator
+    of the loss-chance leg in the high-conviction gate:
+    ``high_conviction_count: int | None`` — stocks clearing ALL 5 HC legs
+    (is_eligible + rec ∈ {bullish, lean_bullish} + MoS > 0 + composite ≥ 50 +
+    loss_chance ≤ 45); ``high_conviction_ex_loss_chance_count: int | None`` —
+    stocks passing ONLY legs 1-4 (loss-chance leg OMITTED; ≥ hc_count always;
+    the marginal-bite denominator: bite = ex − hc; corrected from tautological
+    field ``high_conviction_mos_positive_count`` by methodology-scientist
+    2026-06-26); ``high_conviction_below_floor: bool | None`` — True if ANY
+    rebalance leg in ``backtest_pit.json`` has
+    eligible_high_conviction_count < 5 (ADAPTIVE_MIN_PICKS); None when artifact
+    is absent or unreadable. SHADOW / OBSERVABILITY-ONLY (Rule 18); defense
+    UNCHANGED at 36; live rankings/scores byte-identical.
+
     Proposal C-2 MoS conviction tilt (0.10.38-phase8pilot, 2026-06-26) —
     1 additive nullable ``Metadata`` field:
     ``mos_tilt_shadow_max_delta_pp: float | None`` — the maximum per-rebalance
@@ -236,7 +251,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.38-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.39-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

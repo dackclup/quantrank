@@ -1035,5 +1035,103 @@ Until the flip-gate clears: `meta.mos_tilt_active = false` in `backtest_pit.json
 
 ---
 
+## Proposal C-1 — high-conviction gate counters (SHADOW / observability-first, Rule 18)
+
+**Added**: 2026-06-26. Schema `0.10.39-phase8pilot`.
+**Status**: PURELY ADDITIVE OBSERVABILITY. Rankings, scores, flags, selection, and NAV
+are BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+### Context: the gate is ALREADY live
+
+The high-conviction gate (`gate="high_conviction"` in `compute/portfolio/weights.py`)
+has been the production selection driver in the backfill since PR #604. The C-1 slice-1
+counters do **not** gate the wire-in — they measure the marginal bite of the loss-chance
+leg in an already-live gate. The PR/docstring language is:
+"measuring the marginal bite of the loss-chance leg in the ALREADY-LIVE gate"
+— NOT "gating the wire-in."
+
+### Gate composition
+
+A candidate is high-conviction (`is_high_conviction(c: PickCandidate) -> bool`) iff it
+clears ALL of the following legs simultaneously. Fail-closed: any `None` input → False:
+
+| Leg | Condition | Rationale |
+|-----|-----------|-----------|
+| 1 | `is_eligible(risk_flags)` — no active rank-gate veto | Existing 7-veto safety gate |
+| 2 | `recommendation ∈ {bullish, lean_bullish}` | UI Strong Buy / Buy signal |
+| 3 | `mos_pct > 0` | Graham-Dodd strict undervaluation; ~top 30% of S&P 500 |
+| 4 | `composite_score ≥ 50.0` | Redundant with leg 2 but kept explicit per user requirement |
+| 5 | `loss_chance_pct ≤ 45.0` | Below universe median (~49); the one genuinely new threshold |
+
+### Marginal-bite instrument
+
+The φ-redundancy instrument (methodology C-1 RATIFY-WITH-CONDITION, amended 2026-06-26):
+
+- `high_conviction_count` = full-gate pass count (all 5 legs).
+- `high_conviction_ex_loss_chance_count` = count passing legs 1-4 ONLY (leg 5 =
+  `loss_chance_pct ≤ 45` OMITTED). Implemented by `_passes_ex_loss_chance(c)` in
+  `compute/main.py`, which reuses `is_eligible` / `HIGH_CONVICTION_RECOMMENDATIONS` /
+  `HIGH_CONVICTION_COMPOSITE_MIN` from `compute.portfolio.weights` — no inlined literals.
+
+  The marginal bite of leg 5 is:
+  ```
+  leg_5_bite = high_conviction_ex_loss_chance_count − high_conviction_count
+  ```
+  By construction `ex_loss_chance_count ≥ high_conviction_count` always (leg 5 can only
+  filter names out, not add them). A materially positive bite validates keeping
+  `loss_chance_pct ≤ 45`; a near-zero bite across crons means leg 5 bites nothing and
+  is a drop candidate.
+
+  This replaces the earlier (tautological) `high_conviction_mos_positive_count` field,
+  which was correctly identified as always equaling `high_conviction_count` (leg 3 already
+  requires MoS > 0, so no independent information).
+
+### Starvation canary
+
+`high_conviction_below_floor: bool | None` — reads the refreshed `backtest_pit.json`
+artifact (same pattern as C-2's `mos_tilt_shadow_max_delta_pp`). True if ANY rebalance
+leg in the artifact has `eligible_high_conviction_count < ADAPTIVE_MIN_PICKS (5)`.
+
+The cron's full-universe HC count is always >> 5 (current counts ~30-60/cron), so a
+universe-level `< 5` check is structurally useless. The per-rebalance per-leg band-book
+size (5-20 names) is where starvation is meaningful.
+
+### Flip-gate (future PR, pre-registered — methodology C-1 RATIFY-WITH-CONDITION)
+
+The loss-chance leg calibration (`HIGH_CONVICTION_LOSS_CHANCE_MAX = 45.0`) is resolved
+(keep or drop) only after ALL of the following conditions clear:
+
+1. **hc_count ≥ floor + 2 (≥ 7)**: across ALL crons AND ALL backtest rebalance legs.
+   A bare below_floor gate (hc_count < 5) is NOT the flip signal.
+2. **Marginal-bite read**: derive
+   `leg_5_bite = high_conviction_ex_loss_chance_count − high_conviction_count`
+   from the cron data.
+   - If `leg_5_bite` is meaningfully non-zero → keep `loss_chance_pct ≤ 45` (the leg is
+     discriminating real risk).
+   - If `leg_5_bite ≈ 0` across all crons → drop the leg (it bites nothing; every name
+     that passes legs 1-4 also passes leg 5). Issue #130.
+3. **below_floor = False**: the artifact-read canary never fires True across all observed
+   rebalances (starvation check).
+4. **Methodology-scientist ratify**: review at the Q3 2026-08-19 cohort audit.
+
+Until the flip-gate clears: `select_picks` continues to gate on `gate="high_conviction"`
+unchanged; the counters are purely informational.
+
+### Schema surface
+
+- `Metadata.high_conviction_count: int | None` — full-gate pass count (all 5 legs) over the
+  ranked universe on this cron run. None on failure (try/except → non-fatal).
+- `Metadata.high_conviction_ex_loss_chance_count: int | None` — count passing legs 1-4 only
+  (leg 5 = loss_chance ≤ 45 OMITTED). Marginal-bite denominator:
+  `bite = high_conviction_ex_loss_chance_count − high_conviction_count`.
+  None on failure (non-fatal alongside `high_conviction_count`).
+- `Metadata.high_conviction_below_floor: bool | None` — starvation canary from the
+  `backtest_pit.json` artifact. None when the artifact is absent.
+
+HARD CONSTRAINT: all three fields MUST NEVER be read by scoring, the composite, pillar
+computation, veto/flag logic, fair-price, `select_picks`, or `inverse_vol_weights`.
+
+---
+
 **Reminder**: this is a research / educational tool. Not investment advice. See
 the disclaimer in the [README](../README.md).

@@ -593,6 +593,26 @@ export type Metadata = {
   // try/except → None. Rankings/scores/flags are byte-identical.
   // Null on legacy snapshots (pre-0.10.38) or when backtest_pit.json is absent.
   mos_tilt_shadow_max_delta_pp?: number | null;
+  // Proposal C-1 — high-conviction gate SHADOW counters (Rule 18
+  // observability-only, write-only). The high-conviction gate is already
+  // the production selection driver; these 3 fields expose its universe-wide
+  // firing rate at each cron run for calibration. No UI consumer yet. Defense
+  // layer UNCHANGED at 36.
+  //
+  // `high_conviction_count` — count of the full ranked universe clearing every
+  // leg of the high-conviction gate (no active veto + bullish/lean_bullish
+  // recommendation + MoS > 0 + composite >= 50 + loss-chance <= 45). The
+  // AI-pick basket draws from this pool.
+  high_conviction_count?: number | null;
+  // `high_conviction_ex_loss_chance_count` — count passing the gate WITHOUT
+  // the loss-chance leg (the marginal-bite denominator). By construction
+  // always >= high_conviction_count. Lets methodology audit the loss-chance
+  // leg's standalone contribution.
+  high_conviction_ex_loss_chance_count?: number | null;
+  // `high_conviction_below_floor` — True when any backtest rebalance leg has
+  // < 5 high-conviction-eligible names (starvation canary). Signals a
+  // potential scarcity event that may trigger the floor-5 fallback.
+  high_conviction_below_floor?: boolean | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

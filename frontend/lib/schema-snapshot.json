@@ -242,6 +242,21 @@
       "required": true,
       "default": "<required>"
     },
+    "high_conviction_below_floor": {
+      "type": "bool | None",
+      "required": false,
+      "default": null
+    },
+    "high_conviction_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "high_conviction_ex_loss_chance_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "ic_weight_by_pillar": {
       "type": "dict[str, float] | None",
       "required": false,
