@@ -5,19 +5,19 @@
   "industry": "Education Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 5128916715.942383,
-  "current_price": 1172.86,
-  "rank": 875,
-  "composite_score": 48.1,
+  "market_cap": 4975031102.172852,
+  "current_price": 1137.67,
+  "rank": 896,
+  "composite_score": 47.74,
   "pillar_scores": {
     "quality": 30.29,
-    "value": 45.75,
+    "value": 47.45,
     "growth": 66.84,
-    "momentum": 56.2,
-    "health": 64.96,
+    "momentum": 51.66,
+    "health": 64.95,
     "profitability": 36.39,
-    "technical": 52.44,
-    "risk": 72.21,
+    "technical": 49.68,
+    "risk": 71.08,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 4373000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5128916715.942383,
-    "pe_ratio_ttm": 16.9122150314488,
+    "market_cap": 4975031102.172852,
+    "pe_ratio_ttm": 16.404788856594525,
     "goodwill": 1585666000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1136.2031038530645,
+        "value": 1080.3281586685669,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 4228.9908349918405,
+        "value": 4011.8809153290726,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 747.5107232845012,
+        "value": 746.836261346165,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 1136.2031038530645,
-    "max": 4228.9908349918405,
+    "median": 1080.3281586685669,
+    "max": 4011.8809153290726,
     "low": 434.1429518958849,
-    "high": 4228.9908349918405,
-    "mos_pct": -3.226261341320763,
-    "valuation_warnings": [],
+    "high": 4011.8809153290726,
+    "mos_pct": -5.307821037212964,
+    "valuation_warnings": [
+      "stale_filing_soft"
+    ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 1136.2031038530645,
+    "median_trimmed": 1080.3281586685669,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,12 +102,13 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 120,
+    "filing_lag_days": 121,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-25"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "stale_filing_soft",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -121,22 +124,22 @@
     "label": "Consumer Discretionary median (n=196)",
     "values": {
       "Quality": 48.31,
-      "Value": 50.81,
+      "Value": 51.04,
       "Growth": 49.11,
-      "Momentum": 43.43,
+      "Momentum": 42.3,
       "Health": 42.23,
       "Profitability": 50.26,
-      "Technical": 52.59,
-      "Risk": 40.92
+      "Technical": 52.86,
+      "Risk": 40.62
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.07705357640611,
-  "price_change_1d_pct": 2.121,
+  "loss_chance_pct": 46.98873271329231,
+  "price_change_1d_pct": -3.0004,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.1,
+  "composite_score_adjusted": 47.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.98,
+  "osap_blended_score": 49.79,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,10 +201,10 @@
     "latest_filing_date": "2026-05-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.01507339507036193,
+  "cross_source_delta": 0.015073455548870676,
   "dividend_yield_pct": 0.64,
   "pays_dividend": true,
   "payout_ratio": 0.1076,
-  "average_dollar_volume": 19827540.669759113,
+  "average_dollar_volume": 20016501.29815674,
   "security_type": null
 }
