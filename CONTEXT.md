@@ -166,7 +166,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | `tests/` | pytest suite (offline + `@network` gated) |
 | `.claude/skills/` | 47 invocation-triggerable skills + phase planning docs |
 | `.claude/agents/` | 26 project-specific sub-agents in 5 tiers |
-| `.claude/hooks/` | 3 hook scripts (`log-bash.sh` + `schema-reminder.sh` + `delegate-first.sh`) |
+| `.claude/hooks/` | 4 hook scripts (`log-bash.sh` + `schema-reminder.sh` + `delegate-first.sh` + `verify-claims.sh`) |
 | `docs/` | METHODOLOGY.md, design.md, agents/ |
 
 ---

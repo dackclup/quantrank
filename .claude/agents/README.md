@@ -405,9 +405,14 @@ on every session start. The combination gives the main agent two
 levels of routing strength:
 
 - **MUST-invoke agents** — `schema-sentinel`, `quantrank-reviewer`,
-  `phase-coordinator`, `release-captain`. The description uses
-  "MUST be invoked (no confirmation)" language; the main agent
-  spawns them automatically without pausing the user's flow.
+  `phase-coordinator`, `release-captain`, `ci-triage-engineer`,
+  `incident-commander`, `methodology-scientist`, and
+  `agent-output-verifier` (the last gates ACTING on a high-stakes agent
+  claim / a release GO / a Mark-Ready / merge flip / two reports
+  disagreeing — reinforced every turn by the `verify-claims.sh`
+  UserPromptSubmit hook). The description uses "MUST be invoked (no
+  confirmation)" language; the main agent spawns them automatically
+  without pausing the user's flow.
 - **PROACTIVELY-invoke agents** — `defense-layer-auditor`,
   `edgar-debugger`, `security-reviewer`, `frontend-design-reviewer`.
   The description uses "Use PROACTIVELY when..." language; the main
@@ -430,6 +435,13 @@ Enterprise tier:
 - `frontend-design-reviewer` fires on `frontend/components/` diff cues
 - `release-captain` fires on "tag release" / "cut release" cues
 - `phase-coordinator` fires on branch / PR-open / phase-completion cues
+
+Operations tier:
+- `agent-output-verifier` fires (MUST-invoke) before ACTING on a high-stakes
+  agent claim — release GO / Mark-Ready / merge / destructive command / two
+  reports disagreeing — and on "จับผิด" / "fact-check this report"; the
+  `verify-claims.sh` UserPromptSubmit hook keeps the verify-before-acting
+  reflex top-of-mind every turn. NOT per-report (cost).
 
 The user can also invoke any subagent explicitly: "use the
 defense-layer-auditor to check the latest run", and the main agent will
