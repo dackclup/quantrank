@@ -789,7 +789,7 @@ audit), prefer routing it through Claude Code rather than re-
 implementing the integration in a different agent.
 
 Claude Code also reads `.claude/settings.json` for the harness's hook
-configuration. Three hooks ship today (2 PostToolUse + 1
+configuration. Four hooks ship today (2 PostToolUse + 2
 UserPromptSubmit):
 
 - `.claude/hooks/log-bash.sh` (PostToolUse Bash) — appends every Bash
@@ -900,16 +900,17 @@ inline. Inline work is the EXCEPTION, acceptable only for trivial
 1-Read lookups, when no sub-agent matches the task, when the user
 explicitly opts out ("ทำเอง" / "inline this"), when the work IS
 building the agent / hook infrastructure itself, or when
-synthesizing across multiple sub-agent reports. A
-`UserPromptSubmit` hook (`.claude/hooks/delegate-first.sh`)
-injects this rule as `additionalContext` on every user turn so
-the main agent can't lose it mid-session. Cross-tool agents
+synthesizing across multiple sub-agent reports. Two
+`UserPromptSubmit` hooks (`.claude/hooks/delegate-first.sh` for the
+delegate-first rule + `.claude/hooks/verify-claims.sh` for the
+verify-before-acting rule) inject these as `additionalContext` on
+every user turn so the main agent can't lose them mid-session. Cross-tool agents
 (Copilot / Cursor / Devin) do not have access to the
 sub-agent / hook layer and should fall back to running the
 canonical skills (`schema-check`, `verify-production-output`,
 `security-check`) inline.
 
-The three hooks are bash + `jq` only, 5-second timeout, fail-open
+The four hooks are bash + `jq` only, 5-second timeout, fail-open
 on missing dependencies / unwritable filesystem / empty stdin.
 Copilot / Cursor / Devin do NOT execute `.claude/hooks/` — those
 tools should rely on git pre-commit hooks (run `ruff` + the
