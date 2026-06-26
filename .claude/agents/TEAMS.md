@@ -14,7 +14,7 @@
 The two are **different mechanisms**, and a team **reuses subagent
 definitions as teammate roles** — it does not replace them.
 
-| | **Subagent** (the 25 files here) | **Agent team** (this doc) |
+| | **Subagent** (the 26 files here) | **Agent team** (this doc) |
 |---|---|---|
 | Communication | reports back to main only; peers never talk | teammates message each other directly (mailbox) |
 | Coordination | main spawns + manages everything | shared task list; teammates self-claim |
@@ -209,7 +209,7 @@ Each owns its layer; require plan approval before schema changes.
 
 ## Companion docs
 
-- [`README.md`](README.md) — the 25-subagent catalog + 8 subagent flows
+- [`README.md`](README.md) — the 26-subagent catalog + 9 subagent flows
 - [`CLAUDE.md`](../../CLAUDE.md) §Auto-routing policy — subagent routing
 - the two builders: [`compute-builder.md`](compute-builder.md) ·
   [`frontend-builder.md`](frontend-builder.md)

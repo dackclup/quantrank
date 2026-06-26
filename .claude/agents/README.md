@@ -22,7 +22,7 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (25)
+## The current set (26)
 
 Organized into five tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
@@ -68,13 +68,14 @@ would have:
 | [`data-analyst`](data-analyst.md) | Data analyst / BI | "analyze the rankings" / "วิเคราะห์ data" / "score distribution" / "sector breakdown" / "what changed this week"; post-cron descriptive pass. Aggregate / distributional analytics over rankings.json + metadata.json (score tiers, sector breakdown, rec mix, MoS / factor distributions, Top-N composition, WoW drift). DISTINCT from stock-detail-auditor (per-ticker correctness) / methodology-scientist (academic). Read-only. | sonnet | Read, Bash, Grep, Glob |
 | [`data-scientist`](data-scientist.md) | Data scientist / ML engineer | Signal predictive-power evaluation (Spearman IC · IC decay · forward returns); backtest statistical scrutiny (PBO/DSR · deflated Sharpe · leakage/look-ahead probes); `compute/validation/**` + `compute/features/**` (OSAP / Qlib / IPCA) interpretation; Phase-5 ML meta-learner scoping (purged time-series CV, baseline-first); "is this signal real?" / "overfit ไหม" / "วิเคราะห์เชิงสถิติ". The EMPIRICAL seat — financial-engineer designs → data-scientist evaluates → methodology-scientist ratifies. Read-only. | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 4 — Operations (3)
+### Tier 4 — Operations (4)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`docs-reviewer`](docs-reviewer.md) | Tech writer / docs PM | CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md touched; section header added/renamed; "review the docs" | sonnet | Read, Bash, Grep, Glob |
 | [`ci-triage-engineer`](ci-triage-engineer.md) | CI / build engineer on-call | GitHub Actions check fails on any open PR (webhook event); "CI failed" / "Python test red" / "build แตก" / "เช็คทำไม CI fail". Knows the CI matrix (Python lint+test · Frontend build · simulate · Vercel preview) + 10-class failure taxonomy (schema-pin-drift / ruff-I001 / F401 / F841 / dep-missing-ci-only / real-bug / simulate-45min-cap / flaky-transient / vercel-build-skew / schema-drift-CI). Read-only; proposes the one-line fix the user authorizes. | sonnet | Read, Bash, Grep, Glob |
 | [`incident-commander`](incident-commander.md) | Incident commander / SRE on-call | Cron fails / hangs / produces corrupt output; Vercel deploy breaks; schema-snapshot CI guard fails; "production is broken" / "site is wrong" / "incident" | opus | Read, Bash, Grep, Glob |
+| [`agent-output-verifier`](agent-output-verifier.md) | QA / verification engineer (the "จับผิด" seat) | Before the orchestrator ACTS on a high-stakes agent claim (release GO / destructive command / Mark-Ready / "Top-5 rotated correctly" / "coverage is 99%"); when two agent reports disagree; "จับผิด" / "fact-check this report" / "verify the agent's claims" / "ข้อมูลที่ ai พ่นมาถูกไหม". The cross-cutting backstop on every agent's shared failure mode — a confident, fluent, WRONG sentence. Re-derives each checkable claim from ground truth (code · output JSON · git · the academic-anchor list); per-claim CONFIRMED / REFUTED / STALE / UNSUPPORTED / UNVERIFIABLE verdict. Read-only; does NOT redo the source analysis and does NOT fix. | opus | Read, Bash, Grep, Glob |
 
 ### Tier 5 — Builders (2)
 
@@ -112,9 +113,14 @@ The four tiers reflect QuantRank's actual workload distribution + the
 - **Tier 4 (Operations)** is the orchestrator / coordinator layer —
   `docs-reviewer` keeps the project's institutional memory clean;
   `ci-triage-engineer` is the reactive triager for GitHub Actions
-  failures (signal-driven via the PR-activity webhook); and
-  `incident-commander` is the P1 conductor when production breaks.
-  These map to "staff+ engineers / SRE on-call" in a big org.
+  failures (signal-driven via the PR-activity webhook);
+  `incident-commander` is the P1 conductor when production breaks; and
+  `agent-output-verifier` is the cross-cutting QA backstop that
+  fact-checks what the *other agents themselves* emit before the
+  orchestrator acts on it (the "จับผิด" seat — every other agent can
+  produce a confident-but-wrong sentence; this one re-derives the claims
+  from ground truth). These map to "staff+ engineers / SRE on-call / QA"
+  in a big org.
 - **Tier 5 (Builders)** is the write-capable implementer layer —
   `compute-builder` + `frontend-builder` own one code layer each in an
   agent-team Feature Squad (or run as scoped write-subagents). They map
@@ -125,7 +131,7 @@ The four tiers reflect QuantRank's actual workload distribution + the
 
 The team isn't a flat list of independent agents — it's a coordinated
 system where specialists escalate to each other and orchestrators
-spawn parallel workers. Eight canonical flows codify the integration:
+spawn parallel workers. Nine canonical flows codify the integration:
 
 ### Flow 1 — Pre-push gate (every PR before Mark-Ready)
 
@@ -284,6 +290,37 @@ financial-engineer), when the construct doesn't exist yet. The designer
 proposes; the validator gates; they are deliberately separate seats so
 no single agent both invents and ratifies its own prior.
 
+### Flow 9 — Output verification (don't act on a wrong claim)
+
+```
+[any agent] returns a report whose claims gate a high-stakes action
+  (release GO · destructive command · Mark-Ready · "Top-5 rotated" ·
+   "coverage 99%" · "threshold matches Beneish 1999")
+  │           — OR two agent reports disagree
+  │           — OR user: "จับผิด" / "fact-check that report" / "is that true?"
+  ▼
+[agent-output-verifier] (opus) re-derives EVERY checkable claim from
+ground truth (code · output JSON · metadata · git · academic-anchor list):
+  1. Extract atomic claims from the report
+  2. Per claim → CONFIRMED / REFUTED / STALE / UNSUPPORTED / UNVERIFIABLE
+  3. Quote claimed-vs-actual with the exact source for every REFUTED/STALE
+  4. Verdict: TRUSTWORTHY | TRUSTWORTHY-WITH-CORRECTIONS | DO-NOT-ACT
+  │
+  ▼
+orchestrator proceeds with the gated action ONLY on TRUSTWORTHY(-WITH-
+CORRECTIONS); on DO-NOT-ACT it routes each refuted claim back to the
+owning agent (a wrong number → that agent; a mis-citation → ESCALATE
+methodology-scientist) and re-verifies after the fix.
+```
+
+This is the cross-cutting backstop: every other flow above produces
+*claims*, and any claim can be confidently wrong. Flow 9 is the optional
+"trust but verify" gate the orchestrator inserts before *acting* on a
+report whose error would be expensive to undo. It is NOT run on every
+agent report (that would double the team's cost) — it fires when the
+stakes of acting on a false claim are high, or when reports conflict.
+The verifier never fixes; it routes the fix back to the claim's owner.
+
 ### Spawn discipline (cross-cutting)
 
 When a flow says "spawn in parallel", the main agent uses ONE Agent
@@ -326,19 +363,23 @@ HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> 
   command, an ambiguous requirement) — the orchestrator surfaces it via
   `AskUserQuestion` rather than guessing.
 
-**Model split (why 5 opus / 20 sonnet under an Opus 4.8 main):** the
+**Model split (why 6 opus / 20 sonnet under an Opus 4.8 main):** the
 orchestrator carries cross-agent synthesis, so most agents are **sonnet**
-— focused, well-scoped work handing a crisp verdict back up. The five
+— focused, well-scoped work handing a crisp verdict back up. The six
 **opus** agents (`quantrank-reviewer` · `methodology-scientist` ·
-`release-captain` · `incident-commander` · `financial-engineer`) run on
-opus because their job IS breadth-of-judgment (full-diff review ·
-academic-prior weighing · release-ladder orchestration · P1 incident
-triage · generative quant design) that doesn't compress to a sonnet
-pass. Sonnet agents also drain the separate Max-plan
+`release-captain` · `incident-commander` · `financial-engineer` ·
+`agent-output-verifier`) run on opus because their job IS
+breadth-of-judgment (full-diff review · academic-prior weighing ·
+release-ladder orchestration · P1 incident triage · generative quant
+design · adversarial cross-checking of another model's output) that
+doesn't compress to a sonnet pass. `agent-output-verifier` is opus on
+purpose: catching a fluent, confident, wrong sentence that a capable
+model produced needs at least as much reasoning headroom as producing
+it did. Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: 23 of 25 agents run at `effort: max`** (frontmatter; set 2026-05-31,
+**Effort: 24 of 26 agents run at `effort: max`** (frontmatter; set 2026-05-31,
 carve-out 2026-06-03). The `effort` field is orthogonal to `model` — `model`
 picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
 the top of the `low / medium / high / xhigh / max` ladder and overrides the
@@ -427,7 +468,7 @@ each invocation.
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
    - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
-     field, orthogonal to `model`). 23 of 25 agents run at the top
+     field, orthogonal to `model`). 24 of 26 agents run at the top
      reasoning level; the 2 deterministic script-runners (`schema-sentinel`
      + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
      A new agent gets `effort: max` too unless it's a pure mechanical
