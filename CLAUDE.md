@@ -196,7 +196,13 @@ These are exactly the kind of trap catalogued in §Gotchas /
 Verification ladder before any push: `ruff check .` → `pytest -m "not
 network"` → (if schemas touched) `schema_check` → (if frontend touched)
 `tsc --noEmit` + `next build` → (if compute output committed)
-`verify-production-output/helper.py`.
+`verify-production-output/helper.py`. **`python tools/preflight.py`**
+runs the cheap deterministic rungs of this ladder (ruff + the doc /
+model-pin / **agent-hook-consistency** guards) always, and the heavy
+rungs (pytest / schema_check / tsc) only when the diff touches their
+surface — one command, mirrors the CI paths-filter; `--all` forces every
+rung. The agent/hook/flow count guard (`tools/check_agent_hook_consistency.py`)
+also runs as its own CI step.
 
 **After every `workflow_dispatch` green** (REQUIRED 2026-05-17): run
 Section A-L scan + Section I Playwright spot-check for any PR landing
@@ -250,6 +256,18 @@ delegate the connector-bound step to a sibling session
   the accounting equation is verified on real data. The Phase 4h →
   4h.2 retrofit (PRs #112 → #118 → #124) is the forcing precedent.
   See `WORKFLOW.md` §Observability-Before-Wiring Pattern.
+- **Error→regression ratchet** (`docs/LESSONS_LEARNED.md` 2026-06-26).
+  When an error is caught — by a reviewer, a sub-agent, CI, or
+  production — and the error class is **mechanical** (a count, a format,
+  a sync, a structural invariant), convert it into a **deterministic
+  guard** (a `tools/` check or a test) in the **same fixing PR**, so the
+  probabilistic catch becomes a deterministic one that can't recur. LLM
+  review (`agent-output-verifier` · `docs-reviewer` · `quantrank-reviewer`)
+  is the safety net for *novel* errors; it must NOT be the standing
+  defense for a *mechanical* one. Forcing precedent: doc count-drift was
+  caught by an LLM 3× across #621/#622, then determinized into
+  `tools/check_agent_hook_consistency.py` (CI-wired). The cheap local
+  mirror of the whole verification ladder is `python tools/preflight.py`.
 - **CLAUDE.md + AGENTS.md ship with every PR.** Both agent docs must
   move in lockstep on every PR (any type — feat / fix / ci / docs /
   chore). At minimum the PR's **in-flight entry lands in

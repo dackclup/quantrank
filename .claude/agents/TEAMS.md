@@ -68,11 +68,12 @@ desktop terminal).
 | new defense flag / threshold recalibration / new factor / scoring pillar | **Methodology Debate** (or the Flow 8 subagent sequence) |
 | production broken / cron stuck / corrupt output, root cause unclear | **Incident War Room** (or the Flow 4 subagent fan-out) |
 | big / risky multi-lens PR review | **PR Review Crew** (or the Flow 1 subagent gate) |
+| about to act on an irreversible / expensive-to-undo claim (release GO · destructive command · cron-gating accounting-equation) | **Verification Panel** (or 3 sequential `agent-output-verifier` lens passes — majority rule) |
 
 Decline any time ("just do it inline" / "no team") and the orchestrator drops
 back to the normal subagent path.
 
-## The 5 recipes
+## The 6 recipes
 
 Teammate roles reference existing subagent definitions by name (Claude
 Code honors their `tools` + `model`; the body is appended to the
@@ -161,6 +162,25 @@ subagent form is usually the right call.
   `security-reviewer` · `dependency-auditor` · `docs-reviewer`
 - **Recommendation:** prefer the **subagent fallback** (Flow 2 ladder).
   Convene as a team only if a finding needs cross-discussion.
+
+### 6 — Verification Panel  *(irreversible claims only)*
+
+A 3-lens adversarial panel over a single high-stakes, expensive-to-undo
+claim (a release GO, an irreversible destructive command, a production-
+cron-gating "the accounting equation holds"). Kills the single-point-of-
+failure of one verifier being confidently wrong. NOT for routine
+verification — that's a single `agent-output-verifier` pass (cost).
+
+- **Lead:** main session
+- **Teammates:** three `agent-output-verifier` instances, each a distinct
+  lens — **re-derivation** (recompute from ground truth) · **refutation**
+  (assume every claim is wrong, hunt the breaker) · **completeness** (find
+  the claim nobody stated). See `agent-output-verifier.md` §Panel mode.
+- **Decision rule:** proceed only if ≥ 2 of 3 return TRUSTWORTHY with no
+  shared CRITICAL refutation; any CRITICAL REFUTED → DO-NOT-ACT.
+- **Subagent fallback (web/mobile):** the orchestrator spawns the three
+  `agent-output-verifier` passes sequentially (different lens prompt each)
+  and takes the majority — no cross-talk, same gate.
 
 ## Teammate protocol (shared rules)
 

@@ -916,6 +916,22 @@ Copilot / Cursor / Devin do NOT execute `.claude/hooks/` — those
 tools should rely on git pre-commit hooks (run `ruff` + the
 schema-snapshot guard, see §Security considerations) instead.
 
+**Deterministic drift guards (CI-wired, `tools/`)** — the project
+converts recurring *mechanical* error classes into scripts so an LLM
+reviewer never has to catch them by hand (the **Error→regression
+ratchet**, CLAUDE.md §Conventions). Each runs as its own `ci.yml` step
+on every PR: `check_doc_test_counts.py` (no hardcoded *test* counts) ·
+`check_model_pin.py` (subagent model aliases stay floating) ·
+**`check_agent_hook_consistency.py`** (the hardcoded *structural* counts
+— agents / opus-sonnet split / effort split / hooks / flows / tier sums
+— must equal the filesystem + frontmatter ground truth; derives every
+number, so adding an agent/hook/flow and updating the docs passes
+automatically). `tools/preflight.py` runs the whole CLAUDE.md
+verification ladder locally in one command, gating the heavy rungs
+(pytest / schema_check / tsc) on the changed surface. Cross-tool agents
+without `.claude/hooks/` should still run these `tools/` guards before a
+push.
+
 ## Multi-session audit pattern
 
 When an in-flight session (mid-audit, mid-PR-review) discovers it lacks

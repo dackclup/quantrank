@@ -90,6 +90,35 @@ mobile → "overlap = none in all 8 cases". Numbers, not vibes.
 
 ## Mistakes log
 
+### 2026-06-26 — doc count-drift caught by an LLM 3× → determinized into a guard (`agent-output-verifier` work, #621/#622)
+
+**What happened:** across the two PRs that added `agent-output-verifier`,
+the *only* real defects were **hardcoded structural counts going stale** —
+"25 subagents" not bumped to 26, "5 opus"→6, "3 hooks"→4, "8 flows"→9,
+plus AGENTS.md "three hooks" prose. The `docs-reviewer` sub-agent (an LLM)
+caught these — but it took **three separate review rounds** to catch them
+all, and an LLM catching a purely mechanical fact is probabilistic: the
+next session it could miss one.
+
+**Root cause:** a deterministic fact (count of files / frontmatter values)
+was being checked by probabilistic judgment. Wrong tool for the job.
+
+**The ratchet (the fix that makes it never recur):** `tools/check_agent_hook_consistency.py`
+derives every structural count from the filesystem + frontmatter and asserts
+the doc anchors match — wired into CI (`ci.yml`) + `tools/preflight.py`. The
+count-drift class is now caught **deterministically, every time, for free**.
+No number lives in the guard; adding an agent/hook/flow and updating the docs
+makes it pass automatically.
+
+**The rule — Error→regression ratchet:** when an error is caught (by a
+reviewer, an agent, CI, or production), and the error class is *mechanical*
+(a count, a format, a sync, an invariant), **convert it into a deterministic
+guard — a test or a `tools/` check — in the SAME fixing PR**, so the
+probabilistic catch becomes a deterministic one. LLM review is the safety
+net for the *novel* error; it must not be the standing defense for a
+*mechanical* one. This is the path that ratchets the systematic error classes
+toward ~0. (Promoted to CLAUDE.md §Conventions "Error→regression ratchet".)
+
 ### 2026-06-04 — filter-page color/UX polish (`$impeccable`, #408 + #409)
 
 A multi-round `$impeccable polish` of the filter page surfaced ONE recurring
