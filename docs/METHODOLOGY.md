@@ -843,5 +843,98 @@ recalibration is a visible diff. Recalibrate at Phase-7 HMM design time from emp
 
 ---
 
+## Proposal A — Shrinkage Composite (schema 0.10.37-phase8pilot)
+
+**Status: OBSERVABILITY-FIRST (Rule 18). Machinery shipped; pin=1.0 → composite byte-identical.**
+
+### Motivation
+
+QuantRank's Phase-3 composite uses a fixed weight vector (`PHASE3_EFFECTIVE_WEIGHTS`) derived from
+subjective priors. Over time, as the IC-decay monitor accumulates per-pillar IC history, we can
+use that evidence to *nudge* the weights toward a data-informed allocation. Proposal A implements
+a Bayesian-flavored shrinkage scheme: shrink toward the prior (`w0`) and let data only move
+weights insofar as the evidence is reliable.
+
+### Formula
+
+The shrinkage scheme follows Timmermann (2006) "Forecast Combinations" §3 (*Handbook of Economic
+Forecasting* Vol. 1, pp. 135–196, Elsevier):
+
+    λ_p = 1 / (1 + n_p / τ)                    ← shrinkage factor per pillar
+    w_p = λ_p · w0_p + (1 − λ_p) · w_IC_p      ← blended weight
+
+where `n_p` = months of IC history for pillar `p`, and `τ = SHRINKAGE_TAU_MONTHS = 24.0` (the
+prior-persistence half-life). At `n_p = τ`, λ = 0.5 (equal blend); as `n_p → ∞`, λ → 0 (full
+IC-implied weight).
+
+The IC-implied weight `w_IC` follows the signal-weighting principle from Grinold and Kahn (2000)
+*Active Portfolio Management* (2nd ed., Ch. 4): weight proportionally to max(rolling_12m_IC, 0).
+
+Ledoit and Wolf (2004) *JMVA* 88(2) is cited as the **shrinkage principle only** (shrink an
+empirical estimate toward a structured prior). This module does NOT implement covariance shrinkage;
+the application is to the 1-D weight vector.
+
+### Identity-at-launch (safety property)
+
+With `SHRINKAGE_LAMBDA_PIN = 1.0` AND every pillar preliminary (< 12 monthly IC observations),
+the blend returns `w0` via **two independent guards**:
+
+1. **Pin guard** — `blend_weights` forces λ_p = 1.0 for all preliminary pillars.
+2. **Degenerate guard** — `build_ic_weights` sets `w_IC := w0` when Σraw = 0.
+
+Rankings/scores/flags are byte-identical at launch.
+
+### τ calibration note (Tier-2/3 gut-feel)
+
+`SHRINKAGE_TAU_MONTHS = 24.0` is a **Tier-2/3 gut-feel calibration** — it is inert-at-launch
+because the pin = 1.0. It only bites once: (a) a pillar clears 12 months, AND (b) the pin is
+lifted via the A3-i/A3-ii gate. The Proposal-F (#604 merged) `build_pillar_half_lives` output
+will supply empirical per-pillar τ_p, superseding this scalar constant.
+
+### Pre-registered pin-lift gate
+
+The following gates MUST ALL clear before setting `SHRINKAGE_LAMBDA_PIN = None`:
+
+From the §5 design brief:
+- ≥ 1 full cron of observation at the new weight vector (shadow comparison).
+- Methodology-scientist RATIFY-PROCEED on the blended IC distribution.
+- Defense-layer-auditor confirms byte-identical canary holds on ≥ 2 crons.
+- Data-scientist OOS horse-race passes (A3-ii below).
+
+**A3-i** — Minimum n floor: ≥ 24 monthly IC observations per active pillar. (n = 12 clears the
+preliminary label but is too thin to move weight reliably; the standard Proposal-F Di Mascio 2022
+floor of 12 is not sufficient for weight decisions.)
+
+**A3-ii** — Timmermann OOS horse-race: compute blended IC vs fixed-w0 IC on the existing
+purged-embargo holdout (`meta.validation in_sample=false` block). Lift pin ONLY when:
+
+    blended_IC > fixed_w0_IC  by > 1 SE of the IC difference
+
+If this condition is NOT met, keep `SHRINKAGE_LAMBDA_PIN = 1.0` **permanently** and ship the
+**1/N prior** instead. Rationale: Timmermann (2006) §5 shows that forecast-combination gains
+over the best individual model are most reliable when the combination strictly beats the benchmark
+OOS. Equal-weighting (1/N) is the literature-recommended fallback when no combination gains emerge.
+
+### Observability (6 new Metadata fields)
+
+All 6 fields are `None` while the shrinkage block is skipped or fails; they are WRITE-ONLY and
+NEVER read by scoring, composite, pillar computation, veto/flag logic, fair-price, or
+`select_picks`. Defense layer UNCHANGED at 36.
+
+| Field | Type | Meaning |
+|---|---|---|
+| `shrinkage_lambda` | `float \| None` | Schedule-derived λ (most-history pillar proxy) |
+| `shrinkage_lambda_applied` | `float \| None` | Actual λ applied (= 1.0 while pinned) |
+| `ic_weight_by_pillar` | `dict[str,float] \| None` | IC-implied w_IC before blend |
+| `shrinkage_blended_weight_by_pillar` | `dict[str,float] \| None` | Final blended weights (byte-identity canary) |
+| `n_preliminary_pillars` | `int \| None` | Pillars with < 12 months IC history |
+| `shrinkage_weights_degenerate` | `bool \| None` | True when Σraw = 0 → w_IC := w0 |
+
+The `shrinkage_blended_weight_by_pillar` field is the **byte-identity canary**: while the pin is
+1.0, it MUST equal `PHASE3_EFFECTIVE_WEIGHTS` within 1e-9 per pillar. Any deviation triggers an
+investigation gate before the deviation can be intentional.
+
+---
+
 **Reminder**: this is a research / educational tool. Not investment advice. See
 the disclaimer in the [README](../README.md).

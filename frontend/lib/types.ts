@@ -550,6 +550,37 @@ export type Metadata = {
   // `market_regime_state` — categorical label derived from breadth signal
   // ("risk_on" / "neutral" / "risk_off"). Shadow / no scoring consumer.
   market_regime_state?: string | null;
+  // Proposal A — shrinkage composite diagnostics (0.10.37-phase8pilot, Rule 18
+  // observability-first, SHADOW / OBSERVABILITY-ONLY). Identity-at-launch: with
+  // SHRINKAGE_LAMBDA_PIN=1.0 and all pillars preliminary the blend returns w0 —
+  // composite is byte-identical. NEVER fed to scoring, vetoes, or rankings.
+  // Defense layer UNCHANGED at 36. (Timmermann 2006; no UI consumer yet.)
+  //
+  // `shrinkage_lambda` — schedule-derived λ = 1/(1 + n/τ) for the pillar with
+  // the most IC history. None when all pillars preliminary or monitor skipped.
+  shrinkage_lambda?: number | null;
+  // `shrinkage_lambda_applied` — λ actually applied (1.0 while the obs-first
+  // SHRINKAGE_LAMBDA_PIN holds; diverges from shrinkage_lambda once pin lifted).
+  // None when the shrinkage block was skipped or failed.
+  shrinkage_lambda_applied?: number | null;
+  // `ic_weight_by_pillar` — IC-implied weight vector w_IC before blending.
+  // Keys: all 8 active pillars. Values 0.0 for preliminary pillars;
+  // normalized to 1.0 over non-preliminary positive-IC pillars.
+  // None when the shrinkage block was skipped or failed.
+  ic_weight_by_pillar?: Record<string, number> | null;
+  // `shrinkage_blended_weight_by_pillar` — final blended weights passed to
+  // compute_composite. Byte-identity canary: while pinned must equal
+  // PHASE3_EFFECTIVE_WEIGHTS (dict form) within 1e-9 per pillar.
+  // None when the shrinkage block was skipped or failed.
+  shrinkage_blended_weight_by_pillar?: Record<string, number> | null;
+  // `n_preliminary_pillars` — count of active pillars below the 12-month
+  // IC-history gate (ICDecayReport.preliminary == True). Zero means all
+  // active pillars have crossed the MIN_HISTORY_MONTHS floor. None when skipped.
+  n_preliminary_pillars?: number | null;
+  // `shrinkage_weights_degenerate` — True when all pillars are preliminary OR
+  // all IC <= 0 (Σraw == 0) → identity fallback to w0. Expected True at launch.
+  // None when the shrinkage block was skipped or failed.
+  shrinkage_weights_degenerate?: boolean | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

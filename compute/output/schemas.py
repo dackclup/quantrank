@@ -880,6 +880,57 @@ class Metadata(BaseModel):
     # Defense layer UNCHANGED at 36.
     market_breadth_above_200dma_pct: float | None = None
     market_regime_state: str | None = None
+    # Proposal A — shrinkage composite diagnostics (Rule 18 observability-first,
+    # 0.10.37-phase8pilot).
+    #
+    # Identity-at-launch safety property: with ``SHRINKAGE_LAMBDA_PIN = 1.0``
+    # AND every pillar currently preliminary (thin IC history), the blend
+    # returns ``w0`` via two independent guards — composite is byte-identical.
+    # These 6 fields are SHADOW / OBSERVABILITY-ONLY; they feed ONLY this
+    # Metadata constructor.  NEVER read by scoring, composite, pillar
+    # computation, veto/flag logic, fair-price, or select_picks.
+    # Defense layer UNCHANGED at 36.  Rankings/scores/flags byte-identical.
+    #
+    # ``shrinkage_lambda`` — the schedule-derived λ = 1/(1 + n/τ) for the
+    # pillar with the MOST IC history (n = max n_observations across active
+    # non-preliminary pillars).  ``None`` when all pillars are preliminary
+    # or the monitor was skipped.
+    shrinkage_lambda: float | None = None
+    # ``shrinkage_lambda_applied`` — λ actually applied to each pillar blend.
+    # While ``SHRINKAGE_LAMBDA_PIN = 1.0`` (identity mode), this equals 1.0
+    # for every pillar; it will differ from ``shrinkage_lambda`` once the pin
+    # is lifted.  ``None`` when the shrinkage block was skipped or failed.
+    shrinkage_lambda_applied: float | None = None
+    # ``ic_weight_by_pillar`` — the IC-implied weight vector ``w_IC`` before
+    # blending.  Per-pillar dict mapping pillar name to the IC-derived weight.
+    # Keys: all 8 active pillars.  Values are 0.0 for preliminary pillars (no
+    # usable IC); normalized to 1.0 over non-preliminary positive-IC pillars.
+    # When ``shrinkage_weights_degenerate=True``, this equals ``w0``.
+    # ``None`` when the shrinkage block was skipped or failed.
+    ic_weight_by_pillar: dict[str, float] | None = None
+    # ``shrinkage_blended_weight_by_pillar`` — the final blended weight vector
+    # passed to ``compute_composite``.  The byte-identity canary: while
+    # ``SHRINKAGE_LAMBDA_PIN = 1.0`` this must equal
+    # ``PHASE3_EFFECTIVE_WEIGHTS`` (dict form) exactly within 1e-9 per pillar.
+    # On the first sp1500 cron where this deviates, the methodology-scientist
+    # gate (A3-i/A3-ii) must clear before the deviation can be intentional.
+    # ``None`` when the shrinkage block was skipped or failed.
+    shrinkage_blended_weight_by_pillar: dict[str, float] | None = None
+    # ``n_preliminary_pillars`` — count of active pillars currently in the
+    # ``preliminary_mask`` (ICDecayReport.preliminary == True), i.e., fewer
+    # than MIN_HISTORY_MONTHS (12) monthly IC observations.  While this equals
+    # len(ACTIVE_PILLARS_PHASE3) (all 8 active pillars), the blend is
+    # fully pinned to ``w0`` regardless of the lambda_pin setting.  Zero means
+    # all active pillars have crossed the MIN_HISTORY_MONTHS floor (but the
+    # pin may still be 1.0 pending A3-i/A3-ii).  ``None`` when skipped/failed.
+    n_preliminary_pillars: int | None = None
+    # ``shrinkage_weights_degenerate`` — True when the IC-implied weight
+    # vector could not be meaningfully constructed (all non-preliminary IC
+    # was zero or negative; Σraw == 0).  In this state ``ic_weight_by_pillar``
+    # equals ``w0`` and the blend returns ``w0``.  Expected value at launch:
+    # True (all pillars preliminary → Σraw = 0 → degenerate).  ``None`` when
+    # the shrinkage block was skipped or failed.
+    shrinkage_weights_degenerate: bool | None = None
 
 
 class RawMetrics(BaseModel):

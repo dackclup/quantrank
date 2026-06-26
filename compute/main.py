@@ -1658,7 +1658,149 @@ def run_weekly_compute() -> int:
     # PR 3d Defense #9: ``non_reliance_by_ticker`` injects the pre-computed
     # 4.02 veto results from Step 4b above so compute_risk_flags doesn't
     # re-issue the EDGAR fetch.
-    composite = compute_composite(pillar_df)
+    #
+    # Proposal A — shrinkage composite (Rule 18 observability-first).
+    # HOISTED here (before compute_composite) so blended_w exists at call time.
+    # PIT-clean: walk_ic_history reads COMMITTED PRIOR rankings only — the
+    # current run is not committed yet, so there is zero look-ahead.
+    # Guarded by QR_SKIP_DECAY_MONITOR (reuses the IC-history guard — both
+    # are IC-history machinery; no separate env-var needed per the co-location
+    # decision 2026-06-24 that also applies to Proposal F).
+    # C5: try/except → degrade-to-empty → degenerate=True → blended_w=w0 →
+    # composite byte-identical.  NEVER raises; cron never blocked.
+    # Identity-at-launch: SHRINKAGE_LAMBDA_PIN=1.0 + all pillars preliminary
+    # → blended_w == PHASE3_EFFECTIVE_WEIGHTS → composite byte-identical.
+    _shrinkage_skip = (
+        os.environ.get("QR_SKIP_DECAY_MONITOR", "").lower() in ("1", "true", "yes")
+    )
+    # Diagnostics for Metadata (6 Proposal-A fields).
+    _shrinkage_lambda: float | None = None
+    _shrinkage_lambda_applied: float | None = None
+    _ic_weight_by_pillar: dict[str, float] | None = None
+    _shrinkage_blended_weight_by_pillar: dict[str, float] | None = None
+    _n_preliminary_pillars: int | None = None
+    _shrinkage_weights_degenerate: bool | None = None
+    # The shared _ic_walk_result is consumed here AND by the decay/half-life
+    # monitors below (Proposal A #605 consolidation — ONE git-walk, not two).
+    _ic_walk_result = None
+
+    if not _shrinkage_skip:
+        try:
+            from compute.scoring.composite import (
+                ACTIVE_PILLARS_PHASE3 as _SHRINK_ACTIVE_PILLARS,
+            )
+            from compute.scoring.composite import (
+                PHASE3_EFFECTIVE_WEIGHTS as _SHRINK_W0,
+            )
+            from compute.scoring.shrinkage import (
+                SHRINKAGE_LAMBDA_PIN as _SHRINK_PIN,
+            )
+            from compute.scoring.shrinkage import (
+                SHRINKAGE_TAU_MONTHS as _SHRINK_TAU,
+            )
+            from compute.scoring.shrinkage import (
+                blend_weights as _blend_weights,
+            )
+            from compute.scoring.shrinkage import (
+                build_ic_weights as _build_ic_weights,
+            )
+            from compute.scoring.shrinkage import (
+                compute_shrinkage_lambda as _compute_shrinkage_lambda,
+            )
+            from compute.validation.ic_decay import (
+                IC_HORIZON_MONTHS as _SHRINK_HORIZON,
+            )
+            from compute.validation.ic_decay import (
+                IC_LOOKBACK_MONTHS as _SHRINK_LOOKBACK,
+            )
+            from compute.validation.ic_decay import (
+                build_decay_report as _shrink_build_decay,
+            )
+            from compute.validation.ic_decay import (
+                walk_ic_history as _walk_ic_history,
+            )
+
+            # ONE git-walk (#605 consolidation).
+            _ic_walk_result = _walk_ic_history(
+                horizon_months=_SHRINK_HORIZON,
+                lookback_months=_SHRINK_LOOKBACK,
+            )
+
+            # Build per-pillar decay reports using the injected panels
+            # (no second git-walk).
+            _shrink_decay_reports, _, _shrink_n_dates = _shrink_build_decay(
+                panels=_ic_walk_result.panels,
+                entries=_ic_walk_result.entries,
+                n_dates_with_ic=_ic_walk_result.n_dates_with_ic,
+            )
+
+            # Compute IC-implied weights (reads ICDecayReport.preliminary — C1).
+            _w_ic, _prelim_mask, _degenerate = _build_ic_weights(
+                _shrink_decay_reports,
+                _SHRINK_W0,
+                _SHRINK_ACTIVE_PILLARS,
+            )
+
+            # Schedule-derived lambda (most-history pillar proxy).
+            _max_n = max(
+                (r.n_observations for r in _shrink_decay_reports
+                 if r.pillar in _SHRINK_ACTIVE_PILLARS),
+                default=0,
+            )
+            _lam = _compute_shrinkage_lambda(_max_n, tau=_SHRINK_TAU)
+
+            # Blend (SHRINKAGE_LAMBDA_PIN=1.0 → blended_w == w0 at launch).
+            _blended_w = _blend_weights(
+                _SHRINK_W0,
+                _w_ic,
+                _lam,
+                _prelim_mask,
+                lambda_pin=_SHRINK_PIN,
+            )
+
+            # C-canary: assert renorm held before handing to compute_composite.
+            _blended_sum = sum(_blended_w.values())
+            if abs(_blended_sum - 1.0) > 1e-9:
+                raise ValueError(
+                    f"Proposal A: blended weight sum={_blended_sum:.15f} "
+                    "deviates from 1.0 by > 1e-9 — aborting shrinkage; "
+                    "falling back to w0."
+                )
+
+            # Populate 6 Metadata diagnostics.
+            _shrinkage_lambda = _lam
+            _shrinkage_lambda_applied = (
+                float(_SHRINK_PIN) if _SHRINK_PIN is not None else _lam
+            )
+            _ic_weight_by_pillar = dict(_w_ic)
+            _shrinkage_blended_weight_by_pillar = dict(_blended_w)
+            _n_preliminary_pillars = len(_prelim_mask)
+            _shrinkage_weights_degenerate = bool(_degenerate)
+
+            logger.info(
+                "Proposal A shrinkage: lambda=%.4f applied=%.4f "
+                "preliminary=%d/%d degenerate=%s",
+                _lam,
+                _shrinkage_lambda_applied,
+                _n_preliminary_pillars,
+                len(_SHRINK_ACTIVE_PILLARS),
+                _degenerate,
+            )
+
+        except Exception as _shrink_exc:  # noqa: BLE001
+            logger.warning(
+                "Proposal A shrinkage failed (non-fatal — falling back to w0); "
+                "blended_w := PHASE3_EFFECTIVE_WEIGHTS.  Error: %s",
+                _shrink_exc,
+            )
+            _blended_w = None  # signal: use default below
+            _ic_walk_result = None  # decay/half-life monitors will self-walk
+
+    # Determine the weight vector for compute_composite.
+    # When shrinkage succeeded → use _blended_w (byte-identical to w0 while pinned).
+    # When shrinkage was skipped / failed → pass None (compute_composite defaults to w0).
+    _composite_weights = _blended_w if (not _shrinkage_skip and _blended_w is not None) else None
+    composite = compute_composite(pillar_df, weights=_composite_weights)
     sectors_dict = {t: inp.sector for t, inp in inputs.items()}
     non_reliance_by_ticker = {
         t: r.non_reliance_flag.fired
@@ -3365,6 +3507,12 @@ def run_weekly_compute() -> int:
     # frontend build always has the file. Wrapped in try/except so any
     # git/network/data failure NEVER blocks the cron; degrades to
     # decay_report_url=None. Skip-safe via QR_SKIP_DECAY_MONITOR=1.
+    #
+    # Proposal A #605 consolidation: reuses ``_ic_walk_result`` from the
+    # hoisted shrinkage block (ONE git-walk, not two).  When
+    # ``_ic_walk_result`` is None (shrinkage skipped or failed), the decay
+    # monitor self-walks via the injected-panels=None path (backward-compat,
+    # byte-identical to the pre-#605 behaviour).
     decay_report_url: str | None = None
     _decay_report_path = config.DATA_DIR / "decay_report.json"
     if os.environ.get("QR_SKIP_DECAY_MONITOR", "").lower() in ("1", "true", "yes"):
@@ -3383,7 +3531,17 @@ def run_weekly_compute() -> int:
                 emit_decay_report,
             )
 
-            _decay_reports, _decay_status, _decay_n_dates = build_decay_report()
+            # Reuse _ic_walk_result if available (#605 — no second git-walk).
+            if _ic_walk_result is not None:
+                _decay_reports, _decay_status, _decay_n_dates = build_decay_report(
+                    panels=_ic_walk_result.panels,
+                    entries=_ic_walk_result.entries,
+                    n_dates_with_ic=_ic_walk_result.n_dates_with_ic,
+                )
+            else:
+                # Self-walk fallback (shrinkage was skipped or failed).
+                _decay_reports, _decay_status, _decay_n_dates = build_decay_report()
+
             emit_decay_report(
                 _decay_reports,
                 _decay_report_path,
@@ -3421,18 +3579,16 @@ def run_weekly_compute() -> int:
     # On first cron with ~1 week of git IC history the expected outcome is
     # all ``None`` (preliminary=True for every pillar) — identical posture to
     # ``bonferroni_shadow_*`` / ``cross_source_corruption_*``.
+    #
+    # Proposal A #605 consolidation: reuses ``_ic_walk_result.panels`` so the
+    # duplicate git-walk (block-2 re-walk) is DELETED.  When _ic_walk_result
+    # is None, falls back to a standalone panel build from empty entries.
     pillar_ic_half_life_months: dict[str, float | None] | None = None
     pillar_ic_decay_fit_model: dict[str, str | None] | None = None
     if os.environ.get("QR_SKIP_DECAY_MONITOR", "").lower() not in ("1", "true", "yes"):
         try:
             from compute.validation.historical_ic import (
                 DEFAULT_PILLARS as _DEFAULT_PILLARS_HL,
-            )
-            from compute.validation.historical_ic import (
-                compute_historical_ic_report as _compute_ic_report_hl,
-            )
-            from compute.validation.ic_decay import (
-                IC_LOOKBACK_MONTHS as _IC_LOOKBACK_MONTHS_HL,
             )
             from compute.validation.ic_decay import (
                 build_pillar_half_lives,
@@ -3441,24 +3597,13 @@ def run_weekly_compute() -> int:
                 pillar_entries_to_monthly_panel as _panel_for_hl,
             )
 
-            _hl_end = datetime.now(UTC).date()
-            _hl_start = _hl_end - timedelta(days=int(_IC_LOOKBACK_MONTHS_HL * 30.5))
-            try:
-                _hl_ic_report = _compute_ic_report_hl(
-                    start_date=_hl_start,
-                    end_date=_hl_end,
-                    horizon_months=6,
-                    pillars=_DEFAULT_PILLARS_HL,
-                )
-                _hl_entries = _hl_ic_report.entries
-            except Exception as _hl_ic_exc:  # noqa: BLE001
-                logger.debug(
-                    "IC half-life: historical_ic walk failed, degrading to empty: %s",
-                    _hl_ic_exc,
-                )
-                _hl_entries = []
+            # Reuse _ic_walk_result panels (#605 — block-2 re-walk deleted).
+            if _ic_walk_result is not None:
+                _hl_panels = _ic_walk_result.panels
+            else:
+                # Fallback: build from empty (shrinkage was skipped or failed).
+                _hl_panels = _panel_for_hl([])
 
-            _hl_panels = _panel_for_hl(_hl_entries)
             _hl_results = build_pillar_half_lives(_hl_panels)
             # Surface results: per-pillar half-life + winning model.
             # Missing pillars (no history at all) map to None.
@@ -3795,6 +3940,18 @@ def run_weekly_compute() -> int:
         # Rejection-as-tilt: Welch-Goyal 2008 *RFS* 21(4) — no tilt, ever.
         market_breadth_above_200dma_pct=market_breadth_above_200dma_pct,
         market_regime_state=market_regime_state,
+        # Proposal A — shrinkage composite diagnostics (0.10.37-phase8pilot,
+        # Rule 18 observability-first).
+        # SHADOW / OBSERVABILITY-ONLY — live scores, flags, rankings are
+        # byte-identical (SHRINKAGE_LAMBDA_PIN=1.0 + all pillars preliminary
+        # → blended_w == PHASE3_EFFECTIVE_WEIGHTS at launch).
+        # Defense layer UNCHANGED at 36.
+        shrinkage_lambda=_shrinkage_lambda,
+        shrinkage_lambda_applied=_shrinkage_lambda_applied,
+        ic_weight_by_pillar=_ic_weight_by_pillar,
+        shrinkage_blended_weight_by_pillar=_shrinkage_blended_weight_by_pillar,
+        n_preliminary_pillars=_n_preliminary_pillars,
+        shrinkage_weights_degenerate=_shrinkage_weights_degenerate,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

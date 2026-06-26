@@ -242,6 +242,11 @@
       "required": true,
       "default": "<required>"
     },
+    "ic_weight_by_pillar": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
     "insider_sell_cluster_firing_count": {
       "type": "int | None",
       "required": false,
@@ -313,6 +318,11 @@
       "default": null
     },
     "multi_class_per_class_override_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "n_preliminary_pillars": {
       "type": "int | None",
       "required": false,
       "default": null
@@ -414,6 +424,26 @@
     },
     "shares_fallback_triggered_count": {
       "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "shrinkage_blended_weight_by_pillar": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "shrinkage_lambda": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "shrinkage_lambda_applied": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "shrinkage_weights_degenerate": {
+      "type": "bool | None",
       "required": false,
       "default": null
     },
