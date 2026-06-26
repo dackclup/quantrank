@@ -32,8 +32,11 @@ displayed — it exists only to close the net identity.
 
 Three new diagnostic counters flow into ``payload["meta"]`` via
 ``reconciliation_errors``:
-  - ``position_return_reconciliation_max_abs_error``:  |Σ C_i − R^g_port|
-  - ``position_return_cost_line_residual``:           |Σ C^n_i + C_cost − R^n_port|
+  - ``position_return_reconciliation_max_abs_error``:
+        max(|Σ_t (k_t/K)·R^g_t − R^g_port|,  max_t |Σ_i w_{i,t}·(ρ_{i,t}−1) − R^g_t|)
+        Computed directly from SubPeriod records (NOT from the flat position_returns
+        map, which covers only current/recently-sold tickers).
+  - ``position_return_cost_line_residual``:           |R^g_port + C_cost − R^n_port|
   - ``carino_clamp_count``
 
 PR-2a extensions (unchanged):
@@ -1099,6 +1102,71 @@ def compute_position_returns_per_quarter(
     return results
 
 
+def compute_window_contributions(
+    sub_periods: list[SubPeriod],
+    kt_over_K: list[float],
+) -> dict[int, dict[str, float]]:
+    """Compute per-window Carino contributions for every ticker across all sub-periods.
+
+    This is the per-window primitive consumed by the PR-2b display layer.  Each
+    value ``result[t][ticker]`` is the Carino-weighted contribution of ``ticker``
+    in sub-period ``t``:
+
+        c_{i,t} = (k_t / K) · w_{i,t} · (ρ_{i,t} − 1)
+
+    Summing over all windows gives the LIFETIME contribution from
+    ``_compute_contribution_from_sub_periods``:
+
+        C_i = Σ_t result[t][ticker]     (== contrib_nav_pts / 100 for that ticker)
+
+    Summing over all tickers for a fixed window gives the Carino-weighted
+    single-window contribution (fraction of R^g_port attributable to that window):
+
+        Σ_i result[t][ticker] = (k_t / K) · R^g_t
+
+    Parameters
+    ----------
+    sub_periods:
+        Sub-period records from ``build_portfolio_nav(decompose=True)``.
+        Must be non-empty and aligned with ``kt_over_K``.
+    kt_over_K:
+        Per-sub-period Carino linking ratio ``k_t / K`` from
+        ``_build_carino_grid``.  Must have the same length as ``sub_periods``.
+
+    Returns
+    -------
+    dict[int, dict[str, float]]
+        ``{window_index: {ticker: contribution_fraction}}``.
+        Tickers with zero weight in a window are omitted from that window's dict.
+        Windows where a price-relative is missing produce ``None`` for that ticker
+        (never raise).  An empty ``sub_periods`` returns ``{}``.
+
+    Notes
+    -----
+    Rule 18 (observability-before-wiring): this function is emitted as a
+    diagnostic primitive for PR-2b display; it does NOT feed production
+    scoring, vetoes, or the composite.
+    """
+    if not sub_periods:
+        return {}
+
+    result: dict[int, dict[str, float]] = {}
+    for t, sp in enumerate(sub_periods):
+        window_contribs: dict[str, float] = {}
+        for ticker, w in sp.start_weights_gross.items():
+            if w == 0.0:
+                continue
+            rho = sp.price_relatives.get(ticker)
+            if rho is None:
+                # Missing price-relative: emit None, never raise (graceful degradation).
+                window_contribs[ticker] = None  # type: ignore[assignment]
+                continue
+            r_pos_t = rho - 1.0
+            window_contribs[ticker] = kt_over_K[t] * w * r_pos_t
+        result[t] = window_contribs
+    return result
+
+
 def reconciliation_errors(
     position_returns: dict[str, PositionReturn],
     portfolio_nav_net: list[float | None],
@@ -1133,12 +1201,15 @@ def reconciliation_errors(
     -------
     (gross_identity_error, cost_line_residual, pp_twr_error, carino_clamp_count)
         gross_identity_error:
-            |Σ_i contrib_nav_pts_i/100 − R^g_port| — how close the sum of all
-            Carino contributions is to the portfolio gross return (expected ~1e-11).
-            None when ``sub_periods`` is None or no contrib_nav_pts exist.
+            ``max(|Σ_t (k_t/K)·R^g_t − R^g_port|, max_t |Σ_i w_{i,t}·(ρ_{i,t}−1) − R^g_t|)``
+            — the stricter of the full-period Carino chain error and the worst
+            per-window BHB primitive error (expected ~1e-11).  Computed directly
+            from ``sub_periods`` — NOT from the flat ``position_returns`` map
+            (which covers only current/recently-sold tickers, not the full
+            attribution universe).  None when ``sub_periods`` is None.
         cost_line_residual:
-            |Σ_i contrib_nav_pts_i/100 + C_cost − R^n_port| — how close the
-            net identity closes (expected ~1e-11 with un-rounded δ_t).
+            |R^g_port + C_cost − R^n_port| — how close the net identity closes
+            (expected ~1e-11 with un-rounded δ_t; C_cost = Σ_t (k_t/K)·(−δ_t)).
             None when ``sub_periods`` is None or net NAV unavailable.
         pp_twr_error:
             max |engine TWR − client-side point-to-point return| in percentage
@@ -1164,24 +1235,54 @@ def reconciliation_errors(
                 gross_product *= 1.0 + sp.gross_sub_return
             R_port_gross = gross_product - 1.0
 
-            # Sum of all position contributions (in fraction, not percent).
-            contrib_sum = sum(
-                pr.contrib_nav_pts / 100.0
-                for pr in position_returns.values()
-                if pr.contrib_nav_pts is not None
+            # --- GROSS identity: SubPeriod-based (fix for PR-2c reconciliation bug) ---
+            # The old code summed contrib_nav_pts from _pos_returns (flat current-basket
+            # only, ~10 tickers) and compared against R^g_port (+832% full 10y).
+            # That pairing is incoherent: the flat map covers ONLY current/recently-sold
+            # tickers, NOT the full attribution universe across all rebalance windows.
+            #
+            # Correct check: verify both the per-window BHB identity and the full-period
+            # Carino chain DIRECTLY from SubPeriod records (which already hold all
+            # position weights and price relatives for every window):
+            #
+            #   Per-window BHB:  Σ_i w_{i,t}·(ρ_{i,t}−1) = R^g_t    (engine invariant)
+            #   Carino chain:    Σ_t (k_t/K)·R^g_t        = R^g_port  (~1e-11)
+            #
+            # Both checks use only sub_periods — no position_returns needed for GROSS.
+
+            # 1. Per-window BHB primitive: max_t |Σ_i w·(ρ−1) − R^g_t|
+            max_window_bhb_err: float = 0.0
+            for sp in sub_periods:
+                bhb_sum = sum(
+                    w * (sp.price_relatives.get(ticker, 1.0) - 1.0)
+                    for ticker, w in sp.start_weights_gross.items()
+                )
+                window_err = abs(bhb_sum - sp.gross_sub_return)
+                if window_err > max_window_bhb_err:
+                    max_window_bhb_err = window_err
+
+            # 2. Full-period Carino chain: |Σ_t (k_t/K)·R^g_t − R^g_port|
+            carino_chain_sum = sum(
+                kt_over_K[t] * sp.gross_sub_return
+                for t, sp in enumerate(sub_periods)
             )
-            gross_identity_error = abs(contrib_sum - R_port_gross)
+            chain_err = abs(carino_chain_sum - R_port_gross)
+
+            gross_identity_error = max(chain_err, max_window_bhb_err)
 
             # --- Cost line residual (NET identity) ---
-            # C_cost = Σ_t (k_t/K) × (−δ_t)
+            # Σ_i C_i = R^g_port exactly (Carino 1999 §3).  The net identity is:
+            #   R^g_port + C_cost = R^n_port
+            # where C_cost = Σ_t (k_t/K)·(−δ_t) (Menchero 2000 cost-drag line).
+            # Using R^g_port (from SubPeriods) avoids the flat-position-map subset
+            # problem that afflicted the old contrib_sum path.
             C_cost = _cost_line_contribution(sub_periods, kt_over_K)
             # R^n_port from geometric linking of net sub-returns.
             net_product = 1.0
             for sp in sub_periods:
                 net_product *= 1.0 + sp.net_sub_return
             R_port_net = net_product - 1.0
-            net_contrib_sum = contrib_sum + C_cost
-            cost_line_residual = abs(net_contrib_sum - R_port_net)
+            cost_line_residual = abs(R_port_gross + C_cost - R_port_net)
 
         except Exception:  # noqa: BLE001
             logger.warning(
