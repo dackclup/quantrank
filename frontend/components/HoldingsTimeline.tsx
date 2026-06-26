@@ -256,7 +256,7 @@ export function HoldingsTimeline({
                 id={drawerId}
                 role="region"
                 aria-labelledby={headerId}
-                className={`grid transition-[grid-template-rows] duration-200 ease-in-out motion-reduce:duration-0${isExpanded ? ' grid-rows-[1fr]' : ' grid-rows-[0fr]'}`}
+                className={`grid transition-[grid-template-rows] duration-200 ease-in-out motion-reduce:transition-none${isExpanded ? ' grid-rows-[1fr]' : ' grid-rows-[0fr]'}`}
               >
                 <div className="overflow-hidden">
                   <QuarterDrawer
@@ -498,7 +498,7 @@ function MwrReturnCell({
   }
 
   // Whether to show the TWR shadow: only when both are present AND they differ
-  // by >= 0.1pp (avoids noisy "Your return: +12.3% / Stock: +12.3%" duplicate).
+  // by >= 0.05pp (avoids noisy "Your return: +12.3% / Stock: +12.3%" duplicate).
   const showTwr = twr !== null && mwr !== null && Math.abs(twr - mwr) >= 0.05;
 
   return (

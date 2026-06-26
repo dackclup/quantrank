@@ -593,7 +593,8 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span className="hidden sm:block">Sector</span>
           <span
             className="text-right"
-            title={hasMwr ? 'Money-weighted return (MWR) — accounts for rebalance timing. Stock price return (TWR) shown below when it differs by ≥0.1pp.' : undefined}
+            title={hasMwr ? 'Money-weighted return (MWR) — accounts for rebalance timing. Stock price return (TWR) shown below when it differs by ≥0.05pp.' : undefined}
+            aria-label={hasMwr ? 'Your return (money-weighted). See tooltip for explanation.' : undefined}
           >
             {hasMwr ? 'Your return' : 'Return'}
           </span>
@@ -646,10 +647,13 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 {/* Return cell — engine MWR (money-weighted return) since entry.
                     data.mwrByTicker populated from top-level position_returns (PR-1 #614).
                     Pre-engine artifacts (empty mwrByTicker) render '—' gracefully.
-                    TWR shadow shown when |twr_pct − mwr_pct| ≥ 0.1pp (i.e. rebalance
+                    TWR shadow shown when |twr_pct − mwr_pct| ≥ 0.05pp (i.e. rebalance
                     timing moved the needle) — labeled "Stock price return" to distinguish
                     from the MWR headline. partial_history flag maps to a "(partial)"
-                    affordance so the reader knows the return window is clipped. */}
+                    affordance so the reader knows the return window is clipped.
+                    The outer span carries aria-label so SR users hear the full
+                    MWR + TWR + partial context in one announcement; inner lines
+                    are aria-hidden to avoid double-announcement. */}
                 {(() => {
                   const m = mwrForTicker(h.ticker);
                   const mwr = m?.mwr_pct ?? null;
@@ -658,12 +662,17 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   const sinceDate = m?.since_date ?? null;
                   const twrDiffers = mwr !== null && twr !== null && Math.abs(twr - mwr) >= 0.05;
                   return (
-                    <span className="text-right">
+                    <span
+                      className="text-right"
+                      aria-label={[
+                        mwr !== null ? `Your return ${pctStr(mwr)}` : 'Return unavailable',
+                        twrDiffers ? `Stock price return ${pctStr(twr)}` : '',
+                        partial && sinceDate ? `Partial return from ${sinceDate}` : '',
+                      ].filter(Boolean).join('; ')}
+                    >
                       <span
                         className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(mwr)}`}
-                        aria-label={partial && sinceDate
-                          ? `${pctStr(mwr)} — partial return from ${sinceDate}; full tenure began earlier`
-                          : undefined}
+                        aria-hidden="true"
                       >
                         {pctStr(mwr)}
                       </span>
@@ -732,7 +741,10 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               </span>
               {/* Return cell — engine MWR since entry through exit rebalance.
                   Sold rows: position_returns carries the final MWR once the position
-                  is closed (engine records it at rotation). Pre-engine → '—'. */}
+                  is closed (engine records it at rotation). Pre-engine → '—'.
+                  The outer span carries aria-label so SR users hear the full
+                  MWR + TWR + partial context in one announcement; inner lines
+                  are aria-hidden to avoid double-announcement. */}
               {(() => {
                 const m = mwrForTicker(s.ticker);
                 const mwr = m?.mwr_pct ?? null;
@@ -741,12 +753,17 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 const sinceDate = m?.since_date ?? null;
                 const twrDiffers = mwr !== null && twr !== null && Math.abs(twr - mwr) >= 0.05;
                 return (
-                  <span className="text-right">
+                  <span
+                    className="text-right"
+                    aria-label={[
+                      mwr !== null ? `Your return ${pctStr(mwr)}` : 'Return unavailable',
+                      twrDiffers ? `Stock price return ${pctStr(twr)}` : '',
+                      partial && sinceDate ? `Partial return from ${sinceDate}` : '',
+                    ].filter(Boolean).join('; ')}
+                  >
                     <span
                       className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(mwr)}`}
-                      aria-label={partial && sinceDate
-                        ? `${pctStr(mwr)} — partial return from ${sinceDate}; full tenure began earlier`
-                        : undefined}
+                      aria-hidden="true"
                     >
                       {pctStr(mwr)}
                     </span>
