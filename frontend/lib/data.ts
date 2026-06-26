@@ -318,6 +318,35 @@ export function getAiPickData(): AiPickData | null {
     for (const [t, w] of Object.entries(pw)) priorWeights[t] = w;
   }
 
+  // PR-2b MWR redesign — read the top-level `position_returns` map (PR-1 #614).
+  // This is the engine-computed MWR/TWR per ticker across the FULL backtest tenure.
+  // Shape: { TICKER: { mwr_pct, twr_pct, contrib_nav_pts, since_date,
+  //                    partial_history, legs_used } }
+  // Present on artifacts regenerated with #614 or later; empty map on legacy
+  // artifacts (falls back to entryCloses point-to-point in the render layer).
+  const rawMwr = (bt as unknown as {
+    position_returns?: Record<string, {
+      mwr_pct: number | null;
+      twr_pct: number | null;
+      contrib_nav_pts: number | null;
+      since_date: string | null;
+      partial_history: boolean;
+      legs_used: number | null;
+    }>;
+  }).position_returns ?? {};
+
+  const mwrByTicker: import('./types').AiPickData['mwrByTicker'] = {};
+  for (const [ticker, entry] of Object.entries(rawMwr)) {
+    mwrByTicker[ticker] = {
+      mwr_pct: entry.mwr_pct !== undefined ? entry.mwr_pct : null,
+      twr_pct: entry.twr_pct !== undefined ? entry.twr_pct : null,
+      contrib_nav_pts: entry.contrib_nav_pts !== undefined ? entry.contrib_nav_pts : null,
+      since_date: entry.since_date !== undefined ? entry.since_date : null,
+      partial_history: Boolean(entry.partial_history),
+      legs_used: entry.legs_used !== undefined ? entry.legs_used : null,
+    };
+  }
+
   return {
     meta,
     dates: nav.dates,
@@ -348,20 +377,86 @@ export function getAiPickData(): AiPickData | null {
     // of slicing holdings[:sliceCount]. Sectors are resolved from r.holdings.
     // `bandCarryNames` carries r.band_carry_names when present so the
     // timeline can tag carried tickers without re-inferring from scores.
-    timeline: rebalances.map((r) => ({
-      date: r.date,
-      holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
-      ...(typeof r.adaptive_count === 'number' ? { adaptiveCount: r.adaptive_count } : {}),
-      ...(typeof r.band_held_count === 'number' ? { bandHeldCount: r.band_held_count } : {}),
-      ...(Array.isArray(r.band_book) && r.band_book.length > 0
-        ? { bandBook: r.band_book as string[] }
-        : {}),
-      ...(Array.isArray(r.band_carry_names) && r.band_carry_names.length > 0
-        ? { bandCarryNames: r.band_carry_names as string[] }
-        : {}),
-    })),
+    //
+    // PR-2b: each timeline entry also carries:
+    //   mwrByTicker — per-quarter MWR/TWR from rebalances[i].position_returns
+    //                 (PR-2a #618). Absent on pre-#618 artifacts → '—' in drawer.
+    //   weightByTicker — per-ticker basket weight (0-1) for the drawer Weight column.
+    //                    Resolved from band_weights (STATE 1) or
+    //                    weights_by_count[String(adaptive_count)] (STATE 2 adaptive)
+    //                    or weights_by_count["1..N"] (slider legacy).
+    timeline: rebalances.map((r) => {
+      // Resolve per-quarter MWR from the raw rebalance (PR-2a #618 shape).
+      const rawPR = (r as unknown as {
+        position_returns?: Record<string, {
+          mwr_pct: number | null;
+          twr_pct: number | null;
+          contrib_nav_pts: number | null;
+          since_date: string | null;
+          partial_history: boolean;
+          legs_used: number | null;
+        }>;
+      }).position_returns;
+      const mwrForEntry: Record<string, import('./types').MwrPositionReturn> | undefined =
+        rawPR
+          ? Object.fromEntries(
+              Object.entries(rawPR).map(([t, e]) => [
+                t,
+                {
+                  mwr_pct: e.mwr_pct !== undefined ? e.mwr_pct : null,
+                  twr_pct: e.twr_pct !== undefined ? e.twr_pct : null,
+                  contrib_nav_pts: e.contrib_nav_pts !== undefined ? e.contrib_nav_pts : null,
+                  since_date: e.since_date !== undefined ? e.since_date : null,
+                  partial_history: Boolean(e.partial_history),
+                  legs_used: e.legs_used !== undefined ? e.legs_used : null,
+                },
+              ]),
+            )
+          : undefined;
+
+      // Resolve per-quarter weights: band_weights (STATE 1) else
+      // weights_by_count[String(adaptive_count)] (STATE 2) else
+      // weights_by_count for the largest available count key (slider legacy,
+      // best-effort only). Absent → weightByTicker is undefined → '—' in drawer.
+      let weightForEntry: Record<string, number | null> | undefined;
+      const rawR = r as unknown as {
+        band_weights?: Record<string, number>;
+        weights_by_count?: Record<string, Record<string, number>>;
+        adaptive_count?: number;
+      };
+      if (rawR.band_weights && Object.keys(rawR.band_weights).length > 0) {
+        weightForEntry = rawR.band_weights as Record<string, number>;
+      } else if (rawR.adaptive_count != null && rawR.weights_by_count) {
+        const wmap = rawR.weights_by_count[String(rawR.adaptive_count)];
+        if (wmap) weightForEntry = wmap as Record<string, number>;
+      } else if (rawR.weights_by_count) {
+        // Slider legacy: pick the largest count key available
+        const keys = Object.keys(rawR.weights_by_count).map(Number).filter(isFinite);
+        if (keys.length > 0) {
+          const maxKey = String(Math.max(...keys));
+          const wmap = rawR.weights_by_count[maxKey];
+          if (wmap) weightForEntry = wmap as Record<string, number>;
+        }
+      }
+
+      return {
+        date: r.date,
+        holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
+        ...(typeof r.adaptive_count === 'number' ? { adaptiveCount: r.adaptive_count } : {}),
+        ...(typeof r.band_held_count === 'number' ? { bandHeldCount: r.band_held_count } : {}),
+        ...(Array.isArray(r.band_book) && r.band_book.length > 0
+          ? { bandBook: r.band_book as string[] }
+          : {}),
+        ...(Array.isArray(r.band_carry_names) && r.band_carry_names.length > 0
+          ? { bandCarryNames: r.band_carry_names as string[] }
+          : {}),
+        ...(mwrForEntry !== undefined ? { mwrByTicker: mwrForEntry } : {}),
+        ...(weightForEntry !== undefined ? { weightByTicker: weightForEntry } : {}),
+      };
+    }),
     entryCloses,
     lastCloses,
+    mwrByTicker,
     latestScores,
     priorWeights,
     // Caption-branching fields — forwarded from meta so sub-components

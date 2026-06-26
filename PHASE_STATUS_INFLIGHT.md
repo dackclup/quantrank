@@ -7903,3 +7903,86 @@ is the strongest "automatic" the harness supports short of per-report (which
 was rejected on cost).
 
 **Gate**: `docs-reviewer` + `phase-coordinator` Mode B at Draft→Ready.
+
+---
+
+## PR-2b — feat(frontend): MWR/Carino return redesign — frontend unify (in flight, 2026-06-26)
+
+**Branch**: `claude/mwr-rotation-unify-pr2b`
+
+**Unifies** the user-facing return display onto the locked MWR headline. Surfaces PR-1
+(#614 MWR/TWR engine), PR-2a (#618 per-quarter) and PR-2c (#619 Carino) in the frontend.
+
+**Current-picks "Your return" column (AiPickAdaptiveBranch)**:
+- Replaced `adaptivePlSince` point-to-point useMemo (streak walk over
+  `entryCloses`/`lastCloses`) with a lookup into `data.mwrByTicker[ticker]` from the
+  top-level `position_returns` (PR-1 #614). The column header changes from "Return" to
+  "Your return" when MWR data is present (conditional on `hasMwr`); falls back to "Return"
+  with the old description text for pre-#614 artifacts.
+- TWR ("Stock price return") shown as a muted secondary line under the MWR headline when
+  `|twr_pct − mwr_pct| ≥ 0.05pp` — suppressed when the two are essentially identical.
+- Sold rows use the same MWR lookup (engine records final MWR at rotation). Graceful
+  degradation: empty `mwrByTicker` → all cells render '—' (pre-engine artifact path).
+- `adaptivePlSince` useMemo completely removed from the adaptive branch. `entryCloses`/
+  `lastCloses` are still consumed by the legacy slider branch (`AiPickSliderBranch`),
+  which is unchanged.
+
+**Rotation-history per-quarter drawers (HoldingsTimeline.tsx)**:
+- New accordion-based rotation history: each quarter row is a `<button>` that reveals a
+  slide-down `QuarterDrawer` detail table (# · Status · Ticker · Sector · Your return ·
+  Weight). CSS `grid-rows: 0fr → 1fr` transition for height-correct reveal.
+- Return column = `entry.mwrByTicker[ticker].mwr_pct` (per-rebalance MWR from
+  `rebalances[i].position_returns`, PR-2a #618). Pre-PR-2a artifacts render Return as
+  '—' with a "pre-engine artifact" notice below the drawer.
+- TWR shadow ("Stock price return") shown smaller beneath MWR when they differ (same
+  `≥ 0.05pp` threshold). `partial_history=true` → "(partial)" affordance note.
+- Plain-text tickers in collapsed button (no `<a>` in `<button>` — invalid HTML per
+  WHATWG); clickable ticker links live in the expanded QuarterDrawer only.
+- `MwrReturnCell` component shared between held and sold rows within the drawer.
+- `aria-expanded` / `aria-controls` a11y pair on each button. `min-h-[44px]` touch
+  target. `motion-reduce:duration-0` on the grid-rows transition.
+
+**Shared helpers (`frontend/lib/portfolio-format.ts`)**:
+- Extracted `apportionWeightLabels` + `pctStr` + `toneClass` from `AiPickPortfolio.tsx`;
+  added `twrToneClass` (muted emerald-600/rose-600 vs headline emerald-700/rose-700).
+- Both `AiPickPortfolio.tsx` and `HoldingsTimeline.tsx` import from `portfolio-format.ts`.
+- Local duplicates in `AiPickPortfolio.tsx` removed.
+
+**Types / data pipeline**:
+- `frontend/lib/types.ts`: added `MwrPositionReturn` type; extended `AiPickTimelineEntry`
+  with `mwrByTicker?` + `weightByTicker?`; extended `BacktestRebalance` with
+  `position_returns?`; added `mwrByTicker: Record<string, MwrPositionReturn>` to
+  `AiPickData` (non-optional, may be empty `{}`).
+- `frontend/lib/data.ts`: reads top-level `position_returns` from `backtest_pit.json`
+  into `mwrByTicker`; maps per-rebalance `position_returns` into each `AiPickTimelineEntry`;
+  resolves `weightByTicker` from `band_weights` / `weights_by_count[adaptiveCount]` /
+  largest-count key fallback. Schema triple UNTOUCHED (view-model-only fields).
+
+**Rule-18 cron gate**: DRAFT only — flip-to-Ready waits on ≥ 1 cron landing the
+post-#619 per-quarter `position_returns` in `main`'s `backtest_pit.json`. Current
+artifact (`generated_utc: 2026-06-26T00:30:32Z`) has top-level `position_returns` (PR-1)
+but no per-rebalance `position_returns` (PR-2a not yet run). The UI gracefully degrades
+in that state: Current-picks shows MWR; QuarterDrawer Return shows '—'.
+
+**Per-window Carino CONTRIBUTION**: deferred to a future enhancement — v1 drawers show
+per-quarter MWR RETURN, not per-window NAV contribution. `compute_window_contributions`
+(PR-2c) exists but is not wired to the frontend yet.
+
+**Tests** (`frontend/lib/portfolio-format.test.ts`): 35 new vitest tests covering
+`apportionWeightLabels` (Hamilton apportionment, null handling, realistic 9-stock basket),
+`pctStr` (formatting, typographic minus, rounding), `toneClass`, `twrToneClass` (dark:
+pair invariant, muted-vs-headline structural check), and MWR feed integration scenarios
+(TWR shadow threshold, graceful degradation, partial_history).
+
+**Verify**: `schema_check` PASS · `tsc --noEmit` PASS · `next build` PASS · `vitest run`
+275/275 PASS.
+
+**A11y fixes (design-reviewer, 2026-06-26)**: (1) outer return-cell `<span>` in both held-row
+and sold-row IIFEs now carry `aria-label` composing MWR + TWR + partial context; inner child
+spans are `aria-hidden` — matches `MwrReturnCell` pattern already correct in
+`HoldingsTimeline.tsx`. (2) "Your return" column header span gains `aria-label` paired with
+existing `title=`. (3) Threshold copy aligned: "≥0.1pp" → "≥0.05pp" in header `title` text
+and inline comments (code + tests already at 0.05 — copy-only fix). (4) Drawer transition
+aligned: `motion-reduce:duration-0` → `motion-reduce:transition-none` for intra-component
+consistency with the chevron. Commit `4587c0fad`. `tsc` PASS · `next build` PASS · `vitest`
+275/275 PASS. Branch ready for PR flip-to-Ready (cron gate still applies).
