@@ -986,6 +986,10 @@ export type BacktestRebalance = {
   // the PREFIX holdings[:adaptive_count] with weights_by_count[String(adaptive_count)].
   // Present only when the artifact was generated with the adaptive rule.
   adaptive_count?: number;
+  // PR-2a (#618) + PR-2c (#619) per-quarter MWR/TWR position returns. Keyed by
+  // ticker; each value has {mwr_pct, twr_pct, contrib_nav_pts, since_date,
+  // partial_history, legs_used}. Absent on pre-#618 artifacts.
+  position_returns?: Record<string, MwrPositionReturn>;
   // V55 hysteresis hold-band (hold_band_min present in adaptive_rule) — the
   // ACTUAL book after the band is applied. NOT a prefix of `holdings`; includes
   // both new entries (composite >= composite_min) and carried names (composite
@@ -1131,6 +1135,25 @@ export type AiPickTimelineHolding = {
   sector: string;
 };
 
+// Per-holding MWR/TWR return from the engine (PR-2b MWR/Carino redesign).
+// Mirrors the `position_returns` dict shape in `backtest_pit.json`.
+// `mwr_pct` = money-weighted return (the locked Current-picks headline).
+// `twr_pct` = time-weighted / stock-price return (shadow, shown as tooltip).
+// `contrib_nav_pts` = lifetime contribution to NAV in portfolio points — null
+//   on per-quarter rebalance rows (not exported at that granularity yet).
+// `since_date` = earliest leg start date in the engine's measurement window.
+// `partial_history` = true when the price series was shorter than the full tenure.
+// `legs_used` = number of basket-legs used in the MWR calculation.
+// All fields optional so a partial / legacy artifact degrades to '—' display.
+export type MwrPositionReturn = {
+  mwr_pct: number | null;
+  twr_pct: number | null;
+  contrib_nav_pts: number | null;
+  since_date: string | null;
+  partial_history: boolean;
+  legs_used: number | null;
+};
+
 export type AiPickTimelineEntry = {
   date: string;
   holdings: AiPickTimelineHolding[];
@@ -1153,6 +1176,20 @@ export type AiPickTimelineEntry = {
   // re-inferring from scores. Absent on pre-band artifacts and on legs with no
   // carry names.
   bandCarryNames?: string[];
+  // PR-2b MWR redesign — per-ticker MWR/TWR from the engine for THIS rebalance's
+  // quarter (rebalances[i].position_returns). Present only when the artifact was
+  // generated with the per-quarter MWR engine (PR-2a #618 + PR-2c #619). Absent /
+  // undefined on pre-#618 artifacts → QuarterDrawer renders Return as '—'.
+  // The `weightByTicker` and `returnByTicker` from #612 are replaced by:
+  //   mwrByTicker[ticker].mwr_pct  → headline "Your return"
+  //   mwrByTicker[ticker].twr_pct  → shadow "Stock price return"
+  // Weight is still provided separately via weightByTicker (unchanged from #612).
+  mwrByTicker?: Record<string, MwrPositionReturn>;
+  // Per-ticker basket weight for this quarter (0-1 fractions; sum ≈ 1 over the
+  // held basket). Used for the Weight column in the QuarterDrawer detail table.
+  // Present when the rebalance carries weights_by_count[String(adaptiveCount)]
+  // or band_weights. Absent → Weight column shows '—'.
+  weightByTicker?: Record<string, number | null>;
 };
 
 // Adaptive-mode view model — present when the artifact carries nav.adaptive.
@@ -1222,15 +1259,26 @@ export type AiPickData = {
   // every quarterly rebalance (oldest → newest), trimmed to ticker + sector, for
   // the rotation-history timeline. The client slices each entry to [0, count) so
   // the timeline tracks the count slider, then diffs neighbours for entered /
-  // exited markers.
+  // exited markers. PR-2b: each entry now carries mwrByTicker + weightByTicker
+  // when the artifact includes per-quarter position_returns (PR-2a #618 / #619).
   timeline: AiPickTimelineEntry[];
   // Adjusted close at each rebalance date (index-aligned with `timeline`) for
-  // each CURRENTLY-held ticker, plus the latest close per ticker — lets the
-  // client show P/L since a holding's entry rebalance (streak start depends on
-  // the count slider) without shipping full per-ticker price series. null where
-  // the price-history file doesn't reach back that far.
+  // each CURRENTLY-held ticker, plus the latest close per ticker. Used by the
+  // legacy slider-branch point-to-point return. Still present for backward compat;
+  // the adaptive-branch Current-picks "Your return" now uses mwrByTicker instead
+  // (PR-2b). When the engine's MWR is available, entryCloses/lastCloses are only
+  // consumed by the slider branch.
   entryCloses: Record<string, (number | null)[]>;
   lastCloses: Record<string, number | null>;
+  // PR-2b MWR redesign — engine-computed per-ticker MWR/TWR for the CURRENT basket
+  // (top-level `position_returns` from backtest_pit.json). Keyed by ticker.
+  // Present when the artifact was generated with PR-1 (#614) or later.
+  // `mwr_pct` is the "Your return" headline; `twr_pct` is the "Stock price return"
+  // shadow. `contrib_nav_pts` is the lifetime NAV contribution (null here because
+  // per-quarter Carino contribution is not yet exported; see note in PR-2b body).
+  // Absent / empty on pre-#614 artifacts → Current-picks falls back to entryCloses
+  // point-to-point return (same as before PR-2b).
+  mwrByTicker: Record<string, MwrPositionReturn>;
   // Forwarded from BacktestMeta for caption branching — avoids passing the
   // full meta object into every sub-component (AnnualReturnsTable /
   // AiPickPortfolio captions only need these two fields).

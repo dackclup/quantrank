@@ -12,7 +12,8 @@ import { HoldingsTimeline } from './HoldingsTimeline';
 import { Chip } from './Chip';
 import { SectorChip } from './SectorChip';
 import { SegmentedSelector, type SegmentOption } from './SegmentedSelector';
-import type { AiPickData, AiPickTimelineEntry } from '@/lib/types';
+import { apportionWeightLabels, pctStr, toneClass, twrToneClass } from '@/lib/portfolio-format';
+import type { AiPickData, AiPickTimelineEntry, MwrPositionReturn } from '@/lib/types';
 
 const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
@@ -37,33 +38,6 @@ const CHART_BASE = 10_000;
 
 function isFinite_(v: number | null | undefined): v is number {
   return v !== null && v !== undefined && !Number.isNaN(v);
-}
-
-// Largest-remainder (Hamilton) apportionment so the DISPLAYED 1-decimal weight
-// percentages sum to exactly the basket total (100.0% for a normalized
-// inverse-vol book). Raw weights sum to 1.0, but independent toFixed(1) rounding
-// drifts the visible column to 99.9 / 100.1 / 100.2% — this removes that drift.
-// Non-finite weights render '—' and are excluded from the apportionment; the
-// target total honestly tracks the finite-weight sum (so a genuinely <100% book
-// would still show <100%, just without per-row rounding noise).
-function apportionWeightLabels(weights: (number | null | undefined)[]): string[] {
-  const labels = weights.map(() => '—');
-  const finiteIdx: number[] = [];
-  weights.forEach((w, i) => { if (isFinite_(w)) finiteIdx.push(i); });
-  if (finiteIdx.length === 0) return labels;
-  const sumFinite = finiteIdx.reduce((s, i) => s + (weights[i] as number), 0);
-  const target = Math.round(sumFinite * 1000);              // tenths of a percent (1000 = 100.0%)
-  const tenths = finiteIdx.map((i) => (weights[i] as number) * 1000);
-  const floors = tenths.map((t) => Math.floor(t));
-  const used = floors.reduce((s, f) => s + f, 0);
-  let remaining = Math.max(0, target - used);               // +0.1% units left to distribute
-  const order = floors
-    .map((_, k) => k)
-    .sort((a, b) => (tenths[b] - floors[b]) - (tenths[a] - floors[a])); // largest fractional remainder first
-  const add = floors.map(() => 0);
-  for (let k = 0; k < order.length && remaining > 0; k += 1) { add[order[k]] = 1; remaining -= 1; }
-  finiteIdx.forEach((i, k) => { labels[i] = `${((floors[k] + add[k]) / 10).toFixed(1)}%`; });
-  return labels;
 }
 
 function money$(v: number | null): string {
@@ -95,17 +69,6 @@ function startIndexForYears(dates: string[], years: number): number {
     if (dates[i] >= cutoff) return i;
   }
   return 0;
-}
-
-function pctStr(v: number | null): string {
-  if (v === null) return '—';
-  const sign = v >= 0 ? '+' : '−';
-  return `${sign}${Math.abs(v).toFixed(1)}%`;
-}
-
-function toneClass(v: number | null): string {
-  if (v === null) return 'text-slate-500 dark:text-slate-400';
-  return v >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
 }
 
 // ---------------------------------------------------------------------------
@@ -295,75 +258,16 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
     return soldTickers.map((ticker) => ({ ticker, sector: sectorByTicker[ticker] ?? '' }));
   }, [timeline, priorHeldSet, displayHoldings]);
 
-  // Per-holding total return since entry (for both held/new AND sold rows).
-  // Mirrors the slider branch's plSince logic but uses heldSetForEntry()
-  // for the adaptive membership test instead of count-slicing.
-  //
-  // Held/New: streak-start index is the earliest rebalance where the ticker
-  // was already in the basket; entry close = close at that rebalance;
-  // pct = (lastClose / entryClose - 1) * 100.
-  //
-  // Sold: streak-start index within the PRIOR basket membership;
-  // sellIdx = timeline.length - 1 (latest rebalance, the one it left);
-  // pct = (closeAtSell / entryClose - 1) * 100.
-  //
-  // History-cap: when entryCloses[t][streakStartIdx] is null (the holding's
-  // tenure predates the available price-history window — e.g. KLAC's streak
-  // starts at a 2020 rebalance but the history file starts 2021), we advance
-  // the entry index forward to the FIRST rebalance that carries a non-null
-  // close. pct is then the partial return since that capped date, not the full
-  // tenure. capped=true + sinceDate lets the render layer show an SR-accessible
-  // affordance so a sighted/screen-reader user understands the return is partial.
-  // Genuine no-data (no non-null close anywhere in the range) keeps pct=null.
-  const adaptivePlSince = useMemo((): Record<string, { pct: number | null; sinceDate: string | null; capped: boolean }> => {
-    const result: Record<string, { pct: number | null; sinceDate: string | null; capped: boolean }> = {};
+  // Engine MWR lookup helper.
+  // data.mwrByTicker is populated from backtest_pit.json top-level position_returns
+  // (PR-1 #614 / PR-2a #618). Pre-engine artifacts (no position_returns key) produce
+  // an empty map → all return cells gracefully render '—'.
+  // hasMwr drives whether the column header shows "Your return" vs "Return".
+  const hasMwr = Object.keys(data.mwrByTicker).length > 0;
 
-    // Held/New rows — current basket members
-    for (const h of weightSortedHoldings) {
-      const t = h.ticker;
-      // Walk back to streak start (earliest rebalance the ticker was already present)
-      let streakStart = timeline.length - 1;
-      while (streakStart > 0 && heldSetForEntry(timeline[streakStart - 1]).has(t)) streakStart -= 1;
-      // Advance forward past any null-close rebalances at the start of the window
-      let entryIdx = streakStart;
-      const endIdx = timeline.length - 1;
-      while (entryIdx < endIdx && (data.entryCloses[t]?.[entryIdx] ?? null) === null) entryIdx += 1;
-      const entry = data.entryCloses[t]?.[entryIdx] ?? null;
-      const lastC = data.lastCloses[t] ?? null;
-      const pct = entry !== null && lastC !== null && entry !== 0
-        ? (lastC / entry - 1) * 100
-        : null;
-      result[t] = {
-        pct,
-        sinceDate: entry !== null ? (timeline[entryIdx]?.date ?? null) : null,
-        capped: entryIdx > streakStart,
-      };
-    }
-
-    // Sold rows — rotated-out names (streak within the prior basket)
-    const sellIdx = timeline.length - 1;
-    for (const s of soldRows) {
-      const t = s.ticker;
-      // Walk back through the PRIOR basket to find the streak start
-      let streakStart = sellIdx;
-      while (streakStart > 0 && heldSetForEntry(timeline[streakStart - 1]).has(t)) streakStart -= 1;
-      // Advance forward past any null-close rebalances at the start of the window
-      let entryIdx = streakStart;
-      while (entryIdx < sellIdx && (data.entryCloses[t]?.[entryIdx] ?? null) === null) entryIdx += 1;
-      const entry = data.entryCloses[t]?.[entryIdx] ?? null;
-      const atSell = data.entryCloses[t]?.[sellIdx] ?? null;
-      const pct = entry !== null && atSell !== null && entry !== 0
-        ? (atSell / entry - 1) * 100
-        : null;
-      result[t] = {
-        pct,
-        sinceDate: entry !== null ? (timeline[entryIdx]?.date ?? null) : null,
-        capped: entryIdx > streakStart,
-      };
-    }
-
-    return result;
-  }, [timeline, weightSortedHoldings, soldRows, data.entryCloses, data.lastCloses]);
+  function mwrForTicker(ticker: string): MwrPositionReturn | null {
+    return data.mwrByTicker[ticker] ?? null;
+  }
 
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
   const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
@@ -671,7 +575,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="font-mono tabular-nums">{displayCount}</span>.
             </>
           )}
-          {' '}Return = total return since each holding entered the basket (sold names: through their exit rebalance).
+          {hasMwr
+            ? ' Your return = money-weighted return (MWR) since each holding entered the basket — accounts for the timing of rebalance adds and trims.'
+            : ' Return = total return since each holding entered the basket (sold names: through their exit rebalance).'}
         </p>
         {/* Grid header + rows share a common template:
             Mobile (5 tracks, sector hidden): [1.25rem auto 1fr 4.25rem 2.75rem]
@@ -685,7 +591,12 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span>Status</span>
           <span>Ticker</span>
           <span className="hidden sm:block">Sector</span>
-          <span className="text-right">Return</span>
+          <span
+            className="text-right"
+            title={hasMwr ? 'Money-weighted return (MWR) — accounts for rebalance timing. Stock price return (TWR) shown below when it differs by ≥0.1pp.' : undefined}
+          >
+            {hasMwr ? 'Your return' : 'Return'}
+          </span>
           <span className="text-right">Weight</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -732,26 +643,38 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="hidden sm:block">
                   <SectorChip sector={h.sector} />
                 </span>
-                {/* Return cell — total return since entry (entry→today).
-                    Uses adaptivePlSince, precomputed per-ticker via heldSetForEntry
-                    streak walk. font-semibold matches the slider branch's Return cell.
-                    When capped=true the holding's streak predates the price-history
-                    window (e.g. KLAC 2020 entry / history starts 2021). The aria-label
-                    exposes this to screen readers; the "since YYYY" caption gives a
-                    visual affordance without relying on color alone (SKILL.md Rule 10). */}
+                {/* Return cell — engine MWR (money-weighted return) since entry.
+                    data.mwrByTicker populated from top-level position_returns (PR-1 #614).
+                    Pre-engine artifacts (empty mwrByTicker) render '—' gracefully.
+                    TWR shadow shown when |twr_pct − mwr_pct| ≥ 0.1pp (i.e. rebalance
+                    timing moved the needle) — labeled "Stock price return" to distinguish
+                    from the MWR headline. partial_history flag maps to a "(partial)"
+                    affordance so the reader knows the return window is clipped. */}
                 {(() => {
-                  const pl = adaptivePlSince[h.ticker] ?? { pct: null, sinceDate: null, capped: false };
+                  const m = mwrForTicker(h.ticker);
+                  const mwr = m?.mwr_pct ?? null;
+                  const twr = m?.twr_pct ?? null;
+                  const partial = m?.partial_history ?? false;
+                  const sinceDate = m?.since_date ?? null;
+                  const twrDiffers = mwr !== null && twr !== null && Math.abs(twr - mwr) >= 0.05;
                   return (
-                    <span
-                      className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}
-                      aria-label={pl.capped && pl.sinceDate
-                        ? `${pctStr(pl.pct)} — return measured from ${pl.sinceDate}, the start of available price history; the holding's full tenure began earlier`
-                        : undefined}
-                    >
-                      {pctStr(pl.pct)}
-                      {pl.capped && pl.sinceDate && (
+                    <span className="text-right">
+                      <span
+                        className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(mwr)}`}
+                        aria-label={partial && sinceDate
+                          ? `${pctStr(mwr)} — partial return from ${sinceDate}; full tenure began earlier`
+                          : undefined}
+                      >
+                        {pctStr(mwr)}
+                      </span>
+                      {twrDiffers && (
+                        <span className={`block font-mono text-[10px] font-normal tabular-nums ${twrToneClass(twr)}`} aria-hidden="true" title="Stock price return (TWR)">
+                          {pctStr(twr)} price
+                        </span>
+                      )}
+                      {partial && sinceDate && (
                         <span className="block font-mono text-[10px] font-normal tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">
-                          since {pl.sinceDate.slice(0, 7)}
+                          since {sinceDate.slice(0, 7)}
                         </span>
                       )}
                     </span>
@@ -807,25 +730,34 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="hidden sm:block">
                 {s.sector ? <SectorChip sector={s.sector} /> : null}
               </span>
-              {/* Return cell — total return from entry → sell rebalance (entry→exit).
-                  Uses adaptivePlSince, computed via the streak-within-prior-basket
-                  walk in the useMemo above. Full emerald/rose tone so the return is
-                  the row's headline even though ticker/sector stay muted.
-                  capped=true means the streak predates the price-history window;
-                  aria-label exposes partial-return context to screen readers. */}
+              {/* Return cell — engine MWR since entry through exit rebalance.
+                  Sold rows: position_returns carries the final MWR once the position
+                  is closed (engine records it at rotation). Pre-engine → '—'. */}
               {(() => {
-                const pl = adaptivePlSince[s.ticker] ?? { pct: null, sinceDate: null, capped: false };
+                const m = mwrForTicker(s.ticker);
+                const mwr = m?.mwr_pct ?? null;
+                const twr = m?.twr_pct ?? null;
+                const partial = m?.partial_history ?? false;
+                const sinceDate = m?.since_date ?? null;
+                const twrDiffers = mwr !== null && twr !== null && Math.abs(twr - mwr) >= 0.05;
                 return (
-                  <span
-                    className={`text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}
-                    aria-label={pl.capped && pl.sinceDate
-                      ? `${pctStr(pl.pct)} — return measured from ${pl.sinceDate}, the start of available price history; the holding's full tenure began earlier`
-                      : undefined}
-                  >
-                    {pctStr(pl.pct)}
-                    {pl.capped && pl.sinceDate && (
+                  <span className="text-right">
+                    <span
+                      className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(mwr)}`}
+                      aria-label={partial && sinceDate
+                        ? `${pctStr(mwr)} — partial return from ${sinceDate}; full tenure began earlier`
+                        : undefined}
+                    >
+                      {pctStr(mwr)}
+                    </span>
+                    {twrDiffers && (
+                      <span className={`block font-mono text-[10px] font-normal tabular-nums ${twrToneClass(twr)}`} aria-hidden="true" title="Stock price return (TWR)">
+                        {pctStr(twr)} price
+                      </span>
+                    )}
+                    {partial && sinceDate && (
                       <span className="block font-mono text-[10px] font-normal tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">
-                        since {pl.sinceDate.slice(0, 7)}
+                        since {sinceDate.slice(0, 7)}
                       </span>
                     )}
                   </span>
