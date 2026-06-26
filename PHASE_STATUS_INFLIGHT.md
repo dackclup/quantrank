@@ -7807,3 +7807,51 @@ full offline suite 3078 PASS / 10 SKIP (pre-existing osap/ipca/qlib/shallow-clon
 - Hypothesis Dirichlet property: random Dirichlet-weights + random price-relatives →
   `gross_identity_error < 1e-9` (replaces the 3-ticker deterministic fixture for
   property-based coverage; `deadline=None` on slow CI).
+
+---
+
+## agents — new `agent-output-verifier` cross-cutting fact-checker (in flight, 2026-06-26)
+
+**Branch**: `claude/subagents-agent-validation-n579a5`
+
+Adds a 26th subagent, `.claude/agents/agent-output-verifier.md` (Tier 4
+Operations · opus · `effort: max` · read-only `Read/Bash/Grep/Glob`) — the
+team's adversarial fact-checker / "จับผิด" seat. It re-derives every
+*checkable* claim another agent (or the main session) emits — numbers,
+`file:line` refs, coverage %, flag counts, citations, "Top-5 rotated"
+verdicts, cross-report consistency — against ground truth (repo files ·
+`frontend/public/data/*.json` · `git` · `schema_check` · the CLAUDE.md
+academic-anchor list) and returns a per-claim CONFIRMED / REFUTED / STALE /
+UNSUPPORTED / UNVERIFIABLE verdict + a TRUSTWORTHY / TRUSTWORTHY-WITH-
+CORRECTIONS / DO-NOT-ACT gate. It addresses the one failure mode every
+other agent shares — a confident, fluent, *wrong* sentence — and is the
+backstop the orchestrator inserts before ACTING on a high-stakes claim
+(release GO / destructive command / Mark-Ready) or when two reports
+disagree. NOT run per-report (cost); read-only — it never fixes, only
+routes the fix back to the owning agent (a mis-citation → ESCALATE
+methodology-scientist). Distinct from the domain auditors
+(`defense-layer-auditor` / `stock-detail-auditor` / `data-analyst` audit the
+DATA; this audits an agent's CLAIMS *about* the data/code/git).
+
+**Why opus**: catching a capable model's fluent-but-wrong output needs at
+least as much reasoning headroom as producing it did. Model split moves
+5 opus / 20 sonnet → **6 opus / 20 sonnet** (26 total); effort tally
+23/25 max → **24/26 max** (the 2 `high` script-runners unchanged).
+
+**Docs (lockstep)**: `.claude/agents/README.md` (Tier 4 row + count 25→26 +
+model-split + effort + new **Flow 9 — Output verification** + tier
+rationale) · `CLAUDE.md` (§Layout count + §Auto-routing role/table row +
+opus list + §Spawn-discipline flow/split/effort counts) · `AGENTS.md`
+(tree count + Tier 4 note + sonnet-pool count) · `.claude/agents/TEAMS.md`
+(comparison-table + companion-docs counts) · `PHASE_STATUS.md` ·
+`CONTEXT.md` · `WORKFLOW.md` · `docs/GOTCHAS.md`
+(present-tense count 25→26; historical "5 fable agents" preserved).
+
+**No code / schema / workflow touched** — agent + docs only; rankings,
+schema triple, and defense layer (36) BYTE-IDENTICAL / UNCHANGED.
+
+**Verify**: no Python / TS / schema surface touched → ruff / pytest /
+schema_check / tsc N/A; doc-and-agent-frontmatter change only.
+
+**Gate**: `docs-reviewer` (doc substance) + `phase-coordinator` Mode B
+(CLAUDE.md + AGENTS.md lockstep) at Draft→Ready.

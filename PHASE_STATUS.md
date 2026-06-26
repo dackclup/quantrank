@@ -26,7 +26,7 @@
 | Production run | `65bfd335` (2026-06-11 cron — FIRST run on the #458 cache-v7 family; RATIFY-B manifest verification pending on this artifact). Prior validated baseline: `368dccd9` cron Run #71 (detail relocated to §Chronological history) |
 | Universe | **~1504 stocks** (S&P 1500 = ~503 sp500 large-cap + ~399 sp400 mid-cap + ~602 sp600 small-cap; cron default `sp1500` since Slice 7 2026-06-21 (#534); `sp900`/`sp500`-only via manual dispatch) |
 | Skill inventory | **45** invocation-triggerable (44 + the vendored `impeccable` symlink) + `phase-N/` planning docs — index: `.claude/skills/README.md` |
-| Subagent inventory | **25** in 5 tiers (5 opus + 20 sonnet; 23 `effort: max`, 2 `high`) — roster + routing matrix: `.claude/agents/README.md` |
+| Subagent inventory | **26** in 5 tiers (6 opus + 20 sonnet; 24 `effort: max`, 2 `high`) — roster + routing matrix: `.claude/agents/README.md` (Tier 4 adds the cross-cutting `agent-output-verifier` "จับผิด" fact-checker) |
 
 **In flight** (not yet merged on `main`; per-PR detail lives in
 [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):

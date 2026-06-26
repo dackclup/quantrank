@@ -112,7 +112,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # first-party + vendored skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
-.claude/agents/                   # 25 subagents (5 opus / 20 sonnet; 23 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 3 (incl. ci-triage-engineer) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 26 subagents (6 opus / 20 sonnet; 24 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 4 (incl. ci-triage-engineer + the cross-cutting agent-output-verifier "จับผิด" fact-checker for other agents' claims) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh — orchestrator reminder + agent-team auto-propose for team-fit tasks) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -831,12 +831,17 @@ turn (`ps … | grep next | awk '{print $2}' | xargs kill` — NOT a broad
 cancel the rest of the tool batch). Full rationale in CLAUDE.md
 §Gotchas "Background runs default to SYNC".
 
-The 25 subagents under `.claude/agents/` follow the **gate-moment
+The 26 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
 policy — most cues fire at "ready to push" / explicit ask / signal
 event, not on every edit. This is the reduced-token policy
 introduced after the original "spawn-on-every-diff" rule proved
-too expensive. Notable Tier 1 addition: `stock-detail-auditor` for
+too expensive. Notable Tier 4 addition: `agent-output-verifier` — the
+cross-cutting "จับผิด" seat that fact-checks the claims OTHER agents (and
+the main session) emit against ground truth before the orchestrator acts
+on them (re-derives each number/path/citation; per-claim REFUTED/STALE/
+CONFIRMED verdict; read-only, routes the fix back to the claim's owner).
+Notable Tier 1 addition: `stock-detail-auditor` for
 data correctness of per-stock JSON the frontend renders (range /
 consistency / Rule 16 / known-issue overlap; deterministic prefilter
 walks the universe for outliers then thorough LLM verdict on every
@@ -850,13 +855,13 @@ from it — the documented coordination flows are canonical examples, not
 an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
 §Dynamic workflow.
 
-The 25 agent prompts are kept tight (total ~3.8k lines across the 25
+The 26 agent prompts are kept tight (total ~4k lines across the 26
 agent files in `.claude/agents/`) so per-spawn context cost stays bounded —
 trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
 the work the agent does. Hard constraints on prompt size do not
 imply hard caps on output size or investigation depth. Sub-agents
-on the sonnet pool (20 of 25 agents) should walk every relevant
+on the sonnet pool (20 of 26 agents) should walk every relevant
 file, list every finding, and follow every escalation lead — the
 Max-plan "Weekly · Sonnet only" budget is intended for thorough
 audit work and is separate from the "Weekly · all models" pool the
