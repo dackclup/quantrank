@@ -7855,3 +7855,51 @@ schema_check / tsc N/A; doc-and-agent-frontmatter change only.
 
 **Gate**: `docs-reviewer` (doc substance) + `phase-coordinator` Mode B
 (CLAUDE.md + AGENTS.md lockstep) at Draft→Ready.
+
+---
+
+## agents — agent-output-verifier auto-fire hardening: MUST-invoke + verify-claims.sh hook (in flight, 2026-06-26)
+
+**Branch**: `claude/subagents-agent-validation-n579a5` (follow-up to merged #621)
+
+Strengthens `agent-output-verifier` from soft-proactive to **MUST-invoke at
+the act-on-a-claim gates**, plus a 4th every-turn hook so the orchestrator
+auto-fires it without an explicit user command (user request: "ระบบดึงมาใช้
+เองอัตโนมัติได้ไหม" → MUST-invoke + hook-reminder option).
+
+- `.claude/agents/agent-output-verifier.md` — `description:` rewritten to lead
+  with "MUST be invoked (no confirmation) before the orchestrator ACTS on a
+  high-stakes agent claim — a release GO, a destructive command, a Mark-Ready
+  / merge flip, a 'Top-5 rotated' / 'coverage 99%' / 'threshold matches
+  <paper>' assertion — and when two agent reports disagree." Still NOT
+  per-report (cost); still read-only. Model/effort/tools unchanged.
+- `.claude/hooks/verify-claims.sh` — NEW UserPromptSubmit hook (the SECOND
+  every-turn injector alongside `delegate-first.sh`). Injects a ~70-token
+  "VERIFY-BEFORE-ACTING" `hookSpecificOutput.additionalContext` pointer so
+  the verify-before-acting reflex stays top-of-mind every turn. Fail-open,
+  5s timeout, content-agnostic. **A hook cannot itself spawn a subagent**
+  (the model does) — the hook only nudges; the MUST-invoke description is
+  what makes the orchestrator actually fire it.
+- `.claude/settings.json` — wires `verify-claims.sh` as the second
+  UserPromptSubmit hook (validated JSON).
+- Docs (lockstep): `CLAUDE.md` (§Layout hooks 3→4 + routing-table row now
+  MUST-invoke) · `AGENTS.md` (tree "TWO UserPromptSubmit hooks" + hook-list
+  bullet) · `.claude/agents/README.md` (MUST-invoke list + Operations-tier
+  fires note) · `CONTEXT.md` (hook count 3→4). The README MUST-invoke list
+  was also corrected to include ci-triage-engineer / incident-commander /
+  methodology-scientist (their descriptions already say "MUST be invoked";
+  the old list of 4 was stale).
+
+**No code / schema / workflow touched** — agent + hook + settings + docs
+only; rankings, schema triple, defense layer (36) BYTE-IDENTICAL / UNCHANGED.
+
+**Verify**: `verify-claims.sh` smoke-tested (emits valid JSON); `settings.json`
+parses; no Python / TS / schema surface → ruff / pytest / schema_check / tsc
+N/A.
+
+**Caveat surfaced to user**: even MUST-invoke + hook is orchestrator-driven,
+not hook-enforced — hooks can inject reminders but cannot spawn agents. This
+is the strongest "automatic" the harness supports short of per-report (which
+was rejected on cost).
+
+**Gate**: `docs-reviewer` + `phase-coordinator` Mode B at Draft→Ready.

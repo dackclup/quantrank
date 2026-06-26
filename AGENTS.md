@@ -113,7 +113,7 @@ tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # first-party + vendored skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
 .claude/agents/                   # 26 subagents (6 opus / 20 sonnet; 24 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 4 (incl. ci-triage-engineer + the cross-cutting agent-output-verifier "จับผิด" fact-checker for other agents' claims) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
-.claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh — orchestrator reminder + agent-team auto-propose for team-fit tasks) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
+.claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + TWO UserPromptSubmit hooks (delegate-first.sh — orchestrator reminder + agent-team auto-propose; verify-claims.sh — verify-before-acting reminder to spawn agent-output-verifier on high-stakes agent claims) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
 .agents/skills/                   # Vendored third-party skills (skills.sh layout) — currently impeccable (pbakaus/impeccable, Apache-2.0); symlinked into .claude/skills/, dev-session tooling only (never CI). See THIRD_PARTY_NOTICES.md
@@ -789,7 +789,7 @@ audit), prefer routing it through Claude Code rather than re-
 implementing the integration in a different agent.
 
 Claude Code also reads `.claude/settings.json` for the harness's hook
-configuration. Three hooks ship today (2 PostToolUse + 1
+configuration. Four hooks ship today (2 PostToolUse + 2
 UserPromptSubmit):
 
 - `.claude/hooks/log-bash.sh` (PostToolUse Bash) — appends every Bash
@@ -813,6 +813,16 @@ UserPromptSubmit):
   sub-agent in `.claude/agents/` instead of doing the work inline.
   Drains the under-utilized Max-plan "Weekly · Sonnet only" pool
   (PR #223 token-economy rebalance).
+- `.claude/hooks/verify-claims.sh` (UserPromptSubmit, the SECOND
+  every-turn injector) — injects the "VERIFY-BEFORE-ACTING" reminder
+  so the main agent spawns `agent-output-verifier` to re-derive a
+  high-stakes claim from ground truth BEFORE acting on it (a release
+  GO / Mark-Ready / merge flip / destructive command / two agent
+  reports disagreeing). `agent-output-verifier` is MUST-invoke at
+  those gates; the hook only keeps the reflex top-of-mind — a hook
+  cannot itself spawn a subagent (the model does). NOT per-report by
+  design (cost). Kept as a separate hook from `delegate-first.sh` so
+  each reminder tunes / disables independently.
 
 **Background-run hygiene** (2026-05-31): prefer SYNCHRONOUS sub-agent
 spawns and foreground Bash. A `run_in_background:true` sub-agent is
@@ -890,16 +900,17 @@ inline. Inline work is the EXCEPTION, acceptable only for trivial
 1-Read lookups, when no sub-agent matches the task, when the user
 explicitly opts out ("ทำเอง" / "inline this"), when the work IS
 building the agent / hook infrastructure itself, or when
-synthesizing across multiple sub-agent reports. A
-`UserPromptSubmit` hook (`.claude/hooks/delegate-first.sh`)
-injects this rule as `additionalContext` on every user turn so
-the main agent can't lose it mid-session. Cross-tool agents
+synthesizing across multiple sub-agent reports. Two
+`UserPromptSubmit` hooks (`.claude/hooks/delegate-first.sh` for the
+delegate-first rule + `.claude/hooks/verify-claims.sh` for the
+verify-before-acting rule) inject these as `additionalContext` on
+every user turn so the main agent can't lose them mid-session. Cross-tool agents
 (Copilot / Cursor / Devin) do not have access to the
 sub-agent / hook layer and should fall back to running the
 canonical skills (`schema-check`, `verify-production-output`,
 `security-check`) inline.
 
-The three hooks are bash + `jq` only, 5-second timeout, fail-open
+The four hooks are bash + `jq` only, 5-second timeout, fail-open
 on missing dependencies / unwritable filesystem / empty stdin.
 Copilot / Cursor / Devin do NOT execute `.claude/hooks/` — those
 tools should rely on git pre-commit hooks (run `ruff` + the
