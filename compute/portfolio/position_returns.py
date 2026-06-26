@@ -267,12 +267,25 @@ def _extract_streaks(
     ticker: str,
     legs: list[tuple[str, float]],
     closes: Mapping[str, Mapping[str, float]],
+    *,
+    all_rebalance_dates: Sequence[str] | None = None,
 ) -> list[list[tuple[str, float, float | None]]]:
     """Extract contiguous holding streaks for ``ticker`` from its sequence of ``(date, weight)`` legs.
 
     A streak is a maximal sub-sequence of consecutive legs where the weight is
     non-zero.  Weight → 0 signals a sell/termination, starting a new streak if
     the position is re-entered later.
+
+    When ``all_rebalance_dates`` is provided, the function ALSO splits a streak
+    on a **rebalance-date gap**: if two consecutive present legs ``(d_prev, d_cur)``
+    are not adjacent in ``all_rebalance_dates`` (i.e. the ticker was absent from
+    ≥ 1 intervening rebalances), the current streak is closed and a new one is
+    started.  This correctly handles backfills where absent tickers are simply
+    omitted from ``band_legs`` rather than emitting a weight-0 leg, so that the
+    "current contiguous streak" is the re-entry streak, not the first-ever entry.
+
+    When ``all_rebalance_dates`` is ``None`` (default), the old weight-only
+    behaviour is preserved BYTE-IDENTICAL (backward-compatible).
 
     Parameters
     ----------
@@ -283,6 +296,11 @@ def _extract_streaks(
         ticker, in ascending date order.
     closes:
         ``{ticker: {date_iso: close}}`` — the shared adjusted-close panel.
+    all_rebalance_dates:
+        The FULL ordered sequence of rebalance dates in the attribution window
+        (or the PIT-truncated prefix for historical quarters).  When provided,
+        consecutive present legs that are not adjacent in this axis trigger a
+        streak split.  None = weight-only mode (backward-compat).
 
     Returns
     -------
@@ -291,8 +309,14 @@ def _extract_streaks(
         representing the contiguous holding period.  The caller is responsible
         for computing returns from consecutive pairs within a streak.
     """
+    # Build the rank lookup from all_rebalance_dates once, if provided.
+    date_rank: dict[str, int] | None = None
+    if all_rebalance_dates is not None:
+        date_rank = {d: i for i, d in enumerate(all_rebalance_dates)}
+
     streaks: list[list[tuple[str, float, float | None]]] = []
     current: list[tuple[str, float, float | None]] = []
+    prev_date: str | None = None
 
     for date_iso, weight in legs:
         if weight <= 0.0:
@@ -300,9 +324,30 @@ def _extract_streaks(
             if current:
                 streaks.append(current)
                 current = []
+            prev_date = None
         else:
+            # Gap-aware split: if two consecutive held legs have non-adjacent
+            # positions in all_rebalance_dates, the ticker was absent during
+            # the intervening rebalances → treat as a new streak.
+            if (
+                date_rank is not None
+                and prev_date is not None
+                and current
+            ):
+                prev_rank = date_rank.get(prev_date)
+                cur_rank = date_rank.get(date_iso)
+                if (
+                    prev_rank is not None
+                    and cur_rank is not None
+                    and cur_rank - prev_rank > 1
+                ):
+                    # Gap detected: close current streak, start fresh.
+                    streaks.append(current)
+                    current = []
+
             px = _close_on(ticker, date_iso, closes)
             current.append((date_iso, weight, px))
+            prev_date = date_iso
 
     # Finalize an open streak (current holder, not yet sold).
     if current:
@@ -818,11 +863,17 @@ def _compute_flat_latest_returns(
             for ticker, weight in weight_map.items():
                 ticker_date_weights.setdefault(ticker, {})[date_iso] = weight
 
+    # Full ordered rebalance-date axis for gap-aware streak splitting.
+    all_rebalance_dates_flat: list[str] = [d for d, _ in band_legs]
+
     result: dict[str, PositionReturn] = {}
     for ticker in candidates:
         legs = ticker_all_legs.get(ticker, [])
         try:
-            streaks = _extract_streaks(ticker, legs, closes)
+            streaks = _extract_streaks(
+                ticker, legs, closes,
+                all_rebalance_dates=all_rebalance_dates_flat,
+            )
             if not streaks:
                 result[ticker] = PositionReturn(
                     mwr_pct=None,
@@ -996,6 +1047,10 @@ def compute_position_returns_per_quarter(
     # The last rebalance date — used to identify "current" holders.
     last_rebal_date = band_legs[-1][0]
 
+    # Full ordered rebalance-date axis for gap-aware streak splitting.
+    # Each per-quarter iteration passes a PIT-truncated prefix of this list.
+    all_dates_full: list[str] = [d for d, _ in band_legs]
+
     # Per-rebalance maps.
     results: list[dict[str, PositionReturn]] = []
 
@@ -1003,6 +1058,11 @@ def compute_position_returns_per_quarter(
         # The next rebalance date is the end_date for non-latest quarters.
         is_last_rebal = (rebal_idx == len(band_legs) - 1)
         next_rebal_date: str | None = None if is_last_rebal else band_legs[rebal_idx + 1][0]
+
+        # PIT-truncated rebalance axis for gap detection: dates up to and including
+        # rebal_date only — mirrors the Fix-#3 leg truncation so gap detection
+        # stays PIT-safe with no look-ahead.
+        pit_rebalance_dates = all_dates_full[: rebal_idx + 1]
 
         quarter_map: dict[str, PositionReturn] = {}
 
@@ -1022,7 +1082,10 @@ def compute_position_returns_per_quarter(
                 legs = [(d, w) for d, w in all_legs if d <= rebal_date]
 
             try:
-                streaks = _extract_streaks(ticker, legs, closes)
+                streaks = _extract_streaks(
+                    ticker, legs, closes,
+                    all_rebalance_dates=pit_rebalance_dates,
+                )
                 if not streaks:
                     quarter_map[ticker] = PositionReturn(
                         mwr_pct=None,

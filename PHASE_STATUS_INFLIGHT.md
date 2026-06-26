@@ -8045,6 +8045,9 @@ guard step. Full offline pytest = CI (local env lacks `.[dev,factors]`).
 **Gate**: `quantrank-reviewer` (new tools/ logic) + `security-reviewer`
 (ci.yml edit) + `test-engineer` (coverage) + `docs-reviewer` +
 `phase-coordinator` Mode B at Draft→Ready.
+
+---
+
 ## PR #624 — feat(compute): Proposal C-1 high-conviction gate counter slice 1 (observability) (in flight, 2026-06-26)
 
 **Scope.** Proposal C-1 — measuring the marginal bite of the loss-chance leg in the
@@ -8137,5 +8140,58 @@ two try/except blocks + import) · `compute/config.py` (schema bump) ·
 
 **Gate**: frontend-builder (mirror 3 fields) + test-engineer + schema-sentinel +
 quantrank-reviewer + defense-layer-auditor at Draft→Ready.
+
+---
+
+## PR #TBD — fix(portfolio): gap-aware latest streak for per-position return display (in flight, 2026-06-26)
+
+`compute/portfolio/position_returns.py` — `_extract_streaks` gained a new
+keyword-only param `all_rebalance_dates: Sequence[str] | None = None`. When
+`None` (default), behavior is BYTE-IDENTICAL to before (backward-compat).
+When provided, the function also splits a streak on a **rebalance-date gap**:
+if two consecutive held legs are not adjacent in `all_rebalance_dates` (ticker
+was absent ≥ 1 intervening rebalances), the current streak is closed and a
+new one begins. This fixes the root cause of cross-gap chaining in the
+backfill, where absent quarters produce a DATE JUMP in per-ticker legs with no
+weight-0 sentinel, causing `_extract_streaks` to see one continuous run spanning
+the gap.
+
+Callers updated: `_compute_flat_latest_returns` passes the full
+`band_legs`-derived date axis; `compute_position_returns_per_quarter` passes a
+PIT-truncated prefix (`all_dates_full[:rebal_idx+1]`) to preserve Fix-#3
+look-ahead safety. The `reconciliation_errors` bare call `_extract_streaks(ticker,
+legs, {})` (multi-streak skip for `pp_twr_error`) is LEFT BARE — no
+`all_rebalance_dates` — so the Carino #619 reconciliation (which operates on
+`sub_periods` directly) stays BYTE-IDENTICAL.
+
+**Verified before commit**:
+- Local replay on committed `backtest_pit.json`: ALL → 2026-05-15 (was 2021-05-15),
+  KLAC → 2020-08-14 (was 2016-08-14), CF → 2024-05-15 (was 2023-05-15);
+  SYF (single-streak, 4 legs) and IBKR (single-leg) BYTE-IDENTICAL.
+- `ruff check .` PASS.
+- `pytest tests/test_portfolio/test_position_returns.py -q` — 64/64 PASS.
+- Offline pytest (excluding missing-module osap) — 3124 PASS / 10 SKIP.
+
+**Schema triple**: untouched (no schema field change; `backtest_pit.json` is
+a hand-built artifact, not in the Pydantic↔TS↔snapshot triple).
+**Rule 16 / annotate-before-veto**: N/A (display-only fix, no scoring/veto change).
+**Rule 18 / observability-first**: N/A (no new external data source).
+**Defense layer**: UNCHANGED at 36. Rankings/scores/flags BYTE-IDENTICAL.
+
+**Coverage needed (for test-engineer)**:
+1. `test_extract_streaks_gap_aware_splits_on_date_gap`: verify that two
+   all-positive legs with a gap in `all_rebalance_dates` produce 2 streaks.
+2. `test_extract_streaks_gap_aware_none_is_byte_identical`: same legs without
+   `all_rebalance_dates` produce 1 streak (backward-compat).
+3. `test_flat_path_since_date_gap_ticker`: construct a band_legs where a ticker
+   is absent for 1 rebalance (gap), call `compute_position_returns`, assert
+   `since_date` is the re-entry date not the first entry.
+4. `test_per_quarter_since_date_gap_ticker_pit_safe`: same gap scenario in
+   `compute_position_returns_per_quarter`, assert the latest quarter shows
+   the re-entry `since_date` and historical quarters up to the drop-date show
+   the original entry date (PIT-safe).
+5. `test_reconciliation_bare_call_unchanged`: multi-streak name (two real streaks
+   via weight-0 leg) — assert `reconciliation_errors` still counts it as
+   multi-streak (using the bare `_extract_streaks(ticker, legs, {})` call).
 
 ---
