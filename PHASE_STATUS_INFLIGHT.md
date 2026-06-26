@@ -7525,3 +7525,110 @@ unchanged). Defense layer UNCHANGED at 36.
   #605 injection-equivalence; Hypothesis property (non-neg, sum 1±1e-9, ==w0 when λ=1 or mask=all).
 
 **Gate**: quantrank-reviewer + schema-sentinel + test-engineer at Draft→Ready.
+
+---
+
+## PR #NNN — feat(compute): per-quarter position returns (PR-2a) (in flight, 2026-06-26)
+
+**Branch**: `claude/position-returns-per-quarter` (off `main`; PR-1 merged as #614)
+
+**Scope**: Extends PR-1's shadow position-return attribution to cover ALL historical
+rebalances.  Carino reconciliation DESCOPED to a follow-up PR (see below).  STILL
+SHADOW — no frontend read.  Rankings/NAV gross+net BYTE-IDENTICAL.  Defense UNCHANGED at 36.
+
+**FIX-FIRST revision (2026-06-26)**: quantrank-reviewer returned FIX-FIRST with three
+issues; all three are resolved in this revision:
+
+1. **Fix #3 — per-quarter PIT look-ahead (HIGH, RESOLVED)**: `compute_position_returns_per_quarter`
+   now truncates the leg list to `date <= rebal_date` for all non-latest quarters before
+   computing TWR/MWR.  Historical quarter r can no longer chain prices through future rebalance
+   dates (look-ahead eliminated).  The latest rebalance still uses the full leg list.
+   Correctness signal: `test_per_quarter_pit_no_lookahead` confirms quarter-0 TWR (10%) ≠
+   quarter-1 TWR (21%) for a 3-rebalance fixture.
+
+2. **Carino descoped — Fix #2 (RESOLVED)**: `_compute_carino_contribution_for_streak` is
+   retained but NOT called from the main compute path.  All `contrib_nav_pts` values are
+   `None`.  `position_return_reconciliation_max_abs_error` is `None`.  Carino re-derivation
+   delegated to financial-engineer in a dedicated follow-up PR (numerator/denominator
+   sub-period mismatch confirmed — see PR-2a review comments).
+   `TODO(carino-reconciliation PR)` markers placed at both call sites.
+   `test_carino_identity_three_quarter_book` updated to assert `contrib_nav_pts is None`
+   for all positions across all quarters.
+
+3. **Fix #1b — backward-compat flat field (RESOLVED)**: `compute_position_returns` now
+   uses `_compute_flat_latest_returns` (not `per_quarter[-1]`).  The new helper covers
+   BOTH current holders at the latest rebalance AND names sold at the latest rebalance
+   (marked-to-exit close), preserving PR-1 semantics for Current-picks "Sold" rows.
+   `test_compute_position_returns_per_quarter_latest_compat` updated to reflect the
+   no-sold-names fixture (keys still agree; docstring updated).
+
+**Files changed** (`compute/**` + `scripts/` only; no schema triple, no frontend):
+- `compute/portfolio/position_returns.py` — core implementation
+- `scripts/backfill_portfolio_pit.py` — wiring (imports + per-rebalance injection)
+- `tests/test_portfolio/test_position_returns.py` — 14 new tests (27 → 41 total)
+
+**What changed vs PR-1 (#614)**:
+
+1. **Per-quarter generalization** — new public function
+   `compute_position_returns_per_quarter` returns `list[dict[str, PositionReturn]]`,
+   one map per entry in `band_legs_for_nav` (~40 rebalances × ~8-16 holdings).
+   Each quarter's map is truncated to legs with `date <= rebal_date` (Fix #3 PIT).
+
+2. **New `_compute_flat_latest_returns` helper** — assembles the flat top-level
+   `payload["position_returns"]` for PR-1 backward compat: current holders (weight > 0
+   at latest rebalance) + sold-at-latest names (weight > 0 at prior leg, 0 at last leg).
+
+3. **Carino DESCOPED** — `contrib_nav_pts=None` for all positions; helper code retained
+   but not called; `TODO(carino-reconciliation PR)` markers at both call sites.
+
+4. **TWR vs client-side counter** — `reconciliation_errors` accepts `closes` parameter.
+   When provided, computes max |engine TWR − point-to-point HPR| over clean single-streak
+   names → `position_return_twr_vs_clientside_max_abs_pp` (Carino-independent, RETAINED).
+
+5. **Artifact shape** — `backfill_portfolio_pit.py` injects
+   `position_returns_to_dict(per_quarter_maps[i])` into each
+   `rebalances_out[i]["position_returns"]`.  The top-level `payload["position_returns"]`
+   uses `_compute_flat_latest_returns` (not `per_quarter[-1]`).
+
+**Backward compat conditions**:
+- C1: same adjusted-close series passed (no raw/adjusted mixing).
+- `compute_position_returns` covers current holders + sold-at-latest names (PR-1 semantics).
+- `position_return_reconciliation_max_abs_error` is `None` (Carino descoped).
+- `position_return_twr_vs_clientside_max_abs_pp` is computed and retained.
+
+**New helpers in `position_returns.py`**:
+- `_compute_flat_latest_returns` — PR-1-compat flat field builder (current + sold names).
+- `_close_on_or_before` — scans backward for most recent valid close (weekend/holiday handling).
+- `_compute_carino_contribution_for_streak` — retained but not called (Carino descoped).
+- Updated `_compute_twr` and `_compute_mwr` — added `end_date: str | None = None`
+  parameter for non-latest quarter terminal marking.
+
+**MWR cash-flow sign**: weight increase (add) = positive CF; weight decrease (trim) = negative CF.
+Locked by existing `test_modified_dietz_add_then_gain_cash_flow_sign` test.
+
+**Schema triple**: UNTOUCHED — no new `schemas.py` / `types.ts` / `schema-snapshot.json` fields.
+
+**Tests added** (14 new; in `tests/test_portfolio/test_position_returns.py`):
+- `test_close_on_or_before_exact_date` — exact hit
+- `test_close_on_or_before_weekend_falls_back_to_friday` — non-trading day
+- `test_close_on_or_before_no_eligible_date` — all dates after target → None
+- `test_close_on_or_before_missing_ticker` — unknown ticker → None
+- `test_compute_position_returns_per_quarter_length` — len == len(band_legs)
+- `test_compute_position_returns_per_quarter_empty_input` — empty → []
+- `test_compute_position_returns_per_quarter_latest_compat` — keys agree (no sold names fixture)
+- `test_carino_identity_three_quarter_book` — UPDATED: all contrib_nav_pts must be None
+- `test_per_quarter_pit_no_lookahead` — NEW: quarter-0 TWR (10%) ≠ quarter-1 TWR (21%)
+- `test_reconciliation_errors_with_closes_pp_twr_near_zero` — clean name → pp_err ≈ 0
+- `test_reconciliation_errors_with_closes_not_none` — partial_history=True → pp_err=None
+- `test_compute_carino_contribution_basic` — single-leg manual derivation (helper retained)
+- `test_compute_carino_contribution_empty_streak` — empty → None
+- `test_compute_carino_contribution_no_nav` — empty date_to_nav → None
+
+**Verify**: ruff PASS · pytest offline 41 position_returns tests passed · schema_check N/A · tsc untouched.
+
+**SHADOW constraint**: frontend does NOT read `rebalances[i].position_returns` until
+PR-2b adds a UI surface gated on ≥ 1 cron confirming the reconciliation counters.
+
+**Unblocks**: Carino follow-up PR (financial-engineer re-derivation) + PR-2b (rotation-history drawers)
+
+**Gate**: quantrank-reviewer + defense-layer-auditor at Draft→Ready.

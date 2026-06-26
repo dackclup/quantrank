@@ -4,12 +4,14 @@ Covers:
 (a) Multi-rebalance holder with known prices → assert TWR, MWR correct.
 (b) Null intermediate price → partial_history=True, TWR drops that leg.
 (c) Re-entry after gap → only the current streak is used.
-(d) Carino identity: Σ contrib_nav_pts ≈ portfolio NAV total return in pts.
+(d) Carino descoped → contrib_nav_pts is None for all positions (PR-2a FIX-FIRST).
 (e) Weight → 0 terminates the streak.
 (f) Empty band_legs returns empty dict.
 (g) _days_between helper.
 (h) _carino_coefficient edge cases (R=0, R=-1).
 (i) position_returns_to_dict serialization.
+(j) Per-quarter PIT look-ahead fix: quarter-0 TWR != quarter-N TWR.
+(k) Flat field (compute_position_returns) covers sold-at-latest names.
 """
 from __future__ import annotations
 
@@ -20,6 +22,8 @@ import pytest
 from compute.portfolio.position_returns import (
     PositionReturn,
     _carino_coefficient,
+    _close_on_or_before,
+    _compute_carino_contribution_for_streak,
     _compute_mwr,
     _compute_twr,
     _days_between,
@@ -27,6 +31,7 @@ from compute.portfolio.position_returns import (
     _is_valid_price,
     _modified_dietz,
     compute_position_returns,
+    compute_position_returns_per_quarter,
     position_returns_to_dict,
     reconciliation_errors,
 )
@@ -483,3 +488,685 @@ def test_reconciliation_errors_no_contribs():
     carino_err, pp_err = reconciliation_errors(pr, nav_net, nav_dates, band_legs)
     # contrib_nav_pts is None → carino_error = None.
     assert carino_err is None
+
+
+# ---------------------------------------------------------------------------
+# PR-2a new tests
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# _close_on_or_before
+# ---------------------------------------------------------------------------
+
+
+def test_close_on_or_before_exact_date():
+    """Returns the close on the exact date when available."""
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-01-02": 101.0}}
+    px = _close_on_or_before("AAPL", "2020-01-01", closes)
+    assert px == pytest.approx(100.0)
+
+
+def test_close_on_or_before_weekend_falls_back_to_friday():
+    """A target date with no close (e.g. weekend) returns the prior available close."""
+    closes = {
+        "AAPL": {
+            "2020-01-03": 100.0,  # Friday
+            "2020-01-06": 105.0,  # Monday
+        }
+    }
+    # Saturday — no close; should return the Friday close.
+    px = _close_on_or_before("AAPL", "2020-01-04", closes)
+    assert px == pytest.approx(100.0)
+
+
+def test_close_on_or_before_no_eligible_date():
+    """Returns None when no close exists on or before the target date."""
+    closes = {"AAPL": {"2020-06-01": 100.0}}
+    px = _close_on_or_before("AAPL", "2019-01-01", closes)
+    assert px is None
+
+
+def test_close_on_or_before_missing_ticker():
+    """Returns None for a ticker not in the closes panel."""
+    closes: dict = {}
+    px = _close_on_or_before("NOTHERE", "2020-01-01", closes)
+    assert px is None
+
+
+# ---------------------------------------------------------------------------
+# compute_position_returns_per_quarter — length contract
+# ---------------------------------------------------------------------------
+
+
+def test_compute_position_returns_per_quarter_length():
+    """Returns one map per entry in band_legs."""
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5, "MSFT": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 120.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 210.0, "2020-07-01": 220.0},
+    }
+    nav_net = [100.0, 110.0, 120.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 3
+
+
+def test_compute_position_returns_per_quarter_empty_input():
+    """Returns an empty list for empty band_legs."""
+    per_quarter = compute_position_returns_per_quarter(
+        [], {}, portfolio_nav_net=[], portfolio_nav_dates=[]
+    )
+    assert per_quarter == []
+
+
+# ---------------------------------------------------------------------------
+# compute_position_returns_per_quarter — latest compat with compute_position_returns
+# ---------------------------------------------------------------------------
+
+
+def test_compute_position_returns_per_quarter_latest_compat():
+    """The flat field (compute_position_returns) covers current holders.
+
+    FIX-FIRST update: compute_position_returns now uses _compute_flat_latest_returns
+    rather than delegating to per_quarter[-1].  For a fixture with no sold names the
+    two should agree on keys and return values (both mark to the same latest-close).
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 120.0}
+    }
+    nav_net = [100.0, 105.0, 112.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    latest_flat = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+
+    assert len(per_quarter) == 3
+    latest_from_per_quarter = per_quarter[-1]
+
+    # With no sold names at the latest rebalance, both sources should cover
+    # the same tickers and agree on TWR/MWR (both mark to the same latest-close).
+    assert set(latest_flat.keys()) == set(latest_from_per_quarter.keys())
+    for ticker, pr_flat in latest_flat.items():
+        pr_pq = latest_from_per_quarter[ticker]
+        assert pr_flat.twr_pct == pytest.approx(pr_pq.twr_pct, rel=1e-9)
+        assert pr_flat.mwr_pct == pytest.approx(pr_pq.mwr_pct, rel=1e-9)
+        assert pr_flat.since_date == pr_pq.since_date
+        assert pr_flat.partial_history == pr_pq.partial_history
+        assert pr_flat.legs_used == pr_pq.legs_used
+
+
+# ---------------------------------------------------------------------------
+# Carino identity: Σ contrib ≈ NAV total return in base-100 pts
+# ---------------------------------------------------------------------------
+
+
+def test_carino_identity_three_quarter_book():
+    """contrib_nav_pts is None for all positions (Carino descoped to follow-up PR).
+
+    The Carino linking formula was descoped in PR-2a (FIX-FIRST) because the
+    numerator (position own-price return) and denominator (net NAV sub-return)
+    are inconsistent → Σ contrib ≠ NAV return.  Re-derivation is deferred to
+    a dedicated Carino PR by financial-engineer.
+
+    Until that PR lands, every PositionReturn must carry contrib_nav_pts=None.
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5, "MSFT": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 121.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 204.0, "2020-07-01": 206.0},
+    }
+    nav_net = [100.0, 106.0, 111.8]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 3
+
+    # All positions across all quarters must have contrib_nav_pts == None.
+    for quarter_map in per_quarter:
+        for ticker, pr in quarter_map.items():
+            assert pr.contrib_nav_pts is None, (
+                f"{ticker}: expected contrib_nav_pts=None (Carino descoped) "
+                f"but got {pr.contrib_nav_pts}"
+            )
+
+
+# ---------------------------------------------------------------------------
+# Per-quarter PIT look-ahead fix (Fix #3): quarter-0 TWR != quarter-N TWR
+# ---------------------------------------------------------------------------
+
+
+def test_per_quarter_pit_no_lookahead():
+    """Fix #3: historical quarter TWR differs from latest-quarter TWR.
+
+    For a ticker held across 3 rebalances with distinct prices, the TWR
+    computed for quarter-0 (using only legs up to 2020-01-01) must differ
+    from the TWR for quarter-2 (using all three legs) and from the TWR for
+    quarter-1 (using two legs).
+
+    Without the fix the code would use the full leg history for every quarter
+    (look-ahead), producing the same TWR for all three.  With the fix applied:
+      - quarter-0 has only 1 leg (entry at 2020-01-01, mark to 2020-04-01) →
+        TWR = 110/100 − 1 = 10%
+      - quarter-1 has 2 legs (entry at 2020-01-01, mark to 2020-07-01) →
+        TWR = (110/100) × (121/110) − 1 = 21%
+      - quarter-2 (latest) has 3 legs → same TWR = 21% (no additional leg in
+        our data, since latest-close matches 2020-07-01)
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5}),
+    ]
+    # Prices at each rebalance boundary; no later-date closes beyond 2020-07-01.
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,
+            "2020-07-01": 121.0,
+        }
+    }
+    nav_net = [100.0, 106.0, 111.8]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 3
+
+    twr_q0 = per_quarter[0]["AAPL"].twr_pct
+    twr_q1 = per_quarter[1]["AAPL"].twr_pct
+    twr_q2 = per_quarter[2]["AAPL"].twr_pct
+
+    assert twr_q0 is not None, "quarter-0 TWR should be computed"
+    assert twr_q1 is not None, "quarter-1 TWR should be computed"
+    assert twr_q2 is not None, "quarter-2 TWR should be computed"
+
+    # The key correctness signal: quarter-0 must NOT equal quarter-2.
+    # If look-ahead is present they would be equal (same full chain of legs).
+    assert twr_q0 != pytest.approx(twr_q2, rel=1e-6), (
+        f"quarter-0 TWR ({twr_q0:.4f}%) == quarter-2 TWR ({twr_q2:.4f}%): "
+        "look-ahead elimination (Fix #3) is NOT working"
+    )
+
+    # Spot-check expected values (single-leg quarter-0 vs two-leg quarter-1).
+    # quarter-0: AAPL held at 2020-01-01, mark to 2020-04-01 (next rebal).
+    #   TWR = 110/100 − 1 = 10%
+    assert twr_q0 == pytest.approx(10.0, abs=0.05), f"Unexpected quarter-0 TWR: {twr_q0}"
+
+    # quarter-1 (two legs, mark to 2020-07-01): (110/100)×(121/110)−1 = 21%
+    assert twr_q1 == pytest.approx(21.0, abs=0.05), f"Unexpected quarter-1 TWR: {twr_q1}"
+
+
+# ---------------------------------------------------------------------------
+# reconciliation_errors — pp_twr counter with closes
+# ---------------------------------------------------------------------------
+
+
+def test_reconciliation_errors_with_closes_pp_twr_near_zero():
+    """pp_twr ≈ 0 for a clean single-streak, full-history name (TWR == HPR).
+
+    For a name with a single unbroken streak and no partial history, the
+    engine's TWR must equal the simple point-to-point HPR (exit/entry − 1).
+    The counter should be ~0 (within floating-point noise).
+    """
+    # One ticker, two rebalances (entry → current), clean prices.
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+    ]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 120.0, "2020-06-30": 130.0}}
+    nav_net = [100.0, 110.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    _carino_err, pp_twr_err = reconciliation_errors(
+        pos_returns, nav_net, nav_dates, band_legs, closes=closes
+    )
+    # pp_twr_err should be computed (not None) since AAPL is a clean single-streak name.
+    # The engine TWR marks to latest close (2020-06-30=130).
+    # pp_return = (130/100 - 1) × 100 = 30%.
+    # TWR prices = [100, 120, 130] → (120/100)×(130/120) - 1 = 30%.
+    # diff = 0 → pp_twr_err should be ~0.
+    assert pp_twr_err is not None
+    assert pp_twr_err == pytest.approx(0.0, abs=1e-6)
+
+
+def test_reconciliation_errors_with_closes_not_none():
+    """With closes provided, pp_twr_error is either a float or None (not absent)."""
+    # Minimal fixture where the single ticker has partial_history (null mid price)
+    # → it's skipped for pp comparison → pp_twr_error = None.
+    pr = {"AAPL": PositionReturn(
+        mwr_pct=10.0, twr_pct=None, contrib_nav_pts=5.0,
+        since_date="2020-01-01", partial_history=True, legs_used=0
+    )}
+    band_legs = [("2020-01-01", {"AAPL": 0.5})]
+    nav_net = [100.0, 105.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 120.0}}
+
+    _carino_err, pp_twr_err = reconciliation_errors(
+        pr, nav_net, nav_dates, band_legs, closes=closes
+    )
+    # partial_history=True → skip → None.
+    assert pp_twr_err is None
+
+
+# ---------------------------------------------------------------------------
+# _compute_carino_contribution_for_streak
+# ---------------------------------------------------------------------------
+
+
+def test_compute_carino_contribution_basic():
+    """A single-leg streak: contrib = w × r_pos × (k_sub / k_port)."""
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0}}
+    streak = [("2020-01-01", 0.5, 100.0), ("2020-04-01", 0.5, 110.0)]
+    # date_to_nav: 100 → 105 over the period.
+    date_to_nav = {"2020-01-01": 100.0, "2020-04-01": 105.0}
+    portfolio_total_return_pct = 5.0  # 100→105
+
+    contrib = _compute_carino_contribution_for_streak(
+        "AAPL",
+        streak,
+        closes,
+        date_to_nav=date_to_nav,
+        is_current_holder=False,
+        end_date=None,
+        portfolio_total_return_pct=portfolio_total_return_pct,
+    )
+    # Manual check:
+    # r_pos_sub  = 110/100 - 1 = 0.10
+    # r_port_sub = 105/100 - 1 = 0.05
+    # k_port = ln(1.05)/0.05 ≈ 0.9759
+    # k_sub  = ln(1.05)/0.05≈ 0.9759  (same period)
+    # contrib = 0.5 × 0.10 × (0.9759/0.9759) × 100 = 5.0
+    import math as _math
+    k_port = _math.log(1.05) / 0.05
+    k_sub  = _math.log(1.05) / 0.05
+    expected = 0.5 * 0.10 * (k_sub / k_port) * 100.0
+    assert contrib is not None
+    assert contrib == pytest.approx(expected, rel=1e-6)
+
+
+def test_compute_carino_contribution_empty_streak():
+    """Returns None for an empty streak."""
+    contrib = _compute_carino_contribution_for_streak(
+        "AAPL",
+        [],
+        {},
+        date_to_nav={"2020-01-01": 100.0},
+        is_current_holder=False,
+        end_date=None,
+        portfolio_total_return_pct=5.0,
+    )
+    assert contrib is None
+
+
+def test_compute_carino_contribution_no_nav():
+    """Returns None when date_to_nav is empty."""
+    streak = [("2020-01-01", 0.5, 100.0), ("2020-04-01", 0.5, 110.0)]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0}}
+    contrib = _compute_carino_contribution_for_streak(
+        "AAPL",
+        streak,
+        closes,
+        date_to_nav={},
+        is_current_holder=False,
+        end_date=None,
+        portfolio_total_return_pct=5.0,
+    )
+    assert contrib is None
+
+
+# ---------------------------------------------------------------------------
+# PR-2a TEST-HARDENING ADDITIONS (test-engineer, 2026-06-26)
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# 1. Sold-name backward-compat (the #1b fix lock)
+#
+# compute_position_returns (flat, via _compute_flat_latest_returns) MUST include
+# a ticker that was sold at the latest rebalance (weight > 0 at prior leg,
+# weight = 0 at the last leg) — that is the "Sold row" in the Current-picks
+# table.
+#
+# compute_position_returns_per_quarter[-1] covers only weight > 0 at the latest
+# leg, so it must NOT include the sold name.
+#
+# This locks the PR-1 backward-compat semantics that the reviewer flagged as
+# silently dropped when _compute_flat_latest_returns was introduced.
+# ---------------------------------------------------------------------------
+
+
+def test_sold_name_included_in_flat_field_excluded_from_last_per_quarter():
+    """Flat field includes sold-at-latest-rebalance name; per-quarter[-1] does not.
+
+    Fixture:
+      Q0: AAPL 0.5, MSFT 0.5  (both held)
+      Q1: AAPL 0.5, MSFT 0.5  (both still held)
+      Q2: AAPL 0.5, MSFT 0.0  (MSFT sold at the latest rebalance)
+
+    compute_position_returns() is the flat field.  It must cover MSFT (sold row).
+    compute_position_returns_per_quarter()[-1] covers only current holders at Q2;
+    MSFT must be absent from it.
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5, "MSFT": 0.0}),  # MSFT sold here
+    ]
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,
+            "2020-07-01": 121.0,
+        },
+        "MSFT": {
+            "2020-01-01": 200.0,
+            "2020-04-01": 220.0,
+            "2020-07-01": 230.0,  # exit close for the sold leg
+        },
+    }
+    nav_net = [100.0, 108.0, 115.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    flat = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+
+    # The flat field (backward-compat PR-1 semantics) must include MSFT.
+    assert "MSFT" in flat, (
+        "Sold-at-latest MSFT must appear in the flat position_returns field "
+        "(Current-picks 'Sold' row); _compute_flat_latest_returns is broken"
+    )
+    # The flat field must also include the current holder AAPL.
+    assert "AAPL" in flat
+
+    # The last per-quarter map covers only current holders (weight > 0 at Q2).
+    last_per_quarter = per_quarter[-1]
+    assert "AAPL" in last_per_quarter, "Current holder AAPL must be in per_quarter[-1]"
+    assert "MSFT" not in last_per_quarter, (
+        "Sold MSFT must NOT appear in per_quarter[-1] "
+        "(per_quarter covers only weight>0 holders at that rebalance)"
+    )
+
+    # Sanity: MSFT's flat entry is computed with sold semantics (is_current=False):
+    # the streak [Q0=200, Q1=220] ends with weight=0 at Q2=230.
+    # _extract_streaks sees weight=0 at Q2 → terminates the streak at Q1 (last non-zero
+    # entry). TWR = 220/200 - 1 = 10%.
+    msft_flat = flat["MSFT"]
+    assert msft_flat.twr_pct is not None
+    assert msft_flat.twr_pct == pytest.approx(10.0, rel=1e-6), (
+        f"Sold MSFT flat TWR should be 10.0% (200→220), got {msft_flat.twr_pct}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 2. Per-quarter look-ahead / truncation — extended injection test
+#
+# The existing test_per_quarter_pit_no_lookahead checks that q0 != q2.
+# Here we add an EXPLICIT injection test: adding a price AFTER a historical
+# quarter's end-date must NOT change that quarter's TWR.
+# ---------------------------------------------------------------------------
+
+
+def test_per_quarter_injecting_future_price_does_not_change_historical_quarter():
+    """Adding a later-dated close does not alter a historical quarter's TWR.
+
+    Fixture: AAPL held across Q0 (2020-01-01) and Q1 (2020-04-01).
+    We compute TWR for quarter-0 once WITHOUT a 2020-07-01 close and once
+    WITH it.  The values must be byte-identical because Fix #3 truncates
+    the leg window to dates <= rebal_date, so the 2020-07-01 entry is
+    invisible to the Q0 computation.
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+    ]
+    # Closes WITHOUT any price after Q1's rebal date.
+    closes_without_future = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,
+        }
+    }
+    # Closes WITH a price 3 months after Q1 that would corrupt Q0 if look-ahead leaked.
+    closes_with_future = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,
+            "2020-07-01": 999.0,   # injected future price — must NOT affect Q0
+        }
+    }
+    nav_net = [100.0, 108.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    per_quarter_without = compute_position_returns_per_quarter(
+        band_legs, closes_without_future,
+        portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates,
+    )
+    per_quarter_with = compute_position_returns_per_quarter(
+        band_legs, closes_with_future,
+        portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates,
+    )
+
+    twr_q0_without = per_quarter_without[0]["AAPL"].twr_pct
+    twr_q0_with    = per_quarter_with[0]["AAPL"].twr_pct
+
+    assert twr_q0_without is not None, "Q0 TWR should be computable without future price"
+    assert twr_q0_with is not None,    "Q0 TWR should be computable with future price"
+
+    assert twr_q0_without == pytest.approx(twr_q0_with, rel=1e-9), (
+        f"Injecting a future price changed Q0 TWR from {twr_q0_without:.4f}% "
+        f"to {twr_q0_with:.4f}%.  Fix #3 (PIT look-ahead elimination) is broken."
+    )
+
+    # Also verify the baseline correctness: Q0 should mark to close on/before
+    # the NEXT rebal date (2020-04-01 = 110), so TWR = 110/100 - 1 = 10%.
+    # For quarter-0 (is_last_rebal=False), is_current=True, end_date=2020-04-01.
+    # terminal = _close_on_or_before(AAPL, 2020-04-01, closes) = 110.
+    # prices = [100, 110] → TWR = 10%.
+    assert twr_q0_without == pytest.approx(10.0, abs=0.01), (
+        f"Unexpected Q0 TWR: {twr_q0_without} (expected 10.0%)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 3. Re-entry-after-gap in a per-quarter context
+#
+# A ticker held, sold (gap), re-bought. Each quarter's streak is locally
+# truncated correctly:
+#   - The quarter during the gap (weight=0) excludes the ticker from the map.
+#   - A quarter after re-entry measures only from the RE-ENTRY date, not
+#     across the gap, because streaks[-1] gives the most-recent streak
+#     within the truncated leg window.
+# ---------------------------------------------------------------------------
+
+
+def test_re_entry_after_gap_per_quarter_streak_resets():
+    """Re-entry after a gap: the post-gap quarter measures from the re-entry date.
+
+    Fixture:
+      Q0 (2020-01-01): AAPL 0.3  — entered; price = 100
+      Q1 (2020-04-01): AAPL 0.0  — sold; gap
+      Q2 (2020-07-01): AAPL 0.3  — re-entered; price = 80
+      Q3 (2020-10-01): AAPL 0.3  — still held; price = 96
+
+    Expected invariants:
+      - per_quarter[1] does NOT contain AAPL (weight=0 at Q1 → skipped).
+      - per_quarter[2]["AAPL"].since_date == "2020-07-01"  (re-entry, not original Q0).
+      - per_quarter[3]["AAPL"].since_date == "2020-07-01"  (still the re-entry date).
+      - per_quarter[3]["AAPL"].twr_pct uses only the post-re-entry leg (80 → 96 = 20%).
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.3}),
+        ("2020-04-01", {"AAPL": 0.0}),   # sold
+        ("2020-07-01", {"AAPL": 0.3}),   # re-entered
+        ("2020-10-01", {"AAPL": 0.3}),   # latest
+    ]
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 90.0,    # exit close (not used for re-entry streak)
+            "2020-07-01": 80.0,    # re-entry price
+            "2020-10-01": 96.0,    # latest
+        }
+    }
+    nav_net = [100.0, 98.0, 102.0, 106.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01", "2020-10-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 4
+
+    # Q1: AAPL has weight=0 → must be absent from the quarter map.
+    assert "AAPL" not in per_quarter[1], (
+        "AAPL has weight=0 at Q1 (gap); it must be absent from per_quarter[1]"
+    )
+
+    # Q2: re-entry; since_date must be the RE-ENTRY date (not original Q0 entry).
+    assert "AAPL" in per_quarter[2], "AAPL re-entered at Q2 must appear in per_quarter[2]"
+    pr_q2 = per_quarter[2]["AAPL"]
+    assert pr_q2.since_date == "2020-07-01", (
+        f"After re-entry, since_date must be the re-entry date '2020-07-01', "
+        f"not the original entry.  Got: {pr_q2.since_date}"
+    )
+
+    # Q3 (latest): streak continues from re-entry; since_date unchanged.
+    pr_q3 = per_quarter[3]["AAPL"]
+    assert pr_q3.since_date == "2020-07-01", (
+        f"Q3 since_date should still be re-entry '2020-07-01', got {pr_q3.since_date}"
+    )
+
+    # Q3 TWR for the re-entry streak:
+    # Truncated legs at Q3 (is_last_rebal=True) = full history:
+    #   [(2020-01-01, 0.3), (2020-04-01, 0.0), (2020-07-01, 0.3), (2020-10-01, 0.3)]
+    # _extract_streaks sees weight=0 at Q1 → splits into two streaks.
+    # streaks[-1] = [(2020-07-01, 0.3, 80), (2020-10-01, 0.3, 96)]
+    # is_current_holder = True (last_rebal_date = 2020-10-01, all_legs[-1] has w>0)
+    # latest close = 96 (same as streak[-1] price) → terminal appended = 96
+    # prices = [80, 96, 96] → TWR = (96/80) × (96/96) - 1 = 20%.
+    assert pr_q3.twr_pct is not None
+    assert pr_q3.twr_pct == pytest.approx(20.0, rel=1e-6), (
+        f"Q3 TWR for re-entry streak (80→96) should be 20.0%, got {pr_q3.twr_pct}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 4. MWR sign convention under per-quarter truncation
+#
+# The add=+CF / trim=−CF sign convention must hold for NON-latest quarters,
+# not just the flat/latest field.  A TRIM in a historical quarter must produce
+# a negative cash flow in Modified Dietz — exactly the invariant locked by
+# test_modified_dietz_trim_then_gain_cash_flow_sign, but exercised here via
+# the end-to-end compute_position_returns_per_quarter path.
+# ---------------------------------------------------------------------------
+
+
+def test_mwr_sign_trim_in_historical_quarter():
+    """TRIM at a historical quarter rebalance produces a positive MWR (negative CF).
+
+    Fixture:
+      Q0 (2020-01-01): AAPL weight=0.2, price=100
+      Q1 (2020-04-01): AAPL weight=0.1, price=100  ← TRIM at same price
+                                                       (weight halved → negative CF)
+      Q2 (2020-07-01): AAPL weight=0.1, price=110  ← latest; asset gained +10%
+
+    For quarter-0's truncated view (legs <= Q0's rebal_date = only one entry):
+      is_current=True, end_date=Q1 date=2020-04-01
+      streak = [(2020-01-01, 0.2, 100)]
+      terminal = _close_on_or_before(AAPL, 2020-04-01) = 100  (price flat at trim)
+      flows = [(0.2×100, 0.2×100, 1.0)] → v_begin=20, v_end=20 → MWR = 0.0% (flat)
+
+    For quarter-1's truncated view (legs <= Q1's rebal_date):
+      legs = [(2020-01-01, 0.2), (2020-04-01, 0.1)]
+      streak = [(2020-01-01, 0.2, 100), (2020-04-01, 0.1, 100)]
+      is_current=True, end_date=2020-07-01
+      terminal = _close_on_or_before(AAPL, 2020-07-01) = 110
+      all_entries = [(Q0, 0.2, 100), (Q1, 0.1, 100), (terminal, 0.1, 110)]
+
+      Modified Dietz for leg i=0→1:  w0=0.2, p0=100, p1=100
+        v_begin=20, v_end=20
+      leg i=1→2:  w0=0.1, p0=100, p1=110
+        v_begin=10, v_end=11
+
+      full Modified Dietz aggregation:
+        total_v_end   = 11   (from last leg's v_end → but _modified_dietz uses
+                              flows[-1][1]=v_end of the last FLOW tuple)
+        ...
+
+    The key behavioral assertion (sign-direction lock) is:
+      MWR for Q1 must be POSITIVE (the asset gained +10%, so the return must be > 0).
+      If the TRIM's cash flow sign is inverted (positive instead of negative), the
+      numerator goes negative and MWR would be spuriously negative.
+
+    We also verify Q1 MWR is in the plausible range [0%, 15%] for a 10% asset gain
+    where half the position was trimmed at zero gain.
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.2}),
+        ("2020-04-01", {"AAPL": 0.1}),   # TRIM: weight halved at same price
+        ("2020-07-01", {"AAPL": 0.1}),   # latest; asset +10%
+    ]
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 100.0,  # flat at trim date
+            "2020-07-01": 110.0,  # +10% gain
+        }
+    }
+    nav_net = [100.0, 101.0, 106.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 3
+
+    # Q1 is a historical (non-latest) quarter containing the TRIM.
+    mwr_q1 = per_quarter[1]["AAPL"].mwr_pct
+
+    assert mwr_q1 is not None, "Q1 MWR must be computable for the TRIM fixture"
+
+    assert mwr_q1 > 0.0, (
+        f"Q1 MWR is {mwr_q1:.4f}% — spuriously negative.  "
+        "TRIM (weight decrease) should produce a negative cash flow, NOT a negative MWR "
+        "(the asset gained +10% after the trim; the return must be positive).  "
+        "Cash-flow sign convention for TRIM likely flipped."
+    )
+
+    # Plausibility upper bound: the full +10% can only be earned on the halved
+    # position (0.1 weight) for the second leg.  No position should show > 15%.
+    assert mwr_q1 < 15.0, (
+        f"Q1 MWR {mwr_q1:.4f}% > 15% on a 10% asset gain — MWR is inflated, "
+        "likely a cash-flow sign error."
+    )
