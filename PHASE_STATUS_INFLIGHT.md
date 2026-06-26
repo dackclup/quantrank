@@ -7632,6 +7632,9 @@ PR-2b adds a UI surface gated on ≥ 1 cron confirming the reconciliation counte
 **Unblocks**: Carino follow-up PR (financial-engineer re-derivation) + PR-2b (rotation-history drawers)
 
 **Gate**: quantrank-reviewer + defense-layer-auditor at Draft→Ready.
+
+---
+
 ## PR #617 — feat(compute): MoS conviction tilt shadow (Proposal C-2, in flight, 2026-06-26)
 
 **Branch**: `claude/fund-performance-rankings-f8x4o1`
@@ -7692,3 +7695,115 @@ in `frontend/lib/types.ts` + regen `frontend/lib/schema-snapshot.json`).
 at Draft→Ready.
 
 ---
+
+## PR-2c — Carino C3 reconciliation (`claude/carino-reconciliation`, 2026-06-26)
+
+**Scope**: Implements the Carino (1999) GROSS-identity contribution-to-NAV
+reconciliation gate (C3 correctness gate) for the position-return redesign.
+Builds on PR-1 (#614) + PR-2a (#618) which are merged on `main`.
+STILL SHADOW / Rule-18: no frontend read; display flip is a separate PR-2b.
+
+**Files written** (`compute/` only):
+- `compute/portfolio/backtest.py` — adds `SubPeriod` frozen dataclass (fields:
+  `date_from`, `date_to`, `start_weights_gross`, `price_relatives`,
+  `gross_sub_return`, `net_sub_return`, `cost_drag`) + `decompose: bool = False`
+  keyword arg to `build_portfolio_nav`; existing callers with default
+  `decompose=False` receive BYTE-IDENTICAL output.
+- `compute/portfolio/position_returns.py` — adds window-global Carino grid
+  (`_build_carino_grid`, `_compute_contribution_from_sub_periods`,
+  `_cost_line_contribution`); updates `compute_position_returns` with
+  `sub_periods` kwarg; `reconciliation_errors` returns 4-tuple
+  `(gross_identity_error, cost_line_residual, pp_twr_error, carino_clamp_count)`;
+  deprecated `_compute_carino_contribution_for_streak` retained as compat stub.
+- `scripts/backfill_portfolio_pit.py` — imports `SubPeriod`; calls
+  `build_portfolio_nav(decompose=True)` for adaptive NAV; `_assemble_nav`
+  now returns 7-tuple (added `sub_periods: list[SubPeriod]`); passes
+  `sub_periods` to `_compute_flat_latest_returns` + `reconciliation_errors`;
+  wires 3 new counters into `payload["meta"]`:
+  `position_return_reconciliation_max_abs_error`, `position_return_cost_line_residual`,
+  `carino_clamp_count` (+ retains `position_return_twr_vs_clientside_max_abs_pp`).
+
+**Algorithm (window-global Carino grid)**:
+- `k_t = ln(1+R^g_t)/R^g_t`; `K = ln(1+R^g_port)/R^g_port`
+- When `1+R^g_t ≤ 0`: clamp `k_t=1`, increment `carino_clamp_count`
+- `C_i = Σ_t (k_t/K) · w_{i,t} · (ρ_{i,t}−1)` (LIFETIME, not streak-scoped)
+- `__cost__` synthetic line: `C_cost = Σ_t (k_t/K)·(−δ_t)` (RAW un-rounded δ_t)
+- GROSS identity: `Σ_i C_i = R^g_port` (~1e-11 float floor)
+- NET identity: `Σ_i C^n_i + C_cost = R^n_port` (closed by un-rounded δ_t)
+- Condition C1: price relatives lifted from engine's `price_on` closure (no second price walk)
+
+**Invariant gates**: Rule 16 annotate-only N/A (no scoring change) · Rule 18 obs-first YES
+  (new counters in `meta`, no frontend read, defense UNCHANGED at 36).
+
+**Schema triple**: untouched (`backtest_pit.json` `meta` dict is hand-built, not in the Pydantic↔TS↔snapshot triple).
+
+**Verify**: ruff PASS · pytest offline GREEN — `tests/test_portfolio/test_position_returns.py` 199 tests pass (+13 from this PR) · schema_check PASS. The 3 prior 2-tuple→4-tuple `reconciliation_errors` unpacks are fixed (test-engineer, commit `e28e4056d`).
+
+**Test coverage added (+13)**: the 3 contract-change unpack fixes + 13 new behaviors —
+`_build_carino_grid` empty / zero-return-limit / `1+R≤0` clamp · `_compute_contribution_from_sub_periods`
+absent-ticker / missing-price-relative-leg · **C3 GROSS identity** `|Σ C_i − R^g_port| < 1e-9`
+(deterministic 3-ticker book + mid-window entry + a Hypothesis `@given` Dirichlet property) ·
+NET identity near-zero-δ path · `carino_clamp_count` propagation · `sub_periods=None` PR-2a compat.
+**NET cost-line honesty**: the geometric cross-term (`δ × R`, ~8e-5 at 20bps) is emitted as the
+DIAGNOSTIC counter `position_return_cost_line_residual` with NO hard assert in production — an
+inherent Carino limitation, surfaced not swallowed.
+
+**SHADOW constraint**: frontend does NOT read `contrib_nav_pts` until PR-2b adds a UI surface
+gated on ≥ 1 cron confirming the C3 reconciliation counters.
+
+**Unblocks**: PR-2b (rotation-history drawers — can now trust GROSS identity closes to ~1e-11)
+
+**Gate**: quantrank-reviewer + defense-layer-auditor at Draft→Ready.
+
+### PR-2c follow-up: per-window reconciliation fix (2026-06-26)
+
+**Bug fixed**: `reconciliation_errors()` was comparing `Σ pr.contrib_nav_pts/100` from the
+flat `_pos_returns` map (ONLY current holders + names sold at the latest rebalance — ~10
+tickers with MIXED partial attribution windows) against `R^g_port` (FULL 10-year gross NAV).
+This window-set mismatch produced `position_return_reconciliation_max_abs_error = 7.006`
+instead of the expected ~1e-11.  The Carino math was correct; the wiring paired mismatched
+position-sets.
+
+**Root cause**: the flat `position_returns` dict covers ~10 tickers whose individual
+`C_i` sums to ~+131.6% (they hold partial, mixed-entry-window lifetimes), not the full
+attribution universe that closes to R^g_port = +832%.  The identity
+`Σ_i C_i = R^g_port` holds only when `C_i` is summed over ALL tickers that EVER held
+a position in ANY sub-period.
+
+**Fix** (`compute/portfolio/position_returns.py`):
+- Replaced the buggy `contrib_sum = Σ pr.contrib_nav_pts/100` GROSS-identity leg with
+  a SubPeriod-based computation that uses two checks:
+  1. **Per-window BHB primitive**: `max_t |Σ_i w_{i,t}·(ρ_{i,t}−1) − R^g_t|` —
+     verifies the engine's Brinson-Hood-Beebower invariant for each sub-period directly
+     from `SubPeriod.start_weights_gross` / `price_relatives` / `gross_sub_return`.
+  2. **Full-period Carino chain**: `|Σ_t (k_t/K)·R^g_t − R^g_port|` — verifies the
+     multi-period geometric linking from sub-period gross returns to the total gross NAV.
+  `gross_identity_error = max(chain_err, max_window_bhb_err)` — stricter of both.
+- Fixed **cost-line residual** to use `|R^g_port + C_cost − R^n_port|` (SubPeriod-based
+  R^g_port) instead of the old `|contrib_sum + C_cost − R^n_port|` which carried the
+  same flat-map subset error.
+- Added `compute_window_contributions(sub_periods, kt_over_K)` — new public primitive
+  returning `{window_idx: {ticker: contrib_fraction}}` for the PR-2b display layer.
+  Each `result[t][ticker] = (k_t/K)·w_{i,t}·(ρ_{i,t}−1)`; missing price-relative
+  degrades to `None` (never raises); empty `sub_periods` returns `{}`.
+
+**No signature change**: `reconciliation_errors()` signature is unchanged; callers in
+`scripts/backfill_portfolio_pit.py` need no rewiring.
+
+**Verify**: `ruff check .` PASS · `tests/test_portfolio/test_position_returns.py` 58 PASS ·
+full offline suite 3078 PASS / 10 SKIP (pre-existing osap/ipca/qlib/shallow-clone).
+
+**Coverage needed (for test-engineer)**:
+- Positive 2-window fixture: build 2 SubPeriods with known weights/price-relatives;
+  assert `gross_identity_error < 1e-9` on the fixed code.
+- Negative regression guard: simulate the OLD wiring (compute flat `position_returns`
+  for a partial-history subset and sum their `contrib_nav_pts`) and assert the old
+  error `≥ 1.0` (i.e., the bug would have fired); confirms the fix addresses the root cause.
+- Cost-line identity: single SubPeriod with cost_drag > 0; assert `cost_line_residual < 1e-9`.
+- `compute_window_contributions` nominal: verify `Σ_t Σ_i result[t][i]` ≈ `R^g_port` for
+  a 2-ticker, 3-window fixture.
+- `compute_window_contributions` degradation: missing price-relative → `None` in that
+  window's dict, no raise.
+- Hypothesis Dirichlet property: random Dirichlet-weights + random price-relatives →
+  `gross_identity_error < 1e-9` (replaces the 3-ticker deterministic fixture for
+  property-based coverage; `deadline=None` on slow CI).

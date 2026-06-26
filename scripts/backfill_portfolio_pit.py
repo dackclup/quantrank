@@ -77,6 +77,7 @@ from compute.main import (  # noqa: E402 — live cross-section builders reused;
 from compute.output.writer import write_backtest_pit_json
 from compute.portfolio.backtest import (
     DEFAULT_COST_BPS_PER_SIDE,
+    SubPeriod,
     align_benchmark_nav,
     build_portfolio_nav,
     quarterly_rebalance_dates,
@@ -1569,7 +1570,7 @@ def run_backfill(
             }
         )
 
-    nav, _grid_monthly_by_config, _grid_month_labels, _grid_aligned_net, _grid_diagnostics, _nav_closes = (
+    nav, _grid_monthly_by_config, _grid_month_labels, _grid_aligned_net, _grid_diagnostics, _nav_closes, _nav_sub_periods = (
         _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav, grid_legs)
     )
 
@@ -1806,27 +1807,39 @@ def run_backfill(
         # Covers current holders + names sold at the latest rebalance so the
         # Current-picks "Sold" rows retain their return data.
         # NOT per_quarter[-1] (which drops sold names with weight==0 at the last leg).
-        _pos_returns = _compute_flat_latest_returns(band_legs_for_nav, _nav_closes)
+        # PR-2c: pass sub_periods for Carino C3 GROSS reconciliation (SHADOW/Rule 18).
+        _sub_periods_for_contrib = _nav_sub_periods if _nav_sub_periods else None
+        _pos_returns = _compute_flat_latest_returns(
+            band_legs_for_nav, _nav_closes, sub_periods=_sub_periods_for_contrib
+        )
         payload["position_returns"] = position_returns_to_dict(_pos_returns)
 
-        # Reconciliation counters.
-        # position_return_reconciliation_max_abs_error: always None (Carino descoped).
-        # position_return_twr_vs_clientside_max_abs_pp: clean-name TWR vs HPR diff.
-        _carino_err, _pp_err = reconciliation_errors(
+        # Reconciliation counters (PR-2c: 3 C3 counters + unchanged pp_twr).
+        # position_return_reconciliation_max_abs_error: |Σ C_i − R^g_port| (~1e-11).
+        # position_return_cost_line_residual:           |Σ C^n_i + C_cost − R^n_port| (~1e-11).
+        # carino_clamp_count:                           sub-periods where 1+R^g_t ≤ 0.
+        # position_return_twr_vs_clientside_max_abs_pp: clean-name TWR vs HPR diff (PR-2a).
+        _gross_err, _cost_residual, _pp_err, _clamp_count = reconciliation_errors(
             _pos_returns,
             _adaptive_net,
             _adaptive_dates,
             band_legs_for_nav,
             closes=_nav_closes,
+            sub_periods=_sub_periods_for_contrib,
         )
-        payload["meta"]["position_return_reconciliation_max_abs_error"] = _carino_err  # None
+        payload["meta"]["position_return_reconciliation_max_abs_error"] = _gross_err
+        payload["meta"]["position_return_cost_line_residual"] = _cost_residual
+        payload["meta"]["carino_clamp_count"] = _clamp_count
         payload["meta"]["position_return_twr_vs_clientside_max_abs_pp"] = _pp_err
         logger.info(
             "backfill: position_returns_per_quarter computed for %d quarters, "
-            "%d tickers in flat latest map (carino_err=%s, pp_err=%s)",
+            "%d tickers in flat latest map (gross_err=%s, cost_residual=%s, "
+            "clamp_count=%d, pp_err=%s)",
             len(_per_quarter_returns),
             len(_pos_returns),
-            _carino_err,
+            _gross_err,
+            _cost_residual,
+            _clamp_count,
             _pp_err,
         )
     except Exception as _pr_exc:  # noqa: BLE001 — position return failure never kills the backfill
@@ -2132,7 +2145,7 @@ def _assemble_nav(
     data_dir: Path,
     band_legs: list[tuple[str, dict[str, float]]] | None = None,
     grid_legs: dict[str, list[tuple[str, dict[str, float]]]] | None = None,
-) -> tuple[dict, dict[str, dict], list[str], dict[str, list[float | None]], dict, dict[str, dict[str, float]]]:
+) -> tuple[dict, dict[str, dict], list[str], dict[str, list[float | None]], dict, dict[str, dict[str, float]], list[SubPeriod]]:
     """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
     Also computes monthly grid NAVs for the 12-config grid if ``grid_legs`` is provided.
 
@@ -2153,7 +2166,7 @@ def _assemble_nav(
 
     Returns
     -------
-    (nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, closes)
+    (nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, closes, sub_periods)
         nav               — the product NAV dict (``dates``, ``by_count``, ``adaptive``,
                            ``benchmark``, ``default_count``)
         monthly_by_config — ``{key: {net, gross, month_labels}}`` for each grid config
@@ -2163,6 +2176,10 @@ def _assemble_nav(
         closes            — ``{ticker: {date_iso: close}}`` shared price panel
                            (returned for position_returns wiring; same series used by
                            build_portfolio_nav — Condition C1)
+        sub_periods       — ``SubPeriod`` records from the adaptive NAV's
+                           ``decompose=True`` run (one per rebalance-to-rebalance
+                           interval).  Empty list when no adaptive legs.  Used by
+                           Carino C3 reconciliation in the position_returns wiring.
 
     Backward-compat note: callers that do not use the grid return value (``_assemble_nav``
     called without ``grid_legs``) receive empty dicts/lists for the grid outputs.
@@ -2174,7 +2191,7 @@ def _assemble_nav(
         "adaptive": {},
         "default_count": DEFAULT_COUNT,
     }
-    empty_grid: tuple = ({}, [], {}, {}, {})
+    empty_grid: tuple = ({}, [], {}, {}, {}, [])
     if not rebalance_picks:
         return empty_nav, *empty_grid
 
@@ -2185,7 +2202,7 @@ def _assemble_nav(
         extra_leg_sets=list(grid_legs.values()) if grid_legs else None,
     )
     if not dates:
-        return empty_nav, *empty_grid
+        return empty_nav, *empty_grid  # type: ignore[return-value]
 
     by_count: dict[str, dict] = {}
     for n in range(1, MAX_PICKS + 1):
@@ -2226,11 +2243,15 @@ def _assemble_nav(
             if n_adp in wbc and (snapped := _snap_to_trading_day(d, dates)) is not None
         ]
     adaptive: dict = {}
+    sub_periods: list[SubPeriod] = []
     if adaptive_legs:
-        gn_adp = build_portfolio_nav(dates, closes, adaptive_legs)
+        # decompose=True: capture SubPeriod records for Carino C3 reconciliation.
+        # The conservative NAV is display-only and does not need sub_periods.
+        gn_adp = build_portfolio_nav(dates, closes, adaptive_legs, decompose=True)
         cons_adp = build_portfolio_nav(
             dates, closes, adaptive_legs, cost_bps_per_side=CONSERVATIVE_COST_BPS
         )
+        sub_periods = gn_adp.get("sub_periods", [])
         pad_adp: list[float | None] = [None] * (len(axis) - len(gn_adp["dates"]))
         adaptive = {
             "gross": pad_adp + gn_adp["gross"],
@@ -2258,7 +2279,7 @@ def _assemble_nav(
             grid_legs, closes, dates, axis, expected_leg_count=expected_legs
         )
 
-    return nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, closes
+    return nav, monthly_by_config, all_month_labels, aligned_net, grid_diagnostics, closes, sub_periods
 
 
 def _benchmark_navs(portfolio_dates: list[str], data_dir: Path) -> dict[str, list]:

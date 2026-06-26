@@ -21,6 +21,13 @@ Phase 7.0:
 * **Delisting** = carry-forward the last available close, then liquidate into
   the next rebalance's redistribution (a delisting is NEVER treated as a 0).
 
+The ``decompose=True`` opt-in adds a ``sub_periods`` key to the output — one
+``SubPeriod`` per rebalance-to-rebalance (and final-to-end) interval with the
+start weights, price relatives, gross/net sub-returns, and the RAW (un-rounded)
+turnover cost drag ``δ_t``.  Existing callers with ``decompose=False`` (the
+default) receive BYTE-IDENTICAL output — the flag is the only branch that adds
+``sub_periods``.
+
 The selection + weighting that PRODUCE the holdings live in ``weights.py`` and
 the backfill script; this module is deliberately scoring-agnostic so its NAV
 math is unit-testable without any market data or fundamentals.
@@ -29,6 +36,7 @@ math is unit-testable without any market data or fundamentals.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, field
 from datetime import date
 
 # Novy-Marx-Velikov 2016 large-cap low-end; the backfill also reports a
@@ -41,6 +49,58 @@ DEFAULT_COST_BPS_PER_SIDE: float = 10.0
 # 10-K deadlines; 45 covers the 10-Q and the backfill keys selection off the
 # actual ``filing_date <= as_of`` filter regardless).
 DEFAULT_FILING_LAG_DAYS: int = 45
+
+
+@dataclass(frozen=True)
+class SubPeriod:
+    """One rebalance-to-rebalance (or final-to-end) attribution interval.
+
+    Consumed by ``position_returns._compute_contribution`` via the Carino
+    (1999) linking algorithm.  All weight and price-relative data are lifted
+    directly from the engine's ``shares_gross`` / ``price_on`` carry-forward
+    path — no second price walk (Condition C1).
+
+    Fields
+    ------
+    date_from : str
+        ISO date (YYYY-MM-DD) of the START of this sub-period (a rebalance
+        date, or the first NAV date for the initial sub-period).
+    date_to : str
+        ISO date of the END of this sub-period (the NEXT rebalance date, or the
+        last NAV date for the terminal sub-period).
+    start_weights_gross : dict[str, float]
+        POST-renormalization target weights (Σ = 1 over priced names) at
+        ``date_from`` from the gross share path.  Names with no valid price on
+        ``date_from`` are omitted; the engine already redistributed their weight
+        pro-rata.
+    price_relatives : dict[str, float]
+        ``ρ_{i,t} = price(date_to) / price(date_from)`` for each held name,
+        using the same carry-forward-safe ``price_on`` closure as the engine.
+        A name whose price is unavailable at either boundary is omitted.
+    gross_sub_return : float
+        ``Π_i w_{i,t} × ρ_{i,t} − 1`` — the portfolio's gross return over this
+        sub-period.  Equals ``Σ_i w_{i,t} × (ρ_{i,t} − 1)`` by identity.
+    net_sub_return : float
+        Gross sub-return minus the cost drag ``δ_t`` (= gross − δ_t, first
+        period only since cost is applied at rebalance time, not distributed
+        across trading days; for the initial deployment the cost drag is folded
+        into NAV before the period begins).
+    cost_drag : float
+        RAW (un-rounded) turnover cost drag ``δ_t = turnover × cost_frac`` for
+        this sub-period.  The ``turnover_by_rebalance`` list in the main output
+        uses ``round(turnover, 6)``; this field retains full floating-point
+        precision so the net-identity ``Σ(net_sub) + δ_t`` closes to the float
+        floor rather than to ~1e-3 quantization error (methodology C-condition).
+        Zero for sub-periods where no rebalance occurs (terminal interval).
+    """
+
+    date_from: str
+    date_to: str
+    start_weights_gross: dict[str, float] = field(default_factory=dict)
+    price_relatives: dict[str, float] = field(default_factory=dict)
+    gross_sub_return: float = 0.0
+    net_sub_return: float = 0.0
+    cost_drag: float = 0.0
 
 
 def quarterly_rebalance_dates(
@@ -92,6 +152,7 @@ def build_portfolio_nav(
     *,
     cost_bps_per_side: float = DEFAULT_COST_BPS_PER_SIDE,
     base: float = 100.0,
+    decompose: bool = False,
 ) -> dict:
     """Build the daily gross + net NAV for a rebalanced, buy-and-hold portfolio.
 
@@ -111,12 +172,23 @@ def build_portfolio_nav(
         Per-side turnover cost in basis points (round-trip = 2x). Net NAV only.
     base:
         Rebased starting value (default 100).
+    decompose:
+        When ``True``, the returned dict additionally contains a ``sub_periods``
+        key — a list of ``SubPeriod`` objects, one per rebalance-to-rebalance
+        (and final-to-end) interval.  Each ``SubPeriod`` carries the
+        post-renormalization weights, price relatives, gross/net sub-returns,
+        and the RAW (un-rounded) cost drag ``δ_t`` for that interval.
+        Existing callers that omit this argument (``decompose=False``) receive
+        BYTE-IDENTICAL output — no ``sub_periods`` key is added, no computation
+        changes.
 
     Returns
     -------
     dict with ``dates`` (from the first rebalance onward), ``gross``, ``net``
     (both rebased to ``base``), and ``turnover_by_rebalance`` (the Sum|Dw| at
     each rebalance, first entry ~1.0 = initial deployment).
+    When ``decompose=True``, additionally contains ``sub_periods``
+    (list of ``SubPeriod``).
     """
     cost_frac = cost_bps_per_side / 10_000.0
     rebal_by_date: dict[str, dict[str, float]] = {d: dict(w) for d, w in rebalances}
@@ -141,6 +213,16 @@ def build_portfolio_nav(
     net: list[float] = []
     turnover_log: list[float] = []
 
+    # Decompose-mode tracking: sub-period boundaries + state.
+    # We record the target weights and date at each rebalance, then at the NEXT
+    # rebalance (or the final date) we compute price relatives and sub-returns.
+    _prev_rebal_date: str | None = None
+    _prev_target: dict[str, float] = {}         # POST-renorm weights at prev rebalance
+    _prev_nav_gross_before_cost: float = base    # gross NAV at prev rebalance (post-drift, pre-realloc)
+    _prev_nav_net_before_cost: float = base      # net NAV at prev rebalance (post-cost-deduct, pre-realloc)
+    _prev_cost_drag: float = 0.0                 # RAW δ_t at prev rebalance
+    sub_periods: list[SubPeriod] = []
+
     for d in dates:
         # 1) mark-to-market existing holdings at today's (carry-forward) prices
         if started:
@@ -162,6 +244,13 @@ def build_portfolio_nav(
                 nav_net = base
                 drift_n: dict[str, float] = {}
                 started = True
+                # First rebalance: record state for decompose; cost_drag=0 (initial deployment
+                # charges cost but there is no prior sub-period to close yet).
+                if decompose:
+                    _prev_rebal_date = d
+                    _prev_target = dict(target)
+                    _prev_nav_gross_before_cost = base
+                    _prev_nav_net_before_cost = base
             else:
                 valid_px = {t: px[t] for t in px if _is_valid_price(px[t])}
                 # include currently-held names' prices for drift
@@ -172,22 +261,65 @@ def build_portfolio_nav(
                 # gross has no cost so it needs no drift; only net's turnover does
                 drift_n = _drifted_weights(shares_net, valid_px)
 
+                # Close the previous sub-period before applying costs.
+                if decompose and _prev_rebal_date is not None:
+                    sub_periods.append(
+                        _build_sub_period(
+                            date_from=_prev_rebal_date,
+                            date_to=d,
+                            prev_target=_prev_target,
+                            price_on=price_on,
+                            nav_gross_start=_prev_nav_gross_before_cost,
+                            nav_gross_end=nav_gross,
+                            cost_drag=_prev_cost_drag,
+                        )
+                    )
+
             # turnover = Sum |w_target - w_drifted| (counts both sides; the net
             # cost = turnover * per-side bps == round-trip bps on the traded notional)
             keys = set(target) | set(drift_n)
             turnover = sum(abs(target.get(t, 0.0) - drift_n.get(t, 0.0)) for t in keys)
             turnover_log.append(round(turnover, 6))
 
-            nav_net *= 1.0 - turnover * cost_frac
+            # RAW cost drag (full float precision — NOT rounded to 6dp).
+            raw_cost_drag = turnover * cost_frac
+
+            nav_net *= 1.0 - raw_cost_drag
 
             # re-allocate to target weights at today's prices
             shares_gross = _shares_for(target, nav_gross, d, price_on)
             shares_net = _shares_for(target, nav_net, d, price_on)
 
+            # Update decompose state for the next sub-period.
+            if decompose:
+                _prev_rebal_date = d
+                _prev_target = dict(target)
+                _prev_nav_gross_before_cost = nav_gross
+                _prev_nav_net_before_cost = nav_net
+                _prev_cost_drag = raw_cost_drag
+
         if started:
             out_dates.append(d)
             gross.append(nav_gross)
             net.append(nav_net)
+
+    # Close the terminal sub-period (from last rebalance to end of dates).
+    if decompose and _prev_rebal_date is not None and out_dates:
+        terminal_date = out_dates[-1]
+        if terminal_date != _prev_rebal_date:
+            # Compute gross NAV at terminal date (already in gross[-1]).
+            terminal_nav_gross = gross[-1] if gross else _prev_nav_gross_before_cost
+            sub_periods.append(
+                _build_sub_period(
+                    date_from=_prev_rebal_date,
+                    date_to=terminal_date,
+                    prev_target=_prev_target,
+                    price_on=price_on,
+                    nav_gross_start=_prev_nav_gross_before_cost,
+                    nav_gross_end=terminal_nav_gross,
+                    cost_drag=0.0,  # no rebalance at the terminal boundary
+                )
+            )
 
     # Raw NAV in initial-capital units: gross[0] == base; net[0] already
     # reflects the one-time entry cost, so net stays BELOW gross by the
@@ -196,12 +328,70 @@ def build_portfolio_nav(
     # multi-timeframe chart rebases each WINDOW to 100 client-side (PR-4), and
     # the benchmark NAV is rebased to the same window start, so the comparison
     # stays honest.
-    return {
+    result: dict = {
         "dates": out_dates,
         "gross": gross,
         "net": net,
         "turnover_by_rebalance": turnover_log,
     }
+    if decompose:
+        result["sub_periods"] = sub_periods
+    return result
+
+
+def _build_sub_period(
+    date_from: str,
+    date_to: str,
+    prev_target: dict[str, float],
+    price_on,
+    nav_gross_start: float,
+    nav_gross_end: float,
+    cost_drag: float,
+) -> SubPeriod:
+    """Build a ``SubPeriod`` for the interval [``date_from``, ``date_to``].
+
+    Uses the engine's ``price_on`` closure (adjusted-close + carry-forward)
+    so price relatives are sourced from the same adjusted-close series as
+    the NAV computation (Condition C1 — no second price walk).
+
+    The gross sub-return is derived from the ratio of NAV values rather than
+    re-multiplying weights × price relatives; this guarantees
+    ``Σ w_i ρ_i == 1 + gross_sub_return`` by the engine's own arithmetic
+    (the engine IS the source of truth for NAV, not a second calculation).
+    Price relatives are computed for observability / contribution attribution.
+    """
+    # Price relatives ρ_{i,t} = p(date_to) / p(date_from), carry-forward-safe.
+    price_relatives: dict[str, float] = {}
+    for ticker in prev_target:
+        p_from = price_on(ticker, date_from)
+        p_to = price_on(ticker, date_to)
+        if _is_valid_price(p_from) and _is_valid_price(p_to):
+            price_relatives[ticker] = float(p_to) / float(p_from)  # type: ignore[arg-type]
+
+    # Gross sub-return: ratio of NAV values (engine-consistent arithmetic).
+    gross_sub_return: float
+    if nav_gross_start > 0:
+        gross_sub_return = (nav_gross_end / nav_gross_start) - 1.0
+    else:
+        # Degenerate: if start NAV is 0, compute from weights × price relatives.
+        weighted_sum = sum(
+            prev_target.get(t, 0.0) * (price_relatives.get(t, 1.0) - 1.0)
+            for t in prev_target
+        )
+        gross_sub_return = weighted_sum
+
+    # Net sub-return = gross_sub_return − cost_drag (cost deducted at rebalance).
+    net_sub_return = gross_sub_return - cost_drag
+
+    return SubPeriod(
+        date_from=date_from,
+        date_to=date_to,
+        start_weights_gross=dict(prev_target),
+        price_relatives=price_relatives,
+        gross_sub_return=gross_sub_return,
+        net_sub_return=net_sub_return,
+        cost_drag=cost_drag,
+    )
 
 
 def _portfolio_value(shares: Mapping[str, float], d: str, price_on) -> float:
