@@ -153,6 +153,32 @@ orchestrator must NOT proceed with the gated action until it's fixed.
   `next=DONE`. Finding zero errors is a valid, valuable result — don't
   manufacture nits to look thorough.
 
+## Panel mode (highest-stakes / irreversible claims)
+
+For a single verifier, one pass is enough. But for the **most expensive-to-
+undo** actions — a release tag, an irreversible destructive command, a
+production-cron-gating "the accounting equation holds" claim — a single
+verdict is itself a single point of failure (the verifier can be confidently
+wrong too). For those, the orchestrator runs a **3-lens adversarial panel**:
+it spawns this agent THREE times with distinct mandates, and acts only on the
+**majority**:
+
+- **Lens 1 — re-derivation:** verify each claim by recomputing from ground
+  truth (the default workflow above).
+- **Lens 2 — refutation:** assume each CONFIRMED claim is WRONG; actively
+  hunt for the file / commit / JSON value that breaks it. Default to REFUTED
+  when evidence is ambiguous.
+- **Lens 3 — completeness:** ignore the stated claims; ask "what claim is
+  *missing* — an unstated assumption, an un-checked side effect, a stale
+  number nobody quoted?" Surface the gap the other two won't see.
+
+Decision rule: proceed only if **≥ 2 of 3 lenses return TRUSTWORTHY** with no
+shared CRITICAL refutation; any CRITICAL REFUTED from any lens → DO-NOT-ACT
+until fixed. This is the diminishing-returns ceiling — panel mode is reserved
+for irreversible gates, NOT routine verification (cost). The orchestrator
+drives the fan-out (a subagent cannot spawn its peers); see
+`.claude/agents/TEAMS.md` §6 "Verification Panel".
+
 ## When in doubt
 
 - `CLAUDE.md` §Phase status / §Gotchas — the canonical live numbers

@@ -7986,3 +7986,62 @@ and inline comments (code + tests already at 0.05 — copy-only fix). (4) Drawer
 aligned: `motion-reduce:duration-0` → `motion-reduce:transition-none` for intra-component
 consistency with the chevron. Commit `4587c0fad`. `tsc` PASS · `next build` PASS · `vitest`
 275/275 PASS. Branch ready for PR flip-to-Ready (cron gate still applies).
+
+---
+
+## tooling — error-reduction toward ~0: consistency guard + preflight + ratchet + verification panel (in flight, 2026-06-26)
+
+**Branch**: `claude/subagents-agent-validation-n579a5` (follow-up to #621/#622)
+
+Four defense-in-depth layers to drive the SYSTEMATIC error classes toward
+~0% (literal 0 unreachable — LLMs are probabilistic; this determinizes the
+determinizable + adds independent layers + a ratchet). User ask: "ต่อยอด
+ให้ความผิดพลาดเข้าใกล้ 0%".
+
+**Layer 1 — deterministic consistency guard** (`tools/check_agent_hook_consistency.py`
++ `ci.yml` step + `tests/test_agent_hook_consistency.py`, 8 tests): derives
+every structural count from the filesystem + agent frontmatter + settings.json
+and asserts the hardcoded doc anchors (CLAUDE.md / AGENTS.md / README / CONTEXT
+/ PHASE_STATUS) match — agents (26) / opus-sonnet split (6/20) / effort split
+(24/2) / hooks (4) / flows (9) / tier sums. Catches the EXACT count-drift class
+that `docs-reviewer` (an LLM) caught 3× across #621/#622 — now deterministic,
+~0% miss, free, forever. No number lives in the guard; negative-tested (corrupt
+a count → exit 1).
+
+**Layer 2 — verification-ladder runner** (`tools/preflight.py` +
+`tests/test_preflight.py`, 7 tests): one command runs the CLAUDE.md ladder;
+cheap deterministic rungs (ruff + the 3 guards) always, heavy rungs (pytest /
+schema_check / tsc) gated on the changed surface (mirrors the ci.yml
+paths-filter; detects untracked new files; `--all` forces all). Removes the
+"forgot a rung" process-skip class locally. Honest limit: no harness pre-push
+hook, so it's opt-in; CI is the hard gate, preflight the fast local mirror.
+
+**Layer 3 — Error→regression ratchet** (CLAUDE.md §Conventions bullet +
+`docs/LESSONS_LEARNED.md` entry + §Commands ladder note): the standing rule —
+a *mechanical* error caught by anyone becomes a deterministic guard (test or
+`tools/` check) in the SAME fixing PR. LLM review is the net for *novel*
+errors, never the standing defense for mechanical ones. Layer 1 IS the first
+ratchet instance (count-drift → guard).
+
+**Layer 4 — adversarial verification panel** (agent-output-verifier.md §Panel
+mode + TEAMS.md recipe #6 + auto-proposal row): for irreversible / expensive-
+to-undo claims (release GO / destructive command / cron-gating accounting-
+equation), the orchestrator runs 3 `agent-output-verifier` lenses (re-derive ·
+refute · completeness) and acts on majority (≥2/3 TRUSTWORTHY, any CRITICAL
+REFUTED → DO-NOT-ACT). Kills the single-verifier-confidently-wrong SPOF.
+Reserved for irreversible gates (cost / diminishing returns) — routine
+verification stays a single pass.
+
+**Lockstep**: CLAUDE.md (§Conventions ratchet bullet + §Commands preflight +
+§Layout-adjacent) · AGENTS.md (deterministic-drift-guards paragraph) ·
+`docs/LESSONS_LEARNED.md` · `.claude/agents/{agent-output-verifier,README}.md`
++ `TEAMS.md`. New code is `tools/` + `tests/` only — NO compute/scoring/schema
+touched; rankings + schema triple + defense layer (36) BYTE-IDENTICAL.
+
+**Verify**: ruff PASS (tools/ + new tests) · the 2 new tools' tests 15 PASS ·
+`check_agent_hook_consistency.py` PASS + negative-tested · `ci.yml` adds 1
+guard step. Full offline pytest = CI (local env lacks `.[dev,factors]`).
+
+**Gate**: `quantrank-reviewer` (new tools/ logic) + `security-reviewer`
+(ci.yml edit) + `test-engineer` (coverage) + `docs-reviewer` +
+`phase-coordinator` Mode B at Draft→Ready.
