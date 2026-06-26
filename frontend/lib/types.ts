@@ -613,6 +613,27 @@ export type Metadata = {
   // < 5 high-conviction-eligible names (starvation canary). Signals a
   // potential scarcity event that may trigger the floor-5 fallback.
   high_conviction_below_floor?: boolean | null;
+  // Proposal E — turnover/hysteresis + liquidity-capacity SHADOW canaries
+  // (0.10.40-phase8pilot, Rule 18 observability-first). Write-only / no UI
+  // consumer this slice. Live AI-pick band/weights are byte-identical.
+  // Defense layer UNCHANGED at 36.
+  //
+  // `hysteresis_turnover_reduction_mean_pp` — mean (over all backtest
+  // rebalance legs) of the percentage-point reduction in name-turnover that
+  // the hysteresis hold-band achieves vs a stateless rebuild (Garleanu-
+  // Pedersen 2013 *JF* 68(6) no-trade region). Positive = band reduces churn.
+  // H1 gate (pre-registered): mean >= 15pp over >= 4 live rebalances.
+  // Populated by reading backtest_pit.json after the PIT-backtest refresh.
+  // Null on legacy snapshots (pre-0.10.40) or when the artifact is absent.
+  hysteresis_turnover_reduction_mean_pp?: number | null;
+  // `low_liquidity_held_count` — count of holdings in the FINAL backtest
+  // rebalance leg's banded book carrying the `low_liquidity` annotate
+  // (trailing-30d mean dollar volume < ADV_FLOOR_USD = $5M). Measures the
+  // live AI-pick basket's capacity-constraint exposure (Amihud 2002;
+  // sub-$5M = capacity tilt, NOT an alpha claim). Expected near-zero on
+  // S&P 900 books; may light up on S&P 1500 small-cap exposure.
+  // Null on legacy snapshots (pre-0.10.40) or when the artifact is absent.
+  low_liquidity_held_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
