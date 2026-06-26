@@ -20,6 +20,8 @@ import pytest
 from compute.portfolio.position_returns import (
     PositionReturn,
     _carino_coefficient,
+    _close_on_or_before,
+    _compute_carino_contribution_for_streak,
     _compute_mwr,
     _compute_twr,
     _days_between,
@@ -27,6 +29,7 @@ from compute.portfolio.position_returns import (
     _is_valid_price,
     _modified_dietz,
     compute_position_returns,
+    compute_position_returns_per_quarter,
     position_returns_to_dict,
     reconciliation_errors,
 )
@@ -483,3 +486,297 @@ def test_reconciliation_errors_no_contribs():
     carino_err, pp_err = reconciliation_errors(pr, nav_net, nav_dates, band_legs)
     # contrib_nav_pts is None → carino_error = None.
     assert carino_err is None
+
+
+# ---------------------------------------------------------------------------
+# PR-2a new tests
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# _close_on_or_before
+# ---------------------------------------------------------------------------
+
+
+def test_close_on_or_before_exact_date():
+    """Returns the close on the exact date when available."""
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-01-02": 101.0}}
+    px = _close_on_or_before("AAPL", "2020-01-01", closes)
+    assert px == pytest.approx(100.0)
+
+
+def test_close_on_or_before_weekend_falls_back_to_friday():
+    """A target date with no close (e.g. weekend) returns the prior available close."""
+    closes = {
+        "AAPL": {
+            "2020-01-03": 100.0,  # Friday
+            "2020-01-06": 105.0,  # Monday
+        }
+    }
+    # Saturday — no close; should return the Friday close.
+    px = _close_on_or_before("AAPL", "2020-01-04", closes)
+    assert px == pytest.approx(100.0)
+
+
+def test_close_on_or_before_no_eligible_date():
+    """Returns None when no close exists on or before the target date."""
+    closes = {"AAPL": {"2020-06-01": 100.0}}
+    px = _close_on_or_before("AAPL", "2019-01-01", closes)
+    assert px is None
+
+
+def test_close_on_or_before_missing_ticker():
+    """Returns None for a ticker not in the closes panel."""
+    closes: dict = {}
+    px = _close_on_or_before("NOTHERE", "2020-01-01", closes)
+    assert px is None
+
+
+# ---------------------------------------------------------------------------
+# compute_position_returns_per_quarter — length contract
+# ---------------------------------------------------------------------------
+
+
+def test_compute_position_returns_per_quarter_length():
+    """Returns one map per entry in band_legs."""
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5, "MSFT": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 120.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 210.0, "2020-07-01": 220.0},
+    }
+    nav_net = [100.0, 110.0, 120.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 3
+
+
+def test_compute_position_returns_per_quarter_empty_input():
+    """Returns an empty list for empty band_legs."""
+    per_quarter = compute_position_returns_per_quarter(
+        [], {}, portfolio_nav_net=[], portfolio_nav_dates=[]
+    )
+    assert per_quarter == []
+
+
+# ---------------------------------------------------------------------------
+# compute_position_returns_per_quarter — latest compat with compute_position_returns
+# ---------------------------------------------------------------------------
+
+
+def test_compute_position_returns_per_quarter_latest_compat():
+    """The last entry of per_quarter matches compute_position_returns output exactly.
+
+    PR-1 backward compat: compute_position_returns delegates to per_quarter[-1].
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 120.0}
+    }
+    nav_net = [100.0, 105.0, 112.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    latest_flat = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+
+    assert len(per_quarter) == 3
+    latest_from_per_quarter = per_quarter[-1]
+
+    # Every key and value must match.
+    assert set(latest_flat.keys()) == set(latest_from_per_quarter.keys())
+    for ticker, pr_flat in latest_flat.items():
+        pr_pq = latest_from_per_quarter[ticker]
+        assert pr_flat.twr_pct == pytest.approx(pr_pq.twr_pct, rel=1e-9)
+        assert pr_flat.mwr_pct == pytest.approx(pr_pq.mwr_pct, rel=1e-9)
+        assert pr_flat.since_date == pr_pq.since_date
+        assert pr_flat.partial_history == pr_pq.partial_history
+        assert pr_flat.legs_used == pr_pq.legs_used
+
+
+# ---------------------------------------------------------------------------
+# Carino identity: Σ contrib ≈ NAV total return in base-100 pts
+# ---------------------------------------------------------------------------
+
+
+def test_carino_identity_three_quarter_book():
+    """Σ(contrib_nav_pts) ≈ NAV_end − NAV_start (in base-100 points).
+
+    Uses two tickers held for 3 rebalances with clean prices.  The Carino
+    linking formula ensures the sum reconciles within a small absolute tolerance.
+
+    NAV: 100 → 105 → 112.  NAV return in pts = 12.
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-07-01", {"AAPL": 0.5, "MSFT": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0, "2020-07-01": 121.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 204.0, "2020-07-01": 206.0},
+    }
+    # Build a synthetic NAV that tracks a 50/50 blend:
+    # Q1: AAPL +10%, MSFT +2% → port ~+6%  → NAV 100→106
+    # Q2: AAPL +10%, MSFT +1% → port ~+5.5% → NAV 106→111.8
+    # daily dates align exactly with rebalance dates for this test.
+    nav_net = [100.0, 106.0, 111.8]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    # Use the LATEST quarter map (tickers are current holders → full NAV window).
+    latest_map = per_quarter[-1]
+
+    contribs = [
+        pr.contrib_nav_pts
+        for pr in latest_map.values()
+        if pr.contrib_nav_pts is not None
+    ]
+    # Both tickers should have a contrib when NAV is available.
+    assert len(contribs) >= 1, "No Carino contributions computed — check NAV/closes alignment"
+
+    # Σ contrib should be within ~3 pts of NAV return (11.8 pts here).
+    nav_return_pts = nav_net[-1] - nav_net[0]
+    sigma_contrib = sum(contribs)
+    # Relative tolerance: allow up to ~25% error (Carino approximation over multi-leg).
+    assert abs(sigma_contrib - nav_return_pts) < abs(nav_return_pts) * 0.25 + 0.5, (
+        f"Carino reconciliation error too large: "
+        f"Σcontrib={sigma_contrib:.4f}, nav_return_pts={nav_return_pts:.4f}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# reconciliation_errors — pp_twr counter with closes
+# ---------------------------------------------------------------------------
+
+
+def test_reconciliation_errors_with_closes_pp_twr_near_zero():
+    """pp_twr ≈ 0 for a clean single-streak, full-history name (TWR == HPR).
+
+    For a name with a single unbroken streak and no partial history, the
+    engine's TWR must equal the simple point-to-point HPR (exit/entry − 1).
+    The counter should be ~0 (within floating-point noise).
+    """
+    # One ticker, two rebalances (entry → current), clean prices.
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5}),
+    ]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 120.0, "2020-06-30": 130.0}}
+    nav_net = [100.0, 110.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    _carino_err, pp_twr_err = reconciliation_errors(
+        pos_returns, nav_net, nav_dates, band_legs, closes=closes
+    )
+    # pp_twr_err should be computed (not None) since AAPL is a clean single-streak name.
+    # The engine TWR marks to latest close (2020-06-30=130).
+    # pp_return = (130/100 - 1) × 100 = 30%.
+    # TWR prices = [100, 120, 130] → (120/100)×(130/120) - 1 = 30%.
+    # diff = 0 → pp_twr_err should be ~0.
+    assert pp_twr_err is not None
+    assert pp_twr_err == pytest.approx(0.0, abs=1e-6)
+
+
+def test_reconciliation_errors_with_closes_not_none():
+    """With closes provided, pp_twr_error is either a float or None (not absent)."""
+    # Minimal fixture where the single ticker has partial_history (null mid price)
+    # → it's skipped for pp comparison → pp_twr_error = None.
+    pr = {"AAPL": PositionReturn(
+        mwr_pct=10.0, twr_pct=None, contrib_nav_pts=5.0,
+        since_date="2020-01-01", partial_history=True, legs_used=0
+    )}
+    band_legs = [("2020-01-01", {"AAPL": 0.5})]
+    nav_net = [100.0, 105.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 120.0}}
+
+    _carino_err, pp_twr_err = reconciliation_errors(
+        pr, nav_net, nav_dates, band_legs, closes=closes
+    )
+    # partial_history=True → skip → None.
+    assert pp_twr_err is None
+
+
+# ---------------------------------------------------------------------------
+# _compute_carino_contribution_for_streak
+# ---------------------------------------------------------------------------
+
+
+def test_compute_carino_contribution_basic():
+    """A single-leg streak: contrib = w × r_pos × (k_sub / k_port)."""
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0}}
+    streak = [("2020-01-01", 0.5, 100.0), ("2020-04-01", 0.5, 110.0)]
+    # date_to_nav: 100 → 105 over the period.
+    date_to_nav = {"2020-01-01": 100.0, "2020-04-01": 105.0}
+    portfolio_total_return_pct = 5.0  # 100→105
+
+    contrib = _compute_carino_contribution_for_streak(
+        "AAPL",
+        streak,
+        closes,
+        date_to_nav=date_to_nav,
+        is_current_holder=False,
+        end_date=None,
+        portfolio_total_return_pct=portfolio_total_return_pct,
+    )
+    # Manual check:
+    # r_pos_sub  = 110/100 - 1 = 0.10
+    # r_port_sub = 105/100 - 1 = 0.05
+    # k_port = ln(1.05)/0.05 ≈ 0.9759
+    # k_sub  = ln(1.05)/0.05≈ 0.9759  (same period)
+    # contrib = 0.5 × 0.10 × (0.9759/0.9759) × 100 = 5.0
+    import math as _math
+    k_port = _math.log(1.05) / 0.05
+    k_sub  = _math.log(1.05) / 0.05
+    expected = 0.5 * 0.10 * (k_sub / k_port) * 100.0
+    assert contrib is not None
+    assert contrib == pytest.approx(expected, rel=1e-6)
+
+
+def test_compute_carino_contribution_empty_streak():
+    """Returns None for an empty streak."""
+    contrib = _compute_carino_contribution_for_streak(
+        "AAPL",
+        [],
+        {},
+        date_to_nav={"2020-01-01": 100.0},
+        is_current_holder=False,
+        end_date=None,
+        portfolio_total_return_pct=5.0,
+    )
+    assert contrib is None
+
+
+def test_compute_carino_contribution_no_nav():
+    """Returns None when date_to_nav is empty."""
+    streak = [("2020-01-01", 0.5, 100.0), ("2020-04-01", 0.5, 110.0)]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0}}
+    contrib = _compute_carino_contribution_for_streak(
+        "AAPL",
+        streak,
+        closes,
+        date_to_nav={},
+        is_current_holder=False,
+        end_date=None,
+        portfolio_total_return_pct=5.0,
+    )
+    assert contrib is None

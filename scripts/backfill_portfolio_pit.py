@@ -83,7 +83,7 @@ from compute.portfolio.backtest import (
 )
 from compute.portfolio.pit_fundamentals import pit_history_rows, pit_snapshot_fields
 from compute.portfolio.position_returns import (
-    compute_position_returns,
+    compute_position_returns_per_quarter,
     position_returns_to_dict,
     reconciliation_errors,
 )
@@ -1698,42 +1698,76 @@ def run_backfill(
         "nav": nav,
     }
 
-    # PR-1 (shadow/obs-first, Rule 18): per-position return attribution.
-    # Computes MWR / TWR / Carino-linked contribution for every holding that
-    # appears in band_legs_for_nav.  Emitted as:
-    #   payload["position_returns"]   — {ticker: {mwr_pct, twr_pct, contrib_nav_pts,
-    #                                             since_date, partial_history, legs_used}}
-    #   payload["meta"]["position_return_reconciliation_max_abs_error"]
-    #   payload["meta"]["position_return_twr_vs_clientside_max_abs_pp"]
-    # SHADOW-ONLY in PR-1: frontend does NOT read these fields until PR-2 adds a UI
-    # surface gated on ≥ 1 cron confirming the reconciliation counters.
-    # Graceful-degradation: any failure leaves the block absent rather than killing
-    # the backfill (Rule 18).
+    # PR-2a (shadow/obs-first, Rule 18): per-position return attribution — per-quarter.
+    # PR-2a extends PR-1 (#614) with two improvements:
+    #   1. Per-quarter generalization: compute one {ticker: PositionReturn} map for
+    #      EVERY historical rebalance and inject it as
+    #      rebalances[i]["position_returns"] (enabling the PR-2b rotation-history drawers).
+    #   2. Carino (1999) reconciliation: contrib_nav_pts is now populated using the daily
+    #      NAV series, so Σ(contrib_nav_pts) ≈ NAV_end − NAV_start (condition C3,
+    #      verified post-merge via backfill dispatch).
+    #   3. TWR vs client-side: reconciliation_errors now receives closes so it can
+    #      compute the pp_twr counter (previously always None).
+    # Backward compat: payload["position_returns"] still holds the LATEST rebalance map
+    # (byte-identical to PR-1 for the meta counter consumers).
+    # SHADOW-ONLY: frontend does NOT read position_returns until PR-2b adds a UI surface
+    # gated on ≥ 1 cron confirming the reconciliation counters.
+    # Graceful-degradation: any failure leaves the blocks absent (Rule 18).
     try:
         _adaptive_net = nav.get("adaptive", {}).get("net", [])
         _adaptive_dates = nav.get("dates", [])
-        _pos_returns = compute_position_returns(
+
+        # Compute per-quarter maps for ALL rebalances.
+        _per_quarter_returns = compute_position_returns_per_quarter(
             band_legs_for_nav,
             _nav_closes,
             portfolio_nav_net=_adaptive_net,
             portfolio_nav_dates=_adaptive_dates,
         )
+
+        # Inject per-rebalance position_returns into each rebalances_out entry.
+        # The length of _per_quarter_returns matches band_legs_for_nav (one map per
+        # rebalance); rebalances_out may be shorter if early rebalances were skipped
+        # (no picks), so we align by rebalance date.
+        _band_dates = [d for d, _ in band_legs_for_nav]
+        _rebal_date_to_quarter_idx: dict[str, int] = {
+            d: i for i, d in enumerate(_band_dates)
+        }
+        for _rebal_entry in rebalances_out:
+            _rd = _rebal_entry.get("date")
+            _qidx = _rebal_date_to_quarter_idx.get(_rd, -1)
+            if 0 <= _qidx < len(_per_quarter_returns):
+                _rebal_entry["position_returns"] = position_returns_to_dict(
+                    _per_quarter_returns[_qidx]
+                )
+
+        # Keep the top-level payload["position_returns"] as the LATEST-quarter map
+        # for backward compat with consumers that read the flat top-level field.
+        _pos_returns = _per_quarter_returns[-1] if _per_quarter_returns else {}
         payload["position_returns"] = position_returns_to_dict(_pos_returns)
+
+        # Reconciliation counters (PR-2a: now passes closes for pp_twr computation).
         _carino_err, _pp_err = reconciliation_errors(
-            _pos_returns, _adaptive_net, _adaptive_dates, band_legs_for_nav
+            _pos_returns,
+            _adaptive_net,
+            _adaptive_dates,
+            band_legs_for_nav,
+            closes=_nav_closes,
         )
         payload["meta"]["position_return_reconciliation_max_abs_error"] = _carino_err
         payload["meta"]["position_return_twr_vs_clientside_max_abs_pp"] = _pp_err
         logger.info(
-            "backfill: position_returns computed for %d tickers "
-            "(carino_err=%s, pp_err=%s)",
+            "backfill: position_returns_per_quarter computed for %d quarters, "
+            "%d tickers in latest quarter (carino_err=%s, pp_err=%s)",
+            len(_per_quarter_returns),
             len(_pos_returns),
             _carino_err,
             _pp_err,
         )
     except Exception as _pr_exc:  # noqa: BLE001 — position return failure never kills the backfill
         logger.warning(
-            "backfill: compute_position_returns failed: %s — position_returns will be absent",
+            "backfill: compute_position_returns_per_quarter failed: %s — "
+            "position_returns will be absent",
             _pr_exc,
         )
 
