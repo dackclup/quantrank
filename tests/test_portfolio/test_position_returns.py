@@ -18,14 +18,20 @@ from __future__ import annotations
 import math
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
+from compute.portfolio.backtest import SubPeriod
 from compute.portfolio.position_returns import (
     PositionReturn,
+    _build_carino_grid,
     _carino_coefficient,
     _close_on_or_before,
     _compute_carino_contribution_for_streak,
+    _compute_contribution_from_sub_periods,
     _compute_mwr,
     _compute_twr,
+    _cost_line_contribution,
     _days_between,
     _extract_streaks,
     _is_valid_price,
@@ -485,9 +491,13 @@ def test_reconciliation_errors_no_contribs():
     nav_net = [100.0, 110.0]
     nav_dates = ["2020-01-01", "2020-04-01"]
 
-    carino_err, pp_err = reconciliation_errors(pr, nav_net, nav_dates, band_legs)
-    # contrib_nav_pts is None → carino_error = None.
-    assert carino_err is None
+    gross_err, cost_residual, pp_err, clamp_count = reconciliation_errors(
+        pr, nav_net, nav_dates, band_legs
+    )
+    # sub_periods=None → gross_err=None, cost_residual=None, clamp_count=0.
+    assert gross_err is None
+    assert cost_residual is None
+    assert clamp_count == 0
 
 
 # ---------------------------------------------------------------------------
@@ -744,7 +754,7 @@ def test_reconciliation_errors_with_closes_pp_twr_near_zero():
     pos_returns = compute_position_returns(
         band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
     )
-    _carino_err, pp_twr_err = reconciliation_errors(
+    _gross_err, _cost_residual, pp_twr_err, _clamp = reconciliation_errors(
         pos_returns, nav_net, nav_dates, band_legs, closes=closes
     )
     # pp_twr_err should be computed (not None) since AAPL is a clean single-streak name.
@@ -769,7 +779,7 @@ def test_reconciliation_errors_with_closes_not_none():
     nav_dates = ["2020-01-01", "2020-04-01"]
     closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 120.0}}
 
-    _carino_err, pp_twr_err = reconciliation_errors(
+    _gross_err, _cost_residual, pp_twr_err, _clamp = reconciliation_errors(
         pr, nav_net, nav_dates, band_legs, closes=closes
     )
     # partial_history=True → skip → None.
@@ -1169,4 +1179,589 @@ def test_mwr_sign_trim_in_historical_quarter():
     assert mwr_q1 < 15.0, (
         f"Q1 MWR {mwr_q1:.4f}% > 15% on a 10% asset gain — MWR is inflated, "
         "likely a cash-flow sign error."
+    )
+
+
+# ---------------------------------------------------------------------------
+# PR-2c (Carino C3) — new tests (test-engineer, 2026-06-26)
+# ---------------------------------------------------------------------------
+#
+# Coverage behaviors 1-12 + 1 Hypothesis property for the C3 GROSS identity.
+# All tests are offline, deterministic, no network.
+# ---------------------------------------------------------------------------
+
+
+def _sub_period(
+    date_from: str,
+    date_to: str,
+    weights: dict[str, float],
+    price_relatives: dict[str, float],
+    gross_sub_return: float,
+    *,
+    cost_drag: float = 0.0,
+) -> SubPeriod:
+    """Builder for a synthetic SubPeriod fixture."""
+    net_sub_return = gross_sub_return - cost_drag
+    return SubPeriod(
+        date_from=date_from,
+        date_to=date_to,
+        start_weights_gross=weights,
+        price_relatives=price_relatives,
+        gross_sub_return=gross_sub_return,
+        net_sub_return=net_sub_return,
+        cost_drag=cost_drag,
+    )
+
+
+# ---------------------------------------------------------------------------
+# 1. _build_carino_grid: empty sub_periods → ([], 1.0, 0)
+# ---------------------------------------------------------------------------
+
+
+def test_build_carino_grid_empty_sub_periods():
+    """Empty sub_periods list → kt_over_K=[], K=1.0, clamp_count=0."""
+    kt_over_K, K, clamp_count = _build_carino_grid([])
+    assert kt_over_K == []
+    assert K == pytest.approx(1.0)
+    assert clamp_count == 0
+
+
+# ---------------------------------------------------------------------------
+# 2. _build_carino_grid: zero-gross-return sub-period → k_t=1, ratio=1/K
+# ---------------------------------------------------------------------------
+
+
+def test_build_carino_grid_zero_gross_return_sub_period():
+    """A sub-period with gross_sub_return=0 → k_t uses the limit k_t=1.0.
+
+    The Carino coefficient for R=0 is defined as the L'Hopital limit = 1.0.
+    The ratio k_t/K must be well-defined (no NaN, no division by zero).
+    """
+    sp = _sub_period(
+        "2020-01-01",
+        "2020-04-01",
+        {"AAPL": 1.0},
+        {"AAPL": 1.0},   # price relative = 1 → gross return = 0
+        gross_sub_return=0.0,
+    )
+    kt_over_K, K, clamp_count = _build_carino_grid([sp])
+    assert len(kt_over_K) == 1
+    assert kt_over_K[0] == kt_over_K[0]   # not NaN
+    assert math.isfinite(kt_over_K[0])
+    assert clamp_count == 0
+
+
+# ---------------------------------------------------------------------------
+# 3. _build_carino_grid: 1+R^g_t ≤ 0 → clamp_count=1, no NaN
+# ---------------------------------------------------------------------------
+
+
+def test_build_carino_grid_total_loss_sub_period_clamps():
+    """A sub-period with 1+R^g_t ≤ 0 increments clamp_count and stays finite.
+
+    The degenerate guard clamps k_t=1 instead of computing ln(non-positive).
+    Two sub-periods: one normal (+20%), one total loss (−100%).
+    """
+    sp_normal = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 1.0}, {"AAPL": 1.2},
+        gross_sub_return=0.2,
+    )
+    sp_loss = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": 1.0}, {"AAPL": 0.0},
+        gross_sub_return=-1.0,   # 1 + R = 0 → degenerate
+    )
+    kt_over_K, K, clamp_count = _build_carino_grid([sp_normal, sp_loss])
+    assert clamp_count == 1
+    assert len(kt_over_K) == 2
+    for ratio in kt_over_K:
+        assert math.isfinite(ratio), f"kt_over_K contains non-finite value: {ratio}"
+
+
+# ---------------------------------------------------------------------------
+# 4. _compute_contribution_from_sub_periods: absent ticker → 0.0
+# ---------------------------------------------------------------------------
+
+
+def test_compute_contribution_absent_ticker():
+    """A ticker not present in any sub-period's weights contributes exactly 0.0."""
+    sp = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 0.5, "MSFT": 0.5},
+        {"AAPL": 1.1, "MSFT": 1.05},
+        gross_sub_return=0.075,
+    )
+    kt_over_K, _K, _ = _build_carino_grid([sp])
+    contrib = _compute_contribution_from_sub_periods(
+        "GOOG",                      # not in any sub-period
+        {},                          # ticker_legs empty for GOOG
+        [sp],
+        kt_over_K,
+    )
+    assert contrib == pytest.approx(0.0)
+
+
+# ---------------------------------------------------------------------------
+# 5. _compute_contribution_from_sub_periods: missing price_relative → leg skipped
+# ---------------------------------------------------------------------------
+
+
+def test_compute_contribution_missing_price_relative_leg_skipped():
+    """A sub-period with the ticker's price_relative absent is skipped silently.
+
+    The ticker has weight > 0 in the sub-period's start_weights_gross but no
+    entry in price_relatives (price unavailable at that boundary).  The leg
+    must be skipped — no crash, and the contribution is 0 for that leg.
+    """
+    sp = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 0.5},              # AAPL has weight
+        {},                          # but NO price_relative for AAPL
+        gross_sub_return=0.0,
+    )
+    kt_over_K, _K, _ = _build_carino_grid([sp])
+    # Should not raise; contribution must be 0.0 (skipped leg).
+    contrib = _compute_contribution_from_sub_periods(
+        "AAPL",
+        {"2020-01-01": 0.5},
+        [sp],
+        kt_over_K,
+    )
+    assert contrib == pytest.approx(0.0)
+
+
+# ---------------------------------------------------------------------------
+# 6. C3 GROSS identity: Σ_i C_i == R^g_port (to 1e-9)
+# ---------------------------------------------------------------------------
+
+
+def test_c3_gross_identity_three_ticker_two_sub_period():
+    """C3 gate: Σ position contributions closes to R^g_port to within 1e-9.
+
+    Hand-built 3-ticker × 2-sub-period book with known numbers.
+    Sub-period 1: AAPL +20%, MSFT +10%, GOOG +5%  (equal 1/3 weights each)
+    Sub-period 2: AAPL +5%,  MSFT −2%,  GOOG +8%  (equal 1/3 weights each)
+
+    R^g_t[0] = (1/3)(0.20 + 0.10 + 0.05) = 0.1167
+    R^g_t[1] = (1/3)(0.05 − 0.02 + 0.08) = 0.0367
+    R^g_port  = (1 + R^g_t[0])(1 + R^g_t[1]) − 1
+    """
+    w = 1.0 / 3.0
+    r0_aapl, r0_msft, r0_goog = 0.20, 0.10, 0.05
+    r1_aapl, r1_msft, r1_goog = 0.05, -0.02, 0.08
+
+    gross0 = w * r0_aapl + w * r0_msft + w * r0_goog
+    gross1 = w * r1_aapl + w * r1_msft + w * r1_goog
+    R_port_gross = (1.0 + gross0) * (1.0 + gross1) - 1.0
+
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": w, "MSFT": w, "GOOG": w},
+        {"AAPL": 1.0 + r0_aapl, "MSFT": 1.0 + r0_msft, "GOOG": 1.0 + r0_goog},
+        gross_sub_return=gross0,
+    )
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": w, "MSFT": w, "GOOG": w},
+        {"AAPL": 1.0 + r1_aapl, "MSFT": 1.0 + r1_msft, "GOOG": 1.0 + r1_goog},
+        gross_sub_return=gross1,
+    )
+
+    kt_over_K, _K, _ = _build_carino_grid([sp0, sp1])
+
+    ticker_legs = {"2020-01-01": w, "2020-04-01": w}
+    c_aapl = _compute_contribution_from_sub_periods("AAPL", ticker_legs, [sp0, sp1], kt_over_K)
+    c_msft = _compute_contribution_from_sub_periods("MSFT", ticker_legs, [sp0, sp1], kt_over_K)
+    c_goog = _compute_contribution_from_sub_periods("GOOG", ticker_legs, [sp0, sp1], kt_over_K)
+
+    gross_sum = c_aapl + c_msft + c_goog
+    error = abs(gross_sum - R_port_gross)
+    assert error < 1e-9, (
+        f"C3 GROSS identity violated: |Σ_i C_i − R^g_port| = {error:.2e} "
+        f"(Σ={gross_sum:.12f}, R^g={R_port_gross:.12f})"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 7. NET identity: Σ_i C^n_i + C_cost == R^n_port (to 1e-9)
+# ---------------------------------------------------------------------------
+
+
+def test_c3_net_identity_with_cost_drag():
+    """NET identity: Σ position gross-contributions + C_cost closes to R^n_port.
+
+    The Carino (1999) net identity reads:
+        Σ_i C_i + C_cost = R^n_port
+    where:
+        C_i    = position gross contribution (Σ_t (k_t/K) × w_it × (ρ_it − 1))
+        C_cost = Σ_t (k_t/K) × (−δ_t)           (synthetic cost line)
+
+    With geometric linking, this identity closes EXACTLY only when cost_drag δ_t
+    is zero (the cross-term δ_t × R^g_{t+1} is a second-order approximation error
+    of O(δ × R)).  This test uses δ_t so small (1e-12) that the cross-term is
+    below float epsilon, verifying the un-rounded-δ_t path without the
+    geometric cross-term noise.
+
+    For non-trivial cost drag, the production code emits the residual as a
+    DIAGNOSTIC counter (position_return_cost_line_residual) and does NOT assert
+    <1e-9 — that tolerance only applies when δ_t ≈ 0.
+    """
+    w = 0.5
+    r0 = 0.10   # both tickers same gross sub-return for sub-period 0
+    r1 = 0.08   # both tickers same gross sub-return for sub-period 1
+    # Use a cost drag small enough that the second-order cross-term
+    # delta0 * gross1 is below 1e-14 (float epsilon territory).
+    delta0 = 1e-14
+    delta1 = 0.0
+
+    gross0 = w * r0 + w * r0
+    gross1 = w * r1 + w * r1
+
+    net0 = gross0 - delta0
+    net1 = gross1 - delta1
+    R_net = (1 + net0) * (1 + net1) - 1.0
+
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": w, "MSFT": w},
+        {"AAPL": 1.0 + r0, "MSFT": 1.0 + r0},
+        gross_sub_return=gross0,
+        cost_drag=delta0,
+    )
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": w, "MSFT": w},
+        {"AAPL": 1.0 + r1, "MSFT": 1.0 + r1},
+        gross_sub_return=gross1,
+        cost_drag=delta1,
+    )
+
+    kt_over_K, _K, _ = _build_carino_grid([sp0, sp1])
+    ticker_legs = {"2020-01-01": w, "2020-04-01": w}
+
+    c_aapl = _compute_contribution_from_sub_periods("AAPL", ticker_legs, [sp0, sp1], kt_over_K)
+    c_msft = _compute_contribution_from_sub_periods("MSFT", ticker_legs, [sp0, sp1], kt_over_K)
+    c_cost = _cost_line_contribution([sp0, sp1], kt_over_K)
+
+    net_sum = c_aapl + c_msft + c_cost
+    error = abs(net_sum - R_net)
+    assert error < 1e-9, (
+        f"C3 NET identity violated with near-zero δ_t: |Σ_i C_i + C_cost − R^n_port| = {error:.2e} "
+        f"(Σ_gross={c_aapl + c_msft:.12f}, C_cost={c_cost:.12f}, "
+        f"net_sum={net_sum:.12f}, R^n={R_net:.12f})"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 8. carino_clamp_count propagates into reconciliation_errors return
+# ---------------------------------------------------------------------------
+
+
+def test_carino_clamp_count_propagates_via_reconciliation_errors():
+    """carino_clamp_count in the 4-tuple matches the clamp count from _build_carino_grid.
+
+    When a sub-period has 1+R^g_t ≤ 0, clamp_count > 0 must appear in
+    reconciliation_errors' 4th return element.
+    """
+    sp_normal = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 1.0}, {"AAPL": 1.1},
+        gross_sub_return=0.1,
+    )
+    sp_loss = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": 1.0}, {"AAPL": 0.0},
+        gross_sub_return=-1.0,   # triggers clamp
+    )
+
+    # Build position_returns with contrib_nav_pts computed via sub_periods.
+    band_legs = [
+        ("2020-01-01", {"AAPL": 1.0}),
+        ("2020-04-01", {"AAPL": 1.0}),
+    ]
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0}}
+    nav_net = [100.0, 110.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes,
+        portfolio_nav_net=nav_net,
+        portfolio_nav_dates=nav_dates,
+        sub_periods=[sp_normal, sp_loss],
+    )
+    gross_err, cost_residual, pp_err, clamp_count = reconciliation_errors(
+        pos_returns, nav_net, nav_dates, band_legs,
+        sub_periods=[sp_normal, sp_loss],
+    )
+    assert clamp_count == 1, (
+        f"Expected clamp_count=1 for one total-loss sub-period, got {clamp_count}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 9. reconciliation_errors(sub_periods=None) → gross_err=None, cost_residual=None, clamp=0
+# ---------------------------------------------------------------------------
+
+
+def test_reconciliation_errors_sub_periods_none_returns_none_gross_fields():
+    """When sub_periods=None, gross_identity_error and cost_line_residual are None.
+
+    This is the PR-2a backward-compat path (no Carino grid computed).
+    The 4-tuple must be (None, None, <pp_twr_or_None>, 0).
+    """
+    pr = {"AAPL": PositionReturn(
+        mwr_pct=5.0, twr_pct=5.0, contrib_nav_pts=None,
+        since_date="2020-01-01", partial_history=False, legs_used=1,
+    )}
+    band_legs = [("2020-01-01", {"AAPL": 1.0})]
+    nav_net = [100.0, 105.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    gross_err, cost_residual, pp_twr_err, clamp_count = reconciliation_errors(
+        pr, nav_net, nav_dates, band_legs, sub_periods=None
+    )
+    assert gross_err is None, f"gross_err must be None when sub_periods=None, got {gross_err}"
+    assert cost_residual is None, (
+        f"cost_residual must be None when sub_periods=None, got {cost_residual}"
+    )
+    assert clamp_count == 0
+
+
+# ---------------------------------------------------------------------------
+# 10. compute_position_returns WITH sub_periods → all tickers get non-None contrib_nav_pts
+# ---------------------------------------------------------------------------
+
+
+def test_compute_position_returns_with_sub_periods_populates_contrib_nav_pts():
+    """When sub_periods is provided, every ticker in the result has non-None contrib_nav_pts."""
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 210.0},
+    }
+    nav_net = [100.0, 105.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    gross0 = 0.5 * 0.10 + 0.5 * 0.05   # AAPL +10%, MSFT +5%
+    sp = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 0.5, "MSFT": 0.5},
+        {"AAPL": 1.10, "MSFT": 1.05},
+        gross_sub_return=gross0,
+    )
+
+    pos_returns = compute_position_returns(
+        band_legs, closes,
+        portfolio_nav_net=nav_net,
+        portfolio_nav_dates=nav_dates,
+        sub_periods=[sp],
+    )
+
+    for ticker, pr in pos_returns.items():
+        assert pr.contrib_nav_pts is not None, (
+            f"Expected non-None contrib_nav_pts for {ticker} when sub_periods provided"
+        )
+
+
+# ---------------------------------------------------------------------------
+# 11. compute_position_returns(sub_periods=None) → all contrib_nav_pts=None (backward-compat)
+# ---------------------------------------------------------------------------
+
+
+def test_compute_position_returns_without_sub_periods_contrib_is_none():
+    """PR-2a backward-compat: when sub_periods=None, contrib_nav_pts is None for all."""
+    band_legs = [
+        ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
+        ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
+    ]
+    closes = {
+        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 110.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 210.0},
+    }
+    nav_net = [100.0, 105.0]
+    nav_dates = ["2020-01-01", "2020-04-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes,
+        portfolio_nav_net=nav_net,
+        portfolio_nav_dates=nav_dates,
+        sub_periods=None,
+    )
+
+    for ticker, pr in pos_returns.items():
+        assert pr.contrib_nav_pts is None, (
+            f"{ticker}: expected contrib_nav_pts=None (sub_periods=None / PR-2a compat), "
+            f"got {pr.contrib_nav_pts}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# 12. Mid-window entry/exit: a ticker absent from some sub-periods still passes
+#     the GROSS identity (partial coverage sub-periods are handled correctly)
+# ---------------------------------------------------------------------------
+
+
+def test_c3_gross_identity_with_mid_window_entry():
+    """C3 GROSS identity holds when a ticker enters mid-window.
+
+    GOOG enters only in sub-period 2 (absent in sub-period 1).
+    The GROSS identity must still close: Σ_i C_i = R^g_port.
+    """
+    # Sub-period 0: only AAPL (weight=1.0)
+    gross0 = 0.10
+    sp0 = _sub_period(
+        "2020-01-01", "2020-04-01",
+        {"AAPL": 1.0},
+        {"AAPL": 1.10},
+        gross_sub_return=gross0,
+    )
+    # Sub-period 1: AAPL (0.5) + GOOG (0.5) — GOOG enters
+    r1_aapl, r1_goog = 0.05, 0.08
+    gross1 = 0.5 * r1_aapl + 0.5 * r1_goog
+    sp1 = _sub_period(
+        "2020-04-01", "2020-07-01",
+        {"AAPL": 0.5, "GOOG": 0.5},
+        {"AAPL": 1.0 + r1_aapl, "GOOG": 1.0 + r1_goog},
+        gross_sub_return=gross1,
+    )
+
+    R_port_gross = (1 + gross0) * (1 + gross1) - 1.0
+
+    kt_over_K, _K, _ = _build_carino_grid([sp0, sp1])
+
+    c_aapl = _compute_contribution_from_sub_periods(
+        "AAPL",
+        {"2020-01-01": 1.0, "2020-04-01": 0.5},
+        [sp0, sp1],
+        kt_over_K,
+    )
+    c_goog = _compute_contribution_from_sub_periods(
+        "GOOG",
+        {"2020-04-01": 0.5},          # enters only at sub-period 1
+        [sp0, sp1],
+        kt_over_K,
+    )
+
+    gross_sum = c_aapl + c_goog
+    error = abs(gross_sum - R_port_gross)
+    assert error < 1e-9, (
+        f"C3 GROSS identity with mid-window entry violated: "
+        f"|Σ_i C_i − R^g_port| = {error:.2e}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Hypothesis property: C3 GROSS identity holds for ALL Dirichlet inputs
+# ---------------------------------------------------------------------------
+
+
+@given(
+    # Number of sub-periods: 1–4 (keep panels small for speed)
+    n_periods=st.integers(min_value=1, max_value=4),
+    # Number of tickers: 2–4
+    n_tickers=st.integers(min_value=2, max_value=4),
+    # Price relatives ∈ [0.5, 2.0] (no total losses, so no clamping needed)
+    price_relatives_flat=st.lists(
+        st.floats(min_value=0.5, max_value=2.0, allow_nan=False, allow_infinity=False),
+        min_size=1,
+        max_size=16,
+    ),
+    # Weights per period: uniform Dirichlet approximated by raw Dirichlet draws
+    raw_weights_flat=st.lists(
+        st.floats(min_value=0.01, max_value=1.0, allow_nan=False, allow_infinity=False),
+        min_size=1,
+        max_size=16,
+    ),
+    # Partial-window mask: randomly zero out a name's weight in some periods
+    partial_mask_flat=st.lists(st.booleans(), min_size=1, max_size=16),
+)
+def test_c3_gross_identity_holds_for_all_dirichlet_inputs(
+    n_periods: int,
+    n_tickers: int,
+    price_relatives_flat: list[float],
+    raw_weights_flat: list[float],
+    partial_mask_flat: list[bool],
+) -> None:
+    """C3 invariant: |Σ_i C_i − R^g_port| < 1e-9 for all valid draws.
+
+    Strategy:
+    - n_periods sub-periods, n_tickers tickers.
+    - Raw weights drawn from [0.01, 1.0], then Dirichlet-normalised per period.
+    - partial_mask applies mid-window entry/exit (zero weight for some names
+      in some periods); re-normalised after zeroing.
+    - Price relatives drawn from [0.5, 2.0] — no total-loss sub-periods,
+      so clamping does not confound the identity test.
+    - Computes Σ C_i via _build_carino_grid + _compute_contribution_from_sub_periods.
+    - Asserts the Carino C3 GROSS identity to within 1e-9.
+    """
+    tickers = [f"T{i}" for i in range(n_tickers)]
+
+    # Pad flat lists to the required length (n_periods × n_tickers) by cycling.
+    required = n_periods * n_tickers
+
+    def _cycle_pad(lst: list, length: int) -> list:
+        if not lst:
+            return [1.0] * length
+        return [lst[i % len(lst)] for i in range(length)]
+
+    pr_flat = _cycle_pad(price_relatives_flat, required)
+    rw_flat = _cycle_pad(raw_weights_flat, required)
+    pm_flat = _cycle_pad(partial_mask_flat, required)
+
+    sub_periods = []
+    for t in range(n_periods):
+        raw_w = {tickers[i]: rw_flat[t * n_tickers + i] for i in range(n_tickers)}
+        # Apply partial_mask: zero some weights to simulate mid-window entry/exit.
+        for i in range(n_tickers):
+            if pm_flat[t * n_tickers + i]:
+                raw_w[tickers[i]] = 0.0
+        # Normalise weights (skip if total is 0).
+        total_w = sum(raw_w.values())
+        if total_w <= 0.0:
+            # All zeroed; assign uniform weights so the period is not empty.
+            raw_w = {ticker: 1.0 / n_tickers for ticker in tickers}
+            total_w = 1.0
+        weights = {ticker: v / total_w for ticker, v in raw_w.items() if v > 0}
+
+        # Price relatives — use the padded flat list.
+        pr_map = {tickers[i]: pr_flat[t * n_tickers + i] for i in range(n_tickers)}
+        pr_map = {k: v for k, v in pr_map.items() if k in weights}
+
+        # Gross sub-return = Σ w_i (ρ_i − 1).
+        gross_sub = sum(weights.get(k, 0.0) * (pr_map.get(k, 1.0) - 1.0) for k in weights)
+
+        sub_periods.append(_sub_period(
+            f"2020-{t + 1:02d}-01", f"2020-{t + 2:02d}-01",
+            weights,
+            pr_map,
+            gross_sub_return=gross_sub,
+        ))
+
+    # Portfolio GROSS return via geometric linking.
+    R_port_gross = 1.0
+    for sp in sub_periods:
+        R_port_gross *= 1.0 + sp.gross_sub_return
+    R_port_gross -= 1.0
+
+    kt_over_K, _K, _ = _build_carino_grid(sub_periods)
+
+    # Per-ticker Carino contributions.
+    gross_sum = 0.0
+    for ticker in tickers:
+        # ticker_legs = {date_from: weight} across all sub-periods.
+        ticker_legs = {
+            sp.date_from: sp.start_weights_gross.get(ticker, 0.0)
+            for sp in sub_periods
+        }
+        c = _compute_contribution_from_sub_periods(ticker, ticker_legs, sub_periods, kt_over_K)
+        gross_sum += c
+
+    error = abs(gross_sum - R_port_gross)
+    assert error < 1e-9, (
+        f"C3 GROSS identity violated: |Σ_i C_i − R^g_port| = {error:.2e} "
+        f"(n_periods={n_periods}, n_tickers={n_tickers})"
     )
