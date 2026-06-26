@@ -955,6 +955,70 @@ class Metadata(BaseModel):
     # ``backtest_pit.json`` artifact is absent (first cron after a cold clone,
     # or when the backfill was not re-run since C-2 was landed).
     mos_tilt_shadow_max_delta_pp: float | None = None
+    # Proposal C-1 — high-conviction gate counters (0.10.39-phase8pilot, Rule 18
+    # observability-first).
+    #
+    # Background: the high-conviction gate (``is_high_conviction`` in
+    # ``compute/portfolio/weights.py``) is ALREADY the production selection
+    # driver in the backfill (``gate="high_conviction"`` wired since PR #604).
+    # This C-1 slice measures the marginal bite of the loss-chance leg
+    # (``loss_chance_pct <= HIGH_CONVICTION_LOSS_CHANCE_MAX = 45.0``) in the
+    # ALREADY-LIVE gate.  These counters do NOT gate the wire-in — they observe
+    # a gate that has been live in the backfill for multiple crons.
+    #
+    # Gate composition (``is_high_conviction``):
+    #   (1) is_eligible  — no active rank-gate veto (7 veto flags)
+    #   (2) recommendation ∈ {"bullish", "lean_bullish"}
+    #   (3) margin_of_safety_pct > 0  (strict undervaluation, Graham-Dodd)
+    #   (4) composite_score ≥ 50.0    (HIGH_CONVICTION_COMPOSITE_MIN)
+    #   (5) loss_chance_pct ≤ 45.0    (HIGH_CONVICTION_LOSS_CHANCE_MAX —
+    #                                   gut-feel, firing-rate under observation)
+    # Fail-closed: any None input → not high-conviction.
+    #
+    # ``high_conviction_count`` — count of stocks in the full ranked universe
+    # that clear ALL legs of the gate on this cron run.
+    #
+    # ``high_conviction_ex_loss_chance_count`` — count of stocks passing the HC
+    # gate WITHOUT the loss-chance leg (legs 1-4 only; leg 5 omitted).  This
+    # is the marginal-bite DENOMINATOR:
+    #   bite = high_conviction_ex_loss_chance_count − high_conviction_count
+    # By construction ex_loss_chance_count ≥ high_conviction_count always.
+    # A materially positive bite (e.g. ≥ 5 names across crons) means leg 5
+    # is doing real work — keep it.  A bite ≈ 0 across crons means leg 5 is
+    # redundant and can be dropped in the gate-flip.
+    # Legs 1-4 used: is_eligible + recommendation ∈ HC_RECS + MoS > 0 +
+    # composite ≥ HIGH_CONVICTION_COMPOSITE_MIN.  Fail-closed on None inputs
+    # for legs 1-4 (same as is_high_conviction); loss_chance_pct is
+    # NEITHER required NOR fail-closed here — that is the point.
+    #
+    # ``high_conviction_below_floor`` — starvation canary derived from the
+    # refreshed ``backtest_pit.json`` artifact (same read pattern as C-2's
+    # ``mos_tilt_shadow_max_delta_pp``).  True if ANY rebalance leg in the
+    # artifact has ``eligible_high_conviction_count < ADAPTIVE_MIN_PICKS (5)``
+    # — the per-rebalance starvation signal (the cron's full-universe count is
+    # always >> 5, so universe-level < 5 is structurally useless).  False when
+    # the artifact is present + readable AND all rebalance legs clear the floor.
+    # None when the artifact is absent or unreadable (first cron after a cold
+    # clone; graceful-degradation path).
+    #
+    # HARD CONSTRAINT: all three fields MUST NEVER be read by scoring, the
+    # composite, pillar computation, veto/flag logic, fair-price, ``select_picks``,
+    # or ``inverse_vol_weights``.  They are written to ``Metadata`` ONLY and feed
+    # the diagnostic surface.  Rankings/scores/flags are byte-identical.
+    # Defense layer UNCHANGED at 36.
+    #
+    # Pre-registered FUTURE gate-flip condition (methodology C-1 RATIFY-WITH-
+    # CONDITION): hc_count ≥ ADAPTIVE_MIN_PICKS + 2 (≥ 7) across ALL crons AND
+    # ALL backtest rebalance legs AND the marginal-bite read
+    # (count_passing_legs_1_2_3_4 − high_conviction_count) resolves the
+    # loss-chance leg — keep loss_chance≤45 if it bites; drop the leg if ≈ 0.
+    # NOT a bare below_floor gate.  Gates issue #130.
+    #
+    # Nullable on legacy snapshots (pre-0.10.39).  None when the helper failed
+    # (non-fatal, try/except — cron never blocked).
+    high_conviction_count: int | None = None
+    high_conviction_ex_loss_chance_count: int | None = None
+    high_conviction_below_floor: bool | None = None
 
 
 class RawMetrics(BaseModel):

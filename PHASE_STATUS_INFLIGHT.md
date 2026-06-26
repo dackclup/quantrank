@@ -8045,3 +8045,97 @@ guard step. Full offline pytest = CI (local env lacks `.[dev,factors]`).
 **Gate**: `quantrank-reviewer` (new tools/ logic) + `security-reviewer`
 (ci.yml edit) + `test-engineer` (coverage) + `docs-reviewer` +
 `phase-coordinator` Mode B at Draft→Ready.
+## PR #624 — feat(compute): Proposal C-1 high-conviction gate counter slice 1 (observability) (in flight, 2026-06-26)
+
+**Scope.** Proposal C-1 — measuring the marginal bite of the loss-chance leg in the
+ALREADY-LIVE high-conviction gate. The `gate="high_conviction"` has been the production
+selection driver in the backfill since PR #604; this PR adds PURELY ADDITIVE shadow counters
+to `Metadata` so the cron reports how many universe names clear the gate and whether any
+backtest rebalance leg ever starved below the 5-name floor. Rankings/scores/flags are
+BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+**Note on C-2 (#617).** Proposal C-2 (MoS conviction tilt, `mos_tilt_shadow_max_delta_pp`)
+was merged before this PR on branch `claude/fund-performance-rankings-f8x4o1`; schema is
+now `0.10.38-phase8pilot` → this PR bumps to `0.10.39-phase8pilot`.
+
+**What is built.**
+
+- `compute/output/schemas.py` — 3 new additive `Metadata` fields (all `int | None` or
+  `bool | None`, default `None`):
+  - `high_conviction_count: int | None` — full-gate pass count (all 5 legs) over the ranked
+    universe.
+  - `high_conviction_ex_loss_chance_count: int | None` — count passing legs 1-4 ONLY (leg 5 =
+    loss_chance ≤ 45 OMITTED). This is the marginal-bite denominator:
+    `bite = high_conviction_ex_loss_chance_count − high_conviction_count`.
+    By construction `ex_loss_chance_count ≥ high_conviction_count` always.
+    A materially positive bite → keep leg 5. A bite ≈ 0 → drop candidate.
+    Implemented by `_passes_ex_loss_chance(c)` in `compute/main.py`, which reuses
+    `is_eligible` / `HIGH_CONVICTION_RECOMMENDATIONS` / `HIGH_CONVICTION_COMPOSITE_MIN`
+    constants from `compute.portfolio.weights` (no inlined literals).
+  - `high_conviction_below_floor: bool | None` — starvation canary derived from reading
+    `backtest_pit.json` (same artifact-read pattern as C-2). True if ANY rebalance leg has
+    `eligible_high_conviction_count < ADAPTIVE_MIN_PICKS (5)`; None when artifact absent.
+
+- `compute/main.py` — two new blocks before the `Metadata(...)` call:
+  1. `_passes_ex_loss_chance(c)` pure predicate + `_count_high_conviction(summaries)` helper
+     (try/except → None). Iterates the full ranked `summaries` list, builds a `PickCandidate`
+     per row, calls `is_high_conviction(c)` (5-leg count) AND `_passes_ex_loss_chance(c)`
+     (4-leg count), returns `(hc_count, ex_loss_chance_count)`.
+     Log line reports all three: count, ex_loss_chance, bite.
+  2. C-1 below_floor canary: reads `backtest_pit.json` artifact, extracts
+     `eligible_high_conviction_count` per rebalance, checks if any leg < 5. try/except → None.
+  New imports (expanded): `from compute.portfolio.weights import (HIGH_CONVICTION_COMPOSITE_MIN,
+  HIGH_CONVICTION_RECOMMENDATIONS, PickCandidate, is_eligible, is_high_conviction)`.
+
+- `compute/config.py` — schema `0.10.38` → `0.10.39-phase8pilot`.
+
+**Byte-identity proof.** `compute/main.py` does NOT call `select_picks`,
+`inverse_vol_weights`, or `_band_book`. The only additions are two try/except blocks that
+read `summaries` (already fully built) and `backtest_pit.json` (already written by the
+PIT-backtest refresh earlier in the cron). No summaries / StockDetail / risk_flags /
+composite_score fields are mutated.
+
+**Pre-registered gate-flip condition (methodology C-1 RATIFY-WITH-CONDITION 2026-06-26):**
+hc_count ≥ `ADAPTIVE_MIN_PICKS + 2` (≥ 7) across ALL crons AND ALL backtest rebalance
+legs AND the marginal-bite read (`high_conviction_ex_loss_chance_count − high_conviction_count`)
+resolves the loss-chance leg — keep `loss_chance ≤ 45` if bite is materially > 0; drop the
+leg if bite ≈ 0 across crons. NOT a bare below_floor gate. Issue #130.
+
+**Schema triple**: 3 new fields added to `Metadata` → TS mirror + snapshot regen NEEDED.
+frontend-builder: add to `Metadata` in `frontend/lib/types.ts`:
+```
+high_conviction_count: number | null;
+high_conviction_ex_loss_chance_count: number | null;
+high_conviction_below_floor: boolean | null;
+```
+Then regen `frontend/lib/schema-snapshot.json`.
+
+**Tests needed** (test-engineer):
+  - `_count_high_conviction` with an empty list → (0, 0).
+  - All-pass candidates (all 5 legs pass) → `hc_count == universe_size` AND
+    `ex_loss_chance_count == universe_size`.
+  - Loss-chance leg bite: mix where some candidates fail ONLY leg 5 (`loss_chance_pct > 45`
+    but pass legs 1-4) — verify `ex_loss_chance_count > hc_count` and the gap equals the
+    blocked count; and `ex_loss_chance_count − hc_count == bite_count`.
+  - Invariant: `ex_loss_chance_count ≥ hc_count` always (any list, any data).
+  - `_passes_ex_loss_chance` is insensitive to `loss_chance_pct`: a candidate with
+    `loss_chance_pct=99.0` but otherwise passing legs 1-4 → returns True.
+  - Adapter faithfulness: verify that a `StockSummary`-equivalent input maps correctly
+    to the `PickCandidate` fields and `is_high_conviction` returns the expected result.
+  - `high_conviction_below_floor` from a mock `backtest_pit.json`:
+    - all legs >= 5 → False.
+    - one leg < 5 → True.
+    - absent artifact → None.
+  - `Metadata` round-trip: construct `Metadata(..., high_conviction_count=40,
+    high_conviction_ex_loss_chance_count=45, high_conviction_below_floor=False)` →
+    `model_dump()` → round-trip preserves values; extra="forbid" does not error.
+
+**Files**: `compute/output/schemas.py` (+3 fields) · `compute/main.py` (+helper +
+two try/except blocks + import) · `compute/config.py` (schema bump) ·
+`CLAUDE.md` (§In-flight + §Gotchas) · `AGENTS.md` (§Phase status) ·
+`PHASE_STATUS_INFLIGHT.md` (this) · `docs/METHODOLOGY.md` (C-1 section).
+
+**Gate**: frontend-builder (mirror 3 fields) + test-engineer + schema-sentinel +
+quantrank-reviewer + defense-layer-auditor at Draft→Ready.
+
+---

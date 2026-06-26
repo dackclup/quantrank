@@ -112,6 +112,13 @@ from compute.output.writer import (
     write_stock_detail,
     write_stock_history,
 )
+from compute.portfolio.weights import (
+    HIGH_CONVICTION_COMPOSITE_MIN,
+    HIGH_CONVICTION_RECOMMENDATIONS,
+    PickCandidate,
+    is_eligible,
+    is_high_conviction,
+)
 from compute.scoring.beneish import BeneishResult, compute_beneish
 from compute.scoring.bonferroni_shadow import compute_bonferroni_shadow
 from compute.scoring.composite import (
@@ -217,6 +224,88 @@ def _resolve_close_column(prices: pd.DataFrame) -> str | None:
     if "Close" in prices.columns:
         return "Close"
     return None
+
+
+def _passes_ex_loss_chance(c: PickCandidate) -> bool:
+    """HC gate with the loss_chance leg (leg 5) REMOVED — legs 1-4 only.
+
+    This is the marginal-bite denominator: names passing legs 1-4 but failing
+    leg 5 are the ones the loss-chance filter actually removes.  Reuses the
+    live constants from ``compute.portfolio.weights`` (not inlined literals).
+
+    Fail-closed on None inputs for legs 1-3 (same as ``is_high_conviction``);
+    ``loss_chance_pct`` is NEITHER required NOR fail-closed here — that is the
+    point.
+    """
+    # leg 1 — no active rank-gate veto
+    if not is_eligible(c.risk_flags):
+        return False
+    # leg 2 — bullish or lean_bullish
+    if c.recommendation not in HIGH_CONVICTION_RECOMMENDATIONS:
+        return False
+    # leg 3 — strict undervaluation (Graham-Dodd; fail-closed on None)
+    if c.mos_pct is None or c.mos_pct <= 0.0:
+        return False
+    # leg 4 — minimum composite quality bar (fail-closed on None implicitly
+    # since composite_score is float, not Optional; PickCandidate constructor
+    # ensures it is always set)
+    if c.composite_score < HIGH_CONVICTION_COMPOSITE_MIN:
+        return False
+    # leg 5 (loss_chance ≤ 45) deliberately omitted — this is the instrument
+    return True
+
+
+def _count_high_conviction(
+    summaries: list[StockSummary],
+) -> tuple[int, int]:
+    """Count stocks clearing the high-conviction gate in the ranked universe.
+
+    This is **purely additive observability** — it NEVER mutates summaries,
+    changes the composite, influences selection, or touches the defense layer.
+    The gate (``is_high_conviction``) is already the production selection driver
+    in the backfill; this helper measures the marginal bite of its loss-chance
+    leg on today's cron snapshot.
+
+    Returns
+    -------
+    (high_conviction_count, high_conviction_ex_loss_chance_count)
+
+    ``high_conviction_count``
+        Full-gate pass count: clears all 5 legs (is_eligible + rec ∈
+        {bullish, lean_bullish} + MoS > 0 + composite ≥ 50 + loss_chance ≤ 45).
+
+    ``high_conviction_ex_loss_chance_count``
+        Count passing legs 1-4 only (loss-chance leg omitted).  By construction
+        ex_loss_chance_count ≥ high_conviction_count always.  The marginal-bite
+        of leg 5 is:
+          bite = high_conviction_ex_loss_chance_count − high_conviction_count
+        A materially positive bite across crons means leg 5 is doing real work.
+        A bite ≈ 0 across crons means leg 5 is redundant (drop candidate).
+
+    Methodology citation (C-1 RATIFY-WITH-CONDITION 2026-06-26):
+        Gate-flip pre-registration: hc_count ≥ ADAPTIVE_MIN_PICKS + 2 (≥ 7)
+        across ALL crons AND ALL rebalance legs, AND the marginal-bite read
+        (ex_loss_chance_count − hc_count) resolves whether to keep
+        loss_chance ≤ 45 (bites) or drop the leg (≈ 0).  NOT a bare
+        below_floor gate.  Issue #130.
+    """
+    hc_count = 0
+    ex_loss_chance_count = 0
+    for s in summaries:
+        c = PickCandidate(
+            ticker=s.ticker,
+            composite_score=s.composite_score,
+            sector=s.sector,
+            risk_flags=tuple(s.risk_flags),
+            recommendation=s.recommendation,
+            mos_pct=s.margin_of_safety_pct,
+            loss_chance_pct=s.loss_chance_pct,
+        )
+        if is_high_conviction(c):
+            hc_count += 1
+        if _passes_ex_loss_chance(c):
+            ex_loss_chance_count += 1
+    return hc_count, ex_loss_chance_count
 
 
 def _fetch_prices_one(row: pd.Series) -> dict | None:
@@ -3698,6 +3787,85 @@ def run_weekly_compute() -> int:
             _mos_tilt_exc,
         )
 
+    # --- Proposal C-1 — high-conviction gate counters (Rule 18 observability-first).
+    # Measures the marginal bite of the loss-chance leg in the ALREADY-LIVE
+    # high-conviction gate (``gate="high_conviction"`` wired in the backfill since
+    # PR #604).  PURELY ADDITIVE — never mutates summaries, composite, or selection.
+    # Rankings/scores/flags are byte-identical.  Defense layer UNCHANGED at 36.
+    # HARD CONSTRAINT: these counters MUST NEVER be read by scoring, composite,
+    # pillar, veto/flag, fair-price, select_picks, or inverse_vol_weights.
+    # Wrapped in try/except so any failure degrades gracefully to None (never
+    # blocks the cron).
+    _hc_count: int | None = None
+    _hc_ex_loss_chance_count: int | None = None
+    try:
+        _hc_count, _hc_ex_loss_chance_count = _count_high_conviction(summaries)
+        logger.info(
+            "C-1 HC gate: count=%d ex_loss_chance=%d bite=%d (universe=%d)",
+            _hc_count,
+            _hc_ex_loss_chance_count,
+            _hc_ex_loss_chance_count - _hc_count,
+            len(summaries),
+        )
+    except Exception as _hc_exc:  # noqa: BLE001
+        logger.warning(
+            "high_conviction counter failed (non-fatal, #C-1): %s",
+            _hc_exc,
+        )
+        _hc_count = None
+        _hc_ex_loss_chance_count = None
+
+    # --- Proposal C-1 — below_floor starvation canary.
+    # Read the refreshed backtest_pit.json (same artifact-read pattern as C-2's
+    # mos_tilt canary above).  True when ANY rebalance leg has
+    # eligible_high_conviction_count < ADAPTIVE_MIN_PICKS (5) — the per-rebalance
+    # starvation signal.  The cron's full-universe count is always >> 5, so a
+    # universe-level < 5 check is structurally useless; this reads the backfill
+    # artifact where the per-leg band-book size is 5-20 names.
+    # None when the artifact is absent or unreadable (graceful-degradation).
+    _hc_below_floor: bool | None = None
+    _ADAPTIVE_MIN_PICKS_C1: int = 5  # mirrors ADAPTIVE_MIN_PICKS in backfill
+    try:
+        import json as _json_c1
+
+        _c1_pit_path = config.DATA_DIR / "portfolio" / "backtest_pit.json"
+        if _c1_pit_path.exists():
+            with _c1_pit_path.open("r", encoding="utf-8") as _c1_fh:
+                _c1_pit_data = _json_c1.load(_c1_fh)
+            _below_floor_legs = [
+                int(rb["eligible_high_conviction_count"])
+                for rb in _c1_pit_data.get("rebalances", [])
+                if rb.get("eligible_high_conviction_count") is not None
+            ]
+            if _below_floor_legs:
+                _hc_below_floor = any(
+                    n < _ADAPTIVE_MIN_PICKS_C1 for n in _below_floor_legs
+                )
+                logger.info(
+                    "C-1 below_floor canary: min_leg=%d across %d legs → %s",
+                    min(_below_floor_legs),
+                    len(_below_floor_legs),
+                    _hc_below_floor,
+                )
+            else:
+                logger.debug(
+                    "C-1 below_floor canary: no eligible_high_conviction_count "
+                    "entries found in backtest_pit.json — high_conviction_below_floor → None"
+                )
+        else:
+            logger.debug(
+                "C-1 below_floor canary: backtest_pit.json not found at %s — "
+                "high_conviction_below_floor → None",
+                _c1_pit_path,
+            )
+    except Exception as _hc_floor_exc:  # noqa: BLE001
+        logger.warning(
+            "C-1 below_floor canary read failed (non-fatal, #C-1): %s — "
+            "high_conviction_below_floor → None",
+            _hc_floor_exc,
+        )
+        _hc_below_floor = None
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -4000,6 +4168,20 @@ def run_weekly_compute() -> int:
         # or when the backfill was not re-run since C-2 landed).
         # Defense layer UNCHANGED at 36.
         mos_tilt_shadow_max_delta_pp=_mos_tilt_shadow_max_delta_pp,
+        # Proposal C-1 — high-conviction gate counters (0.10.39-phase8pilot, Rule 18).
+        # PURELY ADDITIVE / OBSERVABILITY-ONLY — live scores, flags, rankings are
+        # byte-identical.  Measures the marginal bite of the loss-chance leg in the
+        # ALREADY-LIVE high-conviction gate (backfill ``gate="high_conviction"``).
+        # None when the helper failed (non-fatal try/except — cron never blocked).
+        # Defense layer UNCHANGED at 36.
+        high_conviction_count=_hc_count,
+        # Marginal-bite denominator: passes legs 1-4 only (loss-chance omitted).
+        # bite = ex_loss_chance_count − hc_count.  Both None on helper failure.
+        high_conviction_ex_loss_chance_count=_hc_ex_loss_chance_count,
+        # below_floor: True if ANY rebalance leg in backtest_pit.json has
+        # eligible_high_conviction_count < 5 (ADAPTIVE_MIN_PICKS).
+        # None when the artifact is absent or unreadable.
+        high_conviction_below_floor=_hc_below_floor,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
