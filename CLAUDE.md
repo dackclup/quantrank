@@ -358,12 +358,12 @@ command needs user authorization. Pattern not in the table → walk the
 - **Route on the handoff line.** Every agent report ends with
   `HANDOFF · status=… · next=<DONE | SPAWN <agent>:<scope> | ESCALATE
   <agent>:<why> | NEEDS-USER:<decision>>` — compose next steps
-  dynamically; the 8 flows in
+  dynamically; the 9 flows in
   [`.claude/agents/README.md`](.claude/agents/README.md) are canonical
   examples, not an exhaustive script.
 - **Don't gatekeep sub-agent effort** — no word caps / "≤ N items";
   sonnet tokens drain the under-utilized Sonnet-only pool. Keep the
-  5-opus / 20-sonnet model split and the effort policy (23 of 25 at
+  6-opus / 20-sonnet model split and the effort policy (24 of 26 at
   `effort: max`; the two deterministic script-runners `schema-sentinel`
   + `vercel-preview-auditor` at `high`; a new agent gets `max` unless
   it's a pure mechanical lookup). Rationale + authoring conventions:

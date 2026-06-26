@@ -7841,8 +7841,10 @@ least as much reasoning headroom as producing it did. Model split moves
 **Docs (lockstep)**: `.claude/agents/README.md` (Tier 4 row + count 25→26 +
 model-split + effort + new **Flow 9 — Output verification** + tier
 rationale) · `CLAUDE.md` (§Layout count + §Auto-routing role/table row +
-opus list) · `AGENTS.md` (tree count + Tier 4 note + sonnet-pool count) ·
-`PHASE_STATUS.md` · `CONTEXT.md` · `WORKFLOW.md` · `docs/GOTCHAS.md`
+opus list + §Spawn-discipline flow/split/effort counts) · `AGENTS.md`
+(tree count + Tier 4 note + sonnet-pool count) · `.claude/agents/TEAMS.md`
+(comparison-table + companion-docs counts) · `PHASE_STATUS.md` ·
+`CONTEXT.md` · `WORKFLOW.md` · `docs/GOTCHAS.md`
 (present-tense count 25→26; historical "5 fable agents" preserved).
 
 **No code / schema / workflow touched** — agent + docs only; rankings,
