@@ -257,6 +257,11 @@
       "required": false,
       "default": null
     },
+    "hysteresis_turnover_reduction_mean_pp": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "ic_weight_by_pillar": {
       "type": "dict[str, float] | None",
       "required": false,
@@ -278,6 +283,11 @@
       "default": null
     },
     "low_liquidity_annotate_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "low_liquidity_held_count": {
       "type": "int | None",
       "required": false,
       "default": null

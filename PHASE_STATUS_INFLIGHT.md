@@ -8193,5 +8193,110 @@ a hand-built artifact, not in the Pydantic↔TS↔snapshot triple).
 5. `test_reconciliation_bare_call_unchanged`: multi-streak name (two real streaks
    via weight-0 leg) — assert `reconciliation_errors` still counts it as
    multi-streak (using the bare `_extract_streaks(ticker, legs, {})` call).
+## PR #628 — Proposal E: turnover/hysteresis diagnostic + liquidity capacity tilt (in flight, 2026-06-26)
+
+**Branch**: `claude/fund-performance-rankings-f8x4o1` (same branch as F/D/A/C-2/C-1; Proposal E is the final
+slice of the legendary-fund 6-proposal program).
+
+**Schema**: `0.10.39` → **`0.10.40-phase8pilot`**.
+**Status**: SHADOW / OBSERVABILITY-ONLY. Live `band_book` / `band_weights` /
+`band_carry_count` / `band_legs_for_nav` / `nav.adaptive.*` are BYTE-IDENTICAL.
+Defense layer UNCHANGED at 36 (`low_liquidity` is an existing annotate; the capacity
+tilt is a sizing device, NOT a new flag).
+
+**What landed:**
+
+- `compute/portfolio/weights.py` — 2 new pure functions + 1 constant:
+  - `LIQ_CAPACITY_TILT = 0.5` (Tier-2 gut-feel, Amihud 2002 capacity constraint).
+  - `book_turnover(curr: set[str], prev: set[str]) -> float` — symmetric-difference name
+    turnover `|curr △ prev| / |prev|`; 0.0 when prev is empty.
+  - `liquidity_capacity_tilt(base_weights, low_liquidity_tickers, *, haircut=LIQ_CAPACITY_TILT, cap=MAX_WEIGHT) -> dict` —
+    `w_i × haircut` for low-liq holdings PRE-renorm, renorm, RE-CAP using the SAME
+    iterative pin-and-redistribute routine as `inverse_vol_weights` (NOT naive clip).
+    Identity guards: empty liq set → base_weights unchanged; all liq → renorm cancels.
+
+- `scripts/backfill_portfolio_pit.py` — SHADOW wiring (per-rebalance, mirrors C-2 pattern):
+  - **Stateless counterfactual**: `_band_book(full_order, scores_this, tenure=set())` each leg.
+  - **DEFENSE-PRECEDENCE ASSERTION** (binding condition 1): asserts no active-veto ticker
+    appears in EITHER `band_book` OR `_stateless_book`. `AssertionError` surfaces, never silenced.
+    Covers BOTH books simultaneously.
+  - **Turnover triple**: `_turnover_band_pct`, `_turnover_stateless_pct`, `_turnover_reduction_pp` —
+    threaded via `_prev_band_book_set` / `_prev_stateless_book_set` across legs.
+  - **Liq-capacity tilt shadow**: `_liq_tilted_weights` via `liquidity_capacity_tilt`; `_low_liq_set_this`
+    is empty in the backfill (no PIT ADV data); identity path in practice.
+  - Per-rebalance exports in `backtest_pit.json`: `stateless_book`, `turnover_band_pct`,
+    `turnover_stateless_pct`, `turnover_reduction_pp`, `liq_tilted_weights`,
+    `low_liquidity_holdings`, `liq_tilt_max_abs_weight_delta_pp`.
+  - `meta.hysteresis_shadow`: `{enter:65, exit:60, current_live_band:[65,55], liq_haircut:0.5,
+    max_weight:0.35, active:false}` — discloses the shadow probe config. `exit=60` is a
+    single-DOF shadow re-param only (H-C freeze-lock; live band STAYS 65/55 UNCHANGED).
+  - New imports: `ACTIVE_VETO_FLAGS`, `LIQ_CAPACITY_TILT`, `MAX_WEIGHT`, `book_turnover`,
+    `liquidity_capacity_tilt`.
+
+- `compute/output/schemas.py` — 2 new `Metadata` canaries:
+  - `hysteresis_turnover_reduction_mean_pp: float | None` — mean `turnover_reduction_pp`
+    over all backtest legs. H1 gate: mean >= 15pp over >= 4 live rebalances
+    (Garleanu-Pedersen 2013 *JF* 68(6)).
+  - `low_liquidity_held_count: int | None` — count of `low_liquidity_holdings` in the
+    FINAL backtest rebalance leg (the current AI-pick book's liq exposure).
+
+- `compute/main.py` — E canary artifact-read block (same try/except pattern as C-2 + C-1):
+  reads `backtest_pit.json`, extracts `turnover_reduction_pp` per leg (mean → canary)
+  and `low_liquidity_holdings` from the final leg (len → canary). Both → None on
+  absent/unreadable artifact.
+
+- `compute/config.py` — schema `0.10.39` → `0.10.40-phase8pilot`.
+
+- `docs/METHODOLOGY.md` — §Proposal E section: turnover diagnostic, liq-capacity tilt,
+  stacking order (inverse_vol → liq_tilt → mos_tilt → single re-cap), defense-precedence
+  assertion, flip-gate conditions, academic anchors (Garleanu-Pedersen 2013 / Novy-Marx-
+  Velikov 2016 / Amihud 2002).
+
+**Byte-identity proof.** `scripts/backfill_portfolio_pit.py`: all E variables are
+underscore-prefixed locals; none assigned to `band_book`, `band_weights_map`,
+`band_legs_for_nav`, or any grid variable. `compute/main.py`: the two new canary reads
+only read `backtest_pit.json`; they never mutate `summaries`, `meta` fields of scoring
+types, `composite_score`, `risk_flags`, or `valuation_warnings`.
+
+**Pre-registered flip-gate conditions (E RATIFY-WITH-CONDITION):**
+(1) Defense-precedence assertion NEVER trips across all crons + backtest legs.
+(2) `mean(turnover_reduction_pp) >= 15pp` over >= 4 live rebalances (H1, Garleanu-Pedersen).
+(3) MAX_WEIGHT holds post-liq-tilt (test suite pins it).
+(4) Sidecar tenure only at forward-decoupling.
+(5) Methodology re-ratify exit=60 vs live 55 (H-C freeze-lock; H-B/H-C conditions).
+
+**Schema triple**: 2 new fields added to `Metadata` → TS mirror + snapshot regen NEEDED.
+frontend-builder: add to `Metadata` in `frontend/lib/types.ts`:
+```
+hysteresis_turnover_reduction_mean_pp: number | null;
+low_liquidity_held_count: number | null;
+```
+Then regen `frontend/lib/schema-snapshot.json`.
+
+**Tests needed** (test-engineer):
+  - `book_turnover`: empty prev → 0.0; same book → 0.0; full swap → 2.0 (symmetric diff
+    = |A△B| / |A|, all names replaced); partial overlap.
+  - `liquidity_capacity_tilt`: empty base_weights → {}; empty liq set → identity
+    (base_weights unchanged); all names flagged → identity (renorm cancels haircut);
+    single low-liq holding → haircut applied, renorm correct, MAX_WEIGHT respected;
+    post-cap assertion: no output weight > MAX_WEIGHT + 1e-12.
+  - Defense-precedence assertion: mock a candidate carrying an ACTIVE_VETO_FLAGS member
+    appearing in band_book → AssertionError raised (should NOT be silenced);
+    clean book → no assertion error.
+  - `Metadata` round-trip: construct with `hysteresis_turnover_reduction_mean_pp=12.5,
+    low_liquidity_held_count=0` → `model_dump()` round-trip preserves values;
+    extra="forbid" does not error.
+  - Identity test for combined stacking order: inverse_vol → liq_capacity_tilt (empty liq
+    set) → mos_conviction_tilt (all None mos) should return base weights unchanged
+    (both identity guards active simultaneously).
+
+**Files**: `compute/portfolio/weights.py` (+2 fns +1 const) · `scripts/backfill_portfolio_pit.py`
+(+E shadow block + init state + meta field + expanded imports) · `compute/output/schemas.py`
+(+2 fields) · `compute/main.py` (+E canary block + 2 Metadata args) · `compute/config.py`
+(schema bump) · `docs/METHODOLOGY.md` (§Proposal E) · `CLAUDE.md` (§Gotchas + §In-flight) ·
+`AGENTS.md` (§Phase status) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: frontend-builder (mirror 2 fields) + test-engineer + schema-sentinel +
+quantrank-reviewer + defense-layer-auditor at Draft→Ready.
 
 ---

@@ -1133,5 +1133,165 @@ computation, veto/flag logic, fair-price, `select_picks`, or `inverse_vol_weight
 
 ---
 
+## Proposal E — Turnover / hysteresis diagnostic + liquidity capacity tilt (SHADOW / observability-first, Rule 18)
+
+**Added**: 2026-06-26. Schema `0.10.40-phase8pilot`.
+**Status**: SHADOW / OBSERVABILITY-ONLY. Rankings, scores, flags, selection, live
+`band_book`, `band_weights`, `band_carry_count`, `band_legs_for_nav`, and `nav.adaptive.*`
+are BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+### Context
+
+The hysteresis hold-band ([55, 65) from `ADAPTIVE_HOLD_BAND_MIN=55` to
+`ADAPTIVE_COMPOSITE_MIN=65`) is ALREADY the production carry rule in the backfill
+(V55.1, ratified 2026-06-11). Proposal E slice-1 adds SHADOW diagnostics around it:
+
+1. **Turnover measurement**: compute the product band's name-turnover and compare it
+   against a no-carry stateless counterfactual (empty-seed tenure each rebalance) to
+   verify the H1 gate hypothesis.
+2. **Liquidity-capacity tilt**: shadow-size a haircut for low-liquidity holdings in the
+   band book — an implementation guard, NOT a performance signal.
+
+### Turnover diagnostic
+
+**`book_turnover(curr, prev) -> float`** (pure, `compute/portfolio/weights.py`):
+
+```
+turnover = |curr △ prev| / |prev|   (0.0 when prev is empty)
+```
+
+Symmetric-difference name turnover. The denominator is `|prev|` (not `|curr ∪ prev|`) so
+an incumbent-heavy band book with few additions shows LOW turnover — the intuition that
+the hysteresis band REDUCES churn (H1).
+
+Per-rebalance exports in `backtest_pit.json`:
+
+| Field | Meaning |
+|---|---|
+| `stateless_book` | Counterfactual no-carry book (empty-seed tenure) |
+| `turnover_band_pct` | Product band symmetric-diff turnover × 100 vs prior leg |
+| `turnover_stateless_pct` | No-carry counterfactual symmetric-diff turnover × 100 |
+| `turnover_reduction_pp` | `turnover_stateless_pct − turnover_band_pct` (positive = band reduces churn) |
+
+### Liquidity-capacity tilt
+
+**`liquidity_capacity_tilt(base_weights, low_liquidity_tickers, *, haircut=0.5, cap=MAX_WEIGHT) -> dict`**
+(pure, `compute/portfolio/weights.py`):
+
+1. Apply `w_i × haircut` (default 0.5) for low-liquidity holdings PRE-renorm.
+2. Renormalize to sum 1.0.
+3. RE-CAP at `MAX_WEIGHT = 0.35` using the SAME iterative pin-and-redistribute
+   routine as `inverse_vol_weights` lines 277-290 (NOT naive clip — naive clip can
+   re-breach the cap).
+
+**Stacking order** for future combined live wiring (C-2 + E both live):
+
+```
+1. inverse_vol_weights(sigmas)           → base weights
+2. liquidity_capacity_tilt(base, liq)   → liq-haircut renorm     [E]
+3. mos_conviction_tilt(liq_tilted, mos) → MoS tilt renorm        [C-2]
+4. single MAX_WEIGHT re-cap (iterative pin-redistribute, once at end)
+```
+
+The "single terminal re-cap" discipline prevents double-capping accumulation — the
+intermediate re-caps in steps 2 and 3 guard against immediate over-cap; the final
+single re-cap at step 4 is the authoritative exit check.
+
+**`LIQ_CAPACITY_TILT = 0.5`** — Tier-2 gut-feel haircut (disclosed). The haircut is a
+CAPACITY constraint, NOT an alpha claim (illiquidity carries a return *premium* per
+Amihud 2002 §4 — the haircut guards implementation capacity for a concentrated small-cap
+book consistent with the #544 HARD gate).
+
+Per-rebalance exports in `backtest_pit.json`:
+
+| Field | Meaning |
+|---|---|
+| `liq_tilted_weights` | Shadow liq-capacity-tilted weights (empty dict if no liq holdings) |
+| `low_liquidity_holdings` | Sorted list of band-book tickers triggering the haircut |
+| `liq_tilt_max_abs_weight_delta_pp` | max \|liq_tilted - base\| × 100 |
+
+`meta.hysteresis_shadow` in `backtest_pit.json` discloses the shadow re-parameterization
+config and the live band for auditing:
+
+```json
+{
+  "enter": 65.0,        // live ADAPTIVE_COMPOSITE_MIN
+  "exit": 60,           // shadow probe only — NOT live; H-C freeze-lock single-DOF
+  "current_live_band": [65.0, 55.0],  // [enter, exit] as live
+  "liq_haircut": 0.5,
+  "max_weight": 0.35,
+  "active": false
+}
+```
+
+`exit=60` is a SHADOW re-parameterization disclosure — the live band STAYS [65, 55]
+(`ADAPTIVE_HOLD_BAND_MIN=55` UNCHANGED). The H-C freeze-lock prohibits any second
+hysteresis DOF without a fresh pre-registration.
+
+### Defense-precedence assertion (binding methodology condition 1)
+
+The backfill asserts that NEITHER the product `band_book` NOR the stateless
+counterfactual contains any ticker carrying an active rank-gate veto:
+
+```python
+assert not (ACTIVE_VETO_FLAGS & set(candidate.risk_flags))
+    for each ticker in band_book + stateless_book
+```
+
+The veto filter is already upstream (`select_picks` / HC gate); this assertion pins
+that the new stateless counterfactual ALSO inherits it. The assertion fires for BOTH
+books simultaneously so the condition covers both paths. An `AssertionError` surfaces
+and is never silenced — it means the upstream veto filter was bypassed.
+
+### Flip-gate (future PR, pre-registered — E RATIFY-WITH-CONDITION)
+
+ALL of the following conditions must clear before any live wiring:
+
+1. **Defense-precedence assertion NEVER trips** across all cron runs and all backtest
+   rebalance legs.
+2. **H1 — turnover reduction**: `mean(turnover_reduction_pp) >= 15pp` over >= 4 live
+   rebalances (Garleanu-Pedersen 2013 partial-adjustment / hold-band dynamics).
+3. **MAX_WEIGHT holds post-liq-tilt**: no holding exceeds 35% after the liq-capacity
+   haircut (guaranteed by the iterative pin-redistribute re-cap; the test suite pins it).
+4. **Sidecar tenure** ONLY at forward-decoupling: the empty-seed stateless replay is
+   deterministic from `BACKTEST_CANONICAL_START`; a sidecar tenure file is only
+   needed when the canonical start no longer reconstructs path-dependent tenure
+   exactly each run.
+5. **Methodology re-ratify exit=60 vs live 55** (H-B/H-C freeze-lock — no 2nd
+   hysteresis DOF without fresh pre-registration; the shadow meta discloses exit=60
+   as a single-DOF probe, never as a live change).
+
+### Academic anchors
+
+- **Garleanu-Pedersen 2013** *JF* 68(6) "Dynamic portfolio choice with frictions" —
+  no-trade region theory underpinning the hold-band; partial-adjustment dynamics;
+  the H1 gate (>= 15pp turnover reduction) is calibrated against their finding that
+  turnover reduction materializes quickly in the no-trade region.
+- **Novy-Marx-Velikov 2016** *RFS* 29(7) "A taxonomy of anomalies and their trading
+  costs" — high-turnover strategies erode a disproportionate share of their gross
+  premium to market impact; turnover reduction via a band is the implementation-cost
+  mechanism.
+- **Amihud 2002** *JFM* 5(1) "Illiquidity and stock returns: cross-section and
+  time-series effects" — the $5M ADV floor (`ADV_FLOOR_USD`) is a capacity
+  constraint. Amihud demonstrates that illiquidity carries a *return premium*, so
+  the haircut is an implementation guard, NOT a signal suppressor or alpha claim.
+  The `low_liquidity` annotate (existing, defense 36) provides the flag; the
+  capacity tilt acts on it.
+
+### Schema surface
+
+- `Metadata.hysteresis_turnover_reduction_mean_pp: float | None` — mean
+  `turnover_reduction_pp` over all backtest legs with the E fields populated.
+  Populated by reading `backtest_pit.json` after the PIT-backtest refresh.
+  None when the artifact is absent or has no E legs.
+- `Metadata.low_liquidity_held_count: int | None` — count of `low_liquidity_holdings`
+  in the FINAL backtest rebalance leg (the current AI-pick book's liq exposure).
+  None when the artifact is absent or has no final-leg E fields.
+
+HARD CONSTRAINT: both fields MUST NEVER be read by scoring, the composite, pillar
+computation, veto/flag logic, fair-price, `select_picks`, or `inverse_vol_weights`.
+
+---
+
 **Reminder**: this is a research / educational tool. Not investment advice. See
 the disclaimer in the [README](../README.md).

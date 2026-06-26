@@ -1019,6 +1019,49 @@ class Metadata(BaseModel):
     high_conviction_count: int | None = None
     high_conviction_ex_loss_chance_count: int | None = None
     high_conviction_below_floor: bool | None = None
+    # Proposal E — Turnover / hysteresis diagnostic + liquidity capacity tilt
+    # (0.10.40-phase8pilot, Rule 18 observability-first).
+    #
+    # Background: the hysteresis hold-band [55, 65) is ALREADY the production
+    # carry rule in the backfill (V55.1, ratified 2026-06-11).  Proposal E
+    # slice-1 adds SHADOW diagnostics around it — the live band and NAV are
+    # byte-identical.  Defense layer UNCHANGED at 36 (``low_liquidity`` is an
+    # existing annotate; the capacity tilt is a sizing device, NOT a new flag).
+    #
+    # ``hysteresis_turnover_reduction_mean_pp`` — mean per-rebalance
+    # turnover-reduction (percentage-points) of the hysteresis band vs the
+    # no-carry stateless counterfactual over ALL backtest legs:
+    #     turnover_reduction_pp_per_leg = turnover_stateless_pct − turnover_band_pct
+    #     hysteresis_turnover_reduction_mean_pp = mean(per_leg_reductions)
+    # Positive values confirm the band reduces churn.  H1 gate (pre-registered):
+    # mean >= 15pp over >= 4 live rebalances (Garleanu-Pedersen 2013 *JF* 68(6)).
+    # Populated by reading ``backtest_pit.json`` after the PIT-backtest refresh
+    # (same artifact-read pattern as C-2 and C-1).
+    # None when the artifact is absent, unreadable, or has no legs with the
+    # E shadow fields (first cron after a cold clone or before the backfill re-runs).
+    #
+    # HARD CONSTRAINT: this field MUST NEVER be read by scoring, the composite,
+    # pillar computation, veto/flag logic, fair-price, ``select_picks``, or
+    # ``inverse_vol_weights``.  Written to ``Metadata`` ONLY.
+    # Rankings/scores/flags are byte-identical.  Defense layer UNCHANGED at 36.
+    #
+    # Nullable on legacy snapshots (pre-0.10.40).
+    hysteresis_turnover_reduction_mean_pp: float | None = None
+    # ``low_liquidity_held_count`` — number of holdings in the FINAL backtest
+    # rebalance leg's banded book that carry the ``low_liquidity`` annotate
+    # (trailing-30d mean dollar volume < ADV_FLOOR_USD = $5M).
+    # This is the capacity-constraint exposure count for the live AI-pick book.
+    # Populated by reading ``backtest_pit.json`` (same artifact-read pattern).
+    # None when the artifact is absent, unreadable, or has no final-leg
+    # ``low_liquidity_holdings`` field.
+    #
+    # Flip-gate contribution: zero or near-zero across crons confirms the S&P 900
+    # AI-pick basket is NOT exposed to sub-$5M ADV names (dormant on S&P 900;
+    # may light up on S&P 1500 small-cap books — Amihud 2002 capacity, not alpha).
+    #
+    # HARD CONSTRAINT: same as ``hysteresis_turnover_reduction_mean_pp`` above.
+    # Defense layer UNCHANGED at 36.  Nullable on legacy snapshots (pre-0.10.40).
+    low_liquidity_held_count: int | None = None
 
 
 class RawMetrics(BaseModel):

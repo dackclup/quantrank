@@ -181,6 +181,23 @@ def test_schema_version_pinned():
     Pin-lift gate requires A3-i/A3-ii OOS horse-race + methodology-scientist
     RATIFY-PROCEED.
 
+    Proposal E turnover / hysteresis diagnostic + liquidity capacity tilt
+    (0.10.40-phase8pilot, 2026-06-26) — 2 additive nullable ``Metadata``
+    fields (SHADOW / OBSERVABILITY-ONLY, Rule 18):
+    ``hysteresis_turnover_reduction_mean_pp: float | None`` — mean per-rebalance
+    turnover-reduction (pp) of the hysteresis band vs the stateless counterfactual
+    over ALL backtest legs. Positive values confirm the band reduces churn.
+    H1 gate (pre-registered): mean >= 15pp over >= 4 live rebalances (Garleanu-
+    Pedersen 2013 *JF* 68(6)).
+    ``low_liquidity_held_count: int | None`` — count of low-liq holdings in the
+    FINAL backtest rebalance leg's banded book. Capacity-constraint exposure canary
+    (Amihud 2002 *JFM* 5(1)). None when artifact absent / unreadable.
+    New pure functions: ``book_turnover(curr, prev) -> float`` (symmetric-diff
+    name-count turnover) + ``liquidity_capacity_tilt(base, low_liq_tickers)``
+    (haircut ×0.5 PRE-renorm → renorm → iterative pin-redistribute re-cap).
+    Live band_book / NAV / rankings / scores / flags BYTE-IDENTICAL. Defense
+    layer UNCHANGED at 36. ``LIQ_CAPACITY_TILT = 0.5`` constant pin.
+
     Proposal C-1 high-conviction gate counter (0.10.39-phase8pilot, 2026-06-26)
     — 3 additive nullable ``Metadata`` fields for the marginal-bite denominator
     of the loss-chance leg in the high-conviction gate:
@@ -251,7 +268,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.39-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.40-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

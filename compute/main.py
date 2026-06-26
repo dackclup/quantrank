@@ -3866,6 +3866,62 @@ def run_weekly_compute() -> int:
         )
         _hc_below_floor = None
 
+    # --- Proposal E — Turnover / hysteresis diagnostic + liq-capacity tilt canaries.
+    # Reads the refreshed backtest_pit.json (same artifact-read pattern as C-2 and C-1).
+    # HARD CONSTRAINT: these fields MUST NEVER be read by scoring, composite, pillar,
+    # veto/flag, fair-price, select_picks, or inverse_vol_weights.  Written to
+    # Metadata ONLY.  Rankings/scores/flags are byte-identical.  Defense layer
+    # UNCHANGED at 36.
+    _hysteresis_turnover_reduction_mean_pp: float | None = None
+    _low_liquidity_held_count: int | None = None
+    try:
+        import json as _json_e
+
+        _e_pit_path = config.DATA_DIR / "portfolio" / "backtest_pit.json"
+        if _e_pit_path.exists():
+            with _e_pit_path.open("r", encoding="utf-8") as _e_fh:
+                _e_pit_data = _json_e.load(_e_fh)
+            # hysteresis_turnover_reduction_mean_pp: mean turnover_reduction_pp
+            # across ALL rebalance legs that carry the E shadow fields.
+            _e_reductions: list[float] = [
+                float(rb["turnover_reduction_pp"])
+                for rb in _e_pit_data.get("rebalances", [])
+                if rb.get("turnover_reduction_pp") is not None
+            ]
+            if _e_reductions:
+                _hysteresis_turnover_reduction_mean_pp = round(
+                    sum(_e_reductions) / len(_e_reductions), 4
+                )
+            logger.info(
+                "E turnover canary: mean_reduction_pp=%.4f across %d legs",
+                _hysteresis_turnover_reduction_mean_pp or 0.0,
+                len(_e_reductions),
+            )
+            # low_liquidity_held_count: count of low_liquidity_holdings in the
+            # FINAL rebalance leg (the current AI-pick book's liq exposure).
+            _e_rebalances = _e_pit_data.get("rebalances", [])
+            if _e_rebalances:
+                _final_leg = _e_rebalances[-1]
+                _ll_holdings = _final_leg.get("low_liquidity_holdings")
+                if isinstance(_ll_holdings, list):
+                    _low_liquidity_held_count = len(_ll_holdings)
+            logger.info(
+                "E liq canary: low_liquidity_held_count=%s (final leg)",
+                _low_liquidity_held_count,
+            )
+        else:
+            logger.debug(
+                "E canary: backtest_pit.json not found at %s — "
+                "hysteresis_turnover_reduction_mean_pp and low_liquidity_held_count → None",
+                _e_pit_path,
+            )
+    except Exception as _e_canary_exc:  # noqa: BLE001
+        logger.warning(
+            "E canary read failed (non-fatal): %s — "
+            "hysteresis_turnover_reduction_mean_pp and low_liquidity_held_count → None",
+            _e_canary_exc,
+        )
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -4182,6 +4238,13 @@ def run_weekly_compute() -> int:
         # eligible_high_conviction_count < 5 (ADAPTIVE_MIN_PICKS).
         # None when the artifact is absent or unreadable.
         high_conviction_below_floor=_hc_below_floor,
+        # Proposal E — Turnover / hysteresis diagnostic + liq-capacity tilt
+        # canaries (0.10.40-phase8pilot, Rule 18 observability-first).
+        # SHADOW / OBSERVABILITY-ONLY — live scores, flags, rankings byte-identical.
+        # Defense layer UNCHANGED at 36.  Both None when the artifact is absent
+        # (first cron after cold clone or before backfill re-runs with E wiring).
+        hysteresis_turnover_reduction_mean_pp=_hysteresis_turnover_reduction_mean_pp,
+        low_liquidity_held_count=_low_liquidity_held_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

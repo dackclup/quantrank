@@ -446,6 +446,193 @@ def mos_conviction_tilt(
     return {t: v / s for t, v in weights.items()} if s > 0 else dict(base_weights)
 
 
+# ── Proposal E — Turnover / hysteresis diagnostic + liquidity capacity tilt ──
+# (SHADOW / observability-first, Rule 18)
+#
+# Two new pure functions + one constant.  All E fields are SHADOW diagnostics
+# emitted in ``backtest_pit.json`` (free-form dict, NOT the Pydantic↔TS↔snapshot
+# triple) plus 2 cross-universe Metadata canaries.  NEVER feeds the live NAV,
+# band_book, band_weights, or any scoring path.
+#
+# Flip-gate (future, all conditions binding — pre-registered):
+#   (1) Defense-precedence assertion NEVER trips across all cron runs and all
+#       backtest rebalance legs (the stateless counterfactual inherits the HC gate).
+#   (2) Realized ``turnover_reduction_pp`` mean >= 15% vs the no-band stateless
+#       counterfactual over >= 4 live rebalances (H1, Garleanu-Pedersen 2013 partial-
+#       adjustment / hold-band dynamics).
+#   (3) MAX_WEIGHT holds post-liq-tilt: no holding exceeds 35% after the liq-capacity
+#       haircut (guaranteed by the iterative pin-redistribute re-cap below).
+#   (4) Sidecar tenure ONLY at forward-decoupling (a future forward-only tenure file
+#       when BACKTEST_CANONICAL_START no longer reconstructs path-dependent tenure
+#       deterministically each run).
+#   (5) Methodology re-ratify exit=60 vs live 55 (H-B/H-C freeze-lock — no 2nd
+#       hysteresis DOF without fresh pre-registration; the shadow-only meta discloses
+#       exit=60 as a single-DOF probe, never as a live change).
+#
+# Anchors:
+#   Garleanu-Pedersen 2013 *JF* 68(6) — no-trade region with transaction costs;
+#       the band [55, 65) is the empirically calibrated no-trade region.
+#   Novy-Marx-Velikov 2016 *RFS* 29(7) — "A taxonomy of anomalies and their
+#       trading costs": high-turnover strategies erode a disproportionate share of
+#       their gross premium to market impact.
+#   Amihud 2002 *JFM* 5(1) — illiquidity and stock returns: the $5M ADV floor
+#       is a CAPACITY constraint (not an alpha claim — illiquidity carries a return
+#       *premium*, so the haircut is an implementation guard, not a signal suppressor).
+#
+# HARD CONSTRAINT: ``LIQ_CAPACITY_TILT``, ``book_turnover``, and
+# ``liquidity_capacity_tilt`` MUST NEVER be read by scoring, the composite,
+# pillar computation, veto/flag logic, fair-price, ``select_picks``, or
+# ``inverse_vol_weights``.  They exist ONLY in the ``backtest_pit.json``
+# shadow diagnostic and the 2 cross-universe Metadata canaries.
+# Defense layer UNCHANGED at 36 (``low_liquidity`` is an existing annotate;
+# the capacity tilt is a sizing device, NOT a new flag).
+
+# ``LIQ_CAPACITY_TILT``: the Tier-2 gut-feel haircut applied to low-liquidity
+# holdings in the shadow liq-capacity tilt.  ``w_i × 0.5`` before renorm.
+# Never touches a live AI-pick rank≤10 name per #544 HARD gate (the assertion
+# in the backfill covers both product band_book and the stateless counterfactual).
+LIQ_CAPACITY_TILT: float = 0.5
+
+
+def book_turnover(curr: set[str], prev: set[str]) -> float:
+    """Symmetric-difference name turnover: |curr △ prev| / |prev|.
+
+    Returns 0.0 when ``prev`` is empty (first rebalance — band inert, no
+    predecessor to measure turnover against).  Returns 1.0 when prev is
+    non-empty but curr is empty (degenerate — full replacement).
+
+    This is a NAME-count turnover metric (not a weight-based TWR measure).
+    The caller divides by ``|prev|`` (not ``|curr ∪ prev|``) so that an
+    incumbent-heavy band book with few additions shows a LOW turnover
+    relative to the predecessor book — which is the desired intuition
+    (the hysteresis band reduces turnover = keeps old names).
+
+    Proposal E — SHADOW only. Never fed to scoring, NAV, or weights.
+    Anchors: Novy-Marx-Velikov 2016 §2 (turnover erodes premia);
+    Garleanu-Pedersen 2013 (no-trade region minimises turnover cost).
+
+    Parameters
+    ----------
+    curr:
+        Set of ticker names in the CURRENT rebalance book.
+    prev:
+        Set of ticker names in the PRIOR rebalance book.
+    """
+    if not prev:
+        return 0.0
+    symmetric_diff = len(curr.symmetric_difference(prev))
+    return symmetric_diff / len(prev)
+
+
+def liquidity_capacity_tilt(
+    base_weights: dict[str, float],
+    low_liquidity_tickers: set[str],
+    *,
+    haircut: float = LIQ_CAPACITY_TILT,
+    cap: float = MAX_WEIGHT,
+) -> dict[str, float]:
+    """Capacity-constraint haircut for low-liquidity holdings (Proposal E, SHADOW).
+
+    Halves (× ``haircut``) the weight of every holding flagged as ``low_liquidity``
+    BEFORE renormalization, then renormalizes to sum 1.0, then RE-CAPS at ``cap``
+    using the SAME iterative pin-and-redistribute routine as ``inverse_vol_weights``
+    (NOT a naive clip — naive clip would re-breach the cap on small books).
+
+    Amihud 2002 capacity rationale
+    --------------------------------
+    The $5M ADV floor is a CAPACITY constraint, not an alpha claim: an illiquid
+    holding occupies a disproportionate share of the market's available float
+    relative to the book-weight implied by inverse-vol.  Halving the allocated
+    weight gives the remaining names proportionally more room.  The haircut is
+    NOT a performance tilt (illiquidity carries a *return premium* per Amihud
+    2002 §4 — this function is an implementation guard for a concentrated small-cap
+    book, consistent with the #544 HARD gate).
+
+    Stacking order (future combined live wiring, C-2 + E both live):
+        1. inverse_vol_weights(sigmas)          → base weights
+        2. liquidity_capacity_tilt(base, liq)  → liq-haircut renorm     [THIS FN]
+        3. mos_conviction_tilt(liq_tilted, mos) → MoS tilt renorm
+        4. single MAX_WEIGHT re-cap (the iterative pin-redistribute loop, once at end)
+    The "single terminal re-cap" discipline avoids double-capping accumulation.
+
+    Identity guards (test-pinnable)
+    --------------------------------
+    - ``low_liquidity_tickers`` empty → all ``haircut`` multipliers = 1.0 →
+      ``provisional == base_weights`` → returns ``base_weights`` unchanged.
+    - ``base_weights`` empty → returns ``{}`` immediately.
+    - All tickers are low-liquidity → haircut × ALL names → renorm cancels →
+      returns ``base_weights`` unchanged (the cap may still bind if the input
+      already hit it, but the RELATIVE weights are preserved).
+
+    HARD CONSTRAINT: this function is NEVER called on the live NAV path.
+    The backfill invokes it AFTER ``band_weights_map = inverse_vol_weights(...)``
+    and emits the tilted weights as ``rebalances[].liq_tilted_weights`` for
+    diagnostics only.  ``band_weights_map`` and all NAV math remain byte-identical.
+    Defense layer UNCHANGED at 36.  Rankings / scores / flags unaffected.
+
+    Parameters
+    ----------
+    base_weights:
+        Inverse-vol weights from ``inverse_vol_weights`` (sum 1.0, keys = book).
+    low_liquidity_tickers:
+        Set of tickers carrying the ``low_liquidity`` annotate flag.  Keys need
+        not cover the full book — missing keys receive haircut = 1.0 (no haircut).
+    haircut:
+        Multiplicative weight factor applied to low-liquidity holdings BEFORE
+        renorm (default ``LIQ_CAPACITY_TILT = 0.5`` — halve the weight).
+    cap:
+        Single-name concentration cap (inherits ``MAX_WEIGHT = 0.35``).
+    """
+    if not base_weights:
+        return {}
+
+    tickers = list(base_weights.keys())
+    n = len(tickers)
+
+    # Apply the haircut PRE-renorm.
+    provisional: dict[str, float] = {
+        t: base_weights[t] * (haircut if t in low_liquidity_tickers else 1.0)
+        for t in tickers
+    }
+
+    # Renormalize to sum 1.0.
+    total = sum(provisional.values())
+    if total <= 0.0:
+        return dict(base_weights)  # degenerate guard
+    renormed = {t: v / total for t, v in provisional.items()}
+
+    # Re-cap at ``cap`` using the iterative pin-and-redistribute routine
+    # (REUSES the SAME logic as ``inverse_vol_weights`` lines 277-290 —
+    # NOT a naive clip-and-renorm which can re-breach the cap).
+    # Pinned names stay at ``cap``; residual redistributes pro-rata over
+    # free names until none exceeds the cap.  Converges in <= n passes.
+    if n * cap < 1.0 - 1e-12:
+        # Cap infeasible → equal weight (same fallback as inverse_vol_weights).
+        return {t: 1.0 / n for t in tickers}
+
+    pinned: set[str] = set()
+    weights: dict[str, float] = {}
+    raw_renormed = renormed
+    for _ in range(n + 1):
+        free = [t for t in tickers if t not in pinned]
+        free_raw_total = sum(raw_renormed[t] for t in free)
+        remaining = 1.0 - len(pinned) * cap
+        weights = {t: cap for t in pinned}
+        for t in free:
+            weights[t] = (
+                raw_renormed[t] / free_raw_total * remaining
+                if free_raw_total > 0
+                else 0.0
+            )
+        newly = [t for t in free if weights[t] > cap + 1e-12]
+        if not newly:
+            break
+        pinned.update(newly)
+
+    s = sum(weights.values())
+    return {t: v / s for t, v in weights.items()} if s > 0 else dict(base_weights)
+
+
 def trailing_return_sigma(
     closes: Sequence[float | None], window: int = SIGMA_WINDOW_DAYS
 ) -> float | None:

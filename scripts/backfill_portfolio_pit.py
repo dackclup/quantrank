@@ -90,16 +90,21 @@ from compute.portfolio.position_returns import (
     reconciliation_errors,
 )
 from compute.portfolio.weights import (
+    ACTIVE_VETO_FLAGS,
     HIGH_CONVICTION_COMPOSITE_MIN,
     HIGH_CONVICTION_LOSS_CHANCE_MAX,
     HIGH_CONVICTION_RECOMMENDATIONS,
+    LIQ_CAPACITY_TILT,
     MAX_PICKS,
+    MAX_WEIGHT,
     MOS_TILT_CLIP_HI,
     MOS_TILT_CLIP_LO,
     MOS_TILT_KAPPA,
     PickCandidate,
+    book_turnover,
     inverse_vol_weights,
     is_high_conviction,
+    liquidity_capacity_tilt,
     mos_conviction_tilt,
     select_picks,
     trailing_return_sigma,
@@ -1021,6 +1026,19 @@ def run_backfill(
     grid_legs: dict[str, list[tuple[str, dict[str, float]]]] = {k: [] for k in _GRID_CONFIG_KEYS}
     grid_tenure: dict[str, set[str]] = {k: set() for k in _GRID_CONFIG_KEYS}
 
+    # ── Proposal E threading state (SHADOW / observability-first) ─────────────
+    # ``prev_band_book_set`` threads the PRODUCT band_book names from the prior
+    # leg so ``book_turnover`` can compute symmetric-difference turnover.
+    # ``prev_stateless_book_set`` does the same for the stateless counterfactual.
+    # Both start as empty sets (first rebalance → turnover = 0.0).
+    _prev_band_book_set: set[str] = set()
+    _prev_stateless_book_set: set[str] = set()
+    # Stateless tenure state for the E counterfactual: ALWAYS an empty set,
+    # passed to _band_book each leg (fresh entry-only, no carry across legs).
+    # Re-created each leg for explicitness; the constant empty-set simulates
+    # "no hysteresis at all" — the comparison baseline for H1 turnover-reduction.
+    # ──────────────────────────────────────────────────────────────────────────
+
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
@@ -1394,6 +1412,112 @@ def run_backfill(
                     _tilt_exc,
                 )
 
+        # ── Proposal E: Turnover / hysteresis + liq-capacity tilt (SHADOW) ──────
+        # All E variables are underscore-prefixed locals (shadow pattern from C-2).
+        # LIVE band_book / band_weights_map / band_legs_for_nav UNCHANGED.
+        # Defense layer UNCHANGED at 36.  Rankings/scores/flags byte-identical.
+        #
+        # (1) Stateless counterfactual book (empty-seed tenure = no carry).
+        #     Produces the NO-HYSTERESIS book at this rebalance for turnover comparison.
+        _stateless_book: list[str] = []
+        _stateless_book_set: set[str] = set()
+        try:
+            _stateless_book, _, _ = _band_book(
+                full_order, scores_this, tenure=set()  # empty seed = stateless
+            )
+            _stateless_book_set = set(_stateless_book)
+
+            # DEFENSE-PRECEDENCE ASSERTION (binding methodology condition 1):
+            # Assert that NEITHER the product band_book NOR the stateless
+            # counterfactual contains any active-veto name.
+            # The veto filter is already upstream (select_picks / HC gate) — this
+            # assertion pins that the new stateless counterfactual ALSO inherits it.
+            # Fires for BOTH books simultaneously so the condition covers both paths.
+            for _veto_check_ticker in list(band_book) + _stateless_book:
+                _cand = candidates_by_ticker.get(_veto_check_ticker)
+                if _cand is not None:
+                    _carried_vetoes = ACTIVE_VETO_FLAGS & set(_cand.risk_flags)
+                    assert not _carried_vetoes, (
+                        f"E defense-precedence VIOLATION at {T_iso}: ticker "
+                        f"{_veto_check_ticker!r} in book with active veto(es) "
+                        f"{_carried_vetoes!r}"
+                    )
+        except AssertionError:
+            raise  # assertion violations surface, never silenced
+        except Exception as _e_stateless_exc:  # noqa: BLE001
+            logger.warning(
+                "backfill: E stateless counterfactual failed at %s: %s — shadow omitted",
+                T_iso,
+                _e_stateless_exc,
+            )
+            _stateless_book_set = set()
+
+        # (2) Turnover triple (symmetric-difference name turnover, %).
+        #     turnover_band_pct     = product band turnover vs prior leg (× 100).
+        #     turnover_stateless_pct = no-carry counterfactual turnover vs prior leg (× 100).
+        #     turnover_reduction_pp = stateless − band (positive = band reduces churn).
+        _turnover_band_pct: float | None = None
+        _turnover_stateless_pct: float | None = None
+        _turnover_reduction_pp: float | None = None
+        try:
+            _turnover_band_pct = round(
+                book_turnover(set(band_book), _prev_band_book_set) * 100.0, 4
+            )
+            _turnover_stateless_pct = round(
+                book_turnover(_stateless_book_set, _prev_stateless_book_set) * 100.0, 4
+            )
+            _turnover_reduction_pp = round(
+                _turnover_stateless_pct - _turnover_band_pct, 4
+            )
+        except Exception as _e_turn_exc:  # noqa: BLE001
+            logger.warning(
+                "backfill: E turnover triple failed at %s: %s — shadow omitted",
+                T_iso,
+                _e_turn_exc,
+            )
+
+        # Thread the current books forward for the next rebalance.
+        _prev_band_book_set = set(band_book)
+        _prev_stateless_book_set = _stateless_book_set
+
+        # (3) Liquidity-capacity tilt (SHADOW).
+        #     In the backfill we do NOT have PIT ADV data per ticker — the
+        #     ``low_liquidity`` annotate is computed live from trailing-30d price×volume
+        #     data that is not replayed PIT in the fundamentals snapshot.
+        #     Therefore ``_low_liq_set_this`` is empty for all historical legs.
+        #     This means ``liquidity_capacity_tilt`` returns base_weights unchanged
+        #     (identity guard: empty low_liq_set → all haircut multipliers = 1.0).
+        #     The diagnostic still ships the empty field so the schema contract is
+        #     established; the shadow will light up on future sp1500 small-cap crons
+        #     when the live forward compute populates it.
+        _low_liq_set_this: set[str] = set()  # no PIT ADV data in backfill
+        _liq_tilted_weights: dict[str, float] = {}
+        _liq_tilt_max_delta_pp: float | None = None
+        _low_liquidity_holdings: list[str] = []
+        if band_weights_map:
+            try:
+                _liq_tilted_weights = liquidity_capacity_tilt(
+                    band_weights_map, _low_liq_set_this
+                )
+                if _liq_tilted_weights:
+                    _liq_tilt_max_delta_pp = round(
+                        max(
+                            abs(_liq_tilted_weights.get(t, 0.0) - band_weights_map.get(t, 0.0))
+                            * 100.0
+                            for t in band_weights_map
+                        ),
+                        6,
+                    )
+                _low_liquidity_holdings = sorted(_low_liq_set_this & set(band_book))
+            except Exception as _e_liq_exc:  # noqa: BLE001
+                logger.warning(
+                    "backfill: E liquidity_capacity_tilt failed at %s: %s — shadow omitted",
+                    T_iso,
+                    _e_liq_exc,
+                )
+
+        # ── End Proposal E shadow block ──────────────────────────────────────────
+
         # Carry-weight share: fraction of the band book's total weight held by carry names
         # (those in prior tenure AND score < ADAPTIVE_COMPOSITE_MIN — the band's value).
         # Rounded to 4 dp per spec; None when the book has no weight (degenerate leg).
@@ -1567,6 +1691,36 @@ def run_backfill(
                 # across all band-book members for this rebalance.  None when
                 # mos_tilted_weights is empty.
                 "mos_tilt_max_abs_weight_delta_pp": _mos_tilt_max_delta_pp,
+                # ── Proposal E shadow fields (Rule 18 observability-first) ───────
+                # stateless_book: the counterfactual NO-CARRY book at this rebalance
+                # (empty-seed tenure — simulates no hysteresis band at all).
+                # Used to compute the turnover-reduction H1 diagnostic.
+                "stateless_book": _stateless_book,
+                # turnover_band_pct: product band symmetric-difference turnover
+                # vs the prior leg's band_book (× 100).  0.0 on first rebalance.
+                "turnover_band_pct": _turnover_band_pct,
+                # turnover_stateless_pct: no-carry counterfactual symmetric-difference
+                # turnover vs the prior stateless book (× 100).
+                "turnover_stateless_pct": _turnover_stateless_pct,
+                # turnover_reduction_pp: turnover_stateless_pct − turnover_band_pct.
+                # Positive = band reduces churn.  H1 gate: mean >= 15pp over >= 4
+                # live rebalances (Garleanu-Pedersen 2013 JF 68(6)).
+                "turnover_reduction_pp": _turnover_reduction_pp,
+                # liq_tilted_weights: inverse-vol weights after the liq-capacity
+                # haircut (× 0.5 for low-liquidity holdings, renorm, re-cap).
+                # SHADOW ONLY — does NOT feed band_legs_for_nav / NAV math.
+                # Empty dict when band_weights is empty or tilt failed.
+                "liq_tilted_weights": (
+                    {t: round(w, 6) for t, w in _liq_tilted_weights.items()}
+                    if _liq_tilted_weights
+                    else {}
+                ),
+                # low_liquidity_holdings: sorted list of band-book tickers that
+                # triggered the liq-capacity haircut this rebalance.
+                "low_liquidity_holdings": _low_liquidity_holdings,
+                # liq_tilt_max_abs_weight_delta_pp: max |liq_tilted - base| × 100
+                # across all band-book members.  None when liq_tilted_weights empty.
+                "liq_tilt_max_abs_weight_delta_pp": _liq_tilt_max_delta_pp,
             }
         )
 
@@ -1754,6 +1908,24 @@ def run_backfill(
             # mos_tilt_active: False — shadow only; live band_weights / NAV
             # are byte-identical.  Set True in a future PR after flip-gate clears.
             "mos_tilt_active": False,
+            # ── Proposal E shadow meta (Rule 18 observability-first) ─────────────
+            # hysteresis_shadow: discloses the shadow re-parameterization config
+            # and the live band for auditing.
+            #   enter: composite threshold for fresh entry (live = 65).
+            #   exit: shadow probe exit threshold (live is ADAPTIVE_HOLD_BAND_MIN=55;
+            #         60 ships ONLY as a shadow re-param disclosure — NOT a live change).
+            #         H-C freeze-lock: no 2nd DOF without fresh pre-registration.
+            #   current_live_band: [enter_live, exit_live] — the live production band.
+            #   liq_haircut: the Tier-2 gut-feel haircut for low-liquidity holdings.
+            #   active: False — shadow only; live band STAYS [65, 55] (UNCHANGED).
+            "hysteresis_shadow": {
+                "enter": ADAPTIVE_COMPOSITE_MIN,
+                "exit": 60,  # shadow probe only, NOT live; H-C freeze-lock single-DOF
+                "current_live_band": [ADAPTIVE_COMPOSITE_MIN, ADAPTIVE_HOLD_BAND_MIN],
+                "liq_haircut": LIQ_CAPACITY_TILT,
+                "max_weight": MAX_WEIGHT,
+                "active": False,
+            },
         },
         "rebalances": rebalances_out,
         "nav": nav,
