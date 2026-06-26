@@ -7632,3 +7632,63 @@ PR-2b adds a UI surface gated on ≥ 1 cron confirming the reconciliation counte
 **Unblocks**: Carino follow-up PR (financial-engineer re-derivation) + PR-2b (rotation-history drawers)
 
 **Gate**: quantrank-reviewer + defense-layer-auditor at Draft→Ready.
+## PR #617 — feat(compute): MoS conviction tilt shadow (Proposal C-2, in flight, 2026-06-26)
+
+**Branch**: `claude/fund-performance-rankings-f8x4o1`
+**Schema**: `0.10.37-phase8pilot` → `0.10.38-phase8pilot`
+**Type**: feat(compute) — observability-first (Rule 18). SHADOW / OBSERVABILITY-ONLY.
+Live `band_weights`, `band_legs_for_nav`, NAV, rankings, scores, and flags are
+BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+**What**: Proposal C-2 from the legendary-fund deep-research 6-proposal program
+(methodology-scientist RATIFY-SHADOW). Adds a book-relative MoS-conviction tilt
+on top of inverse-vol weights as a diagnostic surface:
+
+- `compute/portfolio/weights.py` — new pure function `mos_conviction_tilt(base_weights,
+  mos_by_ticker, *, kappa, cap)` + constants `MOS_TILT_KAPPA=0.25` (Tier-2 gut-feel,
+  disclosed), `MOS_TILT_CLIP_LO=0.5`, `MOS_TILT_CLIP_HI=1.5`. Book-relative z-score
+  (mos None→z=0); multiplier `m=clip(1+κ·z, lo, hi)`; renorm; **iterative pin-and-
+  redistribute re-cap (reuses the same ≤n-pass loop as `inverse_vol_weights`)**.
+  Stevens 1946 admissibility: mos_pct is ratio-scale cardinal (vs composite_score ordinal);
+  Graham-Dodd MoS doctrine. Identity guards: σ_mos=0 / all-None / single-name book.
+
+- `scripts/backfill_portfolio_pit.py` — SHADOW wire after `band_weights_map`:
+  computes `mos_tilted_weights` (via the new function), exports two additive
+  per-rebalance fields (`mos_tilted_weights` · `mos_tilt_max_abs_weight_delta_pp`).
+  Does NOT feed `band_legs_for_nav`. Three additive `meta.*` fields:
+  `mos_tilt_kappa=0.25` · `mos_tilt_clip=[0.5,1.5]` · `mos_tilt_active=false`.
+
+- `compute/output/schemas.py` — ONE additive `Metadata` field:
+  `mos_tilt_shadow_max_delta_pp: float | None = None` (max per-rebalance delta
+  across all legs — the cross-universe canary).
+
+- `compute/main.py` — C-2 canary derivation block before the `Metadata(...)` call:
+  reads `backtest_pit.json` (if present), extracts `max(mos_tilt_max_abs_weight_delta_pp)`
+  across all rebalance legs, passes it into `Metadata.mos_tilt_shadow_max_delta_pp`.
+  try/except → None (never blocks cron).
+
+- `compute/config.py` — schema `0.10.37` → `0.10.38-phase8pilot`.
+
+**Flip-gate (future PR)**: re-derive κ from observed z(mos) distribution; confirm
+clip-bind rate ≤ ~5%; verify MAX_WEIGHT holds post-renorm on all rebalance legs;
+OOS turnover check; methodology-scientist ratify at the Q3 2026-08-19 cohort audit.
+
+**Schema triple**: 1 new field added → TS mirror + snapshot regen NEEDED
+(frontend-builder: add `mos_tilt_shadow_max_delta_pp: number | null` to `Metadata`
+in `frontend/lib/types.ts` + regen `frontend/lib/schema-snapshot.json`).
+
+**Tests needed** (test-engineer):
+  - Identity guards: σ_mos=0 → returns base_weights unchanged; all-None → identity;
+    single-name book (n=1) → identity; empty base_weights → `{}`.
+  - Clip bounds: z such that 1+κ·z < MOS_TILT_CLIP_LO is clamped to CLIP_LO; ditto HI.
+  - MAX_WEIGHT holds post-tilt: property test — Hypothesis generates random books + MoS
+    values; assert max(mos_tilted_weights.values()) ≤ MAX_WEIGHT + 1e-9.
+  - Sum-to-1: all non-degenerate outputs sum to 1.0 within 1e-9.
+  - Byte-identity canary: higher-MoS ticker gets higher tilted weight when σ > 0.
+  - Hypothesis property: non-neg weights, sum 1±1e-9, MAX_WEIGHT bound holds.
+  - `mos_conviction_tilt` is pure (no I/O side effects).
+
+**Gate**: quantrank-reviewer + schema-sentinel + test-engineer + defense-layer-auditor
+at Draft→Ready.
+
+---

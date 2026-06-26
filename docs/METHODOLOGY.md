@@ -936,5 +936,104 @@ investigation gate before the deviation can be intentional.
 
 ---
 
+## Proposal C-2 — MoS conviction tilt (SHADOW / observability-first, Rule 18)
+
+**Added**: 2026-06-26. Schema `0.10.38-phase8pilot`.
+**Status**: SHADOW / OBSERVABILITY-ONLY. Live NAV, `band_weights`, rankings, scores,
+and flags are BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+### Motivation
+
+The current inverse-volatility weighting scheme treats all basket members equally
+in terms of fundamental valuation: a stock trading 30% below fair value receives
+the same weight (modulo vol) as one trading 30% above. The MoS conviction tilt is
+a price-discipline overlay that biases weight allocation toward more deeply
+undervalued holdings within the held book.
+
+### Methodology foundations
+
+**Graham-Dodd margin of safety** (Graham & Dodd, *Security Analysis*, 1934/1940 eds.):
+a stock trading below its intrinsic value provides a margin of safety that both
+reduces downside risk and creates an asymmetric return distribution. `mos_pct > 0`
+signals the market price is below the QuantRank 6-method fair-value ensemble
+median; tilting toward higher MoS is a systematic implementation of the price
+discipline overlay Graham and Dodd advocated.
+
+**Stevens 1946 scale-type admissibility**: Stevens, S.S. (1946). "On the Theory of
+Scales of Measurement." *Science* 103(2684): 677–680.
+
+`mos_pct` is a **ratio-scale** cardinal quantity — it has a natural zero (price ==
+fair value) and meaningful ratios (mos=20% is twice as undervalued as mos=10%). This
+makes z-scoring, linear arithmetic, and proportional tilts admissible statistical
+operations on `mos_pct`.
+
+This stands in sharp contrast to `composite_score`, which is an **ordinal** percentile
+rank (Stevens ordinal scale). Cardinal arithmetic on ordinal scores is a scale-type
+error (weighting proportional to composite_score would effectively allocate capital
+based on the score's rank, which Rule 16 / the module-level docstring explicitly
+forbid). The MoS conviction tilt is permitted precisely because `mos_pct` is
+ratio-scale; any composite-proportional tilt remains forbidden.
+
+### Mechanics
+
+The tilt operates as a post-step after `inverse_vol_weights`:
+
+1. **Book-relative z-score**: `z_i = (mos_i − μ) / σ` where μ, σ are the mean and
+   sample stdev of `mos_pct` over the **held book** (not the full universe). Names
+   with `mos_pct = None` receive `z_i = 0` (neutral — no tilt).
+2. **Multiplier**: `m_i = clip(1 + κ · z_i, 0.5, 1.5)`.
+3. **Provisional weight**: `w'_i = base_weight_i · m_i`.
+4. **Renormalize** to sum 1.0.
+5. **Re-cap** at `MAX_WEIGHT = 0.35` using the same iterative pin-and-redistribute
+   routine as `inverse_vol_weights` (converges in ≤ n passes; never naive clip).
+
+**Identity guards** (test-pinnable): σ_mos = 0 (all holdings share the same MoS) OR
+all MoS values are `None` OR single-name book → returns base weights unchanged.
+
+### Constants (Tier-2 gut-feel, disclosed)
+
+| Constant | Value | Rationale |
+|---|---|---|
+| `MOS_TILT_KAPPA` | 0.25 | 1σ high-MoS name → 25% weight boost before renorm; 2σ clips at 1.5× |
+| `MOS_TILT_CLIP_LO` | 0.5 | Floor: a 2σ-low-MoS name loses at most 50% of its base weight |
+| `MOS_TILT_CLIP_HI` | 1.5 | Ceiling: a 2σ-high-MoS name gains at most 50% over its base weight |
+
+κ = 0.25 is a **Tier-2 gut-feel calibration** — it is disclosed as such and is not
+re-derived from in-sample data.
+
+### Flip-gate (future PR, pre-registered)
+
+The tilt becomes live (replacing `band_weights` as the active weight vector) only
+after ALL of the following conditions clear:
+
+1. **κ re-derivation**: re-derive κ from the observed `z(mos)` distribution on real
+   cron data (min 4 quarterly rebalances with `mos_tilt_max_abs_weight_delta_pp` emitted).
+2. **Clip-bind rate ≤ ~5%**: fewer than ~5% of (ticker × rebalance) pairs should hit
+   the `MOS_TILT_CLIP_LO` or `MOS_TILT_CLIP_HI` bounds. Frequent clipping indicates
+   κ is too large and the tilt is driven by outliers.
+3. **MAX_WEIGHT holds post-renorm**: `max(mos_tilted_weights.values()) ≤ MAX_WEIGHT`
+   on every historical rebalance leg (verified by the iterative re-cap).
+4. **OOS turnover check**: the tilt-induced quarterly turnover uplift vs the base
+   inverse-vol weights is within the cost-budget assumption (DEFAULT_COST_BPS_PER_SIDE).
+5. **Methodology-scientist ratify**: re-ratify at the Q3 2026-08-19 cohort audit after
+   reviewing `Metadata.mos_tilt_shadow_max_delta_pp` across ≥ 2 crons.
+
+Until the flip-gate clears: `meta.mos_tilt_active = false` in `backtest_pit.json`;
+`rebalances[].band_weights` and the adaptive NAV are byte-identical to pre-C-2.
+
+### Schema surface
+
+- `Metadata.mos_tilt_shadow_max_delta_pp: float | None` — cross-universe canary: the
+  maximum per-rebalance `max_t |mos_tilted_weight_t − base_weight_t| × 100` across all
+  rebalance legs in the current `backtest_pit.json`. None when the artifact is absent
+  (first cron after a cold clone or when the backfill was not re-run since C-2 landed).
+- `rebalances[].mos_tilted_weights` — shadow tilted weights per rebalance (additive,
+  NOT the live `band_weights`).
+- `rebalances[].mos_tilt_max_abs_weight_delta_pp` — per-rebalance max |delta| × 100.
+- `meta.mos_tilt_kappa` / `meta.mos_tilt_clip` / `meta.mos_tilt_active` — parameter
+  disclosure in the artifact.
+
+---
+
 **Reminder**: this is a research / educational tool. Not investment advice. See
 the disclaimer in the [README](../README.md).

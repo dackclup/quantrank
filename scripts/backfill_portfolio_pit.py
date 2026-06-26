@@ -93,9 +93,13 @@ from compute.portfolio.weights import (
     HIGH_CONVICTION_LOSS_CHANCE_MAX,
     HIGH_CONVICTION_RECOMMENDATIONS,
     MAX_PICKS,
+    MOS_TILT_CLIP_HI,
+    MOS_TILT_CLIP_LO,
+    MOS_TILT_KAPPA,
     PickCandidate,
     inverse_vol_weights,
     is_high_conviction,
+    mos_conviction_tilt,
     select_picks,
     trailing_return_sigma,
 )
@@ -1359,6 +1363,36 @@ def run_backfill(
         band_sigmas = {t: sigmas[t] for t in band_book if t in sigmas}
         band_weights_map = inverse_vol_weights(band_sigmas) if band_sigmas else {}
 
+        # ── Proposal C-2: MoS conviction tilt (SHADOW / observability-first) ──
+        # Compute the tilted weights for diagnostic export ONLY.
+        # ``band_weights_map`` and ``band_legs_for_nav`` are NEVER altered here —
+        # live NAV, band_weights, and all existing fields remain byte-identical.
+        # The tilt function is called with the mos_by_ticker values for the band
+        # book; None entries receive z=0 (neutral, no tilt) per the identity guard.
+        _mos_band = {t: mos_by_ticker.get(t) for t in band_book}
+        _mos_tilted_weights: dict[str, float] = {}
+        _mos_tilt_max_delta_pp: float | None = None
+        if band_weights_map:
+            try:
+                _mos_tilted_weights = mos_conviction_tilt(
+                    band_weights_map, _mos_band
+                )
+                if _mos_tilted_weights:
+                    _mos_tilt_max_delta_pp = round(
+                        max(
+                            abs(_mos_tilted_weights.get(t, 0.0) - band_weights_map.get(t, 0.0))
+                            * 100.0
+                            for t in band_weights_map
+                        ),
+                        6,
+                    )
+            except Exception as _tilt_exc:  # noqa: BLE001
+                logger.warning(
+                    "backfill: mos_conviction_tilt failed at %s: %s — shadow omitted",
+                    T_iso,
+                    _tilt_exc,
+                )
+
         # Carry-weight share: fraction of the band book's total weight held by carry names
         # (those in prior tenure AND score < ADAPTIVE_COMPOSITE_MIN — the band's value).
         # Rounded to 4 dp per spec; None when the book has no weight (degenerate leg).
@@ -1518,6 +1552,20 @@ def run_backfill(
                 # carried names without inferring from scores, and the H2 audit read
                 # the cohort directly.
                 "band_carry_names": sorted(carry_names_in_book),
+                # ── Proposal C-2 shadow fields (Rule 18 observability-first) ──────
+                # mos_tilted_weights: inverse-vol weights tilted toward higher-MoS
+                # holdings via ``mos_conviction_tilt``.  SHADOW ONLY — do NOT feed
+                # into NAV math (band_weights / band_legs_for_nav are unchanged).
+                # Empty dict when band_weights is empty or tilt computation failed.
+                "mos_tilted_weights": (
+                    {t: round(w, 6) for t, w in _mos_tilted_weights.items()}
+                    if _mos_tilted_weights
+                    else {}
+                ),
+                # mos_tilt_max_abs_weight_delta_pp: max |tilted - base| × 100
+                # across all band-book members for this rebalance.  None when
+                # mos_tilted_weights is empty.
+                "mos_tilt_max_abs_weight_delta_pp": _mos_tilt_max_delta_pp,
             }
         )
 
@@ -1694,6 +1742,17 @@ def run_backfill(
             ),
             "historical_sector_fallback_count": _historical_sector_fallback_count,
             "disclaimer": disclaimer,
+            # ── Proposal C-2 shadow meta (Rule 18 observability-first) ─────────
+            # mos_tilt_kappa: the κ constant used for the MoS-conviction tilt.
+            #   Tier-2 gut-feel calibration (disclosed); flip-gate: re-derive from
+            #   observed z(mos) distribution + clip-bind rate ≤ ~5% + MAX_WEIGHT
+            #   holds + OOS turnover check.
+            "mos_tilt_kappa": MOS_TILT_KAPPA,
+            # mos_tilt_clip: [lo, hi] multiplier clip bounds.
+            "mos_tilt_clip": [MOS_TILT_CLIP_LO, MOS_TILT_CLIP_HI],
+            # mos_tilt_active: False — shadow only; live band_weights / NAV
+            # are byte-identical.  Set True in a future PR after flip-gate clears.
+            "mos_tilt_active": False,
         },
         "rebalances": rebalances_out,
         "nav": nav,

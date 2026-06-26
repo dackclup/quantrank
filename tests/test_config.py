@@ -181,6 +181,15 @@ def test_schema_version_pinned():
     Pin-lift gate requires A3-i/A3-ii OOS horse-race + methodology-scientist
     RATIFY-PROCEED.
 
+    Proposal C-2 MoS conviction tilt (0.10.38-phase8pilot, 2026-06-26) —
+    1 additive nullable ``Metadata`` field:
+    ``mos_tilt_shadow_max_delta_pp: float | None`` — the maximum per-rebalance
+    ``max_t |mos_tilted_weight_t − base_weight_t| × 100`` across ALL rebalance
+    legs in the refreshed ``backtest_pit.json`` artifact. Cross-universe canary
+    for κ=0.25 calibration. SHADOW / OBSERVABILITY-ONLY (Rule 18); live NAV
+    path byte-identical; defense UNCHANGED at 36. Nullable on legacy snapshots
+    (pre-0.10.38); None when the ``backtest_pit.json`` artifact is absent.
+
     IC half-life monitor (0.10.35-phase8pilot, Proposal F, issue #604) — two
     additive nullable ``Metadata`` fields (``pillar_ic_half_life_months`` /
     ``pillar_ic_decay_fit_model``); SHADOW / OBSERVABILITY-ONLY (Rule 18),
@@ -227,7 +236,7 @@ def test_schema_version_pinned():
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
     ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.37-phase8pilot"
+    assert config.SCHEMA_VERSION == "0.10.38-phase8pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():
@@ -499,3 +508,95 @@ def test_shrinkage_metadata_fields_round_trip():
     assert m2.shrinkage_blended_weight_by_pillar == blended_w
     assert m2.n_preliminary_pillars == 8
     assert m2.shrinkage_weights_degenerate is True
+
+
+# ---------------------------------------------------------------------------
+# Proposal C-2 — MoS conviction tilt (0.10.38-phase8pilot).
+#
+# 1 additive nullable Metadata field:
+#   mos_tilt_shadow_max_delta_pp: float | None
+#
+# SHADOW / OBSERVABILITY-ONLY (Rule 18); live NAV path byte-identical;
+# defense UNCHANGED at 36.  Nullable on pre-0.10.38 artifacts; None when
+# backtest_pit.json is absent (cold clone or skipped backfill).
+# ---------------------------------------------------------------------------
+
+
+def test_mos_tilt_metadata_field_defaults_to_none():
+    """Proposal C-2 (0.10.38-phase8pilot): ``mos_tilt_shadow_max_delta_pp``
+    exists on Metadata and defaults to None — backward-compatible with all
+    pre-0.10.38 JSON artifacts (which have no such key).
+
+    Field type: ``float | None`` — holds the maximum per-rebalance
+    single-name weight shift (in percentage points) that the MoS tilt
+    would produce in ``backtest_pit.json``.  None when the artifact is
+    absent or the backfill was not re-run since C-2 landed.
+    """
+    from compute.output.schemas import Metadata
+
+    m = Metadata(
+        version="0.10.38-phase8pilot",
+        last_update_utc="2026-06-26T22:00:00Z",
+        next_update_utc="2026-06-27T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-c2-default-none",
+        git_commit="c2c2c2c2",
+    )
+    assert m.mos_tilt_shadow_max_delta_pp is None, (
+        "mos_tilt_shadow_max_delta_pp must default to None (backward-compat)"
+    )
+
+
+def test_mos_tilt_metadata_field_round_trips():
+    """Proposal C-2: ``mos_tilt_shadow_max_delta_pp`` survives a Pydantic
+    model_dump → model_validate round-trip with a realistic value.
+
+    A value of 8.4 means the largest weight shift seen across all rebalance
+    legs was 8.4 pp (e.g., a holding went from 20% base weight to 28.4%
+    or 11.6% after the MoS tilt) — a plausible calibration output for κ=0.25.
+    """
+    from compute.output.schemas import Metadata
+
+    m = Metadata(
+        version="0.10.38-phase8pilot",
+        last_update_utc="2026-06-26T22:00:00Z",
+        next_update_utc="2026-06-27T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-c2-round-trip",
+        git_commit="deadc2c2",
+        mos_tilt_shadow_max_delta_pp=8.4,
+    )
+    assert m.mos_tilt_shadow_max_delta_pp == 8.4
+
+    payload = m.model_dump(mode="json")
+    assert payload["mos_tilt_shadow_max_delta_pp"] == 8.4
+
+    m2 = Metadata.model_validate(payload)
+    assert m2.mos_tilt_shadow_max_delta_pp == 8.4
+
+
+def test_mos_tilt_metadata_field_zero_is_valid():
+    """Proposal C-2: 0.0 is a valid ``mos_tilt_shadow_max_delta_pp`` value.
+
+    Means the tilt produced zero weight shift on all rebalances — occurs when
+    all MoS values are equal (identity case) or the book has a single name.
+    Distinct from None (field absent / backfill not run).
+    """
+    from compute.output.schemas import Metadata
+
+    m = Metadata(
+        version="0.10.38-phase8pilot",
+        last_update_utc="2026-06-26T22:00:00Z",
+        next_update_utc="2026-06-27T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-c2-zero",
+        git_commit="00c2c2c2",
+        mos_tilt_shadow_max_delta_pp=0.0,
+    )
+    assert m.mos_tilt_shadow_max_delta_pp == 0.0
+
+    payload = m.model_dump(mode="json")
+    assert payload["mos_tilt_shadow_max_delta_pp"] == 0.0
