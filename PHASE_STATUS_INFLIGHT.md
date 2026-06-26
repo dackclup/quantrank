@@ -7976,3 +7976,13 @@ pair invariant, muted-vs-headline structural check), and MWR feed integration sc
 
 **Verify**: `schema_check` PASS · `tsc --noEmit` PASS · `next build` PASS · `vitest run`
 275/275 PASS.
+
+**A11y fixes (design-reviewer, 2026-06-26)**: (1) outer return-cell `<span>` in both held-row
+and sold-row IIFEs now carry `aria-label` composing MWR + TWR + partial context; inner child
+spans are `aria-hidden` — matches `MwrReturnCell` pattern already correct in
+`HoldingsTimeline.tsx`. (2) "Your return" column header span gains `aria-label` paired with
+existing `title=`. (3) Threshold copy aligned: "≥0.1pp" → "≥0.05pp" in header `title` text
+and inline comments (code + tests already at 0.05 — copy-only fix). (4) Drawer transition
+aligned: `motion-reduce:duration-0` → `motion-reduce:transition-none` for intra-component
+consistency with the chevron. Commit `4587c0fad`. `tsc` PASS · `next build` PASS · `vitest`
+275/275 PASS. Branch ready for PR flip-to-Ready (cron gate still applies).
