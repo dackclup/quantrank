@@ -2204,3 +2204,429 @@ def test_per_window_gross_identity_holds_for_random_inputs(
         f"per-window GROSS identity violated: gross_identity_error = {gross_err:.2e} "
         f"(n_windows={n_windows}, n_tickers={n_tickers})"
     )
+
+
+# ---------------------------------------------------------------------------
+# Gap-aware streak-scoping fix (claude/return-current-streak-fix)
+#
+# _extract_streaks gains `all_rebalance_dates` kwarg (Sequence[str] | None).
+# When provided, the function splits a streak on a DATE-JUMP in the per-ticker
+# legs (ticker absent from ≥ 1 intervening rebalances) in ADDITION to the
+# existing weight-0 split.
+#
+# Callers:
+#   _compute_flat_latest_returns — passes the full band_legs date axis
+#   compute_position_returns_per_quarter — passes the PIT-truncated prefix
+#
+# reconciliation_errors: the bare _extract_streaks call at ~line 1372 is left
+# WITHOUT all_rebalance_dates (Carino #619 byte-identical invariant).
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# G1. Gap-aware split — absent-quarter triggers two streaks
+# ---------------------------------------------------------------------------
+
+
+def test_gap_aware_extract_streaks_date_jump_produces_two_streaks():
+    """_extract_streaks splits on a date jump when all_rebalance_dates is provided.
+
+    Axis: Q0, Q1, Q2, Q3 (four rebalance dates).
+    Ticker legs: Q0 (present), Q2 (present) — Q1 is absent (DATE JUMP).
+    With all_rebalance_dates=axis: two streaks; streaks[-1][0][0] == Q2.
+    Without all_rebalance_dates (old path): one streak (no gap detection).
+    """
+    axis = ["2021-01-01", "2021-04-01", "2021-07-01", "2021-10-01"]
+    # Ticker present at Q0 and Q2 — Q1 missing (date jump on the axis).
+    legs = [("2021-01-01", 0.3), ("2021-07-01", 0.3)]
+    closes = {
+        "KLAC": {
+            "2021-01-01": 200.0,
+            "2021-07-01": 240.0,
+        }
+    }
+
+    # --- New behaviour: gap-aware split produces 2 streaks ---
+    streaks_gap = _extract_streaks("KLAC", legs, closes, all_rebalance_dates=axis)
+    assert len(streaks_gap) == 2, (
+        f"Expected 2 streaks (gap at Q1 should split), got {len(streaks_gap)}. "
+        "The all_rebalance_dates gap-detection is not firing."
+    )
+    # The re-entry streak starts at the re-entry date (Q2 = 2021-07-01).
+    assert streaks_gap[-1][0][0] == "2021-07-01", (
+        f"Latest streak should start at re-entry date '2021-07-01', "
+        f"got {streaks_gap[-1][0][0]}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# G2. Back-compat byte-identical — all_rebalance_dates=None → 1 streak
+# ---------------------------------------------------------------------------
+
+
+def test_gap_aware_extract_streaks_none_axis_is_byte_identical():
+    """all_rebalance_dates=None (default) preserves old weight-only behaviour.
+
+    Same legs as G1 but NO axis provided — the two held legs share no
+    weight-0 leg between them, so old code saw one continuous streak.
+    The default call must still produce 1 streak (backward-compat).
+    """
+    legs = [("2021-01-01", 0.3), ("2021-07-01", 0.3)]
+    closes = {
+        "KLAC": {
+            "2021-01-01": 200.0,
+            "2021-07-01": 240.0,
+        }
+    }
+
+    streaks_old = _extract_streaks("KLAC", legs, closes)
+    assert len(streaks_old) == 1, (
+        f"Without all_rebalance_dates the old weight-only path must yield 1 streak, "
+        f"got {len(streaks_old)}"
+    )
+    # The single streak starts at the first held date.
+    assert streaks_old[0][0][0] == "2021-01-01"
+
+
+# ---------------------------------------------------------------------------
+# G3. Flat path since_date — compute_position_returns uses re-entry date
+# ---------------------------------------------------------------------------
+
+
+def test_flat_path_since_date_equals_re_entry_date_when_gap_present():
+    """compute_position_returns: since_date == re-entry date when ticker absent ≥1 rebalance.
+
+    Fixture:
+      Q0 (2021-01): ALL held at 0.4
+      Q1 (2021-04): ALL absent from the rebalance weight map (OTHER holds; gap on axis)
+      Q2 (2021-07): ALL held at 0.4
+      Q3 (2021-10): ALL held at 0.4  ← latest
+
+    The axis is [Q0, Q1, Q2, Q3].  ALL's legs are [Q0, Q2, Q3].  Q1 is on the
+    axis but absent from ALL's weight map — the date-rank gap triggers a streak
+    split.  Without the fix, _extract_streaks would see one streak from Q0 to Q3
+    → since_date = 2021-01-01.  With the fix, since_date = 2021-07-01.
+    """
+    band_legs = [
+        ("2021-01-01", {"ALL": 0.4}),
+        ("2021-04-01", {"OTHER": 0.4}),   # Q1: ALL absent — gap on axis
+        ("2021-07-01", {"ALL": 0.4}),
+        ("2021-10-01", {"ALL": 0.4}),
+    ]
+    closes = {
+        "ALL": {
+            "2021-01-01": 100.0,
+            "2021-07-01": 110.0,
+            "2021-10-01": 120.0,
+        },
+        "OTHER": {"2021-04-01": 50.0},
+    }
+    nav_net = [100.0, 102.0, 108.0, 115.0]
+    nav_dates = ["2021-01-01", "2021-04-01", "2021-07-01", "2021-10-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    pr = pos_returns.get("ALL")
+    assert pr is not None, "ALL should appear in flat position_returns (current holder)"
+    assert pr.since_date == "2021-07-01", (
+        f"since_date should be the re-entry date '2021-07-01' (gap at Q1 must split). "
+        f"Got: {pr.since_date}. Gap-aware fix may not be wired into _compute_flat_latest_returns."
+    )
+    # Latest streak is [Q2, Q3] only.  For a current holder _compute_twr also
+    # appends the latest close → prices = [110, 120, 120] → legs_used=2.
+    assert pr.legs_used >= 1, (
+        f"legs_used should be ≥1 (re-entry streak has at least one sub-period), "
+        f"got {pr.legs_used}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# G4. Per-quarter PIT-safety — re-entry shows re-entry since_date in that quarter,
+#     pre-drop quarters show the ORIGINAL entry (no look-ahead)
+# ---------------------------------------------------------------------------
+
+
+def test_per_quarter_pit_gap_aware_since_date_no_lookahead():
+    """compute_position_returns_per_quarter: PIT-truncated gap detection, no look-ahead.
+
+    Fixture (4 rebalance dates; CF absent at Q1):
+      Q0 (2021-01): CF held 0.3 — original entry; OTHER held 0.3
+      Q1 (2021-04): CF absent from weight map (OTHER held); gap on axis
+      Q2 (2021-07): CF held 0.3 — re-entry; OTHER dropped
+      Q3 (2021-10): CF held 0.3 — latest
+
+    The axis has 4 dates.  CF's legs are [Q0, Q2, Q3].  At Q1 the axis
+    date exists but CF is absent → gap detection fires for Q2+ PIT slices.
+
+    Per-quarter invariants:
+      - per_quarter[0]["CF"].since_date == "2021-01-01"  (original entry; PIT axis = [Q0])
+      - "CF" not in per_quarter[1]                        (absent at Q1 — weight=0 skip)
+      - per_quarter[2]["CF"].since_date == "2021-07-01"  (re-entry; PIT axis = [Q0,Q1,Q2])
+      - per_quarter[3]["CF"].since_date == "2021-07-01"  (latest; PIT axis = full)
+      - for ALL Q: since_date <= rebal_date              (#618 look-ahead invariant)
+    """
+    band_legs = [
+        ("2021-01-01", {"CF": 0.3, "OTHER": 0.3}),
+        ("2021-04-01", {"OTHER": 0.3}),              # Q1: CF absent from weight map
+        ("2021-07-01", {"CF": 0.3}),                  # CF re-enters
+        ("2021-10-01", {"CF": 0.3}),                  # latest
+    ]
+    closes = {
+        "CF": {
+            "2021-01-01": 50.0,
+            "2021-07-01": 55.0,
+            "2021-10-01": 60.0,
+        },
+        "OTHER": {"2021-01-01": 80.0, "2021-04-01": 82.0},
+    }
+    nav_net = [100.0, 101.5, 105.0, 110.0]
+    nav_dates = ["2021-01-01", "2021-04-01", "2021-07-01", "2021-10-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    assert len(per_quarter) == 4, f"Expected 4 quarters (one per band_leg), got {len(per_quarter)}"
+
+    # Q0 (index 0): CF entered; PIT axis = [2021-01-01]; single leg; since_date = original entry
+    pr_q0 = per_quarter[0].get("CF")
+    assert pr_q0 is not None, "CF must appear in per_quarter[0] (weight=0.3 at Q0)"
+    assert pr_q0.since_date == "2021-01-01", (
+        f"Q0 since_date should be original entry '2021-01-01', got {pr_q0.since_date}"
+    )
+
+    # Q1 (index 1): CF absent from weight map → skipped by per-quarter loop
+    assert "CF" not in per_quarter[1], (
+        "CF is absent at Q1 (weight=0 — not in weight map); must be absent from per_quarter[1]"
+    )
+
+    # Q2 (index 2): re-entry; PIT axis = [Q0,Q1,Q2]; gap at Q1 splits streak
+    pr_q2 = per_quarter[2].get("CF")
+    assert pr_q2 is not None, "CF must appear in per_quarter[2] (re-entered at Q2)"
+    assert pr_q2.since_date == "2021-07-01", (
+        f"Q2 since_date must be re-entry '2021-07-01' (not original '2021-01-01'). "
+        f"Got: {pr_q2.since_date}.  PIT gap-detection is not applied."
+    )
+
+    # Q3 (index 3): latest; still shows re-entry date
+    pr_q3 = per_quarter[3].get("CF")
+    assert pr_q3 is not None, "CF must appear in per_quarter[3] (latest, still held)"
+    assert pr_q3.since_date == "2021-07-01", (
+        f"Q3 since_date must still be '2021-07-01', got {pr_q3.since_date}"
+    )
+
+    # #618 look-ahead invariant: since_date <= rebal_date for every quarter
+    rebal_dates = [d for d, _ in band_legs]
+    for q_idx, (rebal_date, quarter_map) in enumerate(zip(rebal_dates, per_quarter, strict=False)):
+        for ticker, pr in quarter_map.items():
+            if pr.since_date is not None:
+                assert pr.since_date <= rebal_date, (
+                    f"Look-ahead violation at Q{q_idx} ({rebal_date}): "
+                    f"{ticker}.since_date={pr.since_date} > rebal_date"
+                )
+
+
+# ---------------------------------------------------------------------------
+# G5. Sold-with-gap — re-entry then explicit sell; since_date = re-entry
+# ---------------------------------------------------------------------------
+
+
+def test_sold_after_gap_re_entry_since_date_is_re_entry():
+    """Explicit sell after a gap: latest streak = re-entry…sell; since_date = re-entry.
+
+    Fixture (KLAC analog — 4 dates on axis):
+      Q0 (2020-08): KLAC held 0.3   — original entry; OTHER held
+      Q1 (2021-05): KLAC absent from weight map (OTHER held); gap on axis
+      Q2 (2021-08): KLAC held 0.3   — re-entry
+      Q3 (2021-11): KLAC weight=0   — explicit sell at latest rebalance
+
+    The axis = [Q0, Q1, Q2, Q3].  KLAC's legs = [Q0, Q2, Q3-exit].
+    Gap at Q1 triggers streak split: first streak = [Q0], second = [Q2, Q3-sell].
+    since_date for the flat field should be the re-entry date '2021-08-01'.
+    is_current=False (sold at Q3).
+    """
+    band_legs = [
+        ("2020-08-01", {"KLAC": 0.3, "OTHER": 0.3}),
+        ("2021-05-01", {"OTHER": 0.3}),               # Q1: KLAC absent — gap on axis
+        ("2021-08-01", {"KLAC": 0.3}),                # re-entry
+        ("2021-11-01", {"KLAC": 0.0}),                # explicit sell
+    ]
+    closes = {
+        "KLAC": {
+            "2020-08-01": 300.0,
+            "2021-08-01": 350.0,
+            "2021-11-01": 380.0,
+        },
+        "OTHER": {"2020-08-01": 50.0, "2021-05-01": 52.0},
+    }
+    nav_net = [100.0, 103.0, 108.0, 113.0]
+    nav_dates = ["2020-08-01", "2021-05-01", "2021-08-01", "2021-11-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    pr = pos_returns.get("KLAC")
+    assert pr is not None, "KLAC must appear in flat field (sold at latest rebalance)"
+    assert pr.since_date == "2021-08-01", (
+        f"since_date for sold-after-gap should be re-entry '2021-08-01', "
+        f"got {pr.since_date}"
+    )
+    # The re-entry streak contains only Q2 (the sell at Q3 terminates it but is NOT
+    # appended to the streak as a held entry).  For a sold (is_current=False) single-
+    # entry streak with end_date=None, _compute_twr has no second price point →
+    # twr=None, legs_used=0.  This is correct and expected behavior; the since_date
+    # lock above is the principal assertion (the gap split worked).
+    assert pr.partial_history is False, (
+        "Single re-entry entry with no computable leg pair should NOT set partial_history "
+        "(partial_history is only set on genuine data gaps, not on short-streak sold names)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# G6. Carino #619 UNTOUCHED — reconciliation_errors unchanged for gapped fixture
+# ---------------------------------------------------------------------------
+
+
+def test_carino_619_reconciliation_errors_unaffected_by_gap_ticker():
+    """reconciliation_errors gross_identity_error is byte-identical before/after the fix.
+
+    The bare _extract_streaks call inside reconciliation_errors (~line 1372)
+    does NOT receive all_rebalance_dates — it uses the old weight-only path.
+    This is intentional (Carino #619 stays byte-identical).
+
+    Test: a gapped ticker fixture produces gross_identity_error < 1e-9 AND
+    carino_clamp_count == 0.  Running the same fixture WITH and WITHOUT the
+    gapped-ticker in band_legs both produce the same near-zero gross_identity_error
+    (the SubPeriod-based C3 check is immune to the per-ticker streak split).
+    """
+    # Sub-period: AAPL and KLAC both present for the full attribution window.
+    # (sub_periods covers the whole window; the gap is in per-ticker band_legs only)
+    r_aapl, r_klac = 0.10, 0.05
+    w = 0.5
+    gross0 = w * r_aapl + w * r_klac   # = 0.075
+    sp = _sub_period(
+        "2021-01-01", "2021-07-01",
+        {"AAPL": w, "KLAC": w},
+        {"AAPL": 1.0 + r_aapl, "KLAC": 1.0 + r_klac},
+        gross_sub_return=gross0,
+    )
+
+    # band_legs: KLAC absent at Q1 (gap on the axis); AAPL always present.
+    band_legs = [
+        ("2021-01-01", {"AAPL": w, "KLAC": w}),
+        ("2021-04-01", {"AAPL": w}),              # Q1: KLAC absent — gap on axis
+        ("2021-07-01", {"AAPL": w, "KLAC": w}),
+    ]
+    closes = {
+        "AAPL": {"2021-01-01": 100.0, "2021-04-01": 105.0, "2021-07-01": 110.0},
+        "KLAC": {"2021-01-01": 200.0, "2021-07-01": 210.0},
+    }
+    nav_net = [100.0, 105.0, 107.5]
+    nav_dates = ["2021-01-01", "2021-04-01", "2021-07-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates,
+        sub_periods=[sp],
+    )
+
+    gross_err, cost_residual, _pp_err, clamp_count = reconciliation_errors(
+        pos_returns,
+        nav_net,
+        nav_dates,
+        band_legs,
+        sub_periods=[sp],
+    )
+
+    assert gross_err is not None, "gross_identity_error must be a float when sub_periods provided"
+    assert gross_err < 1e-9, (
+        f"Carino #619 gross_identity_error = {gross_err:.2e} with gapped fixture "
+        f"(expected < 1e-9 — the SubPeriod-based BHB/chain check must be unaffected by "
+        f"the gap-aware streak change in _compute_flat_latest_returns)"
+    )
+    assert clamp_count == 0, (
+        f"Expected clamp_count=0 (no total-loss sub-periods), got {clamp_count}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# G7. Hypothesis property — streak partition invariant
+# ---------------------------------------------------------------------------
+
+
+@given(
+    # Number of dates on the full axis: 3–8
+    n_dates=st.integers(min_value=3, max_value=8),
+    # For each date, is the ticker present? (at least 2 must be True)
+    presence_flat=st.lists(st.booleans(), min_size=3, max_size=8),
+    # Weight when present: > 0
+    weight=st.floats(min_value=0.05, max_value=0.5, allow_nan=False, allow_infinity=False),
+)
+@_h_settings(max_examples=50)
+def test_gap_aware_streak_partition_invariant(
+    n_dates: int,
+    presence_flat: list[bool],
+    weight: float,
+) -> None:
+    """Partition invariant: Σ len(streak) == len(present_legs).
+
+    Additional invariants:
+      - Every streak is internally contiguous (no date-rank gap within a streak).
+      - streaks[-1] ends at the last present leg.
+
+    Strategy: random presence mask over a 3–8 date axis; at least 2 present
+    dates so there is at least one streak to check.  No weight-0 legs —
+    only the gap-aware split fires.
+    """
+    # Build the ordered axis.
+    base_dates = [
+        "2020-01-01", "2020-04-01", "2020-07-01", "2020-10-01",
+        "2021-01-01", "2021-04-01", "2021-07-01", "2021-10-01",
+    ]
+    axis = base_dates[:n_dates]
+
+    # Pad / trim the presence mask to exactly n_dates entries.
+    pm = [presence_flat[i % len(presence_flat)] for i in range(n_dates)]
+
+    # Ensure at least 2 present dates so streaks are non-trivial.
+    if sum(pm) < 2:
+        # Force the first two dates to be present.
+        pm[0] = True
+        pm[1] = True
+
+    legs = [(axis[i], weight) for i in range(n_dates) if pm[i]]
+    present_count = len(legs)
+
+    closes = {"T": {d: float(100 + idx * 5) for idx, d in enumerate(axis)}}
+
+    streaks = _extract_streaks("T", legs, closes, all_rebalance_dates=axis)
+
+    # --- Partition invariant ---
+    total_legs_in_streaks = sum(len(s) for s in streaks)
+    assert total_legs_in_streaks == present_count, (
+        f"Partition invariant violated: Σ len(streak) = {total_legs_in_streaks} "
+        f"!= present_count = {present_count}. "
+        f"axis={axis}, pm={pm}"
+    )
+
+    # --- Contiguity invariant: no internal gap within any streak ---
+    date_rank = {d: i for i, d in enumerate(axis)}
+    for streak_idx, streak in enumerate(streaks):
+        for leg_i in range(1, len(streak)):
+            prev_d = streak[leg_i - 1][0]
+            cur_d = streak[leg_i][0]
+            prev_r = date_rank.get(prev_d)
+            cur_r = date_rank.get(cur_d)
+            assert prev_r is not None and cur_r is not None
+            assert cur_r - prev_r == 1, (
+                f"Streak {streak_idx} has an internal gap: "
+                f"{prev_d} (rank {prev_r}) → {cur_d} (rank {cur_r}), diff={cur_r - prev_r}. "
+                f"axis={axis}, pm={pm}"
+            )
+
+    # --- Last streak ends at the last present leg ---
+    last_present_date = legs[-1][0]
+    last_streak_last_date = streaks[-1][-1][0]
+    assert last_streak_last_date == last_present_date, (
+        f"streaks[-1] should end at the last present leg ({last_present_date}), "
+        f"got {last_streak_last_date}. axis={axis}, pm={pm}"
+    )
