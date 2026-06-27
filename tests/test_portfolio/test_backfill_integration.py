@@ -2528,3 +2528,151 @@ def test_run_backfill_parquet_present_flips_meta_and_replays_7th_veto(
     assert meta["item402_pit_rows"] > 0, (
         f"Expected item402_pit_rows > 0; got {meta['item402_pit_rows']!r}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Sector-enrichment PIT fix: removed-from-universe tickers must show their
+# correct GICS sector (from the historical_sector parquet) in the assembled
+# holdings / full_ranked output, NOT "Unknown".
+#
+# Root-cause: the old code used `sector_by_ticker.get(t, "Unknown")` which
+# returns "Unknown" for any ticker absent from the CURRENT S&P membership map.
+# The fix routes all displayed sector values through `_pit_sector(ticker, T)`
+# which queries the historical_sector parquet for the correct GICS label.
+# ---------------------------------------------------------------------------
+
+
+def test_removed_ticker_gets_pit_sector_not_unknown(tmp_path, _universe) -> None:
+    """A ticker removed from the current S&P universe that appears as a holding
+    in a historical rebalance must show its correct PIT GICS sector label (from
+    the historical_sector parquet) in holdings, full_ranked, and
+    sector_weights_by_count — NOT 'Unknown'.
+
+    The test uses a 4-ticker universe: AAA/BBB/CCC are current; OLD was
+    removed (present only in historical rebalances).  sector_at is mocked so
+    that OLD returns "Energy" (its real sector) while AAA/BBB/CCC return their
+    fixture sectors.  The historical_sector parquet is mocked as present so
+    _pit_sector routes through the parquet lookup path.
+
+    Verifies the fix is selection-neutral: the set of picked tickers is
+    unaffected by the sector change (sector is descriptive-only and is NOT
+    read by select_picks / is_high_conviction / is_eligible).
+    """
+    from compute.ingest.historical_universe import MembershipEvent, MembershipResult
+
+    # The removed ticker "OLD" is not in the current universe (_universe has AAA/BBB/CCC).
+    old_pit_sector = "Energy"
+    remove_event = MembershipEvent(
+        effective_date=date(2022, 9, 1),
+        ticker="OLD",
+        action="REMOVE",
+        name="Old Corp",
+        source_url="https://example.com",
+    )
+
+    # Sector labels for current-universe tickers (mirrors _universe fixture).
+    _current_sectors = {
+        "AAA": "Information Technology",
+        "BBB": "Health Care",
+        "CCC": "Financials",
+    }
+
+    def _sector_at_side_effect(ticker: str, as_of: object) -> str:
+        # Parquet-present path: return the PIT sector.
+        if ticker == "OLD":
+            return old_pit_sector
+        return _current_sectors.get(ticker, "Unknown")
+
+    # members_at returns OLD in the historical cohort for EVERY rebalance so we can
+    # assert on its sector label across all produced rebalance outputs.
+    def _members_at_side_effect(
+        as_of_date: date, current_universe: frozenset | set | None = None
+    ) -> MembershipResult:
+        all_tickers = frozenset({"AAA", "BBB", "CCC", "OLD"})
+        return MembershipResult(
+            tickers=all_tickers,
+            as_of_date=as_of_date,
+            anchor_date=date.today(),
+            is_complete=True,
+            events_applied=1,
+        )
+
+    def _fake_resolve_cik(ticker: str) -> str | None:
+        return "0000099999" if ticker == "OLD" else None
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(
+            bf,
+            "fetch_fundamentals_history",
+            side_effect=lambda cik: _annual_history(1.0),
+        ),
+        mock.patch.object(
+            bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)
+        ),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+        mock.patch.object(bf, "_resolve_cik_for_removed_ticker", side_effect=_fake_resolve_cik),
+        mock.patch.object(bf, "list_known_events", return_value=(remove_event,)),
+        mock.patch.object(bf, "members_at", side_effect=_members_at_side_effect),
+        # Mock the sector parquet as PRESENT so _pit_sector routes through sector_at.
+        mock.patch.object(
+            bf,
+            "historical_sector_parquet_stats",
+            return_value={"parquet_present": True, "row_count": 500, "path": "/fake/path"},
+        ),
+        # Override the autouse fixture's sector_at mock with our PIT-aware version.
+        mock.patch.object(bf, "sector_at", side_effect=_sector_at_side_effect),
+        # item402 parquet absent (not under test here).
+        mock.patch.object(bf, "item402_parquet_row_count", return_value=0),
+    ):
+        out = bf.run_backfill(
+            date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only"
+        )
+
+    assert out.exists(), "run_backfill produced no output file"
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0, "No rebalances produced"
+
+    found_old_in_holdings = False
+    found_old_in_full_ranked = False
+
+    for reb in payload["rebalances"]:
+        # --- holdings (rebalances[i].holdings) ---
+        for h in reb["holdings"]:
+            if h["ticker"] == "OLD":
+                found_old_in_holdings = True
+                assert h["sector"] == old_pit_sector, (
+                    f"holdings: OLD sector should be {old_pit_sector!r} (from PIT parquet), "
+                    f"got {h['sector']!r} — removed-ticker sector-enrichment bug"
+                )
+                assert h["sector"] != "Unknown", (
+                    "holdings: OLD sector must NOT be 'Unknown'; the PIT parquet lookup failed"
+                )
+
+        # --- full_ranked (rebalances[i].full_ranked) ---
+        for entry in reb.get("full_ranked", []):
+            if entry["ticker"] == "OLD":
+                found_old_in_full_ranked = True
+                assert entry["sector"] == old_pit_sector, (
+                    f"full_ranked: OLD sector should be {old_pit_sector!r} (from PIT parquet), "
+                    f"got {entry['sector']!r} — removed-ticker sector-enrichment bug"
+                )
+                assert entry["sector"] != "Unknown", (
+                    "full_ranked: OLD sector must NOT be 'Unknown'"
+                )
+
+        # --- sector_weights_by_count: if OLD was picked, its sector bucket must not be "Unknown" ---
+        swbc = reb.get("sector_weights_by_count", {})
+        for n_str, by_sector in swbc.items():
+            assert "Unknown" not in by_sector, (
+                f"sector_weights_by_count[{n_str}] contains 'Unknown' sector bucket; "
+                "removed ticker's sector was not resolved via PIT parquet lookup"
+            )
+
+    # OLD is in the cohort every rebalance — it must have appeared at least once.
+    assert found_old_in_holdings or found_old_in_full_ranked, (
+        "OLD never appeared in any rebalance's holdings or full_ranked — "
+        "the test fixture did not inject it into the scoring universe as expected. "
+        "Check the members_at mock or the survivorship-fix pre-fetch path."
+    )

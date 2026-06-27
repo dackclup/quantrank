@@ -8475,3 +8475,32 @@ Frontend-only, NO schema change, NO compute change (`position_returns.py` untouc
 **Gate**: frontend-design-reviewer (return cells, dark-mode tone, no tfoot contamination) at Draft→Ready.
 
 ---
+
+## PR #TBD — fix(backfill): PIT sector for removed-from-universe tickers (rotation-history "Unknown") (in flight, 2026-06-27)
+
+Owner-reported: the rotation-history (and AI-pick) holdings showed sector "Unknown"
+for tickers that have since dropped out of the current S&P universe (WU, RHI, HP, …).
+ROOT CAUSE (verified): `data/historical_sector.parquet` HAS correct PIT sectors for
+these names (WU=Information Technology, RHI=Industrials, HP=Energy; 0 "Unknown" rows
+across 19,661) and the `_pit_sector(ticker, as_of)` helper reads it correctly — but the
+DISPLAYED holding/candidate sector was stamped from `sector_by_ticker` (the CURRENT-universe
+membership map), which omits removed tickers → falls back to "Unknown".
+
+FIX: route the displayed sector through `_pit_sector(t, T)` at the 4 call sites that feed
+the rendered output — `full_ranked[].sector` (~1253), `PickCandidate(sector=)` (~1266),
+`holdings[].sector` (~1630, via `candidates_by_ticker`), and the `_sector_weights_by_count`
+aggregation (~1619, fed the PIT-resolved sector map so buckets agree with per-holding labels).
+SELECTION-NEUTRAL: `select_picks` / `is_high_conviction` never read `PickCandidate.sector`
+(only composite/risk_flags/recommendation/mos/loss_chance/ticker) — picks + order byte-identical.
+Backfill script only (offline artifact generator); live scoring loop + rankings.json untouched;
+NO schema change. The displayed sector completes after the next cron regenerates the backtest
+with this code (the artifact regen, not this PR, is what updates the site).
+
++1 test (`test_removed_ticker_gets_pit_sector_not_unknown`). Verify: ruff clean, offline
+pytest 492/492 (69 backfill-integration incl. the new one).
+
+**Files**: `scripts/backfill_portfolio_pit.py` · `tests/test_portfolio/test_backfill_integration.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: quantrank-reviewer at Draft→Ready.
+
+---
