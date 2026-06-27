@@ -5,19 +5,19 @@
   "industry": "Industrial Conglomerates",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 146557625639.24713,
-  "current_price": 231.29,
-  "rank": 969,
-  "composite_score": 46.51,
+  "market_cap": 147140595017.25287,
+  "current_price": 232.21,
+  "rank": 992,
+  "composite_score": 46.13,
   "pillar_scores": {
     "quality": 60.73,
-    "value": 30.84,
-    "growth": 25.89,
-    "momentum": 55.37,
-    "health": 48.82,
+    "value": 30.64,
+    "growth": 25.79,
+    "momentum": 55.47,
+    "health": 48.8,
     "profitability": 49.41,
-    "technical": 49.19,
-    "risk": 60.95,
+    "technical": 42.29,
+    "risk": 61.14,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 633653119.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 146557625639.24713,
-    "pe_ratio_ttm": 35.73704599835336,
+    "market_cap": 147140595017.25287,
+    "pe_ratio_ttm": 35.87919898006654,
     "goodwill": 21079000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 182.57551678646013,
+        "value": 180.6020113907473,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 89.53616328227771,
+        "value": 89.51726213144877,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 199.2219411495195,
+        "value": 197.25424559016898,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 136.0558400343689,
-    "max": 199.2219411495195,
+    "median": 135.05963676109803,
+    "max": 197.25424559016898,
     "low": 61.56030643624944,
-    "high": 199.2219411495195,
-    "mos_pct": -69.99637298017262,
+    "high": 197.25424559016898,
+    "mos_pct": -71.93146100682533,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 136.0558400343689,
+    "median_trimmed": 135.05963676109803,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -102,7 +102,9 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,22 +118,22 @@
     "label": "Industrials median (n=254)",
     "values": {
       "Quality": 49.14,
-      "Value": 49.85,
-      "Growth": 50.49,
-      "Momentum": 54.29,
+      "Value": 49.7,
+      "Growth": 50.39,
+      "Momentum": 54.19,
       "Health": 57.02,
       "Profitability": 49.31,
-      "Technical": 52.94,
-      "Risk": 50.81
+      "Technical": 50.85,
+      "Risk": 50.62
     }
   },
   "beneish_m_score": -2.601615038592017,
   "dechow_f_score": 0.46197613696099904,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.74464322174988,
-  "price_change_1d_pct": 0.0216,
+  "loss_chance_pct": 61.93629651637628,
+  "price_change_1d_pct": 0.4195,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.51,
+  "composite_score_adjusted": 46.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.18,
+  "osap_blended_score": 48.99,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,10 +197,10 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.009511904584743875,
+  "cross_source_delta": 0.500000011557833,
   "dividend_yield_pct": 2.06,
   "pays_dividend": true,
   "payout_ratio": 0.74120003,
-  "average_dollar_volume": 1133693536.3421528,
+  "average_dollar_volume": 1258461152.513158,
   "security_type": null
 }

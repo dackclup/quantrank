@@ -5,19 +5,19 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 57629206502.767944,
-  "current_price": 43.5199,
-  "rank": 948,
-  "composite_score": 46.87,
+  "market_cap": 57880934690.56547,
+  "current_price": 43.71,
+  "rank": 916,
+  "composite_score": 47.4,
   "pillar_scores": {
     "quality": 33.75,
-    "value": 62.72,
+    "value": 64.91,
     "growth": 41.71,
-    "momentum": 76.78,
+    "momentum": 76.76,
     "health": 19.75,
     "profitability": 34.04,
-    "technical": 49.29,
-    "risk": 56.06,
+    "technical": 49.92,
+    "risk": 56.16,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 1324203521.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 57629206502.767944,
-    "pe_ratio_ttm": 37.03676510460665,
+    "market_cap": 57880934690.56547,
+    "pe_ratio_ttm": 37.19854414560763,
     "goodwill": 23828000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 38.8265075023027,
+        "value": 38.21792032190395,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 419.17931338486824,
+        "value": 410.55149834985815,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 82.2422474999208,
+        "value": 84.41571742159769,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 82.2422474999208,
-    "max": 82.2422474999208,
-    "low": 38.8265075023027,
-    "high": 419.17931338486824,
-    "mos_pct": 47.083278243731506,
+    "median": 84.41571742159769,
+    "max": 84.41571742159769,
+    "low": 38.21792032190395,
+    "high": 410.55149834985815,
+    "mos_pct": 48.2205442072219,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 60.53437750111175,
+    "median_trimmed": 61.31681887175082,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -107,7 +107,8 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
+    "extreme_multiples_pb_estimate",
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -122,22 +123,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 50.33,
-      "Value": 50.15,
+      "Value": 50.53,
       "Growth": 51.02,
-      "Momentum": 71.26,
+      "Momentum": 71.07,
       "Health": 65.0,
       "Profitability": 49.14,
-      "Technical": 47.48,
-      "Risk": 41.09
+      "Technical": 46.48,
+      "Risk": 40.86
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5721995214098937,
   "recommendation": "neutral",
-  "loss_chance_pct": 26.084487016523024,
-  "price_change_1d_pct": -6.8495,
+  "loss_chance_pct": 27.423111062560057,
+  "price_change_1d_pct": -6.4426,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.87,
+  "composite_score_adjusted": 47.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.36,
+  "osap_blended_score": 49.63,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -199,10 +200,10 @@
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0006870467454040449,
+  "cross_source_delta": 3.0362925919577234e-08,
   "dividend_yield_pct": 1.22,
   "pays_dividend": true,
   "payout_ratio": 0.5093,
-  "average_dollar_volume": 1647316214.8814154,
+  "average_dollar_volume": 1689068727.1894042,
   "security_type": null
 }
