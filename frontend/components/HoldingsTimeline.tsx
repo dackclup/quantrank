@@ -39,6 +39,11 @@ type Row = {
   // The full entry — carries mwrByTicker + weightByTicker when the artifact
   // was generated with per-quarter MWR (PR-2a #618 / #619).
   entry: AiPickTimelineEntry;
+  // The PRIOR quarter's mwrByTicker — used for CASE B: sold rows in this
+  // quarter look up their realized exit return from the prior rebalance's
+  // position_returns (the engine records the final MWR there, not in the
+  // rebalance where the name exits). Absent for the initial basket (no prior).
+  prevMwrByTicker?: Record<string, MwrPositionReturn>;
 };
 
 /**
@@ -96,6 +101,11 @@ export function HoldingsTimeline({
     let totalEntered = 0;
     for (let i = 0; i < timeline.length; i += 1) {
       const entry = timeline[i];
+      // CASE B: carry the previous entry's mwrByTicker so sold rows in the
+      // QuarterDrawer can resolve their realized exit return. The engine writes
+      // the final MWR into the quarter BEFORE the name exits (the last quarter
+      // it was held), not into the quarter where it sold.
+      const prevMwrByTicker = i > 0 ? timeline[i - 1].mwrByTicker : undefined;
       // When the entry carries bandBook, use the EXACT held set
       // (the band book is NOT a prefix of `holdings`). Build sectorByTicker
       // from the full holdings list so band-carried names whose rank may have
@@ -139,6 +149,7 @@ export function HoldingsTimeline({
         sectorByTicker,
         sliceCount,
         entry,
+        ...(prevMwrByTicker !== undefined ? { prevMwrByTicker } : {}),
       });
       prev = held;
     }
@@ -286,7 +297,7 @@ function QuarterDrawer({
   row: Row;
   isInitial: boolean;
 }) {
-  const { entry, held, entered, exited, sectorByTicker } = row;
+  const { entry, held, entered, exited, sectorByTicker, prevMwrByTicker } = row;
   const mwrByTicker = entry.mwrByTicker;
   const weightByTicker = entry.weightByTicker;
   const hasWeights = Boolean(weightByTicker && Object.keys(weightByTicker).length > 0);
@@ -342,6 +353,10 @@ function QuarterDrawer({
           const isNew = isInitial || entered.has(ticker);
           const pr: MwrPositionReturn | null = mwrByTicker?.[ticker] ?? null;
           const mwr = pr?.mwr_pct ?? null;
+          // CASE A: legs_used === 0 means this is the entry instant — return = 0 by
+          // identity (purchased now, measured now). The engine emits mwr_pct=null
+          // at this point; we coalesce to 0.0% in MwrReturnCell via legsUsed.
+          const legsUsed = pr?.legs_used ?? null;
 
           return (
             <li
@@ -381,10 +396,12 @@ function QuarterDrawer({
                   ? <SectorChip sector={sectorByTicker[ticker]} />
                   : null}
               </span>
-              {/* Return cell — MWR headline ("Your return"). */}
+              {/* Return cell — MWR headline ("Your return").
+                  legsUsed passed so the cell can coalesce entry-instant 0 (CASE A). */}
               <MwrReturnCell
                 mwr={mwr}
                 hasMwr={hasMwr}
+                legsUsed={legsUsed}
               />
               <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                 {hasWeights ? weightLabels[i] : '—'}
@@ -397,9 +414,19 @@ function QuarterDrawer({
             First sold row gets a slightly stronger top border to visually separate
             the "out of basket" appendix from the active holdings. */}
         {exited.map((ticker, j) => {
-          const pr: MwrPositionReturn | null = mwrByTicker?.[ticker] ?? null;
-          const mwr = pr?.mwr_pct ?? null;
+          // CASE B: the engine writes a sold ticker's realized exit return into
+          // the PRIOR rebalance's position_returns (the last quarter it was held),
+          // NOT into the current rebalance's map (where it has weight 0 and is
+          // absent). Look up prevMwrByTicker first; fall back to the current
+          // quarter's map only if somehow present there (should not happen, but
+          // keeps the lookup safe against future engine changes).
+          const prSold: MwrPositionReturn | null =
+            prevMwrByTicker?.[ticker] ?? mwrByTicker?.[ticker] ?? null;
+          const mwrSold = prSold?.mwr_pct ?? null;
           const sector = sectorByTicker[ticker] ?? '';
+          // hasMwr for sold rows: use the broader check — if EITHER the current or
+          // prior quarter has MWR data for ANY ticker, the column is enabled.
+          const hasMwrForSold = hasMwr || Boolean(prevMwrByTicker && Object.keys(prevMwrByTicker).length > 0);
           return (
             <li
               key={ticker}
@@ -427,11 +454,16 @@ function QuarterDrawer({
               <span className="hidden sm:block">
                 {sector ? <SectorChip sector={sector} /> : null}
               </span>
+              {/* Sold row: realized exit return from the prior rebalance's map
+                  (CASE B). legsUsed not needed here — a sold position has
+                  non-zero legs by definition (it was held ≥1 quarter). */}
               <MwrReturnCell
-                mwr={mwr}
-                hasMwr={hasMwr}
+                mwr={mwrSold}
+                hasMwr={hasMwrForSold}
               />
-              {/* Weight: 0.0% — the ticker is no longer in the basket. */}
+              {/* Weight: 0.0% — the ticker is no longer in the basket.
+                  GUARD: sold row weight is NEVER included in any aggregate total
+                  (the footer reads only held rows; this is a display-only cell). */}
               <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
                 0.0%
               </span>
@@ -452,13 +484,22 @@ function QuarterDrawer({
 // MWR Return cell — shared between held and sold rows in QuarterDrawer.
 // Headline: MWR ("Your return").
 // When hasMwr is false (legacy artifact), renders '—' consistently.
+//
+// CASE A: legsUsed === 0 means this is the entry instant — the position was
+// just purchased this quarter so return = 0 by financial identity (no price
+// movement measured yet). The engine emits mwr_pct=null at this point; we
+// coalesce to 0.0% so every cell shows a number. Tone is neutral (toneClass(0)
+// maps to emerald/non-negative, which is the correct design-system rendering
+// for a zero-return — not muted slate, which implies "data absent").
 // ---------------------------------------------------------------------------
 function MwrReturnCell({
   mwr,
   hasMwr,
+  legsUsed = null,
 }: {
   mwr: number | null;
   hasMwr: boolean;
+  legsUsed?: number | null;
 }) {
   // When the artifact has no MWR data at all, render a plain muted dash.
   // This path fires for all rows in a pre-#618 artifact.
@@ -470,8 +511,23 @@ function MwrReturnCell({
     );
   }
 
-  // MWR present but this specific ticker is absent → mwr=null (shouldn't
-  // normally happen if the engine emits all basket members, but be safe).
+  // CASE A: entry instant (legs_used === 0) — return = 0.0% by identity.
+  // Render as neutral "+0.0%" rather than "—" so the column never has a blank.
+  if (mwr === null && legsUsed === 0) {
+    return (
+      <span
+        className="text-right"
+        aria-label="Your return +0.0%"
+      >
+        <span className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(0)}`}>
+          {pctStr(0)}
+        </span>
+      </span>
+    );
+  }
+
+  // MWR present but this specific ticker is absent → mwr=null (genuinely
+  // missing data — e.g. sold ticker not in any known prior-rebalance map).
   if (mwr === null) {
     return (
       <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-400 dark:text-slate-500">

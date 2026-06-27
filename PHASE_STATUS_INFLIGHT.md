@@ -8447,3 +8447,31 @@ Verify: tsc --noEmit clean · next build 1512 pages · vitest 275/275 green.
 **Gate**: frontend-design-reviewer (rotation drawer return column, light+dark, accordion intact) at Draft→Ready.
 
 ---
+
+## PR #TBD — feat(frontend): fill blank "—" return cells (entry-instant 0.0% + sold-row realized return) (in flight, 2026-06-27)
+
+Owner-reported: rotation-history + Current-picks "Your return" cells were blank ("—")
+in two cases. financial-engineer design (DISPLAY-ONLY-SAFE — Carino reconciliation 4.7e-16
++ headline NAV byte-identical; the artifact values are read as-is, only the rendering of
+nulls changes):
+- CASE A (initial basket / entry instant): every holding had `mwr_pct=null`,`legs_used=0`
+  (return at the instant of purchase = 0 by identity). Display-coalesce `legs_used===0` →
+  **0.0%** (neutral tone), keeping the cumulative-since-entry column definition invariant
+  across all 40 baskets — alters zero already-validated numbers.
+- CASE B (sold rows): the realized exit return already EXISTS in the PRIOR rebalance's
+  `position_returns[ticker]` (marked-to-exit-close, PIT-safe). Frontend looks it up from
+  `rebalances[i-1]` (+ flat `mwrByTicker` fallback for latest-rebalance sells). GUARD: the
+  sold-row return renders in the row cell ONLY — never enters the `<tfoot>` Total-return
+  footer / any current-basket aggregate (footer excludes 0-weight sold rows).
+
+Frontend-only, NO schema change, NO compute change (`position_returns.py` untouched).
+`HoldingsTimeline.tsx` (`Row.prevMwrByTicker` + `legsUsed` prop on `MwrReturnCell`) +
+`AiPickPortfolio.tsx` (`priorMwrByTicker` from `timeline[-2]` + `mwrForSoldTicker`).
++16 vitest contract tests (`return-cell-display.test.ts`). Verify: tsc clean, next build
+1512 pages, vitest 291 green.
+
+**Files**: `frontend/components/HoldingsTimeline.tsx` · `frontend/components/AiPickPortfolio.tsx` · `frontend/lib/return-cell-display.test.ts` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: frontend-design-reviewer (return cells, dark-mode tone, no tfoot contamination) at Draft→Ready.
+
+---
