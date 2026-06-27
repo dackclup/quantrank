@@ -8580,3 +8580,37 @@ change; rankings/scores/output BYTE-IDENTICAL; defense layer UNCHANGED at 36.
 `tools/check_agent_hook_consistency.py` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR #TBD — fix(backtest): entry price on-or-after fill (supersede #638; rb[0] Sunday-rebalance null) (in flight, 2026-06-27)
+
+Follow-up that SUPERSEDES #638's direction. The rotation-history initial basket (rb[0],
+2016-08-14 = Sunday) still showed null returns after #638, because the price panel STARTS
+2016-08-15 (Mon) → there is no close on-or-before the Sunday date. ROOT CAUSE (financial-engineer
+DESIGN-READY, DISPLAY-ONLY-SAFE): the NAV path snaps each rebalance date to the first trading day
+ON-OR-AFTER (`_snap_to_trading_day`, fills Mon Aug-15), but position_returns received the RAW
+Sunday date and resolved the entry on-or-BEFORE (#638) → None. The entry must match the NAV fill:
+ON-OR-AFTER. Correct asymmetric pair: entry = on-or-after (the fill), terminal = on-or-before
+(last mark before rotating out, UNCHANGED).
+
+FIX (`compute/portfolio/position_returns.py`): add `_close_on_or_after(ticker, date_iso, closes,
+*, not_after=None)`; `_extract_streaks` entry (~368) `_close_on_or_before` → `_close_on_or_after`
+bounded by the next leg date (new `entry_not_after` param threads `next_rebal_date` from
+`compute_position_returns_per_quarter` for the PIT-truncated single-leg case, so the entry can't
+leap past the terminal → no degenerate ρ=1); `reconciliation_errors` pp_twr cross-check entry
+(~1399) `_close_on` → `_close_on_or_after` for coherence. Terminals UNCHANGED.
+
+DISPLAY-ONLY-SAFE: Carino GROSS/cost identity + sub_periods + headline NAV are disjoint from
+`_extract_streaks` (built from the engine `price_on` closure over snapped legs) → reconciliation
+stays at the 1.78e-15 floor. Interior trading-day legs byte-identical (the 3 close helpers
+coincide on a real trading day). +tests (WR-1 Monday-fill, rb[1] leg restoration, interior
+invariance, no-inversion/not_after bound, reconciliation-invariance, 2 Hypothesis props).
+ruff clean, offline pytest 297/297; NO schema change.
+
+SEQUENCING: merge → regen `backtest_pit.json` (compute-rankings, Saturday=manual) → THEN merge
+#639 (Case-A revert). Post-regen rb[0] shows real forward returns.
+
+**Files**: `compute/portfolio/position_returns.py` · `tests/test_portfolio/test_position_returns.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: quantrank-reviewer at Draft→Ready.
+
+---

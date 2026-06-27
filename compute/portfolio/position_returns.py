@@ -199,6 +199,56 @@ def _close_on_or_before(
     return px if _is_valid_price(px) else None
 
 
+def _close_on_or_after(
+    ticker: str,
+    date_iso: str,
+    closes: Mapping[str, Mapping[str, float]],
+    *,
+    not_after: str | None = None,
+) -> float | None:
+    """First available valid close ON OR AFTER ``date_iso`` (the fill day).
+
+    Used for entry-price lookups so that a rebalance date that falls on a
+    non-trading day (e.g. Sunday 2016-08-14 for the initial basket) resolves
+    to the FIRST trading-day close *after* that date, matching the NAV path's
+    ``_snap_to_trading_day`` on-or-after convention.
+
+    This is asymmetric with the terminal-price convention: terminal prices use
+    ``_close_on_or_before`` (the last mark before rotating out), while entry
+    prices use this helper (the actual fill day).
+
+    Parameters
+    ----------
+    ticker:
+        The ticker symbol.
+    date_iso:
+        ISO date string (YYYY-MM-DD).  The search starts on this date
+        (inclusive) and scans forward.
+    closes:
+        ``{ticker: {date_iso: close}}`` — the shared adjusted-close panel.
+    not_after:
+        Optional upper bound (inclusive).  When provided the search is bounded
+        so that the entry price cannot leap past the next leg's date.  This
+        prevents a panel hole from producing a degenerate entry == terminal
+        situation when the sub-period contains no trading days at all.
+
+    Returns
+    -------
+    float | None
+        The close on the first trading day on or after ``date_iso`` (and on or
+        before ``not_after`` when supplied).  None when no eligible close
+        exists or the eligible close is not a valid price.
+    """
+    series = closes.get(ticker)
+    if not series:
+        return None
+    eligible = [d for d in series if d >= date_iso and (not_after is None or d <= not_after)]
+    if not eligible:
+        return None
+    px = series[min(eligible)]
+    return px if _is_valid_price(px) else None
+
+
 def _modified_dietz(
     flows: Sequence[tuple[float, float, float]],
 ) -> float | None:
@@ -282,6 +332,7 @@ def _extract_streaks(
     closes: Mapping[str, Mapping[str, float]],
     *,
     all_rebalance_dates: Sequence[str] | None = None,
+    entry_not_after: str | None = None,
 ) -> list[list[tuple[str, float, float | None]]]:
     """Extract contiguous holding streaks for ``ticker`` from its sequence of ``(date, weight)`` legs.
 
@@ -314,6 +365,13 @@ def _extract_streaks(
         (or the PIT-truncated prefix for historical quarters).  When provided,
         consecutive present legs that are not adjacent in this axis trigger a
         streak split.  None = weight-only mode (backward-compat).
+    entry_not_after:
+        Optional hard upper bound for the entry-price forward search, used as
+        the fallback ``not_after`` when the lookahead within ``legs`` yields no
+        next positive-weight leg (e.g. when legs are PIT-truncated to a single
+        entry).  Typically set to the NEXT rebalance date so that a panel hole
+        cannot let the entry price leap past the sub-period boundary.
+        None = no external bound (the lookahead-only bound remains).
 
     Returns
     -------
@@ -331,7 +389,7 @@ def _extract_streaks(
     current: list[tuple[str, float, float | None]] = []
     prev_date: str | None = None
 
-    for date_iso, weight in legs:
+    for leg_idx, (date_iso, weight) in enumerate(legs):
         if weight <= 0.0:
             # Sell signal: close the current streak if non-empty.
             if current:
@@ -358,14 +416,34 @@ def _extract_streaks(
                     streaks.append(current)
                     current = []
 
-            # Use _close_on_or_before (not _close_on) so a rebalance date that
-            # falls on a non-trading day (e.g. 2016-08-14 = Sunday for the
-            # initial basket) resolves to the most-recent prior trading-day
-            # close.  Symmetric with the terminal-price lookup at line ~423
-            # (_close_on_or_before for end_date) and _last_close for the latest
-            # mark.  _close_on_or_before is on-or-before only (no look-ahead)
-            # and is already _is_valid_price-guarded.
-            px = _close_on_or_before(ticker, date_iso, closes)
+            # Entry price: use _close_on_or_after (not _close_on_or_before) so
+            # that a rebalance date that falls on a non-trading day (e.g.
+            # 2016-08-14 = Sunday for rb[0]) resolves to the FIRST trading-day
+            # close ON OR AFTER that date — matching the NAV path's
+            # _snap_to_trading_day on-or-after fill convention (asymmetric:
+            # terminal prices still use _close_on_or_before, i.e. the last mark
+            # before rotating out).
+            #
+            # not_after: bound the forward search by the next leg's date so that
+            # a panel hole spanning the whole sub-period cannot let the entry
+            # price leap past the terminal date (avoid degenerate entry==terminal
+            # where ρ=1 by construction, not by market).  The next leg's date_iso
+            # is retrieved by lookahead on the legs list.
+            next_leg_date: str | None = None
+            for lookahead_idx in range(leg_idx + 1, len(legs)):
+                next_date_candidate, next_weight_candidate = legs[lookahead_idx]
+                if next_weight_candidate > 0.0:
+                    next_leg_date = next_date_candidate
+                    break
+                # A weight-0 leg is a sell; don't look past it.
+                break
+            # Use the lookahead-derived next leg date if available; fall back to
+            # entry_not_after (e.g. next rebalance date passed by the caller)
+            # when legs are PIT-truncated to a single entry and the lookahead is
+            # empty.  This prevents a panel hole from leaping the entry price
+            # past the sub-period boundary via an unconstrained forward search.
+            effective_not_after = next_leg_date if next_leg_date is not None else entry_not_after
+            px = _close_on_or_after(ticker, date_iso, closes, not_after=effective_not_after)
             current.append((date_iso, weight, px))
             prev_date = date_iso
 
@@ -1105,6 +1183,7 @@ def compute_position_returns_per_quarter(
                 streaks = _extract_streaks(
                     ticker, legs, closes,
                     all_rebalance_dates=pit_rebalance_dates,
+                    entry_not_after=next_rebal_date,
                 )
                 if not streaks:
                     quarter_map[ticker] = PositionReturn(
@@ -1394,9 +1473,13 @@ def reconciliation_errors(
                 continue  # skip multi-streak names
 
             # For clean single-streak names, compute the point-to-point HPR.
-            # Entry price = close at since_date; exit price = last close in series
+            # Entry price = close on-or-after since_date (matching the engine's
+            # _close_on_or_after entry convention — a since_date that falls on a
+            # non-trading day, e.g. rb[0] Sunday 2016-08-14, would return None
+            # here if we used _close_on, producing a spurious skip and masking
+            # the initial-basket discrepancy).  Exit price = last close in series
             # (for current holders, same as what _compute_twr marks to).
-            entry_px = _close_on(ticker, pr.since_date, closes)
+            entry_px = _close_on_or_after(ticker, pr.since_date, closes)
             exit_px = _last_close(ticker, closes)
             if entry_px is None or exit_px is None:
                 continue
