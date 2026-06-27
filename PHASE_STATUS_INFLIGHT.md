@@ -8395,3 +8395,27 @@ double-count footgun by pricing the shadow path on RAW split-adjusted Close only
 Draft→Ready.
 
 ---
+
+## PR #TBD — docs: Mode C reconciliation to schema 0.10.41 (#631/#632 merged) (in flight, 2026-06-27)
+
+Mode C doc-lockstep bump after #631 (Option-B dividend pool-and-redeploy SHADOW NAV,
+schema 0.10.40→0.10.41) and #632 (frontend: drop per-row TWR `% price`+`since` sub-lines)
+merged to main 2026-06-27. CLAUDE.md + AGENTS.md were still declaring schema 0.10.40
+(the two PRs only landed INFLIGHT entries, not the §Phase status / version-state substance
+bump) — this reconciles all four canonical trackers to 0.10.41:
+- CLAUDE.md §Phase status: 0.10.41 promoted to current (0.10.40 → "Prior"); §In-flight
+  records #631/#632 merged + the deferred Q3 items; new §Gotchas entry for the div-pool
+  shadow (artifact-vs-triple split, BYTE-IDENTICAL guard, `actions=True` column-append,
+  HARD-CONSTRAINT no-scoring-read, headline-flip = future owner-signed PR).
+- AGENTS.md §In-flight: reconciled (was stale — still listed the merged legendary-fund
+  program as in-flight); now "Nothing in flight", schema 0.10.41, #631/#632 recorded.
+- SKILL.md §schema-version table: new 0.10.41 row.
+- PHASE_STATUS.md §Current state: date 2026-06-27, Schema cell bumped to 0.10.41.
+
+Docs-only — NO code/schema/workflow change; rankings byte-identical (trivially).
+
+**Files**: `CLAUDE.md` · `AGENTS.md` · `SKILL.md` · `PHASE_STATUS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: docs-reviewer (substance check) at Draft→Ready.
+
+---
