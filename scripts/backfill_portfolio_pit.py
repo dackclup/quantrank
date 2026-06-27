@@ -986,8 +986,11 @@ def run_backfill(
             _scoring_universe_removed_unavailable_count += 1
 
     # Removed tickers only need sector assignment for the rebalances where they
-    # appear.  We use "Unknown" as a safe fallback — GICS sector is "stable from
-    # today" (the existing backtest approximation; see meta.sector_from_today).
+    # appear.  We insert "Unknown" into sector_by_ticker so the fallback-detection
+    # logic inside _pit_sector (which compares `result == sector_by_ticker.get(ticker,
+    # "Unknown")`) continues to count correctly.  The displayed output (holdings,
+    # full_ranked, PickCandidate, sector_weights_by_count) now goes through
+    # _pit_sector(ticker, T) directly and never reads this "Unknown" fallback value.
     # Tickers already in sector_by_ticker (current universe) are unaffected.
     for ticker in _removed_tickers:
         if ticker not in sector_by_ticker:
@@ -1250,7 +1253,11 @@ def run_backfill(
             {
                 "ticker": t,
                 "composite_score": round(cs, 2),
-                "sector": sector_by_ticker.get(t, "Unknown"),
+                # Use PIT sector from the historical_sector parquet so that removed-
+                # from-universe tickers (e.g. WU, RHI, HP) show their correct GICS
+                # sector rather than "Unknown" (which sector_by_ticker would return
+                # because those names are absent from the current S&P membership map).
+                "sector": _pit_sector(t, T),
                 "mos_pct": (
                     round(mos_by_ticker[t], 2) if mos_by_ticker.get(t) is not None else None
                 ),
@@ -1263,7 +1270,12 @@ def run_backfill(
             PickCandidate(
                 ticker=str(t),
                 composite_score=float(composite[t]),
-                sector=sector_by_ticker.get(str(t), "Unknown"),
+                # Use PIT sector so removed-from-universe tickers (e.g. WU, RHI, HP)
+                # get their correct GICS sector rather than "Unknown".  select_picks
+                # does NOT read PickCandidate.sector (confirmed: it gates only on
+                # composite_score / risk_flags / recommendation / mos_pct /
+                # loss_chance_pct) — this change is SELECTION-NEUTRAL.
+                sector=_pit_sector(str(t), T),
                 risk_flags=tuple(pit_risk_flags.get(str(t), [])),  # PIT veto flags
                 recommendation=rec_by_ticker.get(str(t)),
                 mos_pct=mos_by_ticker.get(str(t)),
@@ -1605,7 +1617,15 @@ def run_backfill(
                     restate_names.add(t)
 
         # Phase 7.0c: sector_weights_by_count — derived per-N sector-weight map.
-        sw_by_count = _sector_weights_by_count(weights_by_count, sector_by_ticker)
+        # Build a PIT-resolved sector map for the picks at this rebalance so that
+        # removed-from-universe tickers (e.g. WU, RHI, HP) contribute their correct
+        # GICS sector bucket rather than "Unknown".  Only covers tickers in picks
+        # (the domain of weights_by_count); candidates_by_ticker already holds PIT
+        # sectors from the PickCandidate construction above so we reuse it here.
+        pit_sector_for_picks = {
+            c.ticker: c.sector for c in candidates if c.ticker in set(picks)
+        }
+        sw_by_count = _sector_weights_by_count(weights_by_count, pit_sector_for_picks)
 
         rebalances_out.append(
             {
@@ -1615,7 +1635,9 @@ def run_backfill(
                     {
                         "ticker": t,
                         "composite_score": round(float(composite[t]), 2),
-                        "sector": sector_by_ticker.get(t, "Unknown"),
+                        # Use PIT sector so removed-from-universe tickers get their
+                        # correct GICS sector rather than "Unknown".
+                        "sector": candidates_by_ticker[t].sector if t in candidates_by_ticker else _pit_sector(t, T),
                         "sigma_90d": round(sigmas[t], 6) if t in sigmas else None,
                         # Phase 7.0c: signed MoS% per holding (None-safe).
                         "mos_pct": (
