@@ -8419,3 +8419,31 @@ Docs-only — NO code/schema/workflow change; rankings byte-identical (trivially
 **Gate**: docs-reviewer (substance check) at Draft→Ready.
 
 ---
+
+## PR #TBD — feat(frontend): drop TWR "% price" + "partial" sub-lines from Rotation-history drawer (in flight, 2026-06-27)
+
+Owner-requested follow-up to #632: that PR removed the per-row TWR "stock price
+return" shadow line and the partial-history note from the Current-picks table
+(`AiPickPortfolio.tsx`), but the SAME two sub-lines were still rendering in the
+**Rotation history** per-quarter drawer (`HoldingsTimeline.tsx` `MwrReturnCell`,
+shared by held + sold rows). This applies the identical removal there so both
+return surfaces show a single headline MWR ("Your return") number.
+
+Frontend-only, NO schema change (the underlying `MwrPositionReturn.twr_pct` /
+`partial_history` fields stay on the artifact; the drawer just stops rendering
+them). Removed: the TWR shadow `<span>` (`{pctStr(twr)} price`), the `partial`
+note `<span>`, the `twr`/`isPartial` props + their type entries on `MwrReturnCell`,
+the `twr`/`isPartial` locals at both call sites (held + sold loops), the `showTwr`
+computation, the `twrToneClass` import (export retained in `portfolio-format.ts` —
+its own unit test still passes), the TWR clause in the column-header tooltip, and
+the TWR/partial entries in the SR aria-label (now a single "Your return X%"
+string). The `mwr === null && twr === null` empty-guard simplified to `mwr === null`.
+Headline `pctStr(mwr)`/`toneClass(mwr)` path untouched.
+
+Verify: tsc --noEmit clean · next build 1512 pages · vitest 275/275 green.
+
+**Files**: `frontend/components/HoldingsTimeline.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: frontend-design-reviewer (rotation drawer return column, light+dark, accordion intact) at Draft→Ready.
+
+---
