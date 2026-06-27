@@ -44,6 +44,11 @@ type Row = {
   // position_returns (the engine records the final MWR there, not in the
   // rebalance where the name exits). Absent for the initial basket (no prior).
   prevMwrByTicker?: Record<string, MwrPositionReturn>;
+  // The PRIOR quarter's bandSectors — used to resolve sector chips for SOLD
+  // names (names in `exited` were in last quarter's band_book, so their PIT
+  // sector lives on the prior entry's bandSectors). Absent for the initial
+  // basket and for pre-regen artifacts that lack band_sectors.
+  prevBandSectors?: Record<string, string>;
 };
 
 /**
@@ -106,6 +111,9 @@ export function HoldingsTimeline({
       // the final MWR into the quarter BEFORE the name exits (the last quarter
       // it was held), not into the quarter where it sold.
       const prevMwrByTicker = i > 0 ? timeline[i - 1].mwrByTicker : undefined;
+      // CASE B (sector): carry the previous entry's bandSectors so sold rows can
+      // resolve their sector chip — sold names were in LAST quarter's band_book.
+      const prevBandSectors = i > 0 ? timeline[i - 1].bandSectors : undefined;
       // When the entry carries bandBook, use the EXACT held set
       // (the band book is NOT a prefix of `holdings`). Build sectorByTicker
       // from the full holdings list so band-carried names whose rank may have
@@ -150,6 +158,7 @@ export function HoldingsTimeline({
         sliceCount,
         entry,
         ...(prevMwrByTicker !== undefined ? { prevMwrByTicker } : {}),
+        ...(prevBandSectors !== undefined ? { prevBandSectors } : {}),
       });
       prev = held;
     }
@@ -297,8 +306,18 @@ function QuarterDrawer({
   row: Row;
   isInitial: boolean;
 }) {
-  const { entry, held, entered, exited, sectorByTicker, prevMwrByTicker } = row;
+  const { entry, held, entered, exited, sectorByTicker, prevMwrByTicker, prevBandSectors } = row;
   const mwrByTicker = entry.mwrByTicker;
+
+  // Build the primary sector lookup for HELD rows: merge bandSectors (PIT map
+  // covering every band_book ticker) over the holdings-derived sectorByTicker
+  // fallback so that band-CARRIED names (HP/UAL/INTC) resolve correctly.
+  // When bandSectors is absent (pre-regen artifact), falls back to the existing
+  // holdings-based map — zero behavior change.
+  const resolvedSectorByTicker: Record<string, string> = {
+    ...sectorByTicker,
+    ...(entry.bandSectors ?? {}),
+  };
   const weightByTicker = entry.weightByTicker;
   const hasWeights = Boolean(weightByTicker && Object.keys(weightByTicker).length > 0);
   const hasMwr = Boolean(mwrByTicker && Object.keys(mwrByTicker).length > 0);
@@ -388,8 +407,8 @@ function QuarterDrawer({
                 {ticker}
               </Link>
               <span className="hidden sm:block">
-                {sectorByTicker[ticker]
-                  ? <SectorChip sector={sectorByTicker[ticker]} />
+                {resolvedSectorByTicker[ticker]
+                  ? <SectorChip sector={resolvedSectorByTicker[ticker]} />
                   : null}
               </span>
               {/* Return cell — MWR headline ("Your return").
@@ -418,7 +437,13 @@ function QuarterDrawer({
           const prSold: MwrPositionReturn | null =
             prevMwrByTicker?.[ticker] ?? mwrByTicker?.[ticker] ?? null;
           const mwrSold = prSold?.mwr_pct ?? null;
-          const sector = sectorByTicker[ticker] ?? '';
+          // Sector for SOLD rows: prefer prevBandSectors (the prior quarter's PIT
+          // sector map — the sold name was in LAST quarter's band_book) then fall
+          // back to the current resolved map (covers the holdings-based fallback).
+          const sector =
+            prevBandSectors?.[ticker] ??
+            resolvedSectorByTicker[ticker] ??
+            '';
           // hasMwr for sold rows: use the broader check — if EITHER the current or
           // prior quarter has MWR data for ANY ticker, the column is enabled.
           const hasMwrForSold = hasMwr || Boolean(prevMwrByTicker && Object.keys(prevMwrByTicker).length > 0);

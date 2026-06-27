@@ -439,6 +439,15 @@ export function getAiPickData(): AiPickData | null {
         }
       }
 
+        // PIT sector map — free-form field `band_sectors` added by compute-builder
+      // in parallel. Present on newly-regenerated artifacts; absent on older ones.
+      // Cast via `unknown` (same pattern as other free-form raw reads above).
+      const rawBandSectors = (r as unknown as { band_sectors?: Record<string, string> }).band_sectors;
+      const bandSectorsEntry: Record<string, string> | undefined =
+        rawBandSectors && typeof rawBandSectors === 'object' && !Array.isArray(rawBandSectors)
+          ? (rawBandSectors as Record<string, string>)
+          : undefined;
+
       return {
         date: r.date,
         holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
@@ -452,6 +461,7 @@ export function getAiPickData(): AiPickData | null {
           : {}),
         ...(mwrForEntry !== undefined ? { mwrByTicker: mwrForEntry } : {}),
         ...(weightForEntry !== undefined ? { weightByTicker: weightForEntry } : {}),
+        ...(bandSectorsEntry !== undefined ? { bandSectors: bandSectorsEntry } : {}),
       };
     }),
     entryCloses,
