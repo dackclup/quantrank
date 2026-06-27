@@ -8504,3 +8504,35 @@ pytest 492/492 (69 backfill-integration incl. the new one).
 **Gate**: quantrank-reviewer at Draft→Ready.
 
 ---
+
+## PR #TBD — fix(backtest): weekend/holiday rebalance entry-price lookup (rotation-history initial-basket null) (in flight, 2026-06-27)
+
+Owner-reported: the initial basket (2016-08-14) showed blank/0.0% "Your return" for every
+holding. ROOT CAUSE (proven + financial-engineer RATIFY-WITH-CONDITIONS, DISPLAY-ONLY-SAFE):
+the per-quarter "Your return" is designed to show each holding's forward return (entry →
+next rebalance), but `_extract_streaks` priced each leg via `_close_on` (EXACT date) while
+the terminal already used `_close_on_or_before`. **2016-08-14 is a Sunday** → no exact close
+→ entry price None → first leg invalid → rb[0] null (and weekend/holiday legs elsewhere
+dropped as "partial"). A clean-data repro confirms rb[0] SHOULD yield a real forward return.
+
+FIX (1 line, `compute/portfolio/position_returns.py` ~368): `_close_on` → `_close_on_or_before`
+for the streak entry/leg price — symmetric with the terminal marking, on-OR-before (no
+look-ahead), `_is_valid_price`-guarded. The out-of-scope `_close_on` at ~1399 (`pp_twr_error`
+diagnostic) is untouched.
+
+BLAST RADIUS — DISPLAY-ONLY-SAFE (financial-engineer traced end-to-end): the Carino
+reconciliation (`position_return_reconciliation_max_abs_error` = 4.7e-16) + headline NAV
+(+829%) are computed from `sub_periods` / the engine `price_on` closure, structurally disjoint
+from this path → byte-identical (delta ZERO). +4 tests (WR-1 positive / WR-2 no-fabrication /
+WR-3 reconciliation-invariance regression guard / WR-4 no-look-ahead Hypothesis). Full offline
+suite 3206 passed; ruff + schema_check clean; NO schema change.
+
+SEQUENCING: this backend fix + a `backtest_pit.json` regen land BEFORE the separate frontend
+PR that reverts #637 Case-A (the 0.0% coalesce) — #637 Case-B (sold-row prior-rebalance
+lookup) stays. Post-regen the initial basket shows real forward returns.
+
+**Files**: `compute/portfolio/position_returns.py` · `tests/test_portfolio/test_position_returns.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: quantrank-reviewer at Draft→Ready.
+
+---
