@@ -8536,3 +8536,41 @@ lookup) stays. Post-regen the initial basket shows real forward returns.
 **Gate**: quantrank-reviewer at Draft→Ready.
 
 ---
+
+## loop-engineering subagent — new `loop-engineer` Tier-4 Operations agent (in flight, 2026-06-27)
+
+Adds a 27th project subagent: `loop-engineer` (`.claude/agents/loop-engineer.md`),
+a **Loop Engineering** seat in Tier 4 (Operations). Given an assigned task it
+DESIGNS the iterative work-loop — the Goal → Context → Action → Check/Fix →
+Repeat/Review cycle — instead of answering one-shot: a machine-checkable
+definition-of-done, each iteration's exact CHECK command pulled from the
+verification ladder (`ruff` → `pytest` → `schema_check` → `tsc` + `next build`
+→ `verify-production-output` / `tools/preflight.py`), a FIX-route to the owning
+agent per the §Auto-routing table, a mandatory convergence guard so the loop
+provably halts, and a final human-review gate. Read-only (Read/Bash/Grep/Glob,
+no Edit/Write) — it COMPOSES the loop and hands it to the Opus-4.8 orchestrator
+to run by dispatching the named agents; it never executes the loop or spawns
+peers itself. Model `sonnet`, `effort: max` (open-ended design/planning seat,
+mirrors `phase-coordinator`).
+
+Roster bookkeeping (the agent/hook/flow consistency guard reads filesystem
+ground truth, so every stated count moved in lockstep): subagents **26 → 27**,
+sonnet **20 → 21**, `effort: max` **24 → 25**, Tier 4 Operations **4 → 5**,
+tier-header sum 27. Synced across CLAUDE.md (layout table + orchestrator/walk-all
+counts + model-split line + new §Auto-routing row), AGENTS.md (count sentences +
+tree-comment tier breakdown + sonnet-pool line + Tier-4 note), CONTEXT.md (3
+roster anchors), PHASE_STATUS.md (current-state row), and `.claude/agents/README.md`
+(current-set header + Tier-4 table row + tier rationale + model-split + effort
+headings). `tools/check_agent_hook_consistency.py` opus-split anchors bumped
+`20 sonnet` → `21 sonnet` (the only number that lives in the guard regex itself).
+
+Meta-infrastructure only — no `compute/**` / `frontend/**` / schema / workflow
+change; rankings/scores/output BYTE-IDENTICAL; defense layer UNCHANGED at 36.
+
+**Verify**: `python tools/check_agent_hook_consistency.py` PASS · `ruff check .` clean.
+
+**Files**: `.claude/agents/loop-engineer.md` (new) · `.claude/agents/README.md` ·
+`CLAUDE.md` · `AGENTS.md` · `CONTEXT.md` · `PHASE_STATUS.md` ·
+`tools/check_agent_hook_consistency.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

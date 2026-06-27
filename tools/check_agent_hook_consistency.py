@@ -208,10 +208,10 @@ ANCHORS: tuple[Anchor, ...] = (
     Anchor("CONTEXT.md", r"(\d+) project-specific sub-agents in 5 tiers", "n_agents", "CONTEXT layout"),
     Anchor("PHASE_STATUS.md", r"\*\*(\d+)\*\* in 5 tiers", "n_agents", "PHASE_STATUS current-state"),
     # --- opus split ---
-    Anchor("AGENTS.md", r"(\d+) opus / 20 sonnet", "n_opus", "AGENTS opus split"),
-    Anchor("CONTEXT.md", r"(\d+) opus \+ 20 sonnet", "n_opus", "CONTEXT opus split"),
-    Anchor("PHASE_STATUS.md", r"(\d+) opus \+ 20 sonnet", "n_opus", "PHASE_STATUS opus split"),
-    Anchor(".claude/agents/README.md", r"why (\d+) opus / 20 sonnet", "n_opus", "README model-split heading"),
+    Anchor("AGENTS.md", r"(\d+) opus / 21 sonnet", "n_opus", "AGENTS opus split"),
+    Anchor("CONTEXT.md", r"(\d+) opus \+ 21 sonnet", "n_opus", "CONTEXT opus split"),
+    Anchor("PHASE_STATUS.md", r"(\d+) opus \+ 21 sonnet", "n_opus", "PHASE_STATUS opus split"),
+    Anchor(".claude/agents/README.md", r"why (\d+) opus / 21 sonnet", "n_opus", "README model-split heading"),
     # --- effort max ---
     Anchor(".claude/agents/README.md", r"Effort: (\d+) of \d+ agents run at", "n_effort_max", "README effort heading"),
     Anchor(".claude/agents/README.md", r"(\d+) of \d+ agents run at the top", "n_effort_max", "README authoring effort"),
