@@ -663,26 +663,22 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 {/* Return cell — engine MWR (money-weighted return) since entry.
                     data.mwrByTicker populated from top-level position_returns (PR-1 #614).
                     Pre-engine artifacts (empty mwrByTicker) render '—' gracefully.
-                    CASE A: when legs_used === 0 (entry instant), mwr_pct is null but
-                    the correct financial value is 0.0% — coalesced here.
+                    Genuine null (missing data or pre-engine artifact) renders '—'.
                     The outer span carries aria-label so SR users hear the MWR value;
                     the inner span is aria-hidden to avoid double-announcement. */}
                 {(() => {
                   const m = mwrForTicker(h.ticker);
                   const mwr = m?.mwr_pct ?? null;
-                  const legsUsed = m?.legs_used ?? null;
-                  // CASE A coalesce: entry instant = 0.0% by identity.
-                  const displayMwr = (mwr === null && legsUsed === 0) ? 0 : mwr;
                   return (
                     <span
                       className="text-right"
-                      aria-label={displayMwr !== null ? `Your return ${pctStr(displayMwr)}` : 'Return unavailable'}
+                      aria-label={mwr !== null ? `Your return ${pctStr(mwr)}` : 'Return unavailable'}
                     >
                       <span
-                        className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(displayMwr)}`}
+                        className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(mwr)}`}
                         aria-hidden="true"
                       >
-                        {hasMwr ? pctStr(displayMwr) : pctStr(null)}
+                        {hasMwr ? pctStr(mwr) : pctStr(null)}
                       </span>
                     </span>
                   );
@@ -741,8 +737,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   CASE B: tries data.mwrByTicker (top-level position_returns) first,
                   then falls back to the prior rebalance's per-quarter mwrByTicker
                   (where the engine records the final MWR for names that exited).
-                  Sold rows: legs_used is non-zero by definition (held ≥1 quarter
-                  before selling), so the CASE A legsUsed===0 coalesce never fires.
                   GUARD: this return value is DISPLAY-ONLY — it is never added to
                   the footer total or any aggregate (weight is 0.0%; footer sums
                   weight-weighted returns only over held rows). */}

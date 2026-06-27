@@ -1,12 +1,12 @@
 /**
- * Contract tests for the return-cell null-coalesce display fixes.
+ * Contract tests for the return-cell display behavior.
  *
- * Covers three invariants introduced in the "fill blank return cells" PR:
- *
- * CASE A — entry instant (legs_used === 0): mwr_pct is null at the instant of
- * purchase (no price movement measured yet). The correct financial value is
- * 0.0% by identity.  The render layer coalesces null → 0 when legs_used === 0
- * and produces "+0.0%" via pctStr(0) with the non-negative tone.
+ * CASE A — entry-instant coalesce REMOVED (#638 revert): the backend
+ * `position_returns.py` bug (Sunday/weekend rebalance date → null close → null
+ * mwr_pct for the initial basket) is fixed server-side. Post-regen, the initial
+ * basket produces REAL forward returns (legs_used ≥ 1), so the frontend no longer
+ * special-cases legs_used === 0. Genuine null (missing data / pre-engine artifact)
+ * renders "—".
  *
  * CASE B — sold row prior-rebalance lookup: a sold ticker's realized exit
  * return lives in the PRIOR rebalance's position_returns (the last quarter it
@@ -24,21 +24,17 @@ import { apportionWeightLabels, pctStr, toneClass } from './portfolio-format';
 import type { MwrPositionReturn } from './types';
 
 // ---------------------------------------------------------------------------
-// Helpers that mirror the render-layer coalesce logic exactly so the tests
+// Helpers that mirror the render-layer logic exactly so the tests
 // remain independent of React component internals.
 // ---------------------------------------------------------------------------
 
 /**
- * Replicate the CASE-A coalesce: entry-instant return = 0.0%.
- * When mwr_pct is null AND legs_used === 0, the display value is 0 (not null).
+ * Replicate the held-row display resolution (NO Case-A coalesce).
+ * mwr_pct is used directly; null → "—" at the render layer.
  */
 function resolveDisplayMwr(pr: MwrPositionReturn | null): number | null {
   if (pr === null) return null;
-  const mwr = pr.mwr_pct ?? null;
-  const legs = pr.legs_used ?? null;
-  // CASE A: entry instant coalesce
-  if (mwr === null && legs === 0) return 0;
-  return mwr;
+  return pr.mwr_pct ?? null;
 }
 
 /**
@@ -55,43 +51,16 @@ function resolveSoldMwr(
 }
 
 // ---------------------------------------------------------------------------
-// CASE A — legs_used === 0 → coalesce null to 0.0%
+// Genuine-null behavior (replaces the removed Case-A assertions)
 // ---------------------------------------------------------------------------
 
-describe('CASE A: entry-instant return coalesce (legs_used === 0)', () => {
-  it('resolves null mwr_pct to 0 when legs_used is 0', () => {
-    const pr: MwrPositionReturn = {
-      mwr_pct: null,
-      twr_pct: null,
-      contrib_nav_pts: null,
-      since_date: '2024-02-15',
-      partial_history: false,
-      legs_used: 0,
-    };
-    expect(resolveDisplayMwr(pr)).toBe(0);
+describe('Genuine null mwr_pct renders as "—"', () => {
+  it('resolves null when the position-return entry is absent (no mwrByTicker key)', () => {
+    expect(resolveDisplayMwr(null)).toBeNull();
+    expect(pctStr(null)).toBe('—');
   });
 
-  it('renders 0 as "+0.0%" via pctStr (not "—")', () => {
-    const pr: MwrPositionReturn = {
-      mwr_pct: null,
-      twr_pct: null,
-      contrib_nav_pts: null,
-      since_date: '2024-02-15',
-      partial_history: false,
-      legs_used: 0,
-    };
-    const displayMwr = resolveDisplayMwr(pr);
-    expect(pctStr(displayMwr)).toBe('+0.0%');
-  });
-
-  it('toneClass(0) is neutral/non-negative (emerald, not slate)', () => {
-    // 0 is treated as non-negative by toneClass — the entry-instant "0.0%"
-    // should NOT render in the muted slate tone (which signals data absent).
-    expect(toneClass(0)).toBe('text-emerald-700 dark:text-emerald-300');
-    expect(toneClass(0)).not.toContain('slate');
-  });
-
-  it('does NOT coalesce when legs_used is null (data absent, not entry instant)', () => {
+  it('resolves null when mwr_pct is null and legs_used is null (data absent)', () => {
     const pr: MwrPositionReturn = {
       mwr_pct: null,
       twr_pct: null,
@@ -100,13 +69,27 @@ describe('CASE A: entry-instant return coalesce (legs_used === 0)', () => {
       partial_history: false,
       legs_used: null,
     };
-    // legs_used=null means we have no information — keep as null (renders "—")
     expect(resolveDisplayMwr(pr)).toBeNull();
+    expect(pctStr(resolveDisplayMwr(pr))).toBe('—');
   });
 
-  it('does NOT coalesce when legs_used is positive (data present but zero return)', () => {
-    // If legs_used > 0 and mwr_pct happens to be null, we can't infer 0.0%
-    // (the engine should have emitted a value; null here means genuinely absent).
+  it('resolves null when mwr_pct is null and legs_used is 0 (no special-case after #638 revert)', () => {
+    // Post-regen the backend provides real forward returns for the initial basket.
+    // legs_used === 0 is no longer coalesced to 0.0% — it renders "—" like any
+    // other absent value so genuinely-broken/absent rows don't mask data absence.
+    const pr: MwrPositionReturn = {
+      mwr_pct: null,
+      twr_pct: null,
+      contrib_nav_pts: null,
+      since_date: '2024-02-15',
+      partial_history: false,
+      legs_used: 0,
+    };
+    expect(resolveDisplayMwr(pr)).toBeNull();
+    expect(pctStr(resolveDisplayMwr(pr))).toBe('—');
+  });
+
+  it('resolves null when mwr_pct is null and legs_used is positive', () => {
     const pr: MwrPositionReturn = {
       mwr_pct: null,
       twr_pct: null,
@@ -116,20 +99,7 @@ describe('CASE A: entry-instant return coalesce (legs_used === 0)', () => {
       legs_used: 3,
     };
     expect(resolveDisplayMwr(pr)).toBeNull();
-  });
-
-  it('preserves a real mwr_pct when legs_used is 0 and value is provided', () => {
-    // Engine could theoretically emit mwr_pct=0.0 explicitly at legs=0;
-    // the coalesce should not overwrite a provided value.
-    const pr: MwrPositionReturn = {
-      mwr_pct: 0.0,
-      twr_pct: 0.0,
-      contrib_nav_pts: null,
-      since_date: '2024-02-15',
-      partial_history: false,
-      legs_used: 0,
-    };
-    expect(resolveDisplayMwr(pr)).toBe(0.0);
+    expect(pctStr(resolveDisplayMwr(pr))).toBe('—');
   });
 
   it('preserves a positive real mwr_pct regardless of legs_used', () => {
@@ -145,9 +115,22 @@ describe('CASE A: entry-instant return coalesce (legs_used === 0)', () => {
     expect(pctStr(resolveDisplayMwr(pr))).toBe('+12.3%');
   });
 
-  it('handles null position-return entry gracefully (no mwrByTicker entry)', () => {
-    expect(resolveDisplayMwr(null)).toBeNull();
-    expect(pctStr(null)).toBe('—');
+  it('preserves an explicit 0.0 mwr_pct (real engine-emitted zero return)', () => {
+    const pr: MwrPositionReturn = {
+      mwr_pct: 0.0,
+      twr_pct: 0.0,
+      contrib_nav_pts: null,
+      since_date: '2024-02-15',
+      partial_history: false,
+      legs_used: 1,
+    };
+    expect(resolveDisplayMwr(pr)).toBe(0.0);
+    expect(pctStr(resolveDisplayMwr(pr))).toBe('+0.0%');
+  });
+
+  it('toneClass(0) is neutral/non-negative (emerald, not slate) for an explicit 0.0', () => {
+    expect(toneClass(0)).toBe('text-emerald-700 dark:text-emerald-300');
+    expect(toneClass(0)).not.toContain('slate');
   });
 });
 
