@@ -62,6 +62,19 @@ MWR (Modified Dietz, CFA/GIPS standard)
 
     where W_i = fraction of period remaining after flow i.
 
+    **Option-B shadow path (issue #620):** when ``build_portfolio_nav`` is
+    called with ``dividends`` + ``price_basis="raw"`` (the SHADOW
+    ``nav.adaptive_div_pooled`` series), pooled cash accumulates between
+    rebalances and is redeployed at each rebalance.  For Modified-Dietz
+    classification purposes the accrued-dividend cash bucket is treated as an
+    INTERNAL reinvestment (not an external cash flow), so ``ΣCF_i = 0`` and
+    the denominator simplifies to ``V_begin``.  The redeployed cash is already
+    folded into ``nav_total`` before ``_shares_for`` re-pegs shares, so no
+    adjustment is required in this module — the ``SubPeriod.price_relatives``
+    already reflect the full redeployed NAV as the sub-period start.  This note
+    is documentation-only; the shadow path does not change any computation in
+    ``position_returns.py``.
+
 TWR (Time-Weighted Return, chained geometric)
     Chained geometric product over the contiguous legs in the position's streak:
 

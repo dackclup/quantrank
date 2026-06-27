@@ -9,6 +9,7 @@ from __future__ import annotations
 import datetime
 import logging
 import math as _math
+import os
 import time
 
 import pandas as pd
@@ -27,7 +28,7 @@ def _yf_download(
     *,
     start: datetime.date | None = None,
 ) -> pd.DataFrame:
-    """Download OHLCV from yfinance with tenacity retry.
+    """Download OHLCV (+ Dividends when ``QR_SKIP_DIVIDENDS`` is unset) from yfinance.
 
     Parameters
     ----------
@@ -43,12 +44,31 @@ def _yf_download(
         Optional fixed calendar floor for the download.  When provided,
         ``yf.download`` is called with ``start=start.isoformat()`` and no
         ``period`` argument, fetching all available data from that date forward.
+
+    Notes
+    -----
+    ``actions=True`` is passed to ``yf.download`` so the ``Dividends`` (and
+    ``Stock Splits``) column is fetched on the SAME HTTP round-trip at zero
+    extra cost.  The ``Dividends`` column is used by
+    ``fetch_dividends_panel`` (Option-B shadow NAV series, issue #620).
+    Set ``QR_SKIP_DIVIDENDS=1`` to suppress this addition (the column will be
+    absent from the returned frame and ``fetch_dividends_panel`` degrades
+    gracefully to an empty dict).
+
+    MultiIndex flatten: when yfinance returns a MultiIndex (multi-ticker
+    download — rare here since we download per-ticker), the existing
+    ``get_level_values(0)`` call flattens the first level.  For single-ticker
+    downloads with ``actions=True``, yfinance returns a flat column set that
+    already includes ``Dividends`` — no special handling required.
     """
+    _skip_dividends = bool(os.environ.get("QR_SKIP_DIVIDENDS"))
+    _actions = not _skip_dividends
     if start is not None:
         df = yf.download(
             ticker,
             start=start.isoformat(),
             auto_adjust=False,
+            actions=_actions,
             progress=False,
             threads=False,
             group_by="column",
@@ -58,11 +78,15 @@ def _yf_download(
             ticker,
             period=period,
             auto_adjust=False,
+            actions=_actions,
             progress=False,
             threads=False,
             group_by="column",
         )
     if isinstance(df.columns, pd.MultiIndex):
+        # Flatten MultiIndex: prefer level 0 (the field name — Open/High/Low/Close/
+        # Volume/Dividends/Stock Splits) rather than level 1 (the ticker), which is
+        # what the existing code uses for single-ticker downloads.
         df.columns = df.columns.get_level_values(0)
     return df
 
@@ -293,6 +317,86 @@ def compute_average_dollar_volume(
     except Exception:  # noqa: BLE001
         # Broad catch: never let a volume computation failure crash the cron.
         return None
+
+
+def fetch_dividends_panel(
+    price_frames: dict[str, pd.DataFrame | None],
+) -> dict[str, dict[str, float]]:
+    """Extract the ``Dividends`` column from pre-fetched price frames.
+
+    Parameters
+    ----------
+    price_frames:
+        ``{ticker: DataFrame | None}`` as produced by the Step-1 prices loop.
+        DataFrames MUST already contain a ``Dividends`` column (present when
+        ``_yf_download`` was called with ``actions=True`` and
+        ``QR_SKIP_DIVIDENDS`` was not set).  Frames that lack the column (old
+        cached parquets, or a ``QR_SKIP_DIVIDENDS=1`` run) are silently skipped
+        — graceful degradation, NOT a crash.
+
+    Returns
+    -------
+    dict[str, dict[str, float]]
+        ``{ticker: {iso_date: div_per_share}}`` containing only ex-dates with a
+        non-zero, finite dividend.  Returns an empty dict when
+        ``QR_SKIP_DIVIDENDS=1`` is set or when no frame has a ``Dividends``
+        column — the Option-B shadow NAV caller treats an empty panel as
+        "no dividends available" and degrades gracefully.
+
+    Notes
+    -----
+    * Zero-value rows (``Dividends == 0``) are dropped — yfinance emits a 0
+      for every trading day; only actual ex-dates have positive values.
+    * This function is a PURE READ of data already downloaded and cached by
+      ``fetch_prices``; it performs zero network calls.
+    * Set ``QR_SKIP_DIVIDENDS=1`` to suppress the entire dividend panel (useful
+      for debugging or environments where yfinance ``actions=True`` is not
+      available).  The escape hatch mirrors ``QR_SKIP_SPLITS``.
+    * Rule 18 (observability-before-wiring): this panel feeds the Option-B
+      SHADOW NAV series only (``nav.adaptive_div_pooled``).  The live
+      ``nav.adaptive`` path is BYTE-IDENTICAL regardless of this panel.
+    """
+    if bool(os.environ.get("QR_SKIP_DIVIDENDS")):
+        logger.info("fetch_dividends_panel: QR_SKIP_DIVIDENDS=1 — returning empty panel")
+        return {}
+
+    panel: dict[str, dict[str, float]] = {}
+    for ticker, df in price_frames.items():
+        if df is None or df.empty:
+            continue
+        if "Dividends" not in df.columns:
+            # Old cached parquet or QR_SKIP_DIVIDENDS run — skip silently.
+            continue
+        try:
+            div_series = df["Dividends"].dropna()
+            # Keep only positive (actual ex-date) rows.
+            div_series = div_series[div_series > 0.0]
+            if div_series.empty:
+                continue
+            ticker_map: dict[str, float] = {}
+            for ts, val in div_series.items():
+                val_f = float(val)
+                if _math.isfinite(val_f) and val_f > 0.0:
+                    # Convert pandas Timestamp index to ISO date string.
+                    if hasattr(ts, "date"):
+                        iso_date = ts.date().isoformat()
+                    elif isinstance(ts, datetime.date):
+                        iso_date = ts.isoformat()
+                    else:
+                        iso_date = str(ts)[:10]
+                    ticker_map[iso_date] = val_f
+            if ticker_map:
+                panel[ticker] = ticker_map
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "fetch_dividends_panel: skipping %s due to error: %s", ticker, e
+            )
+    logger.info(
+        "fetch_dividends_panel: %d tickers with dividend data out of %d frames",
+        len(panel),
+        len(price_frames),
+    )
+    return panel
 
 
 def _earliest_date(df: pd.DataFrame) -> datetime.date | None:

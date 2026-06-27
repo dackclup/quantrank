@@ -634,6 +634,25 @@ export type Metadata = {
   // S&P 900 books; may light up on S&P 1500 small-cap exposure.
   // Null on legacy snapshots (pre-0.10.40) or when the artifact is absent.
   low_liquidity_held_count?: number | null;
+  // Option-B dividend-pool-and-redeploy SHADOW canaries (0.10.41-phase8pilot,
+  // issue #620, Rule 18 observability-first). Write-only — no UI consumer
+  // this slice. Live nav.adaptive and rankings are BYTE-IDENTICAL.
+  // Defense layer UNCHANGED at 36.
+  //
+  // `div_pool_shadow_terminal_nav_delta_pct` — terminal NAV uplift (%) of
+  // the dividend-pooled shadow series vs the live nav.adaptive (net-of-cost).
+  // Formula: 100 × (NAV_div_pooled_net[-1] / NAV_adaptive_net[-1] − 1).
+  // Positive = dividends add value once redeployed; near-zero = yield
+  // immaterial at the basket level. Null on legacy snapshots (pre-0.10.41)
+  // or when the artifact is absent / has no nav.adaptive_div_pooled key.
+  div_pool_shadow_terminal_nav_delta_pct?: number | null;
+  // `div_stream_coverage_pct` — fraction of tickers in the ranked universe
+  // with at least one ex-date dividend entry in fetch_dividends_panel,
+  // expressed as a percentage (0–100). Rule-18 coverage canary: expected
+  // ~40–60% of S&P 1500 names pay dividends. Null when QR_SKIP_DIVIDENDS=1
+  // or when the Dividends column is absent from all cached price frames
+  // (first run after a cache cold-seed bump).
+  div_stream_coverage_pct?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

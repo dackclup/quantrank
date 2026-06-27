@@ -1062,6 +1062,54 @@ class Metadata(BaseModel):
     # HARD CONSTRAINT: same as ``hysteresis_turnover_reduction_mean_pp`` above.
     # Defense layer UNCHANGED at 36.  Nullable on legacy snapshots (pre-0.10.40).
     low_liquidity_held_count: int | None = None
+    # ``div_pool_shadow_terminal_nav_delta_pct`` — A/B-diff canary for the
+    # Option-B dividend-pool-and-redeploy SHADOW NAV series (issue #620,
+    # schema 0.10.41-phase8pilot).
+    #
+    # Formula: 100 × (NAV_div_pooled_net[-1] / NAV_adaptive_net[-1] − 1)
+    # i.e. the terminal NAV uplift (%) of the dividend-pooled shadow vs the
+    # live ``nav.adaptive`` series.  Positive = dividends add value once
+    # redeployed; near-zero = dividend yield immaterial at the basket level.
+    #
+    # Populated by reading ``backtest_pit.json`` after the PIT-backtest
+    # refresh (same artifact-read pattern as C-2, C-1, and Proposal E).
+    # None when the artifact is absent, unreadable, or has no
+    # ``nav.adaptive_div_pooled`` key (first cron after a cold clone or
+    # before the backfill re-runs).
+    #
+    # Methodology conditions (ratified by methodology-scientist):
+    #   1. Idle cash earns 0% between rebalances (conservative floor).
+    #   2. Sold-name conservation: ex-date dividends on names sold at
+    #      rebalance are captured in the terminal-sub-period cash bucket
+    #      before redeploy — no leakage.
+    #   3. Shadow-first: live ``nav.adaptive`` is BYTE-IDENTICAL; the
+    #      shadow flip is gated on ≥ 1 cron confirming a plausible delta.
+    #
+    # Adj-Close double-count footgun: Adj Close already embeds dividend
+    # reinvestment; the Option-B path prices on RAW split-adjusted Close to
+    # avoid double-counting (CLAUDE.md §Gotchas).
+    #
+    # HARD CONSTRAINT: this field MUST NEVER be read by scoring, the
+    # composite, pillar computation, veto/flag logic, fair-price,
+    # ``select_picks``, or ``inverse_vol_weights``.  Written to ``Metadata``
+    # ONLY.  Rankings/scores/flags BYTE-IDENTICAL.  Defense layer UNCHANGED
+    # at 36.  Nullable on legacy snapshots (pre-0.10.41).
+    div_pool_shadow_terminal_nav_delta_pct: float | None = None
+    # ``div_stream_coverage_pct`` — fraction of tickers in the CURRENT
+    # ranked universe that have at least one ex-date dividend entry in the
+    # ``fetch_dividends_panel`` output, expressed as a percentage (0–100).
+    # Rule-18 coverage canary: until this field populates with a plausible
+    # value (expected ~40–60% of S&P 1500 names pay dividends), the Option-B
+    # shadow series must NOT be promoted to the headline.
+    #
+    # None when ``QR_SKIP_DIVIDENDS=1`` is set, or when the ``Dividends``
+    # column is absent from ALL cached price frames (old parquets — first run
+    # after a cache cold-seed bump will see None here; subsequent runs after
+    # the cache warms will populate it).
+    #
+    # Same HARD CONSTRAINT as ``div_pool_shadow_terminal_nav_delta_pct``.
+    # Nullable on legacy snapshots (pre-0.10.41).
+    div_stream_coverage_pct: float | None = None
 
 
 class RawMetrics(BaseModel):
