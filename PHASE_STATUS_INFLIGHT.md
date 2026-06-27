@@ -8612,5 +8612,29 @@ SEQUENCING: merge → regen `backtest_pit.json` (compute-rankings, Saturday=manu
 **Files**: `compute/portfolio/position_returns.py` · `tests/test_portfolio/test_position_returns.py` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 **Gate**: quantrank-reviewer at Draft→Ready.
+## PR #TBD — revert(frontend): drop #637 Case-A 0.0% entry-instant coalesce (keep Case-B) (in flight, 2026-06-27)
+
+Follow-up to the #638 backend fix. #637 Case A coalesced `legs_used === 0` (entry instant)
+→ display "+0.0%" — a workaround for the initial basket's null returns. The REAL cause was
+the weekend entry-price bug (#638, merged: `_close_on` → `_close_on_or_before`); post-regen
+the initial basket produces REAL forward returns (`legs_used >= 1`). So the Case-A coalesce
+is now unnecessary AND wrong — its `legs_used === 0` predicate would only fire on
+genuinely-broken/absent rows, where a fake "+0.0%" masks real data absence
+(financial-engineer + quantrank-reviewer both confirmed: revert Case A, keep Case B).
+
+Removed in `AiPickPortfolio.tsx` (the `displayMwr = (mwr===null && legsUsed===0) ? 0 : mwr`
+coalesce + `legsUsed` derivation; `mwr` used directly; genuine null → "—") and
+`HoldingsTimeline.tsx` (`MwrReturnCell` `legsUsed` prop + the Case-A branch + the call-site
+derivation). #637 Case B (sold-row `mwrForSoldTicker` / `prevMwrByTicker` prior-rebalance
+lookup) is UNCHANGED. `return-cell-display.test.ts`: the 5 Case-A "→ +0.0%" tests replaced
+with genuine-null-renders-"—" tests; Case-B + footer-exclusion guard suites preserved.
+
+Frontend-only, NO schema change. tsc clean, next build 1512 pages, vitest 290 green.
+SEQUENCING: merges AFTER the `backtest_pit.json` regen (with #635 sector + #638 weekend fix)
+lands on main, so the UI never shows stale "—".
+
+**Files**: `frontend/components/AiPickPortfolio.tsx` · `frontend/components/HoldingsTimeline.tsx` · `frontend/lib/return-cell-display.test.ts` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: frontend-design-reviewer at Draft→Ready.
 
 ---

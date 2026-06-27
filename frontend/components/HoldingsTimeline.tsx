@@ -353,10 +353,6 @@ function QuarterDrawer({
           const isNew = isInitial || entered.has(ticker);
           const pr: MwrPositionReturn | null = mwrByTicker?.[ticker] ?? null;
           const mwr = pr?.mwr_pct ?? null;
-          // CASE A: legs_used === 0 means this is the entry instant — return = 0 by
-          // identity (purchased now, measured now). The engine emits mwr_pct=null
-          // at this point; we coalesce to 0.0% in MwrReturnCell via legsUsed.
-          const legsUsed = pr?.legs_used ?? null;
 
           return (
             <li
@@ -397,11 +393,10 @@ function QuarterDrawer({
                   : null}
               </span>
               {/* Return cell — MWR headline ("Your return").
-                  legsUsed passed so the cell can coalesce entry-instant 0 (CASE A). */}
+                  Genuine null (missing data or pre-engine artifact) renders '—'. */}
               <MwrReturnCell
                 mwr={mwr}
                 hasMwr={hasMwr}
-                legsUsed={legsUsed}
               />
               <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                 {hasWeights ? weightLabels[i] : '—'}
@@ -455,8 +450,7 @@ function QuarterDrawer({
                 {sector ? <SectorChip sector={sector} /> : null}
               </span>
               {/* Sold row: realized exit return from the prior rebalance's map
-                  (CASE B). legsUsed not needed here — a sold position has
-                  non-zero legs by definition (it was held ≥1 quarter). */}
+                  (CASE B — prevMwrByTicker lookup at call site above). */}
               <MwrReturnCell
                 mwr={mwrSold}
                 hasMwr={hasMwrForSold}
@@ -484,22 +478,15 @@ function QuarterDrawer({
 // MWR Return cell — shared between held and sold rows in QuarterDrawer.
 // Headline: MWR ("Your return").
 // When hasMwr is false (legacy artifact), renders '—' consistently.
-//
-// CASE A: legsUsed === 0 means this is the entry instant — the position was
-// just purchased this quarter so return = 0 by financial identity (no price
-// movement measured yet). The engine emits mwr_pct=null at this point; we
-// coalesce to 0.0% so every cell shows a number. Tone is neutral (toneClass(0)
-// maps to emerald/non-negative, which is the correct design-system rendering
-// for a zero-return — not muted slate, which implies "data absent").
+// Genuine null mwr (missing data) renders '—'; real mwr renders normally.
+// CASE B (sold rows) is handled at the call site via prevMwrByTicker lookup.
 // ---------------------------------------------------------------------------
 function MwrReturnCell({
   mwr,
   hasMwr,
-  legsUsed = null,
 }: {
   mwr: number | null;
   hasMwr: boolean;
-  legsUsed?: number | null;
 }) {
   // When the artifact has no MWR data at all, render a plain muted dash.
   // This path fires for all rows in a pre-#618 artifact.
@@ -511,22 +498,7 @@ function MwrReturnCell({
     );
   }
 
-  // CASE A: entry instant (legs_used === 0) — return = 0.0% by identity.
-  // Render as neutral "+0.0%" rather than "—" so the column never has a blank.
-  if (mwr === null && legsUsed === 0) {
-    return (
-      <span
-        className="text-right"
-        aria-label="Your return +0.0%"
-      >
-        <span className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(0)}`}>
-          {pctStr(0)}
-        </span>
-      </span>
-    );
-  }
-
-  // MWR present but this specific ticker is absent → mwr=null (genuinely
+  // MWR data present but this specific ticker is absent → mwr=null (genuinely
   // missing data — e.g. sold ticker not in any known prior-rebalance map).
   if (mwr === null) {
     return (
