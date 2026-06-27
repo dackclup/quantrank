@@ -20,9 +20,13 @@ Pipeline:
     risk_flags into the per-ticker risk list.
 11. Sort by composite, assign rank
 12. Top-5 rotation: compare to previous rankings.json; flagged stocks
-    (any of 4 active vetoes — altman / sloan / NSI / data-quality;
-    non-reliance 8-K is deferred per issue #14) cannot earn
-    ``entered_top5``
+    (ANY active veto in ``risk_flags`` — the 10 ``KNOWN_RISK_FLAGS``,
+    e.g. altman / sloan / NSI / data-quality / beneish / dechow /
+    non-reliance / fundamentals-unavailable / post-split-unreconciled /
+    stale-filing-hard) cannot earn ``entered_top5``. NB: this Top-5 gate
+    (``if risk_flags.get(ticker): continue``) is BROADER than the 7-flag
+    AI-pick-basket gate (``ACTIVE_VETO_FLAGS``) and the 4-flag cautious-label
+    gate (``_CAUTIOUS_FORCING_RISK``) — three distinct sets, by design
 13. Atomic writes: rankings.json, metadata.json, stocks/{TICKER}.json,
     stocks/history/{TICKER}.json
 14. Final RSS memory log (best-effort via psutil)

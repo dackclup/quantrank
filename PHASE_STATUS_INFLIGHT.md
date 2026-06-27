@@ -8751,3 +8751,33 @@ UNCHANGED (38 all along — the "36" headline was stale, now corrected).
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## docs(compute): clarify the 7/4/10 three-veto-gate split in docstrings (in flight, 2026-06-27)
+
+Follow-up to #641 (defense-layer count reconciliation). The #641 work established
+that "active veto" means three DIFFERENT gates with three different membership
+sets, which two compute docstrings named ambiguously. Docstring-only clarification
+(zero code/behavior change; rankings/scores BYTE-IDENTICAL):
+- `compute/output/schemas.py` (high-conviction gate comment): `is_eligible —
+  no active rank-gate veto (7 veto flags)` → spell out it's the NARROWER
+  AI-pick-basket gate (`ACTIVE_VETO_FLAGS`, 7), distinct from the 10 Top-5
+  vetoes (`KNOWN_RISK_FLAGS`) and the 4 cautious-label vetoes
+  (`_CAUTIOUS_FORCING_RISK`).
+- `compute/main.py` (Step-12 Top-5 rotation docstring): the stale Phase-3b relic
+  `any of 4 active vetoes — altman / sloan / NSI / data-quality` (the Top-5 gate
+  actually skips on ANY of the 10 `KNOWN_RISK_FLAGS` via
+  `if risk_flags.get(ticker): continue`) → corrected to the full 10-flag set +
+  a note that this gate is BROADER than the 7-flag basket / 4-flag label gates.
+
+Ground-truth counts confirmed at runtime: `ACTIVE_VETO_FLAGS`=7 ·
+`_CAUTIOUS_FORCING_RISK`=4 · `KNOWN_RISK_FLAGS`=10 (this corrected an earlier
+"5" estimate for the cautious-label set). Comment-only — no Pydantic field/type/
+default changed; `schema_check` in sync; defense layer UNCHANGED at 38.
+
+**Verify**: `python -m compute.output.schema_check` PASS · `ruff check .` clean ·
+`python tools/check_defense_layer_counts.py` PASS.
+
+**Files**: `compute/output/schemas.py` · `compute/main.py` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
