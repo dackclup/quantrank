@@ -8697,9 +8697,16 @@ hooks · 9 flows):
   predictions on the `S&P 500 cohort/universe` → `S&P 1500` (cohort size feeds
   the firing-rate math; the historical "rescaled 10× for S&P 500 in PR #163"
   anchor was left intact as accurate history).
+- **`AGENTS.md`** (adjacent drift surfaced by `phase-coordinator` Mode B at the
+  Ready gate): the `compute/ingest/universe.py` tree comment said
+  `S&P 500 / 400 / 900 (combined)` — stale since the S&P 1500 cutover; corrected
+  to `S&P 500 / 400 / 600 + combined 900 / 1500 (QR_UNIVERSE=sp500|sp900|sp1500)`
+  to match what the module actually fetches. CLAUDE.md's universe facts were
+  already current, so no CLAUDE.md edit is needed for lockstep.
 
-Meta-infrastructure only — no `compute/**` / `frontend/**` / schema / workflow
-change; rankings/scores/output BYTE-IDENTICAL; defense layer UNCHANGED at 36.
+Meta-infrastructure / docs only — no `compute/**` / `frontend/**` / schema /
+workflow change; rankings/scores/output BYTE-IDENTICAL; defense layer UNCHANGED
+at 36.
 
 **Verify**: `python tools/check_agent_hook_consistency.py` PASS.
 
@@ -8707,6 +8714,7 @@ change; rankings/scores/output BYTE-IDENTICAL; defense layer UNCHANGED at 36.
 `.claude/agents/agent-output-verifier.md` ·
 `.claude/agents/expert-user-explorer.md` ·
 `.claude/agents/financial-engineer.md` ·
-`.claude/agents/methodology-scientist.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+`.claude/agents/methodology-scientist.md` · `AGENTS.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
