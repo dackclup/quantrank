@@ -455,11 +455,13 @@ function QuarterDrawer({
                 mwr={mwrSold}
                 hasMwr={hasMwrForSold}
               />
-              {/* Weight: 0.0% — the ticker is no longer in the basket.
+              {/* Weight: em-dash — the ticker is no longer in the basket; "0.0%"
+                  would read as a real allocation. Muted alignment matches the
+                  return-cell dash convention (text-slate-400 dark:text-slate-500).
                   GUARD: sold row weight is NEVER included in any aggregate total
                   (the footer reads only held rows; this is a display-only cell). */}
               <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                0.0%
+                —
               </span>
             </li>
           );

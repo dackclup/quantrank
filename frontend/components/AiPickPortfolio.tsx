@@ -758,7 +758,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 );
               })()}
               <span className="text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500">
-                0.0%
+                —
               </span>
             </li>
           ))}

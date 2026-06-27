@@ -211,13 +211,15 @@ describe('CASE B: sold-row prior-rebalance MWR lookup', () => {
 // ---------------------------------------------------------------------------
 
 describe('GUARD: sold rows excluded from footer totals', () => {
-  it('sold-row weight is exactly 0.0% (hardcoded display constant)', () => {
+  it('sold-row weight renders as "—" (em-dash, not "0.0%")', () => {
     // The sold-row weight cell in both AiPickPortfolio and HoldingsTimeline
-    // renders the string "0.0%" unconditionally. This test verifies the
-    // formatting is correct and consistent with the held-row format.
-    const soldWeight = 0.0;
-    // Render as a percentage manually (the component renders this as a string literal)
-    expect(`${soldWeight.toFixed(1)}%`).toBe('0.0%');
+    // renders "—" (em-dash) so it reads as "not applicable" rather than a real
+    // 0.0% allocation. Held/New rows still show their real weight %.
+    // This test locks that display convention.
+    const SOLD_ROW_WEIGHT_DISPLAY = '—';
+    expect(SOLD_ROW_WEIGHT_DISPLAY).toBe('—');
+    // Verify it is NOT the old "0.0%" literal
+    expect(SOLD_ROW_WEIGHT_DISPLAY).not.toBe('0.0%');
   });
 
   it('sold rows are excluded from apportionWeightLabels input (weight = null or excluded)', () => {

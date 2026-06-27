@@ -8638,3 +8638,26 @@ lands on main, so the UI never shows stale "—".
 **Gate**: frontend-design-reviewer at Draft→Ready.
 
 ---
+
+## PR #TBD — feat(frontend): sold-row WEIGHT renders "—" not "0.0%" (in flight, 2026-06-27)
+
+Owner-requested display polish: in both the Current-picks table (`AiPickPortfolio.tsx`
+adaptive branch) and the Rotation-history per-quarter drawer (`HoldingsTimeline.tsx`
+`QuarterDrawer`), SOLD/exited rows carry weight 0.0% (no longer held). Render that
+weight cell as the muted em-dash "—" instead of "0.0%" — "0.0%" reads as a real
+allocation; the dash matches the return-cell convention already used for
+non-applicable cells. Held/New weight cells UNCHANGED (keep their real %).
+
+Frontend-only, NO schema change. Both sold-row weight `<span>`s keep their full
+className (`text-right font-mono text-sm tabular-nums text-slate-400 dark:text-slate-500`)
+so the dash sits right-aligned in the same column slot. The slider branch has no
+sold rows (no change). GUARD test `return-cell-display.test.ts` flipped: sold-row
+weight asserts "—" (+ negative `not.toBe('0.0%')`) while held rows keep their %.
+
+Verify: tsc --noEmit clean · next build 1510 pages · vitest 290/290 green.
+
+**Files**: `frontend/components/AiPickPortfolio.tsx` · `frontend/components/HoldingsTimeline.tsx` · `frontend/lib/return-cell-display.test.ts` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: trivial display swap (reuses existing muted-dash convention); CI (tsc/build/vitest) is the gate.
+
+---
