@@ -113,6 +113,7 @@ def build_ladder(changed: list[str] | None, force_all: bool) -> list[Rung]:
         Rung("doc-count guard", [sys.executable, "tools/check_doc_test_counts.py"]),
         Rung("model-pin guard", [sys.executable, "tools/check_model_pin.py"]),
         Rung("agent/hook consistency", [sys.executable, "tools/check_agent_hook_consistency.py"]),
+        Rung("defense-layer counts", [sys.executable, "tools/check_defense_layer_counts.py"]),
         # --- conditional rungs ---
         Rung(
             "schema_check",

@@ -55,6 +55,8 @@ jobs:
         run: python tools/check_model_pin.py
       - name: Agent/hook/flow consistency guard
         run: python tools/check_agent_hook_consistency.py
+      - name: Defense-layer count guard
+        run: python tools/check_defense_layer_counts.py
       - name: Schema snapshot guard
         run: python -m compute.output.schema_check
       - name: Pytest

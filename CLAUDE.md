@@ -36,7 +36,7 @@ design-system spec.
 | Path | Purpose |
 |---|---|
 | `compute/ingest/` | SEC EDGAR + yfinance fetchers with on-disk caches |
-| `compute/scoring/` | 8-pillar composite + risk overlay (7 active vetoes after Phase 4.5a) |
+| `compute/scoring/` | 8-pillar composite + risk overlay (10 active vetoes — `KNOWN_RISK_FLAGS`) |
 | `compute/valuation/` | 6-method fair-price ensemble + Tier-1 defenses |
 | `compute/output/` | Pydantic schemas + JSON writers + schema-snapshot guard |
 | `compute/warehouse/` | Per-run PIT research warehouse: `flatten` (Pydantic→row) + `writer` (Parquet snapshot + run manifest + filing-index partition) + `flag_registry` + `warehouse_schema_check` drift guard + `filing_index` (SEC filing pointer index — Slice 1, issue #579; 10-K/10-Q/8-K accession rows; no cron wiring yet). Writes `data/warehouse/`; observability-first (write-only, no read path) |
@@ -106,7 +106,7 @@ production scoring until an accounting-equation verification clears on
   since #441) · risk. Each is normalized cross-sectionally to 0-100,
   then weighted into the **composite** (`scoring/composite.py`).
 - **Defense layer** (`scoring/risk_overlay.py` + `manipulation_index.py`):
-  **36 declared boolean flags** (9 active vetoes + 27 annotates/reserved
+  **38 declared boolean flags** (10 active vetoes + 28 annotates/reserved
   incl. `low_liquidity` #527; ~28 emit) + 5 numerical guards. A **veto** marks a stock `cautious`
   and suppresses its Top-5 badge; an **annotate** is informational only
   and never changes rank. New flags ship `annotate`-first
@@ -520,8 +520,8 @@ that ranks all ~903 names on `QR_UNIVERSE=sp900`. **The scheduled cron now defau
 A1/A2/A2-S/B/C tracked on issue #130). The technical
 pillar is an honest 4-metric mean after the #441 MAD close-out
 (`0.10.17`, RATIFY-REMOVE) — **no 5th technical input without a fresh
-pre-registration**. Defense layer **36 declared boolean flags** (9
-active vetoes incl. `fundamentals_unavailable` #487 + `post_split_share_lag_unreconciled` #499 + 27 annotates incl.
+pre-registration**. Defense layer **38 declared boolean flags** (10
+active vetoes incl. `fundamentals_unavailable` #487 + `post_split_share_lag_unreconciled` #499 + 28 annotates incl.
 the paired `post_split_share_lag` #499 + `low_liquidity` #527 + reserved; ~28 emit; `USE_SECTOR_COE = True`) + 5 numerical guards + `manipulation_index` rollup. Gate (a)
 verdict (#453): **the veto layer does NOT rescue returns**
 (drawdown-year protection only; bite is 97% `sloan_accruals_top_decile`
