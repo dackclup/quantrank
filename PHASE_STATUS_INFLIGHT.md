@@ -8300,3 +8300,30 @@ Then regen `frontend/lib/schema-snapshot.json`.
 quantrank-reviewer + defense-layer-auditor at Draft→Ready.
 
 ---
+
+## PR #TBD — feat(frontend): drop per-row TWR "price" + "since" sub-lines from Current-picks return cell (in flight, 2026-06-27)
+
+Owner-requested UI simplification on the home AI-pick Current-picks table
+(`frontend/components/AiPickPortfolio.tsx`). The return cell previously rendered
+the headline MWR ("Your return", e.g. `+4.7%`) PLUS two grey secondary sub-lines:
+the TWR "stock price return" shadow (`+2.7% price`, shown when `|twr − mwr| ≥
+0.05pp`) and a `since YYYY-MM` partial-history date. The owner decided one number
+is clearer than three and that — between MWR and price-only TWR — the MWR headline
+is the honest "what did my money actually earn" figure (money-weighted, total-return,
+accounts for rebalance add/trim timing), so both sub-lines are removed.
+
+Frontend-only, NO schema change (the underlying `MwrPositionReturn.twr_pct` /
+`since_date` / `partial_history` fields stay on the artifact; the view simply stops
+rendering them). Removed in BOTH the Held/New holdings block and the Sold-rows block:
+the `twr`/`partial`/`sinceDate`/`twrDiffers` locals, both sub-`<span>`s, the
+`twrToneClass` import (export retained in `portfolio-format.ts` — still used by
+`HoldingsTimeline.tsx`), and the TWR clause in the column-header tooltip + the
+SR aria-label announce array (now a single "Your return X%" string). The
+`hasMwr`/`mwrForTicker`/`pctStr(mwr)`/`toneClass(mwr)` headline path is untouched.
+Verify: tsc clean · next build 1512 pages · vitest 275/275 green.
+
+**Files**: `frontend/components/AiPickPortfolio.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: frontend-design-reviewer (visual regression on Current-picks table) at Draft→Ready.
+
+---
