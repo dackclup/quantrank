@@ -1,44 +1,44 @@
 {
-  "ticker": "CNXC",
-  "name": "Concentrix",
-  "sector": "Industrials",
-  "industry": "Data Processing & Outsourced Services",
+  "ticker": "ECHO",
+  "name": "EchoStar",
+  "sector": "Communication Services",
+  "industry": "Wireless Telecommunication Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1373828709.4457932,
-  "current_price": 22.52,
-  "rank": 1362,
-  "composite_score": 37.68,
+  "market_cap": 28089271365.600586,
+  "current_price": 97.19,
+  "rank": 1377,
+  "composite_score": 37.14,
   "pillar_scores": {
-    "quality": 20.87,
-    "value": 81.1,
-    "growth": 52.56,
-    "momentum": 6.9,
-    "health": 32.75,
-    "profitability": 29.92,
-    "technical": 15.25,
-    "risk": 9.4,
+    "quality": 14.71,
+    "value": 51.96,
+    "growth": 63.73,
+    "momentum": 62.19,
+    "health": 15.75,
+    "profitability": 22.88,
+    "technical": 14.56,
+    "risk": 51.45,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9953940000.0,
-    "net_income": -1327592000.0,
-    "total_assets": 10674622000.0,
-    "total_liabilities": 7886208000.0,
-    "stockholders_equity": 2788414000.0,
-    "cash": 222699000.0,
-    "operating_cash_flow": 722339000.0,
-    "capex": 237780000.0,
-    "free_cash_flow": 484559000.0,
-    "eps_basic": -21.762081576955897,
-    "eps_diluted": -21.762081576955897,
-    "shares_outstanding": 61004826.0,
+    "revenue": 14802720000.0,
+    "net_income": -14441396000.0,
+    "total_assets": 41375692000.0,
+    "total_liabilities": 35698289000.0,
+    "stockholders_equity": 5631310000.0,
+    "cash": 1343780000.0,
+    "operating_cash_flow": 564232000.0,
+    "capex": 840738000.0,
+    "free_cash_flow": -276506000.0,
+    "eps_basic": -49.96780778785803,
+    "eps_diluted": -49.96780778785803,
+    "shares_outstanding": 289014000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1373828709.4457932,
+    "market_cap": 28089271365.600586,
     "pe_ratio_ttm": null,
-    "goodwill": 3696052000.0
+    "goodwill": 0.0
   },
   "fair_price": {
     "methods": {
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 196.31589167804873,
+        "value": 43.20955855973338,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -73,75 +73,69 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 23.490488036864367,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
         "tier_used": null
       }
     },
-    "median": 109.90318985745655,
-    "max": 23.490488036864367,
-    "low": 23.490488036864367,
-    "high": 196.31589167804873,
-    "mos_pct": 79.5092385517,
-    "valuation_warnings": [
-      "extreme_multiples_pb_estimate"
-    ],
+    "median": 43.20955855973338,
+    "max": 43.20955855973338,
+    "low": 43.20955855973338,
+    "high": 43.20955855973338,
+    "mos_pct": -124.92708947037654,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 1,
-    "median_trimmed": null,
-    "methods_excluded_from_median": [
-      "multiples_pb"
-    ]
+    "median_trimmed": 43.20955855973338,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development",
+      "gross_profit",
+      "cost_of_revenue",
       "interest_expense",
-      "inventory"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 85,
+    "filing_lag_days": 47,
     "latest_period_end": "2026-03-31",
-    "latest_filed_date": "2026-04-03"
+    "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
-    "cross_source_disagreement"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 17.841834651608572,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
-    "auditor_change": true,
-    "latest_8k_filing_date": "2024-10-30",
-    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/1803599/0001803599-24-000187-index.html"
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=254)",
+    "label": "Communication Services median (n=51)",
     "values": {
-      "Quality": 49.14,
-      "Value": 49.8,
-      "Growth": 50.39,
-      "Momentum": 54.35,
-      "Health": 57.02,
-      "Profitability": 49.31,
-      "Technical": 53.31,
-      "Risk": 51.41
+      "Quality": 50.98,
+      "Value": 51.63,
+      "Growth": 51.47,
+      "Momentum": 37.9,
+      "Health": 34.87,
+      "Profitability": 52.29,
+      "Technical": 38.45,
+      "Risk": 39.14
     }
   },
-  "beneish_m_score": -3.3555680998782833,
+  "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 31.332761727000495,
-  "price_change_1d_pct": -7.0957,
+  "loss_chance_pct": 78.43127001688381,
+  "price_change_1d_pct": -2.6737,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.68,
+  "composite_score_adjusted": 37.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,24 +183,24 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.76,
+  "osap_blended_score": 44.49,
   "entered_top5": false,
   "exited_top5": false,
-  "index_membership": "sp400",
+  "index_membership": "sp500",
   "index_memberships": [
-    "sp400",
+    "sp500",
     "russell1000"
   ],
   "valuation_methods_applicable": 1,
   "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-01",
-    "fetch_status": "ok"
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "failed"
   },
-  "cross_source_delta": 0.11012430408099311,
-  "dividend_yield_pct": 5.76,
-  "pays_dividend": true,
-  "payout_ratio": 0.282,
-  "average_dollar_volume": 38732081.11434805,
-  "security_type": null
+  "cross_source_delta": 0.0039012507292593857,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 1345524670.5316215,
+  "security_type": "Common stock"
 }
