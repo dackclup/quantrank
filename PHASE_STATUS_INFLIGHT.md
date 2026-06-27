@@ -8661,3 +8661,93 @@ Verify: tsc --noEmit clean · next build 1510 pages · vitest 290/290 green.
 **Gate**: trivial display swap (reuses existing muted-dash convention); CI (tsc/build/vitest) is the gate.
 
 ---
+
+## subagents — coherence/integration polish pass: drift-proof stale facts across the 27-agent roster (in flight, 2026-06-27)
+
+Refined the `.claude/agents/**` definitions so the standing 27-agent team
+stays internally coherent and integrates without acting on stale facts.
+Deterministic ground truth was already clean (`check_agent_hook_consistency.py`
+PASS; frontmatter names/model-split/effort uniform; the `HANDOFF · status=… ·
+next=…` contract identical across all 27; every cross-agent reference resolves).
+The flaws were stale **domain facts** baked into agent bodies — exactly the
+drift class the count-guard does NOT cover (it guards roster counts, not
+prose facts).
+
+Fixes (all body-text only — NO frontmatter touched, so roster counts are
+unaffected; guard still 27 agents / 6 opus / 21 sonnet / 25 max + 2 high · 4
+hooks · 9 flows):
+- **`defense-layer-auditor.md`** (highest-stakes — it audits the defense layer
+  it had wrong): `7 active vetoes` → derive from `flag_registry.py`
+  `KNOWN_RISK_FLAGS` at run time; `27 boolean flags` scorecard with a hardcoded
+  veto/annotate enumeration → derive the inventory from the canonical registry
+  + CLAUDE.md §scoring headline (the registry grows almost every scoring PR — a
+  baked-in list is the drift source); `Universe size = 502` → read
+  `metadata.universe` + expected size at run time (cron defaults to S&P 1500
+  ~1504 since Slice 7; sp900/sp500 only on dispatch). Mirrors the file's
+  existing "never hardcode a schema-version literal" pattern — drift-proof by
+  construction.
+- **`agent-output-verifier.md`**: stale illustrative examples `"26 agents"` →
+  `"27 agents"`, `schema 0.10.33` → `0.10.41` (the fact-checker should not ship
+  stale facts in its own examples).
+- **`expert-user-explorer.md`**: stale Playwright anchor `Home … H1 = "S&P 500
+  ranking"` → home `/` IS the AI-pick portfolio (H1 "AI picks, backtested.",
+  title "QuantRank — AI stock picks, backtested"); the table lives at `/ranking`
+  with a tab-driven H1 — read the active tab, don't hard-code a headline.
+- **`financial-engineer.md` + `methodology-scientist.md`**: live firing-rate
+  predictions on the `S&P 500 cohort/universe` → `S&P 1500` (cohort size feeds
+  the firing-rate math; the historical "rescaled 10× for S&P 500 in PR #163"
+  anchor was left intact as accurate history).
+- **`AGENTS.md`** (adjacent drift surfaced by `phase-coordinator` Mode B at the
+  Ready gate): the `compute/ingest/universe.py` tree comment said
+  `S&P 500 / 400 / 900 (combined)` — stale since the S&P 1500 cutover; corrected
+  to `S&P 500 / 400 / 600 + combined 900 / 1500 (QR_UNIVERSE=sp500|sp900|sp1500)`
+  to match what the module actually fetches. CLAUDE.md's universe facts were
+  already current, so no CLAUDE.md edit is needed for lockstep.
+
+**Defense-layer headline reconciliation (36 → 38) + new ratchet guard.** The
+`defense-layer-auditor` de-hardcoding (above) routed the auditor through the
+CLAUDE.md §scoring "headline", which surfaced a pre-existing 3-way count drift:
+§Layout said "7 active vetoes", §Scoring "9", METHODOLOGY "7" — while the
+registry carries 10 active vetoes (`KNOWN_RISK_FLAGS`) + 28 annotates
+(`KNOWN_VALUATION_WARNINGS`) = 38. `agent-output-verifier` (10 vs 11 reviewer
+disagreement → REFUTED 11, CONFIRMED 10) + `methodology-scientist` (taxonomy
+ruling) established the root cause: **three distinct gates with three different
+membership sets** — `KNOWN_RISK_FLAGS` (10, the canonical Top-5 veto gate at
+`main.py:1998`) vs `ACTIVE_VETO_FLAGS` (7, backtest AI-pick basket only) vs
+`_CAUTIOUS_FORCING_RISK` (5, `cautious` label only). The headline veto count is
+defined by the Top-5 gate → **10 active vetoes**. methodology-scientist ruled
+**registry-true 38** (rejecting a total-preserving "10+26=36" — that would
+require deleting 2 real registered warnings). NO flag was added or removed — the
+defense layer was always 38; only the stale DOC headline is corrected:
+  - `CLAUDE.md` §Layout `7 active vetoes after Phase 4.5a` → `10 active vetoes`;
+    §Scoring + §Phase-status `36 (9 + 27)` → `38 (10 + 28)` (2 places).
+  - `docs/METHODOLOGY.md` L16 `33 (7 + 26)` → `38 (10 + 28)`. (L713 "Two active
+    vetoes …" is a contextual reference to 2 specific flags, not a total — left.)
+  - NEW deterministic guard `tools/check_defense_layer_counts.py` (error→regression
+    ratchet): derives the truth from the registry (no count literal in the guard)
+    and asserts the CLAUDE.md / METHODOLOGY.md headline anchors match — wired into
+    `tools/preflight.py` + `.github/workflows/ci.yml` as its own step, mirroring
+    `check_agent_hook_consistency.py`.
+
+Follow-up (NOT in this PR): the 7/5/10 three-gate semantic split is intentional
+(basket conviction stricter than Top-5 suppression) but the `schemas.py:970` /
+`main.py:23` docstrings name it ambiguously — a `quantrank-reviewer` docstring
+pass is queued separately.
+
+Meta-infrastructure / docs + a CI guard — no `compute/**` / `frontend/**` /
+schema change; rankings/scores/output BYTE-IDENTICAL; the defense flag SET is
+UNCHANGED (38 all along — the "36" headline was stale, now corrected).
+
+**Verify**: `python tools/check_agent_hook_consistency.py` PASS ·
+`python tools/check_defense_layer_counts.py` PASS.
+
+**Files**: `.claude/agents/defense-layer-auditor.md` ·
+`.claude/agents/agent-output-verifier.md` ·
+`.claude/agents/expert-user-explorer.md` ·
+`.claude/agents/financial-engineer.md` ·
+`.claude/agents/methodology-scientist.md` · `AGENTS.md` · `CLAUDE.md` ·
+`docs/METHODOLOGY.md` · `tools/check_defense_layer_counts.py` (new) ·
+`tools/preflight.py` · `.github/workflows/ci.yml` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

@@ -91,7 +91,7 @@ selectors → act. Prefer role/text selectors (`getByRole("button",{name:/.../})
 
 ### Known-good anchors (from the validated baseline)
 
-- Home `<title>` = `QuantRank`; H1 = "S&P 500 ranking".
+- Home (`/`) IS the AI-pick portfolio: `<title>` = `QuantRank — AI stock picks, backtested`; H1 = "AI picks, backtested." The full table lives at `/ranking` (title `Ranking · QuantRank`) with a **tab-driven H1** (`SPX` → "S&P 500 ranking", `MID` → "S&P MidCap 400 ranking", `SML` → "S&P SmallCap 600 ranking", `ALL` → "<universe> ranking", plus DJI/NDX/RUI) — don't hard-code one headline; read the active tab.
 - Ranking columns: `Rank · Ticker · Name · Sector · Score · Price · Loss Chance`.
 - "Filters" button opens `FilterDrawer` (controls: **Valuation · Recommendation · Score-tier · Sector · Score-range min/max** — there is NO direct margin-of-safety / quality-pillar / risk-flag filter; those are readable only on the detail page). A ticker/name search input exists. The drawer's internal DOM is not a stable `aside`/`[role=dialog]` container — derive selectors by recon each run, do not hard-code.
 - Stock detail = `/stock/<TICKER>/` (trailing slash); H1 = ticker + recommendation;
