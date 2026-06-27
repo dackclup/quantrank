@@ -11,7 +11,6 @@ import {
   apportionWeightLabels,
   pctStr,
   toneClass,
-  twrToneClass,
 } from '@/lib/portfolio-format';
 
 // Fixed month names — locale-stable across SSR vs client (no `Date()`/Intl
@@ -279,7 +278,6 @@ export function HoldingsTimeline({
 //
 // Return = per-quarter MWR from entry.mwrByTicker[ticker].mwr_pct (PR-2b).
 // Falls back to '—' when mwrByTicker is absent (pre-PR-2a #618 artifact).
-// TWR ("Stock price return") is shown as a secondary line under MWR.
 // ---------------------------------------------------------------------------
 function QuarterDrawer({
   row,
@@ -329,7 +327,7 @@ function QuarterDrawer({
             it surfaces on hover/focus for keyboard users too. */}
         <span
           className="text-right cursor-help"
-          title="Your return = money-weighted return (MWR): your actual return given when the system trimmed or added at different prices. Stock price return (TWR) = the underlying stock's own price movement, shown in smaller text below."
+          title="Your return = money-weighted return (MWR): your actual return given when the system trimmed or added at different prices."
           aria-label="Your return (money-weighted). See tooltip for explanation."
         >
           Your return
@@ -344,8 +342,6 @@ function QuarterDrawer({
           const isNew = isInitial || entered.has(ticker);
           const pr: MwrPositionReturn | null = mwrByTicker?.[ticker] ?? null;
           const mwr = pr?.mwr_pct ?? null;
-          const twr = pr?.twr_pct ?? null;
-          const isPartial = pr?.partial_history ?? false;
 
           return (
             <li
@@ -385,14 +381,9 @@ function QuarterDrawer({
                   ? <SectorChip sector={sectorByTicker[ticker]} />
                   : null}
               </span>
-              {/* Return cell — MWR headline + TWR shadow.
-                  mwr is "Your return" (the locked MWR headline).
-                  twr is "Stock price return" (shown smaller beneath when different).
-                  isPartial = price series shorter than full tenure (graceful note). */}
+              {/* Return cell — MWR headline ("Your return"). */}
               <MwrReturnCell
                 mwr={mwr}
-                twr={twr}
-                isPartial={isPartial}
                 hasMwr={hasMwr}
               />
               <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
@@ -408,8 +399,6 @@ function QuarterDrawer({
         {exited.map((ticker, j) => {
           const pr: MwrPositionReturn | null = mwrByTicker?.[ticker] ?? null;
           const mwr = pr?.mwr_pct ?? null;
-          const twr = pr?.twr_pct ?? null;
-          const isPartial = pr?.partial_history ?? false;
           const sector = sectorByTicker[ticker] ?? '';
           return (
             <li
@@ -440,8 +429,6 @@ function QuarterDrawer({
               </span>
               <MwrReturnCell
                 mwr={mwr}
-                twr={twr}
-                isPartial={isPartial}
                 hasMwr={hasMwr}
               />
               {/* Weight: 0.0% — the ticker is no longer in the basket. */}
@@ -463,18 +450,14 @@ function QuarterDrawer({
 
 // ---------------------------------------------------------------------------
 // MWR Return cell — shared between held and sold rows in QuarterDrawer.
-// Headline: MWR ("Your return"). Shadow line: TWR ("Stock price return").
+// Headline: MWR ("Your return").
 // When hasMwr is false (legacy artifact), renders '—' consistently.
 // ---------------------------------------------------------------------------
 function MwrReturnCell({
   mwr,
-  twr,
-  isPartial,
   hasMwr,
 }: {
   mwr: number | null;
-  twr: number | null;
-  isPartial: boolean;
   hasMwr: boolean;
 }) {
   // When the artifact has no MWR data at all, render a plain muted dash.
@@ -489,7 +472,7 @@ function MwrReturnCell({
 
   // MWR present but this specific ticker is absent → mwr=null (shouldn't
   // normally happen if the engine emits all basket members, but be safe).
-  if (mwr === null && twr === null) {
+  if (mwr === null) {
     return (
       <span className="text-right font-mono text-sm font-semibold tabular-nums text-slate-400 dark:text-slate-500">
         —
@@ -497,42 +480,15 @@ function MwrReturnCell({
     );
   }
 
-  // Whether to show the TWR shadow: only when both are present AND they differ
-  // by >= 0.05pp (avoids noisy "Your return: +12.3% / Stock: +12.3%" duplicate).
-  const showTwr = twr !== null && mwr !== null && Math.abs(twr - mwr) >= 0.05;
-
   return (
     <span
       className="text-right"
-      aria-label={[
-        mwr !== null ? `Your return ${pctStr(mwr)}` : 'Return unavailable',
-        showTwr ? `Stock price return ${pctStr(twr)}` : '',
-        isPartial ? 'Partial history — price series shorter than full tenure' : '',
-      ].filter(Boolean).join('; ')}
+      aria-label={`Your return ${pctStr(mwr)}`}
     >
       {/* MWR headline */}
       <span className={`block font-mono text-sm font-semibold tabular-nums ${toneClass(mwr)}`}>
         {pctStr(mwr)}
       </span>
-      {/* TWR shadow — "Stock price return", shown smaller + muted below MWR */}
-      {showTwr && (
-        <span
-          className={`block font-mono text-[0.625rem] tabular-nums ${twrToneClass(twr)}`}
-          title="Stock price return (TWR)"
-          aria-hidden="true"
-        >
-          {pctStr(twr)} price
-        </span>
-      )}
-      {/* Partial-history flag — tiny note when price data is shorter than tenure */}
-      {isPartial && (
-        <span
-          className="block font-mono text-[0.625rem] tabular-nums text-slate-400 dark:text-slate-500"
-          aria-hidden="true"
-        >
-          partial
-        </span>
-      )}
     </span>
   );
 }
