@@ -3922,6 +3922,56 @@ def run_weekly_compute() -> int:
             _e_canary_exc,
         )
 
+    # --- Option-B dividend-pool shadow canaries (issue #620, 0.10.41-phase8pilot).
+    # Reads the refreshed backtest_pit.json (same artifact-read pattern as C-2, C-1, E).
+    # HARD CONSTRAINT: these fields MUST NEVER be read by scoring, composite, pillar,
+    # veto/flag, fair-price, select_picks, or inverse_vol_weights.  Written to
+    # Metadata ONLY.  Rankings/scores/flags are byte-identical.  Defense layer
+    # UNCHANGED at 36.
+    _div_pool_shadow_terminal_nav_delta_pct: float | None = None
+    _div_stream_coverage_pct: float | None = None
+    try:
+        import json as _json_divpool
+
+        _divpool_pit_path = config.DATA_DIR / "portfolio" / "backtest_pit.json"
+        if _divpool_pit_path.exists():
+            with _divpool_pit_path.open("r", encoding="utf-8") as _divpool_fh:
+                _divpool_pit_data = _json_divpool.load(_divpool_fh)
+            # div_stream_coverage_pct: read directly from the artifact meta field
+            # (populated by the backfill's fetch_dividends_panel call).
+            _div_stream_coverage_pct = _divpool_pit_data.get("meta", {}).get(
+                "div_stream_coverage_pct"
+            )
+            # div_pool_shadow_terminal_nav_delta_pct: compute from the terminal
+            # NAV values of both the live and shadow series.
+            _divpool_nav = _divpool_pit_data.get("nav", {})
+            _live_net = _divpool_nav.get("adaptive", {}).get("net", [])
+            _shadow_net = _divpool_nav.get("adaptive_div_pooled", {}).get("net", [])
+            if _live_net and _shadow_net:
+                _live_terminal = next((v for v in reversed(_live_net) if v is not None), None)
+                _shadow_terminal = next((v for v in reversed(_shadow_net) if v is not None), None)
+                if _live_terminal and _shadow_terminal and _live_terminal > 0:
+                    _div_pool_shadow_terminal_nav_delta_pct = round(
+                        100.0 * (_shadow_terminal / _live_terminal - 1.0), 4
+                    )
+            logger.info(
+                "Option-B canary: div_stream_coverage_pct=%s, terminal_delta_pct=%s",
+                _div_stream_coverage_pct,
+                _div_pool_shadow_terminal_nav_delta_pct,
+            )
+        else:
+            logger.debug(
+                "Option-B canary: backtest_pit.json not found at %s — "
+                "div_pool_shadow_terminal_nav_delta_pct and div_stream_coverage_pct → None",
+                _divpool_pit_path,
+            )
+    except Exception as _divpool_canary_exc:  # noqa: BLE001
+        logger.warning(
+            "Option-B canary read failed (non-fatal): %s — "
+            "div_pool_shadow_terminal_nav_delta_pct and div_stream_coverage_pct → None",
+            _divpool_canary_exc,
+        )
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -4245,6 +4295,19 @@ def run_weekly_compute() -> int:
         # (first cron after cold clone or before backfill re-runs with E wiring).
         hysteresis_turnover_reduction_mean_pp=_hysteresis_turnover_reduction_mean_pp,
         low_liquidity_held_count=_low_liquidity_held_count,
+        # Option-B dividend-pool-and-redeploy SHADOW canaries (issue #620,
+        # 0.10.41-phase8pilot, Rule 18 observability-first).
+        # SHADOW / OBSERVABILITY-ONLY — live scores, flags, rankings byte-identical.
+        # Defense layer UNCHANGED at 36.
+        # div_pool_shadow_terminal_nav_delta_pct: terminal NAV uplift (%) of the
+        #   dividend-pooled shadow vs the live nav.adaptive (net-of-cost).
+        #   Positive = dividends add value once redeployed.  None when artifact
+        #   absent or nav.adaptive_div_pooled not yet in the artifact.
+        # div_stream_coverage_pct: fraction of ranked tickers with ≥1 ex-date
+        #   dividend entry; Rule-18 coverage canary (~40–60% expected on S&P 1500).
+        #   None when QR_SKIP_DIVIDENDS=1 or Dividends column absent from all frames.
+        div_pool_shadow_terminal_nav_delta_pct=_div_pool_shadow_terminal_nav_delta_pct,
+        div_stream_coverage_pct=_div_stream_coverage_pct,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

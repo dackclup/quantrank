@@ -38,6 +38,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date
+from typing import Literal
 
 # Novy-Marx-Velikov 2016 large-cap low-end; the backfill also reports a
 # conservative second net line at a higher bps (methodology-scientist: show the
@@ -153,6 +154,8 @@ def build_portfolio_nav(
     cost_bps_per_side: float = DEFAULT_COST_BPS_PER_SIDE,
     base: float = 100.0,
     decompose: bool = False,
+    dividends: Mapping[str, Mapping[str, float]] | None = None,
+    price_basis: Literal["adjusted", "raw"] = "adjusted",
 ) -> dict:
     """Build the daily gross + net NAV for a rebalanced, buy-and-hold portfolio.
 
@@ -181,6 +184,42 @@ def build_portfolio_nav(
         Existing callers that omit this argument (``decompose=False``) receive
         BYTE-IDENTICAL output — no ``sub_periods`` key is added, no computation
         changes.
+    dividends:
+        Keyword-only. ``{ticker: {ex_date_iso: div_per_share}}`` mapping of
+        cash dividends by ex-date. When ``None`` (default) or when
+        ``price_basis="adjusted"``, the function is BYTE-IDENTICAL to the
+        existing path — no dividend accrual, no cash bucket. Only active when
+        **both** ``dividends`` is not ``None`` **and**
+        ``price_basis="raw"``.
+
+        Option-B dividend-pool-and-redeploy semantics (when active):
+        * Positions drift on RAW split-adjusted ``Close`` only (price-return,
+          NOT Adj Close — avoids double-counting since Adj Close already embeds
+          dividend reinvestment per the double-count footgun documented in
+          CLAUDE.md §Gotchas).
+        * Between rebalances a cash bucket accrues per ex-date:
+              cash(d) += Σ_i shares_i × div_per_share[i][d]
+          Cash earns 0% (idle — methodology condition 1 disclosure:
+          ``div_pool_idle_cash_rate=0.0``).
+        * Daily book NAV = Σ_i shares_i × close_raw[i][d] + cash(d).
+        * At rebalance: nav_total = price_value + cash; re-peg ALL of
+          nav_total to new inverse-vol target weights at raw prices; reset
+          cash=0. Net: turnover cost applies to the redeployed cash (extra
+          buy-side turnover) — the existing ``nav_net *= (1 − turnover×cost_frac)``
+          logic handles this automatically since turnover is computed over the
+          full nav_total including redeployed cash.
+        * Sold-name conservation: a name sold at a rebalance with an ex-date
+          in its final sub-period has that dividend booked in its terminal
+          price_value (shares × last price) PLUS the cash bucket accumulated
+          before the rebalance, then redeployed to the next basket. No leakage.
+    price_basis:
+        Keyword-only. ``"adjusted"`` (default) uses the ``closes`` panel
+        as-is (current behavior, byte-identical). ``"raw"`` switches to
+        price-return-only pricing when ``dividends`` is also provided (the
+        Option-B path). The ``closes`` argument MUST already be the raw
+        split-adjusted panel when ``price_basis="raw"``; callers are
+        responsible for passing the correct panel. ``"raw"`` with
+        ``dividends=None`` falls back to byte-identical adjusted behavior.
 
     Returns
     -------
@@ -189,7 +228,15 @@ def build_portfolio_nav(
     each rebalance, first entry ~1.0 = initial deployment).
     When ``decompose=True``, additionally contains ``sub_periods``
     (list of ``SubPeriod``).
+    When Option-B is active (``dividends`` provided + ``price_basis="raw"``),
+    additionally contains ``cash_at_rebalance`` — list of cash-bucket values
+    (float) at each rebalance date (post-accrual, pre-redeploy), one entry per
+    rebalance leg that starts the portfolio. Used by A/B-diff diagnostics.
     """
+    # Option-B guard: dividend-pool path is ONLY active when BOTH conditions hold.
+    # dividends=None OR price_basis="adjusted" => byte-identical existing path.
+    _div_pool_active = (dividends is not None) and (price_basis == "raw")
+
     cost_frac = cost_bps_per_side / 10_000.0
     rebal_by_date: dict[str, dict[str, float]] = {d: dict(w) for d, w in rebalances}
 
@@ -207,6 +254,14 @@ def build_portfolio_nav(
     nav_gross = base
     nav_net = base
     started = False
+
+    # Option-B: separate cash buckets for gross and net paths.
+    # Both start at 0 and accumulate dividend income between rebalances.
+    # At each rebalance the cash is included in nav_total for re-pegging (redeploy).
+    cash_gross: float = 0.0
+    cash_net: float = 0.0
+    # Record cash-bucket values at each rebalance (pre-redeploy) for diagnostics.
+    cash_at_rebalance: list[float] = []
 
     out_dates: list[str] = []
     gross: list[float] = []
@@ -228,6 +283,18 @@ def build_portfolio_nav(
         if started:
             nav_gross = _portfolio_value(shares_gross, d, price_on)
             nav_net = _portfolio_value(shares_net, d, price_on)
+            # Option-B: accrue dividends paid on ex-dates between rebalances.
+            # cash(d) += Σ_i shares_i × div_per_share[i][d]
+            # Cash earns 0% (idle — methodology condition 1: div_pool_idle_cash_rate=0.0).
+            if _div_pool_active:
+                assert dividends is not None  # guarded above
+                for t, div_map in dividends.items():
+                    div_today = div_map.get(d)
+                    if div_today is not None and div_today > 0.0:
+                        sh_gross = shares_gross.get(t, 0.0)
+                        sh_net = shares_net.get(t, 0.0)
+                        cash_gross += sh_gross * div_today
+                        cash_net += sh_net * div_today
 
         # 2) rebalance on a rebalance date
         if d in rebal_by_date:
@@ -251,6 +318,9 @@ def build_portfolio_nav(
                     _prev_target = dict(target)
                     _prev_nav_gross_before_cost = base
                     _prev_nav_net_before_cost = base
+                # Option-B: record initial cash (always 0 at start).
+                if _div_pool_active:
+                    cash_at_rebalance.append(cash_net)
             else:
                 valid_px = {t: px[t] for t in px if _is_valid_price(px[t])}
                 # include currently-held names' prices for drift
@@ -274,6 +344,17 @@ def build_portfolio_nav(
                             cost_drag=_prev_cost_drag,
                         )
                     )
+
+                # Option-B: record cash at this rebalance (post-accrual, pre-redeploy).
+                if _div_pool_active:
+                    cash_at_rebalance.append(cash_net)
+                    # Include pooled cash in total NAV for re-pegging.
+                    # nav_gross already reflects only the price-return path; add cash bucket.
+                    nav_gross = nav_gross + cash_gross
+                    nav_net = nav_net + cash_net
+                    # Reset cash buckets after redeploy.
+                    cash_gross = 0.0
+                    cash_net = 0.0
 
             # turnover = Sum |w_target - w_drifted| (counts both sides; the net
             # cost = turnover * per-side bps == round-trip bps on the traded notional)
@@ -299,9 +380,15 @@ def build_portfolio_nav(
                 _prev_cost_drag = raw_cost_drag
 
         if started:
-            out_dates.append(d)
-            gross.append(nav_gross)
-            net.append(nav_net)
+            # Option-B: daily book NAV includes the cash bucket.
+            if _div_pool_active:
+                out_dates.append(d)
+                gross.append(nav_gross + cash_gross)
+                net.append(nav_net + cash_net)
+            else:
+                out_dates.append(d)
+                gross.append(nav_gross)
+                net.append(nav_net)
 
     # Close the terminal sub-period (from last rebalance to end of dates).
     if decompose and _prev_rebal_date is not None and out_dates:
@@ -336,6 +423,8 @@ def build_portfolio_nav(
     }
     if decompose:
         result["sub_periods"] = sub_periods
+    if _div_pool_active:
+        result["cash_at_rebalance"] = cash_at_rebalance
     return result
 
 

@@ -8300,3 +8300,71 @@ Then regen `frontend/lib/schema-snapshot.json`.
 quantrank-reviewer + defense-layer-auditor at Draft→Ready.
 
 ---
+
+## PR — Option-B dividend-pool-and-redeploy shadow NAV (in flight, 2026-06-27)
+
+**Branch**: `claude/dividend-pool-shadow`. **Schema**: `0.10.40` → `0.10.41-phase8pilot`.
+**Ratified by**: financial-engineer (spec) + methodology-scientist (RATIFY-WITH-CONDITIONS)
++ data-pipeline-engineer (DATA-HEALTHY).
+
+SHADOW-ONLY: live `nav.adaptive` / headline / rankings stay BYTE-IDENTICAL. Implements
+Option-B (pool-and-redeploy): between quarterly rebalances, each holding's ex-date
+dividends accumulate as idle cash (0% — methodology condition 1); at each rebalance the
+full pool is redeployed into the new inverse-vol target basket. Avoids the Adj-Close
+double-count footgun by pricing the shadow path on RAW split-adjusted Close only.
+
+**New in `compute/`**:
+- `compute/portfolio/backtest.py` — two new keyword-only params on `build_portfolio_nav`:
+  `dividends: Mapping[str, Mapping[str, float]] | None = None` +
+  `price_basis: Literal["adjusted","raw"] = "adjusted"`. `None`/`"adjusted"` path is
+  BYTE-IDENTICAL. Option-B active only when both `dividends` is not None AND
+  `price_basis="raw"`. Emits `cash_at_rebalance` list when active.
+- `compute/ingest/prices.py` — `actions=True` added to `_yf_download` (fetches `Dividends`
+  column on same HTTP round-trip, zero extra cost; `QR_SKIP_DIVIDENDS=1` escape hatch);
+  new `fetch_dividends_panel` helper extracts positive-only ex-date entries from
+  pre-fetched price frames, column-absent-graceful for old parquets.
+- `scripts/backfill_portfolio_pit.py` — SHADOW block after validation assembly: builds
+  raw-close panel, calls `fetch_dividends_panel`, shadow `build_portfolio_nav(...,
+  dividends=div_panel, price_basis="raw")` → `nav.adaptive_div_pooled.{gross,net}` +
+  A/B-diff artifact fields (`div_pool_nav_delta_pct`, `div_pool_turnover_cost_delta_bps`,
+  `div_pool_active=false`, `div_pool_idle_cash_rate=0.0`). Live `band_weights`/NAV
+  BYTE-IDENTICAL.
+- `compute/output/schemas.py` — 2 new `Metadata` fields: `div_pool_shadow_terminal_nav_delta_pct`
+  + `div_stream_coverage_pct` (both `float | None = None`).
+- `compute/main.py` — Option-B canary read block (same artifact-read pattern as C-2/C-1/E)
+  + 2 new `Metadata(...)` args.
+- `compute/portfolio/position_returns.py` — docstring note on pooled-cash Modified-Dietz
+  classification (documentation-only, no computation change).
+
+**Schema triple**: `schemas.py` + `types.ts` + `schema-snapshot.json` all updated.
+`schema_check` passes.
+
+**Tests written (2)**: `test_div_pool_none_dividends_byte_identical` +
+`test_div_pool_accrues_cash_before_redeploy` in `tests/test_portfolio/test_backtest.py`.
+
+**Tests needed** (test-engineer):
+  - Sold-name conservation: a name sold at rebalance T with an ex-date in its final
+    sub-period has the dividend booked in cash before redeploy → no leakage.
+  - Redeploy-not-to-sold-name: weights after redeploy match the new target basket, not
+    the old one.
+  - Hypothesis NAV≥price-only: for any valid dividend panel, shadow NAV ≥ adj-close
+    baseline over same horizon (cash adds non-negative value).
+  - Carino closes on B: for the shadow path, the terminal NAV matches price_value +
+    cash_at_last_rebalance × (1+0%) (no leakage).
+  - `fetch_dividends_panel` with no `Dividends` column → returns `{}` gracefully.
+  - `fetch_dividends_panel` with `QR_SKIP_DIVIDENDS=1` env var → returns `{}`.
+  - `build_portfolio_nav` with `dividends={}` (empty) + `price_basis="raw"` →
+    `_div_pool_active=True` but no cash accrues; NAV differs from adj baseline
+    only by carry-forward-on-raw vs adj-close drift.
+
+**Files**: `compute/portfolio/backtest.py` · `compute/ingest/prices.py` ·
+`scripts/backfill_portfolio_pit.py` · `compute/output/schemas.py` · `compute/main.py` ·
+`compute/portfolio/position_returns.py` · `compute/config.py` (schema bump) ·
+`frontend/lib/types.ts` · `frontend/lib/schema-snapshot.json` ·
+`tests/test_portfolio/test_backtest.py` · `tests/test_config.py` (schema pin) ·
+`PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Gate**: schema-sentinel + test-engineer + quantrank-reviewer + defense-layer-auditor at
+Draft→Ready.
+
+---

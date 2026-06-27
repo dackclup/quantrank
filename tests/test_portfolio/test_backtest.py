@@ -148,3 +148,73 @@ def test_align_benchmark_nav_forward_fills_missing_date() -> None:
     )
     # 01-05 forward-fills the 400 close -> 100; 01-06 = 440/400*100 = 110
     assert out == pytest.approx([100.0, 100.0, 110.0])
+
+
+# --- Option-B dividend-pool-and-redeploy (issue #620) -------------------------
+
+
+def test_div_pool_none_dividends_byte_identical() -> None:
+    """dividends=None (or price_basis="adjusted") must produce BYTE-IDENTICAL output."""
+    dates = ["2021-01-04", "2021-01-05", "2021-01-06"]
+    closes = {"AAA": {"2021-01-04": 100.0, "2021-01-05": 105.0, "2021-01-06": 102.0}}
+    reb = [("2021-01-04", {"AAA": 1.0})]
+
+    baseline = build_portfolio_nav(dates, closes, reb)
+    # dividends=None is the default: must be byte-identical
+    with_none = build_portfolio_nav(dates, closes, reb, dividends=None)
+    # price_basis="adjusted" with no dividends: also byte-identical
+    with_adj = build_portfolio_nav(dates, closes, reb, price_basis="adjusted")
+    # dividends supplied but price_basis="adjusted": guard deactivates, byte-identical
+    dummy_divs = {"AAA": {"2021-01-05": 1.0}}
+    with_divs_adj = build_portfolio_nav(dates, closes, reb, dividends=dummy_divs, price_basis="adjusted")
+
+    assert baseline["gross"] == with_none["gross"]
+    assert baseline["net"] == with_none["net"]
+    assert baseline["gross"] == with_adj["gross"]
+    assert baseline["net"] == with_adj["net"]
+    assert baseline["gross"] == with_divs_adj["gross"]
+    assert baseline["net"] == with_divs_adj["net"]
+    # None path must NOT have cash_at_rebalance key
+    assert "cash_at_rebalance" not in baseline
+    assert "cash_at_rebalance" not in with_none
+    assert "cash_at_rebalance" not in with_adj
+    assert "cash_at_rebalance" not in with_divs_adj
+
+
+def test_div_pool_accrues_cash_before_redeploy() -> None:
+    """Single-name holding: ex-date dividend accumulates in cash and shows up in NAV.
+
+    Setup: buy AAA at $100, flat price thereafter, $1 dividend on day 2.
+    At rebalance (day 3) the cash is redeployed — NAV > price-only baseline.
+    """
+    dates = ["2021-01-04", "2021-01-05", "2021-01-06", "2021-04-14"]
+    closes = {
+        "AAA": {
+            "2021-01-04": 100.0,
+            "2021-01-05": 100.0,
+            "2021-01-06": 100.0,
+            "2021-04-14": 100.0,
+        }
+    }
+    # Rebalance on day 1 (initial), day 4 (redeploy).
+    reb = [("2021-01-04", {"AAA": 1.0}), ("2021-04-14", {"AAA": 1.0})]
+    dividends = {"AAA": {"2021-01-05": 1.0}}  # $1 ex-date on day 2
+
+    nav_div = build_portfolio_nav(
+        dates, closes, reb, dividends=dividends, price_basis="raw", cost_bps_per_side=0.0
+    )
+    nav_base = build_portfolio_nav(dates, closes, reb, cost_bps_per_side=0.0)
+
+    # After the dividend accrues (day 2 onward), shadow NAV > price-only baseline.
+    # Day 1 (initial deploy, no dividend yet): equal.
+    assert nav_div["gross"][0] == pytest.approx(nav_base["gross"][0])
+    # Day 2: shadow gross = 100 (price) + 1.0 (cash) = 101; baseline = 100.
+    assert nav_div["gross"][1] == pytest.approx(101.0)
+    assert nav_base["gross"][1] == pytest.approx(100.0)
+    # cash_at_rebalance is present on the shadow result.
+    assert "cash_at_rebalance" in nav_div
+    # First entry is 0.0 (initial leg, no dividends accrued yet).
+    assert nav_div["cash_at_rebalance"][0] == pytest.approx(0.0)
+    # Second entry is the cash at the second rebalance (net path, $1 div × shares).
+    # shares_net ≈ 1.0 share (at $100, invested $100, zero-cost → 1 share), cash ≈ $1.
+    assert nav_div["cash_at_rebalance"][1] == pytest.approx(1.0, rel=1e-4)

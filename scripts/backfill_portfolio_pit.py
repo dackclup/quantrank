@@ -67,7 +67,7 @@ from compute.ingest.fundamentals import FundamentalsSnapshot, fetch_fundamentals
 from compute.ingest.historical_8k import item402_filings_for, item402_parquet_row_count
 from compute.ingest.historical_sector import historical_sector_parquet_stats, sector_at
 from compute.ingest.historical_universe import _ACTION_REMOVE, list_known_events, members_at
-from compute.ingest.prices import fetch_prices
+from compute.ingest.prices import fetch_dividends_panel, fetch_prices
 from compute.ingest.universe import get_sp500_constituents
 from compute.main import (  # noqa: E402 — live cross-section builders reused; see PR-1 note
     _build_historical_metrics,
@@ -2086,6 +2086,118 @@ def run_backfill(
         validation_block["holdout"] = grid_holdout_block
         validation_block["grid_diagnostics"] = _grid_diagnostics if _grid_diagnostics else None
     payload["meta"]["validation"] = validation_block
+
+    # ── Option-B dividend-pool-and-redeploy SHADOW NAV (issue #620) ──────────────
+    # SHADOW-ONLY: live nav.adaptive / rankings / scores are BYTE-IDENTICAL.
+    # Emits nav.adaptive_div_pooled.{gross,net} on the artifact + A/B-diff
+    # meta fields.  Failures degrade gracefully — each sub-block leaves its
+    # key absent rather than killing the backfill (Rule 18 / SKILL.md Rule 16).
+    #
+    # Critical footgun (CLAUDE.md §Gotchas): Adj Close already embeds dividend
+    # reinvestment; the Option-B path prices on RAW split-adjusted Close to
+    # avoid double-counting.  The live nav.adaptive call ABOVE uses Adj Close
+    # and is UNCHANGED.
+    try:
+        # 1. Build the raw-close panel (same tickers as the adjusted-close panel;
+        #    fall back to Adj Close if Close is absent from a frame — graceful).
+        _raw_axis = nav.get("dates", [])
+        _raw_closes: dict[str, dict[str, float]] = {}
+        if _raw_axis and band_legs_for_nav:
+            _raw_start_ts = pd.Timestamp(_raw_axis[0]) if _raw_axis else None
+            for _rt, _pf in prices_by_ticker.items():
+                if _pf is None or _pf.empty:
+                    continue
+                _col = "Close" if "Close" in _pf.columns else ("Adj Close" if "Adj Close" in _pf.columns else None)
+                if _col is None or _raw_start_ts is None:
+                    continue
+                for _ts, _v in _pf.loc[_raw_start_ts:, _col].items():
+                    try:
+                        _vf = float(_v)
+                    except (TypeError, ValueError):
+                        continue
+                    if _vf == _vf and _vf > 0:
+                        _raw_closes.setdefault(_rt, {})[_ts.strftime("%Y-%m-%d")] = _vf
+
+        # 2. Extract the dividend panel from already-fetched price frames (zero new HTTP).
+        _div_panel: dict[str, dict[str, float]] = fetch_dividends_panel(prices_by_ticker)
+
+        # Rule-18 coverage canary: fraction of ranked tickers with ≥1 ex-date entry.
+        _all_tickers_in_prices = set(prices_by_ticker.keys())
+        _tickers_with_divs = set(_div_panel.keys())
+        _div_stream_coverage_pct: float | None = (
+            round(100.0 * len(_tickers_with_divs & _all_tickers_in_prices) / len(_all_tickers_in_prices), 2)
+            if _all_tickers_in_prices
+            else None
+        )
+        payload["meta"]["div_stream_coverage_pct"] = _div_stream_coverage_pct
+
+        # 3. Shadow NAV call: Option-B with raw closes + dividend panel.
+        #    Band legs are UNCHANGED — we re-use band_legs_for_nav as-is.
+        _shadow_adaptive_div: dict = {}
+        if band_legs_for_nav and _raw_closes and _div_panel:
+            _div_axis = nav.get("dates", [])
+            _div_legs = [
+                (_snapped, _wmap)
+                for _dd, _wmap in band_legs_for_nav
+                if (_snapped := _snap_to_trading_day(_dd, _div_axis)) is not None
+            ]
+            if _div_legs:
+                _gn_div = build_portfolio_nav(
+                    _div_axis,
+                    _raw_closes,
+                    _div_legs,
+                    dividends=_div_panel,
+                    price_basis="raw",
+                    decompose=False,
+                )
+                _gn_div_cons = build_portfolio_nav(
+                    _div_axis,
+                    _raw_closes,
+                    _div_legs,
+                    dividends=_div_panel,
+                    price_basis="raw",
+                    cost_bps_per_side=CONSERVATIVE_COST_BPS,
+                )
+                _pad_div: list[float | None] = [None] * (len(_div_axis) - len(_gn_div["dates"]))
+                _shadow_adaptive_div = {
+                    "gross": _pad_div + _gn_div["gross"],
+                    "net": _pad_div + _gn_div["net"],
+                    "net_conservative": _pad_div + _gn_div_cons["net"],
+                    "turnover_by_rebalance": _gn_div["turnover_by_rebalance"],
+                }
+
+        if _shadow_adaptive_div:
+            payload["nav"]["adaptive_div_pooled"] = _shadow_adaptive_div
+
+        # 4. A/B-diff meta fields (artifact-only — NOT schema triple).
+        _adaptive_net_live = nav.get("adaptive", {}).get("net", [])
+        _adaptive_net_shadow = _shadow_adaptive_div.get("net", []) if _shadow_adaptive_div else []
+        _div_pool_nav_delta_pct: float | None = None
+        if _adaptive_net_live and _adaptive_net_shadow:
+            # Find last non-None values from both series.
+            _live_terminal = next((v for v in reversed(_adaptive_net_live) if v is not None), None)
+            _shadow_terminal = next((v for v in reversed(_adaptive_net_shadow) if v is not None), None)
+            if _live_terminal and _shadow_terminal and _live_terminal > 0:
+                _div_pool_nav_delta_pct = round(
+                    100.0 * (_shadow_terminal / _live_terminal - 1.0), 4
+                )
+        payload["meta"]["div_pool_nav_delta_pct"] = _div_pool_nav_delta_pct
+        payload["meta"]["div_pool_turnover_cost_delta_bps"] = None  # future: compare turnover logs
+        payload["meta"]["div_pool_active"] = False   # shadow only — never live
+        payload["meta"]["div_pool_idle_cash_rate"] = 0.0  # methodology condition 1
+
+        logger.info(
+            "backfill: Option-B shadow NAV computed — div_tickers=%d, coverage=%.1f%%, "
+            "terminal_delta_pct=%s",
+            len(_div_panel),
+            _div_stream_coverage_pct or 0.0,
+            _div_pool_nav_delta_pct,
+        )
+    except Exception as _div_exc:  # noqa: BLE001 — shadow failure never kills the backfill
+        logger.warning(
+            "backfill: Option-B shadow NAV failed: %s — nav.adaptive_div_pooled will be absent",
+            _div_exc,
+        )
 
     out = write_backtest_pit_json(payload, data_dir)
     logger.info(
