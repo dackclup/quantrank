@@ -862,7 +862,9 @@ assigned task, DESIGNS the Goal → Context → Action → Check/Fix →
 Repeat/Review cycle (the Loop Engineering discipline) the orchestrator
 then runs; read-only, composes the loop (verifiable done-state + real
 CHECK commands from the verification ladder + FIX-routing to the owning
-agent + convergence guard + human review gate), never executes it.
+agent + convergence guard); the iteration runs autonomously (no human
+between rounds) and the ONLY human gate is authorizing the irreversible
+publish (push main / merge / release / destructive). Never executes it.
 
 Every subagent ends its report with a parseable `HANDOFF · status=… ·
 next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:…>`

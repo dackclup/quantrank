@@ -8546,8 +8546,14 @@ Repeat/Review cycle — instead of answering one-shot: a machine-checkable
 definition-of-done, each iteration's exact CHECK command pulled from the
 verification ladder (`ruff` → `pytest` → `schema_check` → `tsc` + `next build`
 → `verify-production-output` / `tools/preflight.py`), a FIX-route to the owning
-agent per the §Auto-routing table, a mandatory convergence guard so the loop
-provably halts, and a final human-review gate. Read-only (Read/Bash/Grep/Glob,
+agent per the §Auto-routing table, and a mandatory convergence guard so the loop
+provably halts. **Autonomy model — autonomous up to the publish boundary**
+(owner decision 2026-06-27): the act→check→fix→repeat iteration self-drives with
+NO human between rounds (the CHECK command is the automated arbiter); the ONLY
+human gate is authorizing the final irreversible/outward-facing action — push to
+`main` · merge a PR · tag a release · any destructive command — per CLAUDE.md
+§Spawn discipline. A task that never crosses that boundary (e.g. a local refactor
+verified by tests) is fully end-to-end autonomous. Read-only (Read/Bash/Grep/Glob,
 no Edit/Write) — it COMPOSES the loop and hands it to the Opus-4.8 orchestrator
 to run by dispatching the named agents; it never executes the loop or spawns
 peers itself. Model `sonnet`, `effort: max` (open-ended design/planning seat,
