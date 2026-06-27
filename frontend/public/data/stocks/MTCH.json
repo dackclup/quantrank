@@ -5,19 +5,19 @@
   "industry": "Interactive Media & Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 8670516344.296234,
-  "current_price": 37.17,
-  "rank": 449,
-  "composite_score": 54.99,
+  "market_cap": 8150332098.097176,
+  "current_price": 34.94,
+  "rank": 494,
+  "composite_score": 54.36,
   "pillar_scores": {
     "quality": 47.0,
-    "value": 56.67,
+    "value": 58.83,
     "growth": 46.25,
-    "momentum": 66.02,
+    "momentum": 61.74,
     "health": 59.61,
     "profitability": 88.0,
-    "technical": 47.66,
-    "risk": 38.24,
+    "technical": 38.51,
+    "risk": 35.01,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 233266526.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8670516344.296234,
-    "pe_ratio_ttm": 12.890833400429424,
+    "market_cap": 8150332098.097176,
+    "pe_ratio_ttm": 12.117452878554136,
     "goodwill": 2336995000.0
   },
   "fair_price": {
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 57.632159311592055,
+        "value": 56.85919135679592,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 40.045435939664856,
+        "value": 38.15951641342106,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 40.045435939664856,
-    "max": 57.632159311592055,
+    "median": 38.15951641342106,
+    "max": 56.85919135679592,
     "low": 36.22200639518122,
-    "high": 57.632159311592055,
-    "mos_pct": 7.180438177903397,
+    "high": 56.85919135679592,
+    "mos_pct": 8.43699839335422,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 40.045435939664856,
+    "median_trimmed": 38.15951641342106,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,12 +99,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 52,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -118,22 +120,22 @@
     "label": "Communication Services median (n=50)",
     "values": {
       "Quality": 51.5,
-      "Value": 51.0,
+      "Value": 51.17,
       "Growth": 49.88,
-      "Momentum": 38.69,
+      "Momentum": 37.93,
       "Health": 34.45,
       "Profitability": 53.33,
-      "Technical": 45.14,
-      "Risk": 41.0
+      "Technical": 38.47,
+      "Risk": 40.0
     }
   },
   "beneish_m_score": -3.0178817204647923,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 34.99305508188275,
-  "price_change_1d_pct": 6.3824,
+  "loss_chance_pct": 34.86677296924091,
+  "price_change_1d_pct": -1.1319,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.99,
+  "composite_score_adjusted": 54.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.42,
+  "osap_blended_score": 53.11,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -194,10 +196,10 @@
     "latest_filing_date": "2026-06-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3874171889427832e-08,
-  "dividend_yield_pct": 2.29,
+  "cross_source_delta": 0.06382367241505038,
+  "dividend_yield_pct": 2.15,
   "pays_dividend": true,
   "payout_ratio": 0.29389998,
-  "average_dollar_volume": 118266149.27941996,
+  "average_dollar_volume": 113391662.46180041,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Construction Machinery & Heavy Transportation Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 459471600828.9946,
-  "current_price": 997.47,
-  "rank": 493,
-  "composite_score": 54.31,
+  "market_cap": 486897947350.66846,
+  "current_price": 1057.01,
+  "rank": 423,
+  "composite_score": 55.67,
   "pillar_scores": {
     "quality": 74.21,
-    "value": 10.37,
+    "value": 9.97,
     "growth": 58.17,
-    "momentum": 84.23,
+    "momentum": 91.91,
     "health": 46.46,
     "profitability": 55.05,
-    "technical": 59.54,
-    "risk": 72.29,
+    "technical": 68.82,
+    "risk": 72.69,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 460637026.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 459471600828.9946,
-    "pe_ratio_ttm": 48.72445395853602,
+    "market_cap": 486897947350.66846,
+    "pe_ratio_ttm": 51.632868223824865,
     "goodwill": 5865000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 485.326373464551,
+        "value": 488.94063419000764,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 105.79795457416972,
+        "value": 106.5361244802813,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 360.70602051525515,
+        "value": 363.1264067307085,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -80,10 +80,10 @@
       }
     },
     "median": 155.07111334144878,
-    "max": 485.326373464551,
-    "low": 105.79795457416972,
-    "high": 485.326373464551,
-    "mos_pct": -543.2339003762813,
+    "max": 488.94063419000764,
+    "low": 106.5361244802813,
+    "high": 488.94063419000764,
+    "mos_pct": -581.6292131973092,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
@@ -92,7 +92,7 @@
       "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 423.01619698990305,
+    "median_trimmed": 426.0335204603581,
     "methods_excluded_from_median": [
       "graham",
       "multiples_pb",
@@ -108,7 +108,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 52,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -121,7 +121,8 @@
     "extreme_rim_estimate",
     "extreme_dcf_estimate",
     "extreme_estimate_majority",
-    "beneish_high"
+    "beneish_high",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 26.867141157688874,
@@ -136,22 +137,22 @@
     "label": "Industrials median (n=254)",
     "values": {
       "Quality": 49.14,
-      "Value": 49.7,
+      "Value": 49.8,
       "Growth": 50.39,
-      "Momentum": 54.19,
+      "Momentum": 54.35,
       "Health": 57.02,
       "Profitability": 49.31,
-      "Technical": 50.85,
-      "Risk": 50.62
+      "Technical": 53.31,
+      "Risk": 51.41
     }
   },
   "beneish_m_score": -1.365232239831081,
   "dechow_f_score": 0.5447029785627931,
   "recommendation": "cautious",
-  "loss_chance_pct": 64.84258616349402,
-  "price_change_1d_pct": -5.6329,
+  "loss_chance_pct": 64.16702627202352,
+  "price_change_1d_pct": 6.2909,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 52.01,
+  "composite_score_adjusted": 53.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -199,7 +200,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.08,
+  "osap_blended_score": 53.76,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -214,10 +215,10 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 9.780904176350777e-05,
-  "dividend_yield_pct": 0.62,
+  "cross_source_delta": 0.05642103678634607,
+  "dividend_yield_pct": 0.65,
   "pays_dividend": true,
   "payout_ratio": 0.2958,
-  "average_dollar_volume": 3216353960.3667154,
+  "average_dollar_volume": 2849883014.013672,
   "security_type": null
 }

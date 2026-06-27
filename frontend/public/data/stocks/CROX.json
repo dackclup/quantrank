@@ -5,19 +5,19 @@
   "industry": "Footwear",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 6348349534.62854,
-  "current_price": 127.76,
-  "rank": 989,
-  "composite_score": 46.15,
+  "market_cap": 5907105217.763306,
+  "current_price": 118.88,
+  "rank": 1019,
+  "composite_score": 45.62,
   "pillar_scores": {
     "quality": 33.67,
-    "value": 35.08,
+    "value": 36.35,
     "growth": 56.89,
-    "momentum": 77.46,
+    "momentum": 70.89,
     "health": 55.03,
     "profitability": 40.56,
-    "technical": 58.38,
-    "risk": 33.27,
+    "technical": 59.61,
+    "risk": 31.62,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 49689648.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6348349534.62854,
+    "market_cap": 5907105217.763306,
     "pe_ratio_ttm": null,
     "goodwill": 404662000.0
   },
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 84.11277486516022,
+        "value": 82.89640052898366,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 56.21123509114261,
+        "value": 55.67479028716626,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 84.11277486516022,
+    "median": 82.89640052898366,
     "max": 173.83702506318997,
-    "low": 56.21123509114261,
+    "low": 55.67479028716626,
     "high": 173.83702506318997,
-    "mos_pct": -51.89131774696577,
+    "mos_pct": -43.407912158807314,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 84.11277486516022,
+    "median_trimmed": 82.89640052898366,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -96,12 +96,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 57,
+    "filing_lag_days": 58,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -115,22 +117,22 @@
     "label": "Consumer Discretionary median (n=196)",
     "values": {
       "Quality": 48.31,
-      "Value": 50.62,
+      "Value": 51.04,
       "Growth": 49.11,
-      "Momentum": 45.21,
+      "Momentum": 44.89,
       "Health": 42.23,
       "Profitability": 50.26,
-      "Technical": 54.45,
-      "Risk": 41.09
+      "Technical": 54.01,
+      "Risk": 40.62
     }
   },
   "beneish_m_score": -2.532979111384386,
   "dechow_f_score": 0.7351800277329517,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.08694526756047,
-  "price_change_1d_pct": 7.4697,
+  "loss_chance_pct": 57.38483022225647,
+  "price_change_1d_pct": -2.0758,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.15,
+  "composite_score_adjusted": 45.62,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.0,
+  "osap_blended_score": 48.73,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -192,10 +194,10 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.490600659634276e-08,
+  "cross_source_delta": 0.07469720040026122,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 149813313.87590638,
+  "average_dollar_volume": 147871534.31278098,
   "security_type": null
 }

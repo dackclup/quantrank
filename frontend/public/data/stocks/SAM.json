@@ -5,19 +5,19 @@
   "industry": "Brewers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 2008303238.8916016,
-  "current_price": 191.87,
-  "rank": 1233,
-  "composite_score": 41.56,
+  "market_cap": 1886258140.2740479,
+  "current_price": 180.21,
+  "rank": 1237,
+  "composite_score": 41.35,
   "pillar_scores": {
     "quality": 32.14,
-    "value": 50.0,
+    "value": 50.43,
     "growth": 58.77,
-    "momentum": 20.86,
+    "momentum": 19.9,
     "health": 35.76,
     "profitability": 45.24,
-    "technical": 76.81,
-    "risk": 34.01,
+    "technical": 74.75,
+    "risk": 31.72,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 10467000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2008303238.8916016,
+    "market_cap": 1886258140.2740479,
     "pe_ratio_ttm": null,
     "goodwill": 112529000.0
   },
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 198.41122259707643,
+        "value": 198.95780571551003,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 27.41358385390959,
+        "value": 27.452648986112923,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -81,14 +81,14 @@
     },
     "median": 91.79335131978583,
     "max": 246.37935245206648,
-    "low": 27.41358385390959,
+    "low": 27.452648986112923,
     "high": 246.37935245206648,
-    "mos_pct": -109.02384797866118,
+    "mos_pct": -96.32141557405299,
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 145.10228695843114,
+    "median_trimmed": 145.37557851764794,
     "methods_excluded_from_median": [
       "multiples_ev_ebitda"
     ]
@@ -102,7 +102,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 57,
+    "filing_lag_days": 58,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-04-30"
   },
@@ -110,7 +110,8 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate"
+    "extreme_multiples_ev_ebitda_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 53.09400974491258,
@@ -127,20 +128,20 @@
       "Quality": 49.03,
       "Value": 52.38,
       "Growth": 47.4,
-      "Momentum": 38.21,
+      "Momentum": 37.27,
       "Health": 41.6,
       "Profitability": 50.0,
-      "Technical": 53.16,
-      "Risk": 51.45
+      "Technical": 53.03,
+      "Risk": 50.96
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 77.21909288074514,
-  "price_change_1d_pct": 6.4702,
+  "loss_chance_pct": 77.32518712725661,
+  "price_change_1d_pct": -1.4384,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.56,
+  "composite_score_adjusted": 41.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.71,
+  "osap_blended_score": 46.6,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -202,10 +203,10 @@
     "latest_filing_date": "2026-05-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.005116872139923001,
+  "cross_source_delta": 0.0592542798567929,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 50955178.765405275,
+  "average_dollar_volume": 50312297.68287396,
   "security_type": null
 }

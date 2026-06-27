@@ -5,19 +5,19 @@
   "industry": "Broadcasting",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 5008390260.0,
-  "current_price": 164.0,
-  "rank": 1455,
-  "composite_score": 33.46,
+  "market_cap": 4724377792.302475,
+  "current_price": 154.7,
+  "rank": 1466,
+  "composite_score": 32.76,
   "pillar_scores": {
     "quality": 37.25,
-    "value": 41.17,
+    "value": 42.33,
     "growth": 8.5,
-    "momentum": 24.55,
+    "momentum": 24.15,
     "health": 35.91,
-    "profitability": 39.67,
-    "technical": 39.98,
-    "risk": 46.81,
+    "profitability": 39.33,
+    "technical": 23.83,
+    "risk": 44.49,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 30538965.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5008390260.0,
-    "pe_ratio_ttm": 30.353880363636364,
+    "market_cap": 4724377792.302475,
+    "pe_ratio_ttm": 28.632592680621062,
     "goodwill": 5046000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 107.98985986344452,
+        "value": 103.21205546734873,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 169.47426527137364,
+        "value": 163.48136056481593,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 198.27359561964258,
+        "value": 195.041827814951,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 138.7320625674091,
-    "max": 198.27359561964258,
+    "median": 133.34670801608235,
+    "max": 195.041827814951,
     "low": 64.87126812934231,
-    "high": 198.27359561964258,
-    "mos_pct": -18.213480694351656,
+    "high": 195.041827814951,
+    "mos_pct": -16.013360397006966,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 138.7320625674091,
+    "median_trimmed": 133.34670801608235,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,12 +100,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-05-07",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "insider_sell_cluster",
     "c_suite_unusual_sell"
   ],
@@ -122,22 +123,22 @@
     "label": "Communication Services median (n=50)",
     "values": {
       "Quality": 51.5,
-      "Value": 51.0,
+      "Value": 51.17,
       "Growth": 49.88,
-      "Momentum": 38.69,
+      "Momentum": 37.93,
       "Health": 34.45,
       "Profitability": 53.33,
-      "Technical": 45.14,
-      "Risk": 41.0
+      "Technical": 38.47,
+      "Risk": 40.0
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.64368710383869,
-  "price_change_1d_pct": 6.0116,
+  "loss_chance_pct": 54.22488613451981,
+  "price_change_1d_pct": -7.9002,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 32.66,
+  "composite_score_adjusted": 31.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.66,
+  "osap_blended_score": 42.31,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -199,10 +200,10 @@
     "latest_filing_date": "2026-06-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.3161134412077543e-08,
-  "dividend_yield_pct": 4.81,
+  "cross_source_delta": 0.0601163505933569,
+  "dividend_yield_pct": 4.54,
   "pays_dividend": true,
   "payout_ratio": 1.5763,
-  "average_dollar_volume": 70323846.86080322,
+  "average_dollar_volume": 67980948.20083092,
   "security_type": null
 }

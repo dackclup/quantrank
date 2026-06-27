@@ -5,19 +5,19 @@
   "industry": "IT Consulting & Other Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 255301043195.6836,
-  "current_price": 271.63,
-  "rank": 715,
-  "composite_score": 50.85,
+  "market_cap": 242744160939.7119,
+  "current_price": 258.27,
+  "rank": 711,
+  "composite_score": 50.82,
   "pillar_scores": {
     "quality": 62.7,
-    "value": 54.21,
+    "value": 55.44,
     "growth": 54.61,
-    "momentum": 29.59,
+    "momentum": 28.09,
     "health": 38.4,
     "profitability": 48.82,
-    "technical": 42.47,
-    "risk": 49.92,
+    "technical": 40.96,
+    "risk": 48.84,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 939885280.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 255301043195.6836,
-    "pe_ratio_ttm": 23.740100724910135,
+    "market_cap": 242744160939.7119,
+    "pe_ratio_ttm": 22.57245312811158,
     "goodwill": 74709000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 124.71192452913455,
+        "value": 119.59546240521856,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 44.165736734558116,
+        "value": 43.19482171565251,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -80,15 +80,15 @@
       }
     },
     "median": 100.08666241614422,
-    "max": 124.71192452913455,
-    "low": 44.165736734558116,
-    "high": 124.71192452913455,
-    "mos_pct": -171.39480758526912,
+    "max": 119.59546240521856,
+    "low": 43.19482171565251,
+    "high": 119.59546240521856,
+    "mos_pct": -158.04635980349394,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 112.39929347263939,
+    "median_trimmed": 109.84106241068139,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -101,13 +101,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 64,
+    "filing_lag_days": 65,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
+    "extreme_multiples_pb_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -122,22 +123,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 50.33,
-      "Value": 50.53,
+      "Value": 49.93,
       "Growth": 51.02,
-      "Momentum": 71.07,
+      "Momentum": 72.11,
       "Health": 65.0,
       "Profitability": 49.14,
-      "Technical": 46.48,
-      "Risk": 40.86
+      "Technical": 48.06,
+      "Risk": 42.26
     }
   },
   "beneish_m_score": -2.619316967536129,
   "dechow_f_score": 1.6091143559531786,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.574859584966404,
-  "price_change_1d_pct": 5.1729,
+  "loss_chance_pct": 60.58838054661254,
+  "price_change_1d_pct": -1.7835,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.85,
+  "composite_score_adjusted": 50.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.35,
+  "osap_blended_score": 51.34,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,10 +201,10 @@
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.018117362126692e-08,
-  "dividend_yield_pct": 2.62,
+  "cross_source_delta": 0.05172893787301736,
+  "dividend_yield_pct": 2.49,
   "pays_dividend": true,
   "payout_ratio": 0.59470004,
-  "average_dollar_volume": 3100805755.0066934,
+  "average_dollar_volume": 3118263836.450511,
   "security_type": null
 }

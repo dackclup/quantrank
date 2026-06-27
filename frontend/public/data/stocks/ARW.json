@@ -5,19 +5,19 @@
   "industry": "Technology Distributors",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 11001468169.803162,
-  "current_price": 215.15,
-  "rank": 393,
-  "composite_score": 56.25,
+  "market_cap": 11711207589.960632,
+  "current_price": 229.03,
+  "rank": 358,
+  "composite_score": 56.77,
   "pillar_scores": {
     "quality": 36.71,
-    "value": 89.82,
+    "value": 87.98,
     "growth": 27.04,
-    "momentum": 83.66,
+    "momentum": 88.3,
     "health": 55.7,
     "profitability": 24.74,
-    "technical": 54.65,
-    "risk": 60.08,
+    "technical": 59.52,
+    "risk": 63.16,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 51133946.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 11001468169.803162,
-    "pe_ratio_ttm": 15.13994067284362,
+    "market_cap": 11711207589.960632,
+    "pe_ratio_ttm": 16.11666601063595,
     "goodwill": 2109008000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 537.8507309747285,
+        "value": 533.4856224813202,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 804.1244548005737,
+        "value": 833.9420705023059,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 524.4309336266057,
+        "value": 530.5591490594234,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 524.4309336266057,
-    "max": 804.1244548005737,
+    "median": 530.5591490594234,
+    "max": 833.9420705023059,
     "low": 114.67107948577865,
-    "high": 804.1244548005737,
-    "mos_pct": 58.974579853889594,
+    "high": 833.9420705023059,
+    "mos_pct": 56.83233449365225,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 524.4309336266057,
+    "median_trimmed": 530.5591490594234,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,13 +99,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "beneish_high",
+    "cross_source_disagreement",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -121,22 +122,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 50.33,
-      "Value": 50.53,
+      "Value": 49.93,
       "Growth": 51.02,
-      "Momentum": 71.07,
+      "Momentum": 72.11,
       "Health": 65.0,
       "Profitability": 49.14,
-      "Technical": 46.48,
-      "Risk": 40.86
+      "Technical": 48.06,
+      "Risk": 42.26
     }
   },
   "beneish_m_score": -1.9510312953741273,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 21.236003276642567,
-  "price_change_1d_pct": -6.0603,
+  "loss_chance_pct": 21.72365265706494,
+  "price_change_1d_pct": 1.8953,
   "manipulation_index": 3.0,
-  "composite_score_adjusted": 55.95,
+  "composite_score_adjusted": 56.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.05,
+  "osap_blended_score": 54.31,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -198,10 +199,10 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.4160699055665176e-08,
+  "cross_source_delta": 0.06060345873887956,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 145397670.5388743,
+  "average_dollar_volume": 145699368.46181935,
   "security_type": null
 }
