@@ -40,7 +40,9 @@ separately per `verify-production-output/SKILL.md` §Section I):
 - **D**: Top-5 rotation invariants (raw vs effective; flagged stocks lose
   `entered_top5` badge per Rule 16)
 - **E**: risk-flag totals (per-flag counter across the universe;
-  7 active vetoes after Phase 4.5a)
+  active vetoes are the direct-veto entries in `compute/warehouse/flag_registry.py`
+  `KNOWN_RISK_FLAGS` — read the live count at run time, never hardcode it
+  here; CLAUDE.md §scoring carries the current headline)
 - **F**: Tier-2 events spot-check (5 random tickers; verifies the
   5-key dict shape on `tier2_events`)
 - **G**: Fundamentals resilience (interprets `fundamentals_coverage_pct`
@@ -55,41 +57,26 @@ Capture the helper output and parse the per-section verdicts.
 
 ### Step 2 — Defense scorecard
 
-Tally and report per-flag firing counts in this exact order (matches the
-27-boolean-flag reconcile from PR #154 → defense layer headline count):
+Tally and report per-flag firing counts. **Derive the flag inventory from
+the canonical registry at run time — never hardcode the literal flag list
+or its counts here** (the registry grows almost every scoring PR; a baked-in
+list is the exact drift class that made earlier versions of this file stale):
 
-**7 active vetoes** (suppress `entered_top5` badge):
-- altman_distress
-- sloan_accruals_top_decile
-- net_issuance_top_decile
-- non_reliance_filing
-- goodwill_heavy
-- value_trap_risk
-- extreme_<method>_estimate (any of dcf / rim / graham / multiples / tangible_book)
+- **Active vetoes** (suppress `entered_top5` badge, set `recommendation=cautious`):
+  the direct-veto entries in `compute/warehouse/flag_registry.py`
+  `KNOWN_RISK_FLAGS`.
+- **Annotates** (informational, NO rank change): `KNOWN_VALUATION_WARNINGS`
+  (+ the annotate-classified `risk_flags`) in the same registry.
+- **Numerical guards** + the `manipulation_index` rollup.
 
-**10 annotates** (informational, NO rank change):
-- stale_filing_soft
-- data_quality_input_corruption
-- going_concern_disclosure
-- auditor_change
-- restatement_history
-- restatement_high_confidence (added PR #165)
-- loss_avoidance_pattern (rescaled PR #163)
-- manipulation_triple_flag
-- dechow_high
-- beneish_high
+The defense-layer **headline count** (declared boolean flags = active
+vetoes + annotates/reserved) lives in CLAUDE.md §scoring — read it there and
+in the registry, and report any mismatch between doc, registry, and the live
+output as its own finding. The `defense-scorecard` skill
+(`.claude/skills/defense-scorecard/SKILL.md`) auto-tabulates this from the
+helper output; prefer it over re-deriving by hand.
 
-**5 method-applicability** (per `valuation_methods_applicable` count, PR #161):
-- extreme_dcf_estimate / extreme_rim_estimate / extreme_graham_estimate /
-  extreme_multiples_estimate / extreme_tangible_book_estimate
-
-**5 informational** (track only):
-- insufficient_history_for_roe (added PR #166)
-- + 4 others — read from Section J output
-
-**5 numerical guards** + `manipulation_index` rollup.
-
-For each, report `current_count` vs `baseline_count` (git main) with delta.
+For each flag, report `current_count` vs `baseline_count` (git main) with delta.
 
 ### Step 3 — Top-5 rotation check
 
@@ -117,8 +104,12 @@ Report:
   legacy snapshots)
 - `metadata.valuation_methods_applicable_*` distribution looks reasonable
   (PR #161 — should be ≤ 6 since 6 methods exist)
-- Universe size = 502 (S&P 500 minus the one delisting documented in
-  CLAUDE.md)
+- Universe size matches the active cohort — the cron defaults to the full
+  S&P 1500 (~1504 names) since Slice 7; `sp900` (~903) / `sp500` (~502) only
+  on manual dispatch. Read `metadata.universe` + the expected size from
+  CLAUDE.md §Phase status at run time; never hardcode a single literal here.
+  Section H is the real invariant: metadata.universe_size == len(rankings) ==
+  len(stock_files), all three agree
 - `metadata.fundamentals_latency_p95_seconds` < 15s (helper warns at
   > 15; total cron runtime target is < 5 min warm-cache per
   CLAUDE.md §Gotchas)
@@ -141,15 +132,13 @@ Section A-L (helper):
 - H universe consistency: metadata=<N> rankings=<N> files=<N> | <PASS/FAIL>
 - J annotates: <table from helper>
 
-Defense scorecard (27 boolean flags):
-  Vetoes (7):
+Defense scorecard (<N> declared boolean flags — live count from registry/CLAUDE.md):
+  Vetoes (<N>):
     altman_distress: <count> (Δ <+/-N>)
-    ...
-  Annotates (10):
-    ...
-  Method-applicability (5):
-    ...
-  Informational (5):
+    ... (every direct-veto flag from flag_registry KNOWN_RISK_FLAGS)
+  Annotates (<N>):
+    ... (every annotate from the registry)
+  Numerical guards + manipulation_index rollup:
     ...
 
 Top-5 anomalies: <none | list>

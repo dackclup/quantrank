@@ -63,7 +63,7 @@ Action:
      documented as recalibrated, with the rationale)
    - Sign convention matches (flag fires on "bad" direction)
    - Effect size aligns with what the paper measured
-3. Predict the expected firing rate on the S&P 500 universe based on
+3. Predict the expected firing rate on the S&P 1500 universe based on
    the paper's reported base rate
 4. If the new flag overlaps with an existing flag (φ > 0.5 from
    `docs/phase3-correlation/`), flag the redundancy
@@ -104,7 +104,7 @@ often?".
 
 Action:
 1. Cross-reference recent code changes that could affect the flag
-2. Cross-reference recent universe changes (S&P 500 rebalance, sector
+2. Cross-reference recent universe changes (S&P 1500 rebalance, sector
    weight shift)
 3. Cross-reference recent ingest changes (new fundamentals source,
    schema field change)
@@ -128,7 +128,7 @@ Implementation check (mode A):
 - Test pin: <test::name | MISSING>
 
 Firing-rate prediction:
-- Expected: <% range based on paper's base rate × S&P 500 cohort>
+- Expected: <% range based on paper's base rate × S&P 1500 cohort>
 - Actual: <% from latest cron output, if available>
 - Verdict: <within-band | over-firing | under-firing>
 

@@ -82,7 +82,7 @@ to…") — those are not falsifiable and not your beat.
 | Schema-sync claim | `python -m compute.output.schema_check` | Run it. The report's "in sync" must match the checker's exit. |
 | Test/lint claim ("all tests pass", "ruff clean") | the suite | Run `pytest -m "not network"` / `ruff check .` yourself when feasible; do not trust the assertion. |
 | Citation / threshold / academic anchor | `CLAUDE.md` anchor list + `docs/METHODOLOGY.md` | Transcription check only: does the quoted paper/number match the canonical text? Methodology *soundness* → ESCALATE. |
-| Count vs CLAUDE.md ("36 flags", "26 agents", schema version) | the live doc + the actual source | Compare report ↔ doc ↔ code. All three must agree; if doc and code disagree that's its own finding. |
+| Count vs CLAUDE.md ("36 flags", "27 agents", schema version) | the live doc + the actual source | Compare report ↔ doc ↔ code. All three must agree; if doc and code disagree that's its own finding. |
 | Cross-report consistency | the other report(s) | Do two agents assert mutually exclusive facts? Surface the contradiction; verify which (if either) matches ground truth. |
 | Unfalsifiable judgment / future prediction | — | Mark UNVERIFIABLE. Do not pretend to check it. |
 
@@ -126,7 +126,7 @@ Unsupported / unverifiable:
   - "<claim>" → UNVERIFIABLE (needs <CI state / re-run / GitHub MCP>)
 
 Confirmed: <count> claims matched ground truth
-  (list the load-bearing ones, e.g. "universe_size=1504 ✓", "schema 0.10.33 ✓")
+  (list the load-bearing ones, e.g. "universe_size=1504 ✓", "schema 0.10.41 ✓")
 
 Cross-report contradictions: <none | "agent A says X, agent B says ¬X; ground truth = …">
 

@@ -102,7 +102,7 @@ defense flag for X".
 4. Map the **architecture fit**: exact file + function it plugs into,
    how it composes with the 8 pillars / 6-method ensemble / defense
    layer without breaking the sum-to-1 + Rule 16 invariants.
-5. Predict the **effect / firing rate** on the S&P 500 cohort from the
+5. Predict the **effect / firing rate** on the S&P 1500 cohort from the
    paper's base rate; flag if it would suppress > 20% of the universe
    (→ annotate-only mandatory).
 6. Specify the **rollout**: annotate-before-veto path + the exact
@@ -151,7 +151,7 @@ Architecture fit:
 - Plugs into: <file:function>
 - Composes with: <pillar / ensemble / defense> · invariants preserved: <Rule 16 · sum-to-1 · …>
 
-Predicted effect: <firing rate / IC / Δscore on S&P 500 cohort>
+Predicted effect: <firing rate / IC / Δscore on S&P 1500 cohort>
 Rollout: annotate-only first → <Metadata.* observability field> → veto after ≥1 cron + cohort check
 Orthogonality: φ vs <nearest signal> ≈ <est> · <independent | redundancy-risk>
 Test plan: <positive · negative · Hypothesis property>

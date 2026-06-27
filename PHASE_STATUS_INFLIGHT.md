@@ -8661,3 +8661,52 @@ Verify: tsc --noEmit clean · next build 1510 pages · vitest 290/290 green.
 **Gate**: trivial display swap (reuses existing muted-dash convention); CI (tsc/build/vitest) is the gate.
 
 ---
+
+## subagents — coherence/integration polish pass: drift-proof stale facts across the 27-agent roster (in flight, 2026-06-27)
+
+Refined the `.claude/agents/**` definitions so the standing 27-agent team
+stays internally coherent and integrates without acting on stale facts.
+Deterministic ground truth was already clean (`check_agent_hook_consistency.py`
+PASS; frontmatter names/model-split/effort uniform; the `HANDOFF · status=… ·
+next=…` contract identical across all 27; every cross-agent reference resolves).
+The flaws were stale **domain facts** baked into agent bodies — exactly the
+drift class the count-guard does NOT cover (it guards roster counts, not
+prose facts).
+
+Fixes (all body-text only — NO frontmatter touched, so roster counts are
+unaffected; guard still 27 agents / 6 opus / 21 sonnet / 25 max + 2 high · 4
+hooks · 9 flows):
+- **`defense-layer-auditor.md`** (highest-stakes — it audits the defense layer
+  it had wrong): `7 active vetoes` → derive from `flag_registry.py`
+  `KNOWN_RISK_FLAGS` at run time; `27 boolean flags` scorecard with a hardcoded
+  veto/annotate enumeration → derive the inventory from the canonical registry
+  + CLAUDE.md §scoring headline (the registry grows almost every scoring PR — a
+  baked-in list is the drift source); `Universe size = 502` → read
+  `metadata.universe` + expected size at run time (cron defaults to S&P 1500
+  ~1504 since Slice 7; sp900/sp500 only on dispatch). Mirrors the file's
+  existing "never hardcode a schema-version literal" pattern — drift-proof by
+  construction.
+- **`agent-output-verifier.md`**: stale illustrative examples `"26 agents"` →
+  `"27 agents"`, `schema 0.10.33` → `0.10.41` (the fact-checker should not ship
+  stale facts in its own examples).
+- **`expert-user-explorer.md`**: stale Playwright anchor `Home … H1 = "S&P 500
+  ranking"` → home `/` IS the AI-pick portfolio (H1 "AI picks, backtested.",
+  title "QuantRank — AI stock picks, backtested"); the table lives at `/ranking`
+  with a tab-driven H1 — read the active tab, don't hard-code a headline.
+- **`financial-engineer.md` + `methodology-scientist.md`**: live firing-rate
+  predictions on the `S&P 500 cohort/universe` → `S&P 1500` (cohort size feeds
+  the firing-rate math; the historical "rescaled 10× for S&P 500 in PR #163"
+  anchor was left intact as accurate history).
+
+Meta-infrastructure only — no `compute/**` / `frontend/**` / schema / workflow
+change; rankings/scores/output BYTE-IDENTICAL; defense layer UNCHANGED at 36.
+
+**Verify**: `python tools/check_agent_hook_consistency.py` PASS.
+
+**Files**: `.claude/agents/defense-layer-auditor.md` ·
+`.claude/agents/agent-output-verifier.md` ·
+`.claude/agents/expert-user-explorer.md` ·
+`.claude/agents/financial-engineer.md` ·
+`.claude/agents/methodology-scientist.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
