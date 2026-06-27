@@ -8827,5 +8827,25 @@ sandbox lacks pandas/node; CI runs the full suite).
 
 **Files**: `PHASE_STATUS.md` · `tools/check_defense_layer_counts.py` ·
 `PHASE_STATUS_INFLIGHT.md` (this).
+## PR #TBD — feat(backtest): emit rebalances[].band_sectors PIT map for full band_book (in flight, 2026-06-27)
+
+The rotation-history drawer renders rows from each rebalance's `band_book` (the actual
+adaptive basket, incl. band-CARRIED names like HP/UAL/INTC), but per-row sector was looked
+up from `holdings` (top-20) / `full_ranked` (top-40) — band-carried names + ALL sold names
+fall outside both, so their PIT sector existed NOWHERE in the artifact → no sector chip
+(broad: every sold row + carried names). #635 only covered holdings/full_ranked.
+
+FIX (`scripts/backfill_portfolio_pit.py`, ~1702): emit additive free-form
+`rebalances[i].band_sectors = {t: _pit_sector(t, T) for t in band_book}` (empty dict when no
+band_book). PIT (not today's-sector) so reclassified names are correct (WU 2017 = IT, today =
+Financials). Pairs with a frontend wire (separate PR) that reads band_sectors for held rows +
+the PRIOR rebalance's band_sectors for sold rows. Additive/display-only — selection, NAV,
+Carino, sector_weights_by_count, band_legs_for_nav all untouched (compute-builder + reviewer
+confirmed). NO schema-triple change (free-form artifact, C-2/E partition). Needs a regen to
+populate. ruff clean; offline pytest 3216 passed.
+
+**Files**: `scripts/backfill_portfolio_pit.py` · `tests/test_portfolio/test_backfill_integration.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: quantrank-reviewer at Draft→Ready.
 
 ---
