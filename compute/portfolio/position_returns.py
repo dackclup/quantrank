@@ -358,7 +358,14 @@ def _extract_streaks(
                     streaks.append(current)
                     current = []
 
-            px = _close_on(ticker, date_iso, closes)
+            # Use _close_on_or_before (not _close_on) so a rebalance date that
+            # falls on a non-trading day (e.g. 2016-08-14 = Sunday for the
+            # initial basket) resolves to the most-recent prior trading-day
+            # close.  Symmetric with the terminal-price lookup at line ~423
+            # (_close_on_or_before for end_date) and _last_close for the latest
+            # mark.  _close_on_or_before is on-or-before only (no look-ahead)
+            # and is already _is_valid_price-guarded.
+            px = _close_on_or_before(ticker, date_iso, closes)
             current.append((date_iso, weight, px))
             prev_date = date_iso
 
