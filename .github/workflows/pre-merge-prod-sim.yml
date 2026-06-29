@@ -212,17 +212,17 @@ jobs:
     # always visible to a PR run — run #100's main cron saved
     # cache-v8-fast-2026Q2-Linux at 15:50 yet this PR run missed it 8 min
     # later), so the timeout is the must-have safety net regardless of cache.
-    # Matches the weekly cron's `timeout-minutes: 270` (raised in the #249
-    # era + Phase 7.0 folded backtest; bumped 240→270 for sp1500 scale —
-    # cron run 27902140692 measured ~196 min cold compute vs 240 min budget,
-    # only ~7% headroom); simulate runs FEWER loops than the cron (5 skip
-    # vars + no committed output + no PIT backtest), so 270 is an upper bound
-    # it should never approach on a warm restore. Simulate IS informational-
-    # only (workflow comment ~line 24) + restore-only, so the wider budget
-    # can never block a PR merge or poison the canonical cache.
+    # Matches (≥) the weekly cron's `timeout-minutes: 420` (raised in the
+    # #249 era + Phase 7.0 folded backtest; bumped 240→270 for sp1500 scale,
+    # then 270→420 for Phase 9.3 broad-investable-US scale — owner-authorised).
+    # Simulate runs FEWER loops than the cron (5 skip vars + no committed
+    # output + no PIT backtest), so 420 is an upper bound it should never
+    # approach on a warm restore. Simulate IS informational-only (workflow
+    # comment ~line 24) + restore-only, so the wider budget can never block a
+    # PR merge or poison the canonical cache.
     # Guard: tests/test_workflow_cache_coverage.py::test_sim_timeout_at_least_cron_timeout
     # asserts sim_timeout >= cron_timeout — bump this in lockstep with the cron.
-    timeout-minutes: 270
+    timeout-minutes: 420
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
@@ -275,10 +275,11 @@ jobs:
             compute/cache/universe_sp1500-v1.parquet
             compute/cache/yfinance_info
             compute/cache/edgar_form4
-          key: cache-v11-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+            compute/cache/broad_universe-v1.parquet
+          key: cache-v12-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v11-fast-${{ steps.quarter.outputs.q }}-
-            cache-v11-fast-
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-
+            cache-v12-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / osap — from weekly cron)
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5

@@ -14,6 +14,7 @@ on:
           - sp500
           - sp900
           - sp1500
+          - broad_investable_us
         default: sp1500
 
 env:
@@ -186,7 +187,13 @@ jobs:
     #   would blow the budget). Cost: warm steady-state adds ~35-45m/run;
     #   worst-case monthly ceiling is now 270m × 5 weekday runs × 4 weeks =
     #   5,400 GitHub Actions minutes/month.
-    timeout-minutes: 270
+    # - Phase 9.3 runtime prereq (2026-06-29): raised 270 → 420 to cover the
+    #   broad-investable-US dry-run (~3,545 names) warm worst-case ~280-320 min
+    #   compute + the 55-min folded backtest cap. Owner-authorised billing
+    #   increase. The cron universe default STAYS sp1500; 420 min is a headroom
+    #   grant for the future wiring PR, not a permanent sp1500 cost shift.
+    #   Monthly worst-case at 420m × 5 × 4 = 8,400 min/month (new ceiling).
+    timeout-minutes: 420
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
@@ -245,6 +252,15 @@ jobs:
       #     forces a cold-seed on the first post-bump cron so all ~1500 tickers
       #     warm correctly once the sp1500 dispatch or Slice 7 cron-default flip
       #     fires. The cron default STAYS sp900 — same mechanism as v9→v10 (#492).
+      #   v12-fast (Phase 9.3 runtime prereq, 2026-06-29): adds
+      #     compute/cache/broad_universe-v1.parquet to path: so the 7-day-TTL
+      #     broad-universe candidate parquet (Phase 9.1) persists across cron runs
+      #     without re-fetching the SEC company_tickers.json on every run. The
+      #     fast bundle's exact-key save-skip means the parquet written under a
+      #     warm v11 key would be silently dropped; v12 forces a cold-seed on the
+      #     first post-bump run so the broad-universe file warms correctly. Also
+      #     widens the 8-K TTL jitter to 96h (config.EDGAR_8K_CACHE_TTL_JITTER_
+      #     SECONDS) so the ~3,545-name cohort does not synchronise on expiry.
       - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
@@ -258,10 +274,11 @@ jobs:
             compute/cache/universe_sp600-v1.parquet
             compute/cache/universe_sp1500-v1.parquet
             compute/cache/yfinance_info
-          key: cache-v11-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+            compute/cache/broad_universe-v1.parquet
+          key: cache-v12-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v11-fast-${{ steps.quarter.outputs.q }}-
-            cache-v11-fast-
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-
+            cache-v12-fast-
 
       # SLOW-changing text bundle — RUN-ID key + prefix restore-keys (the textbook
       # "keep a cache fresh AND persistent" idiom). A unique key per run means the
@@ -374,22 +391,23 @@ jobs:
           fi
           # TTL-proximity warning (Issue #469): the edgar_8k event cache has a
           # 144h (6-day) TTL — config.EDGAR_8K_CACHE_TTL_SECONDS = 6 * 86400. All
-          # 502 tickers are written in one cold-rebuild burst, so when the layer's
+          # tickers are written in one cold-rebuild burst, so when the layer's
           # NEWEST file nears 144h the next tier2 pass refetches all of them live
-          # (~80 min). Recompute that newest-file age the same way emit() does
-          # (find -printf '%T@' | sort | tail -1) and warn at > 72h
-          # (= 144h TTL - 72h, the config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS window)
-          # so the long pass is PREDICTED here, not a surprise next run. Warning
-          # only — the guarded awk/echo can never fail the job.
+          # (~80 min at sp1500 scale). Recompute that newest-file age the same way
+          # emit() does (find -printf '%T@' | sort | tail -1) and warn at > 96h
+          # (= 144h TTL - 96h, the config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS window
+          # bumped 72h → 96h in Phase 9.3 for broad-investable-US scale) so the
+          # long pass is PREDICTED here, not a surprise next run. Warning only —
+          # the guarded awk/echo can never fail the job.
           k8_newest=$(find compute/cache/edgar_8k -type f -printf '%T@\n' 2>/dev/null | sort -n | tail -1)
           if [ -n "$k8_newest" ]; then
             k8_age=$(awk -v now="$now" -v ts="${k8_newest%.*}" 'BEGIN { printf "%.1f", (now - ts) / 3600 }')
-            # 72 = 144 (EDGAR_8K_CACHE_TTL_SECONDS, hours) - 72 (EDGAR_8K_CACHE_TTL_JITTER_SECONDS, hours)
-            if awk -v a="$k8_age" 'BEGIN { exit !(a > 72) }'; then
-              echo "::warning::edgar_8k cache within 72h of its 144h TTL (newest age ${k8_age}h) — next tier2 pass will refetch ~502 tickers live (~80 min); see #469"
+            # 96 = 144 (EDGAR_8K_CACHE_TTL_SECONDS, hours) - 96 (EDGAR_8K_CACHE_TTL_JITTER_SECONDS, hours)
+            if awk -v a="$k8_age" 'BEGIN { exit !(a > 96) }'; then
+              echo "::warning::edgar_8k cache within 96h of its 144h TTL (newest age ${k8_age}h) — next tier2 pass will refetch tickers live (~80 min at sp1500); see #469"
               {
                 echo ""
-                echo "> **WARNING — edgar_8k near TTL**: newest file is ${k8_age}h old (144h TTL); the next tier2 pass will refetch ~502 tickers live (~80 min). See #469."
+                echo "> **WARNING — edgar_8k near TTL**: newest file is ${k8_age}h old (144h TTL); the next tier2 pass will refetch tickers live (~80 min at sp1500). See #469."
               } >> "$GITHUB_STEP_SUMMARY"
             fi
           fi
