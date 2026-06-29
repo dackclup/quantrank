@@ -15,6 +15,8 @@ parallelised ``_build_snapshot`` increments do at runtime.  No network calls.
 
 from __future__ import annotations
 
+import pytest
+
 import compute.ingest.fundamentals as _fundamentals
 from compute.orchestrator.state import ComputeState, MetricsCollector
 
@@ -37,6 +39,26 @@ def _set_global(key: str, value: int) -> None:
 def _reset_global() -> None:
     """Zero all counters in _FALLBACK_STATS via the public API."""
     _fundamentals.reset_fallback_stats()
+
+
+@pytest.fixture(autouse=True)
+def _restore_fallback_stats_global():
+    """Snapshot + restore the shared ``_FALLBACK_STATS`` global around each test.
+
+    These tests mutate the ``compute.ingest.fundamentals`` module-global to
+    simulate the locked increments ``_build_snapshot`` performs at runtime.
+    Without restoration a non-zero counter could leak into any later test in
+    the same process that reads the global without resetting first.  Snapshot
+    on entry, restore on exit so the global is left exactly as it was found.
+    """
+    with _fundamentals._FALLBACK_STATS_LOCK:
+        saved = dict(_fundamentals._FALLBACK_STATS)
+    try:
+        yield
+    finally:
+        with _fundamentals._FALLBACK_STATS_LOCK:
+            _fundamentals._FALLBACK_STATS.clear()
+            _fundamentals._FALLBACK_STATS.update(saved)
 
 
 # ---------------------------------------------------------------------------
