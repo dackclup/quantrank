@@ -1046,6 +1046,106 @@ def _run_smallcap_coverage_probe(
         return None, None, None, {}
 
 
+def _run_broad_universe_probe(
+    prices_by_ticker: dict[str, pd.DataFrame],
+    security_types_by_ticker: dict[str, str | None] | None = None,
+) -> dict[str, int | float | None]:
+    """Phase 9.1 — Broad Investable US universe coverage probe (Rule 18, obs-first).
+
+    Fetches the Broad Investable US candidate pool from the disk cache / edgartools
+    bundled parquet / live SEC JSON, then runs the price >= $5 AND ADV >= $5M
+    investability screen against the ``prices_by_ticker`` dict already in memory
+    from Step 1 (no extra network calls for prices).
+
+    This function is DIAGNOSTIC ONLY.  It returns a dict suitable for unpacking
+    into the ``Metadata`` constructor.  It does NOT modify any scored ticker data
+    and MUST NEVER feed scoring, composite, pillar computation, veto/flag logic,
+    fair-price, or ``select_picks``.  Rankings/scores/flags are BYTE-IDENTICAL
+    whether or not this probe ran.  Defense layer is UNCHANGED at 36.
+
+    HARD NAMING CONSTRAINT (legal/trademark, 2026-06-29):
+        Call this universe "Broad Investable US" everywhere.  NEVER use the
+        strings "Russell 3000", "Russell-3000-class", or "equivalent to Russell
+        3000" in any field name, label, log line, comment, or user-visible string.
+
+    Escape hatch: returns a dict of all-None values when
+    ``QR_SKIP_BROAD_UNIVERSE=1`` is set (used in CI pre-merge simulations).
+
+    Parameters
+    ----------
+    prices_by_ticker:
+        The Step-1 price dict (ticker → OHLCV DataFrame) already in memory.
+        The probe reuses it to avoid extra yfinance round-trips.
+    security_types_by_ticker:
+        Optional ticker → security_type mapping (from ``fetch_yfinance_security_type``
+        / ``_QUOTE_TYPE_LABEL``).  Used to drop ETF/fund tickers that slipped
+        through the name filter.  ``None`` = security-type filtering skipped
+        (graceful degradation).
+
+    Returns
+    -------
+    dict with keys matching the six ``Metadata.broad_universe_*`` fields.
+    All values are ``None`` on failure or when the probe is skipped.
+    """
+    _empty: dict[str, int | float | None] = {
+        "broad_universe_raw_count": None,
+        "broad_universe_candidate_count": None,
+        "broad_universe_screened_count": None,
+        "broad_universe_price_fail_pct": None,
+        "broad_universe_adv_fail_pct": None,
+        "broad_universe_coverage_pct": None,
+    }
+
+    if os.environ.get(config.BROAD_UNIVERSE_SKIP_ENV_VAR, "").lower() in (
+        "1", "true", "yes"
+    ):
+        logger.info(
+            "[broad-universe-probe] Skipped via %s env-var.",
+            config.BROAD_UNIVERSE_SKIP_ENV_VAR,
+        )
+        return _empty
+
+    try:
+        from compute.ingest.broad_universe import (  # noqa: PLC0415
+            fetch_broad_universe_candidates,
+            screen_broad_universe_investability,
+        )
+
+        logger.info(
+            "[broad-universe-probe] Fetching Broad Investable US candidate pool "
+            "(Rule 18 observability-before-wiring, Phase 9.1)…"
+        )
+        candidates = fetch_broad_universe_candidates()
+        logger.info(
+            "[broad-universe-probe] Candidate pool size: %d tickers",
+            len(candidates),
+        )
+
+        result = screen_broad_universe_investability(
+            candidates=candidates,
+            prices_by_ticker=prices_by_ticker,
+            security_types_by_ticker=security_types_by_ticker,
+        )
+
+        logger.info(
+            "[broad-universe-probe] Complete: raw=%s candidates=%s screened=%s "
+            "coverage=%.1f%% price_fail=%.1f%% adv_fail=%.1f%%",
+            result.get("broad_universe_raw_count"),
+            result.get("broad_universe_candidate_count"),
+            result.get("broad_universe_screened_count"),
+            result.get("broad_universe_coverage_pct") or 0.0,
+            result.get("broad_universe_price_fail_pct") or 0.0,
+            result.get("broad_universe_adv_fail_pct") or 0.0,
+        )
+        return result
+
+    except Exception as exc:  # noqa: BLE001
+        logger.error(
+            "[broad-universe-probe] Probe failed unexpectedly (non-fatal): %s", exc
+        )
+        return _empty
+
+
 def run_weekly_compute() -> int:
     """Run the full weekly compute. Returns the count of successfully scored tickers."""
     logging.basicConfig(
@@ -1096,6 +1196,15 @@ def run_weekly_compute() -> int:
     _pilot_smallcap_coverage_pct: float | None = None
     _pilot_smallcap_null_rate_pct: float | None = None
     _pilot_smallcap_cik_resolution_pct: float | None = None
+    # Phase 9.1 — Broad Investable US probe variables (Rule 18 observability,
+    # initialized to None here; populated after Step 1 prices when the env-var
+    # gate passes).  All six are None on any failure or skip path.
+    _broad_universe_raw_count: int | None = None
+    _broad_universe_candidate_count: int | None = None
+    _broad_universe_screened_count: int | None = None
+    _broad_universe_price_fail_pct: float | None = None
+    _broad_universe_adv_fail_pct: float | None = None
+    _broad_universe_coverage_pct: float | None = None
     if config.QR_UNIVERSE == "sp900":
         logger.info("[sp900] Loading SP900 universe (sp500 + sp400 de-duped)…")
         universe = get_sp900_constituents()
@@ -1278,6 +1387,51 @@ def run_weekly_compute() -> int:
 
     df = pd.DataFrame(rows)
     df = df.set_index("ticker", drop=False)
+
+    # Phase 9.1 — Broad Investable US universe coverage probe (Rule 18,
+    # observability-before-wiring).  Runs immediately after Step 1 so the
+    # full ``prices_by_ticker`` dict is available for the investability screen
+    # (price >= $5 / ADV >= $5M).  The probe is WRITE-ONLY / OBSERVABILITY-ONLY:
+    # its output feeds the ``Metadata`` constructor and NOTHING ELSE.
+    # Rankings/scores/flags are BYTE-IDENTICAL whether or not this block ran.
+    # Defense layer is UNCHANGED at 36.
+    #
+    # The probe is gated on:
+    #   (a) QR_SKIP_BROAD_UNIVERSE != "1" / "true" / "yes"
+    #       (set in the pre-merge sim workflow to avoid the live SEC call)
+    #   (b) graceful degradation: any exception → all-None, cron never blocked
+    #
+    # ``security_types_by_ticker`` is not yet available here (Step 8 builds it).
+    # The probe passes ``security_types_by_ticker=None`` so the security-type
+    # filter is skipped on this slice (graceful degradation documented in
+    # ``screen_broad_universe_investability``).  A Phase 9.3 follow-up can
+    # re-order or cache the types earlier if the sec-type filter proves material.
+    try:
+        _broad_probe_result = _run_broad_universe_probe(
+            prices_by_ticker=prices_by_ticker,
+            security_types_by_ticker=None,  # not yet available at Step 1+
+        )
+        _broad_universe_raw_count = _broad_probe_result.get("broad_universe_raw_count")
+        _broad_universe_candidate_count = _broad_probe_result.get(
+            "broad_universe_candidate_count"
+        )
+        _broad_universe_screened_count = _broad_probe_result.get(
+            "broad_universe_screened_count"
+        )
+        _broad_universe_price_fail_pct = _broad_probe_result.get(
+            "broad_universe_price_fail_pct"
+        )
+        _broad_universe_adv_fail_pct = _broad_probe_result.get(
+            "broad_universe_adv_fail_pct"
+        )
+        _broad_universe_coverage_pct = _broad_probe_result.get(
+            "broad_universe_coverage_pct"
+        )
+    except Exception as _broad_exc:  # noqa: BLE001
+        logger.error(
+            "[broad-universe-probe] Outer block failed (non-fatal): %s", _broad_exc
+        )
+        # _broad_universe_* variables remain at their None-initialized defaults.
 
     # Step 2 — fundamentals snapshot in parallel.
     logger.info(
@@ -4315,6 +4469,26 @@ def run_weekly_compute() -> int:
         #   None when QR_SKIP_DIVIDENDS=1 or Dividends column absent from all frames.
         div_pool_shadow_terminal_nav_delta_pct=_div_pool_shadow_terminal_nav_delta_pct,
         div_stream_coverage_pct=_div_stream_coverage_pct,
+        # Phase 9.1 — Broad Investable US universe coverage probe (Rule 18
+        # observability-before-wiring; issue #661 follow-up).
+        # WRITE-ONLY / OBSERVABILITY-ONLY — live scores, flags, rankings
+        # byte-identical.  Defense layer UNCHANGED at 36.
+        # All six are None when QR_SKIP_BROAD_UNIVERSE=1 or when the probe
+        # failed unexpectedly (graceful degradation, cron-safe).
+        #
+        # HARD NAMING CONSTRAINT (legal/trademark, 2026-06-29):
+        #   "Broad Investable US" only — NEVER "Russell 3000" /
+        #   "Russell-3000-class" / "equivalent to Russell 3000".
+        #
+        # HARD RULE 18 CONSTRAINT:
+        #   These six fields MUST NEVER be read by scoring, composite, pillar
+        #   computation, veto/flag logic, fair-price, or ``select_picks``.
+        broad_universe_raw_count=_broad_universe_raw_count,
+        broad_universe_candidate_count=_broad_universe_candidate_count,
+        broad_universe_screened_count=_broad_universe_screened_count,
+        broad_universe_price_fail_pct=_broad_universe_price_fail_pct,
+        broad_universe_adv_fail_pct=_broad_universe_adv_fail_pct,
+        broad_universe_coverage_pct=_broad_universe_coverage_pct,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

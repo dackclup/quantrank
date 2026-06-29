@@ -49,7 +49,7 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.41-phase8pilot"
+SCHEMA_VERSION: str = "0.10.42-phase9pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -815,3 +815,41 @@ assert len(set(OSAP_SIGNALS_100)) == 100, (
 # design time when an empirical panel of regime labels is available.
 REGIME_RISK_ON_THRESHOLD: float = 60.0   # breadth_pct >= 60% → risk_on  (Tier-3)
 REGIME_RISK_OFF_THRESHOLD: float = 40.0  # breadth_pct <= 40% → risk_off (Tier-3)
+
+# ---------------------------------------------------------------------------
+# Phase 9.1 — Broad Investable US universe probe (Rule 18 obs-first)
+# ---------------------------------------------------------------------------
+#
+# HARD NAMING CONSTRAINT (legal/trademark): call it "Broad Investable US"
+# everywhere.  NEVER use "Russell 3000", "Russell-3000-class", or
+# "equivalent to Russell 3000" in any field name, label, comment, doc, or
+# string.
+#
+# ``SEC_COMPANY_TICKERS_URL``: SEC EDGAR public company-tickers endpoint.
+# Returns a JSON dict keyed by numeric index; each value has "cik_str",
+# "ticker", and "title".  No rate-limit sign-in required for this endpoint,
+# but we include EDGAR_USER_AGENT as a courtesy per SEC fair-access policy
+# (mirrors the existing edgartools ``set_identity`` convention).
+SEC_COMPANY_TICKERS_URL: str = "https://www.sec.gov/files/company_tickers.json"
+
+# Broad Investable US disk cache.  7-day TTL matches the SP500/SP400/SP600
+# cache cadence so the universe list refreshes on the same weekly schedule.
+BROAD_UNIVERSE_CACHE: Path = CACHE_DIR / "broad_universe-v1.parquet"
+BROAD_UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
+
+# Price floor for the investability screen ($5/share).  Stored here as a
+# named constant so a future recalibration is a visible config diff.  Do
+# NOT change without methodology-scientist ratification.
+BROAD_UNIVERSE_PRICE_FLOOR_USD: float = 5.0
+
+# Exchange filter for the broad-universe candidate pool.  Only Nasdaq, NYSE,
+# and CBOE main-market listings are considered investable for this audience.
+# OTC tickers are excluded from the probe pool even if they clear the price
+# and ADV floors.
+BROAD_UNIVERSE_ELIGIBLE_EXCHANGES: tuple[str, ...] = ("Nasdaq", "NYSE", "CBOE")
+
+# Escape-hatch env-var for CI pre-merge sim and local offline runs.
+# Set QR_SKIP_BROAD_UNIVERSE=1 to skip the broad-universe probe entirely.
+# The cron does NOT set this flag (the probe is gated by QR_UNIVERSE instead,
+# but the flag is available for the pre-merge sim which cannot hit the SEC).
+BROAD_UNIVERSE_SKIP_ENV_VAR: str = "QR_SKIP_BROAD_UNIVERSE"
