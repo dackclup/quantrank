@@ -9264,3 +9264,53 @@ version pin + alpha158 DeadlineExceeded, both documented above) · schema_check 
 DRAFT PR only — do NOT merge, do NOT flip Ready.
 
 ---
+
+## restatement_history weight demotion (issue #16, in flight, 2026-06-29)
+
+`feat(compute)`: demote the `restatement_history` annotate's manipulation-index
+weight to zero and preserve the irregularity total at 8.0 — surfaced by the early
+Q3 cohort audit (2026-06-27, recorded on issue #130). The flag over-fires at
+**17.82%** on SP1500 (~268 tickers) vs the Hennes-Leone-Miller 2008 *material*
+restatement prior of 1-3%; the ~70%-PPV fraud-class content is already carried by
+the sibling `restatement_high_confidence` (0.27%, 4 tickers). methodology-scientist
+verdict = **DEMOTE** (not deprecate / not rethreshold), owner-authorized 2026-06-27.
+
+Changes (schema `0.10.42-phase9pilot` → **`0.10.43-phase9pilot`**):
+- `compute/scoring/manipulation_index.py`: `RESTATEMENT_HISTORY_WEIGHT` 5.0 → **0.0**;
+  `RESTATEMENT_HIGH_CONFIDENCE_WEIGHT` 3.0 → **8.0** (the hc weight was historically
+  a *delta* on top of the bare 5.0 → combined 8.0 for confirmed irregularities;
+  zeroing the bare term and raising hc to 8.0 keeps the irregularity total at 8.0
+  while the plain-restater term drops to 0.0). Combine is a simple additive sum over
+  the union `risk_flags ∪ valuation_warnings`, so irregularity = 0.0 + 8.0 = 8.0
+  (preserved), plain-restater = 0.0 (demoted).
+- `compute/output/schemas.py` + `frontend/lib/types.ts` + `schema-snapshot.json`:
+  new shadow `Metadata.restatement_history_weight_demote_delta_count: int | None`
+  (count of tickers carrying `restatement_history` but NOT
+  `restatement_high_confidence` — exactly the names whose `composite_score_adjusted`
+  moves; the irregularity subset nets zero). Observability-only (Rule 18); never read
+  by scoring / composite / veto / fair-price / `select_picks`. Wired via the
+  testable module-level helper `_count_restatement_demote_delta()` in `compute/main.py`.
+- `docs/METHODOLOGY.md`: "Known calibration drift" resolved as DEMOTE-TO-ZERO-WEIGHT.
+
+**RANK-NEUTRAL**: `StockSummary.rank` is the RAW composite (computed before the
+manipulation index) — the weight change moves only `composite_score_adjusted` (a
+detail-page number) and the `select_picks` secondary tiebreak (bites only on an
+exact primary-tie). No ticker's displayed rank, veto, or Top-5 badge changes; live
+rankings BYTE-IDENTICAL. Defense layer **UNCHANGED at 38** (DEMOTE not DEPRECATE —
+the flag stays a `FLAG_WEIGHTS` key at 0.0, still emitted into `valuation_warnings`,
+still in `flag_registry.py`). HLM 2008 anchor. Pre-merge-prod-sim ranking diff
+adjudicated DATA-PROVENANCE (cold recompute vs warm-cron-cache; the diff cannot move
+raw `composite_score`), agent-output-verifier TRUSTWORTHY.
+
+**Verify**: `ruff check .` clean · `python -m compute.output.schema_check` in sync ·
+`tsc --noEmit` PASS · offline pytest GREEN (+ new weight-pin / behavioral / delta-count
+/ DEMOTE-not-DEPRECATE tests) · quantrank-reviewer READY-TO-PUSH (all invariants PASS).
+
+**Files**: `compute/scoring/manipulation_index.py` · `compute/output/schemas.py` ·
+`compute/config.py` · `compute/main.py` · `frontend/lib/types.ts` ·
+`frontend/lib/schema-snapshot.json` · `docs/METHODOLOGY.md` ·
+`tests/test_scoring/test_manipulation_index.py` ·
+`tests/test_scoring/test_restatement_weight_demotion.py` · `tests/test_config.py` ·
+`CLAUDE.md` + `AGENTS.md` (§Gotchas lockstep) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

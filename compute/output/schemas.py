@@ -1115,6 +1115,35 @@ class Metadata(BaseModel):
     # Same HARD CONSTRAINT as ``div_pool_shadow_terminal_nav_delta_pct``.
     # Nullable on legacy snapshots (pre-0.10.41).
     div_stream_coverage_pct: float | None = None
+    # Issue #16 — restatement_history weight-demotion delta counter
+    # (Q3 2026 cohort audit, 0.10.42-phase8pilot, Rule 18 observability-first).
+    #
+    # Shadow counter: the number of tickers whose ``composite_score_adjusted``
+    # CHANGES due to the ``RESTATEMENT_HISTORY_WEIGHT`` demotion from 5.0 → 0.0.
+    #
+    # These are exactly the tickers carrying ``restatement_history`` in their
+    # ``valuation_warnings`` but NOT ``restatement_high_confidence`` — i.e., the
+    # "plain restater" cohort whose manipulation-index contribution drops by 5.0
+    # points (from 5.0 to 0.0). The ~70%-PPV "irregularity" subset carries BOTH
+    # flags; for those tickers the high-confidence weight rose 3.0→8.0 so the
+    # combined irregularity total is preserved at 8.0 — net manipulation-index
+    # delta = 0 for that subset. The counter therefore counts only the TRUE
+    # delta population (plain restaters).
+    #
+    # Rationale for the demotion: on SP1500 the bare flag fires at ~17.82%
+    # (~268 tickers) vs the Hennes-Leone-Miller 2008 *TAR* material prior of
+    # 1-3%, meaning the ~70%-PPV fraud-class content (already carried by the
+    # 0.27%-base-rate high-confidence sibling) does not justify the index budget
+    # for the remaining ~70% of bare-flag fires (clerical-error amendments).
+    # Methodology-scientist RATIFIED 2026-06-27 (issue #16).
+    #
+    # HARD CONSTRAINT: this field MUST NEVER be read by scoring, the composite,
+    # pillar computation, veto/flag logic, fair-price, or ``select_picks``.
+    # OBSERVABILITY-ONLY. Defense layer UNCHANGED at 36.
+    #
+    # Nullable on legacy snapshots (pre-0.10.42). None when the per-ticker
+    # summaries loop was skipped or the helper failed (non-fatal try/except).
+    restatement_history_weight_demote_delta_count: int | None = None
 
     # ------------------------------------------------------------------ #
     #  Phase 9.1 — Broad Investable US universe coverage probe            #
