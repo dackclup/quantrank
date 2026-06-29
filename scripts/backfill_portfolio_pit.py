@@ -1699,6 +1699,20 @@ def run_backfill(
                 # carried names without inferring from scores, and the H2 audit read
                 # the cohort directly.
                 "band_carry_names": sorted(carry_names_in_book),
+                # band_sectors: PIT GICS sector for every ticker in band_book.
+                # {ticker: sector_name} — covers ALL band-book members including
+                # carry names (composite 55-64) and floor-pads that may be absent
+                # from holdings[] (top-MAX_PICKS) and full_ranked[] (top-40).
+                # Resolved via _pit_sector(ticker, T) so removed/reclassified tickers
+                # (e.g. WU 2017 sector ≠ today) show their CORRECT historical GICS label.
+                # DISPLAY-ONLY: must NOT feed selection, weights, NAV, Carino, or
+                # sector_weights_by_count (those are untouched).
+                # Empty dict when band_book is empty (degenerate leg / by_count-only path).
+                "band_sectors": (
+                    {t: _pit_sector(t, T) for t in band_book}
+                    if band_book
+                    else {}
+                ),
                 # ── Proposal C-2 shadow fields (Rule 18 observability-first) ──────
                 # mos_tilted_weights: inverse-vol weights tilted toward higher-MoS
                 # holdings via ``mos_conviction_tilt``.  SHADOW ONLY — do NOT feed
