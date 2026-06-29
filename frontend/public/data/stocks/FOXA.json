@@ -5,19 +5,19 @@
   "industry": "Broadcasting",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 21768887228.67357,
-  "current_price": 48.86,
-  "rank": 522,
-  "composite_score": 53.82,
+  "market_cap": 22321350866.06608,
+  "current_price": 50.1,
+  "rank": 508,
+  "composite_score": 54.1,
   "pillar_scores": {
     "quality": 52.45,
-    "value": 63.73,
+    "value": 64.05,
     "growth": 66.18,
-    "momentum": 37.58,
+    "momentum": 37.72,
     "health": 49.94,
     "profitability": 60.62,
-    "technical": 27.67,
-    "risk": 51.28,
+    "technical": 31.34,
+    "risk": 51.34,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 445535959.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 21768887228.67357,
-    "pe_ratio_ttm": 12.43936413067061,
+    "market_cap": 22321350866.06608,
+    "pe_ratio_ttm": 12.755057637752044,
     "goodwill": 3647000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 82.58942416882496,
+        "value": 85.43091637479407,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 58.79313015541375,
+        "value": 63.20261502658052,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,10 +80,10 @@
       }
     },
     "median": 37.26117923684854,
-    "max": 82.58942416882496,
+    "max": 85.43091637479407,
     "low": 12.533472070484132,
-    "high": 82.58942416882496,
-    "mos_pct": -31.128433428732304,
+    "high": 85.43091637479407,
+    "mos_pct": -34.45628801939771,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
@@ -104,13 +104,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
+    "cross_source_disagreement",
     "multi_class_aggregate_shares_suspected"
   ],
   "has_history": true,
@@ -126,22 +127,22 @@
     "label": "Communication Services median (n=51)",
     "values": {
       "Quality": 50.98,
-      "Value": 51.63,
+      "Value": 51.96,
       "Growth": 51.47,
-      "Momentum": 37.9,
+      "Momentum": 38.85,
       "Health": 34.87,
       "Profitability": 52.29,
-      "Technical": 38.45,
+      "Technical": 45.17,
       "Risk": 39.14
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.9842234662417,
-  "price_change_1d_pct": -1.8875,
+  "loss_chance_pct": 51.01088463140648,
+  "price_change_1d_pct": 2.5379,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.82,
+  "composite_score_adjusted": 54.1,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.84,
+  "osap_blended_score": 52.97,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -203,10 +204,10 @@
     "latest_filing_date": "2026-04-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03361981882608903,
+  "cross_source_delta": 0.0575381700584517,
   "dividend_yield_pct": 1.12,
   "pays_dividend": true,
   "payout_ratio": 0.14739999,
-  "average_dollar_volume": 371528886.41381097,
+  "average_dollar_volume": 375081065.7146454,
   "security_type": null
 }

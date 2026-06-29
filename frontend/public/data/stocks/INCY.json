@@ -5,19 +5,19 @@
   "industry": "Biotechnology",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 21482574883.2753,
-  "current_price": 107.53,
-  "rank": 98,
-  "composite_score": 64.57,
+  "market_cap": 22725220131.25,
+  "current_price": 113.75,
+  "rank": 92,
+  "composite_score": 65.01,
   "pillar_scores": {
     "quality": 73.81,
-    "value": 41.27,
+    "value": 39.68,
     "growth": 76.86,
-    "momentum": 56.56,
+    "momentum": 61.44,
     "health": 77.45,
     "profitability": 89.19,
-    "technical": 48.29,
-    "risk": 68.81,
+    "technical": 50.43,
+    "risk": 70.89,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 199782155.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 21482574883.2753,
-    "pe_ratio_ttm": 15.00413464057273,
+    "market_cap": 22725220131.25,
+    "pe_ratio_ttm": 15.872038823957922,
     "goodwill": 133000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 165.35973564467773,
+        "value": 172.1515989137084,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 145.73102210303645,
+        "value": 146.23238582033363,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 95.51099411181544,
+        "value": 99.98644275209557,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 95.51099411181544,
-    "max": 165.35973564467773,
+    "median": 99.98644275209557,
+    "max": 172.1515989137084,
     "low": 28.70088093810259,
-    "high": 165.35973564467773,
-    "mos_pct": -12.583896523378973,
+    "high": 172.1515989137084,
+    "mos_pct": -13.765423460488064,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 95.51099411181544,
+    "median_trimmed": 99.98644275209557,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,13 +98,12 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 60,
+    "filing_lag_days": 62,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "restatement_history",
     "accruals_momentum_high"
   ],
@@ -121,22 +120,22 @@
     "label": "Health Care median (n=168)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.14,
+      "Value": 51.36,
       "Growth": 49.11,
-      "Momentum": 43.14,
+      "Momentum": 42.94,
       "Health": 57.33,
       "Profitability": 48.51,
-      "Technical": 55.96,
-      "Risk": 42.07
+      "Technical": 55.66,
+      "Risk": 42.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 37.1171925280572,
-  "price_change_1d_pct": -0.8575,
+  "loss_chance_pct": 37.311183371301226,
+  "price_change_1d_pct": 5.7844,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 63.57,
+  "composite_score_adjusted": 64.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.21,
+  "osap_blended_score": 58.43,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,10 +197,10 @@
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05784434479928802,
+  "cross_source_delta": 9.713877301300211e-09,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 187609751.1046837,
+  "average_dollar_volume": 195745088.56786093,
   "security_type": null
 }
