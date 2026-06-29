@@ -5,19 +5,19 @@
   "industry": "Transaction & Payment Processing Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 612524604684.3342,
-  "current_price": 336.23,
-  "rank": 703,
-  "composite_score": 51.01,
+  "market_cap": 623655426561.6385,
+  "current_price": 342.34,
+  "rank": 658,
+  "composite_score": 51.49,
   "pillar_scores": {
     "quality": 73.54,
-    "value": 12.79,
+    "value": 12.73,
     "growth": 67.77,
-    "momentum": 42.88,
+    "momentum": 45.61,
     "health": 45.26,
     "profitability": 72.95,
-    "technical": 53.4,
-    "risk": 62.07,
+    "technical": 55.59,
+    "risk": 63.19,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 1821742809.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 612524604684.3342,
-    "pe_ratio_ttm": 27.54652836320985,
+    "market_cap": 623655426561.6385,
+    "pe_ratio_ttm": 28.04710499017982,
     "goodwill": 20891000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 225.51573629706064,
+        "value": 226.19043752059963,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 53.520389621880355,
+        "value": 53.6404412909878,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 139.5180629594705,
-    "max": 225.51573629706064,
-    "low": 53.520389621880355,
-    "high": 225.51573629706064,
-    "mos_pct": -140.99389272914556,
+    "median": 139.9154394057937,
+    "max": 226.19043752059963,
+    "low": 53.6404412909878,
+    "high": 226.19043752059963,
+    "mos_pct": -144.67635436930544,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -111,7 +111,8 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
+    "extreme_multiples_pb_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -126,22 +127,22 @@
     "label": "Financials median (n=256)",
     "values": {
       "Quality": 50.2,
-      "Value": 51.9,
+      "Value": 51.94,
       "Growth": 50.2,
-      "Momentum": 57.93,
+      "Momentum": 55.17,
       "Health": 54.73,
       "Profitability": 49.54,
-      "Technical": 53.97,
-      "Risk": 61.38
+      "Technical": 54.57,
+      "Risk": 60.86
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.49270942779419,
-  "price_change_1d_pct": 1.7276,
+  "loss_chance_pct": 60.25348737490637,
+  "price_change_1d_pct": 1.8172,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.01,
+  "composite_score_adjusted": 51.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.43,
+  "osap_blended_score": 51.67,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -204,10 +205,10 @@
     "latest_filing_date": "2026-05-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.043914552731360225,
+  "cross_source_delta": 0.05138543026402116,
   "dividend_yield_pct": 0.8,
   "pays_dividend": true,
   "payout_ratio": 0.2197,
-  "average_dollar_volume": 2816023966.600138,
+  "average_dollar_volume": 2770864946.7596087,
   "security_type": null
 }

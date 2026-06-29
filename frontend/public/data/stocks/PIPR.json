@@ -5,19 +5,19 @@
   "industry": "Investment Banking & Brokerage",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 5409285928.938217,
-  "current_price": 76.14,
-  "rank": 488,
-  "composite_score": 54.38,
+  "market_cap": 5317284150.248566,
+  "current_price": 74.845,
+  "rank": 473,
+  "composite_score": 54.48,
   "pillar_scores": {
     "quality": 64.94,
-    "value": 42.06,
+    "value": 46.68,
     "growth": 70.75,
-    "momentum": 43.63,
+    "momentum": 39.85,
     "health": 60.29,
     "profitability": 54.62,
-    "technical": 29.74,
-    "risk": 48.8,
+    "technical": 21.16,
+    "risk": 47.91,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 71043945.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5409285928.938217,
-    "pe_ratio_ttm": 16.6179304687066,
+    "market_cap": 5317284150.248566,
+    "pe_ratio_ttm": 16.33529073005221,
     "goodwill": 319258000.0
   },
   "fair_price": null,
@@ -68,7 +68,8 @@
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
-    "valuation_output_anomalous"
+    "valuation_output_anomalous",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 13.004570621746863,
@@ -83,22 +84,22 @@
     "label": "Financials median (n=256)",
     "values": {
       "Quality": 50.2,
-      "Value": 51.9,
+      "Value": 51.94,
       "Growth": 50.2,
-      "Momentum": 57.93,
+      "Momentum": 55.17,
       "Health": 54.73,
       "Profitability": 49.54,
-      "Technical": 53.97,
-      "Risk": 61.38
+      "Technical": 54.57,
+      "Risk": 60.86
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
   "loss_chance_pct": null,
-  "price_change_1d_pct": -1.9573,
+  "price_change_1d_pct": -1.7008,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.38,
+  "composite_score_adjusted": 54.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,7 +147,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.12,
+  "osap_blended_score": 53.17,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -159,10 +160,10 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.04879394367493266,
+  "cross_source_delta": 0.05845275547932422,
   "dividend_yield_pct": 0.95,
   "pays_dividend": true,
   "payout_ratio": 0.1734,
-  "average_dollar_volume": 45942882.699152626,
+  "average_dollar_volume": 44433063.02408549,
   "security_type": "Common stock"
 }
