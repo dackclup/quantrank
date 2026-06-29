@@ -1250,6 +1250,14 @@ export type AiPickTimelineEntry = {
   // Present when the rebalance carries weights_by_count[String(adaptiveCount)]
   // or band_weights. Absent → Weight column shows '—'.
   weightByTicker?: Record<string, number | null>;
+  // PIT sector map covering EVERY band_book ticker for this rebalance
+  // (free-form field `band_sectors` on the raw artifact, added in parallel by
+  // compute-builder). When present, QuarterDrawer uses this as the primary
+  // source for sector chips so that band-CARRIED names (HP/UAL) and SOLD names
+  // (RIG/WU) resolve even when they are absent from `holdings`. Falls back to
+  // the holdings-derived map when absent (pre-regen artifacts). View-model only
+  // — NOT part of the Pydantic-mirrored schema triple.
+  bandSectors?: Record<string, string>;
 };
 
 // Adaptive-mode view model — present when the artifact carries nav.adaptive.

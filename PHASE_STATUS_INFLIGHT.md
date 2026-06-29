@@ -8847,5 +8847,23 @@ populate. ruff clean; offline pytest 3216 passed.
 **Files**: `scripts/backfill_portfolio_pit.py` · `tests/test_portfolio/test_backfill_integration.py` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 **Gate**: quantrank-reviewer at Draft→Ready.
+## PR #TBD — feat(frontend): wire rebalances[].band_sectors into rotation-history drawer (in flight, 2026-06-27)
+
+Frontend consumer for the backend `band_sectors` PIT map (paired backend PR). The
+rotation-history drawer (`HoldingsTimeline.tsx` `QuarterDrawer`) built per-row
+`sectorByTicker` from `entry.holdings` (top-20) — band-CARRIED held names + ALL sold
+names weren't in it → no sector chip. Now: `data.ts` reads `rebalances[i].band_sectors`
+(free-form cast, GRACEFUL when absent on pre-regen artifacts) → exposes `bandSectors` on
+each timeline entry (`types.ts` view-model field); `QuarterDrawer` builds
+`resolvedSectorByTicker = {...holdings-derived, ...entry.bandSectors}` (band_sectors wins —
+PIT-accurate) for held rows, and resolves SOLD rows from the PRIOR entry's `bandSectors`
+(the sold name was in last quarter's band_book). SectorChip render-guard kept (unknown →
+degrade cleanly). Display-only, NO schema-triple change. +12 vitest contract tests.
+
+Verify: tsc clean · next build 1510 pages · vitest 302/302 green.
+
+**Files**: `frontend/lib/types.ts` · `frontend/lib/data.ts` · `frontend/components/HoldingsTimeline.tsx` · `frontend/components/HoldingsTimeline.test.ts` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: frontend-design-reviewer (sector chips on band-carried + sold rows; graceful when band_sectors absent) at Draft→Ready.
 
 ---
