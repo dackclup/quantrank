@@ -281,6 +281,9 @@ export function PerformanceTable({
             signal&rsquo;s record, not the live product&rsquo;s.
           </>
         )}
+        {' '}Backtest universe: <span className="font-medium">S&amp;P 500 only</span> (the cohort
+        with a point-in-time survivorship ledger, 2016–present) — narrower than the S&amp;P 1500
+        currently ranked on the site.
       </p>
     </div>
   );
