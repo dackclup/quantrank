@@ -9071,5 +9071,40 @@ import surface).
 **Files**: `scripts/scout_broad_universe.py` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 **Gate**: ruff; dev-tool only (no production/CI import, no schema, no cron).
+## PR #TBD — fix(frontend): async/await Promise params in stock/[ticker]/page.tsx — Next 16 migration miss from #656 broke all stock detail pages with the empty-state (in flight, 2026-06-29)
+
+**Branch**: `claude/stock-detail-empty-state-thmx81`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema bump, rankings byte-identical.
+
+**Root cause**: PR #656 bumped Next.js 14.2 → 16 (now 16.2.9). In Next.js 15/16 the
+App-Router `params` prop for dynamic-route pages is a `Promise`, not a plain object.
+`frontend/app/stock/[ticker]/page.tsx` still used the Next 14 sync pattern:
+non-async component + `params: { ticker: string }` + `const { ticker } = params`.
+Destructuring a Promise synchronously yields `ticker = undefined` →
+`getStockDetail(undefined)` → null → the "Detail data pending" amber-banner
+empty-state was statically generated for EVERY of the ~1502 stock pages.
+`next build` reported green (the empty-state is valid HTML), making the regression
+completely silent. Production (quantrank.vercel.app/stock/<any>) was broken.
+
+**Fix** (3-line change in `page.tsx`):
+- `export default function` → `export default async function`
+- `params: { ticker: string }` → `params: Promise<{ ticker: string }>`
+- `const { ticker } = params` → `const { ticker } = await params`
+
+`generateStaticParams` (returns plain `{ ticker }` objects) and `dynamicParams = false`
+are unchanged — correct under Next.js 16.
+
+**Regression guard** (`frontend/app/stock/[ticker]/page.test.ts`, new, option b):
+Source-text scan asserts (1) `async function StockDetailPage`, (2) params typed as
+`Promise<{ ticker: string }>`, (3) destructured with `await params`, (4) no sync
+`= params` destructure survives. Option (a) full-invocation was impractical:
+`environment: 'node'` + no jsdom/RTL + RSC rendering requires the full Next.js runtime.
+The source guard is hermetic, zero-dep, and exactly encodes the Next.js 15/16 contract.
+
+**Verification**: `tsc --noEmit` PASS · `next build` PASS (1502 stock pages now render
+real data, not the empty-state) · vitest 4/4 new guard tests PASS · HTML spot-check
+on rank-1 ticker confirms composite score present, "Detail data pending" absent.
+
+**Files**: `frontend/app/stock/[ticker]/page.tsx` · `frontend/app/stock/[ticker]/page.test.ts` (new) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
