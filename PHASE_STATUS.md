@@ -236,7 +236,7 @@ All Phase 8 acceptance criteria (WORKFLOW.md §8 checklist) are met. The Slice 8
 - **#537** (squash `a1a0bbc49`): feat(frontend): append rotated-out **Sold rows** to the Current-picks table.
 - **#533** (squash `3df2ba5f8`): fix(ingest): **`dividend_yield_pct` ×100 double-scaling removal** + `>100` reversion guard.
 - **Dependabot/CI** (#556 upload-artifact 4→7 · #557 checkout 6→7 · #559 npm minor/patch group · #560 @types/node · #575 CI Node 20→22): standard bumps, no logic change.
-- **v2.0 readiness**: all WORKFLOW.md §8 acceptance gates met except the tag itself. The `v2.0.0-phase8` release PR (`claude/release-v2.0.0-phase8`) carries `pyproject` 1.4.0→2.0.0 + `docs/release-notes/v2.0.0-phase8.md` + this doc reconciliation; `release-captain` cuts the tag (mobile flow) after ≥1 green scheduled sp1500 cron. Deferred post-v2.0: `low_liquidity` veto promotion (#544, KEEP-ANNOTATE) + Bonferroni provisional-threshold re-derivation (#542).
+- **v2.0 readiness**: all WORKFLOW.md §8 acceptance gates met except the tag itself. The `v2.0.0-phase8` release PR (`claude/release-v2.0.0-phase8`) carries `pyproject` 1.4.0→2.0.0 + `docs/release-notes/v2.0.0-phase8.md` + this doc reconciliation; `release-captain` cuts the tag (mobile flow) after ≥1 green scheduled sp1500 cron. Deferred post-v2.0: `low_liquidity` veto promotion (#544, KEEP-ANNOTATE) + Bonferroni provisional-threshold re-derivation (#654, split from the closed #542).
 
 ## 2026-06-21 — S&P 1500 cutover Slice 7: cron-default flip sp900→sp1500 (#534) + Slice 6 SML tab (#531)
 
