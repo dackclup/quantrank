@@ -8892,3 +8892,51 @@ defense layer UNCHANGED at 38/10. Lockstep: CLAUDE.md + AGENTS.md moved together
 **Files**: `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR #656 — chore(deps): bump Next.js 14.2→16 + React 18→19 (issue #41) (in flight, 2026-06-29)
+
+**Branch**: `claude/next16-bump`
+**Type**: chore(deps) / security — FRONTEND-ONLY (`frontend/**`); NO `compute/**` /
+schema / data / workflow change; no schema bump; rankings/scores/output
+BYTE-IDENTICAL. Clears issue #41 (CVE refresh on the pinned `next@14.2`).
+
+**Bumps**: `next` 14.2.35 → **16.2.9** · `react`/`react-dom` 18.3.1 → **19.2.7**
+· `@types/react` → 19.2.17 · `@types/react-dom` → 19.2.3 · `eslint` 8.57.0 →
+**9.39.4** · `eslint-config-next` 14.2.35 → **16.2.9** · `postcss` unchanged at
+8.5.15 (already ≥ the #41 CVE floor 8.5.10; `overrides` preserved). recharts
+2.15.4 / next-themes ^0.4.6 / lucide-react ^1.21.0 / @vercel/* unchanged — all
+React-19 peer-clean. Lockfile regenerated.
+
+**Breaking-change fixes (all surgical, frontend-only)**:
+- `app/globals.css` — moved the `@fontsource` `@import`s ABOVE the `@tailwind`
+  directives. Next 16 / Turbopack enforces the CSS spec (`@import` must precede
+  all other rules; PostCSS expands `@tailwind` into hundreds of rules first).
+  Fonts load identically.
+- `components/NavCompareChart.tsx` — `+import type { JSX } from 'react'` (the
+  global `JSX` namespace was removed in `@types/react@19`; now `React.JSX`). Only
+  file in the tree missing the import.
+- `tsconfig.json` — `jsx: "preserve"` → `"react-jsx"` + `.next/dev/types/**`
+  added to `include` (both auto-applied by the Next 16 build writer).
+- `next-env.d.ts` — auto typed-routes reference (Next 16 writer).
+- `package.json` `lint` script `next lint` → `eslint .` (`next lint` removed in
+  Next 16); NEW `eslint.config.mjs` (ESLint 9 is flat-config-only; re-exports
+  `eslint-config-next`'s native flat config, no `FlatCompat` shim) + removed the
+  now-orphan `.eslintrc.json`.
+- `/stock/[ticker]` async-`params`: NOT needed — the static-export SSG path
+  builds all 1502 pages with the sync `params` type under Next 16.
+
+**Verification (orchestrator re-ran from ground truth, not just the builder's
+report)**: `npm install` clean · `tsc --noEmit` **0 errors** · `next build`
+**GREEN — 1509 static pages** (5 static routes + `/stock/[ticker]` × 1502, static
+export emitted) · `npm audit --omit=dev --audit-level=high` **0 prod
+vulnerabilities** (issue #41's next@14 rollup + postcss CVEs cleared) · `vitest`
+**290 passed**. Residual: 6 DEV-ONLY CVEs in the vitest/vite/esbuild chain
+(unreachable in the static-export build/runtime) — a separate `vitest` bump PR.
+dependency-auditor + security-reviewer ran before Mark-Ready.
+
+**Files**: `frontend/package.json` · `frontend/package-lock.json` ·
+`frontend/app/globals.css` · `frontend/components/NavCompareChart.tsx` ·
+`frontend/tsconfig.json` · `frontend/next-env.d.ts` · `frontend/eslint.config.mjs`
+(new) · `frontend/.eslintrc.json` (removed) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

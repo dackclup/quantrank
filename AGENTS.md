@@ -10,7 +10,7 @@
 ## Tech stack
 
 See [`CLAUDE.md`](CLAUDE.md) §Stack for the canonical stack list
-(Python 3.11+ · Next.js 14.2 · pytest 8 · ruff 0.4 · etc.). Extra
+(Python 3.11+ · Next.js 16.2 · React 19.2 · pytest 8 · ruff 0.4 · etc.). Extra
 deps not auto-loaded into Claude context but relevant for build /
 test work: `pyarrow 15` (parquet on-disk caches), `yfinance 0.2`
 (price ingest). GitHub Actions runs CI + the weekly compute cron.
