@@ -13,7 +13,7 @@ design-system spec.
 
 - **Python 3.11+** — pandas 2.2 · edgartools 5.32 · pydantic 2.6 ·
   tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4
-- **Next.js 14.2** (App Router, static export) — React 18.3 ·
+- **Next.js 16.2** (App Router, static export) — React 19.2 ·
   TypeScript 5.9 · Tailwind 3.4 · Recharts 2.15. Fonts via @fontsource:
   **IBM Plex Sans** (body) · **JetBrains Mono** (tabular numerics) ·
   **Roboto Slab** (headlines). LedgerCraft design system: `AppShell` +
@@ -140,7 +140,7 @@ together, enforced by a CI guard (`schema_check`).
 
 ### Frontend rendering (`frontend/`)
 
-Next.js 14 App Router, **static export only**. `frontend/lib/data.ts`
+Next.js 16 App Router, **static export only**. `frontend/lib/data.ts`
 resolves the JSON at **build time** — `rankings.json` + `metadata.json`
 via static `import`, per-stock + backtest files via `fs` inside Server
 Components — so there is no client-side fetch and no `fs` access from a
