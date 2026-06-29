@@ -967,7 +967,12 @@ class Metadata(BaseModel):
     # a gate that has been live in the backfill for multiple crons.
     #
     # Gate composition (``is_high_conviction``):
-    #   (1) is_eligible  — no active rank-gate veto (7 veto flags)
+    #   (1) is_eligible  — no AI-pick-basket veto (``ACTIVE_VETO_FLAGS``, 7
+    #                      flags in compute/portfolio/weights.py). This is the
+    #                      NARROWER basket gate — distinct from the 10 Top-5
+    #                      vetoes (``KNOWN_RISK_FLAGS``) and the 4 cautious-label
+    #                      vetoes (``_CAUTIOUS_FORCING_RISK``); see CLAUDE.md
+    #                      §scoring (38 declared = 10 active vetoes + 28 annotates).
     #   (2) recommendation ∈ {"bullish", "lean_bullish"}
     #   (3) margin_of_safety_pct > 0  (strict undervaluation, Graham-Dodd)
     #   (4) composite_score ≥ 50.0    (HIGH_CONVICTION_COMPOSITE_MIN)
