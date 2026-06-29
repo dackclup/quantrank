@@ -92,6 +92,14 @@ jobs:
       - name: Install
         if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         run: npm ci --no-audit --no-fund
+      # Lint gate (added after the Next 16 / ESLint 9 flat-config migration in
+      # PR #656). `tsc` + `next build` do NOT run eslint, so lint regressions —
+      # including the react-hooks rules eslint-config-next@16 newly enforces —
+      # were previously invisible to CI. `eslint .` fails on errors (warnings
+      # do not gate).
+      - name: Lint (eslint)
+        if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
+        run: npm run lint
       - name: Unit tests (vitest)
         if: github.ref == 'refs/heads/main' || steps.changes.outputs.fe == 'true'
         run: npm run test:unit

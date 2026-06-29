@@ -9129,6 +9129,51 @@ TRUSTWORTHY. ruff clean; 48/48 validation tests pass.
 **Files**: `compute/validation/basket_rule_validation.py` · `scripts/backfill_portfolio_pit.py` · `frontend/public/data/portfolio/backtest_pit.json` (surgical, NAV byte-identical) · `tests/test_validation/test_basket_rule_validation.py` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 **Gate**: ruff; offline pytest (48 validation tests); agent-output-verifier TRUSTWORTHY; display-only, NAV byte-identical.
+## PR #TBD — chore(frontend): ESLint-9 lint-debt cleanup + new `eslint .` CI gate (in flight, 2026-06-29)
+
+Post-#656 (Next 14→16 + ESLint 8→9 bump) the switch to flat config and
+`eslint-config-next@16` (React-Compiler-aware `react-hooks` ruleset) surfaced
+19 errors + 4 warnings that are pre-existing patterns in verified-working
+production code (Playwright expert-user audit confirmed home / ranking /
+stock-detail / charts / theme / infinite-scroll all clean). This PR clears the
+errors so the new `eslint .` CI step (added to `.github/workflows/ci.yml` by the
+orchestrator outside `frontend/**`) passes at 0 errors.
+
+**Code-fixed (behavior-identical, formally verified):**
+- `PriceHistoryChart.tsx:97` (`react-hooks/refs`): `playDrawRef.current = playDraw`
+  was written during render. Moved into a `useEffect(() => { playDrawRef.current = playDraw; }, [playDraw])`.
+  Behavior is identical because the ResizeObserver that reads this ref has a 300ms
+  debounce — it never reads the ref mid-render or within the effect's post-render
+  micro-task window.
+- `PriceHistoryChart.tsx:556` (unused `eslint-disable-next-line` directive): removed.
+  ESLint 9 no longer fires `exhaustive-deps` at that site; the disable was dead.
+
+**Downgraded error → warn in `eslint.config.mjs` (with rationale comments):**
+- `react-hooks/set-state-in-effect`: 12 instances across `NavCompareChart.tsx`,
+  `PriceHistoryChart.tsx`, `RankingTable.tsx`, `ThemeToggle.tsx`, `WatchlistChart.tsx`,
+  `useMotion.ts`, `useWatchlist.ts`. Every site is a mount guard (`setMounted → true`),
+  a cache-hit fast path, or a legitimate derived-state-from-external-system pattern.
+  Rewriting risks render loops or broken hydration guards. Warn keeps future careless
+  uses visible.
+- `react-hooks/refs`: 2 remaining instances in `RankingTable.tsx` (`ref={tbodyFlipRef}` /
+  `ref={cardsFlipRef}` — JSX ref props for custom-hook refs). Standard React pattern;
+  the linter heuristic misidentifies passing a hook-returned ref as a JSX prop as a
+  render-time ref READ. The genuine ref-write-during-render was code-fixed (above).
+- `react-hooks/immutability`: 2 instances in `PriceHistoryChart.tsx` — `chartData`
+  (useMemo) and `yDomain` (let) declared after the useEffect in lexical order, correct
+  at runtime (closures capture initialised values). Reordering the 60-line rAF block
+  risks subtle animation bugs.
+- `react-hooks/preserve-manual-memoization`: 1 instance — intentional `chartData` useMemo
+  consumed by the rAF animation effect. Warn-only.
+
+No schema bump. Rankings byte-identical. No runtime change (all downgraded rules are
+React-Compiler heuristics on proven-correct working code).
+
+**Verify**: `eslint . → 0 errors (21 warnings)` · `tsc --noEmit → PASS` ·
+`next build → 1509 pages` · `vitest run → 315/315`.
+
+**Files**: `frontend/eslint.config.mjs` · `frontend/components/PriceHistoryChart.tsx` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
 
