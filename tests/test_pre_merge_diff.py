@@ -179,6 +179,38 @@ def test_render_markdown_no_movers():
     assert "universe shifted entirely" in out
 
 
+def test_render_markdown_movers_carry_provenance_caveat():
+    """Issue #669 — the movers table must carry the cold-fetch-vs-warm-cache
+    provenance caveat so reviewers don't misread benign provenance movers as
+    code regressions on rank-neutral PRs."""
+    pr_meta = {"universe_size": 1, "version": "0.9.2", "last_update_utc": "2026-05-20T00:00:00Z"}
+    main_meta = {"universe_size": 1, "version": "0.9.2", "last_update_utc": "2026-05-19T00:00:00Z"}
+    movers = [
+        {
+            "ticker": "KLAC",
+            "pr_rank": 5,
+            "main_rank": 129,
+            "delta_rank": 124,
+            "pr_score": 73.37,
+            "main_score": 63.13,
+            "delta_score": 10.24,
+        }
+    ]
+    out = render_markdown(pr_meta, main_meta, movers, [], [], age_days=0.2)
+    assert "cold-fetch (PR) vs warm-cache" in out
+    assert "compute/scoring/**" in out
+    assert "#669" in out
+
+
+def test_render_markdown_no_movers_omits_provenance_caveat():
+    """The caveat rides with the movers table — when there are no shared
+    movers there is nothing to caveat, so it must not appear."""
+    pr_meta = {"universe_size": 1, "version": "0.9.2", "last_update_utc": "2026-05-20T00:00:00Z"}
+    main_meta = {"universe_size": 1, "version": "0.9.2", "last_update_utc": "2026-05-19T00:00:00Z"}
+    out = render_markdown(pr_meta, main_meta, [], [], [], age_days=1.0)
+    assert "cold-fetch (PR) vs warm-cache" not in out
+
+
 def test_render_markdown_universe_additions_truncated(tmp_path):
     pr_meta = {"universe_size": 15, "version": "0.9.2", "last_update_utc": "2026-05-20T00:00:00Z"}
     main_meta = {"universe_size": 1, "version": "0.9.2", "last_update_utc": "2026-05-19T00:00:00Z"}
