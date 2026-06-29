@@ -174,6 +174,22 @@ env:
   # despite the dep being `[dev]`-only and never installed by the job's
   # `.[factors]` install.
   QR_SKIP_SEC_HEALTH: "1"
+  # Phase 9.1b — pre-merge-prod-sim skips the Broad Investable US universe
+  # probe.  The probe calls either the edgartools bundled parquet (no network)
+  # or the live SEC company_tickers.json endpoint (requires EDGAR_USER_AGENT
+  # and a network round-trip).  Dependabot PRs run with an empty
+  # EDGAR_USER_AGENT (GitHub secret-isolation since 2021) so the live path
+  # would raise a hard EnvironmentError rather than gracefully degrade — the
+  # sim would succeed but emit a warning-level error that pollutes the diff
+  # comment.  Even on regular PRs the bundled-parquet path is non-deterministic
+  # (depends on the edgartools version cached on the runner) and the live fetch
+  # adds latency to a sim that already runs close to the 270-min ceiling.
+  # `_run_broad_universe_probe` reads BROAD_UNIVERSE_SKIP_ENV_VAR and returns
+  # the all-None dict immediately, leaving the 6 broad_universe_* Metadata
+  # fields as None — byte-identical for the composite-score diff this sim
+  # checks.  The weekday cron (compute-rankings.yml) does NOT set this flag
+  # so the probe runs there and populates the canary Metadata fields.
+  QR_SKIP_BROAD_UNIVERSE: "1"
 
 permissions:
   contents: read

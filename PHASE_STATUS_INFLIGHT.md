@@ -9601,3 +9601,49 @@ version pin + alpha158 DeadlineExceeded, both documented above) · schema_check 
 DRAFT PR only — do NOT merge, do NOT flip Ready.
 
 ---
+
+## PR #TBD — ci(compute): Phase 9.1b — wire broad-universe probe into weekday cron + pre-merge-sim escape hatch (in flight, 2026-06-29)
+
+Phase 9.1b is the minimal follow-up to Phase 9.1 (#TBD) that:
+1. Confirms the broad-universe probe IS wired into `run_weekly_compute` (done in
+   Phase 9.1 via the `_run_broad_universe_probe` call immediately after Step 1
+   prices — no new compute/** changes needed here).
+2. Adds `QR_SKIP_BROAD_UNIVERSE=1` to `.github/workflows/pre-merge-prod-sim.yml`
+   so the sim skips the live SEC company_tickers.json fetch (Dependabot PRs have
+   no `EDGAR_USER_AGENT`; the bundled-parquet path is non-deterministic on CI
+   runners; composite-score diff is unaffected since the 6 fields are write-only).
+3. Updates the CLAUDE.md §Gotchas `broad_universe_*` entry to reflect the probe
+   now runs on the weekday cron, reusing the SP1500 `prices_by_ticker` dict.
+4. Updates AGENTS.md §In flight with the Phase 9.1b branch.
+
+**Branch**: `claude/phase-9-1b-cron-wiring` (depends on `claude/phase-9-1-broad-investable-probe`).
+
+**Probe input verification**: the probe passes the Step-1 `prices_by_ticker` dict
+(SP1500 ~1502 names) to `screen_broad_universe_investability` — no extra yfinance
+round-trips. `broad_universe_coverage_pct` measures the SP1500∩Broad / Broad total
+overlap (~40–45% expected). This is intentional and cheap. Phase 9.3 (future PR,
+gated on ≥1 cron confirming plausible values) will extend price-fetching to the full
+Broad candidate pool and push coverage toward ~95%+.
+
+**Escape hatch pattern**: `QR_SKIP_BROAD_UNIVERSE=1` → `_run_broad_universe_probe`
+returns the all-None dict immediately; the 6 `broad_universe_*` Metadata fields
+are None. The weekday cron does NOT set this flag. The pre-merge sim DOES.
+
+**Rule 18 hard constraint** (unchanged from Phase 9.1): all six `broad_universe_*`
+Metadata fields MUST NEVER be read by scoring, composite, pillar computation,
+veto/flag logic, fair-price, or `select_picks`. Write-only, observability-only.
+
+**Hard naming constraint** (unchanged): "Broad Investable US" everywhere.
+NEVER "Russell 3000" / "Russell-3000-class" / "equivalent to Russell 3000".
+
+**No schema change**: the 6 fields already exist on `main` via Phase 9.1.
+Rankings/scores/flags BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+**Files**: `.github/workflows/pre-merge-prod-sim.yml` (QR_SKIP_BROAD_UNIVERSE added) ·
+`CLAUDE.md` (§Gotchas broad_universe entry updated — probe now runs on cron) ·
+`AGENTS.md` (§In flight updated to note 9.1b) · `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Gate**: ruff PASS · offline pytest pass · schema_check PASS (no schema change) ·
+DRAFT PR only — do NOT merge, do NOT flip Ready.
+
+---
