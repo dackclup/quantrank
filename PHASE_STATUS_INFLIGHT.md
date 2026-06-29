@@ -8995,3 +8995,23 @@ collection errors; CI runs the complete suite and is the source of truth.
 (this).
 
 ---
+
+## PR #TBD — fix(frontend): Current-picks sold-row return = realized exit (match Rotation-history) (in flight, 2026-06-29)
+
+Current-picks and Rotation-history showed DIFFERENT returns for the same sold ticker
+(KLAC sold May 2026: Current-picks +578.4% vs Rotation-history +711.7%). Root cause:
+`mwrForSoldTicker` in `AiPickPortfolio.tsx` resolved the top-level flat
+`data.mwrByTicker` FIRST, which for a sold name stops at its last HELD quarter
+(KLAC 22 legs, through Feb 2026) — one quarter short of the realized exit. The
+prior-rebalance per-quarter map (`priorMwrByTicker`, 23 legs through the May-2026
+sell close) is the realized-exit value (financial-engineer Case-B design) and is
+what `HoldingsTimeline.tsx` already uses. Fix: flip precedence for SOLD rows to
+`priorMwrByTicker?.[ticker] ?? data.mwrByTicker[ticker] ?? null` (one line, L297),
+mirroring HoldingsTimeline L~437. Held/New rows unchanged. Frontend-only, NO schema
+change. tsc/build clean; vitest 310/310 (+8, incl. a cross-table consistency assert).
+
+**Files**: `frontend/components/AiPickPortfolio.tsx` · `frontend/components/HoldingsTimeline.test.ts` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: CI (tsc/build/vitest); display-logic fix mirrors an existing reviewed pattern.
+
+---
