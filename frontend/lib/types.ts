@@ -653,6 +653,38 @@ export type Metadata = {
   // or when the Dividends column is absent from all cached price frames
   // (first run after a cache cold-seed bump).
   div_stream_coverage_pct?: number | null;
+  // Phase 9.1 — Broad Investable US universe coverage probe fields.
+  // Rule 18 observability-before-wiring (issue #661 follow-up).
+  // WRITE-ONLY / OBSERVABILITY-ONLY: these six fields MUST NEVER be read by
+  // scoring, composite, pillar computation, veto/flag logic, fair-price, or
+  // select_picks. Rankings/scores/flags are byte-identical.
+  // Defense layer UNCHANGED at 36.
+  //
+  // HARD NAMING CONSTRAINT (legal/trademark, 2026-06-29):
+  //   "Broad Investable US" only — NEVER "Russell 3000" /
+  //   "Russell-3000-class" / "equivalent to Russell 3000".
+  //
+  // All six are null when QR_SKIP_BROAD_UNIVERSE=1 or when the probe failed.
+  // `broad_universe_raw_count` — total entries in the candidate pool after
+  // exchange + name/format exclusions applied inside the fetcher.
+  broad_universe_raw_count?: number | null;
+  // `broad_universe_candidate_count` — same as raw_count on the 9.1 Probe
+  // slice; kept as a distinct field for future pre-/post-exclusion accounting.
+  broad_universe_candidate_count?: number | null;
+  // `broad_universe_screened_count` — number of candidates passing BOTH the
+  // price >= $5 AND ADV >= $5M floors using Step-1 prices already in memory.
+  // Lower-bound estimate on this slice (only SP1500 prices available).
+  broad_universe_screened_count?: number | null;
+  // `broad_universe_price_fail_pct` — % of candidates (with prices) whose
+  // last-close was below $5. Range 0–100. Null when no candidates had prices.
+  broad_universe_price_fail_pct?: number | null;
+  // `broad_universe_adv_fail_pct` — % of candidates (with prices, passing
+  // price floor) whose trailing-30d ADV was below $5M. Range 0–100.
+  broad_universe_adv_fail_pct?: number | null;
+  // `broad_universe_coverage_pct` — % of the candidate pool with any Step-1
+  // price data. Expected ~40–45% on 9.1 Probe (SP1500 ∩ Broad / Broad total).
+  // Acts as a Rule-18 gate: Phase 9.3 should push this toward ~95%+.
+  broad_universe_coverage_pct?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
