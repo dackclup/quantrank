@@ -265,11 +265,13 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
   // hasMwr drives whether the column header shows "Your return" vs "Return".
   const hasMwr = Object.keys(data.mwrByTicker).length > 0;
 
-  // CASE B: prior rebalance's per-quarter mwrByTicker — used as a fallback for
-  // sold rows in the Current-picks table when the top-level position_returns
-  // doesn't carry the ticker (can happen when the artifact's per-quarter engine
-  // writes the realized exit return into the LAST quarter the name was held, not
-  // the quarter it exited). Falls back to undefined when there is no prior quarter.
+  // CASE B: prior rebalance's per-quarter mwrByTicker — the CANONICAL source for
+  // sold rows.  The engine writes a sold ticker's realized-exit MWR into the last
+  // quarter the name was held (rebalances[-2].position_returns), not into the
+  // current-quarter map.  The top-level flat map may be one leg short for names
+  // that exited this quarter (e.g. KLAC: 22 legs flat vs 23 legs here).
+  // mwrForSoldTicker() therefore looks here FIRST, mirroring HoldingsTimeline.
+  // Falls back to undefined when there is no prior quarter (initial basket).
   const priorMwrByTicker = timeline.length >= 2
     ? timeline[timeline.length - 2].mwrByTicker
     : undefined;
@@ -278,11 +280,21 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
     return data.mwrByTicker[ticker] ?? null;
   }
 
-  // MWR lookup for SOLD rows: tries the top-level map first (already covers
-  // many cases), then falls back to the prior rebalance's per-quarter map
-  // (CASE B). Returns null when neither source has the ticker.
+  // MWR lookup for SOLD rows: prior-quarter map FIRST (realized exit, CASE B),
+  // then the top-level flat map as fallback.
+  //
+  // WHY THE PRIOR-QUARTER MAP IS CANONICAL FOR SOLD ROWS:
+  //   The engine records a sold ticker's final realized-exit MWR into the
+  //   LAST quarter it was held (rebalances[-2].position_returns), which includes
+  //   the final held-quarter leg.  The top-level flat map (position_returns at
+  //   the top level of backtest_pit.json) stops at "legs computed at the
+  //   previous cron" — it may be one leg short (e.g. KLAC: 22 legs in flat
+  //   vs 23 legs in prior-quarter map = the realized-exit value).
+  //   This precedence exactly mirrors HoldingsTimeline.tsx's sold-row lookup:
+  //   `prevMwrByTicker?.[ticker] ?? mwrByTicker?.[ticker] ?? null` (line ~437).
+  //   HELD rows continue to use mwrForTicker (flat map only) — no change there.
   function mwrForSoldTicker(ticker: string): MwrPositionReturn | null {
-    return data.mwrByTicker[ticker] ?? priorMwrByTicker?.[ticker] ?? null;
+    return priorMwrByTicker?.[ticker] ?? data.mwrByTicker[ticker] ?? null;
   }
 
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);

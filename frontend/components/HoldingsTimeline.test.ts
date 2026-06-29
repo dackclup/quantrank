@@ -14,7 +14,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import type { AiPickTimelineEntry, AiPickTimelineHolding } from '@/lib/types';
+import type { AiPickTimelineEntry, AiPickTimelineHolding, MwrPositionReturn } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
 // Helpers that mirror the QuarterDrawer resolution logic exactly —
@@ -239,5 +239,147 @@ describe('AiPickTimelineEntry.bandSectors type contract', () => {
     const sectorByTicker = buildHoldingsSectorByTicker(entry.holdings);
     const resolved = buildResolvedSectorByTicker(sectorByTicker, entry.bandSectors);
     expect(resolved['HP'] ?? '').toBe('');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 5. mwrForSoldTicker precedence — AiPickPortfolio Current-picks sold rows
+//
+// Contracts the resolution order in mwrForSoldTicker():
+//   priorMwrByTicker?.[ticker]  (realized-exit, canonical)  FIRST
+//   data.mwrByTicker[ticker]    (top-level flat map)         FALLBACK
+//
+// This mirrors HoldingsTimeline QuarterDrawer's sold-row lookup:
+//   prevMwrByTicker?.[ticker] ?? mwrByTicker?.[ticker] ?? null
+//
+// The inversion from the original flat-map-first order is the BUGFIX that
+// makes both tables show the same realized-exit MWR for sold tickers.
+//
+// Ground truth example (KLAC, May-2026 rebalance):
+//   top-level flat map  → mwr_pct=578.37, legs_used=22  (WRONG — one leg short)
+//   prior-quarter map   → mwr_pct=711.69, legs_used=23  (CORRECT — through exit)
+// ---------------------------------------------------------------------------
+
+/**
+ * Pure implementation of mwrForSoldTicker() extracted from AiPickPortfolio.tsx.
+ * Mirrors the component function exactly so the test contracts the same logic.
+ */
+function mwrForSoldTicker(
+  ticker: string,
+  flatMwrByTicker: Record<string, MwrPositionReturn>,
+  priorMwrByTicker: Record<string, MwrPositionReturn> | undefined,
+): MwrPositionReturn | null {
+  return priorMwrByTicker?.[ticker] ?? flatMwrByTicker[ticker] ?? null;
+}
+
+/**
+ * Pure implementation of mwrForTicker() (HELD rows) — unchanged path.
+ * Must NOT look at priorMwrByTicker.
+ */
+function mwrForTicker(
+  ticker: string,
+  flatMwrByTicker: Record<string, MwrPositionReturn>,
+): MwrPositionReturn | null {
+  return flatMwrByTicker[ticker] ?? null;
+}
+
+function makeMwr(mwr_pct: number, legs_used: number): MwrPositionReturn {
+  return {
+    mwr_pct,
+    twr_pct: null,
+    contrib_nav_pts: null,
+    since_date: '2020-08-14',
+    partial_history: false,
+    legs_used,
+  };
+}
+
+describe('mwrForSoldTicker — sold-row MWR resolution precedence (Current-picks fix)', () => {
+  it('returns the prior-quarter value (realized exit) when both maps contain the ticker', () => {
+    // KLAC ground-truth scenario: flat map has 22 legs (stale), prior-quarter has 23 (realized).
+    const flatMap: Record<string, MwrPositionReturn> = {
+      KLAC: makeMwr(578.37, 22),
+    };
+    const priorMap: Record<string, MwrPositionReturn> = {
+      KLAC: makeMwr(711.69, 23),
+    };
+
+    const result = mwrForSoldTicker('KLAC', flatMap, priorMap);
+
+    expect(result?.mwr_pct).toBe(711.69);
+    expect(result?.legs_used).toBe(23);
+  });
+
+  it('Current-picks sold row and HoldingsTimeline sold row now return the SAME mwr_pct', () => {
+    // Assert the two resolution functions agree — this is the core contract.
+    const flatMap: Record<string, MwrPositionReturn> = {
+      KLAC: makeMwr(578.37, 22),
+    };
+    const priorMap: Record<string, MwrPositionReturn> = {
+      KLAC: makeMwr(711.69, 23),
+    };
+
+    // Current-picks (mwrForSoldTicker — prior FIRST)
+    const currentPicksResult = mwrForSoldTicker('KLAC', flatMap, priorMap);
+    // HoldingsTimeline (prevMwrByTicker first, then current mwrByTicker — identical logic)
+    const holdingsTimelineResult = priorMap['KLAC'] ?? flatMap['KLAC'] ?? null;
+
+    expect(currentPicksResult?.mwr_pct).toBe(holdingsTimelineResult?.mwr_pct);
+    expect(currentPicksResult?.legs_used).toBe(holdingsTimelineResult?.legs_used);
+  });
+
+  it('falls back to the flat map when prior-quarter map is undefined (no prior quarter)', () => {
+    const flatMap: Record<string, MwrPositionReturn> = {
+      AAPL: makeMwr(123.45, 10),
+    };
+
+    const result = mwrForSoldTicker('AAPL', flatMap, undefined);
+
+    expect(result?.mwr_pct).toBe(123.45);
+  });
+
+  it('falls back to the flat map when prior-quarter map does not contain the ticker', () => {
+    const flatMap: Record<string, MwrPositionReturn> = {
+      NVDA: makeMwr(999.0, 15),
+    };
+    const priorMap: Record<string, MwrPositionReturn> = {
+      // NVDA absent — only other tickers present
+      MSFT: makeMwr(50.0, 8),
+    };
+
+    const result = mwrForSoldTicker('NVDA', flatMap, priorMap);
+
+    // Falls back to flat map when prior map lacks the ticker
+    expect(result?.mwr_pct).toBe(999.0);
+  });
+
+  it('returns null when both maps lack the ticker', () => {
+    const flatMap: Record<string, MwrPositionReturn> = {};
+    const priorMap: Record<string, MwrPositionReturn> = {};
+
+    const result = mwrForSoldTicker('UNKNOWN', flatMap, priorMap);
+
+    expect(result).toBeNull();
+  });
+
+  it('returns null when both maps are empty', () => {
+    const result = mwrForSoldTicker('TSLA', {}, undefined);
+    expect(result).toBeNull();
+  });
+});
+
+describe('mwrForTicker — HELD-row MWR resolution (unchanged path)', () => {
+  it('resolves from the flat map for held rows (prior-quarter map is NOT consulted)', () => {
+    const flatMap: Record<string, MwrPositionReturn> = {
+      AAPL: makeMwr(200.0, 12),
+    };
+    // Even if prior map had a different value, held rows MUST use the flat map.
+    const result = mwrForTicker('AAPL', flatMap);
+    expect(result?.mwr_pct).toBe(200.0);
+  });
+
+  it('returns null for a ticker absent from the flat map', () => {
+    const flatMap: Record<string, MwrPositionReturn> = {};
+    expect(mwrForTicker('MSFT', flatMap)).toBeNull();
   });
 });
