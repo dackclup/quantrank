@@ -191,10 +191,12 @@ def _run_orchestrator(
         monkeypatch.setenv(key, val)
 
     # ``compute.main`` import is deferred into the patch stack so the
-    # module-level ``get_sp500_constituents`` and ``_fetch_prices_one``
-    # symbols are resolved AFTER the patches are applied.
+    # module-level ``get_sp500_constituents`` symbols are resolved AFTER
+    # the patches are applied.  ``_fetch_prices_one`` now lives in
+    # ``compute.orchestrator.prices`` (PR #259-R2) — patch it there so
+    # the call inside ``fetch_all_prices`` is intercepted correctly.
     with (
-        patch("compute.main._fetch_prices_one", side_effect=_fake_fetch_prices_one),
+        patch("compute.orchestrator.prices._fetch_prices_one", side_effect=_fake_fetch_prices_one),
         patch("compute.main._fundamentals_one", return_value=(_HARNESS_SNAP, 0.1)),
         patch("compute.main._history_one", return_value=(pd.DataFrame(), 0.1)),
         patch("compute.main.get_sp500_constituents", return_value=_HARNESS_UNIVERSE),
