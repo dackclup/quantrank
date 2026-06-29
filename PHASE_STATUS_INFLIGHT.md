@@ -9358,3 +9358,38 @@ raw `composite_score`), agent-output-verifier TRUSTWORTHY.
 **R3-R7 follow**: coverage dict accumulators (R3) · form4 latencies (R4) · prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
 
 ---
+
+## ci(simulate): pre-merge-prod-sim movers provenance caveat (issue #669, in flight, 2026-06-29)
+
+`ci`: annotate the `pre-merge-prod-sim` diff so reviewers don't misread benign
+provenance movers as code regressions. The sim diffs a COLD full re-fetch (PR
+branch) against the COMMITTED `main` baseline (cron warm-cache), so the two sides
+resolve slightly different EDGAR/yfinance fundamentals → `composite_score` /
+rank movers that are NOT a code effect on rank-neutral PRs (the #631 + #652
+pre-merge-prod-sim diffs were both adjudicated DATA-DRIFT/provenance on exactly
+this basis). Surfaced during #652 (issue #16) merge, where KLAC (rank 5 vs 129),
+V, TLN movers cost a full agent-output-verifier + data-pipeline-engineer pass to
+re-confirm benign.
+
+Change (tooling-only, NO schema bump, NO workflow YAML change):
+- `tools/pre_merge_diff.py`: new `PROVENANCE_CAVEAT_LINES` constant appended under
+  the movers table (only when movers exist) — a standing blockquote stating the
+  movers are cold-fetch-vs-warm-cache provenance, and that a mover is a genuine
+  regression ONLY if the PR diff touches `compute/scoring/**` / `compute/valuation/**`
+  / `compute/ingest/**`. Explicitly notes OSAP is observability-only (Rule 18) and
+  does NOT feed `composite_score`, so `QR_SKIP_OSAP` in the sim cannot explain
+  `composite_score` movers (debunks the #652-investigation red herring). Cross-refs
+  #631 / #669.
+- `tests/test_pre_merge_diff.py`: +2 tests — caveat present when movers exist
+  (incl. `compute/scoring/**` + `#669` substrings), absent when no shared movers.
+
+Rankings/scores/flags BYTE-IDENTICAL (this touches only the sim's PR-comment
+rendering — no compute path). Defense layer UNCHANGED at 38.
+
+**Verify**: `ruff check tools/pre_merge_diff.py tests/test_pre_merge_diff.py` clean ·
+`pytest tests/test_pre_merge_diff.py` 20 passed (18 + 2 new).
+
+**Files**: `tools/pre_merge_diff.py` · `tests/test_pre_merge_diff.py` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

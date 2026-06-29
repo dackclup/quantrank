@@ -40,6 +40,30 @@ TOP_N: int = 10
 STALE_THRESHOLD_DAYS: int = 7
 UNIVERSE_PREVIEW_MAX: int = 10
 
+# Standing reviewer caveat appended under the movers table (issue #669).
+# The baseline is the COMMITTED main output (cron warm-cache), while the PR
+# branch is a COLD full re-fetch — so the two sides resolve slightly different
+# EDGAR/yfinance fundamentals (XBRL/TTM resolution, share counts). On a
+# rank-neutral PR the movers are therefore data-PROVENANCE artifacts, NOT a
+# code effect. The #631 + #652 pre-merge-prod-sim diffs were both adjudicated
+# DATA-DRIFT/provenance on exactly this basis. A mover is only a genuine
+# code-induced regression if the PR diff touches the scoring inputs:
+# compute/scoring/** · compute/valuation/** · compute/ingest/**. (OSAP does
+# NOT feed composite_score — it is observability-only, Rule 18 — so QR_SKIP_OSAP
+# in the sim cannot explain composite_score movers.)
+PROVENANCE_CAVEAT_LINES: list[str] = [
+    "> **Movers are cold-fetch (PR) vs warm-cache (committed main) "
+    "fundamentals provenance, not necessarily a code effect.** The baseline is "
+    "the cron's last-committed output (warm cache); the PR branch is a cold "
+    "full re-fetch, so EDGAR/yfinance resolve slightly different fundamentals "
+    "for some tickers — reordering ranks in dense bands. On a rank-neutral PR "
+    "this is expected (cf. #631, #652). Treat a mover as a real regression "
+    "ONLY if this PR's diff touches `compute/scoring/**`, `compute/valuation/**`, "
+    "or `compute/ingest/**` — otherwise cross-check the diff before flagging it. "
+    "See #669.",
+    "",
+]
+
 
 def load_rankings(path: Path) -> dict[str, dict[str, Any]]:
     """Load rankings.json → ``{ticker: {rank, composite_score}}``."""
@@ -179,6 +203,7 @@ def render_markdown(
                 f"{_signed(m['delta_score'])} |"
             )
         lines.append("")
+        lines.extend(PROVENANCE_CAVEAT_LINES)
     else:
         lines.append(
             "_No shared tickers between PR and main — universe shifted entirely._"
