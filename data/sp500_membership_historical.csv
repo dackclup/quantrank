@@ -20,6 +20,8 @@ effective_date,ticker,action,name,source_url,notes
 #
 # License posture (per Research Report v1.0 License section):
 #   - Factual list (uncopyrightable per Feist 1991 + 17 U.S.C. 102(b)).
+2026-06-24,ECHO,ADD,EchoStar,https://ir.echostar.com/news-releases/news-release-details/echostar-changing-stocker-ticker-sats-echo-marking-companys-next,"Ticker rename from SATS (eff. 2026-06-24); same issuer/CIK, S&P 500 membership unchanged (added 2026-03-23 as SATS)"
+2026-06-24,SATS,REMOVE,EchoStar,https://ir.echostar.com/news-releases/news-release-details/echostar-changing-stocker-ticker-sats-echo-marking-companys-next,"Ticker rename SATS->ECHO (eff. 2026-06-24); REMOVE old + ADD new per rename-aware convention, NOT an index removal"
 2026-06-22,MRVL,ADD,Marvell Technology,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,"Replaced POOL (eff. 2026-06-22, ann. 2026-06-05; Q2 quarterly rebalance)"
 2026-06-22,FLEX,ADD,Flex,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,"Replaced CPB (eff. 2026-06-22, ann. 2026-06-05; Q2 quarterly rebalance)"
 2026-06-22,POOL,REMOVE,Pool Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,"Moved to S&P SmallCap 600 (market-cap decline); replaced by MRVL (eff. 2026-06-22, ann. 2026-06-05)"

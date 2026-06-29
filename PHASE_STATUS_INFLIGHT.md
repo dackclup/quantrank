@@ -8940,3 +8940,58 @@ dependency-auditor + security-reviewer ran before Mark-Ready.
 (new) · `frontend/.eslintrc.json` (removed) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR #653 — fix(data)+docs: SATS→ECHO ledger rename + multi_class docstring; close #455 (in flight, 2026-06-29)
+
+**Branch**: `claude/actionable-issues-ee38bz`
+**Type**: fix(data) + docs — NO `compute/**` logic / schema / frontend change; no
+schema bump; rankings/scores/output BYTE-IDENTICAL. Clears three "actionable-now"
+open issues surfaced by an open-issue triage.
+
+**#568 (ledger verifier FAIL → CLEAN).** `scripts/verify_membership_ledger.py`
+was red. The two ORIGINAL items were already fixed by #602 (POOL got its REMOVE
+row in the Q2 rebalance; the 2016-18 size-band overage was absorbed by the band
+ceiling bump to 508 for the UA/UAA dual-class era). The REMAINING red was a NEW,
+different cause: **SATS** (EchoStar) was ADDed 2026-03-23 but absent from the
+current universe with no REMOVE. Web-verified ground truth: EchoStar was NOT
+removed from the S&P 500 — it **renamed its ticker SATS → ECHO effective
+2026-06-24** (ECHO is present in the live sp500 anchor; the EchoStar IR press
+release is the source). Per the ledger's documented RENAME-AWARE convention
+("a ticker symbol change appears as REMOVE old + ADD new on the rename date";
+CDAY→DAY precedent), added a 2026-06-24 rename pair (`ECHO` ADD + `SATS` REMOVE).
+Verifier now **CLEAN** (0 months out of band). Backtest-survivorship only; live
+rankings unaffected.
+
+**#484 Item 1 (docs-only).** `compute/scoring/multi_class_shares.py` module
+docstring still described a *corruption* detector ("~2× the real per-class value",
+"violates the identity Σ per-class market_cap = aggregate"). Post-#456 RATIFY-B
+(ASC 260) + the #261 CLOSE-AS-CORRECT verdict, the company-total aggregate IS the
+correct equity value, so the module is an INFORMATIONAL multi-class-filer detector.
+Rewrote the docstring to match current semantics; explicitly noted that the
+user-visible annotate-string relabel (Item 2) stays deferred to the Q3 2026-08-19
+cohort audit. No logic/behavior change.
+
+**#455 (already implemented → recommend CLOSE).** Investigation found the
+CIK/issuer-level dual-listed dedup is ALREADY shipped in
+`compute/portfolio/weights.py`: `_DUAL_CLASS_GROUP` (all 3 pairs GOOG/GOOGL,
+FOX/FOXA, NWS/NWSA) + `_company_key` + `select_picks`'s `seen_issuers` collapse,
+on the single `select_picks` path used by BOTH live AI-pick and the
+`scripts/backfill_portfolio_pit.py` backtest. It canonicalizes to a fixed class
+(no cross-quarter churn) rather than the issue's liquidity tie-break — a stronger
+design. Covered by 4 tests in `tests/test_portfolio/test_weights.py`. No code
+change; only optional unaddressed sub-item is the detail-page "sibling deduped"
+annotation (UX nicety). Issue recommended for closure.
+
+**Verification**: `scripts/verify_membership_ledger.py` CLEAN · `ruff check
+compute/scoring/multi_class_shares.py` PASS · targeted offline pytest
+(`test_multi_class_shares` + `test_weights` + `test_historical_universe`) 84
+passed · `tools/preflight.py` non-pytest guards (ruff / doc-count / model-pin /
+agent-hook / defense-layer) PASS. Local pytest caveat: the sandbox lacks several
+optional deps (`openassetpricing` etc.) so the full offline suite has unrelated
+collection errors; CI runs the complete suite and is the source of truth.
+
+**Files**: `data/sp500_membership_historical.csv` (SATS→ECHO rename pair) ·
+`compute/scoring/multi_class_shares.py` (docstring) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---

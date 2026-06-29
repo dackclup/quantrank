@@ -1,45 +1,51 @@
-"""Multi-class shares aggregate-overcount annotate (Issue #261).
+"""Multi-class aggregate-filer detector (Issue #261; post-#456 informational).
 
 Detects tickers in the universe that share a CIK with at least one
 other ticker — the signature of a multi-class issuer whose SEC
-``companyfacts`` API returns the AGGREGATE share count across all
-classes rather than the per-class breakdown. When such tickers
-appear at S&P 500 scale (market_cap > 10% of universe median),
-each per-class ticker's reported ``market_cap`` is the aggregate
-(~2× the real per-class value), producing a user-visible $4-5T
-market cap display for what is actually a ~$1T company per class.
+``companyfacts`` API reports the company-TOTAL share count across all
+classes rather than a per-class breakdown.
 
-Examples on the 2026-05-23 cron #3:
+**Post-#456 semantics (RATIFY-B, ASC 260).** The #456 dual-class fix
+made ``raw_metrics.shares_outstanding`` the SEC company-total aggregate
+on purpose, and the #261 CLOSE-AS-CORRECT verdict (methodology-scientist,
+2026-06-15) confirmed that basis is *correct* under ASC 260: the
+aggregate market_cap IS the issuer's real equity value (Alphabet's
+~$4.34T is correct; the per-class listed count lives in display-only
+``shares_outstanding_listed_class``). So this module is **not** a
+corruption detector — it is an informational tag that surfaces the
+multi-class-filer pattern at the per-ticker level for cohort visibility.
+Using the per-class count instead would re-introduce the #456
+PE-contamination bug.
 
-- Alphabet: GOOG (Class C) + GOOGL (Class A), CIK ``0001652044``,
-  both reporting market_cap $4.6T vs real ~$1.05T per class.
+Examples (steady state — six known S&P 500 multi-class lines):
+
+- Alphabet: GOOG (Class C) + GOOGL (Class A), CIK ``0001652044`` —
+  both report the company-total market_cap (correct, ASC 260).
 - News Corp / Fox: NWS + NWSA and FOX + FOXA share CIKs and also
   fire this flag — they ALSO appear in the PR #257
-  ``MULTI_CLASS_SHARE_ALLOWLIST`` (which handles the
+  ``MULTI_CLASS_SHARE_ALLOWLIST`` (which handles a separate
   *companyfacts-undercount* pattern by per-filing XBRL dimensional
-  SUM, distinct from this overcount pattern). The two flags are
-  orthogonal: PR #257's dimensional override corrects undercounts
-  via the ingest layer; this annotate surfaces the structural
-  pattern at the per-ticker level for Q3 audit visibility.
+  SUM, distinct from this detector). The two are orthogonal: PR #257's
+  dimensional override corrects undercounts via the ingest layer; this
+  annotate surfaces the multi-class-filer structure at the per-ticker
+  level for Q3 audit visibility.
 
 Annotate-only per :mod:`portable-annotate-before-veto`. Composite
 rank UNCHANGED — the flag surfaces in
 ``StockDetail.valuation_warnings`` for the detail-page UI and
 ``Metadata.multi_class_aggregate_shares_suspected_count`` for Q3
-2026-08-19 quarterly-audit cohort visibility. A structural fix for
-the GOOG/GOOGL overcount path (reverse-allowlist per-class XBRL
-extraction) lands in a follow-up PR after ``edgar-debugger``
-verifies Alphabet's dimensional context shape.
+2026-08-19 quarterly-audit cohort visibility. The user-visible
+annotate string still reads as a "suspected" tag; relabeling it to an
+explicit "multi-class aggregate filer" informational tag is deferred to
+the Q3 2026-08-19 cohort audit (Issue #484 Item 2) so the
+output-semantics change moves with that review.
 
 Anchor: methodology-scientist Mode B verdict on Issue #261
-(2026-05-26). Damodaran 2019 *Investment Valuation* 3rd ed.
-Ch. 16 §"Multiple Classes of Shares" — by accounting identity
-``Σ per-class market_cap = aggregate market_cap``; a per-class
-ticker that reports the aggregate violates the identity. The CIK-
-collision detector is the cleanest universe-level signature — it
-catches Alphabet (CIK ``0001652044``), News Corp / Fox, and any
-future S&P 500 multi-class addition without a hardcoded ticker
-list.
+(2026-05-26) + CLOSE-AS-CORRECT verdict (2026-06-15). Damodaran 2019
+*Investment Valuation* 3rd ed. Ch. 16 §"Multiple Classes of Shares".
+The CIK-collision detector is the cleanest universe-level signature —
+it catches Alphabet (CIK ``0001652044``), News Corp / Fox, and any
+future S&P 500 multi-class addition without a hardcoded ticker list.
 """
 
 from __future__ import annotations
