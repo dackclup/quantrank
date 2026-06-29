@@ -73,13 +73,7 @@ from compute.ingest.fundamentals import (
     fetch_fundamentals_history,
 )
 from compute.ingest.fundamentals import (
-    get_fallback_stats as get_shares_fallback_stats,
-)
-from compute.ingest.fundamentals import (
     get_filing_precheck_skip_count as get_fundamentals_filing_precheck_skip_count,
-)
-from compute.ingest.fundamentals import (
-    reset_fallback_stats as reset_shares_fallback_stats,
 )
 from compute.ingest.fundamentals import (
     reset_filing_precheck_skip_count as reset_fundamentals_filing_precheck_skip_count,
@@ -98,6 +92,7 @@ from compute.ingest.universe import (
     get_sp900_constituents,
     get_sp1500_constituents,
 )
+from compute.orchestrator import ComputeState
 from compute.output.schemas import (
     DataQuality,
     Metadata,
@@ -1058,6 +1053,10 @@ def run_weekly_compute() -> int:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
 
+    # PR #259-R1 — per-run state container (FACADE-FIRST, byte-identical).
+    # R1 seats the shares-fallback metrics; R2-R7 migrate more accumulators.
+    state = ComputeState()
+
     # PR-3d quick wins: probe SEC EDGAR health BEFORE doing any other
     # work. If SEC is degraded, abort the workflow in <1 minute rather
     # than burn the full 90-min ceiling for ~0% coverage. The probe is
@@ -1290,8 +1289,11 @@ def run_weekly_compute() -> int:
     fundamentals_latency: dict[str, float] = {}
     # Issue #246 PR2a (0.10.3-phase4.5e) — reset Rule 18 shares-fallback
     # counters before the fetch loop so this run's counts start at 0.
-    # Read back via ``get_shares_fallback_stats()`` after the loop.
-    reset_shares_fallback_stats()
+    # Read back via ``state.metrics.shares_fallback_stats`` after the loop.
+    # PR #259-R1: routed through MetricsCollector facade (delegates to
+    # fundamentals.reset_fallback_stats() — the module-global + lock are
+    # unchanged; byte-identical behaviour).
+    state.metrics.reset_shares_fallback()
     # Issue #471 — reset the filing-precheck skip counter (Design B, filing-date gate).
     # Read back via ``get_fundamentals_filing_precheck_skip_count()`` after the histogram log.
     reset_fundamentals_filing_precheck_skip_count()
@@ -3506,9 +3508,10 @@ def run_weekly_compute() -> int:
     # Issue #246 PR2a (0.10.3-phase4.5e) — read the universe-wide
     # shares-fallback counters that accumulated inside
     # ``_build_snapshot`` calls during the threaded fundamentals fetch
-    # loop. Lock acquired by ``get_fallback_stats()`` so this returns a
+    # loop. Lock acquired by get_fallback_stats() so this returns a
     # consistent snapshot even if the loop is somehow still running.
-    shares_fallback_stats = get_shares_fallback_stats()
+    # PR #259-R1: routed through MetricsCollector facade (byte-identical).
+    shares_fallback_stats = state.metrics.shares_fallback_stats
     shares_fallback_triggered_count = shares_fallback_stats["triggered"]
     shares_fallback_too_low_count = shares_fallback_stats["too_low"]
     shares_fallback_dimensional_override_count = shares_fallback_stats[

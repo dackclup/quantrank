@@ -9131,3 +9131,33 @@ TRUSTWORTHY. ruff clean; 48/48 validation tests pass.
 **Gate**: ruff; offline pytest (48 validation tests); agent-output-verifier TRUSTWORTHY; display-only, NAV byte-identical.
 
 ---
+
+## PR #259-R1 — Orchestrator refactor R1: ComputeState + MetricsCollector facade (in flight, 2026-06-29)
+
+**Branch**: `claude/orchestrator-refactor-r1`
+**Type**: refactor(compute) — internal restructuring only; no schema bump, no scoring/valuation/ranking change, no frontend change. BYTE-IDENTICAL output (hard gate for all 7 PRs in the #259 series).
+
+**Scope (FACADE-FIRST, conservative)**: R1 is the minimal first slice of the 7-PR incremental refactor of `compute/main.py::run_weekly_compute`. It introduces a `compute/orchestrator/` package with two dataclasses:
+
+- `MetricsCollector` — run-scoped seat for run-level diagnostic metrics. R1 owns the shares-fallback group (6 counters: `triggered` · `too_low` · `dimensional_override` · `per_class_override` · `per_class_attempt` · `mc_reconcile_failure`) via a **thin facade** over the EXISTING `compute.ingest.fundamentals.reset_fallback_stats()` / `get_fallback_stats()` accessors. The module-global `_FALLBACK_STATS` + `_FALLBACK_STATS_LOCK` in `fundamentals.py` are **completely untouched** — thread-safety on the hot ingest path is preserved.
+- `ComputeState` — per-run container; R1 holds only `metrics: MetricsCollector`. Documented as the future home for all `run_weekly_compute` accumulators as R2-R7 migrate them in.
+
+**`compute/main.py` call sites rerouted (2 of 2)**:
+1. `reset_shares_fallback_stats()` (line ~1294) → `state.metrics.reset_shares_fallback()` — same reset, same timing (before the fundamentals ThreadPool).
+2. `shares_fallback_stats = get_shares_fallback_stats()` (line ~3513) → `shares_fallback_stats = state.metrics.shares_fallback_stats` — same dict, same 6 keys, same `.get()` reads at lines ~4113-4119.
+
+**Schema triple**: untouched. `schemas.py` / `types.ts` / `schema-snapshot.json` not modified.
+**`compute/ingest/fundamentals.py`**: not modified (confirmed via `git diff --name-only`).
+**Tests**: 13 new offline unit tests in `tests/test_orchestrator/test_state.py` — all pass.
+
+**Files**:
+- `compute/orchestrator/__init__.py` (new)
+- `compute/orchestrator/state.py` (new)
+- `compute/main.py` (2 call-site rewires + 1 import swap + 1 `ComputeState()` instantiation)
+- `tests/test_orchestrator/__init__.py` (new)
+- `tests/test_orchestrator/test_state.py` (new — 13 tests)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**R2-R7 follow** (ordered in the #259 issue): filing-precheck counter (R2) · coverage dict accumulators (R3) · form4 latencies (R4) · prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical; R7 is the final sub-step decomposition.
+
+---
