@@ -8893,7 +8893,7 @@ defense layer UNCHANGED at 38/10. Lockstep: CLAUDE.md + AGENTS.md moved together
 
 ---
 
-## PR #654 — chore(deps): bump Next.js 14.2→16 + React 18→19 (issue #41) (in flight, 2026-06-29)
+## PR #656 — chore(deps): bump Next.js 14.2→16 + React 18→19 (issue #41) (in flight, 2026-06-29)
 
 **Branch**: `claude/next16-bump`
 **Type**: chore(deps) / security — FRONTEND-ONLY (`frontend/**`); NO `compute/**` /
