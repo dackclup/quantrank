@@ -387,23 +387,31 @@ class TestSp500PathIndexMembership:
         cohort = row.get("cohort", "sp500")
         assert cohort == "sp400"
 
-    def test_schema_version_bumped_to_phase8pilot(self):
-        """SCHEMA_VERSION must carry the -phase8pilot suffix after the PR 3a bump.
+    def test_schema_version_carries_phase_pilot_suffix(self):
+        """SCHEMA_VERSION must carry a recognised -phase<N>pilot suffix.
 
-        PR 3a introduced 0.10.21-phase8pilot; the OZK/PBF flip-blocker PR
-        (fundamentals_unavailable veto + Rule-18 counter) bumped it to
-        0.10.22-phase8pilot. The canonical version pin lives in
-        tests/test_config.py::test_schema_version_pinned — this test
-        asserts only the -phase8pilot label presence so it stays stable
-        across subsequent PATCH bumps within the phase8pilot series.
+        PR 3a introduced 0.10.21-phase8pilot.  Phase 9.1 bumped the suffix to
+        -phase9pilot (schema 0.10.42).  This test accepts any -phase<N>pilot
+        label so it stays stable across phase-series transitions without
+        hardcoding a now-stale literal.
+
+        The canonical exact-version pin lives in
+        ``tests/test_config.py::test_schema_version_pinned`` — this test
+        asserts only the label family and the version floor.
         """
+        import re
+
         from compute import config
-        assert config.SCHEMA_VERSION.endswith("-phase8pilot"), (
-            f"Expected SCHEMA_VERSION to end with '-phase8pilot', got {config.SCHEMA_VERSION!r}. "
-            "PR 3a introduced the -phase8pilot label; subsequent patches carry it forward."
+
+        _PHASE_PILOT_PAT = re.compile(r"-phase\d+pilot$")
+        assert _PHASE_PILOT_PAT.search(config.SCHEMA_VERSION), (
+            f"Expected SCHEMA_VERSION to end with '-phase<N>pilot', "
+            f"got {config.SCHEMA_VERSION!r}.  "
+            "PR 3a introduced the -phase8pilot label; phase 9.1 moved to "
+            "-phase9pilot; subsequent patches carry the label forward."
         )
         # Additional floor: must be at least 0.10.21 (the PR 3a introduction).
-        _ver_part = config.SCHEMA_VERSION.split("-")[0]  # e.g. "0.10.22"
+        _ver_part = config.SCHEMA_VERSION.split("-")[0]  # e.g. "0.10.42"
         _parts = [int(x) for x in _ver_part.split(".")]
         assert _parts >= [0, 10, 21], (
             f"SCHEMA_VERSION {config.SCHEMA_VERSION!r} is below the PR 3a floor of 0.10.21."
