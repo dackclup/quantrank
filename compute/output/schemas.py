@@ -1219,6 +1219,80 @@ class Metadata(BaseModel):
     # None when the probe is skipped or the candidate pool is empty.
     broad_universe_coverage_pct: float | None = None
 
+    # ------------------------------------------------------------------ #
+    #  Phase 9.1 — Broad Investable US universe coverage probe            #
+    #  (Rule 18 observability-before-wiring; issue #661 follow-up)        #
+    # ------------------------------------------------------------------ #
+    #
+    # These six fields are the ONLY "broad_universe_*" fields that live in
+    # the Pydantic ↔ TS ↔ snapshot triple.  They are emitted by
+    # ``_run_broad_universe_probe`` in ``compute/main.py`` and sourced from
+    # ``compute/ingest/broad_universe.py``.
+    #
+    # HARD NAMING CONSTRAINT (legal/trademark, 2026-06-29):
+    #   Call this universe "Broad Investable US" everywhere.  NEVER use the
+    #   strings "Russell 3000", "Russell-3000-class", or "equivalent to
+    #   Russell 3000" in any field name, label, comment, or string that
+    #   ships in the repo.
+    #
+    # HARD RULE 18 CONSTRAINT:
+    #   All six fields MUST NEVER be read by scoring, composite, pillar
+    #   computation, veto/flag logic, fair-price, or ``select_picks``.
+    #   They feed ONLY the ``Metadata`` constructor.
+    #   Rankings/scores/flags are BYTE-IDENTICAL whether or not the probe
+    #   ran.  Defense layer is UNCHANGED at 36.
+    #
+    # Lifecycle:
+    #   Phase 9.1 (this PR) — emits the six Metadata fields, no ranked
+    #   names added (SP1500 cron unchanged).
+    #   Phase 9.3 (future PR) — pending ≥ 1 cron confirming plausible
+    #   values, broadens the ranked universe to the full screen-passing set.
+    #
+    # ``broad_universe_raw_count`` — total entries returned by
+    # ``fetch_broad_universe_candidates`` BEFORE any screen (i.e. after
+    # exchange + name/format exclusions that happen inside the fetcher).
+    # Gives a baseline for how many names survive the static exclusions.
+    # None when ``QR_SKIP_BROAD_UNIVERSE=1`` or when the probe errors.
+    broad_universe_raw_count: int | None = None
+    # ``broad_universe_candidate_count`` — same as ``raw_count`` on the
+    # 9.1 Probe slice (the exchange + name/format exclusions are applied
+    # inside the fetcher, so the DataFrame handed to the screen already
+    # reflects them).  Kept as a separate field so a future slice can
+    # expose pre-/post-exclusion counts independently.
+    # None when the probe is skipped or errors.
+    broad_universe_candidate_count: int | None = None
+    # ``broad_universe_screened_count`` — number of tickers in the
+    # candidate pool that pass BOTH the price >= $5 AND ADV >= $5M floors
+    # using the Step-1 prices already in memory.
+    #
+    # NOTE: The 9.1 Probe reuses only the SP1500 prices already fetched in
+    # Step 1.  Tickers outside the SP1500 that have no pre-fetched prices
+    # are counted in ``coverage_pct`` but NOT counted towards the screened
+    # pool here.  The absolute value will therefore be depressed relative
+    # to the true screen-passing size until Phase 9.3 fetches prices for
+    # the full candidate pool.  Use this field as a lower-bound estimate.
+    # None when the probe is skipped or the screen cannot run.
+    broad_universe_screened_count: int | None = None
+    # ``broad_universe_price_fail_pct`` — percentage of candidates (with
+    # price data available) whose last-close price was below
+    # ``BROAD_UNIVERSE_PRICE_FLOOR_USD`` ($5).  Range 0–100.
+    # None when the probe is skipped, or when no candidates had prices.
+    broad_universe_price_fail_pct: float | None = None
+    # ``broad_universe_adv_fail_pct`` — percentage of candidates (with
+    # price data available and passing the price floor) whose trailing-30d
+    # mean dollar volume was below ``ADV_FLOOR_USD`` ($5M, Amihud 2002
+    # illiquidity family).  Range 0–100.
+    # None when the probe is skipped, or when no candidates had prices.
+    broad_universe_adv_fail_pct: float | None = None
+    # ``broad_universe_coverage_pct`` — percentage of the candidate pool
+    # for which the Step-1 prices dict held any price data.  On the 9.1
+    # Probe, this will equal roughly SP1500 ∩ Broad-universe / Broad-
+    # universe total — expected ~40–45% (SP1500 ~1504 / Broad ~3545).
+    # Acts as a Rule-18 gate: once Phase 9.3 extends the price-fetch to
+    # the full candidate pool, this should approach ~95%+.
+    # None when the probe is skipped or the candidate pool is empty.
+    broad_universe_coverage_pct: float | None = None
+
 
 class RawMetrics(BaseModel):
     """Latest fundamentals — TTM for flow items, point-in-time for balance items."""
