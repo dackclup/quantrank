@@ -267,8 +267,22 @@ def test_schema_version_pinned():
     Before that (0.10.28-phase8pilot): S&P 1500 Slice 2 smallcap probe.
     Before that (0.10.27-phase8pilot, #512): Dividend-signal observability.
     Before that (0.10.26, #501): four shadow
-    ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY)."""
-    assert config.SCHEMA_VERSION == "0.10.42-phase9pilot"
+    ``Metadata.cross_source_corruption_*`` fields (SHADOW ONLY).
+
+    Phase 9.1 (0.10.42-phase9pilot, #665): Broad Investable US universe
+    coverage probe — six ``Metadata.broad_universe_*`` fields (SHADOW ONLY).
+
+    Issue #16 weight-demotion delta counter (0.10.43-phase9pilot, 2026-06-29) —
+    ``Metadata.restatement_history_weight_demote_delta_count: int | None``.
+    Shadow counter for the Q3 2026 cohort audit: counts plain-restater tickers
+    (``restatement_history`` in ``valuation_warnings`` but NOT
+    ``restatement_high_confidence``), i.e. the population whose
+    manipulation-index contribution drops 5.0→0.0.  Irregularity tickers carry
+    both flags; their combined total is preserved at 8.0 (0.0 + 8.0).
+    RESTATEMENT_HISTORY_WEIGHT demoted 5.0→0.0;
+    RESTATEMENT_HIGH_CONFIDENCE_WEIGHT raised 3.0→8.0.
+    OBSERVABILITY-ONLY; defense layer UNCHANGED at 38."""
+    assert config.SCHEMA_VERSION == "0.10.43-phase9pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():
@@ -632,3 +646,68 @@ def test_mos_tilt_metadata_field_zero_is_valid():
 
     payload = m.model_dump(mode="json")
     assert payload["mos_tilt_shadow_max_delta_pp"] == 0.0
+
+
+def test_restatement_weight_demote_delta_count_defaults_to_none():
+    """Issue #16 (0.10.42-phase8pilot) — new ``Metadata`` field
+    ``restatement_history_weight_demote_delta_count: int | None`` must
+    default to None on construction (backward-compatible with legacy
+    snapshots that pre-date the demotion PR).
+    """
+    from compute.output.schemas import Metadata
+
+    m = Metadata(
+        version="0.10.42-phase8pilot",
+        last_update_utc="2026-06-29T22:00:00Z",
+        next_update_utc="2026-06-30T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-issue16-default",
+        git_commit="deadbeef",
+    )
+    assert m.restatement_history_weight_demote_delta_count is None
+
+
+def test_restatement_weight_demote_delta_count_round_trips():
+    """Issue #16 (0.10.42-phase8pilot) — ``restatement_history_weight_demote_delta_count``
+    must survive a ``model_dump`` / ``model_validate`` round-trip with an
+    integer value (the SP1500 plain-restater count, expected ~268).
+    """
+    from compute.output.schemas import Metadata
+
+    m = Metadata(
+        version="0.10.42-phase8pilot",
+        last_update_utc="2026-06-29T22:00:00Z",
+        next_update_utc="2026-06-30T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-issue16-round-trip",
+        git_commit="deadbeef",
+        restatement_history_weight_demote_delta_count=268,
+    )
+    assert m.restatement_history_weight_demote_delta_count == 268
+
+    payload = m.model_dump(mode="json")
+    assert payload["restatement_history_weight_demote_delta_count"] == 268
+
+    m2 = Metadata.model_validate(payload)
+    assert m2.restatement_history_weight_demote_delta_count == 268
+
+
+def test_restatement_weight_demote_delta_count_zero_is_valid():
+    """Issue #16: 0 is a valid counter value (no plain-restaters in the
+    scored universe — theoretical but must not raise a validation error).
+    """
+    from compute.output.schemas import Metadata
+
+    m = Metadata(
+        version="0.10.42-phase8pilot",
+        last_update_utc="2026-06-29T22:00:00Z",
+        next_update_utc="2026-06-30T22:00:00Z",
+        universe="SP1500",
+        universe_size=1504,
+        compute_run_id="test-issue16-zero",
+        git_commit="deadbeef",
+        restatement_history_weight_demote_delta_count=0,
+    )
+    assert m.restatement_history_weight_demote_delta_count == 0

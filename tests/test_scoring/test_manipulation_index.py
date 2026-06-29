@@ -30,6 +30,7 @@ from compute.scoring.manipulation_index import (
     PENALTY_BUDGET,
     PENALTY_MULTIPLIER,
     REM_SUSPECT_WEIGHT,
+    RESTATEMENT_HIGH_CONFIDENCE_WEIGHT,
     RESTATEMENT_HISTORY_WEIGHT,
     SLOAN_WEIGHT,
     TRIPLE_FLAG_WEIGHT,
@@ -277,3 +278,83 @@ def test_triple_flag_weight_below_individual_vetoes():
     # whose firing it depends on.
     individual_vetos = (SLOAN_WEIGHT, BENEISH_VETO_WEIGHT, DECHOW_VETO_WEIGHT)
     assert TRIPLE_FLAG_WEIGHT < min(individual_vetos)
+
+
+# ---------------------------------------------------------------------------
+# Issue #16 — restatement_history weight-demotion regression ratchet
+# (Q3 2026 cohort audit, 0.10.42-phase8pilot)
+# ---------------------------------------------------------------------------
+
+
+def test_restatement_history_weight_demoted_to_zero():
+    """Regression ratchet: RESTATEMENT_HISTORY_WEIGHT must be 0.0.
+
+    HLM 2008 SP1500 firing rate ~17.82% vs 1-3% material-restatement
+    prior — bare flag is no longer a useful manipulation-index signal.
+    Methodology-scientist RATIFIED 2026-06-27 (issue #16).
+    This test prevents silent re-inflation.
+    """
+    assert RESTATEMENT_HISTORY_WEIGHT == 0.0
+    assert FLAG_WEIGHTS["restatement_history"] == 0.0
+
+
+def test_restatement_high_confidence_weight_is_eight():
+    """Regression ratchet: RESTATEMENT_HIGH_CONFIDENCE_WEIGHT must be 8.0.
+
+    Weight rose 3.0→8.0 to preserve the confirmed-irregularity total at 8.0
+    after the bare-flag demotion (issue #16, HLM 2008 PPV gap 70% vs 30%).
+    Methodology-scientist RATIFIED 2026-06-27.
+    This test prevents silent reduction back to the prior 3.0.
+    """
+    assert RESTATEMENT_HIGH_CONFIDENCE_WEIGHT == 8.0
+    assert FLAG_WEIGHTS["restatement_high_confidence"] == 8.0
+
+
+def test_plain_restater_contributes_zero_to_index():
+    """Plain-restater (bare restatement_history flag only, no high-confidence
+    co-occurrence) must contribute 0.0 to the manipulation index after the
+    issue #16 weight demotion.
+
+    Before the demotion the bare flag contributed 5.0 pts; after, it is 0.0.
+    This is the critical behavioral contract of the demotion PR.
+    """
+    result = compute_manipulation_index([], ["restatement_history"])
+    assert result == pytest.approx(0.0), (
+        f"Plain-restater (bare restatement_history only) must contribute 0.0; "
+        f"got {result}.  RESTATEMENT_HISTORY_WEIGHT was likely re-inflated."
+    )
+
+
+def test_irregularity_ticker_both_flags_contributes_eight():
+    """Confirmed-irregularity ticker (both flags fire: restatement_history
+    + restatement_high_confidence) must contribute exactly 8.0 points —
+    preserved from the pre-demotion total (5.0 + 3.0 = 8.0).
+
+    Post-demotion the arithmetic is 0.0 + 8.0 = 8.0 (same total, different
+    split).  The fraud-class subset must NOT be penalised less than before.
+    """
+    result = compute_manipulation_index(
+        [],
+        ["restatement_history", "restatement_high_confidence"],
+    )
+    expected = RESTATEMENT_HISTORY_WEIGHT + RESTATEMENT_HIGH_CONFIDENCE_WEIGHT
+    assert result == pytest.approx(expected), (
+        f"Irregularity ticker (both flags) must contribute {expected}; got {result}."
+    )
+    assert result == pytest.approx(8.0)
+
+
+def test_restatement_history_still_in_flag_weights():
+    """DEMOTE, not DEPRECATE: restatement_history must remain a key in
+    FLAG_WEIGHTS even at weight 0.0.
+
+    The flag is still emitted as an informational annotate in
+    valuation_warnings; its presence in FLAG_WEIGHTS keeps the
+    manipulation_components() UI drill-down key-stable (Rule 9 audit
+    trail; 36-flag defense-layer count unchanged).
+    """
+    assert "restatement_history" in FLAG_WEIGHTS, (
+        "'restatement_history' was removed from FLAG_WEIGHTS — "
+        "demote-not-deprecate contract violated.  The flag must remain as "
+        "an annotate; only its weight is 0.0."
+    )

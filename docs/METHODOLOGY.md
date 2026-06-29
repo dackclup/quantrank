@@ -344,8 +344,17 @@ composite.
   sibling of `restatement_high_confidence` (next bullet). Threshold
   provenance: **LITERATURE-ANCHORED on the cite, GUT-FEEL on the 5y
   window** (practitioner default; HLM 2008 §3 used a 5y panel).
-  Next-PR decision (retire bare flag or split weights) waits on the
-  Q3 2026-08-19 cohort acceptance check.
+  **MANIPULATION-INDEX WEIGHT DEMOTED TO 0.0** at the Q3 2026
+  cohort audit (issue #16, methodology-scientist RATIFIED 2026-06-27):
+  the bare flag fires at 17.82% of SP1500 (~268 tickers) vs the HLM
+  2008 material prior of 1-3%, meaning the bare-flag PPV ~30% does
+  not justify index budget once the ~70%-PPV `restatement_high_confidence`
+  sibling (base rate 0.27%) carries the fraud-class subset. The flag
+  is **retained as an informational annotate** emitted to
+  `valuation_warnings` (defense layer count UNCHANGED at 36 — flag
+  not retired, weight zeroed). The companion `Metadata.restatement_
+  history_weight_demote_delta_count` field tracks the affected
+  "plain restater" population each cron.
 - `restatement_high_confidence` _(Phase 2.2, PR #165)_ — Joint
   occurrence of a 10-K/A or 10-Q/A amendment AND an 8-K Item 4.02
   (non-reliance) filing within 90 days. Hennes-Leone-Miller 2008
@@ -355,10 +364,16 @@ composite.
   Schroeder 2024 SSRN §3.2 validates the 90-day co-occurrence window
   as the typical lag from Item 4.02 disclosure to amended-filing
   landing. Strict superset of `restatement_history` — both flags
-  fire together; the manipulation-index weight is a **delta** (+3.0
-  on top of the bare flag's 5.0) per PR #165 review fix. Threshold
-  provenance: **LITERATURE-ANCHORED** (HLM 2008 irregularity
-  signature; 90d window per Schroeder 2024 SSRN).
+  fire together. **Manipulation-index weight 3.0→8.0** (Q3 2026
+  cohort audit, issue #16): prior to this change the weight was
+  framed as a "+3.0 delta on top of the bare flag's 5.0" (total 8.0
+  for confirmed-irregularity tickers). After the bare flag's demotion
+  to 0.0, the high-confidence flag now carries the FULL 8.0
+  irregularity weight independently. The combined irregularity total
+  is preserved at 0.0 + 8.0 = 8.0; plain-restater tickers (bare flag
+  only) correctly net 0.0. Threshold provenance: **LITERATURE-ANCHORED**
+  (HLM 2008 irregularity signature; 90d window per Schroeder 2024 SSRN;
+  weight-8.0 magnitude derived from the HLM PPV ratio 70÷30).
 - `late_filing_notification` _(Phase 4.5d)_ — NT-10K or NT-10Q form
   filed (SEC Rule 12b-25 notice of inability to file on time) in
   the lookback window. Bartov & Konchitchki 2017 *Accounting
@@ -767,14 +782,19 @@ Quarterly cohort audit (issue #130, last refresh 2026-05-21 from
   or split weights vs `rem_suspect` which shares the Roychowdhury
   paper anchor but fires on abnormal CFO/Production/DiscExp WITHIN
   the suspect cohort rather than cohort membership for 3+ years).
-- `restatement_history` **11.75% → 11.8%** fire rate (immaterial-
-  amendment noise). Phase 2.2 ships the `restatement_high_confidence`
-  irregularity signature (10-K/A + 8-K Item 4.02 co-occurrence within
-  90 days, PR #165) as a higher-PPV complement. Bare `restatement_history`
-  retained at weight 5; combined weight 8 when high_confidence fires
-  (Hennes-Leone-Miller 2008 *TAR* irregularity PPV ~70% vs bare ~30%).
-  Decision on whether to retire bare flag deferred to ≥ 1 production
-  cron of cohort acceptance data.
+- `restatement_history` **RESOLVED — DEMOTE-TO-ZERO-WEIGHT** (issue #16,
+  methodology-scientist RATIFIED 2026-06-27). Fire rate grew 11.75% → 11.8%
+  on SP900, then to **17.82% on SP1500** (~268 tickers) — well above the HLM
+  2008 material prior of 1-3%. The bare-flag PPV ~30% does not justify
+  manipulation-index budget once the ~70%-PPV `restatement_high_confidence`
+  sibling (PR #165, base rate 0.27%) already carries the fraud-class subset.
+  Disposition: `RESTATEMENT_HISTORY_WEIGHT` demoted 5.0→0.0; `RESTATEMENT_HIGH_
+  CONFIDENCE_WEIGHT` raised 3.0→8.0 to preserve the confirmed-irregularity
+  combined total at 8.0 (0.0 + 8.0). Plain-restater tickers (bare flag only)
+  now contribute 0.0 to the manipulation index. Flag retained as an
+  informational annotate in `valuation_warnings` (defense layer count UNCHANGED
+  at 36 — weight zero, flag not retired). `Metadata.restatement_history_weight_
+  demote_delta_count` tracks the affected plain-restater population per cron.
 
 These are tracked under issue #150 Phase 2.
 

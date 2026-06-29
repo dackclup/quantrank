@@ -307,6 +307,36 @@ def _count_high_conviction(
     return hc_count, ex_loss_chance_count
 
 
+def _count_restatement_demote_delta(summaries: list[StockSummary]) -> int:
+    """Count summaries whose valuation_warnings carry the bare-restater pattern.
+
+    "Bare restater" = ``restatement_history`` present **and**
+    ``restatement_high_confidence`` absent.  These are the tickers whose
+    manipulation-index contribution drops 5.0→0.0 under the weight demotion
+    (``RESTATEMENT_HISTORY_WEIGHT 5.0→0.0``).  Tickers carrying *both* flags
+    (the irregularity subset) net zero delta because
+    ``RESTATEMENT_HIGH_CONFIDENCE_WEIGHT`` rose 3.0→8.0 to compensate.
+
+    Returns
+    -------
+    int
+        Count of summaries matching the bare-restater predicate.
+
+    Notes
+    -----
+    OBSERVABILITY-ONLY (issue #16) — never reads or mutates scores, composite,
+    pillar logic, veto/flag, fair-price, or ``select_picks``.  Defense layer
+    UNCHANGED at 36.  Pure function — no I/O, no side-effects.  The caller
+    wraps in ``try/except → None`` so failures never block the cron.
+    """
+    return sum(
+        1
+        for _s in summaries
+        if "restatement_history" in set(_s.valuation_warnings)
+        and "restatement_high_confidence" not in set(_s.valuation_warnings)
+    )
+
+
 def _fetch_prices_one(row: pd.Series) -> dict | None:
     """Fetch prices + extract last close for one ticker."""
     ticker = row["ticker"]
@@ -3613,6 +3643,37 @@ def run_weekly_compute() -> int:
         bonferroni_shadow_live_fire_count = None
         bonferroni_shadow_provisional_fire_count = None
 
+    # Issue #16 — restatement_history weight-demotion delta counter
+    # (Q3 2026 cohort audit, 0.10.42-phase8pilot, Rule 18 observability-first).
+    #
+    # Counts tickers carrying ``restatement_history`` in valuation_warnings
+    # but NOT ``restatement_high_confidence``.  These are exactly the "plain
+    # restater" tickers whose manipulation-index contribution drops by 5.0
+    # points under the weight demotion (RESTATEMENT_HISTORY_WEIGHT 5.0→0.0).
+    # Irregularity tickers carry BOTH flags; their net delta is zero because
+    # RESTATEMENT_HIGH_CONFIDENCE_WEIGHT rose 3.0→8.0 to compensate.
+    #
+    # OBSERVABILITY-ONLY — never read by scoring, composite, pillar logic,
+    # veto/flag, fair-price, or select_picks.  Defense layer UNCHANGED at 36.
+    # Wrapped in try/except so a bug never blocks the cron.
+    restatement_history_weight_demote_delta_count: int | None = None
+    try:
+        _demote_delta = _count_restatement_demote_delta(summaries)
+        restatement_history_weight_demote_delta_count = _demote_delta
+        logger.info(
+            "restatement_history_weight_demote_delta_count=%d "
+            "(plain-restater tickers whose manipulation-index drops 5.0→0.0; "
+            "irregularity subset carries both flags, net delta=0; issue #16)",
+            _demote_delta,
+        )
+    except Exception as _rst_exc:  # noqa: BLE001
+        logger.warning(
+            "restatement_history_weight_demote_delta_count computation failed "
+            "(non-fatal, #16): %s",
+            _rst_exc,
+        )
+        restatement_history_weight_demote_delta_count = None
+
     # PR-1 cross-source corruption shadow (0.10.26-phase8pilot, Rule 18).
     # Aggregates the per-ticker grade results into the 4 new Metadata counters.
     # Uses the delta dict already populated in Step 8, plus the yf_market_cap
@@ -4472,7 +4533,7 @@ def run_weekly_compute() -> int:
         # Phase 9.1 — Broad Investable US universe coverage probe (Rule 18
         # observability-before-wiring; issue #661 follow-up).
         # WRITE-ONLY / OBSERVABILITY-ONLY — live scores, flags, rankings
-        # byte-identical.  Defense layer UNCHANGED at 36.
+        # byte-identical.  Defense layer UNCHANGED at 38.
         # All six are None when QR_SKIP_BROAD_UNIVERSE=1 or when the probe
         # failed unexpectedly (graceful degradation, cron-safe).
         #
@@ -4489,6 +4550,15 @@ def run_weekly_compute() -> int:
         broad_universe_price_fail_pct=_broad_universe_price_fail_pct,
         broad_universe_adv_fail_pct=_broad_universe_adv_fail_pct,
         broad_universe_coverage_pct=_broad_universe_coverage_pct,
+        # Issue #16 — restatement_history weight-demotion delta counter
+        # (Q3 2026 cohort audit, 0.10.43-phase9pilot, Rule 18 observability-first).
+        # OBSERVABILITY-ONLY — never read by scoring or selection logic.
+        # Counts "plain restater" tickers (bare restatement_history only, not
+        # restatement_high_confidence) — the population whose manipulation-index
+        # contribution drops 5.0→0.0 under the weight demotion (issue #16).
+        # Irregularity subset (both flags) nets zero delta (hc weight rose 3→8).
+        # None on failure (non-fatal try/except — cron never blocked).
+        restatement_history_weight_demote_delta_count=restatement_history_weight_demote_delta_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

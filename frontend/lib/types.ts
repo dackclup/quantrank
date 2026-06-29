@@ -685,6 +685,21 @@ export type Metadata = {
   // price data. Expected ~40–45% on 9.1 Probe (SP1500 ∩ Broad / Broad total).
   // Acts as a Rule-18 gate: Phase 9.3 should push this toward ~95%+.
   broad_universe_coverage_pct?: number | null;
+  // Issue #16 — restatement_history weight-demotion delta counter
+  // (Q3 2026 cohort audit, 0.10.43-phase9pilot, Rule 18 observability-first).
+  // SHADOW / OBSERVABILITY-ONLY — live scores, rankings, flags are BYTE-IDENTICAL.
+  // Defense layer UNCHANGED at 38. HARD CONSTRAINT: MUST NEVER be read by scoring,
+  // composite, pillar, veto/flag logic, fair-price, or select_picks.
+  //
+  // `restatement_history_weight_demote_delta_count` — count of tickers whose
+  // composite_score_adjusted CHANGES due to the RESTATEMENT_HISTORY_WEIGHT demotion
+  // from 5.0 → 0.0. Plain restaters (carrying `restatement_history` in
+  // valuation_warnings but NOT `restatement_high_confidence`). Tickers carrying BOTH
+  // flags see the high-confidence weight rise 3.0→8.0 so their manipulation-index
+  // delta is 0; those are NOT counted here (Hennes-Leone-Miller 2008 *TAR* anchor;
+  // methodology-scientist RATIFIED 2026-06-27, issue #16). Null on legacy snapshots
+  // (pre-0.10.42) or when the helper failed (non-fatal try/except).
+  restatement_history_weight_demote_delta_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

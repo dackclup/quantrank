@@ -138,14 +138,22 @@ REM_SUSPECT_WEIGHT: Final[float] = 8.0
 #: clerical errors (non-malicious) and irregularities (fraud). The
 #: bare ``restatement_history`` flag fires on ANY amendment in the
 #: lookback window — effective material-restatement PPV ~30%.
-#: Phase 2.2 of epic #150 introduced the higher-PPV sibling
-#: ``restatement_high_confidence`` (amendment + Item 4.02 within 90d
-#: per Hennes-Leone-Miller's irregularity signature); see
-#: ``RESTATEMENT_HIGH_CONFIDENCE_WEIGHT`` below. The bare flag
-#: stays in place as a lower-confidence annotate pending a cohort
-#: acceptance check (next-PR decision: retire or split). Provenance:
-#: **literature-anchored on the cite, gut-feel on the weight**.
-RESTATEMENT_HISTORY_WEIGHT: Final[float] = 5.0
+#: **DEMOTED TO WEIGHT-ZERO** at the Q3 2026 cohort audit (issue #16).
+#: Rationale: on SP1500 the bare flag fires at 17.82% (~268 tickers)
+#: vs the Hennes-Leone-Miller 2008 *TAR* material prior of 1-3%,
+#: meaning ~70% of bare-flag fires are clerical-error amendments
+#: (non-material, non-fraud). The ~70%-PPV fraud-class content is
+#: already fully captured by the sibling ``restatement_high_confidence``
+#: (base rate 0.27%), whose weight rose from 3.0→8.0 to preserve the
+#: combined irregularity total at 8.0. The bare flag is RETAINED as an
+#: informational annotate emitted to ``valuation_warnings`` (defense
+#: layer count UNCHANGED at 36); it simply no longer carries manipulation-
+#: index budget. Plain restaters (bare flag only, no co-occurring Item
+#: 4.02) now contribute 0.0 to the index. Provenance:
+#: **literature-anchored on the cite, cohort-data on the demotion**
+#: (17.82% SP1500 firing rate empirically confirmed over ≥ 5 sp1500 crons
+#: prior to the Q3 2026-06-27 methodology-scientist ratification).
+RESTATEMENT_HISTORY_WEIGHT: Final[float] = 0.0
 
 #: Hennes-Leone-Miller 2008 *TAR* "irregularity" signature —
 #: amendment + 8-K Item 4.02 (non-reliance) within 90 days. The
@@ -155,19 +163,21 @@ RESTATEMENT_HISTORY_WEIGHT: Final[float] = 5.0
 #: validates the 90-day co-occurrence window — the typical lag from
 #: Item 4.02 disclosure to amended-filing landing.
 #:
-#: **Weight semantics — DELTA not total.** When the high-confidence
-#: flag fires, the bare ``restatement_history`` flag ALSO fires
-#: (strict superset — every co-occurrence pair is itself an amendment).
-#: Both flags are summed into the manipulation index, so the combined
-#: contribution is ``RESTATEMENT_HISTORY_WEIGHT + RESTATEMENT_HIGH_CONFIDENCE_WEIGHT``
-#: = 5.0 + 3.0 = 8.0 total. The 8.0 target represents the intended
-#: weight for confirmed-irregularity cases (1.6× the bare flag, scaled
-#: down from the ~2.3× PPV ratio 70÷30 while we wait for production
-#: cohort data). Provenance: **literature-anchored** — total magnitude
-#: derived from the PPV gap; the delta wiring keeps the bare flag's
-#: semantics + weight untouched in this PR per the annotate-before-veto
-#: scout discipline.
-RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 3.0
+#: **Weight semantics — FULL 8.0 (not a delta), effective Q3 2026.**
+#: Prior to issue #16 (Q3 2026 cohort audit), this weight was framed
+#: as a "+3.0 delta on top of the 5.0 bare flag", because both flags
+#: summed to 5.0 + 3.0 = 8.0 for confirmed-irregularity tickers.
+#: After the demotion of ``RESTATEMENT_HISTORY_WEIGHT`` to 0.0,
+#: this flag now carries the FULL 8.0 irregularity weight independently.
+#: For a confirmed-irregularity ticker (both flags fire): 0.0 + 8.0 = 8.0
+#: — preserved exactly. For a plain-restater ticker (bare flag only): 0.0
+#: — correctly demoted. The 8.0 target represents the intended weight for
+#: confirmed-irregularity cases (1.6× the former bare flag, scaled down
+#: from the ~2.3× PPV ratio 70÷30 while we accumulate production cohort
+#: data). Provenance: **literature-anchored** — total magnitude derived
+#: from the HLM 2008 PPV gap (70% vs 30%); methodology-scientist
+#: RATIFIED 2026-06-27 (issue #16).
+RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 8.0
 
 #: Bartov-Konchitchki 2017 *Accounting Horizons* 31(4) "SEC Filings,
 #: Regulatory Deadlines, and Capital Market Consequences": NT-10K /
