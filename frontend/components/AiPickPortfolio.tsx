@@ -164,16 +164,30 @@ function buildView(
 // This must stay identical to HoldingsTimeline's logic so the "Current picks"
 // Status column and the "Rotation history" held/buy split never disagree.
 // ---------------------------------------------------------------------------
-function heldSetForEntry(entry: AiPickTimelineEntry): Set<string> {
+
+/**
+ * Returns the held tickers as an ORDERED ARRAY — the same `held` array that
+ * HoldingsTimeline.tsx builds for each entry (its local `held` variable).
+ * This preserves prior-quarter ordering so that sold-row derivation (filter
+ * to those absent from the current basket) produces the SAME order as
+ * HoldingsTimeline's `exited = prev.filter(t => !heldSet.has(t))`.
+ *
+ * Used for sold-row ordering; `heldSetForEntry` (the Set variant) is kept
+ * for the O(1) membership test in the "Held" / "New" status chip.
+ */
+export function orderedHeldForEntry(entry: AiPickTimelineEntry): string[] {
   const hasBandBook = Array.isArray(entry.bandBook) && entry.bandBook.length > 0;
   if (hasBandBook) {
-    return new Set(entry.bandBook as string[]);
+    return entry.bandBook as string[];
   }
   const sliceCount = entry.bandHeldCount ?? entry.adaptiveCount;
-  const tickers = sliceCount !== undefined
+  return sliceCount !== undefined
     ? entry.holdings.slice(0, sliceCount).map((h) => h.ticker)
     : entry.holdings.map((h) => h.ticker);
-  return new Set(tickers);
+}
+
+function heldSetForEntry(entry: AiPickTimelineEntry): Set<string> {
+  return new Set(orderedHeldForEntry(entry));
 }
 
 // ---------------------------------------------------------------------------
@@ -240,23 +254,27 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
   );
 
   // SOLD rows — tickers in the prior quarter's basket that are NOT in the
-  // current basket. Derived from priorHeldSet (already computed above) and
-  // the current basket membership. Edge cases: timeline.length < 2 means
-  // priorHeldSet is empty (initial basket only) → soldTickers is empty →
-  // no sold rows rendered. Sorted alphabetically for deterministic order.
+  // current basket. Derived from the prior entry's ORDERED ticker list so
+  // the order matches HoldingsTimeline's `exited = prev.filter(t => !heldSet.has(t))`
+  // exactly (both use the prior-quarter held array filtered to absentees).
+  // Edge case: timeline.length < 2 → no prior quarter → soldRows is empty.
   const soldRows = useMemo((): Array<{ ticker: string; sector: string }> => {
     if (timeline.length < 2) return [];
+    const priorEntry = timeline[timeline.length - 2];
     const currentTickerSet = new Set(displayHoldings.map((h) => h.ticker));
-    const soldTickers = [...priorHeldSet].filter((t) => !currentTickerSet.has(t)).sort();
+    // Use the ordered array (bandBook order or prefix order) so sold-row
+    // sequence matches HoldingsTimeline's `prev.filter(...)` — NOT a Set
+    // spread + sort, which would produce alphabetical order instead.
+    const priorOrdered = orderedHeldForEntry(priorEntry);
+    const soldTickers = priorOrdered.filter((t) => !currentTickerSet.has(t));
     if (soldTickers.length === 0) return [];
     // Sector lookup from the prior quarter's holdings array
-    const priorEntry = timeline[timeline.length - 2];
     const sectorByTicker: Record<string, string> = {};
     for (const h of priorEntry.holdings) {
       sectorByTicker[h.ticker] = h.sector;
     }
     return soldTickers.map((ticker) => ({ ticker, sector: sectorByTicker[ticker] ?? '' }));
-  }, [timeline, priorHeldSet, displayHoldings]);
+  }, [timeline, displayHoldings]);
 
   // Engine MWR lookup helper.
   // data.mwrByTicker is populated from backtest_pit.json top-level position_returns
