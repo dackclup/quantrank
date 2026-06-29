@@ -8867,3 +8867,28 @@ Verify: tsc clean · next build 1510 pages · vitest 302/302 green.
 **Gate**: frontend-design-reviewer (sector chips on band-carried + sold rows; graceful when band_sectors absent) at Draft→Ready.
 
 ---
+
+## PR (tags-work-remaining-2) — docs: re-point closed #542 Bonferroni residual to new tracker #654 (in flight, 2026-06-29)
+
+Follow-up to the issue-tracker triage. `#542` (Bonferroni multi-test shadow counter)
+was CLOSED via PR #564, but its residual — the **provisional-threshold re-derivation**
+(−1.94 placeholder → empirical sp1500 M-score SD) — was still being referenced as an
+"open deferred" item against the closed `#542` in CLAUDE.md / AGENTS.md / PHASE_STATUS.md.
+
+Re-filed that residual as a fresh tracker **#654** (labels: methodology / phase-8 /
+deferred; Q3 2026-08-19 cohort-audit window) and re-pointed the deferred-item references:
+- `CLAUDE.md` §Phase status (2 refs: §In-flight deferred line + §Next-deliverables Slice-8 line)
+- `AGENTS.md` §Phase + version state (2 refs: §In-flight + prior-chain tail)
+- `PHASE_STATUS.md` §v2.0 readiness (1 ref)
+
+Schema-version log entries that describe what #564 shipped ("(Slice 8, issue #542)") are
+left untouched — those are accurate historical records, not open-deferred status claims.
+
+Docs-only — NO `compute/**` / `frontend/**` / schema change; output BYTE-IDENTICAL;
+defense layer UNCHANGED at 38/10. Lockstep: CLAUDE.md + AGENTS.md moved together + this entry.
+
+**Verify**: `python tools/check_defense_layer_counts.py` PASS · `ruff check .` PASS.
+
+**Files**: `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
