@@ -9345,12 +9345,12 @@ raw `composite_score`), agent-output-verifier TRUSTWORTHY.
 **`compute/scoring/**`**: not modified.
 **`compute/valuation/**`**: not modified.
 
-**Tests**: 20 new offline unit tests in `tests/test_orchestrator/test_prices.py` — cover `_resolve_close_column` (A1-A3), `_fetch_prices_one` (B1-B12), `fetch_all_prices` happy-path (C1-C6), and failure/degradation (D1-D4).
+**Tests**: 25 new offline unit tests in `tests/test_orchestrator/test_prices.py` — cover `_resolve_close_column` (A1-A3), `_fetch_prices_one` (B1-B12), `fetch_all_prices` happy-path (C1-C6), and failure/degradation (D1-D4).
 
 **Files**:
 - `compute/orchestrator/prices.py` (new)
 - `compute/main.py` (2 functions removed, import block updated, Step-1 loop replaced with 1-liner, `fetch_all_prices` import added)
-- `tests/test_orchestrator/test_prices.py` (new — 20 tests)
+- `tests/test_orchestrator/test_prices.py` (new — 25 tests)
 - `tests/test_output/test_wall_clock_schema.py` (patch target renamed)
 - `tests/test_main.py` (patch target renamed)
 - `PHASE_STATUS_INFLIGHT.md` (this entry)
