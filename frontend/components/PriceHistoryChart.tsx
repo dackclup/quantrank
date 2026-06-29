@@ -94,7 +94,12 @@ export function PriceHistoryChart({
   // (the ResizeObserver's debounced timer): lets them skip work WHILE the intro
   // draw is running without re-subscribing on every playDraw flip.
   const playDrawRef = useRef(false);
-  playDrawRef.current = playDraw;
+  // Keep the ref in sync via an effect (not during render) to satisfy the
+  // react-hooks/refs rule. The ResizeObserver reads this after a 300ms debounce,
+  // so the effect's post-render timing is always safe.
+  useEffect(() => {
+    playDrawRef.current = playDraw;
+  }, [playDraw]);
   // Self-drawn intro crosshair overlay (a vertical line + a dot that RIDES the
   // price curve), animated left→right by rAF in sync with the area draw. During
   // the sweep the Recharts cursor + activeDot are suppressed (playDraw) so only
@@ -548,7 +553,6 @@ export function PriceHistoryChart({
     return () => {
       if (raf) cancelAnimationFrame(raf);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hoverIndex, chartData, playDraw, mounted, resolvedTheme, restKey, layoutKey, sweepKey]);
 
   if (loading) {
