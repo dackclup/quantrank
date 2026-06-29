@@ -9053,3 +9053,23 @@ P2-G disclosure once a broad survivorship ledger exists.
 **Gate**: CI (tsc/build); docs-reviewer PASS-WITH-NIT; methodology-REQUIRED disclosure.
 
 ---
+
+## PR #TBD — chore(scripts): Phase 9.0 Broad-Investable-US universe scout (dev tool) (in flight, 2026-06-29)
+
+Phase 9 broadens the live AI-pick universe from SP1500 (~1504) to a "Broad Investable US"
+cohort sourced from SEC `company_tickers.json` + our own price>=$5 / ADV>=$5M investability
+screen (financial-engineer DESIGN, methodology-scientist PROCEED-WITH-CONDITIONS,
+security-reviewer GO-WITH-CONDITIONS). This PR preserves the **9.0 Scout** measurement tool
+`scripts/scout_broad_universe.py` (886 lines) — a one-shot dev tool, NEVER imported by
+production/CI, analogous to the Phase-8 `scripts/scout_universe_expansion.py` precedent.
+Measured findings: raw SEC 10,433 -> ~6,883 candidates (Nasdaq+NYSE+CBOE, name/format
+filtered) -> ~3,545 survivors [95% CI 3,071-4,015] pass the screen; cold runtime ~410 min
+breaches the 270-min GHA timeout by 52% (binding constraint for 9.1). No schema change, no
+cron wiring, no production import. ruff clean; offline pytest unaffected (no production
+import surface).
+
+**Files**: `scripts/scout_broad_universe.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: ruff; dev-tool only (no production/CI import, no schema, no cron).
+
+---
