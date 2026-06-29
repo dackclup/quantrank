@@ -8781,3 +8781,51 @@ default changed; `schema_check` in sync; defense layer UNCHANGED at 38.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR (tags-work-remaining) — docs(phase-status): roadmap drift sweep + extend defense-count guard to PHASE_STATUS.md (in flight, 2026-06-29)
+
+Substance review of `PHASE_STATUS.md` (the canonical chronological tracker)
+surfaced post-`v2.0.0-phase8` doc-drift in the §Current state / §Next deliverables
+/ §Release ladder / §Phase-table sections. Fixes, all verified against ground truth
+(`compute/warehouse/flag_registry.py`, the live git tags, and CLAUDE.md):
+
+- **§Current state defense counts (HIGH, factual)** — `36 declared / 9 active vetoes`
+  → `38 declared / 10 active vetoes` (+`stale_filing_hard`, the 10th `KNOWN_RISK_FLAGS`
+  entry). The §Current state row had drifted while CLAUDE.md + METHODOLOGY (anchored by
+  the guard since #641) already read 38/10; the row escaped the guard because it was not
+  anchored.
+- **§Next deliverables intro** — "the next tag is **v2.0**" was stale (v2.0 shipped
+  2026-06-23) and self-contradicted §Release ladder ("next tag = v2.1"); rewritten to
+  "v2.0.0-phase8 shipped 2026-06-23; the next tag is v2.1". Clarified the
+  "no more phase-pinned tags **after v2.0**" wording (the latest tag still carries the
+  `-phase8` suffix — stated-policy-vs-practice).
+- **§Lane B #544** — "Needs methodology RATIFY-SHADOW … only Slice-8 / v2.0 gate left"
+  → "RATIFY-WITH-CONDITIONS 2026-06-23 (DOCS-ONLY); post-v2.0 deferred, KEEP-ANNOTATE
+  → Q3 audit" (matches the CLAUDE.md §Gotchas `low_liquidity` entry).
+- **§Release ladder** — `v1.4.0-phase4.6` commit hash `bbca9cac` → `a820caee` (the real
+  tag SHA; §Current state already had it right); Slice-8 issue refs `#540/#542` →
+  landed-PR refs `#548/#564`.
+- **§Phase table row 8** — status `🟡 IN PROGRESS` + "Next = Slice 8 (v2.0 — gated …)"
+  → `✅ DONE — 2026-06-23 (v2.0.0-phase8)` + "Slice 8 + the tag SHIPPED" (consistent with
+  §Phase position "8 cutover … all DONE").
+
+**Error→regression ratchet** (CLAUDE.md §Conventions): the defense-count drift is a
+mechanical class, so `tools/check_defense_layer_counts.py` now also anchors the
+PHASE_STATUS.md §Current state rows (`**N declared boolean flags**` + `| Active vetoes |
+**N**`) — phrases that appear ONLY in the current-state table, so the chronological-log
+"defense UNCHANGED at 36" snapshots do not false-positive.
+
+Docs + a CI-guard extension only — NO `compute/**` / `frontend/**` / schema change;
+rankings/scores/output BYTE-IDENTICAL; the defense flag SET is UNCHANGED (38/10 — the
+PHASE_STATUS headline was stale, now corrected to match the registry). Lockstep: this
+entry satisfies the §Conventions "ship with every PR" rule (CLAUDE.md + AGENTS.md carry
+no related drift, so no substance diff there).
+
+**Verify**: `python tools/check_defense_layer_counts.py` PASS (now covers PHASE_STATUS.md)
+· `ruff check` PASS · `python tools/preflight.py` cheap rungs PASS (pytest/tsc skipped —
+sandbox lacks pandas/node; CI runs the full suite).
+
+**Files**: `PHASE_STATUS.md` · `tools/check_defense_layer_counts.py` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

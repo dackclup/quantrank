@@ -34,7 +34,11 @@ Scope notes:
     declared total == their sum.
   - Only CURRENT-STATE headline phrases are anchored (precise regexes), so
     chronological-log prose ("defense UNCHANGED at 36" snapshots in
-    PHASE_STATUS / code comments) does NOT false-positive.
+    PHASE_STATUS / code comments) does NOT false-positive. The PHASE_STATUS.md
+    anchors target the §Current state table rows only ("**N declared boolean
+    flags**" and "| Active vetoes | **N**"), phrases that appear nowhere in the
+    chronological log — added after the §Current state row drifted to 36/9
+    while the registry carried 38/10 (the guard did not yet anchor it).
   - The parenthetical "~28 emit" is a RUNTIME firing fact, not a
     registry-derivable count, so it is intentionally left as prose.
 """
@@ -93,6 +97,11 @@ ANCHORS: tuple[Anchor, ...] = (
     # --- annotates ---
     Anchor("CLAUDE.md", r"\(\d+ active vetoes \+ (\d+) annotates", "n_annotates", "CLAUDE §Scoring annotate count"),
     Anchor("docs/METHODOLOGY.md", r"active vetoes \+ (\d+) annotate", "n_annotates", "METHODOLOGY annotate count"),
+    # --- PHASE_STATUS.md §Current state row (precise: these phrases live ONLY in
+    #     the current-state table, NOT in the chronological log, so the "defense
+    #     UNCHANGED at 36" historical snapshots do not false-positive) ---
+    Anchor("PHASE_STATUS.md", r"\*\*(\d+) declared boolean flags\*\*", "n_declared", "PHASE_STATUS §Current state declared total"),
+    Anchor("PHASE_STATUS.md", r"\| Active vetoes \| \*\*(\d+)\*\*", "n_vetoes", "PHASE_STATUS §Current state veto count"),
 )
 
 
