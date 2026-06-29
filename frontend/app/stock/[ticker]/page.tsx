@@ -27,12 +27,12 @@ export async function generateStaticParams() {
   return listTickersForStaticBuild().map((ticker) => ({ ticker }));
 }
 
-export default function StockDetailPage({
+export default async function StockDetailPage({
   params,
 }: {
-  params: { ticker: string };
+  params: Promise<{ ticker: string }>;
 }) {
-  const { ticker } = params;
+  const { ticker } = await params;
   const detail = getStockDetail(ticker);
   if (!detail) {
     return (
