@@ -1265,7 +1265,7 @@ def test_step4_sectors_dict_passed_to_compute_risk_flags(
         monkeypatch.setenv(key, val)
 
     with (
-        patch("compute.main._fetch_prices_one", side_effect=_fake_prices_for_step4),
+        patch("compute.orchestrator.prices._fetch_prices_one", side_effect=_fake_prices_for_step4),
         patch("compute.main._fundamentals_one", return_value=(_STEP4_SNAP, 0.1)),
         patch("compute.main._history_one", return_value=(pd.DataFrame(), 0.1)),
         patch("compute.main.get_sp500_constituents", return_value=_STEP4_UNIVERSE),

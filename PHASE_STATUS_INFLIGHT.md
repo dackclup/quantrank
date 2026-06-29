@@ -9314,3 +9314,47 @@ raw `composite_score`), agent-output-verifier TRUSTWORTHY.
 `CLAUDE.md` + `AGENTS.md` (§Gotchas lockstep) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR #259-R2 — Step-1 parallel prices fetch loop extracted to `compute/orchestrator/prices.py`
+
+**Branch**: `claude/orchestrator-refactor-r2` · **Issue**: #259 · **Date**: 2026-06-29
+
+**Scope (PURE CODE MOVE — byte-identical output)**: R2 is the second slice of the 7-PR incremental refactor. It extracts the Step-1 parallel prices fetch loop out of `run_weekly_compute` into a new `compute/orchestrator/prices.py` module. No logic change, no reordering of effects, same exception handling, same dict keys — compute output is byte-identical.
+
+**What moved (verbatim, not altered)**:
+1. `_resolve_close_column(prices)` — helper that picks "Adj Close" > "Close" > None. Was sole-use by `_fetch_prices_one` (confirmed no other caller in main.py). Moved to `compute/orchestrator/prices.py`.
+2. `_fetch_prices_one(row)` — per-ticker fetch, close resolution, ADV computation, dict construction with `_prices` + `_adv` keys. Was only submitted via the Step-1 ThreadPoolExecutor (confirmed: one submission site at ~line 1251, comments at 1194 and 2554 are doc-only). Moved to `compute/orchestrator/prices.py`.
+3. **Step-1 ThreadPoolExecutor loop** — 27-line block (`rows`, `prices_by_ticker`, `adv_by_ticker` accumulators + `as_completed` + per-future try/except + `.pop("_prices")` / `.pop("_adv", None)`) moved into `fetch_all_prices(universe, *, max_workers)` in the new module.
+
+**`compute/main.py` changes**:
+- Removed `_resolve_close_column` and `_fetch_prices_one` definitions.
+- Removed `compute_average_dollar_volume` and `fetch_prices` from the `compute.ingest.prices` import block (no longer called directly from main.py; `fetch_benchmarks` + `fetch_spy_benchmark` retained).
+- Added `from compute.orchestrator.prices import fetch_all_prices` import.
+- Replaced the 27-line Step-1 loop with `rows, prices_by_ticker, adv_by_ticker = fetch_all_prices(universe)`.
+- Kept `logger.info("Fetched prices for %d / %d tickers", ...)` in main.py immediately after the call — logs exactly once, at the same position as before.
+- `MIN_VALID_TICKERS` abort block + all downstream code untouched.
+
+**`logger.info` placement**: kept in `main.py` after `fetch_all_prices()` returns. `fetch_all_prices` uses its own `logging.getLogger(__name__)` logger (name `compute.orchestrator.prices`) only for `logger.warning("Price fetch failed for %s: %s", ...)` — the info summary log fires exactly once from main, exactly as before.
+
+**Existing test patch targets updated** (2 files):
+- `tests/test_output/test_wall_clock_schema.py`: `patch("compute.main._fetch_prices_one", ...)` → `patch("compute.orchestrator.prices._fetch_prices_one", ...)`
+- `tests/test_main.py`: same rename (1 occurrence)
+
+**Schema triple**: untouched. `schemas.py` / `types.ts` / `schema-snapshot.json` not modified.
+**`compute/ingest/**`**: not modified.
+**`compute/scoring/**`**: not modified.
+**`compute/valuation/**`**: not modified.
+
+**Tests**: 20 new offline unit tests in `tests/test_orchestrator/test_prices.py` — cover `_resolve_close_column` (A1-A3), `_fetch_prices_one` (B1-B12), `fetch_all_prices` happy-path (C1-C6), and failure/degradation (D1-D4).
+
+**Files**:
+- `compute/orchestrator/prices.py` (new)
+- `compute/main.py` (2 functions removed, import block updated, Step-1 loop replaced with 1-liner, `fetch_all_prices` import added)
+- `tests/test_orchestrator/test_prices.py` (new — 20 tests)
+- `tests/test_output/test_wall_clock_schema.py` (patch target renamed)
+- `tests/test_main.py` (patch target renamed)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**R3-R7 follow**: coverage dict accumulators (R3) · form4 latencies (R4) · prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
+
+---

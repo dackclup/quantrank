@@ -79,9 +79,7 @@ from compute.ingest.fundamentals import (
     reset_filing_precheck_skip_count as reset_fundamentals_filing_precheck_skip_count,
 )
 from compute.ingest.prices import (
-    compute_average_dollar_volume,
     fetch_benchmarks,
-    fetch_prices,
     fetch_spy_benchmark,
 )
 from compute.ingest.universe import (
@@ -93,6 +91,7 @@ from compute.ingest.universe import (
     get_sp1500_constituents,
 )
 from compute.orchestrator import ComputeState
+from compute.orchestrator.prices import fetch_all_prices
 from compute.output.schemas import (
     DataQuality,
     Metadata,
@@ -217,14 +216,6 @@ def _next_business_day_offset(now: datetime) -> int:
     return 1
 
 
-def _resolve_close_column(prices: pd.DataFrame) -> str | None:
-    if "Adj Close" in prices.columns:
-        return "Adj Close"
-    if "Close" in prices.columns:
-        return "Close"
-    return None
-
-
 def _passes_ex_loss_chance(c: PickCandidate) -> bool:
     """HC gate with the loss_chance leg (leg 5) REMOVED — legs 1-4 only.
 
@@ -335,51 +326,6 @@ def _count_restatement_demote_delta(summaries: list[StockSummary]) -> int:
         if "restatement_history" in set(_s.valuation_warnings)
         and "restatement_high_confidence" not in set(_s.valuation_warnings)
     )
-
-
-def _fetch_prices_one(row: pd.Series) -> dict | None:
-    """Fetch prices + extract last close for one ticker."""
-    ticker = row["ticker"]
-    prices = fetch_prices(ticker)
-    if prices is None or prices.empty:
-        return None
-    col = _resolve_close_column(prices)
-    if col is None:
-        return None
-    last = prices[col].dropna()
-    if last.empty:
-        return None
-    current = float(last.iloc[-1])
-    if math.isnan(current) or current <= 0:
-        return None
-    # PR 4f follow-up — 1-day percent change for the ranking-table
-    # quote line. Computed here so the per-stock JSON has the value
-    # ready (no frontend fetch of 502 history files).
-    price_change_1d_pct: float | None = None
-    if len(last) >= 2:
-        prev = float(last.iloc[-2])
-        if not math.isnan(prev) and prev > 0:
-            price_change_1d_pct = (current - prev) / prev * 100.0
-    # S&P 1500 Slice 4 — compute ADV while we already hold the OHLCV
-    # DataFrame.  No extra network round-trip; uses the already-cached frame.
-    # Graceful degradation: compute_average_dollar_volume never raises.
-    adv = compute_average_dollar_volume(prices, config.ADV_LOOKBACK_DAYS)
-    return {
-        "ticker": ticker,
-        "name": row["name"],
-        "sector": row["sector"],
-        "industry": row.get("sub_industry"),
-        "cik": row.get("cik"),
-        # Phase 8 pilot PR 3a — carry cohort so index_membership propagates
-        # into StockSummary / StockDetail without a second universe lookup.
-        # "sp500" default keeps the sp500 path byte-identical.
-        "cohort": row.get("cohort", "sp500"),
-        "current_price": current,
-        "price_change_1d_pct": price_change_1d_pct,
-        "_prices": prices,
-        # Slice 4 ADV (None when volume data unavailable — graceful degradation).
-        "_adv": adv,
-    }
 
 
 # Per-stock fundamentals fetch ceiling. Belt-and-suspenders for the
@@ -1378,33 +1324,8 @@ def run_weekly_compute() -> int:
     except Exception as e:  # noqa: BLE001
         logger.warning("Benchmark export failed (non-fatal): %s", e)
 
-    # Step 1 — prices in parallel.
-    rows: list[dict] = []
-    prices_by_ticker: dict[str, pd.DataFrame] = {}
-    # S&P 1500 Slice 4 — ADV dict built alongside prices (zero extra I/O).
-    # Keyed by ticker; value is trailing-30-day mean dollar volume in USD,
-    # or None when the price DataFrame was unavailable / missing columns.
-    adv_by_ticker: dict[str, float | None] = {}
-    with ThreadPoolExecutor(max_workers=config.MAX_PARALLEL_FETCHES) as ex:
-        futures = {
-            ex.submit(_fetch_prices_one, row): row["ticker"]
-            for _, row in universe.iterrows()
-        }
-        for fut in as_completed(futures):
-            ticker = futures[fut]
-            try:
-                result = fut.result()
-            except Exception as e:  # noqa: BLE001
-                logger.warning("Price fetch failed for %s: %s", ticker, e)
-                continue
-            if result is not None:
-                prices_by_ticker[ticker] = result.pop("_prices")
-                # Use .pop with default so test mocks that don't include
-                # "_adv" (pre-Slice-4 fixtures) degrade gracefully to None
-                # rather than raising KeyError.
-                adv_by_ticker[ticker] = result.pop("_adv", None)
-                rows.append(result)
-
+    # Step 1 — prices in parallel (loop extracted to compute.orchestrator.prices).
+    rows, prices_by_ticker, adv_by_ticker = fetch_all_prices(universe)
     logger.info("Fetched prices for %d / %d tickers", len(rows), len(universe))
     if len(rows) < config.MIN_VALID_TICKERS:
         logger.error(
