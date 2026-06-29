@@ -383,3 +383,162 @@ describe('mwrForTicker — HELD-row MWR resolution (unchanged path)', () => {
     expect(mwrForTicker('MSFT', flatMap)).toBeNull();
   });
 });
+
+// ---------------------------------------------------------------------------
+// 7. Sold-row ORDER consistency — Current-picks must match Rotation-history
+//
+// Bug (owner-spotted, 2026-06-29): Current-picks sold rows were alphabetically
+// sorted (CF then KLAC for May-2026 basket) while Rotation-history used
+// prior-basket order (KLAC then CF, matching the "SELL KLAC CF" header).
+//
+// Root cause: AiPickPortfolio.tsx `soldRows` did
+//   `[...priorHeldSet].filter(t => !currentSet.has(t)).sort()`
+// which spread a Set (order-lost) then sorted alphabetically. HoldingsTimeline
+// used `prev.filter(t => !heldSet.has(t))` where `prev` is the ordered array.
+//
+// Fix: `soldRows` now derives from `orderedHeldForEntry(priorEntry).filter(...)`
+// — the same ordered array HoldingsTimeline uses for `prev`.
+//
+// These tests contract the pure ordering logic for both derivation paths to
+// ensure they produce IDENTICAL results for the same prior-basket data.
+// ---------------------------------------------------------------------------
+
+import { orderedHeldForEntry } from './AiPickPortfolio';
+
+/**
+ * Mirrors AiPickPortfolio.tsx `soldRows` derivation AFTER the fix:
+ *   orderedHeldForEntry(priorEntry).filter(t => !currentSet.has(t))
+ */
+function deriveSoldTickersCurrentPicks(
+  priorEntry: AiPickTimelineEntry,
+  currentTickers: string[],
+): string[] {
+  const currentSet = new Set(currentTickers);
+  return orderedHeldForEntry(priorEntry).filter((t) => !currentSet.has(t));
+}
+
+/**
+ * Mirrors HoldingsTimeline.tsx `exited` derivation:
+ *   prev.filter(t => !heldSet.has(t))
+ * where `prev` is the prior quarter's `held` (= orderedHeldForEntry result).
+ */
+function deriveSoldTickersHoldingsTimeline(
+  priorEntry: AiPickTimelineEntry,
+  currentTickers: string[],
+): string[] {
+  const heldSet = new Set(currentTickers);
+  // HoldingsTimeline computes `prev` as the ordered `held` array from the
+  // PREVIOUS iteration — which is exactly orderedHeldForEntry on that entry.
+  const prev = orderedHeldForEntry(priorEntry);
+  return prev.filter((t) => !heldSet.has(t));
+}
+
+describe('sold-row ORDER — Current-picks matches Rotation-history (ordering fix 2026-06-29)', () => {
+  it('May-2026 scenario: KLAC before CF in prior basket → sold order is [KLAC, CF], not alphabetical [CF, KLAC]', () => {
+    // Prior basket order mirrors the real May-2026 rebalance: KLAC appeared
+    // before CF in the band_book / composite-desc holdings.
+    const priorEntry: AiPickTimelineEntry = {
+      date: '2025-11-30',
+      holdings: [
+        { ticker: 'NVDA', sector: 'Information Technology' },
+        { ticker: 'KLAC', sector: 'Information Technology' },
+        { ticker: 'MSFT', sector: 'Information Technology' },
+        { ticker: 'CF',   sector: 'Materials' },
+        { ticker: 'AAPL', sector: 'Information Technology' },
+      ],
+    };
+    // Current basket retains NVDA, MSFT, AAPL — KLAC and CF were sold.
+    const currentTickers = ['NVDA', 'MSFT', 'AAPL', 'JPM'];
+
+    const currentPicksOrder  = deriveSoldTickersCurrentPicks(priorEntry, currentTickers);
+    const holdingsTimelineOrder = deriveSoldTickersHoldingsTimeline(priorEntry, currentTickers);
+
+    // Both must produce [KLAC, CF] (prior-basket order), NOT [CF, KLAC] (alphabetical).
+    expect(currentPicksOrder).toEqual(['KLAC', 'CF']);
+    expect(holdingsTimelineOrder).toEqual(['KLAC', 'CF']);
+    // Core contract: the two tables agree.
+    expect(currentPicksOrder).toEqual(holdingsTimelineOrder);
+  });
+
+  it('bandBook present: sold order follows bandBook sequence, not holdings order', () => {
+    // When bandBook is present, it is the authoritative membership + order.
+    const priorEntry: AiPickTimelineEntry = {
+      date: '2025-08-31',
+      holdings: [
+        // Holdings list has CF first (alphabetically earlier)
+        { ticker: 'CF',   sector: 'Materials' },
+        { ticker: 'KLAC', sector: 'Information Technology' },
+        { ticker: 'NVDA', sector: 'Information Technology' },
+      ],
+      // bandBook order: KLAC first (composite-desc)
+      bandBook: ['NVDA', 'KLAC', 'CF'],
+    };
+    const currentTickers = ['NVDA'];  // KLAC and CF both sold
+
+    const currentPicksOrder  = deriveSoldTickersCurrentPicks(priorEntry, currentTickers);
+    const holdingsTimelineOrder = deriveSoldTickersHoldingsTimeline(priorEntry, currentTickers);
+
+    // Order from bandBook: [KLAC, CF] — NOT [CF, KLAC] (holdings order or alpha)
+    expect(currentPicksOrder).toEqual(['KLAC', 'CF']);
+    expect(holdingsTimelineOrder).toEqual(['KLAC', 'CF']);
+    expect(currentPicksOrder).toEqual(holdingsTimelineOrder);
+  });
+
+  it('no sold tickers: both return empty array', () => {
+    const priorEntry: AiPickTimelineEntry = {
+      date: '2025-05-31',
+      holdings: [
+        { ticker: 'NVDA', sector: 'Information Technology' },
+        { ticker: 'MSFT', sector: 'Information Technology' },
+      ],
+    };
+    const currentTickers = ['NVDA', 'MSFT', 'AAPL'];
+
+    expect(deriveSoldTickersCurrentPicks(priorEntry, currentTickers)).toEqual([]);
+    expect(deriveSoldTickersHoldingsTimeline(priorEntry, currentTickers)).toEqual([]);
+  });
+
+  it('all prior tickers sold: both return full prior list in prior-basket order', () => {
+    const priorEntry: AiPickTimelineEntry = {
+      date: '2025-02-28',
+      holdings: [
+        { ticker: 'Z',    sector: 'Real Estate' },
+        { ticker: 'AAPL', sector: 'Information Technology' },
+        { ticker: 'META', sector: 'Communication Services' },
+      ],
+    };
+    const currentTickers = ['NVDA', 'MSFT'];  // entirely new basket
+
+    const currentPicksOrder  = deriveSoldTickersCurrentPicks(priorEntry, currentTickers);
+    const holdingsTimelineOrder = deriveSoldTickersHoldingsTimeline(priorEntry, currentTickers);
+
+    // Prior-basket order [Z, AAPL, META], NOT alphabetical [AAPL, META, Z]
+    expect(currentPicksOrder).toEqual(['Z', 'AAPL', 'META']);
+    expect(holdingsTimelineOrder).toEqual(['Z', 'AAPL', 'META']);
+    expect(currentPicksOrder).toEqual(holdingsTimelineOrder);
+  });
+
+  it('bandHeldCount present (no bandBook): uses prefix slice order', () => {
+    const priorEntry: AiPickTimelineEntry = {
+      date: '2025-11-30',
+      holdings: [
+        { ticker: 'NVDA', sector: 'Information Technology' },
+        { ticker: 'KLAC', sector: 'Information Technology' },
+        { ticker: 'CF',   sector: 'Materials' },
+        // 4th holding is outside the slice (bandHeldCount=3)
+        { ticker: 'AAPL', sector: 'Information Technology' },
+      ],
+      bandHeldCount: 3,
+    };
+    const currentTickers = ['NVDA'];
+
+    const currentPicksOrder  = deriveSoldTickersCurrentPicks(priorEntry, currentTickers);
+    const holdingsTimelineOrder = deriveSoldTickersHoldingsTimeline(priorEntry, currentTickers);
+
+    // Only first 3 holdings form the prior basket (bandHeldCount=3).
+    // Sold: [KLAC, CF] in slice order — AAPL (4th holding) is NOT in prior basket.
+    expect(currentPicksOrder).toEqual(['KLAC', 'CF']);
+    expect(holdingsTimelineOrder).toEqual(['KLAC', 'CF']);
+    expect(currentPicksOrder).toEqual(holdingsTimelineOrder);
+  });
+});

@@ -9015,3 +9015,21 @@ change. tsc/build clean; vitest 310/310 (+8, incl. a cross-table consistency ass
 **Gate**: CI (tsc/build/vitest); display-logic fix mirrors an existing reviewed pattern.
 
 ---
+
+## PR #TBD — fix(frontend): Current-picks sold-row ORDER = prior-basket order (match Rotation-history) (in flight, 2026-06-29)
+
+Sold rows appeared in different ORDER in the two tables (May-2026: Current-picks CF,KLAC
+alphabetical vs Rotation-history KLAC,CF prior-basket order matching the "SELL KLAC CF"
+header). `AiPickPortfolio.soldRows` used `[...priorHeldSet].filter(...).sort()` (Set-spread →
+alphabetical); `HoldingsTimeline.exited` uses `prev.filter(...)` (prior-basket order). Fix:
+new exported `orderedHeldForEntry(entry)` (bandBook else holdings prefix, ORDERED) — single
+source of truth; `heldSetForEntry` delegates to it (no behavior change); `soldRows` now
+`orderedHeldForEntry(priorEntry).filter(t => !currentTickerSet.has(t))` → prior-basket order.
+Held/New ordering (weight desc) unchanged. Frontend-only, NO schema change. tsc/build clean;
+vitest 315/315 (+5 incl. cross-table order-equality assert).
+
+**Files**: `frontend/components/AiPickPortfolio.tsx` · `frontend/components/HoldingsTimeline.test.ts` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: CI (tsc/build/vitest); display-ordering fix.
+
+---
