@@ -9033,3 +9033,23 @@ vitest 315/315 (+5 incl. cross-table order-equality assert).
 **Gate**: CI (tsc/build/vitest); display-ordering fix.
 
 ---
+
+## PR #TBD — docs(frontend): backtest-universe scope disclaimer (S&P 500-only ≠ live) (in flight, 2026-06-29)
+
+methodology-scientist REQUIRED a caption line making explicit that the backtest track record
+is computed on the **S&P 500 universe only** (the cohort with a point-in-time survivorship
+ledger, `data/sp500_membership_historical.csv` 2016→present) — narrower than the ~1504-name
+**S&P 1500** currently ranked on the site, and NOT a live track record. Both
+`AnnualReturnsTable.tsx` + `PerformanceTable.tsx` already carried the data-driven "not the
+live product's record" veto-replay caveat; this PR appends the universe-scope clause to BOTH
+captions (reusing the existing muted `<p>` wrapper + `font-medium` inline-emphasis pattern —
+no new surface/color/component). Pure copy edit, NO schema change, rankings/NAV byte-identical.
+docs-reviewer PASS-WITH-NIT (adopted the "currently" precision nit); tsc clean. This is the
+pre-Phase-9 disclosure; Phase 9 (broad-universe AI-pick) will later extend it to the 4-clause
+P2-G disclosure once a broad survivorship ledger exists.
+
+**Files**: `frontend/components/AnnualReturnsTable.tsx` · `frontend/components/PerformanceTable.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: CI (tsc/build); docs-reviewer PASS-WITH-NIT; methodology-REQUIRED disclosure.
+
+---
