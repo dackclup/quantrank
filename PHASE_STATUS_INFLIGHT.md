@@ -9108,3 +9108,26 @@ on rank-1 ticker confirms composite score present, "Detail data pending" absent.
 **Files**: `frontend/app/stock/[ticker]/page.tsx` · `frontend/app/stock/[ticker]/page.test.ts` (new) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR #TBD — fix(compute): dynamic selection_footprint_note (+127.7pp stale → +30.8pp live) (in flight, 2026-06-29)
+
+The home AI-pick artifact's `selection_footprint_note` (and the matching SELECTION FOOTPRINT
+sentence in `meta.disclaimer`) was a HARDCODED "+127.7pp (~16% of total return)" string in two
+places (`compute/validation/basket_rule_validation.py` + `scripts/backfill_portfolio_pit.py`).
+It never updated after the V55.1 carry-domain amendment changed 12/40 rebalances, so it showed
+a stale figure ~4x too large. Fix makes the note DYNAMIC: new `_compute_selection_footprint_note(artifact)`
+derives the adaptive-vs-best-fixed-N net lead from the artifact NAV (`nav.adaptive.net` terminal
+928.34 − `nav.by_count[8].net` terminal 897.58 = +30.76pp ≈ +30.8pp, ~4% of the 828pp total —
+NOT 16%); `backfill_portfolio_pit.py` computes the sentence from live NAV at write-time + fixes
+a stale `n_trials=15`→16. The committed `backtest_pit.json` was SURGICALLY patched (2 string leaves
+only — agent-output-verifier confirmed NAV/weights/holdings/rebalances BYTE-IDENTICAL element-wise).
+Display-string-only; rankings/scores/flags/NAV unchanged; schema triple untouched; defense 36.
+test-engineer replaced the stale `...mentions_127pp` pin with 3 dynamic-behavior tests incl. a
+"127.7"-must-not-appear regression guard (error→regression ratchet). agent-output-verifier
+TRUSTWORTHY. ruff clean; 48/48 validation tests pass.
+
+**Files**: `compute/validation/basket_rule_validation.py` · `scripts/backfill_portfolio_pit.py` · `frontend/public/data/portfolio/backtest_pit.json` (surgical, NAV byte-identical) · `tests/test_validation/test_basket_rule_validation.py` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: ruff; offline pytest (48 validation tests); agent-output-verifier TRUSTWORTHY; display-only, NAV byte-identical.
+
+---

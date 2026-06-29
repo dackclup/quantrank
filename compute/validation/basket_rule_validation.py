@@ -10,9 +10,11 @@ The adaptive thresholds (composite_min=65 / hold_band=55 / floor 5 / uncapped)
 were grid-swept IN-SAMPLE on the same 40-quarter window that constitutes the
 headline track record, then amended twice post-results (V55.0 -> V55.1 hold-band
 carry-domain expansion; uncap amendment). The selection footprint of this in-sample
-optimisation: the adaptive book's lead over the best fixed-N basket (by_count[8])
-is approximately +127.7 pp, representing ~16% of total return — a tuning artifact
-until OOS-confirmed.
+optimisation is the adaptive net NAV lead over the best fixed-N basket (by_count[8]),
+computed dynamically from the artifact's own NAV by ``_compute_selection_footprint_note``
+so it never goes stale across reruns (see that function's docstring for the root-cause
+of the former stale +127.7pp figure). As of the 2026-06-27 artifact the lead is
+approximately +30.8pp (~4% of total return) — a tuning artifact until OOS-confirmed.
 
 The DSR (Bailey-López de Prado 2014) is the primary inferential gate. With n_trials
 = 16 (the 12-configuration grid {55,60,65,70}×{1,3,5} + 1 uncap amendment + 2
@@ -309,6 +311,63 @@ def _walk_forward_anchored_sharpe_stability(
     }
 
 
+def _compute_selection_footprint_note(artifact: dict) -> str:
+    """Compute the selection-footprint disclaimer from the artifact's own NAV data.
+
+    The "selection footprint" is the adaptive net NAV lead over the best fixed-N
+    basket (``by_count[8].net``), both net of turnover costs, both rebased to 100.
+    This is the in-sample tuning artifact from the grid-sweep of
+    (composite_min, min_picks).
+
+    Derives the figure dynamically so the note never goes stale across reruns that
+    produce a new NAV without regenerating this string (the root cause of the
+    stale +127.7pp note — that figure was computed from an older pre-uncap artifact
+    and was never updated when the carry-domain amendment changed the NAV).
+
+    Falls back to a generic caveat string when ``by_count[8].net`` is absent (e.g.
+    synthetic test artifacts). The fallback is intentionally vague — callers that
+    need a precise figure must supply a real artifact.
+    """
+    nav_block = artifact.get("nav", {})
+    adaptive_net: list = nav_block.get("adaptive", {}).get("net") or []
+    bc8_net: list = nav_block.get("by_count", {}).get("8", {}).get("net") or []
+
+    adaptive_terminal = next((v for v in reversed(adaptive_net) if v is not None), None)
+    bc8_terminal = next((v for v in reversed(bc8_net) if v is not None), None)
+
+    if adaptive_terminal is None or bc8_terminal is None:
+        # Synthetic / minimal artifact: no by_count data to derive the footprint from.
+        return (
+            "The adaptive book's lead over the best fixed-N basket (by_count[8]) "
+            "cannot be computed from this artifact (by_count[8].net is absent). "
+            "This excess is a tuning artifact from the in-sample grid sweep and is "
+            "NOT out-of-sample confirmed. A positive DSR and Phi(DSR) >= 0.95 are "
+            "necessary but not sufficient for OOS confirmation — the OOS-confirmation "
+            "step requires a fresh live rebalance window not used during threshold "
+            "selection."
+        )
+
+    net_lead_pp = adaptive_terminal - bc8_terminal
+    adaptive_total_return_pp = adaptive_terminal - 100.0
+    share_pct = (
+        net_lead_pp / adaptive_total_return_pp * 100.0
+        if adaptive_total_return_pp > 0
+        else None
+    )
+
+    lead_str = f"+{net_lead_pp:.1f}pp" if net_lead_pp >= 0 else f"{net_lead_pp:.1f}pp"
+    share_str = f"~{share_pct:.0f}% of total return" if share_pct is not None else "unknown share of total return"
+
+    return (
+        f"The adaptive book's lead over the best fixed-N basket (by_count[8]) is "
+        f"approximately {lead_str} ({share_str}). This excess is a tuning "
+        f"artifact from the in-sample grid sweep and is NOT out-of-sample confirmed. "
+        f"A positive DSR and Phi(DSR) >= 0.95 are necessary but not sufficient for "
+        f"OOS confirmation — the OOS-confirmation step requires a fresh live rebalance "
+        f"window not used during threshold selection."
+    )
+
+
 def compute_basket_rule_validation(
     artifact: dict,
     *,
@@ -352,7 +411,8 @@ def compute_basket_rule_validation(
         ``dsr_passes`` — True when DSR > 0 (the Bailey 2014 positive-DSR gate).
         ``phi_passes`` — True when Φ(DSR) >= 0.95 (the headline inferential gate).
         ``selection_footprint_note`` — disclaimer string quantifying the in-sample
-            selection artifact.
+            selection artifact, derived from the artifact's own NAV data so it stays
+            in sync across reruns.
 
     Raises
     ------
@@ -390,14 +450,7 @@ def compute_basket_rule_validation(
         "walk_forward_sharpe_stability": wf_stability,
         "dsr_passes": bool(dsr_result.passes()),
         "phi_passes": bool(phi >= 0.95),
-        "selection_footprint_note": (
-            "The adaptive book's lead over the best fixed-N basket (by_count[8]) is "
-            "approximately +127.7pp (~16% of total return). This excess is a tuning "
-            "artifact from the in-sample grid sweep and is NOT out-of-sample confirmed. "
-            "A positive DSR and Phi(DSR) >= 0.95 are necessary but not sufficient for "
-            "OOS confirmation — the OOS-confirmation step requires a fresh live rebalance "
-            "window not used during threshold selection."
-        ),
+        "selection_footprint_note": _compute_selection_footprint_note(artifact),
     }
 
 
@@ -692,6 +745,7 @@ def compute_holdout(
 
 __all__ = [
     "BASKET_RULE_N_TRIALS",
+    "_compute_selection_footprint_note",
     "compute_basket_rule_validation",
     "compute_grid_pbo",
     "compute_holdout",

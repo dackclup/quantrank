@@ -352,11 +352,100 @@ def test_compute_basket_rule_validation_walk_forward_in_sample_flag() -> None:
     assert wf["in_sample"] is True
 
 
-def test_compute_basket_rule_validation_selection_footprint_note_mentions_127pp() -> None:
-    """selection_footprint_note quantifies the adaptive premium as ~127.7pp."""
+def test_selection_footprint_note_no_hardcoded_127pp() -> None:
+    """Regression guard: the literal '127.7' must never appear in the note.
+
+    The +127.7pp figure was a stale hardcode from an older pre-uncap artifact.
+    _compute_selection_footprint_note now derives the lead dynamically from the
+    artifact's own NAV; this test ensures the hardcode cannot be re-introduced.
+    Checked across multiple artifacts (with and without by_count[8] data).
+    """
+    from compute.validation.basket_rule_validation import _compute_selection_footprint_note
+
+    # Synthetic artifact without by_count[8] — triggers the fallback path.
+    artifact_no_bc8 = _make_synthetic_artifact(n_legs=40)
+    note_no_bc8 = _compute_selection_footprint_note(artifact_no_bc8)
+    assert "127.7" not in note_no_bc8, (
+        "Stale hardcode '127.7' must not appear in the fallback note"
+    )
+
+    # Also verify via compute_basket_rule_validation (the public call path).
+    result = compute_basket_rule_validation(artifact_no_bc8)
+    assert "127.7" not in result["selection_footprint_note"], (
+        "Stale hardcode '127.7' must not appear in the note from compute_basket_rule_validation"
+    )
+
+
+def _make_artifact_with_bc8(
+    adaptive_terminal: float = 130.0,
+    bc8_terminal: float = 100.0,
+    n_legs: int = 10,
+) -> dict:
+    """Build a minimal artifact with both nav.adaptive.net and nav.by_count['8'].net.
+
+    Both series start at 100 and end at the specified terminal values via a single
+    straight-line step (length-2 list: [start, terminal]).  The rebalances list
+    has one entry so _extract_quarterly_returns does not raise.
+
+    This is the synthetic fixture for testing _compute_selection_footprint_note's
+    dynamic-computation path.
+    """
+    from datetime import date
+
+    dates = [date(2020, 1, 1).isoformat(), date(2020, 4, 1).isoformat()]
+    rebalances = [{"date": dates[0]}]
+    return {
+        "meta": {"rebalance_count": 1},
+        "nav": {
+            "dates": dates,
+            "adaptive": {"net": [100.0, adaptive_terminal]},
+            "by_count": {
+                "8": {"net": [100.0, bc8_terminal]},
+            },
+            "benchmark": {},
+        },
+        "rebalances": rebalances,
+    }
+
+
+def test_selection_footprint_note_computes_dynamic_lead() -> None:
+    """With known terminal NAV values, the note contains the correct +X.Ypp lead.
+
+    Fixture: adaptive.net ends at 130.0, by_count[8].net ends at 100.0.
+    Expected lead = round(130.0 - 100.0, 1) = 30.0 → note contains '+30.0pp'.
+
+    This pins the DYNAMIC computation path of _compute_selection_footprint_note
+    against a controlled synthetic artifact.
+    """
+    from compute.validation.basket_rule_validation import _compute_selection_footprint_note
+
+    artifact = _make_artifact_with_bc8(adaptive_terminal=130.0, bc8_terminal=100.0)
+    note = _compute_selection_footprint_note(artifact)
+
+    assert "+30.0pp" in note, (
+        f"Expected '+30.0pp' in the note for adaptive=130, bc8=100; got: {note!r}"
+    )
+    # Also confirm the stale hardcode is absent from this path.
+    assert "127.7" not in note
+
+
+def test_selection_footprint_note_fallback_when_bc8_absent() -> None:
+    """When by_count[8].net is absent, the note contains the 'cannot be computed' caveat.
+
+    _compute_selection_footprint_note falls back to a generic disclaimer string
+    when bc8_terminal is None (i.e. by_count['8'].net is missing or empty).
+    This is the expected behaviour for all synthetic test fixtures that do not
+    include by_count data.
+    """
+    from compute.validation.basket_rule_validation import _compute_selection_footprint_note
+
+    # Standard synthetic artifact — no by_count["8"] data.
     artifact = _make_synthetic_artifact(n_legs=40)
-    result = compute_basket_rule_validation(artifact)
-    assert "127.7" in result["selection_footprint_note"]
+    note = _compute_selection_footprint_note(artifact)
+
+    assert "cannot be computed" in note, (
+        f"Expected fallback caveat containing 'cannot be computed'; got: {note!r}"
+    )
 
 
 def test_compute_basket_rule_validation_dsr_passes_consistent_with_phi() -> None:

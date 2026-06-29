@@ -334,7 +334,13 @@ _FULL_RANKED_LIMIT = 40
 # computed from the ACTUAL NAV and appended in run_backfill so the disclaimer can never
 # contradict the line shown (methodology-scientist: the old "upper bound" tail implied a
 # win and misframed a losing default).
-DISCLAIMER_BASE = (
+#
+# Similarly, the SELECTION FOOTPRINT sentence is computed from the actual NAV via
+# _selection_footprint_sentence() rather than being a hardcoded constant — so the
+# figure stays correct across reruns without manual edits (the root cause of the
+# stale +127.7pp figure was that it was hardcoded here from a pre-uncap artifact
+# and never updated when the carry-domain V55.1 amendment changed the NAV).
+_DISCLAIMER_STATIC = (
     "Illustrative backtest, not investment advice. This is a point-in-time PROXY "
     "of QuantRank's ranking rule, not a replay of the live composite: at each "
     "historical rebalance it re-runs the current frozen 8-pillar weights using only "
@@ -364,17 +370,64 @@ DISCLAIMER_BASE = (
     "pre-registered). Incumbents are retained while scoring "
     ">= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is "
     "a turnover/implementation-cost device — no performance claims). "
-    "SELECTION FOOTPRINT: the adaptive rule's thresholds (composite_min=65 / "
-    "hold_band=55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on the same 40-leg "
-    "window shown as the track record; the adaptive book's lead over the best fixed-N "
-    "basket is approximately +127.7pp (~16% of total return) and is a tuning artifact "
-    "until confirmed on a fresh out-of-sample window. "
+)
+
+_DISCLAIMER_TAIL = (
     "McLean-Pontiff (2016) is cited for decay of PUBLISHED factors; this rule was "
     "never published, so the relevant haircut is the out-of-sample decay term plus the "
     "in-sample-selection penalty above, not the ~32% post-publication figure. "
-    "The Deflated Sharpe Ratio (n_trials=15, quarterly) is the primary inferential "
-    "gate; the DSR result is stored in meta.validation on the next artifact rerun."
+    "The Deflated Sharpe Ratio (n_trials={n_trials}, quarterly) is the primary "
+    "inferential gate; the DSR result is stored in meta.validation on the next "
+    "artifact rerun."
 )
+
+
+def _selection_footprint_sentence(nav: dict) -> str:
+    """Compute the SELECTION FOOTPRINT sentence for the disclaimer from the NAV.
+
+    The footprint is the adaptive net NAV lead over the best fixed-N basket
+    (``by_count[8].net``), both net of turnover costs, both rebased to 100.
+    Derived at write-time from the produced NAV so the figure never goes stale.
+
+    Returns a fully-formed sentence suitable for insertion into the disclaimer.
+    Falls back to an honest placeholder when by_count[8] is missing (should not
+    occur in production; may occur in test fixtures).
+    """
+    adaptive_net: list = (nav.get("adaptive") or {}).get("net") or []
+    bc8_net: list = (nav.get("by_count") or {}).get("8", {}).get("net") or []
+
+    adaptive_terminal = next((v for v in reversed(adaptive_net) if v is not None), None)
+    bc8_terminal = next((v for v in reversed(bc8_net) if v is not None), None)
+
+    if adaptive_terminal is None or bc8_terminal is None:
+        return (
+            "SELECTION FOOTPRINT: the adaptive rule's thresholds (composite_min=65 / "
+            "hold_band=55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on the same "
+            "window shown as the track record; the exact footprint is unavailable (NAV "
+            "data insufficient) and is a tuning artifact until confirmed on a fresh "
+            "out-of-sample window. "
+        )
+
+    net_lead_pp = adaptive_terminal - bc8_terminal
+    adaptive_total_return_pp = adaptive_terminal - 100.0
+    share_pct = (
+        net_lead_pp / adaptive_total_return_pp * 100.0
+        if adaptive_total_return_pp > 0
+        else None
+    )
+
+    lead_str = f"+{net_lead_pp:.1f}pp" if net_lead_pp >= 0 else f"{net_lead_pp:.1f}pp"
+    share_str = (
+        f"~{share_pct:.0f}% of total return" if share_pct is not None else "unknown share of total return"
+    )
+
+    return (
+        f"SELECTION FOOTPRINT: the adaptive rule's thresholds (composite_min=65 / "
+        f"hold_band=55 / floor 5 / uncapped) were grid-swept IN-SAMPLE on the same "
+        f"40-leg window shown as the track record; the adaptive book's lead over the "
+        f"best fixed-N basket is approximately {lead_str} ({share_str}) and is a "
+        f"tuning artifact until confirmed on a fresh out-of-sample window. "
+    )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
 
@@ -1777,7 +1830,15 @@ def run_backfill(
         "parquet was present at backfill time — so a name that filed an Item 4.02 in "
         "the trailing year at a historical rebalance will appear in this backtest un-vetoed. "
     )
-    disclaimer = DISCLAIMER_BASE + _nr_clause + _insample_lag_clause(nav, start, end)
+    _footprint_sentence = _selection_footprint_sentence(nav)
+    _tail = _DISCLAIMER_TAIL.format(n_trials=BASKET_RULE_N_TRIALS)
+    disclaimer = (
+        _DISCLAIMER_STATIC
+        + _nr_clause
+        + _footprint_sentence
+        + _tail
+        + _insample_lag_clause(nav, start, end)
+    )
 
     # Phase 7.0c: veto_layer_replayed is True when all six accounting vetoes were
     # included in the replay (non_reliance_filing is deliberately excluded and
