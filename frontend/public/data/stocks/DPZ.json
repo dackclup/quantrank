@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 9780652467.471313,
   "current_price": 294.05,
-  "rank": 868,
-  "composite_score": 48.18,
+  "rank": 262,
+  "composite_score": 50.16,
   "pillar_scores": {
-    "quality": 44.01,
-    "value": 59.14,
-    "growth": 58.04,
-    "momentum": 9.3,
-    "health": 52.79,
-    "profitability": 87.71,
-    "technical": 42.23,
-    "risk": 39.65,
+    "quality": 49.2,
+    "value": 69.86,
+    "growth": 47.87,
+    "momentum": 8.42,
+    "health": 54.76,
+    "profitability": 78.9,
+    "technical": 44.22,
+    "risk": 33.53,
     "sentiment": null,
     "ml": null
   },
@@ -49,10 +49,10 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 534.3630214606636,
+        "value": 446.53386645494993,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
@@ -61,10 +61,10 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 527.2331780469533,
+        "value": 495.60533547775003,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 527.2331780469533,
-    "max": 534.3630214606636,
+    "median": 446.53386645494993,
+    "max": 495.60533547775003,
     "low": 205.55380061850914,
-    "high": 534.3630214606636,
-    "mos_pct": 44.227715546614974,
+    "high": 495.60533547775003,
+    "mos_pct": 34.14833456475692,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 527.2331780469533,
+    "median_trimmed": 446.53386645494993,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -103,7 +103,9 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "rem_suspect"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -114,32 +116,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=196)",
+    "label": "Consumer Discretionary median (n=47)",
     "values": {
-      "Quality": 48.31,
-      "Value": 50.49,
-      "Growth": 49.11,
-      "Momentum": 46.35,
-      "Health": 42.12,
-      "Profitability": 50.26,
-      "Technical": 54.04,
-      "Risk": 40.71
+      "Quality": 46.01,
+      "Value": 47.52,
+      "Growth": 51.6,
+      "Momentum": 44.02,
+      "Health": 43.78,
+      "Profitability": 51.77,
+      "Technical": 51.15,
+      "Risk": 40.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.352527294816151,
   "recommendation": "cautious",
-  "loss_chance_pct": 37.427910909649924,
+  "loss_chance_pct": 39.9676978821322,
   "price_change_1d_pct": -1.3851,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.18,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 49.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -180,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.02,
+  "osap_blended_score": 51.01,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,9 +197,9 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 4.452374879128581e-08,
-  "dividend_yield_pct": 2.67,
+  "dividend_yield_pct": 2.71,
   "pays_dividend": true,
   "payout_ratio": 0.41509998,
-  "average_dollar_volume": 269805576.9714559,
-  "security_type": null
+  "average_dollar_volume": 269874541.4952596,
+  "security_type": "Common stock"
 }

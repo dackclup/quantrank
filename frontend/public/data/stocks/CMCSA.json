@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 87603737516.4032,
   "current_price": 24.22,
-  "rank": 160,
-  "composite_score": 61.76,
+  "rank": 43,
+  "composite_score": 62.94,
   "pillar_scores": {
-    "quality": 66.67,
-    "value": 91.83,
-    "growth": 68.63,
-    "momentum": 17.76,
-    "health": 32.81,
-    "profitability": 59.8,
-    "technical": 71.59,
-    "risk": 36.52,
+    "quality": 70.65,
+    "value": 93.12,
+    "growth": 60.87,
+    "momentum": 16.78,
+    "health": 45.38,
+    "profitability": 53.62,
+    "technical": 76.2,
+    "risk": 30.78,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 113.80275324752719,
+        "value": 106.20208377160138,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 63.881380380695845,
+        "value": 54.49049463395159,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 130.45422167382694,
+        "value": 220.22534596810914,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 61.558792665236744,
-    "max": 113.80275324752719,
+    "median": 56.86334979186462,
+    "max": 106.20208377160138,
     "low": 6.1693341804739585,
-    "high": 130.45422167382694,
-    "mos_pct": 60.65549978365329,
+    "high": 220.22534596810914,
+    "mos_pct": 57.40666105319806,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 59.236204949777644,
+    "median_trimmed": 54.49049463395159,
     "methods_excluded_from_median": [
       "multiples_ev_ebitda"
     ]
@@ -126,25 +126,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Communication Services median (n=51)",
+    "label": "Communication Services median (n=23)",
     "values": {
-      "Quality": 50.98,
-      "Value": 52.61,
-      "Growth": 51.47,
-      "Momentum": 36.98,
-      "Health": 34.87,
-      "Profitability": 52.29,
-      "Technical": 46.06,
-      "Risk": 40.87
+      "Quality": 52.17,
+      "Value": 51.81,
+      "Growth": 55.98,
+      "Momentum": 37.4,
+      "Health": 45.62,
+      "Profitability": 50.72,
+      "Technical": 38.4,
+      "Risk": 46.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 14.890070976611671,
+  "loss_chance_pct": 15.437577979495472,
   "price_change_1d_pct": 4.5317,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.76,
+  "composite_score_adjusted": 62.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.81,
+  "osap_blended_score": 57.4,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -208,9 +208,9 @@
     "fetch_status": "ok"
   },
   "cross_source_delta": 0.0123780528450645,
-  "dividend_yield_pct": 5.7,
+  "dividend_yield_pct": 5.45,
   "pays_dividend": true,
   "payout_ratio": 0.2588,
-  "average_dollar_volume": 890276761.1112499,
-  "security_type": null
+  "average_dollar_volume": 891508907.7497736,
+  "security_type": "Common stock"
 }

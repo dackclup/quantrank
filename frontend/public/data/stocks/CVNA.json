@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 14290930713.775635,
   "current_price": 63.72,
-  "rank": 244,
-  "composite_score": 59.52,
+  "rank": 118,
+  "composite_score": 56.7,
   "pillar_scores": {
-    "quality": 71.3,
-    "value": 61.86,
-    "growth": 70.28,
-    "momentum": 39.75,
-    "health": 62.08,
-    "profitability": 53.57,
-    "technical": 30.69,
-    "risk": 30.66,
+    "quality": 51.6,
+    "value": 76.24,
+    "growth": 68.62,
+    "momentum": 41.19,
+    "health": 62.83,
+    "profitability": 40.43,
+    "technical": 33.22,
+    "risk": 31.03,
     "sentiment": null,
     "ml": null
   },
@@ -63,7 +63,6 @@
   "valuation_warnings": [
     "valuation_output_anomalous",
     "cross_source_disagreement",
-    "rem_suspect",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -76,16 +75,16 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=196)",
+    "label": "Consumer Discretionary median (n=47)",
     "values": {
-      "Quality": 48.31,
-      "Value": 50.49,
-      "Growth": 49.11,
-      "Momentum": 46.35,
-      "Health": 42.12,
-      "Profitability": 50.26,
-      "Technical": 54.04,
-      "Risk": 40.71
+      "Quality": 46.01,
+      "Value": 47.52,
+      "Growth": 51.6,
+      "Momentum": 44.02,
+      "Health": 43.78,
+      "Profitability": 51.77,
+      "Technical": 51.15,
+      "Risk": 40.8
     }
   },
   "beneish_m_score": null,
@@ -93,15 +92,15 @@
   "recommendation": "cautious",
   "loss_chance_pct": null,
   "price_change_1d_pct": 2.1973,
-  "manipulation_index": 33.0,
-  "composite_score_adjusted": 56.22,
+  "manipulation_index": 25.0,
+  "composite_score_adjusted": 54.2,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -142,7 +141,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.69,
+  "osap_blended_score": 54.28,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -160,6 +159,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 773912145.7395518,
-  "security_type": null
+  "average_dollar_volume": 775382156.3924662,
+  "security_type": "Common stock"
 }
