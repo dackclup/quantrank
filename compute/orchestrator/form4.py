@@ -208,7 +208,7 @@ def fetch_all_form4(
                 "Phase 4.5e PR 2 — fetching Form-4 insider data for %d tickers "
                 "with %d workers …",
                 len(_f4_tickers),
-                config.EDGAR_MAX_WORKERS,
+                max_workers,
             )
             # Issue #287 PR A — wall-clock start marker (inside else+try so
             # FORM4_FETCH_SKIP=1 leaves form4_wall_clock_seconds=None).
