@@ -363,6 +363,15 @@ def test_workflow_fast_cache_key_is_v12() -> None:
         "post-eviction save restorable by the weekday cron, and what no-ops "
         "the save on warm Saturdays"
     )
+    wh_text = _workflow_text("backfill-warehouse.yml")
+    assert "cache-v12-fast-" in wh_text and "cache-v11-fast-" not in wh_text, (
+        "backfill-warehouse.yml restore-keys must reference the v12-fast family "
+        "(Phase 9.3 bump, 2026-06-29) so the warehouse backfill can borrow a warm "
+        "v12 fast-bundle that includes broad_universe-v1.parquet. A stale v11 "
+        "reference silently misses the new path and falls back to a cold refetch. "
+        "The save key stays -whbf- (subset isolation) but restore-keys must track "
+        "the current fast family in lockstep."
+    )
 
 
 def test_precache_slow_text_family_matches_cron() -> None:
