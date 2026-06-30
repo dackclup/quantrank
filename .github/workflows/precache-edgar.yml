@@ -53,6 +53,7 @@ on:
           - sp500
           - sp900
           - sp1500
+          - broad_investable_us
         default: sp1500
 
 env:
@@ -88,16 +89,28 @@ jobs:
     #     ~196 min (same as compute-rankings.yml cold compute total)
     #   + 10% SEC throttle spike:  ~215-220 min
     #   + runner overhead:         ~5-10 min
-    #   Ceiling:                   ~225 min cold worst-case
+    #   Ceiling:                   ~225 min cold worst-case (sp1500)
     # Typical warm Saturday ≈ 15-25 min (exact-key fast-cache hit).
-    # 270 min ceiling (lockstep with compute-rankings.yml bump) gives
-    # ~45 min buffer over the cold worst-case — wider than the cron's
-    # ~20 min buffer because this workflow omits the 55m folded backtest.
-    # The 240-min budget was adequate for sp900 (~140-160 min cold) but
-    # became dangerously tight at sp1500 scale; bumped in lockstep so a
-    # Saturday cold rebuild can always complete and save the cache bundles
-    # (actions/cache post-job save only runs on job SUCCESS).
-    timeout-minutes: 270
+    #
+    # Phase 9.3 scale-up (Broad Investable US dry-run, ~3,545 names):
+    #   Cold compute: ~280-320 min (1.43-1.63× sp1500 cold; EDGAR loops
+    #   dominate and scale ~linearly with name-count; cached sp1500 overlap
+    #   names do not need re-fetch).
+    #   + 10% SEC throttle spike:  ~310-350 min
+    #   + runner overhead:         ~5-10 min
+    #   Cold worst-case ceiling:   ~360 min (no folded backtest step here)
+    # Typical warm Saturday (exact-key fast-cache hit): ~15-25 min unchanged.
+    # 540 min ceiling (2× sp1500) absorbs the cold ~462-524 min rebuild so
+    # the weekday cron is always warm — the proven SP1500 precache-absorbs-
+    # cold pattern (#492/#520). The 270-min budget was adequate for sp1500
+    # (~225 min cold) but is insufficient for broad-investable-US scale.
+    # actions/cache post-job save only runs on job SUCCESS — the precache's
+    # entire purpose is to complete and save; the ceiling must cover cold.
+    # Owner has authorised the GHA billing increase (2026-06-29).
+    # Monthly cost: warm Saturdays ≈ ~15-25 min (< 1 run × 4 weeks);
+    # cold worst-case at 540m × 4 Saturdays/month = 2,160 min/month max.
+    # The cron universe default STAYS sp1500; 540 min is a headroom grant.
+    timeout-minutes: 540
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
@@ -129,6 +142,12 @@ jobs:
       # Same mechanism as the v9→v10 flip (precache-900 Phase B, #492). The cron
       # default stays sp900 — this key bump ONLY enables the sp1500 manual dispatch
       # and seeds the cache so Slice 7 (the cron-default flip) has a warm bundle.
+      # v12-fast (Phase 9.3 runtime prereq, 2026-06-29): adds
+      #   compute/cache/broad_universe-v1.parquet to path: so the 7-day-TTL
+      #   broad-universe candidate parquet (Phase 9.1) persists across cron runs.
+      #   The fast bundle's exact-key save-skip means the parquet written under a
+      #   warm v11 key would be silently dropped; v12 forces a cold-seed so the
+      #   broad-universe file warms correctly on the first post-bump run.
       # Do NOT bump the slow-text bundle key — it is run-id-keyed and always saves.
       - name: Restore fast caches (fundamentals / prices)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
@@ -143,10 +162,11 @@ jobs:
             compute/cache/universe_sp600-v1.parquet
             compute/cache/universe_sp1500-v1.parquet
             compute/cache/yfinance_info
-          key: cache-v11-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+            compute/cache/broad_universe-v1.parquet
+          key: cache-v12-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v11-fast-${{ steps.quarter.outputs.q }}-
-            cache-v11-fast-
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-
+            cache-v12-fast-
 
       - name: Restore slow text caches (edgar_10k_text / edgar_8k / edgar_form4 / osap)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
@@ -249,22 +269,23 @@ jobs:
           fi
           # TTL-proximity warning (Issue #469): the edgar_8k event cache has a
           # 144h (6-day) TTL — config.EDGAR_8K_CACHE_TTL_SECONDS = 6 * 86400. All
-          # 502 tickers are written in one cold-rebuild burst, so when the layer's
+          # tickers are written in one cold-rebuild burst, so when the layer's
           # NEWEST file nears 144h the next tier2 pass refetches all of them live
-          # (~80 min). Recompute that newest-file age the same way emit() does
-          # (find -printf '%T@' | sort | tail -1) and warn at > 72h
-          # (= 144h TTL - 72h, the config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS window)
-          # so the long pass is PREDICTED here, not a surprise next run. Warning
-          # only — the guarded awk/echo can never fail the job.
+          # (~80 min at sp1500 scale). Recompute that newest-file age the same way
+          # emit() does (find -printf '%T@' | sort | tail -1) and warn at > 96h
+          # (= 144h TTL - 96h, the config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS window
+          # bumped 72h → 96h in Phase 9.3 for broad-investable-US scale) so the
+          # long pass is PREDICTED here, not a surprise next run. Warning only —
+          # the guarded awk/echo can never fail the job.
           k8_newest=$(find compute/cache/edgar_8k -type f -printf '%T@\n' 2>/dev/null | sort -n | tail -1)
           if [ -n "$k8_newest" ]; then
             k8_age=$(awk -v now="$now" -v ts="${k8_newest%.*}" 'BEGIN { printf "%.1f", (now - ts) / 3600 }')
-            # 72 = 144 (EDGAR_8K_CACHE_TTL_SECONDS, hours) - 72 (EDGAR_8K_CACHE_TTL_JITTER_SECONDS, hours)
-            if awk -v a="$k8_age" 'BEGIN { exit !(a > 72) }'; then
-              echo "::warning::edgar_8k cache within 72h of its 144h TTL (newest age ${k8_age}h) — next tier2 pass will refetch ~502 tickers live (~80 min); see #469"
+            # 96 = 144 (EDGAR_8K_CACHE_TTL_SECONDS, hours) - 96 (EDGAR_8K_CACHE_TTL_JITTER_SECONDS, hours)
+            if awk -v a="$k8_age" 'BEGIN { exit !(a > 96) }'; then
+              echo "::warning::edgar_8k cache within 96h of its 144h TTL (newest age ${k8_age}h) — next tier2 pass will refetch tickers live (~80 min at sp1500); see #469"
               {
                 echo ""
-                echo "> **WARNING — edgar_8k near TTL**: newest file is ${k8_age}h old (144h TTL); the next tier2 pass will refetch ~502 tickers live (~80 min). See #469."
+                echo "> **WARNING — edgar_8k near TTL**: newest file is ${k8_age}h old (144h TTL); the next tier2 pass will refetch tickers live (~80 min at sp1500). See #469."
               } >> "$GITHUB_STEP_SUMMARY"
             fi
           fi

@@ -9485,3 +9485,61 @@ CI → 4b. The PR's own sp500 simulate run is the live validation (~43min, compl
 **R4-R7 follow**: form4 latencies (R4) · prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
 
 ---
+
+## Phase 9.3 runtime pre-req — GHA budget + cache-v12-fast cold-seed (in flight, 2026-06-29)
+
+**Branch**: `claude/phase-9-3-runtime-prereq`
+**Type**: ci(compute) — pure CI-config + one config constant + docs lockstep. NO schema
+bump; NO scoring/valuation/Metadata change; cron universe default UNCHANGED at sp1500;
+ZERO compute output changes. Owner has AUTHORIZED the GHA billing increase.
+
+**Changes (7 kinds):**
+
+1. **Timeout bumps** — `compute-rankings.yml` 270→420 min (sp1500 cold + broad-universe
+   cold-fetch headroom); `precache-edgar.yml` 270→540 min (full broad-universe cold
+   worst-case ~360 min, 540 gives headroom); `pre-merge-prod-sim.yml` 270→420 min
+   (must be >= cron per `test_sim_timeout_at_least_cron_timeout`).
+
+2. **Cache key bump v11→v12** — `cache-v11-fast`→`cache-v12-fast` across ALL FOUR
+   workflows (compute-rankings · precache-edgar · pre-merge-prod-sim ·
+   backfill-portfolio). `backfill-portfolio.yml` save key is `cache-v12-bf-` (distinct
+   from `-fast-` to avoid poisoning the quarter's bundle with a subset). Reason: the
+   frozen-fast-cache save-skip (FROZEN-IMMUTABLE-within-a-quarter) would silently omit
+   the new `broad_universe-v1.parquet` path from any warm v11 bundle; the v12 bump
+   forces a cold-seed so ALL four workflows pick up the new path.
+
+3. **`broad_universe-v1.parquet` added to fast-bundle `path:` block** in the three
+   warming workflows (compute-rankings · precache-edgar · pre-merge-prod-sim). NOT
+   added to backfill-portfolio (the backfill does not run the broad-universe probe).
+
+4. **`broad_investable_us` dispatch option** added to `compute-rankings.yml` and
+   `precache-edgar.yml` (after `sp1500`; default stays sp1500).
+
+5. **8-K jitter widened 72h→96h** — `EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 96 * 3600`
+   in `compute/config.py`. At ~3,545 broad-investable-US names the Sat 08:00→Mon 22:00
+   UTC gap is ~62h; W=72h risked re-bunching the cold-burst expiry; W=96h spreads across
+   Sat 08:00→Wed 08:00 UTC (4-day window). Max staleness = 96h vs 730-day 8-K lookback.
+   Canary step threshold updated from 72h→96h (byte-identical in BOTH warming workflows;
+   `test_canary_step_identical_in_both_workflows` enforces it).
+
+6. **Test updates** — `tests/test_workflow_cache_coverage.py`: rename
+   `test_workflow_fast_cache_key_is_v11` → `test_workflow_fast_cache_key_is_v12`;
+   update all v11→v12 / v10-exclusion→v11-exclusion assertions; update
+   `test_canary_emits_edgar_8k_ttl_warning` 72h→96h literal;
+   `test_workflow_fast_cache_key_full_shape_pinned` v11→v12;
+   `test_sim_restores_both_cron_cache_families` v11→v12.
+
+7. **Docs lockstep** — CLAUDE.md §Gotchas `cache-v11-fast`→`cache-v12-fast` entry +
+   in-flight note; AGENTS.md §Gotchas cache family note; PHASE_STATUS_INFLIGHT.md
+   (this entry).
+
+**Files**: `.github/workflows/compute-rankings.yml` · `.github/workflows/precache-edgar.yml` ·
+`.github/workflows/pre-merge-prod-sim.yml` · `.github/workflows/backfill-portfolio.yml` ·
+`compute/config.py` · `tests/test_workflow_cache_coverage.py` ·
+`CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: ruff clean; offline pytest (especially `test_workflow_cache_coverage.py`);
+`python -m compute.output.schema_check` (untouched triple, expected pass); DRAFT PR
+(do NOT merge — owner reviews GHA billing before flip).
+
+---

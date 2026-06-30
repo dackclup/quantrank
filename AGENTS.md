@@ -672,9 +672,11 @@ export function FairPriceCard(props) {  // no types
   (2026-06-06, edgar-debugger root-cause of tier2-cold-every-run): the old
   single 11-path bundle (~250-500 MB) was too big to save reliably post-job, so
   `edgar_10k_text`/`edgar_8k` never persisted → tier2 ran cold ~80m every run.
-  Now: **fast** (fundamentals/prices, `cache-v11-fast-<quarter>-<os>`;
-  family bumped v5→…→v11 — current pin lives in
-  tests/test_workflow_cache_coverage.py) + **slow-text**
+  Now: **fast** (fundamentals/prices, `cache-v12-fast-<quarter>-<os>`;
+  family bumped v5→…→v12 — current pin lives in
+  tests/test_workflow_cache_coverage.py; v12 bump Phase 9.3 2026-06-29:
+  adds `broad_universe-v1.parquet` to fast-bundle path; CI timeouts
+  270→420 min cron / 540 min precache; 8-K jitter 72h→96h) + **slow-text**
   (edgar_10k_text/edgar_8k/edgar_form4/osap, `cache-v5-text-<os>-<run_id>` +
   prefix restore-keys so each run persists fresh text + restores last-good;
   `edgar_form4` moved fast→slow in precache-900 Phase A so a sp900 precache

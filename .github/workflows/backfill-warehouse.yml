@@ -59,7 +59,7 @@ jobs:
       # re-scores from the warm prices + annual fundamentals_history caches (it
       # makes NO new EDGAR calls when the cache is warm). Distinct SAVE key (-whbf-)
       # so this SUBSET bundle never poisons the cron's exact quarter key; restore
-      # borrows the cron's v11-fast family via restore-keys.
+      # borrows the cron's v12-fast family via restore-keys.
       - name: Restore compute caches
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
@@ -74,8 +74,8 @@ jobs:
             compute/cache/edgar_amendments
           key: cache-v11-whbf-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v11-fast-${{ steps.quarter.outputs.q }}-
-            cache-v11-fast-
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-
+            cache-v12-fast-
 
       - name: Run point-in-time warehouse backfill
         # Inputs go through env, NEVER interpolated into the run line (Actions

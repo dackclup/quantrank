@@ -498,7 +498,17 @@ EDGAR_8K_CACHE_TTL_SECONDS: int = 6 * 86400  # 6 days
 #     one.
 # Max staleness = 72h — negligible vs the 730-day 8-K lookback and the
 # daily cron cadence; the 4.01/4.02 item rarity is unchanged.
-EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 72 * 3600  # 72 hours
+#
+# Phase 9.3 bump: W=96h (4 days).  At ~3,545 broad-investable-US names the
+# Sat 08:00 → Mon 22:00 UTC gap is ~62h.  The 6-day (144h) TTL cliff at
+# W=72h still risks re-bunching under an adversarial expiry alignment:
+# jitter spreads to 72h after the Sat precache write, but with the cold
+# cohort written Sat 08:00 UTC + W=72h the last expirations land Tue 08:00 —
+# only 3 days of spread.  With W=96h the spread window covers 4 full days
+# (Sat 08:00 → Wed 08:00), ensuring a cold Saturday rebuild does NOT produce
+# a ~3,545-ticker synchronised tier2 refetch spike on a subsequent weekday.
+# Max staleness = 96h — still negligible vs the 730-day 8-K lookback.
+EDGAR_8K_CACHE_TTL_JITTER_SECONDS: int = 96 * 3600  # 96 hours (Phase 9.3 broad-universe scale)
 
 # Cap how much of an Item body we keep in the cache + surface in the
 # UI excerpt. 500 chars is enough for the human reviewer to gauge

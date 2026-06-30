@@ -213,7 +213,7 @@ def test_workflow_restores_each_cache_dir(workflow: str, cache_path: Path) -> No
 
 
 def test_workflow_fast_cache_key_full_shape_pinned() -> None:
-    """FAST cache key has the full shape ``cache-v11-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
+    """FAST cache key has the full shape ``cache-v12-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}``
     in BOTH compute-rankings.yml and precache-edgar.yml.
 
     WHY (WARN 1): the predecessor test only asserted the prefix
@@ -229,22 +229,22 @@ def test_workflow_fast_cache_key_full_shape_pinned() -> None:
     # Full shape: version token + quarter expression + OS expression.
     # Regex-escape ${{ and }} so they match literally in the workflow text.
     full_shape_re = re.compile(
-        r"key: cache-v11-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
+        r"key: cache-v12-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}"
         r"-\$\{\{ runner\.os \}\}"
     )
     for workflow in ("compute-rankings.yml", "precache-edgar.yml"):
         text = _workflow_text(workflow)
         assert full_shape_re.search(text), (
             f"{workflow} fast-cache key is missing or has the wrong full shape. "
-            f"Expected: ``key: cache-v11-fast-"
+            f"Expected: ``key: cache-v12-fast-"
             f"${{{{ steps.quarter.outputs.q }}}}-${{{{ runner.os }}}}`` — "
             f"a suffix reorder (e.g., -<os>-<quarter>) would silently break "
             f"exact-key parity between the cron and the Saturday precache."
         )
 
 
-def test_workflow_fast_cache_key_is_v11() -> None:
-    """FAST cache key is `cache-v11-fast-` (S&P 1500 cutover Slice 5 bump).
+def test_workflow_fast_cache_key_is_v12() -> None:
+    """FAST cache key is `cache-v12-fast-` (Phase 9.3 runtime pre-req bump).
 
     Bump history on the fundamentals/prices ("fast", quarter-keyed) bundle:
 
@@ -270,6 +270,18 @@ def test_workflow_fast_cache_key_is_v11() -> None:
       forces a cold-seed so all ~1500 tickers warm correctly once the sp1500
       dispatch or Slice 7 cron-default flip fires. The cron default STAYS
       sp900 — same mechanism as v9→v10 (#492). Bumped in ALL FOUR files.
+    - v11 → v12-fast (Phase 9.3 runtime pre-req, 2026-06-29): adds
+      `compute/cache/broad_universe-v1.parquet` to the path: blocks in the
+      three warming workflows (compute-rankings / precache-edgar /
+      pre-merge-prod-sim) so the Broad Investable US candidate parquet
+      (Phase 9.1, 7-day TTL, ~3,545 names) persists across runs. The
+      fast bundle's exact-key save-skip means a warm v11 bundle would
+      silently omit this new path; v12 forces a cold-seed so all four
+      workflows see the new path correctly. Bumped in ALL FOUR files.
+      Also adds `broad_investable_us` to dispatch options in compute-rankings
+      and precache-edgar. The `backfill-portfolio.yml` uses save key
+      `cache-v12-bf-` (distinct from `-fast-` to avoid poisoning the
+      quarter's bundle with an impoverished subset).
     - v4 → v5 (Issue #288 follow-up, 2026-05-28): PR #292 + PR #269
       introduced the GOOG/GOOGL per-class XBRL share-override in Branch 3
       of `_build_snapshot`. Branch 3 only executes on live EDGAR fetch —
@@ -309,8 +321,10 @@ def test_workflow_fast_cache_key_is_v11() -> None:
     - **Bump on universe-expansion that a warm exact-key save-skip would
       prevent from persisting** (sp400/sp500 → sp900 Phase B flip v10;
       sp900 → sp1500 Slice 5 v11).
+    - **Bump on new cache path added to the fast-bundle** that a warm
+      exact-key save would silently omit (broad_universe-v1.parquet v12).
 
-    Bump again to v12-fast next time any of the four triggers fires —
+    Bump again to v13-fast next time any of the four triggers fires —
     in ALL FOUR files at once (compute-rankings / precache-edgar /
     backfill-portfolio / pre-merge-prod-sim; the tri-file pattern became
     quad-file when Issue #249 Option B added the Saturday precache).
@@ -319,35 +333,44 @@ def test_workflow_fast_cache_key_is_v11() -> None:
     workflow comment, and see the lockstep test below.
     """
     text = _workflow_text()
-    assert "key: cache-v11-fast-" in text, (
-        "compute-rankings.yml FAST cache key must be `cache-v11-fast-${{ ... }}` "
-        "(S&P 1500 cutover Slice 5, 2026-06-20). Bump to v12-fast only when a "
+    assert "key: cache-v12-fast-" in text, (
+        "compute-rankings.yml FAST cache key must be `cache-v12-fast-${{ ... }}` "
+        "(Phase 9.3 runtime pre-req, 2026-06-29). Bump to v13-fast only when a "
         "cache directory's *schema* changes, a new metric is added to `_ANNUAL_TAGS` "
         "/ `_TTM_*` / `_BALANCE_TAGS`, a value-correctness fix lands in a "
         "live-fetch-only path that cache replay would short-circuit past, OR a "
         "universe-expansion makes warm-key save-skip prevent full warming."
     )
     bf_text = _workflow_text("backfill-portfolio.yml")
-    assert "cache-v11-fast-" in bf_text, (
-        "backfill-portfolio.yml must share the v11-fast key family (aligned in "
-        "the S&P 1500 Slice 5 bump so both consumers see the same sp1500 depth)"
+    assert "cache-v12-fast-" in bf_text, (
+        "backfill-portfolio.yml must share the v12-fast key family (aligned in "
+        "the Phase 9.3 bump so both consumers see the broad_universe parquet path)"
     )
-    assert "cache-v11-bf-" in bf_text, (
+    assert "cache-v12-bf-" in bf_text, (
         "backfill-portfolio.yml must SAVE under its own -bf- key (its bundle is "
         "a subset of the cron's — an exact-key save would poison the quarter)"
     )
     sim_text = _workflow_text("pre-merge-prod-sim.yml")
-    assert "cache-v11-fast-" in sim_text and "cache-v10-fast-" not in sim_text, (
+    assert "cache-v12-fast-" in sim_text and "cache-v11-fast-" not in sim_text, (
         "pre-merge-prod-sim.yml mirrors the cron's key family (its own header "
         "comment commands bumping together) — a stale family goes silently cold "
         "after archive eviction"
     )
     pre_text = _workflow_text("precache-edgar.yml")
-    assert "key: cache-v11-fast-" in pre_text and "cache-v10-fast-" not in pre_text, (
+    assert "key: cache-v12-fast-" in pre_text and "cache-v11-fast-" not in pre_text, (
         "precache-edgar.yml (Issue #249 Option B) must SAVE under the cron's "
         "EXACT fast key family — exact-key parity is what makes the Saturday "
         "post-eviction save restorable by the weekday cron, and what no-ops "
         "the save on warm Saturdays"
+    )
+    wh_text = _workflow_text("backfill-warehouse.yml")
+    assert "cache-v12-fast-" in wh_text and "cache-v11-fast-" not in wh_text, (
+        "backfill-warehouse.yml restore-keys must reference the v12-fast family "
+        "(Phase 9.3 bump, 2026-06-29) so the warehouse backfill can borrow a warm "
+        "v12 fast-bundle that includes broad_universe-v1.parquet. A stale v11 "
+        "reference silently misses the new path and falls back to a cold refetch. "
+        "The save key stays -whbf- (subset isolation) but restore-keys must track "
+        "the current fast family in lockstep."
     )
 
 
@@ -435,7 +458,7 @@ def test_sim_restores_both_cron_cache_families() -> None:
     """The pre-merge sim must restore BOTH cron cache bundles by their families.
 
     WHY (2026-06-13): the cron writes its cache as TWO bundles under DIFFERENT
-    keys — the fast bundle (`cache-v9-fast-`) and the slow-text bundle
+    keys — the fast bundle (`cache-v12-fast-`) and the slow-text bundle
     (`cache-v5-text-<os>-<run_id>`). The sim originally listed every path under
     the single fast key, so the 5 slow-text paths (edgar_10k_text / edgar_8k /
     osap / amendments / late_filings) were NEVER restored — they live in a
@@ -446,10 +469,10 @@ def test_sim_restores_both_cron_cache_families() -> None:
     bundles restore warm. This guard fails if the slow-text restore is dropped.
     """
     sim_text = _workflow_text("pre-merge-prod-sim.yml")
-    # Fast family (already pinned by the v11 test; re-checked here for symmetry).
-    assert "cache-v11-fast-" in sim_text, (
+    # Fast family (already pinned by the v12 test; re-checked here for symmetry).
+    assert "cache-v12-fast-" in sim_text, (
         "pre-merge-prod-sim.yml must restore the cron's fast cache family "
-        "(`cache-v11-fast-`)."
+        "(`cache-v12-fast-`)."
     )
     # Slow-text family — the bundle the old single-key restore silently dropped.
     assert re.search(r"cache-v\d+-text-\$\{\{ runner\.os \}\}-", sim_text), (
@@ -499,21 +522,22 @@ def test_canary_emits_edgar_8k_ttl_warning() -> None:
     warning is actually PRESENT, so the #469 observability can't silently
     regress on both sides at once.
 
-    Pinned surface: the ``::warning::edgar_8k cache within 72h of its 144h
+    Pinned surface: the ``::warning::edgar_8k cache within 96h of its 144h
     TTL`` literal (the predicted-long-tier2 signal) lives inside the canary
-    step of each cache-warming workflow.  The 72h threshold equals
-    config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS (widened from 24h on
-    2026-06-13 to defeat the weekday-cliff and Sat→Mon re-bunching failure
-    modes — see the config comment for the sufficiency analysis).
+    step of each cache-warming workflow.  The 96h threshold equals
+    config.EDGAR_8K_CACHE_TTL_JITTER_SECONDS (widened from 72h to 96h in
+    Phase 9.3, 2026-06-29, to cover the full Sat 08:00 → Wed 08:00 UTC spread
+    window at ~3,545 broad-investable-US names — see the config comment for
+    the sufficiency analysis).
     """
-    warning_literal = "::warning::edgar_8k cache within 72h of its 144h TTL"
+    warning_literal = "::warning::edgar_8k cache within 96h of its 144h TTL"
     for workflow in _CACHE_WARMING_WORKFLOWS:
         canary = _extract_canary_block(_workflow_text(workflow))
         assert warning_literal in canary, (
             f"{workflow} canary step is missing the Issue #469 edgar_8k "
             f"TTL-proximity warning. Expected the literal "
             f"{warning_literal!r} inside the canary block (it warns when the "
-            f"edgar_8k layer's newest file is within 72h of its 144h TTL so the "
+            f"edgar_8k layer's newest file is within 96h of its 144h TTL so the "
             f"~80-min tier2 refetch is predicted, not surprising)."
         )
 
