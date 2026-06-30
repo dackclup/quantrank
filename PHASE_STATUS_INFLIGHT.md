@@ -9543,3 +9543,107 @@ ZERO compute output changes. Owner has AUTHORIZED the GHA billing increase.
 (do NOT merge — owner reviews GHA billing before flip).
 
 ---
+
+## PR #TBD — feat(compute): Phase 9.1 Broad Investable US universe coverage probe (in flight, 2026-06-29)
+
+Phase 9.1 broadens the OBSERVABILITY surface toward a "Broad Investable US" cohort
+(~3,545 names validated by the 9.0 Scout, PR #661) without ranking any new names.
+Mirrors the `_run_smallcap_coverage_probe` precedent from S&P 1500 Slice 2 (#519):
+a measurement-only slice that emits coverage Metadata fields but leaves
+rankings/scores/flags BYTE-IDENTICAL and the defense layer UNCHANGED at 36.
+
+**What ships**: new `compute/ingest/broad_universe.py` (SEC company_tickers fetcher
++ investability screen — disk cache 7d TTL, EDGAR_USER_AGENT hard-require, tenacity
+retry stop=3/exp 2-20s); new `_run_broad_universe_probe` helper in `compute/main.py`;
+6 new `Metadata` fields (`broad_universe_raw_count` / `broad_universe_candidate_count`
+/ `broad_universe_screened_count` / `broad_universe_price_fail_pct` /
+`broad_universe_adv_fail_pct` / `broad_universe_coverage_pct`); schema triple lockstep
+(`schemas.py` + `frontend/lib/types.ts` + `frontend/lib/schema-snapshot.json`);
+schema version `0.10.41-phase8pilot` → `0.10.42-phase9pilot`; 6 new config constants
+in `compute/config.py` (`SEC_COMPANY_TICKERS_URL` / `BROAD_UNIVERSE_CACHE` /
+`BROAD_UNIVERSE_CACHE_MAX_AGE_DAYS` / `BROAD_UNIVERSE_PRICE_FLOOR_USD` /
+`BROAD_UNIVERSE_ELIGIBLE_EXCHANGES` / `BROAD_UNIVERSE_SKIP_ENV_VAR`).
+
+**Rule 18 hard constraint**: all six `broad_universe_*` Metadata fields MUST NEVER be
+read by scoring, composite, pillar computation, veto/flag logic, fair-price, or
+`select_picks`. Write-only, observability-only.
+
+**Hard naming constraint (legal/trademark)**: "Broad Investable US" everywhere.
+NEVER "Russell 3000" / "Russell-3000-class" / "equivalent to Russell 3000" in
+any field name, label, comment, or string in the repo.
+
+**Escape hatch**: `QR_SKIP_BROAD_UNIVERSE=1` skips the probe (CI pre-merge sim).
+
+**Strategy**: probe reuses the Step-1 `prices_by_ticker` dict already in memory —
+no extra yfinance round-trips. Coverage expected ~40–45% on the 9.1 Probe slice
+(SP1500 ∩ Broad / Broad total). Phase 9.3 (future PR, gated on ≥1 cron confirming
+plausible values) will extend the price-fetch to the full candidate pool.
+
+**Test-engineer follow-up** (tests/** — not written here per ownership boundary):
+- `test_schema_version_pinned` in `tests/test_config.py` needs update from
+  `"0.10.41-phase8pilot"` to `"0.10.42-phase9pilot"`
+- `test_schema_version_bumped_to_phase8pilot` in
+  `tests/test_ingest/test_universe_sp900_pr3a.py` needs suffix widened to accept
+  `-phase9pilot` (or version-floor logic updated)
+- New `tests/test_ingest/test_broad_universe.py` needed covering: (a) fetcher with
+  mocked SEC JSON returns a DataFrame with ticker/name/exchange columns; (b)
+  screen excludes a ticker with high full-history ADV but failing trailing-30d ADV;
+  (c) QR_SKIP_BROAD_UNIVERSE=1 returns all-None dict; (d) empty candidate pool
+  returns all-None dict without errors.
+
+**Files**: `compute/config.py` · `compute/ingest/broad_universe.py` (new) ·
+`compute/main.py` · `compute/output/schemas.py` · `frontend/lib/types.ts` ·
+`frontend/lib/schema-snapshot.json` · `CLAUDE.md` · `AGENTS.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+**Gate**: ruff PASS · offline pytest 3215 passed (3 pre-existing failures: exact
+version pin + alpha158 DeadlineExceeded, both documented above) · schema_check PASS ·
+DRAFT PR only — do NOT merge, do NOT flip Ready.
+
+---
+
+## PR #TBD — ci(compute): Phase 9.1b — wire broad-universe probe into weekday cron + pre-merge-sim escape hatch (in flight, 2026-06-29)
+
+Phase 9.1b is the minimal follow-up to Phase 9.1 (#TBD) that:
+1. Confirms the broad-universe probe IS wired into `run_weekly_compute` (done in
+   Phase 9.1 via the `_run_broad_universe_probe` call immediately after Step 1
+   prices — no new compute/** changes needed here).
+2. Adds `QR_SKIP_BROAD_UNIVERSE=1` to `.github/workflows/pre-merge-prod-sim.yml`
+   so the sim skips the live SEC company_tickers.json fetch (Dependabot PRs have
+   no `EDGAR_USER_AGENT`; the bundled-parquet path is non-deterministic on CI
+   runners; composite-score diff is unaffected since the 6 fields are write-only).
+3. Updates the CLAUDE.md §Gotchas `broad_universe_*` entry to reflect the probe
+   now runs on the weekday cron, reusing the SP1500 `prices_by_ticker` dict.
+4. Updates AGENTS.md §In flight with the Phase 9.1b branch.
+
+**Branch**: `claude/phase-9-1b-cron-wiring` (depends on `claude/phase-9-1-broad-investable-probe`).
+
+**Probe input verification**: the probe passes the Step-1 `prices_by_ticker` dict
+(SP1500 ~1502 names) to `screen_broad_universe_investability` — no extra yfinance
+round-trips. `broad_universe_coverage_pct` measures the SP1500∩Broad / Broad total
+overlap (~40–45% expected). This is intentional and cheap. Phase 9.3 (future PR,
+gated on ≥1 cron confirming plausible values) will extend price-fetching to the full
+Broad candidate pool and push coverage toward ~95%+.
+
+**Escape hatch pattern**: `QR_SKIP_BROAD_UNIVERSE=1` → `_run_broad_universe_probe`
+returns the all-None dict immediately; the 6 `broad_universe_*` Metadata fields
+are None. The weekday cron does NOT set this flag. The pre-merge sim DOES.
+
+**Rule 18 hard constraint** (unchanged from Phase 9.1): all six `broad_universe_*`
+Metadata fields MUST NEVER be read by scoring, composite, pillar computation,
+veto/flag logic, fair-price, or `select_picks`. Write-only, observability-only.
+
+**Hard naming constraint** (unchanged): "Broad Investable US" everywhere.
+NEVER "Russell 3000" / "Russell-3000-class" / "equivalent to Russell 3000".
+
+**No schema change**: the 6 fields already exist on `main` via Phase 9.1.
+Rankings/scores/flags BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
+
+**Files**: `.github/workflows/pre-merge-prod-sim.yml` (QR_SKIP_BROAD_UNIVERSE added) ·
+`CLAUDE.md` (§Gotchas broad_universe entry updated — probe now runs on cron) ·
+`AGENTS.md` (§In flight updated to note 9.1b) · `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Gate**: ruff PASS · offline pytest pass · schema_check PASS (no schema change) ·
+DRAFT PR only — do NOT merge, do NOT flip Ready.
+
+---
