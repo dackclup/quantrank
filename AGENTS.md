@@ -739,6 +739,10 @@ export function FairPriceCard(props) {  // no types
     NOT yet wired into the weekday cron (Slice 1 — cron wiring deferred
     until the ~1500-ticker EDGAR enumeration cost is measured, issue
     #579). Writes committed `data/warehouse/filing_index/` partitions.
+  - `QR_SKIP_BROAD_UNIVERSE=1` — skips the Phase 9.1 Broad Investable US
+    coverage probe (`compute/main.py`); boolean CI escape-hatch, no
+    credential value; prevents the live SEC `company_tickers` fetch in
+    the pre-merge sim (Phase 9.1b, issue #661 follow-up).
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
 - Frontend telemetry: TWO cookieless Vercel-edge client-side beacons —
