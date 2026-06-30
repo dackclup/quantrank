@@ -9647,3 +9647,47 @@ Rankings/scores/flags BYTE-IDENTICAL. Defense layer UNCHANGED at 36.
 DRAFT PR only — do NOT merge, do NOT flip Ready.
 
 ---
+
+## PR #259-R4 — orchestrator refactor R4 (Form-4 fetch) + smell #9 fix (in flight, 2026-06-30)
+
+**Branch**: `claude/orchestrator-refactor-r4`. Fourth slice of the 7-PR incremental refactor of `run_weekly_compute` (issue #259).
+
+**Scope (PURE CODE MOVE — byte-identical output)**: R4 extracts the entire Form-4 insider-transaction fetch block (the `# Phase 4.5e PR 2` comment block through the outer `except` that resets to empty, ~lines 1468-1641 in pre-R4 main.py) out of `run_weekly_compute` into a new `compute/orchestrator/form4.py` module. No logic change, no reordering of effects — compute output is byte-identical across all three execution paths: SKIP, happy-path, and outer-except.
+
+Also absorbs **spaghetti smell #9** (issue #259): `_fetch_one_form4` was a closure defined inside `run_weekly_compute`. It only closed over module-level names (`fetch_recent_form4`, `time`, `logger`) — no loop/local captures — so it moves cleanly to module scope in `compute/orchestrator/form4.py`.
+
+**What moved (verbatim, not altered)**:
+1. `_fetch_one_form4(ticker)` — per-ticker worker; returns `(diagnostic_dict, elapsed_seconds, is_failure)`; catches all exceptions inline so the ThreadPoolExecutor never sees a raised future. Was a closure inside the `else:` branch; now at module scope in the new module. Body byte-for-byte identical.
+2. **The entire Form-4 block** — 5-output initialisation; `FORM4_FETCH_SKIP` env-var check + skip log; the inner `try:` with `_f4_tickers` construction, wall-clock start, `reset_negation_downgrade_count()`, `ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS)` + `as_completed` loop (per-future: append latency, record failures, inner `except` → mark failure + warn), wall-clock end (`round(time.monotonic() - _form4_wc_start, 1)`), `get_negation_downgrade_count()` read, completion log; outer `except Exception:` → warn + reset all 5 to `{}`/`[]`/`[]`/`None`/`None`. All preserved byte-for-byte in `fetch_all_form4`.
+
+**`compute/main.py` changes**:
+- Removed the ~174-line Form-4 block (lines 1468-1641 in pre-R4 main.py).
+- Removed `_fetch_one_form4` closure definition.
+- Added `from compute.orchestrator.form4 import fetch_all_form4` import.
+- Removed `get_negation_downgrade_count` and `reset_negation_downgrade_count` from the `compute.scoring.form4_insider` import block — they are now used only in the orchestrator module. `fetch_recent_form4` remains in main.py (still called at line ~3092 in the per-ticker scoring loop for Form-4 cluster annotates).
+- Replaced the block with a 12-line tuple-unpack call: `(form4_diagnostics, form4_latencies, form4_failures, form4_wall_clock_seconds, form4_negation_guard_downgrade_count) = fetch_all_form4(df)`.
+- All downstream code (the `form4_*` values flowing into the Metadata constructor with `if form4_diagnostics` guards, and `_form4_diag = form4_diagnostics.get(ticker)` in the scoring loop) stays completely untouched and reads the same 5 locals.
+
+**SKIP / happy / outer-except byte-identical guarantee**:
+- SKIP: `os.environ.get("FORM4_FETCH_SKIP", "").lower() in ("1","true","yes")` → logs same message → returns `{}, [], [], None, None`.
+- Happy: same `time.monotonic()` wall-clock with `round(…, 1)`; same `reset_negation_downgrade_count()` before / `get_negation_downgrade_count()` after; same `np.median` / `np.percentile` in the completion log; same `ThreadPoolExecutor` with `config.EDGAR_MAX_WORKERS`; same inner-except dict shape.
+- Outer-except: same warn message; resets all 5 to `{}`/`[]`/`[]`/`None`/`None`.
+
+**`compute/scoring/**`**: not modified (incl. `form4_insider.py`, `form4_signals.py`).
+**`compute/ingest/**`**: not modified.
+**`compute/valuation/**`**: not modified.
+**Schema triple**: untouched. `schemas.py` / `types.ts` / `schema-snapshot.json` not modified.
+
+**Existing tests**: `tests/test_scoring/test_form4_main_loop.py` uses a local harness replica (not a patch against `compute.main._fetch_one_form4`) — no update needed.
+
+**Tests**: 23 new offline unit tests in `tests/test_orchestrator/test_form4.py` — cover `_fetch_one_form4` (A1-A7), `fetch_all_form4` happy-path (B1-B8), per-ticker failure handling (C1-C3), SKIP path (D1/D2/D3 parametrized + D4 + D5), and outer-except path (E1-E2). Test count: headline = 23, Files-list = 23 (both equal `grep -c "def test_"` on the file).
+
+**Files**:
+- `compute/orchestrator/form4.py` (new)
+- `compute/main.py` (Form-4 block removed, `_fetch_one_form4` def removed, imports updated, block replaced with 12-line call)
+- `tests/test_orchestrator/test_form4.py` (new — 23 tests)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**R5-R7 follow**: prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
+
+---
