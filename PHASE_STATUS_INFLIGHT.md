@@ -9393,3 +9393,50 @@ rendering — no compute path). Defense layer UNCHANGED at 38.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## ci(simulate): pin sim universe to sp500 — #616 runner-ceiling (in flight, 2026-06-30)
+
+`ci`: fix the `pre-merge-prod-sim` (simulate) ~4h hosted-runner ceiling (#616). The
+sim now pins `QR_UNIVERSE=sp500` (one-line) while the weekday cron still ranks the
+full sp1500 — a DELIBERATE break of the "sim mirrors the cron" universe invariant.
+
+**Why not the skip-live-fetch approach (#616 Option 4a, REVERTED):** 4a added a
+`QR_SIM_NO_LIVE_FETCH` env var that made the cold-cache path return cached-or-None
+instead of live-fetching. Its first live CI run (PR #671) ABORTED: on a full
+cold cache miss (GitHub scopes caches per branch — a fresh PR branch sees no cache)
+it suppressed ALL prices → `Only 0 tickers priced — below minimum of 100` →
+compute abort, no output. 4a traded "slow but completes" (~3.6h) for "fast abort
+(no output)" — strictly worse, because on a cold miss the sim genuinely NEEDS to
+fetch data to produce a diff. Reverted in full (ingest guards + tests + env var).
+
+**The fix (#616 Option 4b):** sp500 cold is ~43min — the sim still fetches live
+(real fundamentals → a real composite-score diff on the sp500 ∩ committed-main
+intersection), but the smaller universe stays comfortably under the ~4h ceiling.
+
+TRADEOFF: the ~1000 sp400/sp600 names show as "tickers in main only" in the diff,
+and a regression specific to a midcap/smallcap INGEST path is not exercised by the
+sim. Acceptable: (a) the sim is informational-only / non-required; (b) the weekday
+cron still runs the full sp1500 and the post-cron audits cover small/mid-cap paths;
+(c) most scoring/valuation/output logic is universe-agnostic, so an sp500 sim still
+catches the vast majority of real regressions; (d) #669's provenance caveat already
+tells reviewers to cross-check the diff. Production cron UNAFFECTED (warm, 11-110min,
+all recent scheduled runs succeeded — #616 is CI-hygiene, not a production bug).
+
+Change (CI/test/docs only; NO schema bump; rankings/scores byte-identical;
+defense layer UNCHANGED at 38):
+- `.github/workflows/pre-merge-prod-sim.yml`: `QR_UNIVERSE: sp1500` → `sp500` +
+  rewritten rationale comment (the #616 exception to the mirroring invariant).
+- `tests/test_workflow_cache_coverage.py`: `test_sim_mirrors_cron_universe_default`
+  → `test_sim_pins_sp500_universe_per_616_exception` (asserts sp500 set + sp1500
+  absent — the re-inflation ratchet for the #616 decision).
+- Doc: `CLAUDE.md` §Gotchas mirroring-invariant entry + `AGENTS.md` in-flight.
+
+**Verify**: `ruff` clean · `pytest tests/test_workflow_cache_coverage.py` 37 passed ·
+workflow YAML parses. performance-engineer ranked 4a/4b; 4a empirically REFUTED by
+CI → 4b. The PR's own sp500 simulate run is the live validation (~43min, completes).
+
+**Files**: `.github/workflows/pre-merge-prod-sim.yml` ·
+`tests/test_workflow_cache_coverage.py` · `CLAUDE.md` · `AGENTS.md` ·
+`docs/GOTCHAS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

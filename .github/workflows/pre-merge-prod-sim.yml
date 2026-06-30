@@ -58,20 +58,29 @@ env:
   # is unaffected by skipping the fetch. Weekly cron (compute-
   # rankings.yml, default 360-min budget) still runs the full
   # fetch and populates the cache for future sims.
-  # precache-900 Phase B flip (2026-06-16): the weekday cron defaulted to sp900,
-  # so the sim mirrored it. S&P 1500 cutover Slice 7 (2026-06-20): the cron now
-  # defaults to sp1500 (ranked, not probe), so the sim must mirror it too — the
-  # "sim mirrors the cron" invariant is the whole point of pinning this. Set
-  # explicitly here so the sim's universe is independent of the
-  # compute/config.py code default (which stays 'sp500' for local-dev safety)
-  # — GOTCHAS.md §pre-merge-prod-sim mirroring invariant.
-  # Sim cost: sp1500 warm-cache ~175 min (extrapolated from the sp900 ~105 min
-  # observed on PR #534 × 1.66) vs sp900 cold ~131 min vs sp500 ~43 min. The
-  # 270-min timeout (matching the cron, bumped 240→270 for sp1500 scale) holds
-  # headroom on a warm cache-v11 hit (sp600/sp1500 paths seeded #520); a fully
-  # cold sp600 miss can approach the ceiling — the documented compute-rankings.yml
-  # rollback (sp1500→sp900) is the escape hatch.
-  QR_UNIVERSE: sp1500
+  # #616 (2026-06-30) — the sim DELIBERATELY no longer mirrors the cron's
+  # universe. It pins sp500 while the weekday cron ranks the full sp1500.
+  # Why: on a PR-branch cache MISS (GitHub scopes caches per branch; a fresh
+  # `main` cron save is not always visible to a PR run) a cold sp1500 sim
+  # cold-fetches ~1500 names over ~3.6h and intermittently trips the ~4h
+  # hosted-runner stability ceiling (the "runner lost communication" failure).
+  # sp500 cold is ~43 min — it still fetches live (real fundamentals → a real
+  # composite-score diff, NOT a degraded one) but the smaller universe stays
+  # comfortably under the ceiling. (The skip-live-fetch approach #616 Option 4a
+  # was tried and REVERTED: on a full cold miss it suppressed all prices → 0
+  # tickers priced < MIN_VALID_TICKERS=100 → the compute aborted with no output,
+  # i.e. it traded "slow but completes" for "fast abort" — strictly worse.)
+  # TRADEOFF: the diff is computed on the sp500 ∩ committed-main intersection;
+  # the ~1000 sp400/sp600 names show as "tickers in main only", and a regression
+  # specific to a midcap/smallcap INGEST path is not exercised by the sim. That
+  # is acceptable because (a) the sim is informational-only / non-required, (b)
+  # the weekday cron still runs the full sp1500 and the post-cron audits cover
+  # the small/mid-cap paths, (c) most scoring/valuation/output logic is
+  # universe-agnostic so an sp500 sim still catches the vast majority of real
+  # regressions. Pinned explicitly so the sim's universe is independent of the
+  # compute/config.py code default ('sp500' for local-dev safety).
+  # — GOTCHAS.md §pre-merge-prod-sim mirroring invariant (the #616 exception).
+  QR_UNIVERSE: sp500
   FORM4_FETCH_SKIP: "1"
   # 2026-05-24 — pre-merge-prod-sim skips the Tier-2 (10-K text + 8-K)
   # fetch loop too. The Tier-2 loop is 502 tickers × (10-K full-text

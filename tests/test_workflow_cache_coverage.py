@@ -559,29 +559,37 @@ def test_sp900_universe_parquets_in_fast_path_blocks() -> None:
             )
 
 
-def test_sim_mirrors_cron_universe_default() -> None:
-    """pre-merge-prod-sim.yml sets ``QR_UNIVERSE: sp1500`` explicitly to mirror the
-    weekday cron's sp1500 default after the S&P 1500 cutover Slice 7 cron-default
-    flip (2026-06-20).
+def test_sim_pins_sp500_universe_per_616_exception() -> None:
+    """pre-merge-prod-sim.yml pins ``QR_UNIVERSE: sp500`` — the #616 exception to the
+    "sim mirrors the cron" invariant (2026-06-30).
 
-    WHY: the cron's QR_UNIVERSE resolves to sp1500 via the ``|| 'sp1500'`` fallback
-    (Slice 7, 2026-06-20); compute/config.py keeps its code default as 'sp500' for
-    local-dev safety. The sim pins ``QR_UNIVERSE`` explicitly in its ``env:`` block
-    (no dispatch input — it's a bare literal) so the composite-score diff it produces
-    is against the same sp1500 universe the cron uses — a silent universe mismatch
-    would compare apples to oranges (GOTCHAS.md §pre-merge-prod-sim must mirror the
-    cron).
+    WHY: the weekday cron ranks the full sp1500, but a cold sp1500 sim cold-fetches
+    ~1500 names over ~3.6h and intermittently trips the ~4h hosted-runner stability
+    ceiling ("runner lost communication", #616). The sim therefore pins sp500
+    (~43min cold) — it still fetches live (a REAL composite-score diff on the
+    sp500 ∩ committed-main intersection), but the smaller universe stays under the
+    ceiling. The skip-live-fetch fix (#616 Option 4a, `QR_SIM_NO_LIVE_FETCH`) was
+    REVERTED: on a full cold cache miss it suppressed all prices → 0 tickers <
+    MIN_VALID_TICKERS=100 → compute abort (no output), strictly worse than a slow
+    completion. TRADEOFF: sp400/sp600 ingest-specific regressions aren't exercised
+    by the sim (the cron + post-cron audits cover them; the sim is non-required).
 
-    Prior history: Phase B flip (2026-06-16) → sp900; Slice 7 (2026-06-20) → sp1500.
+    This is the re-inflation ratchet for the #616 decision — flipping the sim back
+    to sp1500 must be a deliberate, documented choice (re-trips the runner ceiling).
+
+    Prior history: Phase B flip (2026-06-16) → sp900; Slice 7 (2026-06-20) → sp1500;
+    #616 (2026-06-30) → sp500 (runner-ceiling exception).
     """
     text = _workflow_text("pre-merge-prod-sim.yml")
-    assert "QR_UNIVERSE: sp1500" in text, (
-        "pre-merge-prod-sim.yml must set ``QR_UNIVERSE: sp1500`` explicitly in its "
-        "``env:`` block to mirror the weekday cron's sp1500 default after the "
-        "S&P 1500 cutover Slice 7 cron-default flip (2026-06-20). The compute/"
-        "config.py code default is 'sp500' for local-dev safety, so the sim cannot "
-        "rely on it. Prior history: Phase B flip (2026-06-16) → sp900; Slice 7 "
-        "(2026-06-20) → sp1500."
+    assert "QR_UNIVERSE: sp500" in text, (
+        "pre-merge-prod-sim.yml must pin ``QR_UNIVERSE: sp500`` (the #616 exception) "
+        "so a cold sim stays under the ~4h hosted-runner ceiling. A cold sp1500 sim "
+        "(~3.6h) intermittently trips the runner-communication-loss limit; sp500 cold "
+        "is ~43min. Flipping back to sp1500 re-introduces #616."
+    )
+    assert "QR_UNIVERSE: sp1500" not in text, (
+        "pre-merge-prod-sim.yml must NOT pin sp1500 — that re-trips the #616 "
+        "hosted-runner ceiling. Use sp500 (the documented exception)."
     )
 
 
