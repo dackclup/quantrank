@@ -9477,7 +9477,7 @@ CI → 4b. The PR's own sp500 simulate run is the live validation (~43min, compl
 **Files**:
 - `compute/orchestrator/fundamentals.py` (new)
 - `compute/main.py` (`_fundamentals_one` def removed, import added, Step-2 loop replaced with 1-liner)
-- `tests/test_orchestrator/test_fundamentals.py` (new — 17 tests)
+- `tests/test_orchestrator/test_fundamentals.py` (new — 14 tests)
 - `tests/test_main.py` (import + patch targets updated)
 - `tests/test_output/test_wall_clock_schema.py` (patch target updated)
 - `PHASE_STATUS_INFLIGHT.md` (this entry)
