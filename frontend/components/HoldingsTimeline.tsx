@@ -675,6 +675,14 @@ function QuarterDrawer({
 // progress" badge flags it as partial so readers don't compare it directly to
 // completed-quarter figures.
 // ---------------------------------------------------------------------------
+// Format a signed percentage-point delta, e.g. "+1.4pp" / "−0.7pp" (typographic
+// minus, matching pctStr in portfolio-format). Module-scope — no closure deps.
+function ppStr(v: number | null): string {
+  if (v === null) return '—';
+  const sign = v >= 0 ? '+' : '−';
+  return `${sign}${Math.abs(v).toFixed(1)}pp`;
+}
+
 function LegReturnSummary({
   legReturn,
   benchmarkLabel,
@@ -691,13 +699,6 @@ function LegReturnSummary({
 
   const delta =
     portfolio !== null && benchmark !== null ? portfolio - benchmark : null;
-
-  // Format Δ as signed percentage points (pp), e.g. "+1.4pp" / "−0.7pp".
-  function ppStr(v: number | null): string {
-    if (v === null) return '—';
-    const sign = v >= 0 ? '+' : '−';
-    return `${sign}${Math.abs(v).toFixed(1)}pp`;
-  }
 
   const ariaLabel = [
     `This quarter: AI book ${portfolio !== null ? pctStr(portfolio) : '—'}`,
@@ -720,7 +721,7 @@ function LegReturnSummary({
         </span>
         {partial && (
           <span
-            className="inline-flex items-center gap-0.5 rounded-sm bg-amber-50 px-1 py-0.5 text-[0.625rem] font-medium text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-700"
+            className="inline-flex items-center gap-0.5 rounded-sm bg-amber-50 px-1.5 py-0 text-[0.625rem] font-medium text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-800"
             title="Leg in progress — end boundary is the as-of date, not the next rebalance"
           >
             ▸ in progress
