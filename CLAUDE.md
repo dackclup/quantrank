@@ -421,7 +421,7 @@ inline fuller detail here when it aids the reader.
 - **`loss_avoidance_pattern` thresholds rescaled**
 - **Hypothesis property-based tests**
 - **CI escape-hatch env-var combo for simulate**
-- **pre-merge-prod-sim must mirror the cron's TWO cache bundles AND its `timeout-minutes` — the 5 QR_SKIP_* skips only help on a cache HIT**
+- **pre-merge-prod-sim must mirror the cron's TWO cache bundles AND its `timeout-minutes` — the 5 QR_SKIP_* skips only help on a cache HIT; the sim's UNIVERSE no longer mirrors the cron (#616 exception): sim pins `QR_UNIVERSE=sp500` while the cron ranks sp1500, because a cold sp1500 sim (~3.6h) trips the ~4h hosted-runner ceiling — sp500 cold ~43min still fetches live (real diff) but stays under it. The skip-live-fetch fix (#616 Option 4a) was REVERTED: on a full cold miss it suppressed all prices → 0 tickers < MIN_VALID_TICKERS=100 → compute abort (no output). TRADEOFF: sp400/sp600 ingest-specific regressions aren't exercised by the sim (cron + post-cron audits cover them; sim is non-required)**
 - **The cron cache is split into TWO `actions/cache` steps (don't re-merge): fast (quarter-key) + slow-text (run-id key)**
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
 - **`IMPECCABLE_NO_UPDATE_CHECK` + `IMPECCABLE_UPDATE_HOST`**

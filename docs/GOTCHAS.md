@@ -171,6 +171,18 @@
   `test_sim_restores_both_cron_cache_families` in
   `tests/test_workflow_cache_coverage.py` — keep the sim's two restore steps
   + timeout in lockstep with `compute-rankings.yml` when either moves.
+  **#616 UNIVERSE exception (2026-06-30):** the sim's `QR_UNIVERSE` no longer
+  mirrors the cron — it pins `sp500` while the cron ranks `sp1500`. A cold
+  sp1500 sim (~3.6h) intermittently trips the ~4h hosted-runner stability
+  ceiling ("runner lost communication"); sp500 cold (~43min) still fetches live
+  (a REAL diff on the sp500 ∩ committed-main intersection) but stays under it.
+  The skip-live-fetch fix (#616 Option 4a, `QR_SIM_NO_LIVE_FETCH`) was REVERTED —
+  on a full cold cache miss it suppressed all prices → `0 tickers priced <
+  MIN_VALID_TICKERS=100` → compute abort (no output), strictly worse than a slow
+  completion. Guarded by `test_sim_pins_sp500_universe_per_616_exception`
+  (asserts sp500 set + sp1500 absent). TRADEOFF: sp400/sp600 ingest-specific
+  regressions aren't exercised by the sim (cron + post-cron audits cover them;
+  the sim is non-required). Flipping back to sp1500 re-introduces #616.
 - **The cron cache is split into TWO `actions/cache` steps (don't
   re-merge): fast (quarter-key) + slow-text (run-id key)** (2026-06-06,
   edgar-debugger root-cause). The original SINGLE 11-path bundle
