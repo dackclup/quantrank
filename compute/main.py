@@ -91,6 +91,7 @@ from compute.ingest.universe import (
     get_sp1500_constituents,
 )
 from compute.orchestrator import ComputeState
+from compute.orchestrator.form4 import fetch_all_form4
 from compute.orchestrator.fundamentals import fetch_all_fundamentals
 from compute.orchestrator.prices import fetch_all_prices
 from compute.output.schemas import (
@@ -144,8 +145,6 @@ from compute.scoring.earnings_quality import (
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
 from compute.scoring.form4_insider import (
     fetch_recent_form4,
-    get_negation_downgrade_count,
-    reset_negation_downgrade_count,
 )
 from compute.scoring.form4_signals import (
     count_10b5_1_filtered_transactions,
@@ -1466,179 +1465,17 @@ def run_weekly_compute() -> int:
                 histories[ticker] = pd.DataFrame()
 
     # Phase 4.5e PR 2 — Form-4 insider-transaction fetch loop.
-    # Observability only in this PR: form4_enabled=False means the scoring
-    # layer (PR 3) is not yet wired. The loop populates form4_diagnostics
-    # per-ticker so PR 2's Metadata surface has real latency + coverage
-    # numbers after ≥ 1 cron run. Wrapped in outer try/except so any
-    # catastrophic failure resets to empty state and the cron continues.
-    #
-    # 2026-05-22 hotfix #2: parallelized via ThreadPoolExecutor matching
-    # the sibling EDGAR loops at lines 695 (fundamentals) and 763 (tier2/
-    # 8-K). The original sequential ``for`` loop combined with the
-    # property→method parser fix (also this PR) blew the 45-min CI cap
-    # twice in a row — pre-merge-prod-sim canceled at 43m44s on commit
-    # 3f3bc292 (365d) and again at 45m on e2c6740b (180d sequential).
-    # 502 tickers × ~7s/ticker sequential = ~60 min; with 8 workers it
-    # drops to ~7-8 min while staying under the EDGAR 10 req/s ceiling
-    # (each worker issues ~1 req/s sustained — matching the empirically
-    # safe pattern from PR-3d's bump from 5 → 8 workers).
-    form4_diagnostics: dict[str, dict] = {}
-    form4_latencies: list[float] = []
-    form4_failures: list[str] = []
-    # Issue #287 PR A — wall-clock for the Form-4 loop. `None` semantics:
-    # never assigned when FORM4_FETCH_SKIP=1 (loop didn't run) OR when the
-    # outer try/except fired before the end marker. Populated to the
-    # rounded float seconds on the happy path.
-    form4_wall_clock_seconds: float | None = None
-    _form4_wc_start: float | None = None
-    # PR 6 (residual footgun #1 from PR 4-eq) — count of True → False
-    # downgrades applied by the post-detector negation guard during cache
-    # build (e.g. "10b5-1 plan terminated 2022" + "no 10b5-1 plan in
-    # effect"). `None` semantics mirrors form4_wall_clock_seconds: None
-    # when FORM4_FETCH_SKIP=1 OR when the outer try/except fired. On the
-    # happy path the value is the integer count of downgrades across the
-    # universe-wide cache-build. Warm-cache runs report 0 (no detector
-    # ran this cron — cached `is_rule_10b5_one` is read as-is); cold-
-    # cache runs populate the real cohort number for Q3 cohort audit.
-    form4_negation_guard_downgrade_count: int | None = None
-
-    # 2026-05-22 hotfix #3: env-var escape hatch for cold-cache CI
-    # contexts (pre-merge-prod-sim). The Form-4 fetch is observability
-    # only (form4_enabled=False; _FORM4_FLAGS_ENABLED=False) — it has
-    # ZERO scoring impact, so the pre-merge-prod-sim's composite-diff
-    # check does NOT need it. The 45-min CI cap on that workflow blew
-    # 3x because the property→method parser fix made each filing.obj()
-    # do its real HTTP round-trip on a never-populated form4 cache.
-    # Weekly cron (compute-rankings.yml, default 360min budget) still
-    # runs the full fetch + populates the cache for future sims.
-    if os.environ.get("FORM4_FETCH_SKIP", "").lower() in ("1", "true", "yes"):
-        logger.info(
-            "Phase 4.5e PR 2 — Form-4 fetch SKIPPED via FORM4_FETCH_SKIP "
-            "env var. All form4_* Metadata fields will be None / empty "
-            "(observability-only signal; zero scoring impact). The "
-            "weekly cron populates these fields at default budget."
-        )
-        # form4_diagnostics / form4_latencies / form4_failures remain
-        # empty; the Metadata constructor's `if form4_diagnostics`
-        # guards (lines 2092-2118) coerce each form4_* field to None.
-
-    else:
-
-        def _fetch_one_form4(ticker: str) -> tuple[dict, float, bool]:
-            """Per-ticker Form-4 fetch worker. Returns (diagnostic_dict,
-            elapsed_seconds, is_failure). Catches every exception inline so
-            the ThreadPoolExecutor never sees a raised future — keeps the
-            outer loop's failure semantics intact."""
-            t0 = time.perf_counter()
-            try:
-                transactions = fetch_recent_form4(ticker)
-                elapsed = time.perf_counter() - t0
-                if transactions is None:
-                    return (
-                        {
-                            "insider_count": 0,
-                            "latest_filing_date": None,
-                            "fetch_status": "failed",
-                        },
-                        elapsed,
-                        True,
-                    )
-                distinct = len({t["insider_cik"] for t in transactions})
-                latest = transactions[0]["filing_date"] if transactions else None
-                return (
-                    {
-                        "insider_count": distinct,
-                        "latest_filing_date": latest,
-                        "fetch_status": "ok",
-                    },
-                    elapsed,
-                    False,
-                )
-            except Exception as _f4_e:  # noqa: BLE001
-                elapsed = time.perf_counter() - t0
-                logger.warning("form4 fetch failed for %s: %s", ticker, _f4_e)
-                return (
-                    {
-                        "insider_count": 0,
-                        "latest_filing_date": None,
-                        "fetch_status": "failed",
-                    },
-                    elapsed,
-                    True,
-                )
-
-        try:
-            _f4_tickers = [str(_f4_r["ticker"]) for _, _f4_r in df.iterrows()]
-            logger.info(
-                "Phase 4.5e PR 2 — fetching Form-4 insider data for %d tickers "
-                "with %d workers …",
-                len(_f4_tickers),
-                config.EDGAR_MAX_WORKERS,
-            )
-            # Issue #287 PR A — wall-clock start marker (inside else+try so
-            # FORM4_FETCH_SKIP=1 leaves form4_wall_clock_seconds=None).
-            _form4_wc_start = time.monotonic()
-            # PR 6 — reset the module-level negation-guard counter before
-            # the fetch loop begins. Counter accumulates True → False
-            # downgrades across all worker threads (thread-safe via
-            # ``_negation_lock`` inside form4_insider). Read after the
-            # ThreadPoolExecutor block completes and aliased to
-            # ``form4_negation_guard_downgrade_count`` for Metadata.
-            reset_negation_downgrade_count()
-            with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as _f4_ex:
-                _f4_future_to_ticker = {
-                    _f4_ex.submit(_fetch_one_form4, _t): _t for _t in _f4_tickers
-                }
-                for _f4_future in as_completed(_f4_future_to_ticker):
-                    _f4_ticker = _f4_future_to_ticker[_f4_future]
-                    try:
-                        _f4_diag, _f4_elapsed, _f4_is_failure = _f4_future.result()
-                        form4_diagnostics[_f4_ticker] = _f4_diag
-                        form4_latencies.append(_f4_elapsed)
-                        if _f4_is_failure:
-                            form4_failures.append(_f4_ticker)
-                    except Exception as _f4_e:  # noqa: BLE001
-                        form4_failures.append(_f4_ticker)
-                        form4_diagnostics[_f4_ticker] = {
-                            "insider_count": 0,
-                            "latest_filing_date": None,
-                            "fetch_status": "failed",
-                        }
-                        logger.warning(
-                            "form4 future raised for %s: %s", _f4_ticker, _f4_e
-                        )
-            # Issue #287 PR A — wall-clock end marker (success path).
-            form4_wall_clock_seconds = round(
-                time.monotonic() - _form4_wc_start, 1
-            )
-            # PR 6 — read the negation-guard counter accumulated across
-            # all worker threads. Always populated on the happy path
-            # (zero is a valid value — warm-cache cron OR cold-cache cron
-            # with no negation-phrase footnotes in the universe).
-            form4_negation_guard_downgrade_count = get_negation_downgrade_count()
-            logger.info(
-                "Form-4 fetch complete: %d ok, %d failures, p50=%.2fs p95=%.2fs, "
-                "wall_clock=%ss, negation_downgrades=%d",
-                len(form4_diagnostics) - len(form4_failures),
-                len(form4_failures),
-                float(np.median(form4_latencies)) if form4_latencies else 0.0,
-                float(np.percentile(form4_latencies, 95)) if form4_latencies else 0.0,
-                form4_wall_clock_seconds,
-                form4_negation_guard_downgrade_count,
-            )
-        except Exception as _f4_outer_e:  # noqa: BLE001
-            logger.warning(
-                "Form-4 fetch loop failed entirely (%s); form4_diagnostics → empty.",
-                _f4_outer_e,
-            )
-            form4_diagnostics = {}
-            form4_latencies = []
-            form4_failures = []
-            # Issue #287 PR A — leave form4_wall_clock_seconds = None on failure.
-            form4_wall_clock_seconds = None
-            # PR 6 — leave negation-guard count = None on outer-try failure
-            # (mirrors form4_wall_clock_seconds semantics).
-            form4_negation_guard_downgrade_count = None
+    # Extracted to compute.orchestrator.form4 as part of PR #259-R4.
+    # Absorbs smell #9: _fetch_one_form4 closure moved to module scope in
+    # the orchestrator. All SKIP / happy-path / outer-except semantics are
+    # byte-identical to the original inline block.
+    (
+        form4_diagnostics,
+        form4_latencies,
+        form4_failures,
+        form4_wall_clock_seconds,
+        form4_negation_guard_downgrade_count,
+    ) = fetch_all_form4(df)
 
     # Step 3b — post-split share-lag correction pass (defense layer 35,
     # 2026-06-18 methodology-scientist ruling).
