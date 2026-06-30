@@ -9691,3 +9691,50 @@ Also absorbs **spaghetti smell #9** (issue #259): `_fetch_one_form4` was a closu
 **R5-R7 follow**: prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
 
 ---
+
+## feat(frontend): per-quarter index comparison in Rotation history drawer (in flight, 2026-06-30)
+
+Adds a per-quarter book-vs-benchmark summary block at the top of each
+`QuarterDrawer` in the Rotation history component (`HoldingsTimeline.tsx`),
+mirroring `AnnualReturnsTable`'s portfolio-vs-index comparison but per
+quarterly rebalance leg instead of per calendar year. Each expanded drawer
+now shows that quarter's AI-book leg return vs the benchmark index return +
+the outperformance Δ (in pp). The newest (top) drawer's leg is only partially
+elapsed (last rebalance → as-of) and is marked with an amber "in progress"
+badge + a one-line footnote, analogous to `AnnualReturnsTable`'s `*`
+partial-year marker.
+
+**Frontend-only — NO schema change, NO compute change.** All figures are
+derived in the browser from the NAV series the home page already ships
+(`adaptive.net` / `netByCount[countKey]` for the book, `benchmark[bench]` for
+the index), reactive to the existing benchmark picker — the same series each
+branch already passes to `AnnualReturnsTable`. Two pure helpers were extracted
+and exported from `HoldingsTimeline.tsx` for testability:
+`snapToTradingDayIndex` (binary search mirroring the `bisect_left` semantics of
+`compute/validation/basket_rule_validation.py::_snap_to_trading_day`) and
+`computeLegReturns` (per-leg `(navEnd / navStart − 1)` over the chronological
+timeline, using the last finite NAV index as the final partial leg's end
+boundary). The block reuses `pctStr` / `toneClass` from
+`@/lib/portfolio-format`, soft-palette tone (emerald positive / rose negative),
+`tabular-nums` on every numeric, and paired `dark:` variants.
+
+Graceful absence: empty/mismatched NAV or dates → block does not render
+(pre-regen / partial artifacts safe); single null boundary → that figure
+renders `—`; both null → block omitted.
+
+**Schema triple**: untouched. **Defense layer**: unchanged at 38.
+
+**Files**:
+- `frontend/components/HoldingsTimeline.tsx` (new `LegReturnSummary` block + 2
+  exported pure helpers; 4 new optional props on `HoldingsTimeline`,
+  `benchmarkLabel` on `QuarterDrawer`)
+- `frontend/components/AiPickPortfolio.tsx` (data wiring at both call sites —
+  adaptive + slider branches)
+- `frontend/components/HoldingsTimeline.test.ts` (+13 tests for the helpers)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS (509 pages) ·
+`vitest run` 338/338 PASS. Pending `frontend-design-reviewer` visual/a11y
+audit before Draft → Ready.
+
+---

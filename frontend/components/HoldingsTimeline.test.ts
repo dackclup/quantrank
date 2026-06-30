@@ -542,3 +542,165 @@ describe('sold-row ORDER — Current-picks matches Rotation-history (ordering fi
     expect(currentPicksOrder).toEqual(holdingsTimelineOrder);
   });
 });
+
+// ---------------------------------------------------------------------------
+// 8. Leg-return computation — snapToTradingDayIndex + computeLegReturns
+//
+// These tests contract the pure helpers exported from HoldingsTimeline.tsx
+// that power the per-quarter book vs benchmark summary in each QuarterDrawer.
+//
+// The snap behavior mirrors Python's bisect_left semantics (as in
+// `compute/validation/basket_rule_validation.py::_snap_to_trading_day`):
+//   - exact match → that date's index
+//   - date between two trading days → next trading day (first >= query)
+//   - date past the last trading day → last date index (clamp)
+//   - empty dates → -1
+//
+// The leg-return computation mirrors _extract_quarterly_returns:
+//   bookRet  = portfolioNav[end] / portfolioNav[start] − 1  (as %)
+//   idxRet   = benchmarkNav[end] / benchmarkNav[start] − 1  (as %)
+//   null boundary NAV → null return (never crash)
+//   last leg → partial: true, end = last finite NAV index
+// ---------------------------------------------------------------------------
+
+import { snapToTradingDayIndex, computeLegReturns } from './HoldingsTimeline';
+
+describe('snapToTradingDayIndex — bisect_left semantics', () => {
+  const DATES = ['2023-01-03', '2023-04-03', '2023-07-03', '2023-10-02'];
+
+  it('exact match → that date\'s index', () => {
+    expect(snapToTradingDayIndex('2023-04-03', DATES)).toBe(1);
+  });
+
+  it('date between two trading days → next trading day (first date >=)', () => {
+    // 2023-04-01 (Saturday) → next is 2023-04-03 (index 1)
+    expect(snapToTradingDayIndex('2023-04-01', DATES)).toBe(1);
+  });
+
+  it('date before first trading day → index 0', () => {
+    expect(snapToTradingDayIndex('2022-12-30', DATES)).toBe(0);
+  });
+
+  it('date past last trading day → clamps to last index', () => {
+    // 2024-01-02 is past the end → index 3 (last)
+    expect(snapToTradingDayIndex('2024-01-02', DATES)).toBe(3);
+  });
+
+  it('empty dates → -1', () => {
+    expect(snapToTradingDayIndex('2023-04-03', [])).toBe(-1);
+  });
+
+  it('first date in array → index 0', () => {
+    expect(snapToTradingDayIndex('2023-01-03', DATES)).toBe(0);
+  });
+});
+
+describe('computeLegReturns — per-leg book vs benchmark returns', () => {
+  // Synthetic dates: 4 weekly dates (trading days)
+  const DATES = ['2023-01-03', '2023-01-10', '2023-01-17', '2023-01-24'];
+  // Rebalances at dates[0] and dates[2] → 2 legs
+  const TIMELINE_DATES = ['2023-01-03', '2023-01-17'];
+
+  // NAV series: starts at 100, grows to 110 then 121
+  const PORTFOLIO_NAV: (number | null)[] = [100, 105, 110, 121];
+  // Benchmark: starts at 100, grows to 104 then 108
+  const BENCHMARK_NAV: (number | null)[] = [100, 102, 104, 108];
+
+  it('produces one result per timeline entry', () => {
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    expect(legs).toHaveLength(2);
+  });
+
+  it('leg 0: start=dates[0] (index 0), end=dates[2] (index 2) — not partial', () => {
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    // bookRet  = (110/100 - 1)*100 = +10%
+    // idxRet   = (104/100 - 1)*100 = +4%
+    expect(legs[0].partial).toBe(false);
+    expect(legs[0].portfolio).toBeCloseTo(10, 5);
+    expect(legs[0].benchmark).toBeCloseTo(4, 5);
+  });
+
+  it('leg 1 (last): start=dates[2] (index 2), end=last-finite index (3) — partial:true', () => {
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    // bookRet  = (121/110 - 1)*100 = +10%
+    // idxRet   = (108/104 - 1)*100 = ~3.85%
+    expect(legs[1].partial).toBe(true);
+    expect(legs[1].portfolio).toBeCloseTo(10, 5);
+    expect(legs[1].benchmark).toBeCloseTo((108 / 104 - 1) * 100, 5);
+  });
+
+  it('null NAV at start boundary → null return (graceful, no crash)', () => {
+    const navWithNull: (number | null)[] = [null, 105, 110, 121];
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, navWithNull, BENCHMARK_NAV);
+    // Leg 0 starts at index 0 which is null → portfolio null
+    expect(legs[0].portfolio).toBeNull();
+    // Benchmark is fine (100 at index 0)
+    expect(legs[0].benchmark).toBeCloseTo(4, 5);
+  });
+
+  it('null benchmark NAV at start boundary → benchmark null, portfolio still works', () => {
+    const benchNull: (number | null)[] = [null, 102, 104, 108];
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, PORTFOLIO_NAV, benchNull);
+    expect(legs[0].portfolio).toBeCloseTo(10, 5);
+    expect(legs[0].benchmark).toBeNull();
+  });
+
+  it('all nulls in portfolio NAV → empty result (lastFiniteNavIndex = -1)', () => {
+    const allNull: (number | null)[] = [null, null, null, null];
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, allNull, BENCHMARK_NAV);
+    expect(legs).toHaveLength(0);
+  });
+
+  it('empty dates → empty result', () => {
+    const legs = computeLegReturns(TIMELINE_DATES, [], [], []);
+    expect(legs).toHaveLength(0);
+  });
+
+  it('empty timeline → empty result', () => {
+    const legs = computeLegReturns([], DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    expect(legs).toHaveLength(0);
+  });
+
+  it('mismatched nav vs dates lengths → empty result', () => {
+    const legs = computeLegReturns(TIMELINE_DATES, DATES, [100, 110], BENCHMARK_NAV);
+    expect(legs).toHaveLength(0);
+  });
+
+  it('snap behavior: rebalance date falls between trading days → snaps to next', () => {
+    // TIMELINE_DATES[0] = '2023-01-04' (Wed; not in DATES)
+    // Next trading day in DATES is '2023-01-10' (index 1)
+    const timelineDatesOffGrid = ['2023-01-04', '2023-01-17'];
+    const legs = computeLegReturns(timelineDatesOffGrid, DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    // Leg 0: start=index 1 (105), end=index 2 (110)
+    // bookRet = (110/105 - 1)*100 ≈ 4.76%
+    expect(legs[0].partial).toBe(false);
+    expect(legs[0].portfolio).toBeCloseTo((110 / 105 - 1) * 100, 5);
+  });
+
+  it('rebalance date past end of dates → snaps to last date (clamp)', () => {
+    // TIMELINE_DATES[1] past the series end — snapToTradingDayIndex clamps to
+    // the last index (3). Leg 0 uses the clamped index 3 as its end boundary.
+    // Leg 1 (last leg) starts at clamped index 3 and ends at lastFiniteNavIndex=3.
+    const futureDate = ['2023-01-03', '2025-01-01'];
+    const legs = computeLegReturns(futureDate, DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    // Leg 0: NOT the last leg → partial:false
+    //   start=index 0 (100), end=snapToTradingDayIndex('2025-01-01')=index 3 (121)
+    //   bookRet = (121/100 - 1)*100 = 21%
+    expect(legs[0].partial).toBe(false);
+    expect(legs[0].portfolio).toBeCloseTo(21, 5);
+    // Leg 1: last leg → partial:true
+    //   start=index 3 (121), end=lastFiniteNavIndex=3 (121) — same index → null
+    expect(legs[1].partial).toBe(true);
+    expect(legs[1].portfolio).toBeNull();
+  });
+
+  it('single rebalance → single partial leg from start to end of series', () => {
+    const singleRebalance = ['2023-01-03'];
+    const legs = computeLegReturns(singleRebalance, DATES, PORTFOLIO_NAV, BENCHMARK_NAV);
+    expect(legs).toHaveLength(1);
+    expect(legs[0].partial).toBe(true);
+    // start=index 0 (100), end=last finite=index 3 (121)
+    // bookRet = (121/100 - 1)*100 = 21%
+    expect(legs[0].portfolio).toBeCloseTo(21, 5);
+  });
+});

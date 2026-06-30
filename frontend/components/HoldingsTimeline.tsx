@@ -13,6 +13,128 @@ import {
   toneClass,
 } from '@/lib/portfolio-format';
 
+// ---------------------------------------------------------------------------
+// Leg-return computation helpers (pure, exported for unit tests)
+// ---------------------------------------------------------------------------
+
+/**
+ * Snap a calendar date ISO string to the index of the first trading day in
+ * `dates` that is >= `dateIso` (bisect_left semantics, mirrors
+ * `compute/validation/basket_rule_validation.py::_snap_to_trading_day`).
+ *
+ * Returns:
+ *  - The matched index when `dateIso` falls within the dates array.
+ *  - `dates.length - 1` when `dateIso` is past the last date (clamp to end).
+ *  - `-1` when `dates` is empty (caller must guard against this).
+ */
+export function snapToTradingDayIndex(dateIso: string, dates: string[]): number {
+  if (dates.length === 0) return -1;
+  // Binary search: find the leftmost index where dates[i] >= dateIso.
+  let lo = 0;
+  let hi = dates.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (dates[mid] < dateIso) lo = mid + 1;
+    else hi = mid;
+  }
+  // lo === dates.length means past the end → clamp to last date.
+  return lo < dates.length ? lo : dates.length - 1;
+}
+
+/** Return true when `v` is a finite, usable NAV value (> 0, not null, not NaN). */
+function isFiniteNav(v: number | null | undefined): v is number {
+  return v !== null && v !== undefined && !Number.isNaN(v) && v > 0;
+}
+
+/**
+ * Index of the last finite (> 0) value in `series`.
+ * Returns -1 when no finite value exists.
+ */
+function lastFiniteNavIndex(series: (number | null)[]): number {
+  for (let i = series.length - 1; i >= 0; i -= 1) {
+    if (isFiniteNav(series[i])) return i;
+  }
+  return -1;
+}
+
+/** Per-leg return result attached to each Row. */
+export interface LegReturn {
+  /** Book (portfolio) return for this leg, or null when data is insufficient. */
+  portfolio: number | null;
+  /** Benchmark (index) return for this leg, or null when data is insufficient. */
+  benchmark: number | null;
+  /** True for the last (most recent) leg — end boundary is the as-of date, not
+   *  the next rebalance. */
+  partial: boolean;
+}
+
+/**
+ * Compute per-leg returns for the full timeline (chronological order, oldest first).
+ *
+ * Algorithm mirrors `compute/validation/basket_rule_validation.py::_extract_quarterly_returns`:
+ *
+ *   For leg k (0-indexed chronological):
+ *     snapThis = snapToTradingDayIndex(timeline[k].date, dates)
+ *     snapNext = snapToTradingDayIndex(timeline[k+1].date, dates)  [or lastFiniteNavIndex for the final leg]
+ *     bookRet  = portfolioNav[snapNext] / portfolioNav[snapThis] − 1
+ *     idxRet   = benchmarkNav[snapNext] / benchmarkNav[snapThis] − 1
+ *
+ *   Any missing/null/zero boundary NAV → that figure is null (never crash).
+ *
+ * Returns an array parallel to `timelineDates` (chronological). The last element
+ * has `partial: true`.
+ *
+ * Graceful absence: returns an empty array when dates/nav arrays are empty or
+ * mismatched in length.
+ */
+export function computeLegReturns(
+  timelineDates: string[],
+  dates: string[],
+  portfolioNav: (number | null)[],
+  benchmarkNav: (number | null)[],
+): LegReturn[] {
+  if (
+    timelineDates.length === 0 ||
+    dates.length === 0 ||
+    portfolioNav.length !== dates.length ||
+    benchmarkNav.length !== dates.length
+  ) {
+    return [];
+  }
+
+  const lastFinIdx = lastFiniteNavIndex(portfolioNav);
+  if (lastFinIdx < 0) return [];
+
+  const n = timelineDates.length;
+  const results: LegReturn[] = [];
+
+  for (let k = 0; k < n; k += 1) {
+    const snapThis = snapToTradingDayIndex(timelineDates[k], dates);
+    // End boundary: next rebalance date snapped for all but the last leg;
+    // last-finite-NAV index for the final (partial) leg.
+    const isLastLeg = k === n - 1;
+    const snapEnd = isLastLeg
+      ? lastFinIdx
+      : snapToTradingDayIndex(timelineDates[k + 1], dates);
+
+    const pStart = portfolioNav[snapThis];
+    const pEnd   = portfolioNav[snapEnd];
+    const bStart = benchmarkNav[snapThis];
+    const bEnd   = benchmarkNav[snapEnd];
+
+    const portfolioRet = isFiniteNav(pStart) && isFiniteNav(pEnd) && snapEnd > snapThis
+      ? (pEnd / pStart - 1) * 100
+      : null;
+    const benchmarkRet = isFiniteNav(bStart) && isFiniteNav(bEnd) && snapEnd > snapThis
+      ? (bEnd / bStart - 1) * 100
+      : null;
+
+    results.push({ portfolio: portfolioRet, benchmark: benchmarkRet, partial: isLastLeg });
+  }
+
+  return results;
+}
+
 // Fixed month names — locale-stable across SSR vs client (no `Date()`/Intl
 // drift). The rebalance date is quarter-end + the 45-day filing lag, so it is
 // the month the basket was actually rebalanced into; we show that honestly
@@ -49,6 +171,10 @@ type Row = {
   // sector lives on the prior entry's bandSectors). Absent for the initial
   // basket and for pre-regen artifacts that lack band_sectors.
   prevBandSectors?: Record<string, string>;
+  // Per-leg book vs benchmark return for this quarter — computed in the
+  // chronological pass from the NAV series props. Absent when NAV data is
+  // missing or misaligned.
+  legReturn?: LegReturn;
 };
 
 /**
@@ -74,9 +200,21 @@ type Row = {
 export function HoldingsTimeline({
   timeline,
   count,
+  dates = [],
+  portfolioNav = [],
+  benchmarkNav = [],
+  benchmarkLabel = '',
 }: {
   timeline: AiPickTimelineEntry[];
   count: number;
+  /** NAV dates array (chronological, aligned to portfolioNav / benchmarkNav). */
+  dates?: string[];
+  /** Portfolio net NAV series aligned to `dates`. */
+  portfolioNav?: (number | null)[];
+  /** Benchmark NAV series aligned to `dates`. */
+  benchmarkNav?: (number | null)[];
+  /** Display label for the benchmark index (e.g. "SPY"). */
+  benchmarkLabel?: string;
 }) {
   // Adaptive mode: true when every entry in the timeline carries adaptiveCount.
   // A single missing entry falls back to slider mode (safe for partial artifacts).
@@ -162,10 +300,20 @@ export function HoldingsTimeline({
       });
       prev = held;
     }
+
+    // Compute per-leg returns in the chronological pass (while rows are
+    // oldest-first, before the reverse). This attaches a legReturn to each
+    // row so the display loop can access it directly.
+    const timelineDates = chrono.map((r) => r.date);
+    const legReturns = computeLegReturns(timelineDates, dates, portfolioNav, benchmarkNav);
+    for (let k = 0; k < chrono.length; k += 1) {
+      if (legReturns[k] !== undefined) chrono[k].legReturn = legReturns[k];
+    }
+
     const transitions = Math.max(1, timeline.length - 1);
     chrono.reverse(); // newest first for display
     return { rows: chrono, avgTurnover: totalEntered / transitions };
-  }, [timeline, count, isAdaptive]);
+  }, [timeline, count, isAdaptive, dates, portfolioNav, benchmarkNav]);
 
   if (rows.length === 0) return null;
 
@@ -281,6 +429,7 @@ export function HoldingsTimeline({
                   <QuarterDrawer
                     row={row}
                     isInitial={isInitial}
+                    benchmarkLabel={benchmarkLabel}
                   />
                 </div>
               </div>
@@ -302,9 +451,12 @@ export function HoldingsTimeline({
 function QuarterDrawer({
   row,
   isInitial,
+  benchmarkLabel,
 }: {
   row: Row;
   isInitial: boolean;
+  /** Display label for the benchmark index, forwarded from HoldingsTimeline props. */
+  benchmarkLabel: string;
 }) {
   const { entry, held, entered, exited, sectorByTicker, prevMwrByTicker, prevBandSectors } = row;
   const mwrByTicker = entry.mwrByTicker;
@@ -343,6 +495,16 @@ function QuarterDrawer({
 
   return (
     <div className="mb-2 mt-0.5 rounded border border-slate-100 bg-slate-50 px-3 py-3 dark:border-slate-800 dark:bg-slate-800/50">
+      {/* Per-quarter book vs benchmark summary — shown ABOVE the holdings grid
+          when NAV data is present for this leg. Mirrors the AnnualReturnsTable
+          visual language (same pctStr/toneClass tokens, same muted section label
+          convention, same tabular-nums font-mono discipline). */}
+      {row.legReturn && (
+        <LegReturnSummary
+          legReturn={row.legReturn}
+          benchmarkLabel={benchmarkLabel}
+        />
+      )}
       {/* Grid header — 6 columns matching AiPickPortfolio adaptive branch:
           Mobile (5 tracks, sector hidden): [1.25rem auto 1fr 4.25rem 2.75rem]
           sm+ (6 tracks, sector visible):   [1.25rem auto auto 1fr 4.25rem 2.75rem] */}
@@ -495,6 +657,118 @@ function QuarterDrawer({
       {!hasMwr && (
         <p className="mt-2 text-[0.625rem] text-slate-400 dark:text-slate-500">
           Per-quarter return data unavailable for this quarter (pre-engine artifact).
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Per-quarter book vs benchmark summary block — sits at the TOP of each
+// QuarterDrawer (above the holdings grid), separated by a bottom border.
+// Visual language mirrors AnnualReturnsTable: same pctStr/toneClass tokens,
+// same section-label caps/tracking convention, same tabular-nums discipline.
+// Δ is expressed in percentage POINTS (pp): bookRet% − idxRet%.
+//
+// The newest (top) quarter has partial:true because its end boundary is the
+// as-of date (the series doesn't extend to the next rebalance yet). A "▸ in
+// progress" badge flags it as partial so readers don't compare it directly to
+// completed-quarter figures.
+// ---------------------------------------------------------------------------
+function LegReturnSummary({
+  legReturn,
+  benchmarkLabel,
+}: {
+  legReturn: LegReturn;
+  benchmarkLabel: string;
+}) {
+  const { portfolio, benchmark, partial } = legReturn;
+
+  // Graceful absence: if both figures are null (e.g. benchmark series absent
+  // or lengths mismatch), skip the block entirely to avoid confusing dashes.
+  // Per spec: skip when benchmarkNav is absent — simplest safe path.
+  if (portfolio === null && benchmark === null) return null;
+
+  const delta =
+    portfolio !== null && benchmark !== null ? portfolio - benchmark : null;
+
+  // Format Δ as signed percentage points (pp), e.g. "+1.4pp" / "−0.7pp".
+  function ppStr(v: number | null): string {
+    if (v === null) return '—';
+    const sign = v >= 0 ? '+' : '−';
+    return `${sign}${Math.abs(v).toFixed(1)}pp`;
+  }
+
+  const ariaLabel = [
+    `This quarter: AI book ${portfolio !== null ? pctStr(portfolio) : '—'}`,
+    benchmarkLabel ? `${benchmarkLabel} ${benchmark !== null ? pctStr(benchmark) : '—'}` : null,
+    delta !== null ? `Δ ${ppStr(delta)}` : null,
+    partial ? '(in progress)' : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  return (
+    <div
+      className="mb-2 border-b border-slate-200 pb-2 dark:border-slate-700"
+      aria-label={ariaLabel}
+    >
+      {/* Section label */}
+      <div className="mb-1.5 flex items-center gap-1.5">
+        <span className="text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+          This quarter
+        </span>
+        {partial && (
+          <span
+            className="inline-flex items-center gap-0.5 rounded-sm bg-amber-50 px-1 py-0.5 text-[0.625rem] font-medium text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-700"
+            title="Leg in progress — end boundary is the as-of date, not the next rebalance"
+          >
+            ▸ in progress
+          </span>
+        )}
+      </div>
+
+      {/* Metric row: book | index | Δ */}
+      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+        {/* AI book return */}
+        <div>
+          <div className="text-[0.625rem] text-slate-500 dark:text-slate-400">
+            AI book
+          </div>
+          <div className={`font-mono text-sm font-semibold tabular-nums ${toneClass(portfolio)}`}>
+            {pctStr(portfolio)}
+          </div>
+        </div>
+
+        {/* Benchmark return — only shown when benchmarkLabel is set and benchmark data exists */}
+        {benchmarkLabel && (
+          <div>
+            <div className="text-[0.625rem] text-slate-500 dark:text-slate-400">
+              {benchmarkLabel}
+            </div>
+            <div className={`font-mono text-sm tabular-nums ${toneClass(benchmark)}`}>
+              {pctStr(benchmark)}
+            </div>
+          </div>
+        )}
+
+        {/* Outperformance Δ in pp */}
+        {delta !== null && (
+          <div>
+            <div className="text-[0.625rem] text-slate-500 dark:text-slate-400">
+              vs index
+            </div>
+            <div className={`font-mono text-sm font-semibold tabular-nums ${toneClass(delta)}`}>
+              {ppStr(delta)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Partial footnote */}
+      {partial && (
+        <p className="mt-1 text-[0.625rem] text-slate-400 dark:text-slate-500">
+          ▸ Partially elapsed — last rebalance to as-of date; not a full quarter.
         </p>
       )}
     </div>
