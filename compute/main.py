@@ -91,6 +91,7 @@ from compute.ingest.universe import (
     get_sp1500_constituents,
 )
 from compute.orchestrator import ComputeState
+from compute.orchestrator.fundamentals import fetch_all_fundamentals
 from compute.orchestrator.prices import fetch_all_prices
 from compute.output.schemas import (
     DataQuality,
@@ -334,31 +335,6 @@ def _count_restatement_demote_delta(summaries: list[StockSummary]) -> int:
 # truly stuck task (e.g., SEC's HTTP layer hanging mid-stream past the
 # inner retry's wall-clock cap).
 _FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS = 45
-
-
-def _fundamentals_one(
-    ticker: str, cik: str
-) -> tuple[FundamentalsSnapshot | None, float]:
-    """Fetch the snapshot for one ticker, timed.
-
-    Returns (snapshot, elapsed_seconds). ``snapshot`` is ``None`` on
-    any failure (logged, not raised). The elapsed is captured even on
-    failure so the latency histogram covers stuck/erroring tickers.
-    """
-    t0 = time.perf_counter()
-    snap: FundamentalsSnapshot | None = None
-    try:
-        snap = fetch_fundamentals(ticker, cik)
-    except Exception as e:  # noqa: BLE001
-        logger.warning("fetch_fundamentals raised for %s/%s: %s", ticker, cik, e)
-    elapsed = time.perf_counter() - t0
-    logger.info(
-        "fundamentals_fetch ticker=%s elapsed_seconds=%.2f status=%s",
-        ticker,
-        elapsed,
-        "success" if snap is not None else "failure",
-    )
-    return snap, elapsed
 
 
 def _history_one(ticker: str, cik: str) -> tuple[pd.DataFrame, float]:
@@ -1390,8 +1366,6 @@ def run_weekly_compute() -> int:
         len(df),
         config.EDGAR_MAX_WORKERS,
     )
-    snapshots: dict[str, FundamentalsSnapshot | None] = {}
-    fundamentals_latency: dict[str, float] = {}
     # Issue #246 PR2a (0.10.3-phase4.5e) — reset Rule 18 shares-fallback
     # counters before the fetch loop so this run's counts start at 0.
     # Read back via ``state.metrics.shares_fallback_stats`` after the loop.
@@ -1402,29 +1376,13 @@ def run_weekly_compute() -> int:
     # Issue #471 — reset the filing-precheck skip counter (Design B, filing-date gate).
     # Read back via ``get_fundamentals_filing_precheck_skip_count()`` after the histogram log.
     reset_fundamentals_filing_precheck_skip_count()
-    with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
-        futures = {
-            ex.submit(_fundamentals_one, r["ticker"], str(r.get("cik") or "")): r["ticker"]
-            for _, r in df.iterrows()
-        }
-        for fut in as_completed(futures):
-            ticker = futures[fut]
-            try:
-                snap, elapsed = fut.result(timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)
-            except _cf.TimeoutError:
-                logger.warning(
-                    "Fundamentals task timed out (>%ds) for %s — skipping ticker.",
-                    _FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS,
-                    ticker,
-                )
-                snap = None
-                elapsed = float(_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)
-            except Exception as e:  # noqa: BLE001
-                logger.warning("Fundamentals task raised for %s: %s", ticker, e)
-                snap = None
-                elapsed = 0.0
-            snapshots[ticker] = snap
-            fundamentals_latency[ticker] = elapsed
+    # PR #259-R3 — Step-2 parallel fetch extracted to compute.orchestrator.fundamentals.
+    # The two resets above and the "Fetching fundamentals…" info log (below) remain
+    # here so they fire in the same position and exactly once.  Everything after this
+    # call (coverage calc, histogram, abort gate) is unchanged.
+    snapshots, fundamentals_latency = fetch_all_fundamentals(
+        df, timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS
+    )
 
     coverage = sum(1 for v in snapshots.values() if v is not None) / max(len(df), 1)
     logger.info(

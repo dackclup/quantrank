@@ -25,9 +25,10 @@ logic run.  The shared ``_run_orchestrator`` helper (see below) applies:
 - ``QR_SKIP_DECAY_MONITOR=1`` — bypasses the IC-decay monitor write.
 - ``QR_SKIP_CROSS_SOURCE=1`` — bypasses yfinance market-cap / exchange
   cross-source fetches in Step 8 (pure cache-read, no network).
-- ``_fetch_prices_one``, ``_fundamentals_one``, ``_history_one`` patched to
-  return minimal synthetic data so the pipeline does not abort at the
-  MIN_VALID_TICKERS / MIN_FUNDAMENTALS_COVERAGE gates.
+- ``_fetch_prices_one`` (``compute.orchestrator.prices``), ``_fundamentals_one``
+  (``compute.orchestrator.fundamentals``), ``_history_one`` (``compute.main``)
+  patched to return minimal synthetic data so the pipeline does not abort at
+  the MIN_VALID_TICKERS / MIN_FUNDAMENTALS_COVERAGE gates.
 - ``compute.config.MIN_VALID_TICKERS`` and ``compute.config.MIN_FUNDAMENTALS_COVERAGE``
   lowered to 0 so a 1-ticker run is accepted.
 - ``compute.config.DATA_DIR`` redirected to ``tmp_path`` so no real JSON is
@@ -197,7 +198,7 @@ def _run_orchestrator(
     # the call inside ``fetch_all_prices`` is intercepted correctly.
     with (
         patch("compute.orchestrator.prices._fetch_prices_one", side_effect=_fake_fetch_prices_one),
-        patch("compute.main._fundamentals_one", return_value=(_HARNESS_SNAP, 0.1)),
+        patch("compute.orchestrator.fundamentals._fundamentals_one", return_value=(_HARNESS_SNAP, 0.1)),
         patch("compute.main._history_one", return_value=(pd.DataFrame(), 0.1)),
         patch("compute.main.get_sp500_constituents", return_value=_HARNESS_UNIVERSE),
         patch("compute.main.fetch_spy_benchmark", return_value=None),

@@ -9440,3 +9440,48 @@ CI → 4b. The PR's own sp500 simulate run is the live validation (~43min, compl
 `docs/GOTCHAS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## PR #259-R3 — Step-2 parallel fundamentals fetch extracted to compute/orchestrator/fundamentals.py (in flight, 2026-06-29)
+
+**Branch**: `claude/orchestrator-refactor-r3` (off latest origin/main; R1 `state.py` + R2 `prices.py` already landed).
+
+**Scope (PURE CODE MOVE — byte-identical output)**: R3 is the third slice of the 7-PR incremental refactor. It extracts the Step-2 parallel fundamentals snapshot fetch loop out of `run_weekly_compute` into a new `compute/orchestrator/fundamentals.py` module, mirroring the R2 prices extraction. No logic change, no reordering of effects, same exception handling, same dict keys — compute output is byte-identical.
+
+**What moved (verbatim, not altered)**:
+1. `_fundamentals_one(ticker, cik)` — per-ticker fetch, timing, warning log, and info log. Was sole-use by the Step-2 ThreadPoolExecutor (confirmed: one `def` at ~line 339, one `ex.submit` at ~line 1407 — no other callers). Moved to `compute/orchestrator/fundamentals.py`.
+2. **Step-2 ThreadPoolExecutor loop** — the `with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS)` block that built `snapshots` and `fundamentals_latency` by iterating `df.iterrows()`, calling `fut.result(timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)`, handling `_cf.TimeoutError` and the broad `except Exception` arm. Moved into `fetch_all_fundamentals(df, *, max_workers, timeout)` in the new module.
+
+**Critical shared constants that STAYED in main.py** (shared with Step-3 annual history loop at ~line 1485):
+- `_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS = 45` — also consumed by the Step-3 `_history_one` loop (`fut.result(timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)` + `_cf.TimeoutError` arm). Must remain in main.py. Passed into `fetch_all_fundamentals` as `timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS`.
+- `import concurrent.futures as _cf` — also used by Step-3 `_cf.TimeoutError`. Stays in main.py. The orchestrator module imports its own `concurrent.futures` for its own `TimeoutError` reference.
+
+**`compute/main.py` changes**:
+- Removed `_fundamentals_one` definition (23 lines).
+- Added `from compute.orchestrator.fundamentals import fetch_all_fundamentals` import.
+- Kept `logger.info("Fetching fundamentals for %d tickers (max_workers=%d)…", ...)` in main.py immediately before the call — fires exactly once, at the same position.
+- Kept the two pre-loop resets in main.py immediately before the call: `state.metrics.reset_shares_fallback()` and `reset_fundamentals_filing_precheck_skip_count()` — same call order, exactly once.
+- Replaced the Step-2 `with ThreadPoolExecutor...` block with `snapshots, fundamentals_latency = fetch_all_fundamentals(df, timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)` (1 line).
+- All post-loop code (coverage calc, `_latency_histogram`, `_percentile` p50/p95, slow_tickers, `filing_precheck_skip_count` read + log, `MIN_FUNDAMENTALS_COVERAGE` abort) untouched.
+
+**Existing test patch targets updated** (2 files):
+- `tests/test_main.py`: `_fundamentals_one` removed from `compute.main` import block; added `from compute.orchestrator.fundamentals import _fundamentals_one`. `monkeypatch.setattr("compute.main.fetch_fundamentals", ...)` in the two `_fundamentals_one` unit tests updated to `"compute.orchestrator.fundamentals.fetch_fundamentals"`. `patch("compute.main._fundamentals_one", ...)` in the step-4 harness updated to `"compute.orchestrator.fundamentals._fundamentals_one"`.
+- `tests/test_output/test_wall_clock_schema.py`: `patch("compute.main._fundamentals_one", ...)` updated to `"compute.orchestrator.fundamentals._fundamentals_one"`.
+
+**Schema triple**: untouched. `schemas.py` / `types.ts` / `schema-snapshot.json` not modified.
+**`compute/ingest/**`**: not modified.
+**`compute/scoring/**`**: not modified.
+**`compute/valuation/**`**: not modified.
+
+**Tests**: 14 new offline unit tests in `tests/test_orchestrator/test_fundamentals.py` — cover `_fundamentals_one` (A1-A3), `fetch_all_fundamentals` happy-path (B1-B4), timeout handling (C1-C3), and exception/degradation (D1-D4).
+
+**Files**:
+- `compute/orchestrator/fundamentals.py` (new)
+- `compute/main.py` (`_fundamentals_one` def removed, import added, Step-2 loop replaced with 1-liner)
+- `tests/test_orchestrator/test_fundamentals.py` (new — 17 tests)
+- `tests/test_main.py` (import + patch targets updated)
+- `tests/test_output/test_wall_clock_schema.py` (patch target updated)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**R4-R7 follow**: form4 latencies (R4) · prices/fundamentals frames (R5) · valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
+
+---
