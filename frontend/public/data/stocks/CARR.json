@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 60989520714.36303,
   "current_price": 73.43,
-  "rank": 398,
-  "composite_score": 43.28,
+  "rank": 1043,
+  "composite_score": 45.24,
   "pillar_scores": {
-    "quality": 65.43,
-    "value": 22.02,
-    "growth": 41.36,
-    "momentum": 58.27,
-    "health": 17.61,
-    "profitability": 31.07,
-    "technical": 55.23,
-    "risk": 37.75,
+    "quality": 74.51,
+    "value": 19.28,
+    "growth": 44.22,
+    "momentum": 55.29,
+    "health": 14.17,
+    "profitability": 37.78,
+    "technical": 52.03,
+    "risk": 42.54,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 51.230041563968825,
+        "value": 40.342488078512865,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 22.010596378161566,
+        "value": 12.495180248942795,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 40.559340651168135,
+        "value": 33.011923250143504,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 40.559340651168135,
-    "max": 51.230041563968825,
-    "low": 22.010596378161566,
-    "high": 51.230041563968825,
-    "mos_pct": -81.04337774302786,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 40.559340651168135,
-    "methods_excluded_from_median": []
+    "median": 33.011923250143504,
+    "max": 40.342488078512865,
+    "low": 12.495180248942795,
+    "high": 40.342488078512865,
+    "mos_pct": -122.43478439220164,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 36.677205664328184,
+    "methods_excluded_from_median": [
+      "multiples_pb"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,12 +102,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 61,
+    "filing_lag_days": 62,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -114,25 +120,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=81)",
+    "label": "Industrials median (n=255)",
     "values": {
-      "Quality": 48.15,
-      "Value": 49.59,
-      "Growth": 49.07,
-      "Momentum": 55.13,
-      "Health": 55.02,
-      "Profitability": 48.56,
-      "Technical": 49.35,
-      "Risk": 53.82
+      "Quality": 49.41,
+      "Value": 49.87,
+      "Growth": 50.2,
+      "Momentum": 53.2,
+      "Health": 58.03,
+      "Profitability": 49.41,
+      "Technical": 50.53,
+      "Risk": 51.02
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.35973953978325,
+  "loss_chance_pct": 63.379098565746766,
   "price_change_1d_pct": -0.2174,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.28,
+  "composite_score_adjusted": 45.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.57,
+  "osap_blended_score": 48.55,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -188,7 +194,7 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 9,
     "latest_filing_date": "2026-05-20",

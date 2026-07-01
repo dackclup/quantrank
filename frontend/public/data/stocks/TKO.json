@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 41187894647.9314,
   "current_price": 211.62,
-  "rank": 391,
-  "composite_score": 43.71,
+  "rank": 1042,
+  "composite_score": 45.26,
   "pillar_scores": {
-    "quality": 57.61,
-    "value": 14.49,
-    "growth": 46.74,
-    "momentum": 54.08,
-    "health": 38.69,
-    "profitability": 42.03,
-    "technical": 67.28,
-    "risk": 57.27,
+    "quality": 61.27,
+    "value": 15.36,
+    "growth": 51.47,
+    "momentum": 49.68,
+    "health": 34.86,
+    "profitability": 50.98,
+    "technical": 64.95,
+    "risk": 63.77,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 57.85093436470197,
+        "value": 101.35526712823476,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 36.21496187129986,
+        "value": 43.635184950843204,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 81.69972146880583,
+        "value": 76.68441345143145,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,19 +79,15 @@
         "tier_used": null
       }
     },
-    "median": 57.85093436470197,
-    "max": 81.69972146880583,
-    "low": 36.21496187129986,
-    "high": 81.69972146880583,
-    "mos_pct": -265.80220776228026,
-    "valuation_warnings": [
-      "extreme_multiples_pb_estimate"
-    ],
-    "valuation_methods_applicable": 2,
-    "median_trimmed": 69.7753279167539,
-    "methods_excluded_from_median": [
-      "multiples_pb"
-    ]
+    "median": 76.68441345143145,
+    "max": 101.35526712823476,
+    "low": 43.635184950843204,
+    "high": 101.35526712823476,
+    "mos_pct": -175.96220091220798,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 76.68441345143145,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -105,16 +101,14 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 55,
+    "filing_lag_days": 56,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -125,25 +119,25 @@
     "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/1973266/0001193125-24-196978-index.html"
   },
   "pillar_baseline": {
-    "label": "Communication Services median (n=23)",
+    "label": "Communication Services median (n=51)",
     "values": {
-      "Quality": 52.17,
-      "Value": 51.81,
-      "Growth": 55.98,
-      "Momentum": 37.4,
-      "Health": 45.62,
-      "Profitability": 50.72,
-      "Technical": 38.4,
-      "Risk": 46.48
+      "Quality": 50.98,
+      "Value": 52.61,
+      "Growth": 51.47,
+      "Momentum": 36.67,
+      "Health": 35.7,
+      "Profitability": 51.63,
+      "Technical": 48.4,
+      "Risk": 41.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.14342449044403,
+  "loss_chance_pct": 74.36915485235372,
   "price_change_1d_pct": -1.9733,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.71,
+  "composite_score_adjusted": 45.26,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.78,
+  "osap_blended_score": 48.56,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -199,7 +193,7 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 2,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 14,
     "latest_filing_date": "2026-06-16",

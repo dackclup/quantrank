@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 36217815854.42688,
   "current_price": 368.87,
-  "rank": 490,
-  "composite_score": 33.43,
+  "rank": 1401,
+  "composite_score": 36.23,
   "pillar_scores": {
-    "quality": 16.1,
-    "value": 23.73,
-    "growth": 31.36,
-    "momentum": 57.02,
-    "health": 65.42,
-    "profitability": 36.72,
-    "technical": 47.06,
-    "risk": 37.98,
+    "quality": 26.79,
+    "value": 26.24,
+    "growth": 27.31,
+    "momentum": 54.69,
+    "health": 61.69,
+    "profitability": 43.65,
+    "technical": 43.82,
+    "risk": 43.34,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 167.76401309134548,
+        "value": 210.24213378053895,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 564.384711748449,
+        "value": 575.4635622146362,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 111.28262948453197,
+        "value": 181.77127619928308,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 167.76401309134548,
-    "max": 564.384711748449,
-    "low": 111.28262948453197,
-    "high": 564.384711748449,
-    "mos_pct": -119.87432722913123,
+    "median": 210.24213378053895,
+    "max": 575.4635622146362,
+    "low": 181.77127619928308,
+    "high": 575.4635622146362,
+    "mos_pct": -75.45008152468243,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 167.76401309134548,
+    "median_trimmed": 210.24213378053895,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,7 +99,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-12"
   },
@@ -111,8 +111,7 @@
   "valuation_warnings": [
     "beneish_high",
     "dechow_high",
-    "manipulation_triple_flag",
-    "rem_suspect"
+    "manipulation_triple_flag"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -124,32 +123,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=59)",
+    "label": "Health Care median (n=168)",
     "values": {
-      "Quality": 52.97,
-      "Value": 52.26,
-      "Growth": 48.31,
-      "Momentum": 48.11,
-      "Health": 59.12,
-      "Profitability": 50.56,
-      "Technical": 58.32,
-      "Risk": 41.33
+      "Quality": 50.07,
+      "Value": 51.74,
+      "Growth": 49.11,
+      "Momentum": 44.49,
+      "Health": 56.61,
+      "Profitability": 48.51,
+      "Technical": 56.08,
+      "Risk": 42.29
     }
   },
   "beneish_m_score": -0.905248226553823,
   "dechow_f_score": 2.6461813606784474,
   "recommendation": "neutral",
-  "loss_chance_pct": 80.28569971526325,
+  "loss_chance_pct": 78.88300709833979,
   "price_change_1d_pct": -1.4797,
-  "manipulation_index": 64.0,
-  "composite_score_adjusted": 27.03,
+  "manipulation_index": 56.0,
+  "composite_score_adjusted": 30.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": true,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -190,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.64,
+  "osap_blended_score": 44.04,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",

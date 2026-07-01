@@ -1,0 +1,206 @@
+{
+  "ticker": "SLVM",
+  "name": "Sylvamo Corp.",
+  "sector": "Materials",
+  "industry": "Paper Products",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 1502025910.4837341,
+  "current_price": 37.8,
+  "rank": 1038,
+  "composite_score": 45.36,
+  "pillar_scores": {
+    "quality": 43.43,
+    "value": 73.93,
+    "growth": 45.03,
+    "momentum": 17.36,
+    "health": 36.68,
+    "profitability": 48.72,
+    "technical": 23.15,
+    "risk": 29.78,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3285000000.0,
+    "net_income": 102000000.0,
+    "total_assets": 2834000000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 979000000.0,
+    "cash": 130000000.0,
+    "operating_cash_flow": 235000000.0,
+    "capex": 146000000.0,
+    "free_cash_flow": 89000000.0,
+    "eps_basic": 2.5669330304285247,
+    "eps_diluted": 2.5669330304285247,
+    "shares_outstanding": 39736136.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 1502025910.4837341,
+    "pe_ratio_ttm": 14.725744220428766,
+    "goodwill": 121000000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 51.27627769687191,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 54.409916426629316,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 65.85104130094443,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 82.30121912680278,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 40.09044710201756,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 88.89297638956118,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 60.13047886378688,
+    "max": 88.89297638956118,
+    "low": 40.09044710201756,
+    "high": 88.89297638956118,
+    "mos_pct": 37.13670678943269,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 60.13047886378688,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "property_plant_equipment"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 54,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-08"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": 21.441440607108856,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Materials median (n=78)",
+    "values": {
+      "Quality": 50.4,
+      "Value": 50.91,
+      "Growth": 45.35,
+      "Momentum": 48.4,
+      "Health": 52.62,
+      "Profitability": 53.63,
+      "Technical": 45.61,
+      "Risk": 46.48
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 29.320217852965516,
+  "price_change_1d_pct": 0.7463,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 44.86,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.61,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-06-16",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 3.627349818040931e-08,
+  "dividend_yield_pct": 4.8,
+  "pays_dividend": true,
+  "payout_ratio": 0.8964,
+  "average_dollar_volume": 15073939.626049297,
+  "security_type": "Common stock"
+}

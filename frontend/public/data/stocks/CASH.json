@@ -1,0 +1,216 @@
+{
+  "ticker": "CASH",
+  "name": "Pathward Financial, Inc.",
+  "sector": "Financials",
+  "industry": "Regional Banks",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 1837839508.501831,
+  "current_price": 87.06,
+  "rank": 174,
+  "composite_score": 61.53,
+  "pillar_scores": {
+    "quality": 63.96,
+    "value": 63.77,
+    "growth": 79.59,
+    "momentum": 41.25,
+    "health": 59.25,
+    "profitability": 51.11,
+    "technical": 66.38,
+    "risk": 54.68,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 831868000.0,
+    "net_income": 189954000.0,
+    "total_assets": 7112399000.0,
+    "total_liabilities": 6261722000.0,
+    "stockholders_equity": 851462000.0,
+    "cash": 157602000.0,
+    "operating_cash_flow": 675278000.0,
+    "capex": 12552000.0,
+    "free_cash_flow": 662726000.0,
+    "eps_basic": 8.998280154356928,
+    "eps_diluted": 8.998280154356928,
+    "shares_outstanding": 21110034.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 1837839508.501831,
+    "pe_ratio_ttm": 9.67518193089817,
+    "goodwill": 297928000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 63.13979427997466,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 116.5810806419209,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 50.58182352735781,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 47.287224352132526,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 56.86080890366624,
+    "max": 116.5810806419209,
+    "low": 47.287224352132526,
+    "high": 116.5810806419209,
+    "mos_pct": -53.11072641631087,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 56.86080890366624,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "depreciation_and_amortization",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 55,
+    "latest_period_end": "2026-04-29",
+    "latest_filed_date": "2026-05-07"
+  },
+  "risk_flags": [
+    "non_reliance_filing"
+  ],
+  "valuation_warnings": [
+    "restatement_history",
+    "restatement_high_confidence",
+    "late_filing_notification"
+  ],
+  "has_history": true,
+  "tangible_book_value": 25.239845658230582,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": true,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2025-07-02",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/907471/0000907471-25-000071-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=256)",
+    "values": {
+      "Quality": 50.2,
+      "Value": 50.57,
+      "Growth": 50.2,
+      "Momentum": 54.23,
+      "Health": 54.21,
+      "Profitability": 51.14,
+      "Technical": 54.59,
+      "Risk": 61.06
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 52.82278118548355,
+  "price_change_1d_pct": 0.7406,
+  "manipulation_index": 28.0,
+  "composite_score_adjusted": 58.73,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": true,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": true,
+    "late_filing_notification": true,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 56.69,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 10,
+    "latest_filing_date": "2026-06-08",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 1.115539793319612e-08,
+  "dividend_yield_pct": 0.23,
+  "pays_dividend": true,
+  "payout_ratio": 0.0238,
+  "average_dollar_volume": 18358588.506032307,
+  "security_type": "Common stock"
+}

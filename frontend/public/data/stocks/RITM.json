@@ -1,0 +1,217 @@
+{
+  "ticker": "RITM",
+  "name": "Rithm Capital",
+  "sector": "Financials",
+  "industry": "Mortgage REITs",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 5242499137.509358,
+  "current_price": 9.39,
+  "rank": 1030,
+  "composite_score": 45.47,
+  "pillar_scores": {
+    "quality": 37.6,
+    "value": 71.39,
+    "growth": 26.9,
+    "momentum": 28.41,
+    "health": 43.02,
+    "profitability": 46.42,
+    "technical": 61.07,
+    "risk": 50.71,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 4993547000.0,
+    "net_income": 746860000.0,
+    "total_assets": 53374544000.0,
+    "total_liabilities": 43869249000.0,
+    "stockholders_equity": 8610077000.0,
+    "cash": 1646176000.0,
+    "operating_cash_flow": 975505000.0,
+    "capex": null,
+    "free_cash_flow": null,
+    "eps_basic": 1.337723759692562,
+    "eps_diluted": 1.337723759692562,
+    "shares_outstanding": 558306597.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 5242499137.509358,
+    "pe_ratio_ttm": 7.01938668225552,
+    "goodwill": 316643000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 20.14007139708058,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 11.78596366494675,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 10.822477076643665,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 14.4327515636847,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 13.109357614315726,
+    "max": 20.14007139708058,
+    "low": 10.822477076643665,
+    "high": 20.14007139708058,
+    "mos_pct": 28.371773662893652,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 13.109357614315726,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "capex",
+      "free_cash_flow",
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "interest_expense",
+      "dividends_paid",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "short_term_debt",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 58,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-04"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "restatement_history",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": 14.195012279247706,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=256)",
+    "values": {
+      "Quality": 50.2,
+      "Value": 50.57,
+      "Growth": 50.2,
+      "Momentum": 54.23,
+      "Health": 54.21,
+      "Profitability": 51.14,
+      "Technical": 54.59,
+      "Risk": 61.06
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 32.33265574815186,
+  "price_change_1d_pct": -0.3185,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 44.97,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.66,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 10,
+    "latest_filing_date": "2026-05-27",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 8.516751836912174e-08,
+  "dividend_yield_pct": 10.62,
+  "pays_dividend": true,
+  "payout_ratio": 0.9174,
+  "average_dollar_volume": 46300732.67811244,
+  "security_type": "Common stock"
+}

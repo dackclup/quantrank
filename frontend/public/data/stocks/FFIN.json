@@ -1,0 +1,217 @@
+{
+  "ticker": "FFIN",
+  "name": "First Financial Bankshares",
+  "sector": "Financials",
+  "industry": "Regional Banks",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 4957554559.369125,
+  "current_price": 34.6,
+  "rank": 924,
+  "composite_score": 47.12,
+  "pillar_scores": {
+    "quality": 52.44,
+    "value": 30.73,
+    "growth": 42.97,
+    "momentum": 50.55,
+    "health": 60.21,
+    "profitability": 56.12,
+    "technical": 57.27,
+    "risk": 45.49,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 132583000.0,
+    "net_income": 263777000.0,
+    "total_assets": 15387645000.0,
+    "total_liabilities": 13443794000.0,
+    "stockholders_equity": 1943851000.0,
+    "cash": 737128000.0,
+    "operating_cash_flow": 324261000.0,
+    "capex": 15465000.0,
+    "free_cash_flow": 308796000.0,
+    "eps_basic": 1.8409648725418482,
+    "eps_diluted": 1.8409648725418482,
+    "shares_outstanding": 143281930.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 4957554559.369125,
+    "pe_ratio_ttm": 18.794491405122983,
+    "goodwill": 313481000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 20.070075550041683,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 23.79610533825059,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 17.01334441339719,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 14.235423242487467,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 18.541709981719436,
+    "max": 23.79610533825059,
+    "low": 14.235423242487467,
+    "high": 23.79610533825059,
+    "mos_pct": -86.60629741395901,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 18.541709981719436,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "depreciation_and_amortization",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "long_term_debt",
+      "ebitda",
+      "intangibles_net"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 57,
+    "latest_period_end": "2026-05-05",
+    "latest_filed_date": "2026-05-05"
+  },
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
+  "valuation_warnings": [
+    "valuation_output_anomalous"
+  ],
+  "has_history": true,
+  "tangible_book_value": 11.378755157750875,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=256)",
+    "values": {
+      "Quality": 50.2,
+      "Value": 50.57,
+      "Growth": 50.2,
+      "Momentum": 54.23,
+      "Health": 54.21,
+      "Profitability": 51.14,
+      "Technical": 54.59,
+      "Risk": 61.06
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "cautious",
+  "loss_chance_pct": 76.43813316186058,
+  "price_change_1d_pct": 0.348,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 47.12,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.49,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 22,
+    "latest_filing_date": "2026-06-15",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 2.594643651287582e-08,
+  "dividend_yield_pct": 2.55,
+  "pays_dividend": true,
+  "payout_ratio": 0.413,
+  "average_dollar_volume": 34373592.0882164,
+  "security_type": "Common stock"
+}

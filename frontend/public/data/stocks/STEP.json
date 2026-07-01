@@ -1,0 +1,212 @@
+{
+  "ticker": "STEP",
+  "name": "StepStone Group",
+  "sector": "Financials",
+  "industry": "Asset Management & Custody Banks",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 3269062559.681717,
+  "current_price": 41.36,
+  "rank": 803,
+  "composite_score": 49.29,
+  "pillar_scores": {
+    "quality": 74.32,
+    "value": 46.68,
+    "growth": 39.11,
+    "momentum": 20.89,
+    "health": 61.48,
+    "profitability": 33.79,
+    "technical": 32.07,
+    "risk": 26.24,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 1993603000.0,
+    "net_income": -535808000.0,
+    "total_assets": 6762702000.0,
+    "total_liabilities": 5876676000.0,
+    "stockholders_equity": -413559000.0,
+    "cash": 143562000.0,
+    "operating_cash_flow": 117266000.0,
+    "capex": 2620000.0,
+    "free_cash_flow": 114646000.0,
+    "eps_basic": -6.7790134946787,
+    "eps_diluted": -6.7790134946787,
+    "shares_outstanding": 79039229.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 3269062559.681717,
+    "pe_ratio_ttm": null,
+    "goodwill": 580542000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "insufficient_history_for_roe",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 0,
+    "median_trimmed": null,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "short_term_debt",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 35,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-27"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=256)",
+    "values": {
+      "Quality": 50.2,
+      "Value": 50.57,
+      "Growth": 50.2,
+      "Momentum": 54.23,
+      "Health": 54.21,
+      "Profitability": 51.14,
+      "Technical": 54.59,
+      "Risk": 61.06
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": null,
+  "price_change_1d_pct": 2.7067,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 49.29,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.57,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 0,
+  "form4_diagnostics": {
+    "insider_count": 8,
+    "latest_filing_date": "2026-06-11",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.5946018630207967,
+  "dividend_yield_pct": 4.15,
+  "pays_dividend": true,
+  "payout_ratio": 1.6721001,
+  "average_dollar_volume": 71348893.06173147,
+  "security_type": "Common stock"
+}

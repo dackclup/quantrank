@@ -1,0 +1,214 @@
+{
+  "ticker": "PK",
+  "name": "Park Hotels & Resorts",
+  "sector": "Real Estate",
+  "industry": "Hotel & Resort REITs",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 2869406148.75,
+  "current_price": 14.25,
+  "rank": 1419,
+  "composite_score": 35.45,
+  "pillar_scores": {
+    "quality": 16.39,
+    "value": 40.64,
+    "growth": 30.19,
+    "momentum": 68.97,
+    "health": 21.11,
+    "profitability": 33.33,
+    "technical": 58.61,
+    "risk": 60.65,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2533000000.0,
+    "net_income": -208000000.0,
+    "total_assets": 7658000000.0,
+    "total_liabilities": 4625000000.0,
+    "stockholders_equity": 3088000000.0,
+    "cash": 156000000.0,
+    "operating_cash_flow": 371000000.0,
+    "capex": 302000000.0,
+    "free_cash_flow": 69000000.0,
+    "eps_basic": -1.0329663513445833,
+    "eps_diluted": -1.0329663513445833,
+    "shares_outstanding": 201361835.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2869406148.75,
+    "pe_ratio_ttm": null,
+    "goodwill": 607000000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 1.34819267303155,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 22.350532700014988,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 7.230351894499885,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "dcf_negative_equity_post_debt",
+        "tier_used": null
+      }
+    },
+    "median": 7.230351894499885,
+    "max": 22.350532700014988,
+    "low": 1.34819267303155,
+    "high": 22.350532700014988,
+    "mos_pct": -97.08584323316198,
+    "valuation_warnings": [
+      "extreme_graham_estimate"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 14.790442297257435,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 61,
+    "latest_period_end": "2026-04-24",
+    "latest_filed_date": "2026-05-01"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 12.117489890772996,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Real Estate median (n=106)",
+    "values": {
+      "Quality": 49.17,
+      "Value": 48.78,
+      "Growth": 50.18,
+      "Momentum": 59.45,
+      "Health": 26.74,
+      "Profitability": 51.06,
+      "Technical": 51.1,
+      "Risk": 62.47
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 68.27630991487241,
+  "price_change_1d_pct": -1.927,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 35.45,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 43.65,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 16,
+    "latest_filing_date": "2026-06-24",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 2.0648871901878056e-08,
+  "dividend_yield_pct": 6.88,
+  "pays_dividend": true,
+  "payout_ratio": 5.3846,
+  "average_dollar_volume": 80738125.2658151,
+  "security_type": "Common stock"
+}

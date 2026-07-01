@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 12534283717.33781,
   "current_price": 59.23,
-  "rank": 474,
-  "composite_score": 35.99,
+  "rank": 1459,
+  "composite_score": 33.16,
   "pillar_scores": {
-    "quality": 18.09,
-    "value": 73.05,
-    "growth": 18.62,
-    "momentum": 27.39,
-    "health": 55.46,
-    "profitability": 14.54,
-    "technical": 35.36,
-    "risk": 16.3,
+    "quality": 16.84,
+    "value": 61.73,
+    "growth": 22.45,
+    "momentum": 25.27,
+    "health": 50.69,
+    "profitability": 19.22,
+    "technical": 33.06,
+    "risk": 20.0,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 45.181307783608396,
+        "value": 26.77672108267804,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 255.03945735242635,
+        "value": 74.25828154535223,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 131.12167673139695,
+        "value": 60.881663901626126,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": 16.80738263227314,
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 43.57194464120401,
-    "max": 255.03945735242635,
+    "median": 34.36965129073883,
+    "max": 74.25828154535223,
     "low": 16.80738263227314,
-    "high": 255.03945735242635,
-    "mos_pct": -35.936093809834695,
+    "high": 74.25828154535223,
+    "mos_pct": -72.33226791042921,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 43.57194464120401,
+    "median_trimmed": 34.36965129073883,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,15 +99,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 56,
+    "filing_lag_days": 57,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "restatement_history",
-    "rem_suspect"
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 12.971331462566484,
@@ -119,32 +118,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=47)",
+    "label": "Consumer Discretionary median (n=196)",
     "values": {
-      "Quality": 46.01,
-      "Value": 47.52,
-      "Growth": 51.6,
-      "Momentum": 44.02,
-      "Health": 43.78,
-      "Profitability": 51.77,
-      "Technical": 51.15,
-      "Risk": 40.8
+      "Quality": 48.37,
+      "Value": 50.09,
+      "Growth": 49.11,
+      "Momentum": 46.22,
+      "Health": 42.59,
+      "Profitability": 50.26,
+      "Technical": 52.96,
+      "Risk": 40.51
     }
   },
   "beneish_m_score": -2.638590627365224,
   "dechow_f_score": 0.46843766005748894,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.580510507144496,
+  "loss_chance_pct": 69.42110207931375,
   "price_change_1d_pct": -1.807,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 35.19,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 33.16,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -185,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.92,
+  "osap_blended_score": 42.5,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",

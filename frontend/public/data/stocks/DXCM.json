@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 27003392225.80996,
   "current_price": 69.98,
-  "rank": 27,
-  "composite_score": 65.35,
+  "rank": 97,
+  "composite_score": 64.37,
   "pillar_scores": {
-    "quality": 87.71,
-    "value": 32.2,
-    "growth": 93.64,
-    "momentum": 45.92,
-    "health": 88.29,
-    "profitability": 72.32,
-    "technical": 48.85,
-    "risk": 19.89,
+    "quality": 87.65,
+    "value": 31.45,
+    "growth": 88.84,
+    "momentum": 44.42,
+    "health": 84.37,
+    "profitability": 78.08,
+    "technical": 45.41,
+    "risk": 25.23,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 62.86122320571403,
+        "value": 61.80345421481048,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 22.20136567270226,
+        "value": 21.728270231963684,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 65.61842167902967,
+        "value": 64.2527006015149,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 21.120474851639358,
-    "max": 65.61842167902967,
+    "median": 20.88392713127007,
+    "max": 64.2527006015149,
     "low": 15.52020686968213,
-    "high": 65.61842167902967,
-    "mos_pct": -231.3372632410383,
+    "high": 64.2527006015149,
+    "mos_pct": -235.09024867334762,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 21.120474851639358,
+    "median_trimmed": 20.88392713127007,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,7 +98,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 61,
+    "filing_lag_days": 62,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-30"
   },
@@ -114,25 +114,25 @@
     "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/1093557/0001093557-25-000088-index.html"
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=59)",
+    "label": "Health Care median (n=168)",
     "values": {
-      "Quality": 52.97,
-      "Value": 52.26,
-      "Growth": 48.31,
-      "Momentum": 48.11,
-      "Health": 59.12,
-      "Profitability": 50.56,
-      "Technical": 58.32,
-      "Risk": 41.33
+      "Quality": 50.07,
+      "Value": 51.74,
+      "Growth": 49.11,
+      "Momentum": 44.49,
+      "Health": 56.61,
+      "Profitability": 48.51,
+      "Technical": 56.08,
+      "Risk": 42.29
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.3575810340108057,
   "recommendation": "cautious",
-  "loss_chance_pct": 52.32573449141289,
+  "loss_chance_pct": 52.814543736658,
   "price_change_1d_pct": -0.2281,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.35,
+  "composite_score_adjusted": 64.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.6,
+  "osap_blended_score": 58.11,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",

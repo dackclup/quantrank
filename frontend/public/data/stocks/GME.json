@@ -1,0 +1,210 @@
+{
+  "ticker": "GME",
+  "name": "GameStop",
+  "sector": "Consumer Discretionary",
+  "industry": "Computer & Electronics Retail",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 9907102920.327574,
+  "current_price": 22.08,
+  "rank": 1176,
+  "composite_score": 42.7,
+  "pillar_scores": {
+    "quality": 28.32,
+    "value": 56.34,
+    "growth": 45.73,
+    "momentum": 28.79,
+    "health": 74.04,
+    "profitability": 41.92,
+    "technical": 36.5,
+    "risk": 28.74,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3732800000.0,
+    "net_income": 763200000.0,
+    "total_assets": 10974300000.0,
+    "total_liabilities": 5132200000.0,
+    "stockholders_equity": 5842100000.0,
+    "cash": 7397600000.0,
+    "operating_cash_flow": 759700000.0,
+    "capex": 19100000.0,
+    "free_cash_flow": 740600000.0,
+    "eps_basic": 1.7009468940911412,
+    "eps_diluted": 1.7009468940911412,
+    "shares_outstanding": 448691257.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 9907102920.327574,
+    "pe_ratio_ttm": 12.981004874643046,
+    "goodwill": 0.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 10.428013259461464,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 32.121390338881454,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 38.85717406809,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 10.9165603549523,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 21.518975346916875,
+    "max": 38.85717406809,
+    "low": 10.428013259461464,
+    "high": 38.85717406809,
+    "mos_pct": -2.607115663012088,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 21.518975346916875,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development",
+      "depreciation_and_amortization",
+      "interest_expense",
+      "dividends_paid",
+      "accounts_receivable",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 20,
+    "latest_period_end": "2026-06-05",
+    "latest_filed_date": "2026-06-11"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "restatement_history",
+    "accruals_momentum_high",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 12.94565006422668,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2024-12-10",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/1326380/0001326380-24-000168-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Consumer Discretionary median (n=196)",
+    "values": {
+      "Quality": 48.37,
+      "Value": 50.09,
+      "Growth": 49.11,
+      "Momentum": 46.22,
+      "Health": 42.59,
+      "Profitability": 50.26,
+      "Technical": 52.96,
+      "Risk": 40.51
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 46.56016312884264,
+  "price_change_1d_pct": 0.227,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 42.2,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.28,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 5,
+    "latest_filing_date": "2026-04-15",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 2.0220600854484853e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 124597429.96540247,
+  "security_type": "Common stock"
+}
