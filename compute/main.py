@@ -83,7 +83,6 @@ from compute.ingest.prices import (
     fetch_spy_benchmark,
 )
 from compute.ingest.universe import (
-    derive_index_memberships,
     fetch_dow30_constituents,
     fetch_ndx_constituents,
     get_sp500_constituents,
@@ -94,6 +93,7 @@ from compute.orchestrator import ComputeState
 from compute.orchestrator.form4 import fetch_all_form4
 from compute.orchestrator.fundamentals import fetch_all_fundamentals
 from compute.orchestrator.osap import run_osap_pipeline
+from compute.orchestrator.per_ticker import build_ticker_membership_maps
 from compute.orchestrator.prices import fetch_all_prices
 from compute.orchestrator.tier2 import fetch_all_tier2
 from compute.output.schemas import (
@@ -158,9 +158,6 @@ from compute.scoring.manipulation_index import (
     compute_adjusted_composite,
     compute_manipulation_index,
     manipulation_components,
-)
-from compute.scoring.multi_class_shares import (
-    detect_multi_class_aggregate_shares_suspected,
 )
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
@@ -2339,69 +2336,17 @@ def run_weekly_compute() -> int:
     # -30% to -45% on insider_sell_cluster_firing_count per
     # Jagolinzer 2009 §3.2 + SEC 2022 economic analysis.
     form4_rule10b5_one_excluded_count: int = 0
-    # Issue #261 (0.10.5-phase4.5e) — pre-compute the CIK-collision set
-    # BEFORE the per-ticker loop so each ticker's annotate emit is a
-    # simple `ticker in flagged_set` membership test. The detector
-    # needs the FULL universe upfront (it's a universe-level scan, not
-    # a per-ticker check). cik_by_ticker is sourced from the already-
-    # built `snapshots` dict; market_cap_by_ticker mirrors the
-    # `_build_raw_metrics` line 319 computation (price × shares).
-    # Tickers with missing snapshots / shares fall out of both maps —
-    # the detector returns an empty set if no CIK collisions are
-    # observable on the available data (graceful degradation, no
-    # exception path).
-    cik_by_ticker: dict[str, str | None] = {}
-    market_cap_by_ticker: dict[str, float | None] = {}
-    for _, r in df.iterrows():
-        t = str(r["ticker"])
-        s = snapshots.get(t)
-        if s is None:
-            cik_by_ticker[t] = None
-            market_cap_by_ticker[t] = None
-            continue
-        cik_by_ticker[t] = s.cik
-        market_cap_by_ticker[t] = (
-            float(r["current_price"]) * s.shares_outstanding
-            if s.shares_outstanding is not None
-            else None
-        )
-    multi_class_flagged_tickers: set[str] = (
-        detect_multi_class_aggregate_shares_suspected(
-            cik_by_ticker, market_cap_by_ticker
+    # PR #259-R7a — pre-loop membership-map building moved to
+    # compute.orchestrator.per_ticker.build_ticker_membership_maps (pure
+    # code move; see that module's docstring for the byte-identical
+    # guarantee). cik_by_ticker / market_cap_by_ticker are now fully
+    # internal to the helper — nothing downstream reads them directly.
+    multi_class_flagged_tickers, cohort_by_ticker, memberships_by_ticker = (
+        build_ticker_membership_maps(
+            df, snapshots, dow30=_dow30_tickers, ndx=_ndx_tickers
         )
     )
     multi_class_aggregate_shares_suspected_count: int = 0
-    # Phase 8 pilot PR 3a — cohort-by-ticker lookup for index_membership.
-    # Built once from df (which carries "cohort" from _fetch_prices_one);
-    # defaults to "sp500" so any ticker absent from df (e.g. post-price-fail
-    # drop) stays safe. The column is unconditionally present on both the
-    # sp500 and sp900 paths (added in the universe-load seam above).
-    cohort_by_ticker: dict[str, str] = {
-        str(r["ticker"]): str(r.get("cohort", "sp500"))
-        for _, r in df.iterrows()
-    }
-    # Multi-index membership (0.10.23-phase8pilot) — build memberships_by_ticker
-    # ONCE from the cohort_by_ticker dict + the pre-fetched Dow30/NDX sets.
-    # Runs on both sp500 and sp900 paths (Dow/NDX are sp500 subsets; sp400
-    # tickers simply won't appear in _dow30_tickers/_ndx_tickers).
-    #
-    # Russell 1000 proxy: market_cap_by_ticker is already built above
-    # (lines ~1916-1929, the CIK-collision pre-compute block) as
-    # price × shares_outstanding for every ticker with a non-None snapshot.
-    # We pass it here so derive_index_memberships can apply the Russell 1000
-    # proxy rule (cap present + positive → "russell1000" tag) without any
-    # additional fetch.  Tickers with None cap (missing snapshot /
-    # shares_outstanding) simply do not get the tag.
-    memberships_by_ticker: dict[str, list[str]] = {
-        ticker: derive_index_memberships(
-            ticker,
-            cohort=cohort,
-            dow30=_dow30_tickers,
-            ndx=_ndx_tickers,
-            market_cap=market_cap_by_ticker.get(ticker),
-        )
-        for ticker, cohort in cohort_by_ticker.items()
-    }
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
