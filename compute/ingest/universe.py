@@ -899,7 +899,9 @@ def derive_index_memberships(
         AAPL-shaped ticker with a known positive market cap,
         ``["sp400", "russell1000"]`` for a midcap-only name with a known cap,
         ``["sp500"]`` when dow30/ndx sets are both empty (degraded fetch)
-        and market_cap is None or zero.
+        and market_cap is None or zero.  ``["broad"]`` for a Phase 9.3
+        Broad-Investable-US-only name (russell1000 proxy suppressed — see
+        ``_NO_RUSSELL1000_PROXY_COHORTS`` below).
 
     Russell 1000 proxy rationale
     ----------------------------
@@ -948,16 +950,30 @@ def derive_index_memberships(
     # dollar floor — the cap-presence gate is the rule.
     #
     # GUARD: the "S&P 900 ⊂ Russell 1000" structural argument DOES NOT hold
-    # for S&P 600 small-caps, which sit below the Russell 1000 cutoff (the
-    # Russell 1000 covers the ~1000 largest US stocks; S&P 600 targets the
-    # small-cap tier that is generally outside that boundary).  Suppress the
-    # russell1000 proxy tag for sp600 cohorts to prevent latent corruption
-    # when sp600 names are eventually ranked in a later Slice (Rule 16
-    # annotate-before-veto: the proxy is an additive code, not a veto, but
-    # a structurally incorrect code is still a data-quality defect).
-    # RUT (Russell 2000) would be the correct tag for small-caps but requires
-    # a dedicated FTSE Russell source, not a market-cap proxy.
-    _SP600_COHORTS = {"sp600"}  # extend when additional small-cap cohorts land
-    if cohort not in _SP600_COHORTS and market_cap is not None and market_cap > 0:
+    # for every cohort we can encounter here.  Two documented exceptions:
+    #   - "sp600" (S&P 600 small-caps): sit below the Russell 1000 cutoff
+    #     (the Russell 1000 covers the ~1000 largest US stocks; S&P 600
+    #     targets the small-cap tier that is generally outside that
+    #     boundary).  Added at the S&P 1500 cutover.
+    #   - "broad" (Phase 9.3 Broad Investable US ranked path,
+    #     QR_UNIVERSE=broad_investable_us, dispatch-only): the ~3,545-name
+    #     candidate pool spans the FULL price/ADV-screened market, including
+    #     genuine micro- and small-caps well below the Russell 1000 cutoff.
+    #     Unlike the S&P 900, there is no structural "this cohort's floor
+    #     sits above the Russell 1000 floor" argument for the broad pool —
+    #     a positive market cap alone does not imply Russell 1000 inclusion
+    #     when the source pool is not itself cap-filtered at the top.
+    # Suppressing the proxy tag for these cohorts prevents latent corruption
+    # (Rule 16 annotate-before-veto: the proxy is an additive code, not a
+    # veto, but a structurally incorrect code is still a data-quality
+    # defect).  RUT (Russell 2000) / RUA (Russell 3000) would be the correct
+    # tags but require a dedicated FTSE Russell source, not a market-cap
+    # proxy — reserved for a future phase.
+    _NO_RUSSELL1000_PROXY_COHORTS = {"sp600", "broad"}
+    if (
+        cohort not in _NO_RUSSELL1000_PROXY_COHORTS
+        and market_cap is not None
+        and market_cap > 0
+    ):
         result.append("russell1000")
     return result

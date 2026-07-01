@@ -23,6 +23,53 @@ Rule 18 observability-before-wiring (CLAUDE.md §Conventions):
     Rankings/scores/flags are BYTE-IDENTICAL whether or not the probe ran.
     Defense layer is UNCHANGED at 36.
 
+Phase 9.3 — RANKED universe path (dispatch-only, QR_UNIVERSE=broad_investable_us):
+    This slice adds two functions that turn the candidate pool into an actual
+    SCORED/RANKED universe when ``QR_UNIVERSE=broad_investable_us`` is set via
+    manual ``workflow_dispatch`` (see ``compute/main.py``'s universe-selector
+    seam).  This is DISPATCH-ONLY — the scheduled weekday cron default stays
+    ``sp1500``, UNCHANGED.
+
+    ``candidates_to_universe_frame`` shapes the raw candidate DataFrame (which
+    has only ``ticker``/``name``/``exchange``[/``cik_str``]) into the column
+    shape ``fetch_all_prices`` / ``fetch_all_fundamentals`` expect
+    (``ticker``/``name``/``sector``/``sub_industry``/``cik``/``cohort``).  GICS
+    sector is NOT available from the SEC company-tickers source, so every row
+    gets ``sector="Unknown"`` — this mirrors the EXACT precedent already in
+    ``compute/ingest/universe.py`` (the S&P 400/600 Wikipedia-table loader
+    degrades to ``sector="Unknown"`` when the source table lacks a sector
+    column).  Downstream consumers already tolerate this: sector-exclusion
+    checks are exact-string comparisons against ``"Financials"``/``"Utilities"``
+    (never trip on ``"Unknown"``), ``get_cost_of_equity`` falls back to the flat
+    10% default for any unmapped sector string, and the peer-grouping walk
+    (``_build_peer_groupings``) simply buckets every ``"Unknown"``-sector name
+    into one large peer group (comfortably clears ``MULTIPLES_MIN_PEERS=8``).
+
+    ``select_broad_universe_survivors`` is the RANKED-PATH counterpart to
+    ``screen_broad_universe_investability`` (which stays a pure diagnostic
+    returning COUNTS for the probe's ``Metadata`` fields).  This new function
+    applies the identical price >= $5 / ADV >= $5M screen but returns the
+    SURVIVING TICKER SET so the caller can reduce the scored frame to
+    survivors BEFORE fundamentals fetch (Step 2) — this is the P1-G3
+    methodology gate (methodology-scientist ratified): non-survivors are
+    REMOVED from the peer set entirely, never emitted as a ``low_liquidity``
+    annotate.  Kept as a separate function (not a mutation of the probe) so
+    the Rule-18 diagnostic boundary of ``screen_broad_universe_investability``
+    stays untouched — the probe path and the ranked path use different
+    entry points into the same underlying floors.
+
+    P1-G4 re-normalization disclosure (methodology-REQUIRED): broadening the
+    scored universe from S&P 1500 (~1504 names) to the Broad Investable US
+    pool (~3,545 names) RE-BASES every cross-sectional percentile and sector
+    median used by the 8-pillar composite.  A score computed on the broad
+    universe is NOT comparable to a score computed on the same ticker under
+    an sp1500 cron — the percentile rank, sector-relative pillars, and
+    peer-median valuation inputs are all universe-relative by construction.
+    This PR does not change the frontend disclaimer (deferred to Phase 9.4);
+    the caveat lives here + in ``compute/main.py``'s universe-selector seam
+    + CLAUDE.md §Gotchas for anyone touching this path before 9.4 ships a
+    user-facing label.
+
 ADR detection note:
     yfinance returns ``EQUITY`` for most ADRs (issue #541 PR-1b TODO).  We
     exclude by exchange filter (Nasdaq/NYSE/CBOE only) and the
@@ -531,3 +578,194 @@ def screen_broad_universe_investability(
         "broad_universe_adv_fail_pct": adv_fail_pct,
         "broad_universe_coverage_pct": coverage_pct,
     }
+
+
+# ---------------------------------------------------------------------------
+# Phase 9.3 — RANKED universe path (dispatch-only)
+# ---------------------------------------------------------------------------
+
+
+def candidates_to_universe_frame(candidates: pd.DataFrame) -> pd.DataFrame:
+    """Shape the Broad Investable US candidate pool into a ``universe``-frame.
+
+    Adds the columns the rest of the compute pipeline expects on a universe
+    DataFrame (``sector``, ``sub_industry``, ``cik``, ``cohort``) that the
+    raw candidate pool from ``fetch_broad_universe_candidates`` does not
+    carry.  Mirrors the exact graceful-degradation pattern already used by
+    the S&P 400/600 Wikipedia loader in ``compute/ingest/universe.py`` when
+    the source table lacks a sector column.
+
+    Parameters
+    ----------
+    candidates:
+        DataFrame from ``fetch_broad_universe_candidates`` — at least
+        ``["ticker", "name"]``; optionally ``"exchange"`` and ``"cik_str"``.
+
+    Returns
+    -------
+    DataFrame with columns
+    ``["ticker", "name", "sector", "sub_industry", "cik", "cohort"]``:
+
+    - ``sector``: always ``"Unknown"`` (GICS sector is not available from
+      the SEC company-tickers source).  Downstream sector-exclusion checks
+      are exact-string comparisons against ``"Financials"``/``"Utilities"``
+      so ``"Unknown"`` never trips them; ``get_cost_of_equity`` falls back
+      to the flat 10% default for any unmapped sector.
+    - ``sub_industry``: always ``None`` (not available; the peer-grouping
+      walk already tolerates ``None`` sub_industry and falls through to the
+      sector-level peer group — see ``_build_peer_groupings`` docstring in
+      ``compute/main.py``).
+    - ``cik``: zero-padded ``cik_str`` when present, else ``None``.  A
+      missing CIK is NOT fatal — ``fetch_fundamentals``'s
+      ``Company(cik or ticker)`` call falls back to ticker-symbol
+      resolution (same fallback the S&P 400/600 loader relies on), at the
+      cost of bypassing the snapshot parquet cache for that ticker.
+    - ``cohort``: always ``"broad"``.  This is intentionally NOT overlaid
+      with sp500/sp400/sp600 membership — the S&P-cohort tag is a
+      DIFFERENT dimension (index constituency) than "was sourced via the
+      broad-universe candidate pool", and downstream code
+      (``derive_index_memberships``) already treats ``"broad"`` as its own
+      suppression bucket for the russell1000 proxy tag (see
+      ``compute/ingest/universe.py``).
+
+    Returns an empty-but-correctly-columned DataFrame when ``candidates`` is
+    empty — never raises.
+    """
+    if candidates.empty:
+        return pd.DataFrame(
+            columns=["ticker", "name", "sector", "sub_industry", "cik", "cohort"]
+        )
+
+    out = pd.DataFrame(
+        {
+            "ticker": candidates["ticker"].astype(str),
+            "name": candidates["name"].astype(str)
+            if "name" in candidates.columns
+            else candidates["ticker"].astype(str),
+        }
+    )
+    out["sector"] = "Unknown"
+    out["sub_industry"] = None
+
+    if "cik_str" in candidates.columns:
+        # PANDAS 3.0 GOTCHA: assigning a plain Python list (or
+        # ``Series.map(...).to_numpy()`` / ``pd.array(..., dtype=object)``)
+        # containing a MIX of strings and ``None`` into a DataFrame column
+        # triggers pandas 3.0's automatic string-dtype inference, which
+        # silently coerces every ``None`` back into a float ``NaN`` — even
+        # though ``dtype=object`` was explicitly requested on the source
+        # array.  A NaN in the ``cik`` column is a live corruption risk:
+        # ``bool(float("nan"))`` is True, so ``r.get("cik") or ""``
+        # downstream would keep the NaN (never fall through to the
+        # empty-string default) and ``str(nan_value)`` would hand
+        # ``fetch_fundamentals`` the literal string "nan" as a CIK.
+        #
+        # FIX: wrap the values in ``pd.Series(..., dtype=object,
+        # index=out.index)`` (NOT a bare list / pd.array) BEFORE assigning
+        # to the column — constructing the Series with an explicit dtype
+        # up front bypasses the content-based string-dtype inference that
+        # a subsequent bare-list assignment triggers.  Verified against
+        # pandas 3.0.3 (the version pinned in this repo's uv.lock).
+        _cik_values: list[str | None] = []
+        for v in candidates["cik_str"]:
+            if v is None or (not isinstance(v, str) and pd.isna(v)):
+                _cik_values.append(None)
+                continue
+            s = str(v).strip()
+            if not s or s.lower() in ("none", "nan"):
+                _cik_values.append(None)
+                continue
+            try:
+                _cik_values.append(str(int(float(s))).zfill(10))
+            except (ValueError, TypeError):
+                _cik_values.append(None)
+        out["cik"] = pd.Series(_cik_values, dtype=object, index=out.index)
+    else:
+        out["cik"] = None
+
+    out["cohort"] = "broad"
+    return out.reset_index(drop=True)
+
+
+def select_broad_universe_survivors(
+    candidates: pd.DataFrame,
+    prices_by_ticker: dict[str, pd.DataFrame],
+    *,
+    price_floor: float = config.BROAD_UNIVERSE_PRICE_FLOOR_USD,
+    adv_floor: float = config.ADV_FLOOR_USD,
+    adv_lookback_days: int = config.ADV_LOOKBACK_DAYS,
+) -> set[str]:
+    """Return the set of ticker survivors of the investability screen.
+
+    This is the RANKED-PATH counterpart to
+    ``screen_broad_universe_investability`` (which stays a pure diagnostic
+    returning COUNTS for the Metadata probe fields).  This function applies
+    the IDENTICAL price >= ``price_floor`` AND trailing-``adv_lookback_days``
+    ADV >= ``adv_floor`` screen but returns the surviving TICKER SET so the
+    caller can reduce the scored universe frame to survivors before
+    fundamentals fetch (Step 2 of ``run_weekly_compute``).
+
+    P1-G3 (methodology-scientist ratified): non-survivors are REMOVED from
+    the peer set entirely — this function does NOT emit a ``low_liquidity``
+    annotate for excluded names; it simply omits them from the returned set.
+    That is a deliberate methodology choice: the ``low_liquidity`` annotate
+    exists for names that ARE ranked but trade thinly (S&P 1500 Slice 4);
+    on the broad-universe path, sub-floor names are excluded from the peer
+    set before scoring begins, so there is no ticker to annotate.
+
+    Parameters
+    ----------
+    candidates:
+        DataFrame with at least a ``ticker`` column (the shaped universe
+        frame from ``candidates_to_universe_frame``, or the raw
+        ``fetch_broad_universe_candidates`` output — either works, only
+        ``ticker`` is read).
+    prices_by_ticker:
+        Ticker → OHLCV DataFrame, already fetched (Step 1 of the compute
+        pipeline).  On the ranked path this MUST be the broad-universe
+        price fetch (not a restricted sp1500 dict) or the survivor set will
+        be artificially small.
+    price_floor, adv_floor, adv_lookback_days:
+        Same floors as ``screen_broad_universe_investability`` — kept as
+        separate keyword defaults (not a shared call) so the two functions
+        remain independently testable and cannot silently diverge without a
+        visible diff on both call sites.
+
+    Returns
+    -------
+    set[str]
+        Ticker symbols passing BOTH floors.  Empty set (never raises) when
+        ``candidates`` is empty or no ticker has usable price data.
+    """
+    from compute.ingest.prices import compute_average_dollar_volume  # noqa: PLC0415
+
+    survivors: set[str] = set()
+    if candidates.empty:
+        return survivors
+
+    for ticker in candidates["ticker"].astype(str):
+        df_prices = prices_by_ticker.get(ticker)
+        if df_prices is None or df_prices.empty:
+            continue
+
+        close_col = "Adj Close" if "Adj Close" in df_prices.columns else "Close"
+        try:
+            last_close = float(df_prices[close_col].dropna().iloc[-1])
+        except (IndexError, KeyError, TypeError, ValueError):
+            continue
+
+        if last_close < price_floor:
+            continue
+
+        adv = compute_average_dollar_volume(df_prices, adv_lookback_days)
+        if adv is None or adv < adv_floor:
+            continue
+
+        survivors.add(ticker)
+
+    logger.info(
+        "[broad-universe-ranked] Investability screen: %d / %d candidates survived "
+        "(price >= $%.2f AND trailing-%dd ADV >= $%.0f)",
+        len(survivors), len(candidates), price_floor, adv_lookback_days, adv_floor,
+    )
+    return survivors

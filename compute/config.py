@@ -35,11 +35,19 @@ MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
 # Phase 8 pilot — universe selector (default "sp500" for local runs + tests;
-# the cron sets QR_UNIVERSE=sp900 via workflow env-var since Phase B flip).
+# the SCHEDULED CRON sets QR_UNIVERSE=sp1500 via workflow env-var since the
+# Slice 7 flip, 2026-06-20 — UNCHANGED by Phase 9.3).
 # When set to "sp1500" (Slice 2, manual dispatch only), main.py loads SP1500
 # (sp500 + sp400 + sp600) and runs the smallcap coverage probe (Rule 18
 # observability-first). NO cron/workflow change in Slice 2.
-# Accepted values: "sp500" | "sp900" | "sp1500".
+# When set to "broad_investable_us" (Phase 9.3, DISPATCH-ONLY — never the
+# scheduled cron default), main.py loads the Broad Investable US candidate
+# pool (~6,883 names), fetches prices for the full pool, screens to
+# investability survivors (~3,545), and RANKS the survivor set. P1-G4
+# methodology caveat (re-normalization — NOT comparable to sp1500-cron
+# scores): see compute/ingest/broad_universe.py module docstring +
+# CLAUDE.md §Gotchas.
+# Accepted values: "sp500" | "sp900" | "sp1500" | "broad_investable_us".
 QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 
 # 0.10.20-phase4.6 (issue #75 §3) layers the additive
