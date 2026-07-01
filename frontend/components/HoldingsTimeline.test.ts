@@ -542,3 +542,96 @@ describe('sold-row ORDER — Current-picks matches Rotation-history (ordering fi
     expect(currentPicksOrder).toEqual(holdingsTimelineOrder);
   });
 });
+
+// ---------------------------------------------------------------------------
+// 8. Basket total-return aggregation — weightedBasketReturn
+//
+// Contracts the pure helper exported from HoldingsTimeline.tsx that powers the
+// "Total return" header at the top of each QuarterDrawer. The value is the
+// weight-weighted blend of the SAME per-holding "Your return" (MWR) figures in
+// the rows below, so the header can never disagree with the rows:
+//   total = Σ w_i·mwr_i / Σ w_i   (positive weights, finite mwr)
+//   fallback → equal-weight mean when no positive weights are present
+//   null → when no held ticker has a finite mwr
+// ---------------------------------------------------------------------------
+
+import { weightedBasketReturn } from './HoldingsTimeline';
+
+function mwrMap(entries: Record<string, number | null>): Record<string, MwrPositionReturn> {
+  const out: Record<string, MwrPositionReturn> = {};
+  for (const [t, v] of Object.entries(entries)) {
+    out[t] = {
+      mwr_pct: v,
+      twr_pct: null,
+      contrib_nav_pts: null,
+      since_date: '2020-01-01',
+      partial_history: false,
+      legs_used: 1,
+    };
+  }
+  return out;
+}
+
+describe('weightedBasketReturn — basket total from per-holding MWR', () => {
+  it('weights by holding size: Σ w·mwr / Σ w', () => {
+    const held = ['A', 'B'];
+    const mwr = mwrMap({ A: 10, B: 20 });
+    const weights = { A: 0.75, B: 0.25 };
+    // 0.75*10 + 0.25*20 = 12.5
+    expect(weightedBasketReturn(held, mwr, weights)).toBeCloseTo(12.5, 6);
+  });
+
+  it('equal weights → simple mean of the exact % shown in the rows (ties out)', () => {
+    const held = ['A', 'B', 'C'];
+    const mwr = mwrMap({ A: 30, B: -10, C: 5 });
+    const weights = { A: 1, B: 1, C: 1 };
+    // (30 - 10 + 5) / 3
+    expect(weightedBasketReturn(held, mwr, weights)).toBeCloseTo(25 / 3, 6);
+  });
+
+  it('no weights present → equal-weight mean fallback', () => {
+    const held = ['A', 'B'];
+    const mwr = mwrMap({ A: 10, B: 40 });
+    expect(weightedBasketReturn(held, mwr, undefined)).toBeCloseTo(25, 6);
+  });
+
+  it('skips tickers with a null mwr (dropped from both sums)', () => {
+    const held = ['A', 'B', 'C'];
+    const mwr = mwrMap({ A: 10, B: null, C: 20 });
+    const weights = { A: 0.5, B: 0.5, C: 0.5 };
+    // B dropped → (0.5*10 + 0.5*20)/(0.5+0.5) = 15
+    expect(weightedBasketReturn(held, mwr, weights)).toBeCloseTo(15, 6);
+  });
+
+  it('non-positive weights are ignored for weighting (only positive weights count)', () => {
+    const held = ['A', 'B'];
+    const mwr = mwrMap({ A: 10, B: 20 });
+    // A weight 0 ignored; B positive → weighted uses B only
+    const weights = { A: 0, B: 2 };
+    expect(weightedBasketReturn(held, mwr, weights)).toBeCloseTo(20, 6);
+  });
+
+  it('returns null when no held ticker has a finite mwr', () => {
+    const held = ['A', 'B'];
+    const mwr = mwrMap({ A: null, B: null });
+    expect(weightedBasketReturn(held, mwr, { A: 1, B: 1 })).toBeNull();
+  });
+
+  it('returns null when mwrByTicker is undefined', () => {
+    expect(weightedBasketReturn(['A'], undefined, { A: 1 })).toBeNull();
+  });
+
+  it('returns null for an empty held list', () => {
+    expect(weightedBasketReturn([], mwrMap({ A: 10 }), { A: 1 })).toBeNull();
+  });
+
+  it('ground-truth-style: large lifetime MWRs blend by weight', () => {
+    // KLAC +711% at small weight, others modest — the blend equals the exact
+    // Σ w·mwr / Σ w the rows imply, so the header cannot disagree with them.
+    const held = ['KLAC', 'CF', 'ACGL'];
+    const mwr = mwrMap({ KLAC: 711.69, CF: 94.39, ACGL: -1.86 });
+    const weights = { KLAC: 0.1, CF: 0.3, ACGL: 0.6 };
+    const expected = (0.1 * 711.69 + 0.3 * 94.39 + 0.6 * -1.86) / (0.1 + 0.3 + 0.6);
+    expect(weightedBasketReturn(held, mwr, weights)).toBeCloseTo(expected, 6);
+  });
+});

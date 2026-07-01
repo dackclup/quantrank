@@ -822,7 +822,10 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
       </div>
 
       {timeline.length > 0 && (
-        <HoldingsTimeline timeline={timeline} count={displayCount} />
+        <HoldingsTimeline
+          timeline={timeline}
+          count={displayCount}
+        />
       )}
 
       {/* Footer CTA (H-8) — primary route into the full ranking, paired with
@@ -1207,7 +1210,12 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         />
       </div>
 
-      {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
+      {timeline.length > 0 && (
+        <HoldingsTimeline
+          timeline={timeline}
+          count={count}
+        />
+      )}
 
       {/* Footer CTA (H-8) — primary route into the full ranking, paired with
           the educational-backtest caveat so the call-to-action is never read

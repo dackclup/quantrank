@@ -13,6 +13,52 @@ import {
   toneClass,
 } from '@/lib/portfolio-format';
 
+// ---------------------------------------------------------------------------
+// Basket-return aggregation (pure, exported for unit tests)
+// ---------------------------------------------------------------------------
+
+/**
+ * Weighted-average "total return" of a quarter's basket, computed from the SAME
+ * per-holding "Your return" (MWR) figures shown in the drawer rows — so the
+ * headline can never disagree with the rows it summarizes.
+ *
+ *   total = Σ_i (w_i · mwr_i) / Σ_i w_i   over held tickers with a finite mwr
+ *   and a positive weight.
+ *
+ * When no positive weights are available (pre-weight artifact) it falls back to
+ * the equal-weight mean of the finite mwr values.
+ *
+ * Each mwr_i is a per-holding money-weighted return SINCE that stock was bought
+ * (often multi-quarter), so this blend is a since-purchase basket return, NOT a
+ * single-quarter or time-correct portfolio return — labeled accordingly in the
+ * UI. Returns null when no held ticker has a finite mwr.
+ */
+export function weightedBasketReturn(
+  held: string[],
+  mwrByTicker: Record<string, MwrPositionReturn> | undefined,
+  weightByTicker: Record<string, number | null> | undefined,
+): number | null {
+  if (!mwrByTicker) return null;
+  let wSum = 0;
+  let wRetSum = 0;
+  let simpleSum = 0;
+  let simpleCount = 0;
+  for (const t of held) {
+    const mwr = mwrByTicker[t]?.mwr_pct;
+    if (mwr === null || mwr === undefined || Number.isNaN(mwr)) continue;
+    simpleSum += mwr;
+    simpleCount += 1;
+    const w = weightByTicker?.[t];
+    if (w !== null && w !== undefined && !Number.isNaN(w) && w > 0) {
+      wSum += w;
+      wRetSum += w * mwr;
+    }
+  }
+  if (wSum > 0) return wRetSum / wSum;
+  if (simpleCount > 0) return simpleSum / simpleCount;
+  return null;
+}
+
 // Fixed month names — locale-stable across SSR vs client (no `Date()`/Intl
 // drift). The rebalance date is quarter-end + the 45-day filing lag, so it is
 // the month the basket was actually rebalanced into; we show that honestly
@@ -162,6 +208,7 @@ export function HoldingsTimeline({
       });
       prev = held;
     }
+
     const transitions = Math.max(1, timeline.length - 1);
     chrono.reverse(); // newest first for display
     return { rows: chrono, avgTurnover: totalEntered / transitions };
@@ -341,8 +388,19 @@ function QuarterDrawer({
   const rawWeights = sortedHeld.map((t) => weightByTicker?.[t] ?? null);
   const weightLabels = apportionWeightLabels(rawWeights);
 
+  // Basket total return — the weight-weighted blend of the SAME per-holding
+  // "Your return" (MWR) values shown in the rows below, so the headline can
+  // never disagree with them. Null when no held row has a finite MWR.
+  const basketReturn = weightedBasketReturn(sortedHeld, mwrByTicker, weightByTicker);
+
   return (
     <div className="mb-2 mt-0.5 rounded border border-slate-100 bg-slate-50 px-3 py-3 dark:border-slate-800 dark:bg-slate-800/50">
+      {/* Basket total-return summary — shown ABOVE the holdings grid. Derived
+          from the same per-holding "Your return" values in the rows below
+          (weight-weighted), so it always ties out with them. */}
+      {basketReturn !== null && (
+        <BasketReturnSummary value={basketReturn} weighted={hasWeights} />
+      )}
       {/* Grid header — 6 columns matching AiPickPortfolio adaptive branch:
           Mobile (5 tracks, sector hidden): [1.25rem auto 1fr 4.25rem 2.75rem]
           sm+ (6 tracks, sector visible):   [1.25rem auto auto 1fr 4.25rem 2.75rem] */}
@@ -497,6 +555,48 @@ function QuarterDrawer({
           Per-quarter return data unavailable for this quarter (pre-engine artifact).
         </p>
       )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Basket total-return block — sits at the TOP of each QuarterDrawer (above the
+// holdings grid), separated by a bottom border.
+//
+// The value is the weight-weighted blend of the per-holding "Your return" (MWR)
+// figures in the rows below (see weightedBasketReturn), so it always ties out
+// with them — this is what resolves the "the top number doesn't match the rows"
+// confusion. Because each per-holding MWR is measured SINCE that stock was
+// bought (often multi-quarter), the blend is a since-purchase basket return; the
+// caption states that so it is never mistaken for a single-quarter figure.
+// ---------------------------------------------------------------------------
+function BasketReturnSummary({
+  value,
+  weighted,
+}: {
+  value: number;
+  weighted: boolean;
+}) {
+  const caption = weighted
+    ? 'Weighted by holding size — the blended return of every "Your return" below, since each stock was bought.'
+    : 'Equal-weight blend of every "Your return" below, since each stock was bought.';
+
+  return (
+    <div
+      className="mb-2 border-b border-slate-200 pb-2 dark:border-slate-700"
+      aria-label={`Basket total return ${pctStr(value)}. ${caption}`}
+    >
+      <div className="flex items-baseline gap-x-2">
+        <span className="text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+          Total return
+        </span>
+        <span className={`font-mono text-base font-semibold tabular-nums ${toneClass(value)}`}>
+          {pctStr(value)}
+        </span>
+      </div>
+      <p className="mt-1 text-[0.625rem] text-slate-400 dark:text-slate-500">
+        {caption}
+      </p>
     </div>
   );
 }

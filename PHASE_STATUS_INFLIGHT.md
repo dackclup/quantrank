@@ -9692,6 +9692,59 @@ Also absorbs **spaghetti smell #9** (issue #259): `_fetch_one_form4` was a closu
 
 ---
 
+## feat(frontend): Rotation-history drawer basket total-return header (in flight, 2026-06-30→07-01)
+
+Adds a **"Total return"** summary at the top of each `QuarterDrawer` in the
+Rotation history component (`HoldingsTimeline.tsx`). The figure is the
+**weight-weighted blend of the SAME per-holding "Your return" (MWR) values
+shown in the drawer rows below** — `total = Σ w_i·mwr_i / Σ w_i` (equal-weight
+mean fallback when weights are absent). Because it is derived directly from the
+percentages beside it, the header can never disagree with the rows — resolving
+the owner-reported "the top number doesn't match the rows" confusion.
+
+Design history (this branch): an earlier iteration showed a per-quarter
+**book-vs-benchmark** NAV leg return + outperformance Δ. That was rejected by
+the owner because the per-holding "Your return" column is a **since-purchase
+lifetime MWR** (e.g. KLAC +711% since 2020-08-14, confirmed from
+`backtest_pit.json` + `compute/portfolio/position_returns.py`), so a
+single-quarter book figure sitting next to multi-year lifetime rows read as
+inconsistent. The final design instead aggregates those same lifetime rows, and
+the caption states the blend is a **since-purchase basket return** (not a
+single-quarter or time-weighted portfolio return). The index comparison was
+dropped per owner decision.
+
+**Frontend-only — NO schema change, NO compute change.** The value is computed
+in the browser from each entry's own `mwrByTicker` + `weightByTicker` (the data
+the rows already use); NO NAV plumbing. One pure helper is exported from
+`HoldingsTimeline.tsx` for testability: `weightedBasketReturn(held,
+mwrByTicker, weightByTicker)`. The block reuses `pctStr` / `toneClass` from
+`@/lib/portfolio-format`, soft-palette tone (emerald positive / rose negative),
+`tabular-nums`, and paired `dark:` variants.
+
+Graceful absence: `mwrByTicker` undefined / no held ticker with a finite MWR →
+block omitted; rows with a null MWR are skipped from both sums; non-positive
+weights ignored for weighting.
+
+**Schema triple**: untouched. **Defense layer**: unchanged at 38.
+
+**Files**:
+- `frontend/components/HoldingsTimeline.tsx` (new `BasketReturnSummary` block +
+  exported pure helper `weightedBasketReturn`; removed the interim
+  `computeLegReturns`/`snapToTradingDayIndex` NAV helpers + the
+  `dates`/`portfolioNav` props)
+- `frontend/components/AiPickPortfolio.tsx` (drop the interim `dates`/
+  `portfolioNav` wiring at both call sites — adaptive + slider branches)
+- `frontend/components/HoldingsTimeline.test.ts` (9 `weightedBasketReturn` tests
+  replacing the interim leg-return tests)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verify**: `tsc --noEmit` PASS · `next build` PASS · `vitest run` 329/329 PASS.
+`frontend-design-reviewer` audited the interim block (all PASS bar an
+`amber-700→800` ring + badge-padding nit, both applied); the final block reuses
+the same design tokens.
+
+---
+
 ## PR #259-R5 — orchestrator refactor R5 (Step-4b Tier-2 event-defense fetch loop) (in flight, 2026-07-01)
 
 **Branch**: `claude/orchestrator-refactor-r5`. Fifth slice of the 7-PR incremental refactor of `run_weekly_compute` (issue #259).
