@@ -9875,3 +9875,36 @@ the same design tokens.
 **Gate**: ruff PASS (whole-repo) · offline pytest 3362 passed / 10 skipped (pre-existing env gaps: `ipca`/`qlib` optional packages absent, no live price cache, shallow git clone) / 0 failed (the 2 pre-existing gaps above deselected/ignored, documented) · `schema_check` PASS (no drift) · no live sp1500/sp900/sp500/broad_investable_us cron has exercised this branch yet — dispatch-only, untested on real EDGAR/yfinance data until a manual `workflow_dispatch` run. DRAFT PR only — do NOT merge, do NOT flip Ready. Gated on methodology-scientist (P1-G3/P1-G4 re-normalization + membership-gate review) + quantrank-reviewer + agent-output-verifier (default-path byte-identical claim) per the task brief.
 
 ---
+
+## PR #259-R7a — orchestrator refactor R7a (pre-loop membership-map building) (in flight, 2026-07-01)
+
+**Branch**: `claude/orchestrator-refactor-r7`. First SUB-SLICE of the final slice (R7) of the 7-PR incremental refactor of `run_weekly_compute` (issue #259). R7 (the ~700-line per-ticker Step-8 scoring loop) is the largest and highest-risk slice — it sits on the real scoring/valuation hot path (unlike the observability-only R6 OSAP block) — so it is being carved into sub-slices, each independently byte-identical and revertable. R7a is the LOW-risk lead-off: the self-contained pre-loop map-building block, extracted first to de-risk the eventual full-loop extraction (R7b).
+
+**Scope (PURE CODE MOVE — byte-identical output)**: extracts the pre-loop membership-map building block out of `run_weekly_compute` into a new `compute/orchestrator/per_ticker.py` module, as a single pure function `build_ticker_membership_maps(df, snapshots, *, dow30, ndx) -> (multi_class_flagged_tickers, cohort_by_ticker, memberships_by_ticker)`. No logic change, no reordering, same comments verbatim.
+
+**What moved (verbatim)**: the `cik_by_ticker` / `market_cap_by_ticker` build loop (`for _, r in df.iterrows()`, `s.cik`, `float(r["current_price"]) * s.shares_outstanding` with the `if s.shares_outstanding is not None else None` branch, both nulled when `s is None`), the `detect_multi_class_aggregate_shares_suspected(cik_by_ticker, market_cap_by_ticker)` call (same arg order), the `cohort_by_ticker` dict-comp (`str(r.get("cohort", "sp500"))` default), and the `memberships_by_ticker` dict-comp (`derive_index_memberships(ticker, cohort=cohort, dow30=dow30, ndx=ndx, market_cap=market_cap_by_ticker.get(ticker))`, same kwargs + order). The Issue #261 CIK-collision rationale, the Phase-8-pilot cohort comment, and the russell1000-proxy comment are all carried over verbatim.
+
+**Scope boundary**: `cik_by_ticker` / `market_cap_by_ticker` become INTERNAL to the helper (not returned) — grep-confirmed nothing downstream in `main.py` reads them (the similarly-named `_cs_yf_market_cap_by_ticker` is a distinct cross-source yfinance map, untouched). The three returned maps are consumed downstream under the same names. The per-ticker loop counter init `multi_class_aggregate_shares_suspected_count: int = 0` STAYS in `run_weekly_compute` (it is loop state, not part of the map-building block) — same relative position to the loop as before.
+
+**`compute/main.py` changes**:
+- Added `from compute.orchestrator.per_ticker import build_ticker_membership_maps` (alphabetically slotted among the orchestrator imports).
+- Removed the ~63-line block; replaced with a single tuple-unpack call + the retained counter init.
+- Removed now-dead imports `derive_index_memberships` (from the multi-symbol `compute.ingest.universe` import) and `detect_multi_class_aggregate_shares_suspected` (whole `compute.scoring.multi_class_shares` import block) — grep-confirmed zero remaining live references (only pre-existing comment mentions remain). Both are imported by the new module instead.
+
+**Byte-identical guarantee**: the three returned maps are built by the identical expressions, in the identical order, with identical None-propagation branches, as the removed inline block — verified by line-diff (`git show <commit> -- compute/main.py` removed-block vs the new function body) and independently confirmed by quantrank-reviewer (PASS: byte-identical hard gate holds). Rebased onto post-#676 `origin/main` with zero conflicts; #676's `_SP600_COHORTS` → `_NO_RUSSELL1000_PROXY_COHORTS = {"sp600","broad"}` rename lives inside `derive_index_memberships`, which this helper CALLS (not copies), so its behaviour flows through unchanged.
+
+**Schema triple**: untouched — no `schemas.py` / `types.ts` / `schema-snapshot.json` change; `schema_check` in-sync (no drift, as expected for a pure code move). Defense layer UNCHANGED at 38.
+
+**Tests**: new `tests/test_orchestrator/test_per_ticker.py` — 14 offline synthetic tests (Sections A-D: cohort default/explicit, memberships dow30/ndx/None-snap/None-shares/sp600-suppression/key-parity, multi_class CIK-collision fire/no-fire/below-floor, return-shape + internal-map isolation). Uses a minimal `_FakeSnapshot` dataclass stand-in; no network.
+
+**Files**:
+- `compute/orchestrator/per_ticker.py` (new)
+- `compute/main.py` (block replaced with a call + unpack; one import added, two dead imports removed)
+- `tests/test_orchestrator/test_per_ticker.py` (new — 14 tests)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verification ladder** (all green, post-rebase): `ruff check compute/ tests/` PASS · `python -m compute.output.schema_check` in-sync · `python -m pytest tests/test_orchestrator/ -m "not network" -q` → 123 passed (109 pre-existing R1-R6 + 14 new) · `python -c "import compute.main"` clean.
+
+**R7b follow**: the ~700-line per-ticker Step-8 loop body itself — fair-price ensemble + the ~20 `valuation_warnings.append` sites + StockSummary/StockDetail writes. Kept a pure move; smells #5 (WarningEmitter) / #8 (double `check_rim_applicability`) folded in only if provably byte-identical, else deferred to a small follow-up.
+
+---
