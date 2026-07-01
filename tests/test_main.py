@@ -1274,7 +1274,7 @@ def test_step4_sectors_dict_passed_to_compute_risk_flags(
         patch("compute.main.write_benchmarks_json", return_value=(None, None)),
         patch("compute.main.fetch_dow30_constituents", return_value=set()),
         patch("compute.main.fetch_ndx_constituents", return_value=set()),
-        patch("compute.main.fetch_tier2_for_ticker",
+        patch("compute.orchestrator.tier2.fetch_tier2_for_ticker",
               side_effect=lambda ticker, **kw: _MINIMAL_TIER2_STEP4),
         patch("compute.main.compute_risk_flags", side_effect=_spy_compute_risk_flags),
         patch("compute.config.MIN_VALID_TICKERS", 0),

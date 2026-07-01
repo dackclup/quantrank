@@ -394,21 +394,24 @@ def test_tier2_wall_clock_populated_on_success(
     """Invariant: ``tier2_wall_clock_seconds`` is a ``float`` (not ``None``)
     when ``fetch_tier2_for_ticker`` returns a valid ``Tier2Result``.
 
-    The Tier-2 block in ``run_weekly_compute`` (main.py ~line 1415) starts
-    a wall-clock marker, runs the ``ThreadPoolExecutor`` loop that calls
+    The Step-4b Tier-2 fetch loop now lives in
+    ``compute.orchestrator.tier2.fetch_all_tier2`` (extracted from
+    ``compute.main`` as part of PR #259-R5). It starts a wall-clock
+    marker, runs the ``ThreadPoolExecutor`` loop that calls
     ``fetch_tier2_for_ticker`` per ticker, and assigns
     ``tier2_wall_clock_seconds = round(time.monotonic() - _tier2_wc_start, 1)``
-    (main.py ~line 1430) immediately after the executor exits.
+    immediately after the executor exits. ``compute.main`` calls
+    ``fetch_all_tier2(df)`` once and unpacks the returned tuple.
 
-    ``fetch_tier2_for_ticker`` is patched at the ``compute.main`` module
-    level (it is imported there as a module-level name, not deferred) to
-    return a minimal ``Tier2Result`` with ``fetch_succeeded=True``.  Because
-    the executor succeeds and the outer try does not raise, the end-marker
-    assignment fires and the field carries a non-negative float in the written
-    ``metadata.json``.
+    ``fetch_tier2_for_ticker`` is patched at the
+    ``compute.orchestrator.tier2`` module level (it is imported there as a
+    module-level name, not deferred) to return a minimal ``Tier2Result``
+    with ``fetch_succeeded=True``.  Because the executor succeeds and the
+    outer try does not raise, the end-marker assignment fires and the
+    field carries a non-negative float in the written ``metadata.json``.
     """
     with patch(
-        "compute.main.fetch_tier2_for_ticker",
+        "compute.orchestrator.tier2.fetch_tier2_for_ticker",
         side_effect=lambda ticker, **kw: _MINIMAL_TIER2,
     ):
         meta = _run_orchestrator(
