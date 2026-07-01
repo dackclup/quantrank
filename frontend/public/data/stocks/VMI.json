@@ -1,0 +1,207 @@
+{
+  "ticker": "VMI",
+  "name": "Valmont Industries",
+  "sector": "Industrials",
+  "industry": "Industrial Machinery & Supplies & Components",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 11213324343.633911,
+  "current_price": 577.6,
+  "rank": 180,
+  "composite_score": 61.29,
+  "pillar_scores": {
+    "quality": 74.51,
+    "value": 33.59,
+    "growth": 45.49,
+    "momentum": 83.79,
+    "health": 75.66,
+    "profitability": 61.83,
+    "technical": 63.02,
+    "risk": 66.68,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 4163985000.0,
+    "net_income": 375049000.0,
+    "total_assets": 3435165000.0,
+    "total_liabilities": 1746582000.0,
+    "stockholders_equity": 1679282000.0,
+    "cash": 160189000.0,
+    "operating_cash_flow": 494827000.0,
+    "capex": 149284000.0,
+    "free_cash_flow": 345543000.0,
+    "eps_basic": 19.31882879732411,
+    "eps_diluted": 19.31882879732411,
+    "shares_outstanding": 19413651.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 11213324343.633911,
+    "pe_ratio_ttm": 29.898291539595924,
+    "goodwill": 586730000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 123.76659296602128,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 582.5769493798645,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 354.3628846420889,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 474.08748237214445,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 74.03625362720706,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 148.50195030113275,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 251.43241747161082,
+    "max": 582.5769493798645,
+    "low": 74.03625362720706,
+    "high": 582.5769493798645,
+    "mos_pct": -129.7237489875999,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 354.3628846420889,
+    "methods_excluded_from_median": [
+      "rim"
+    ]
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "research_and_development"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 64,
+    "latest_period_end": "2026-04-24",
+    "latest_filed_date": "2026-04-28"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 50.10850354732348,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": true,
+    "latest_8k_filing_date": "2026-03-06",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/102729/0001104659-26-024717-index.html"
+  },
+  "pillar_baseline": {
+    "label": "Industrials median (n=255)",
+    "values": {
+      "Quality": 49.41,
+      "Value": 49.87,
+      "Growth": 50.2,
+      "Momentum": 53.2,
+      "Health": 58.03,
+      "Profitability": 49.41,
+      "Technical": 50.53,
+      "Risk": 51.02
+    }
+  },
+  "beneish_m_score": -2.6489281624636756,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 55.35483217365952,
+  "price_change_1d_pct": 0.7377,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 61.29,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 56.57,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 18,
+    "latest_filing_date": "2026-05-07",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 8.63585194890892e-08,
+  "dividend_yield_pct": 0.51,
+  "pays_dividend": true,
+  "payout_ratio": 0.15630001,
+  "average_dollar_volume": 133491706.26357421,
+  "security_type": "Common stock"
+}

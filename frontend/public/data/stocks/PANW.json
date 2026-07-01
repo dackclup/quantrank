@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 270580000000.0,
   "current_price": 332.0,
-  "rank": 476,
-  "composite_score": 35.82,
+  "rank": 1357,
+  "composite_score": 38.24,
   "pillar_scores": {
-    "quality": 10.47,
-    "value": 14.3,
-    "growth": 47.64,
-    "momentum": 90.84,
-    "health": 51.14,
-    "profitability": 23.42,
-    "technical": 73.33,
-    "risk": 57.97,
+    "quality": 20.24,
+    "value": 10.76,
+    "growth": 49.47,
+    "momentum": 89.61,
+    "health": 47.81,
+    "profitability": 33.77,
+    "technical": 72.05,
+    "risk": 63.34,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 39.08344482306978,
+        "value": 24.85813226644107,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 339.91463213464516,
+        "value": 256.3793211082852,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 50.448330725467684,
+        "value": 79.14366939428317,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,21 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 50.448330725467684,
-    "max": 339.91463213464516,
-    "low": 39.08344482306978,
-    "high": 339.91463213464516,
-    "mos_pct": -558.0990792474277,
+    "median": 79.14366939428317,
+    "max": 256.3793211082852,
+    "low": 24.85813226644107,
+    "high": 256.3793211082852,
+    "mos_pct": -319.4902795649017,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_estimate_majority"
+      "extreme_multiples_pe_estimate"
     ],
-    "valuation_methods_applicable": 1,
-    "median_trimmed": null,
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 167.76149525128417,
     "methods_excluded_from_median": [
-      "multiples_pe",
-      "multiples_ev_ebitda"
+      "multiples_pe"
     ]
   },
   "top5_factors": [],
@@ -104,7 +101,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-05-26",
     "latest_filed_date": "2026-06-03"
   },
@@ -113,8 +110,6 @@
   ],
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_estimate_majority",
     "accruals_momentum_high",
     "insider_sell_cluster"
   ],
@@ -128,25 +123,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=74)",
+    "label": "Information Technology median (n=189)",
     "values": {
-      "Quality": 50.42,
-      "Value": 48.48,
-      "Growth": 52.7,
-      "Momentum": 73.75,
-      "Health": 68.38,
-      "Profitability": 50.11,
-      "Technical": 44.62,
-      "Risk": 44.92
+      "Quality": 50.66,
+      "Value": 49.29,
+      "Growth": 50.93,
+      "Momentum": 73.57,
+      "Health": 64.98,
+      "Profitability": 49.56,
+      "Technical": 49.35,
+      "Risk": 42.32
     }
   },
   "beneish_m_score": -2.667479283265672,
   "dechow_f_score": 1.7406332331130185,
   "recommendation": "cautious",
-  "loss_chance_pct": 72.0875776174581,
+  "loss_chance_pct": 69.88001979870461,
   "price_change_1d_pct": 9.1387,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 34.82,
+  "composite_score_adjusted": 37.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.84,
+  "osap_blended_score": 45.05,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -203,7 +198,7 @@
     "ndx",
     "russell1000"
   ],
-  "valuation_methods_applicable": 1,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 9,
     "latest_filing_date": "2026-06-24",

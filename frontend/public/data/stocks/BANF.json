@@ -1,0 +1,214 @@
+{
+  "ticker": "BANF",
+  "name": "Bancfirst Corp",
+  "sector": "Financials",
+  "industry": "Regional Banks",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 3732455095.062233,
+  "current_price": 111.13,
+  "rank": 872,
+  "composite_score": 48.08,
+  "pillar_scores": {
+    "quality": 50.88,
+    "value": 44.99,
+    "growth": 51.46,
+    "momentum": 35.22,
+    "health": 60.33,
+    "profitability": 54.69,
+    "technical": 37.02,
+    "risk": 48.66,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 202638000.0,
+    "net_income": 247493000.0,
+    "total_assets": 15116541000.0,
+    "total_liabilities": 13214629000.0,
+    "stockholders_equity": 1901912000.0,
+    "cash": 1704438000.0,
+    "operating_cash_flow": 284173000.0,
+    "capex": 47784000.0,
+    "free_cash_flow": 236389000.0,
+    "eps_basic": 7.368848575466006,
+    "eps_diluted": 7.368848575466006,
+    "shares_outstanding": 33586387.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 3732455095.062233,
+    "pe_ratio_ttm": 15.081053181553552,
+    "goodwill": 183388000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 86.75350653153957,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 95.24890970966688,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 71.01421244614103,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 63.79475390881017,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 78.8838594888403,
+    "max": 95.24890970966688,
+    "low": 63.79475390881017,
+    "high": 95.24890970966688,
+    "mos_pct": -40.8779919916818,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 78.8838594888403,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 54,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-05-08"
+  },
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
+  "valuation_warnings": [
+    "valuation_output_anomalous"
+  ],
+  "has_history": true,
+  "tangible_book_value": 50.451958408030016,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Financials median (n=256)",
+    "values": {
+      "Quality": 50.2,
+      "Value": 50.57,
+      "Growth": 50.2,
+      "Momentum": 54.23,
+      "Health": 54.21,
+      "Profitability": 51.14,
+      "Technical": 54.59,
+      "Risk": 61.06
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "cautious",
+  "loss_chance_pct": 70.26924116762791,
+  "price_change_1d_pct": -1.0154,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 48.08,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.96,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-05-07",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 1.9541498871694387e-08,
+  "dividend_yield_pct": 1.76,
+  "pays_dividend": true,
+  "payout_ratio": 0.2644,
+  "average_dollar_volume": 23058623.754677836,
+  "security_type": "Common stock"
+}

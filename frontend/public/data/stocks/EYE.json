@@ -1,0 +1,209 @@
+{
+  "ticker": "EYE",
+  "name": "National Vision Holdings",
+  "sector": "Consumer Discretionary",
+  "industry": "Specialty Stores",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 1523017819.9872494,
+  "current_price": 19.01,
+  "rank": 1426,
+  "composite_score": 35.13,
+  "pillar_scores": {
+    "quality": 30.93,
+    "value": 49.91,
+    "growth": 41.45,
+    "momentum": 7.0,
+    "health": 30.57,
+    "profitability": 34.86,
+    "technical": 68.48,
+    "risk": 17.94,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2021044000.0,
+    "net_income": 46595000.0,
+    "total_assets": 2020483000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 898006000.0,
+    "cash": 67898000.0,
+    "operating_cash_flow": 175759000.0,
+    "capex": 70184000.0,
+    "free_cash_flow": 105575000.0,
+    "eps_basic": 0.5815893609650377,
+    "eps_diluted": 0.5815893609650377,
+    "shares_outstanding": 80116665.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 1523017819.9872494,
+    "pe_ratio_ttm": 32.68629294961368,
+    "goodwill": 700976000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 10.814690802418225,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 33.45077692542878,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 21.23360867518768,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 7.17060271129681,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 16.02414973880295,
+    "max": 33.45077692542878,
+    "low": 7.17060271129681,
+    "high": 33.45077692542878,
+    "mos_pct": -18.633441017145266,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 16.02414973880295,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "interest_expense",
+      "dividends_paid"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 48,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-14"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
+  "has_history": true,
+  "tangible_book_value": 2.3671105131497923,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Consumer Discretionary median (n=196)",
+    "values": {
+      "Quality": 48.37,
+      "Value": 50.09,
+      "Growth": 49.11,
+      "Momentum": 46.22,
+      "Health": 42.59,
+      "Profitability": 50.26,
+      "Technical": 52.96,
+      "Risk": 40.51
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": 1.237108988310841,
+  "recommendation": "neutral",
+  "loss_chance_pct": 54.95848627998881,
+  "price_change_1d_pct": 1.1978,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 35.13,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 43.49,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 16,
+    "latest_filing_date": "2026-06-22",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 2.3645652830189373e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 41306056.55498759,
+  "security_type": "Common stock"
+}

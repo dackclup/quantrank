@@ -1,0 +1,203 @@
+{
+  "ticker": "WERN",
+  "name": "Werner Enterprises",
+  "sector": "Industrials",
+  "industry": "Cargo Ground Transportation",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 2614424551.7406464,
+  "current_price": 43.61,
+  "rank": 1046,
+  "composite_score": 45.21,
+  "pillar_scores": {
+    "quality": 19.22,
+    "value": 58.1,
+    "growth": 40.98,
+    "momentum": 83.8,
+    "health": 45.5,
+    "profitability": 31.05,
+    "technical": 58.62,
+    "risk": 49.0,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 3070892000.0,
+    "net_income": -8563000.0,
+    "total_assets": 3256196000.0,
+    "total_liabilities": 1875581000.0,
+    "stockholders_equity": 1352701000.0,
+    "cash": 61544000.0,
+    "operating_cash_flow": 235910000.0,
+    "capex": 279639000.0,
+    "free_cash_flow": -43729000.0,
+    "eps_basic": -0.14283542241745492,
+    "eps_diluted": -0.14283542241745492,
+    "shares_outstanding": 59950115.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2614424551.7406464,
+    "pe_ratio_ttm": null,
+    "goodwill": 138576000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 17.249347914280218,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 74.41633923547607,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 79.43051201123134,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 74.41633923547607,
+    "max": 79.43051201123134,
+    "low": 17.249347914280218,
+    "high": 79.43051201123134,
+    "mos_pct": 41.39727772370504,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 74.41633923547607,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 54,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-08"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 19.165217614678472,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Industrials median (n=255)",
+    "values": {
+      "Quality": 49.41,
+      "Value": 49.87,
+      "Growth": 50.2,
+      "Momentum": 53.2,
+      "Health": 58.03,
+      "Profitability": 49.41,
+      "Technical": 50.53,
+      "Risk": 51.02
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": 0.22791093996854234,
+  "recommendation": "neutral",
+  "loss_chance_pct": 27.903481440428816,
+  "price_change_1d_pct": -0.2744,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 45.21,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.53,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-06-16",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 9.27904139423101e-09,
+  "dividend_yield_pct": 1.28,
+  "pays_dividend": true,
+  "payout_ratio": 1.3658999,
+  "average_dollar_volume": 44425946.420682274,
+  "security_type": "Common stock"
+}

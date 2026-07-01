@@ -1,0 +1,203 @@
+{
+  "ticker": "PLUS",
+  "name": "ePlus, Inc.",
+  "sector": "Information Technology",
+  "industry": "Technology Distributors",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 2176596340.8791275,
+  "current_price": 83.23,
+  "rank": 136,
+  "composite_score": 62.74,
+  "pillar_scores": {
+    "quality": 57.54,
+    "value": 82.36,
+    "growth": 51.46,
+    "momentum": 47.7,
+    "health": 86.54,
+    "profitability": 49.65,
+    "technical": 49.43,
+    "risk": 46.87,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2442549000.0,
+    "net_income": 132636000.0,
+    "total_assets": 1800952000.0,
+    "total_liabilities": 731982000.0,
+    "stockholders_equity": 1068970000.0,
+    "cash": 410769000.0,
+    "operating_cash_flow": 232633000.0,
+    "capex": null,
+    "free_cash_flow": null,
+    "eps_basic": 5.071815346703869,
+    "eps_diluted": 5.071815346703869,
+    "shares_outstanding": 26151583.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2176596340.8791275,
+    "pe_ratio_ttm": 16.410298417316017,
+    "goodwill": 202880000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 55.63209855028622,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 205.29517660862834,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 257.909645844604,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 205.48677999576006,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 32.323511024920876,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 205.29517660862834,
+    "max": 257.909645844604,
+    "low": 32.323511024920876,
+    "high": 257.909645844604,
+    "mos_pct": 59.45837367840257,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 205.29517660862834,
+    "methods_excluded_from_median": []
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "capex",
+      "free_cash_flow",
+      "research_and_development",
+      "short_term_debt"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 34,
+    "latest_period_end": "2026-05-25",
+    "latest_filed_date": "2026-05-28"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 30.772362804959073,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Information Technology median (n=189)",
+    "values": {
+      "Quality": 50.66,
+      "Value": 49.29,
+      "Growth": 50.93,
+      "Momentum": 73.57,
+      "Health": 64.98,
+      "Profitability": 49.56,
+      "Technical": 49.35,
+      "Risk": 42.32
+    }
+  },
+  "beneish_m_score": -2.4892194439413475,
+  "dechow_f_score": 0.5761178188832838,
+  "recommendation": "bullish",
+  "loss_chance_pct": 12.821554314140304,
+  "price_change_1d_pct": 3.4042,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 62.74,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 57.29,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp600",
+  "index_memberships": [
+    "sp600"
+  ],
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 6,
+    "latest_filing_date": "2026-06-17",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.009214597463106867,
+  "dividend_yield_pct": 1.34,
+  "pays_dividend": true,
+  "payout_ratio": 0.1592,
+  "average_dollar_volume": 23136931.8558993,
+  "security_type": "Common stock"
+}

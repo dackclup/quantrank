@@ -1,0 +1,215 @@
+{
+  "ticker": "LNTH",
+  "name": "Lantheus Holdings",
+  "sector": "Health Care",
+  "industry": "Health Care Supplies",
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 7222868896.0303955,
+  "current_price": 110.94,
+  "rank": 24,
+  "composite_score": 68.91,
+  "pillar_scores": {
+    "quality": 77.83,
+    "value": 42.41,
+    "growth": 78.79,
+    "momentum": 82.83,
+    "health": 79.4,
+    "profitability": 74.31,
+    "technical": 70.36,
+    "risk": 44.2,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 1546178000.0,
+    "net_income": 279031000.0,
+    "total_assets": 2346587000.0,
+    "total_liabilities": 1134299000.0,
+    "stockholders_equity": 1212288000.0,
+    "cash": 498582000.0,
+    "operating_cash_flow": 407705000.0,
+    "capex": 45345000.0,
+    "free_cash_flow": 362360000.0,
+    "eps_basic": 4.285790074113199,
+    "eps_diluted": 4.285790074113199,
+    "shares_outstanding": 65106082.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 7222868896.0303955,
+    "pe_ratio_ttm": 25.88554281076438,
+    "goodwill": 239399000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 19.53884065452387,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 113.7081200044111,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 31.885918678228727,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 9.25875853091641,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 25.7123796663763,
+    "max": 113.7081200044111,
+    "low": 9.25875853091641,
+    "high": 113.7081200044111,
+    "mos_pct": -331.46532480025894,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 72.79701934131991,
+    "methods_excluded_from_median": [
+      "graham",
+      "rim"
+    ]
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "depreciation_and_amortization",
+      "dividends_paid",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 55,
+    "latest_period_end": "2026-05-01",
+    "latest_filed_date": "2026-05-07"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "accruals_momentum_high"
+  ],
+  "has_history": true,
+  "tangible_book_value": 4.098403586933706,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Health Care median (n=168)",
+    "values": {
+      "Quality": 50.07,
+      "Value": 51.74,
+      "Growth": 49.11,
+      "Momentum": 44.49,
+      "Health": 56.61,
+      "Profitability": 48.51,
+      "Technical": 56.08,
+      "Risk": 42.29
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": 0.4306041482605914,
+  "recommendation": "cautious",
+  "loss_chance_pct": 53.546232916296795,
+  "price_change_1d_pct": 1.2411,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 68.41,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 60.38,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-06-03",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 5.759905122138628e-08,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 110746752.35178426,
+  "security_type": "Common stock"
+}

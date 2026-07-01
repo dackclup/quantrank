@@ -1,0 +1,217 @@
+{
+  "ticker": "KD",
+  "name": "Kyndryl",
+  "sector": "Information Technology",
+  "industry": "IT Consulting & Other Services",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 2487274889.0413475,
+  "current_price": 11.31,
+  "rank": 1031,
+  "composite_score": 45.46,
+  "pillar_scores": {
+    "quality": 52.25,
+    "value": 69.97,
+    "growth": 46.16,
+    "momentum": 7.33,
+    "health": 38.88,
+    "profitability": 37.04,
+    "technical": 38.81,
+    "risk": 13.83,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 15092000000.0,
+    "net_income": 198000000.0,
+    "total_assets": 12551000000.0,
+    "total_liabilities": 11259000000.0,
+    "stockholders_equity": 1175000000.0,
+    "cash": 2623000000.0,
+    "operating_cash_flow": 948000000.0,
+    "capex": 798000000.0,
+    "free_cash_flow": 150000000.0,
+    "eps_basic": 0.900334777209613,
+    "eps_diluted": 0.900334777209613,
+    "shares_outstanding": 219918196.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 2487274889.0413475,
+    "pe_ratio_ttm": 12.561994389097714,
+    "goodwill": 786000000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 1.7912190685426002,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 9.734277933443863,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 6.510772333117811,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 6.510772333117811,
+    "max": 9.734277933443863,
+    "low": 1.7912190685426002,
+    "high": 9.734277933443863,
+    "mos_pct": -73.71211648865449,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 8.122525133280837,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "gross_profit",
+      "operating_income",
+      "dividends_paid",
+      "inventory",
+      "ebitda"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 33,
+    "latest_period_end": "2026-05-22",
+    "latest_filed_date": "2026-05-29"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "restatement_history",
+    "late_filing_notification",
+    "accruals_momentum_high",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.0185605560351176,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Information Technology median (n=189)",
+    "values": {
+      "Quality": 50.66,
+      "Value": 49.29,
+      "Growth": 50.93,
+      "Momentum": 73.57,
+      "Health": 64.98,
+      "Profitability": 49.56,
+      "Technical": 49.35,
+      "Risk": 42.32
+    }
+  },
+  "beneish_m_score": -2.833033705960261,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 66.26919607630742,
+  "price_change_1d_pct": 0.8021,
+  "manipulation_index": 10.0,
+  "composite_score_adjusted": 44.46,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": true,
+    "restatement_high_confidence": false,
+    "late_filing_notification": true,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.66,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 6,
+    "latest_filing_date": "2026-06-05",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.002723825576538385,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 50638110.00437403,
+  "security_type": "Common stock"
+}

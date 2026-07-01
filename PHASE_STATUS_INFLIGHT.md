@@ -9744,3 +9744,46 @@ weights ignored for weighting.
 the same design tokens.
 
 ---
+
+## PR #259-R5 — orchestrator refactor R5 (Step-4b Tier-2 event-defense fetch loop) (in flight, 2026-07-01)
+
+**Branch**: `claude/orchestrator-refactor-r5`. Fifth slice of the 7-PR incremental refactor of `run_weekly_compute` (issue #259).
+
+**Scope (PURE CODE MOVE — byte-identical output)**: R5 extracts the Step-4b Tier-2 event-defense fetch block (the `# Step 4b — Tier-2 event defenses` comment through the outer `except Exception as _t2_outer_e:` that leaves `tier2_wall_clock_seconds = None`, ~lines 1602-1644 in pre-R5 main.py) out of `run_weekly_compute` into a new `compute/orchestrator/tier2.py` module, as a pure function `fetch_all_tier2(df, *, max_workers=config.EDGAR_MAX_WORKERS) -> tuple[dict[str, Tier2Result], float | None]`. This is the simplest R-slice so far — no inner module-scope closure to relocate (unlike R4's `_fetch_one_form4` smell #9 fix), no `FORM4_FETCH_SKIP`-style env-var skip path, and no auxiliary counter beyond the wall-clock. Same `ThreadPoolExecutor`, same per-future try/except skip-on-raise, same `round(monotonic, 1)` wall-clock, same outer-except `None` semantics, same log text/levels — output byte-identical.
+
+**Name-collision handling** (flagged in the task spec, verified clean): there is a PRE-EXISTING `compute/scoring/tier2.py` (the Tier-2 events orchestrator — defines `fetch_tier2_for_ticker`, `Tier2Result`, `tier2_events_dict`, `coverage_pct`). The new `compute/orchestrator/tier2.py` is a DIFFERENT, unrelated package that only IMPORTS `fetch_tier2_for_ticker` + `Tier2Result` FROM `compute.scoring.tier2` — `compute/scoring/tier2.py` itself was NOT touched. Both modules' docstrings cross-reference each other explicitly to prevent future confusion.
+
+**What moved (verbatim, not altered)**: the entire Step-4b block — the `"Fetching Tier-2 event defenses…"` info log (`len(df)` call sits OUTSIDE the try block, matching the original exactly), `tier2_results: dict[str, Tier2Result] = {}` init, the `_tier2_wc_start = time.monotonic()` marker, `tier2_wall_clock_seconds: float | None = None` init, the `try:`/`ThreadPoolExecutor(max_workers=…)`/`as_completed` loop with the identical per-future `try: tier2_results[ticker] = fut.result() except Exception as e: logger.warning("Tier-2 task raised for %s: %s", ticker, e)` skip-and-continue arm, the `round(time.monotonic() - _tier2_wc_start, 1)` end marker, and the outer `except Exception as _t2_outer_e: logger.warning("Tier-2 loop failed entirely: %s", _t2_outer_e)` (leaves `tier2_wall_clock_seconds = None`). Returns `(tier2_results, tier2_wall_clock_seconds)`.
+
+**What STAYED in `compute.main`** (per the task's explicit instruction — these read the returned values, they don't belong in the fetch-loop module): `tier2_coverage = tier2_coverage_pct_calc(tier2_results)` (the `coverage_pct` alias import) + the `"Tier-2 coverage: …(gc=%d, nr=%d, ac=%d, wall_clock=%ss)"` summary log that derives gc/nr/ac counts from `tier2_results.values()` + everything downstream (the `non_reliance_by_ticker` injection into `compute_risk_flags`, the per-ticker `tier2_events_dict(tier2_results.get(ticker))` display-payload construction in the Step-8 per-ticker loop, and the `Metadata(tier2_coverage_pct=…, tier2_enabled=_EIGHT_K_DEFENSES_ENABLED, tier2_wall_clock_seconds=…)` constructor fields) — all read the identical `tier2_results` dict + `tier2_wall_clock_seconds` float returned by the new function, unchanged.
+
+**`compute/main.py` changes**:
+- Added `from compute.orchestrator.tier2 import fetch_all_tier2` import (alongside the existing `form4`/`fundamentals`/`prices` orchestrator imports).
+- Removed `Tier2Result` and `fetch_tier2_for_ticker` from the `compute.scoring.tier2` import block — grepped first to confirm neither has any OTHER caller in `main.py` after the extraction (both had exactly one use-site, inside the extracted block, at the type-hint `tier2_results: dict[str, Tier2Result] = {}` and the `ex.submit(fetch_tier2_for_ticker, r["ticker"])` call respectively). KEPT `_EIGHT_K_DEFENSES_ENABLED` (still used at the `Metadata(tier2_enabled=…)` constructor call) + `tier2_events_dict` (still used in the Step-8 per-ticker loop) + `coverage_pct as tier2_coverage_pct_calc` (still used immediately after the new call, in the coverage-summary block that stayed in main).
+- Replaced the ~43-line block with a 2-line call: `tier2_results, tier2_wall_clock_seconds = fetch_all_tier2(df)` followed immediately by the unchanged `tier2_coverage = tier2_coverage_pct_calc(tier2_results)` + summary log.
+- `time`, `ThreadPoolExecutor`, `as_completed` top-level imports in `compute.main` are UNCHANGED (still used by other blocks — Step-1 prices already moved to R2 but a Step-3 annual-history loop and the OSAP/alpha158/cross-source wall-clock blocks all still reference them directly).
+
+**Byte-identical guarantee**: happy-path returns `({ticker: Tier2Result, …}, round(wall_clock, 1))`; a per-future raise skips that ticker (warned, not added to the dict) while all others are still collected and the wall-clock still populates; the outer-except leaves `tier2_results` as accumulated so far (possibly empty) and `tier2_wall_clock_seconds = None`. All three paths verified against the pre-R5 inline block via `git show HEAD:compute/main.py` diff comparison before writing the new module.
+
+**`compute/scoring/**`**: NOT modified (esp. `compute/scoring/tier2.py` — the name-collision sibling — untouched). **`compute/ingest/**`**, **`compute/valuation/**`**: not modified. **Schema triple**: untouched — `schemas.py` / `types.ts` / `schema-snapshot.json` not modified; `schema_check` reports in-sync (no drift, as expected for a pure code move).
+
+**Existing tests updated** (2 files, patch-target migration only — mirrors the R2/R3 precedent of updating `patch("compute.main.<fn>", …)` → `patch("compute.orchestrator.<module>.<fn>", …)` once a fetch function moves module):
+- `tests/test_main.py::test_step4_sectors_dict_passed_to_compute_risk_flags` — `patch("compute.main.fetch_tier2_for_ticker", …)` → `patch("compute.orchestrator.tier2.fetch_tier2_for_ticker", …)`. `Tier2Result` import in this file already came from `compute.scoring.tier2` (unaffected).
+- `tests/test_output/test_wall_clock_schema.py::test_tier2_wall_clock_populated_on_success` — same patch-target migration + docstring updated to reference `compute.orchestrator.tier2.fetch_all_tier2` instead of inline `main.py` line numbers. `Tier2Result` import in this file already came from `compute.scoring.tier2` (unaffected).
+- Grepped the full `tests/` tree for any other `compute.main.fetch_tier2_for_ticker` reference — none found; these were the only two.
+
+**Tests**: 11 new offline unit tests in `tests/test_orchestrator/test_tier2.py` — cover `fetch_all_tier2` happy-path (A1-A4: 2-tuple return, ticker-keyed results unaltered, wall-clock float, all-tickers-present), per-ticker failure handling (B1-B3: raising ticker skipped while others still collected, no propagation, warning logged), outer-except path (C1-C2: empty results + `None` wall-clock, warning logged), and `max_workers` plumbing (D1-D2: defaults to `config.EDGAR_MAX_WORKERS`, custom value honoured — verified via a `ThreadPoolExecutor` constructor-arg spy). Test count: headline = 11, Files-list = 11 (both equal `grep -c "^def test_"` on the file — reconciled per the R4 lesson on R2/R3's count-drift).
+
+**Files**:
+- `compute/orchestrator/tier2.py` (new)
+- `compute/main.py` (Tier-2 block replaced with 2-line call, imports updated: `Tier2Result` + `fetch_tier2_for_ticker` removed from the `compute.scoring.tier2` import, `fetch_all_tier2` added from the new orchestrator module)
+- `tests/test_orchestrator/test_tier2.py` (new — 11 tests)
+- `tests/test_main.py` (1 patch-target line updated)
+- `tests/test_output/test_wall_clock_schema.py` (1 patch-target line + docstring updated)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verification ladder** (all green): `ruff check compute/ tests/` PASS · `python -m compute.output.schema_check` in-sync (no drift) · `python -m pytest tests/test_orchestrator/ -m "not network" -q` → 88 passed (77 pre-existing R1-R4 + 11 new) · `python -c "import compute.main"` clean (no dangling refs) · targeted re-run of `tests/test_main.py` + `tests/test_output/test_wall_clock_schema.py` (the two files with patch-target edits) → 66 passed.
+
+**R6-R7 follow**: valuation inputs (R6) · output accumulators (R7). Each PR remains byte-identical.
+
+---

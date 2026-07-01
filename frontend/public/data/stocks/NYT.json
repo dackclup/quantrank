@@ -1,0 +1,210 @@
+{
+  "ticker": "NYT",
+  "name": "New York Times Company",
+  "sector": "Communication Services",
+  "industry": "Publishing",
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 11455656569.526672,
+  "current_price": 69.98,
+  "rank": 622,
+  "composite_score": 52.11,
+  "pillar_scores": {
+    "quality": 68.63,
+    "value": 26.14,
+    "growth": 64.22,
+    "momentum": 43.58,
+    "health": 51.41,
+    "profitability": 71.57,
+    "technical": 35.17,
+    "risk": 67.01,
+    "sentiment": null,
+    "ml": null
+  },
+  "raw_metrics": {
+    "revenue": 2901244000.0,
+    "net_income": 427289000.0,
+    "total_assets": 2859351000.0,
+    "total_liabilities": null,
+    "stockholders_equity": 2001481000.0,
+    "cash": 186733000.0,
+    "operating_cash_flow": 577637000.0,
+    "capex": 35470000.0,
+    "free_cash_flow": 542167000.0,
+    "eps_basic": 2.6102114246269066,
+    "eps_diluted": 2.6102114246269066,
+    "shares_outstanding": 163699000.0,
+    "shares_outstanding_listed_class": null,
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 11455656569.526672,
+    "pe_ratio_ttm": 26.810090055036927,
+    "goodwill": 407788000.0
+  },
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 18.17885023957684,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 54.65604717055343,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 30.757965823901085,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 42.64349281481702,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 10.74591512637416,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 26.324555981068997,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 28.541260902485043,
+    "max": 54.65604717055343,
+    "low": 10.74591512637416,
+    "high": 54.65604717055343,
+    "mos_pct": -145.18889896290653,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 30.757965823901085,
+    "methods_excluded_from_median": [
+      "rim"
+    ]
+  },
+  "top5_factors": [],
+  "score_history": [],
+  "data_quality": {
+    "missing_metrics": [
+      "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
+      "interest_expense"
+    ],
+    "imputed_metrics": [],
+    "filing_lag_days": 56,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-06"
+  },
+  "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 8.376947934929351,
+  "tier2_events": {
+    "going_concern_disclosure": false,
+    "non_reliance_filing": false,
+    "auditor_change": false,
+    "latest_8k_filing_date": null,
+    "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Communication Services median (n=51)",
+    "values": {
+      "Quality": 50.98,
+      "Value": 52.61,
+      "Growth": 51.47,
+      "Momentum": 36.67,
+      "Health": 35.7,
+      "Profitability": 51.63,
+      "Technical": 48.4,
+      "Risk": 41.08
+    }
+  },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
+  "recommendation": "neutral",
+  "loss_chance_pct": 59.942830311219026,
+  "price_change_1d_pct": -0.9483,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 52.11,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": false,
+    "beneish_manipulation_veto": false,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "restatement_high_confidence": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": false,
+    "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
+    "beneish_high": false,
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
+  },
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.98,
+  "entered_top5": false,
+  "exited_top5": false,
+  "index_membership": "sp400",
+  "index_memberships": [
+    "sp400",
+    "russell1000"
+  ],
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 17,
+    "latest_filing_date": "2026-06-05",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.01121755359430978,
+  "dividend_yield_pct": 1.3,
+  "pays_dividend": true,
+  "payout_ratio": 0.4077,
+  "average_dollar_volume": 133226805.17751032,
+  "security_type": "Common stock"
+}

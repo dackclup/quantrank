@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 16707520210.887634,
   "current_price": 283.81,
-  "rank": 460,
-  "composite_score": 38.02,
+  "rank": 1333,
+  "composite_score": 38.8,
   "pillar_scores": {
-    "quality": 26.23,
-    "value": 20.16,
-    "growth": 23.77,
-    "momentum": 88.84,
-    "health": 57.17,
-    "profitability": 40.33,
-    "technical": 48.75,
-    "risk": 40.34,
+    "quality": 34.71,
+    "value": 15.36,
+    "growth": 23.82,
+    "momentum": 86.72,
+    "health": 51.94,
+    "profitability": 45.82,
+    "technical": 46.16,
+    "risk": 43.2,
     "sentiment": null,
     "ml": null
   },
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 97.15133326952314,
+        "value": 128.29581968192613,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 327.9369070805043,
+        "value": 277.4893505608289,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 141.06767765409865,
+        "value": 195.29609340555785,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 97.15133326952314,
-    "max": 327.9369070805043,
+    "median": 128.29581968192613,
+    "max": 277.4893505608289,
     "low": 27.225994935707984,
-    "high": 327.9369070805043,
-    "mos_pct": -192.1318606829932,
+    "high": 277.4893505608289,
+    "mos_pct": -121.21531181781438,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 141.06767765409865,
+    "median_trimmed": 195.29609340555785,
     "methods_excluded_from_median": [
       "graham",
       "dcf"
@@ -101,7 +101,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 56,
+    "filing_lag_days": 57,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -121,25 +121,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=81)",
+    "label": "Industrials median (n=255)",
     "values": {
-      "Quality": 48.15,
-      "Value": 49.59,
-      "Growth": 49.07,
-      "Momentum": 55.13,
-      "Health": 55.02,
-      "Profitability": 48.56,
-      "Technical": 49.35,
-      "Risk": 53.82
+      "Quality": 49.41,
+      "Value": 49.87,
+      "Growth": 50.2,
+      "Momentum": 53.2,
+      "Health": 58.03,
+      "Profitability": 49.41,
+      "Technical": 50.53,
+      "Risk": 51.02
     }
   },
   "beneish_m_score": -2.861008263576969,
   "dechow_f_score": null,
-  "recommendation": "cautious",
-  "loss_chance_pct": 68.99202213778631,
+  "recommendation": "neutral",
+  "loss_chance_pct": 68.5983478999678,
   "price_change_1d_pct": 1.8628,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.02,
+  "composite_score_adjusted": 38.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.93,
+  "osap_blended_score": 45.33,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
