@@ -1138,6 +1138,28 @@ def run_weekly_compute() -> int:
     #   stays in place — sp600 small-caps sit below the Russell 1000 cutoff.
     #   CRON DEFAULT: sp1500 (Slice 7 flip, 2026-06-20). Revert: change
     #   || 'sp1500' → || 'sp900' in compute-rankings.yml + precache-edgar.yml.
+    # QR_UNIVERSE=broad_investable_us (Phase 9.3, DISPATCH-ONLY — manual
+    #   workflow_dispatch, NEVER the scheduled cron default which stays sp1500):
+    #   loads the ~6,883-name Broad Investable US candidate pool (SEC
+    #   company_tickers.json + exchange/name/format exclusions, HARD NAMING:
+    #   never "Russell 3000"), shaped into a universe frame with
+    #   sector="Unknown" / cohort="broad" (candidates_to_universe_frame).
+    #   Step 1 (below) fetches prices for the FULL candidate pool — NOT a
+    #   restricted sp1500 dict — then the investability screen
+    #   (price >= $5 AND trailing-30d ADV >= $5M, same floors as the
+    #   Phase-9.1 probe) reduces to the ~3,545 survivors BEFORE fundamentals
+    #   (Step 2) so EDGAR load stays bounded. Non-survivors are REMOVED from
+    #   the peer set entirely (P1-G3 methodology gate) — they do NOT get a
+    #   low_liquidity annotate (that annotate is for names that ARE ranked
+    #   but trade thinly; broad-universe sub-floor names are never ranked).
+    #   Metadata.universe emits "BROAD_INVESTABLE_US".
+    #   P1-G4 RE-NORMALIZATION DISCLOSURE (methodology-REQUIRED): broadening
+    #   the scored universe RE-BASES every cross-sectional percentile and
+    #   sector median the 8-pillar composite uses — a score on this path is
+    #   NOT comparable to the same ticker's sp1500-cron score. See
+    #   ``compute/ingest/broad_universe.py`` module docstring + CLAUDE.md
+    #   §Gotchas for the full caveat. Frontend disclaimer is Phase 9.4 scope
+    #   (not this PR).
     logger.info("Loading universe… (QR_UNIVERSE=%s)", config.QR_UNIVERSE)
     _pilot_cohort_sizes: dict[str, int] | None = None
     _pilot_midcap_coverage_pct: float | None = None
@@ -1249,6 +1271,33 @@ def run_weekly_compute() -> int:
             "[sp1500] Slice 7 (cron-default): ranked universe: %d (sp500+sp400+sp600 — full S&P 1500)",
             len(universe),
         )
+    elif config.QR_UNIVERSE == "broad_investable_us":
+        # Phase 9.3 — Broad Investable US RANKED path (DISPATCH-ONLY; the
+        # scheduled cron never sets QR_UNIVERSE=broad_investable_us — it
+        # stays sp1500).  Loads the ~6,883-name candidate pool and shapes it
+        # into a universe frame; Step 1 below fetches prices for the FULL
+        # candidate pool (not a restricted sp1500 dict), then the
+        # investability screen reduces to survivors before fundamentals.
+        # See the module docstring in compute/ingest/broad_universe.py for
+        # the full P1-G3 (pre-scoring membership gate) + P1-G4
+        # (re-normalization disclosure) methodology detail.
+        from compute.ingest.broad_universe import (  # noqa: PLC0415
+            candidates_to_universe_frame,
+            fetch_broad_universe_candidates,
+        )
+
+        logger.info(
+            "[broad-investable-us] Fetching Broad Investable US candidate pool "
+            "(Phase 9.3 RANKED path, dispatch-only)…"
+        )
+        _broad_candidates_df = fetch_broad_universe_candidates()
+        universe = candidates_to_universe_frame(_broad_candidates_df)
+        logger.info(
+            "[broad-investable-us] Candidate universe size: %d (pre-screen — "
+            "the investability screen after Step 1 prices reduces this to "
+            "survivors before fundamentals)",
+            len(universe),
+        )
     else:
         # Default sp500 path — byte-identical scoring to pre-PR-3a.
         # Add cohort column so _fetch_prices_one.row.get("cohort") is always defined.
@@ -1358,6 +1407,90 @@ def run_weekly_compute() -> int:
             "[broad-universe-probe] Outer block failed (non-fatal): %s", _broad_exc
         )
         # _broad_universe_* variables remain at their None-initialized defaults.
+
+    # Phase 9.3 — Broad Investable US RANKED path: reduce the scored frame to
+    # investability-screen survivors BEFORE fundamentals (Step 2).  DISPATCH-
+    # ONLY (config.QR_UNIVERSE == "broad_investable_us"); every other path is
+    # a no-op here (the block body never executes) so sp1500/sp900/sp500
+    # scoring is UNCHANGED.
+    #
+    # Sequencing: at this point ``prices_by_ticker`` holds prices for the
+    # FULL candidate pool (Step 1 fetched prices for ``universe``, which on
+    # this path is the unscreened ~6,883-name candidate frame — see the
+    # universe-selector seam above).  ``select_broad_universe_survivors``
+    # applies the identical price >= $5 / trailing-30d ADV >= $5M floors the
+    # Phase 9.1 probe uses (just run above, on this same prices_by_ticker
+    # dict — so its ``broad_universe_screened_count`` etc. now describe the
+    # TRUE broad-universe screen, not the sp1500-restricted lower bound the
+    # probe-only Phase 9.1 slice produced).
+    #
+    # ``df`` / ``rows`` / ``prices_by_ticker`` / ``adv_by_ticker`` are all
+    # reduced to the survivor set so Step 2 (fundamentals), the tier2 8-K
+    # loop, the Form-4 loop, and every per-ticker scoring step downstream
+    # run ONLY on the ~3,545 survivors — never on all ~6,883 candidates.
+    # This bounds EDGAR load to roughly the same order of magnitude as the
+    # existing sp1500 path (perf-engineer confirmed no EDGAR_MAX_WORKERS /
+    # tenacity-policy change is needed for this scale).
+    #
+    # P1-G3 (methodology-scientist ratified): non-survivors are REMOVED from
+    # the peer set entirely — they are NOT emitted as a ``low_liquidity``
+    # annotate (that annotate is for names that ARE ranked but trade
+    # thinly; a name that never enters the scored frame has nothing to
+    # annotate).
+    #
+    # Failure handling: UNLIKE most graceful-degradation blocks in this
+    # module (which fall through to a smaller/None result and keep going),
+    # a failure HERE aborts the run (``return 0``, mirroring the
+    # ``assert_sec_api_usable`` / ``MIN_VALID_TICKERS`` abort idiom already
+    # used elsewhere in this function) rather than falling through to
+    # scoring the FULL unscreened ~6,883-name candidate frame.  Silently
+    # scoring the unscreened frame would double the fundamentals-fetch
+    # volume this PR is explicitly bounding (task requirement: "control
+    # runtime") and risks tripping the CI timeout budget — on THIS
+    # dispatch-only path an abort-and-preserve-last-good-data is the safer
+    # failure mode than an unbounded-runtime partial run.
+    if config.QR_UNIVERSE == "broad_investable_us":
+        try:
+            from compute.ingest.broad_universe import (  # noqa: PLC0415
+                select_broad_universe_survivors,
+            )
+
+            _broad_survivor_tickers = select_broad_universe_survivors(
+                candidates=universe,
+                prices_by_ticker=prices_by_ticker,
+            )
+        except Exception as _broad_screen_exc:  # noqa: BLE001
+            logger.error(
+                "[broad-investable-us] Investability-screen computation failed — "
+                "aborting without writing JSON to preserve last-good data "
+                "(scoring the full unscreened candidate frame is not a safe "
+                "fallback on this runtime-bounded path): %s",
+                _broad_screen_exc,
+            )
+            return 0
+
+        _pre_screen_count = len(df)
+        df = df[df["ticker"].isin(_broad_survivor_tickers)].copy()
+        rows = [r for r in rows if r["ticker"] in _broad_survivor_tickers]
+        prices_by_ticker = {
+            t: p for t, p in prices_by_ticker.items() if t in _broad_survivor_tickers
+        }
+        adv_by_ticker = {
+            t: a for t, a in adv_by_ticker.items() if t in _broad_survivor_tickers
+        }
+        logger.info(
+            "[broad-investable-us] Investability screen: %d / %d priced candidates "
+            "survived (price >= $5 AND trailing-30d ADV >= $5M) — fundamentals "
+            "(Step 2) will run ONLY on survivors",
+            len(df), _pre_screen_count,
+        )
+        if len(df) < config.MIN_VALID_TICKERS:
+            logger.error(
+                "[broad-investable-us] Only %d survivors — below minimum of %d. "
+                "Aborting without writing JSON to preserve last-good data.",
+                len(df), config.MIN_VALID_TICKERS,
+            )
+            return 0
 
     # Step 2 — fundamentals snapshot in parallel.
     logger.info(
@@ -3704,11 +3837,22 @@ def run_weekly_compute() -> int:
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
         # Universe label: "SP1500" when QR_UNIVERSE=sp1500 (Slice 7 — sp600 is
         # NOW ranked; the probe-only "SP1500-probe" label from Slice 2 is retired).
-        # "SP900" on the sp900 path; config.UNIVERSE ("SP500") on the sp500 path.
+        # "SP900" on the sp900 path; "BROAD_INVESTABLE_US" on the Phase 9.3
+        # dispatch-only ranked path (P1-G4: NOT comparable to sp1500-cron
+        # scores — see the universe-selector seam docstring); config.UNIVERSE
+        # ("SP500") on the default sp500 path.
         universe=(
             "SP1500"
             if config.QR_UNIVERSE == "sp1500"
-            else ("SP900" if config.QR_UNIVERSE == "sp900" else config.UNIVERSE)
+            else (
+                "SP900"
+                if config.QR_UNIVERSE == "sp900"
+                else (
+                    "BROAD_INVESTABLE_US"
+                    if config.QR_UNIVERSE == "broad_investable_us"
+                    else config.UNIVERSE
+                )
+            )
         ),
         universe_size=len(summaries),
         # Phase 7.0 PR-1 — benchmark index export coverage (Rule 18 observability).

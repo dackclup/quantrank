@@ -1169,10 +1169,23 @@ class Metadata(BaseModel):
     #   ran.  Defense layer is UNCHANGED at 36.
     #
     # Lifecycle:
-    #   Phase 9.1 (this PR) — emits the six Metadata fields, no ranked
-    #   names added (SP1500 cron unchanged).
-    #   Phase 9.3 (future PR) — pending ≥ 1 cron confirming plausible
-    #   values, broadens the ranked universe to the full screen-passing set.
+    #   Phase 9.1 — emits the six Metadata fields as a diagnostic PROBE that
+    #   runs unconditionally after Step 1 on EVERY universe path (sp500 /
+    #   sp900 / sp1500 / broad_investable_us alike); no ranked names added
+    #   on the sp500/sp900/sp1500 paths.
+    #   Phase 9.3 (this schema version) — adds the DISPATCH-ONLY
+    #   ``QR_UNIVERSE=broad_investable_us`` RANKED path (never the scheduled
+    #   cron default, which stays sp1500).  No new field was added: on the
+    #   ranked path these SAME six fields are populated from the FULL
+    #   broad-universe prices dict (not the sp1500-restricted lower bound),
+    #   so ``broad_universe_screened_count`` / ``_coverage_pct`` describe
+    #   the TRUE broad-universe screen result rather than a lower-bound
+    #   estimate.  Distinguish "probe-only, still an sp1500 cron" from
+    #   "the ranked broad-universe run" via ``Metadata.universe`` — the
+    #   probe fields populate under `universe == "SP1500"` (diagnostic-only,
+    #   lower-bound semantics) vs `universe == "BROAD_INVESTABLE_US"` (the
+    #   ranked run — these fields plus ``universe_size`` now describe the
+    #   actual scored population).
     #
     # ``broad_universe_raw_count`` — total entries returned by
     # ``fetch_broad_universe_candidates`` BEFORE any screen (i.e. after
@@ -1180,23 +1193,29 @@ class Metadata(BaseModel):
     # Gives a baseline for how many names survive the static exclusions.
     # None when ``QR_SKIP_BROAD_UNIVERSE=1`` or when the probe errors.
     broad_universe_raw_count: int | None = None
-    # ``broad_universe_candidate_count`` — same as ``raw_count`` on the
-    # 9.1 Probe slice (the exchange + name/format exclusions are applied
-    # inside the fetcher, so the DataFrame handed to the screen already
-    # reflects them).  Kept as a separate field so a future slice can
-    # expose pre-/post-exclusion counts independently.
-    # None when the probe is skipped or errors.
+    # ``broad_universe_candidate_count`` — same as ``raw_count`` (the
+    # exchange + name/format exclusions are applied inside the fetcher, so
+    # the DataFrame handed to the screen already reflects them).  Kept as a
+    # separate field so a future slice can expose pre-/post-exclusion
+    # counts independently.  None when the probe is skipped or errors.
     broad_universe_candidate_count: int | None = None
     # ``broad_universe_screened_count`` — number of tickers in the
     # candidate pool that pass BOTH the price >= $5 AND ADV >= $5M floors
     # using the Step-1 prices already in memory.
     #
-    # NOTE: The 9.1 Probe reuses only the SP1500 prices already fetched in
-    # Step 1.  Tickers outside the SP1500 that have no pre-fetched prices
-    # are counted in ``coverage_pct`` but NOT counted towards the screened
-    # pool here.  The absolute value will therefore be depressed relative
-    # to the true screen-passing size until Phase 9.3 fetches prices for
-    # the full candidate pool.  Use this field as a lower-bound estimate.
+    # On an sp1500 cron (``universe == "SP1500"``), the probe reuses only
+    # the SP1500 prices already fetched in Step 1 — tickers outside the
+    # SP1500 that have no pre-fetched prices are counted in
+    # ``coverage_pct`` but NOT counted towards the screened pool here, so
+    # the value is a LOWER-BOUND estimate of the true broad-universe
+    # screen-passing size.
+    #
+    # On the Phase 9.3 ranked path (``universe == "BROAD_INVESTABLE_US"``),
+    # Step 1 fetches prices for the FULL candidate pool, so this field
+    # holds the TRUE screened count — it should closely track
+    # ``Metadata.universe_size`` (the same screen drives both the probe's
+    # count here and the actual scored population on that path; any
+    # divergence would indicate a graceful-degradation fallback fired).
     # None when the probe is skipped or the screen cannot run.
     broad_universe_screened_count: int | None = None
     # ``broad_universe_price_fail_pct`` — percentage of candidates (with
@@ -1211,11 +1230,14 @@ class Metadata(BaseModel):
     # None when the probe is skipped, or when no candidates had prices.
     broad_universe_adv_fail_pct: float | None = None
     # ``broad_universe_coverage_pct`` — percentage of the candidate pool
-    # for which the Step-1 prices dict held any price data.  On the 9.1
-    # Probe, this will equal roughly SP1500 ∩ Broad-universe / Broad-
-    # universe total — expected ~40–45% (SP1500 ~1504 / Broad ~3545).
-    # Acts as a Rule-18 gate: once Phase 9.3 extends the price-fetch to
-    # the full candidate pool, this should approach ~95%+.
+    # for which the Step-1 prices dict held any price data.  On an sp1500
+    # cron (probe-only), this equals roughly SP1500 ∩ Broad-universe /
+    # Broad-universe total — expected ~40–45% (SP1500 ~1504 / Broad
+    # ~6883-candidate / ~3545-screened).  On the Phase 9.3 ranked path
+    # (``universe == "BROAD_INVESTABLE_US"``), Step 1 fetches prices for
+    # the full candidate pool, so this should approach ~95%+ (coverage
+    # gaps are delisted/renamed tickers or transient price-fetch
+    # failures, not a restricted price dict).
     # None when the probe is skipped or the candidate pool is empty.
     broad_universe_coverage_pct: float | None = None
 
