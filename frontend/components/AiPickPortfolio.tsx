@@ -825,10 +825,6 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         <HoldingsTimeline
           timeline={timeline}
           count={displayCount}
-          dates={dates}
-          portfolioNav={adaptive.net}
-          benchmarkNav={benchmark[bench] ?? []}
-          benchmarkLabel={benchLabel}
         />
       )}
 
@@ -1218,10 +1214,6 @@ function AiPickSliderBranch({ data }: { data: AiPickData }) {
         <HoldingsTimeline
           timeline={timeline}
           count={count}
-          dates={dates}
-          portfolioNav={netByCount[countKey] ?? []}
-          benchmarkNav={benchmark[bench] ?? []}
-          benchmarkLabel={benchLabel}
         />
       )}
 
