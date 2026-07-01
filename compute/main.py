@@ -94,6 +94,7 @@ from compute.orchestrator import ComputeState
 from compute.orchestrator.form4 import fetch_all_form4
 from compute.orchestrator.fundamentals import fetch_all_fundamentals
 from compute.orchestrator.prices import fetch_all_prices
+from compute.orchestrator.tier2 import fetch_all_tier2
 from compute.output.schemas import (
     DataQuality,
     Metadata,
@@ -181,8 +182,6 @@ from compute.scoring.risk_overlay import (
 from compute.scoring.sanity import compute_mos_trailing_ic
 from compute.scoring.tier2 import (
     _EIGHT_K_DEFENSES_ENABLED,
-    Tier2Result,
-    fetch_tier2_for_ticker,
     tier2_events_dict,
 )
 from compute.scoring.tier2 import (
@@ -1599,40 +1598,13 @@ def run_weekly_compute() -> int:
     pillar_df = compute_all_pillars(inputs)
     pillar_df, imputed_by_ticker = neutralize_pillar_scores(pillar_df)
 
-    # Step 4b — Tier-2 event defenses (PR 3d). Fetched in parallel ahead of
-    # risk-flag computation so the resulting non_reliance veto can be
-    # injected into compute_risk_flags (avoiding a duplicate EDGAR fetch
-    # inside the risk-overlay layer). See compute/scoring/tier2.py.
-    #
-    # fetch_tier2_for_ticker catches every per-defense exception
-    # internally, so a failed fetch surfaces as a Tier2Result with
-    # fetch_succeeded=False (not an exception). The defensive try/except
-    # below covers only the unexpected case (e.g., interpreter-level
-    # bug); a missing-ticker entry in tier2_results just means no veto
-    # and an empty tier2_events display dict for that ticker.
-    logger.info("Fetching Tier-2 event defenses (10-K + 8-K) for %d tickers…", len(df))
-    tier2_results: dict[str, Tier2Result] = {}
-    # Issue #287 PR A — wall-clock start marker.
-    _tier2_wc_start = time.monotonic()
-    tier2_wall_clock_seconds: float | None = None
-    try:
-        with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
-            futures = {
-                ex.submit(fetch_tier2_for_ticker, r["ticker"]): r["ticker"]
-                for _, r in df.iterrows()
-            }
-            for fut in as_completed(futures):
-                ticker = futures[fut]
-                try:
-                    tier2_results[ticker] = fut.result()
-                except Exception as e:  # noqa: BLE001
-                    logger.warning("Tier-2 task raised for %s: %s", ticker, e)
-                    # Skip this ticker — downstream uses .get() with safe defaults.
-        tier2_wall_clock_seconds = round(time.monotonic() - _tier2_wc_start, 1)
-    except Exception as _t2_outer_e:  # noqa: BLE001
-        # Defensive: an interpreter-level failure before the end marker
-        # keeps `tier2_wall_clock_seconds = None` (skipped semantic).
-        logger.warning("Tier-2 loop failed entirely: %s", _t2_outer_e)
+    # Step 4b — Tier-2 event defenses (PR 3d; loop extracted to
+    # compute.orchestrator.tier2 as part of PR #259-R5). Fetched in
+    # parallel ahead of risk-flag computation so the resulting
+    # non_reliance veto can be injected into compute_risk_flags (avoiding
+    # a duplicate EDGAR fetch inside the risk-overlay layer). See
+    # compute/scoring/tier2.py.
+    tier2_results, tier2_wall_clock_seconds = fetch_all_tier2(df)
     tier2_coverage = tier2_coverage_pct_calc(tier2_results)
     logger.info(
         "Tier-2 coverage: %s%% (gc=%d, nr=%d, ac=%d, wall_clock=%ss)",
