@@ -9692,49 +9692,55 @@ Also absorbs **spaghetti smell #9** (issue #259): `_fetch_one_form4` was a closu
 
 ---
 
-## feat(frontend): per-quarter index comparison in Rotation history drawer (in flight, 2026-06-30)
+## feat(frontend): Rotation-history drawer basket total-return header (in flight, 2026-06-30→07-01)
 
-Adds a per-quarter book-vs-benchmark summary block at the top of each
-`QuarterDrawer` in the Rotation history component (`HoldingsTimeline.tsx`),
-mirroring `AnnualReturnsTable`'s portfolio-vs-index comparison but per
-quarterly rebalance leg instead of per calendar year. Each expanded drawer
-now shows that quarter's AI-book leg return vs the benchmark index return +
-the outperformance Δ (in pp). The newest (top) drawer's leg is only partially
-elapsed (last rebalance → as-of) and is marked with an amber "in progress"
-badge + a one-line footnote, analogous to `AnnualReturnsTable`'s `*`
-partial-year marker.
+Adds a **"Total return"** summary at the top of each `QuarterDrawer` in the
+Rotation history component (`HoldingsTimeline.tsx`). The figure is the
+**weight-weighted blend of the SAME per-holding "Your return" (MWR) values
+shown in the drawer rows below** — `total = Σ w_i·mwr_i / Σ w_i` (equal-weight
+mean fallback when weights are absent). Because it is derived directly from the
+percentages beside it, the header can never disagree with the rows — resolving
+the owner-reported "the top number doesn't match the rows" confusion.
 
-**Frontend-only — NO schema change, NO compute change.** All figures are
-derived in the browser from the NAV series the home page already ships
-(`adaptive.net` / `netByCount[countKey]` for the book, `benchmark[bench]` for
-the index), reactive to the existing benchmark picker — the same series each
-branch already passes to `AnnualReturnsTable`. Two pure helpers were extracted
-and exported from `HoldingsTimeline.tsx` for testability:
-`snapToTradingDayIndex` (binary search mirroring the `bisect_left` semantics of
-`compute/validation/basket_rule_validation.py::_snap_to_trading_day`) and
-`computeLegReturns` (per-leg `(navEnd / navStart − 1)` over the chronological
-timeline, using the last finite NAV index as the final partial leg's end
-boundary). The block reuses `pctStr` / `toneClass` from
+Design history (this branch): an earlier iteration showed a per-quarter
+**book-vs-benchmark** NAV leg return + outperformance Δ. That was rejected by
+the owner because the per-holding "Your return" column is a **since-purchase
+lifetime MWR** (e.g. KLAC +711% since 2020-08-14, confirmed from
+`backtest_pit.json` + `compute/portfolio/position_returns.py`), so a
+single-quarter book figure sitting next to multi-year lifetime rows read as
+inconsistent. The final design instead aggregates those same lifetime rows, and
+the caption states the blend is a **since-purchase basket return** (not a
+single-quarter or time-weighted portfolio return). The index comparison was
+dropped per owner decision.
+
+**Frontend-only — NO schema change, NO compute change.** The value is computed
+in the browser from each entry's own `mwrByTicker` + `weightByTicker` (the data
+the rows already use); NO NAV plumbing. One pure helper is exported from
+`HoldingsTimeline.tsx` for testability: `weightedBasketReturn(held,
+mwrByTicker, weightByTicker)`. The block reuses `pctStr` / `toneClass` from
 `@/lib/portfolio-format`, soft-palette tone (emerald positive / rose negative),
-`tabular-nums` on every numeric, and paired `dark:` variants.
+`tabular-nums`, and paired `dark:` variants.
 
-Graceful absence: empty/mismatched NAV or dates → block does not render
-(pre-regen / partial artifacts safe); single null boundary → that figure
-renders `—`; both null → block omitted.
+Graceful absence: `mwrByTicker` undefined / no held ticker with a finite MWR →
+block omitted; rows with a null MWR are skipped from both sums; non-positive
+weights ignored for weighting.
 
 **Schema triple**: untouched. **Defense layer**: unchanged at 38.
 
 **Files**:
-- `frontend/components/HoldingsTimeline.tsx` (new `LegReturnSummary` block + 2
-  exported pure helpers; 4 new optional props on `HoldingsTimeline`,
-  `benchmarkLabel` on `QuarterDrawer`)
-- `frontend/components/AiPickPortfolio.tsx` (data wiring at both call sites —
-  adaptive + slider branches)
-- `frontend/components/HoldingsTimeline.test.ts` (+13 tests for the helpers)
+- `frontend/components/HoldingsTimeline.tsx` (new `BasketReturnSummary` block +
+  exported pure helper `weightedBasketReturn`; removed the interim
+  `computeLegReturns`/`snapToTradingDayIndex` NAV helpers + the
+  `dates`/`portfolioNav` props)
+- `frontend/components/AiPickPortfolio.tsx` (drop the interim `dates`/
+  `portfolioNav` wiring at both call sites — adaptive + slider branches)
+- `frontend/components/HoldingsTimeline.test.ts` (9 `weightedBasketReturn` tests
+  replacing the interim leg-return tests)
 - `PHASE_STATUS_INFLIGHT.md` (this entry)
 
-**Verify**: `tsc --noEmit` PASS · `next build` PASS (509 pages) ·
-`vitest run` 338/338 PASS. Pending `frontend-design-reviewer` visual/a11y
-audit before Draft → Ready.
+**Verify**: `tsc --noEmit` PASS · `next build` PASS · `vitest run` 329/329 PASS.
+`frontend-design-reviewer` audited the interim block (all PASS bar an
+`amber-700→800` ring + badge-padding nit, both applied); the final block reuses
+the same design tokens.
 
 ---
