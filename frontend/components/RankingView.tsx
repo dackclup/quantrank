@@ -430,10 +430,11 @@ export function RankingView({
           has no rows in this build artefact). */}
       {cohortRows.length === 0 ? (
         <div className="rounded border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
-          <p className="font-medium">Compute pending.</p>
+          <p className="font-medium">No rankings yet</p>
           <p className="mt-1">
-            The first compute hasn&rsquo;t run yet. Scheduled cron: Mon-Fri
-            22:00 UTC (after US market close), or trigger manually from the GitHub Actions tab.
+            The first compute run hasn&rsquo;t finished. It runs Mon–Fri at
+            22:00 UTC, after US markets close — or trigger it from the GitHub
+            Actions tab.
           </p>
         </div>
       ) : (
