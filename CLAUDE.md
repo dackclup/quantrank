@@ -395,6 +395,35 @@ command needs user authorization. Pattern not in the table → walk the
 - **Ask before authorizing a destructive command** an agent proposes
   (e.g. `release-captain`'s `git tag` + push); honor "skip the X
   agent" / "I'll handle it manually" — note the skip and proceed.
+- **Merge-gate double-check (user says "merge" / "ตัว merge เลย").**
+  **Auto-fire, no confirmation** — the user issues only the bare "merge"
+  command; the orchestrator (not the user) spawns both passes itself,
+  batched in one message, before flipping Draft → Ready and merging.
+  Both are read-only spawns, so no per-spawn authorization is needed
+  (only the merge itself is the user-authorized act).
+  **Pass (1) — correctness (mandatory):** `agent-output-verifier` (opus)
+  re-derives the git-checkable merge-readiness facts from ground truth —
+  head on the live `origin/main` tip / rebase-clean (NOT a stale
+  `base.sha`) · diff == PR description — while the **orchestrator**
+  confirms required CI is green via `mcp__github__*` (the verifier has no
+  GitHub MCP tools per its `tools:` frontmatter, so CI-green is an
+  orchestrator-side check paired with the verifier's git pass — the
+  "sub-agent `tools:` frontmatter does NOT auto-inherit MCP tools"
+  gotcha). This is the mandatory gate (the `agent-output-verifier`
+  routing row + `verify-claims.sh` hook already name it).
+  **Pass (2) — copy (conditional):** IF the PR diff touches user-facing
+  copy — frontend strings / labels / `aria-label` / empty-state / toast,
+  or README / release-notes / changelog / announcement prose — ALSO spawn
+  the matching **Fable 5** seat to review THAT copy *as it appears in the
+  diff*: `ux-microcopy-writer` for in-product strings,
+  `narrative-copywriter` for long-form (a final tone / wording /
+  readability pass on what actually ships). The Fable seat reviews its
+  OWN domain (the copy), NOT correctness — it never replaces pass (1). A
+  pure compute / CI / test / schema PR has no user-facing-copy surface →
+  pass (2) is N/A, skip it (don't force a no-op Fable spawn). Precedent:
+  the merge of #685 ran pass (1) and caught the #681 rebase blocker
+  (branch behind `origin/main` while GitHub still reported
+  `mergeable_state: clean` against a stale base).
 - **Parallel at gate moments, not per edit** — batch-mates at the push
   gate spawn in one message. **De-duplicate**: same agent + same
   unchanged diff within ~10 min → point at the prior result.

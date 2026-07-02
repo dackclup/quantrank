@@ -104,6 +104,12 @@ gate stays with `docs-reviewer` / `agent-output-verifier`
 (long-form) or `frontend-builder` / `frontend-design-reviewer`
 (microcopy). The orchestrator routes a task here only when the job is
 *the prose itself*; a factual or code task never lands on a fable seat.
+One extension of "the prose itself" (2026-07-02): besides *drafting*,
+both seats are also spawned at the **merge gate** to *review* any
+user-facing copy already present in a PR diff (a final tone / wording
+pass in their own domain, still read-only) — never correctness, which is
+`agent-output-verifier`'s parallel pass. See CLAUDE.md §Auto-routing →
+Spawn discipline "Merge-gate double-check".
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|

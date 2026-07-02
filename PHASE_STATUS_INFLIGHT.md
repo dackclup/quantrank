@@ -10321,3 +10321,21 @@ Model split UNCHANGED (6 opus / 21 sonnet / 2 fable); agent count UNCHANGED at 2
 **Verification**: `python tools/check_agent_hook_consistency.py` → `OK — 29 agents (6 opus / 21 sonnet / 2 fable; 29 ultracode / 0 max / 0 high) · 4 hooks · 9 flows` (exit 0); `ruff check tools/check_agent_hook_consistency.py` → All checks passed; `grep -h '^effort:' .claude/agents/*.md | sort | uniq -c` → `29 effort: ultracode`. Docs + frontmatter + one tooling file, no compute/schema/frontend surface.
 
 ---
+
+## PR (branch `claude/fable-5-subagent-test-665lii`) — merge-gate Fable copy-review convention (in flight, 2026-07-02)
+
+Docs-only routing-convention addition (no code / schema / workflow surface). Adds a standing **merge-gate double-check** rule to CLAUDE.md §Auto-routing → Spawn discipline, mirrored in AGENTS.md §subagent-catalog (Tier 6 Fable paragraph).
+
+**Rule**: when the user commands a merge, the orchestrator runs TWO batched passes before flipping Draft → Ready and merging:
+1. `agent-output-verifier` (opus) re-derives the git-checkable merge-readiness facts from ground truth (head on the live `origin/main` tip / rebase-clean — NOT a stale `base.sha` · diff == PR description), while the ORCHESTRATOR confirms required CI is green via `mcp__github__*` (the verifier has no GitHub MCP tools per its `tools:` frontmatter — CI-green is an orchestrator-side check paired with the verifier's git pass). This is the mandatory correctness gate — already enforced by the `agent-output-verifier` routing row + `verify-claims.sh` hook; the new bullet just names the merge case explicitly.
+2. **IF** the PR diff touches user-facing copy (frontend strings / labels / `aria-label` / empty-state / toast, or README / release-notes / changelog / announcement prose), **ALSO** spawn the matching **Fable 5** seat to review THAT copy as it appears in the diff — `ux-microcopy-writer` (in-product strings) or `narrative-copywriter` (long-form) — a final tone / wording / readability pass in its OWN domain. It NEVER replaces pass (1); a pure compute / CI / test / schema PR has no copy surface → pass (2) is skipped (no forced no-op).
+
+**Rationale**: the owner asked for the Fable seats to review the work in a PR before every user-commanded merge. Scoped to the Fable seats' actual domain (copy/tone), keeping correctness with the opus verifier — Fable 5 is the creative-writing model, not a fact-checker (the model-split rationale in `.claude/agents/README.md` §Model split). Precedent this session: the #685 merge ran pass (1) and `agent-output-verifier` caught the #681 rebase blocker (branch behind `origin/main` while GitHub still reported `mergeable_state: clean` against a stale base).
+
+Schema triple UNTOUCHED. Defense layer UNCHANGED at 38. No routing-count / agent-count change (no new agent; a behavioral convention on the existing 29). `tools/check_agent_hook_consistency.py` unaffected (no agent/hook/flow count delta).
+
+**Files**: `CLAUDE.md` (§Auto-routing → Spawn discipline, new "Merge-gate double-check" bullet), `AGENTS.md` (Tier 6 Fable paragraph, mirrored), `.claude/agents/ux-microcopy-writer.md` + `.claude/agents/narrative-copywriter.md` + `.claude/agents/README.md` (merge-gate review-mode carve-out so the "prose itself only" scope language accounts for the new review-of-existing-copy trigger — docs-reviewer Finding A), `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification**: docs-only — `ruff check .` unaffected; `python tools/check_agent_hook_consistency.py` expected green (no count change). No frontend/compute/schema surface.
+
+---

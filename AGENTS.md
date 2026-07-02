@@ -884,6 +884,23 @@ when the deliverable is the prose itself; both are read-only proposers
 figures, and the accuracy gate / wiring stays with `docs-reviewer` /
 `agent-output-verifier` / `frontend-builder`).
 
+**Merge-gate double-check (2026-07-02):** when the user issues the bare
+"merge" command, the orchestrator AUTO-FIRES (no confirmation — the user
+never invokes these seats manually) TWO batched read-only passes before
+flipping Draft → Ready and merging. **Pass (1), mandatory:**
+`agent-output-verifier` (opus) re-derives the git-checkable facts from
+ground truth (head on the live `origin/main` tip / rebase-clean, not a
+stale `base.sha` · diff == PR description), while the **orchestrator**
+confirms required CI is green via `mcp__github__*` (the verifier has no
+GitHub MCP tools, so CI-green is an orchestrator-side check paired with
+the verifier's git pass). **Pass (2), conditional:** IF the PR diff
+touches user-facing copy, the matching Fable seat also reviews THAT copy
+as it appears in the diff (`ux-microcopy-writer` for in-product strings,
+`narrative-copywriter` for long-form) — a final tone / wording pass in
+its own domain, never a substitute for pass (1). A pure compute / CI /
+test / schema PR has no copy surface, so pass (2) is skipped (no forced
+no-op). Full rule: CLAUDE.md §Auto-routing → Spawn discipline.
+
 Every subagent ends its report with a parseable `HANDOFF · status=… ·
 next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:…>`
 line so the Opus 4.8 main session composes the next step *dynamically*

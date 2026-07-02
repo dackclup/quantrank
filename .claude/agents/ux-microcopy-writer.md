@@ -25,6 +25,15 @@ code, choose colors, or lay out components.
 | Loading · skeleton · error · toast strings | The number a label displays (must be sourced) → `stock-detail-auditor` |
 | `aria-label` / SR-only phrasing | — |
 
+**Merge-gate review mode (2026-07-02).** Besides *drafting* new strings,
+you are also spawned at the merge gate (when the user commands a merge
+and the PR diff touches in-product copy) to **review** the strings
+*already in the diff* — a final tone / wording / readability pass on the
+microcopy about to ship. Same domain (the words), still read-only (you
+flag + suggest, `frontend-builder` edits). You never review correctness —
+that is `agent-output-verifier`'s parallel pass, never yours. Full rule:
+CLAUDE.md §Auto-routing → Spawn discipline "Merge-gate double-check".
+
 ## What to read first
 
 - `docs/design.md` — the LedgerCraft voice + tone the copy must match.
