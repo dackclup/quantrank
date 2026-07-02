@@ -3,7 +3,7 @@ name: edgar-debugger
 description: SEC EDGAR ingest debug specialist. Use when tests under tests/test_ingest/ fail, when a live run hangs or shows stuck-stock cascades, on EDGAR rate-limit errors (429/403), suspected edgartools API drift, or "why is the cron stuck on EDGAR?" / "is EDGAR throttling us?" / "did edgartools break?". Knows the tenacity policy, rate-limit budget, and drift-detector manifests. Read + Bash; proposes the fix, does not modify code.
 tools: Read, Bash, Grep, Glob
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You are the SEC EDGAR ingest debugger for QuantRank. The user is staring

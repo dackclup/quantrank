@@ -54,7 +54,9 @@ README = AGENTS_DIR / "README.md"
 NON_AGENT_FILES = {"README.md", "TEAMS.md"}
 
 VALID_MODELS = {"opus", "sonnet", "fable"}
-VALID_EFFORTS = {"max", "high"}
+# `ultracode` is the top effort tier (above `max`); `max`/`high` remain valid
+# for any deliberate lower-effort carve-out.
+VALID_EFFORTS = {"ultracode", "max", "high"}
 
 
 @dataclass
@@ -63,6 +65,7 @@ class GroundTruth:
     n_opus: int
     n_sonnet: int
     n_fable: int
+    n_effort_ultracode: int
     n_effort_max: int
     n_effort_high: int
     n_hooks: int
@@ -103,7 +106,7 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
     errors: list[str] = []
 
     agents = _agent_files()
-    n_opus = n_sonnet = n_fable = n_max = n_high = 0
+    n_opus = n_sonnet = n_fable = n_ultracode = n_max = n_high = 0
     for path in agents:
         fm = _parse_frontmatter(path.read_text())
         model = fm.get("model", "")
@@ -119,7 +122,9 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
                 f".claude/agents/{path.name}: model '{model}' not in "
                 f"{sorted(VALID_MODELS)} (frontmatter malformed?)"
             )
-        if effort == "max":
+        if effort == "ultracode":
+            n_ultracode += 1
+        elif effort == "max":
             n_max += 1
         elif effort == "high":
             n_high += 1
@@ -144,10 +149,10 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
             f"model split inconsistent: {n_opus} opus + {n_sonnet} sonnet "
             f"+ {n_fable} fable != {n_agents} agents"
         )
-    if n_max + n_high != n_agents:
+    if n_ultracode + n_max + n_high != n_agents:
         errors.append(
-            f"effort split inconsistent: {n_max} max + {n_high} high "
-            f"!= {n_agents} agents"
+            f"effort split inconsistent: {n_ultracode} ultracode + {n_max} max "
+            f"+ {n_high} high != {n_agents} agents"
         )
     if tier_sum != n_agents:
         errors.append(
@@ -180,6 +185,7 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
         n_opus=n_opus,
         n_sonnet=n_sonnet,
         n_fable=n_fable,
+        n_effort_ultracode=n_ultracode,
         n_effort_max=n_max,
         n_effort_high=n_high,
         n_hooks=n_hooks,
@@ -221,9 +227,9 @@ ANCHORS: tuple[Anchor, ...] = (
     Anchor("CONTEXT.md", r"21 sonnet \+ (\d+) fable", "n_fable", "CONTEXT fable split"),
     Anchor("PHASE_STATUS.md", r"21 sonnet \+ (\d+) fable", "n_fable", "PHASE_STATUS fable split"),
     Anchor(".claude/agents/README.md", r"21 sonnet / (\d+) fable", "n_fable", "README fable split"),
-    # --- effort max ---
-    Anchor(".claude/agents/README.md", r"Effort: (\d+) of \d+ agents run at", "n_effort_max", "README effort heading"),
-    Anchor(".claude/agents/README.md", r"(\d+) of \d+ agents run at the top", "n_effort_max", "README authoring effort"),
+    # --- effort ultracode (top tier) ---
+    Anchor(".claude/agents/README.md", r"Effort: (\d+) of \d+ agents run at", "n_effort_ultracode", "README effort heading"),
+    Anchor(".claude/agents/README.md", r"(\d+) of \d+ agents run at the top", "n_effort_ultracode", "README authoring effort"),
     # --- hook count ---
     Anchor("CLAUDE.md", r"(\d+) bash hooks wired by", "n_hooks", "CLAUDE hook count"),
     Anchor("CONTEXT.md", r"(\d+) hook scripts", "n_hooks", "CONTEXT hook count"),
@@ -273,7 +279,8 @@ def main() -> int:
             f"\nGround truth: {truth.n_agents} agents "
             f"({truth.n_opus} opus / {truth.n_sonnet} sonnet / "
             f"{truth.n_fable} fable; "
-            f"{truth.n_effort_max} max / {truth.n_effort_high} high) · "
+            f"{truth.n_effort_ultracode} ultracode / {truth.n_effort_max} max "
+            f"/ {truth.n_effort_high} high) · "
             f"{truth.n_hooks} hooks · {truth.n_flows} flows · "
             f"tier sum {truth.tier_sum}.\n"
             "Update the stale doc number(s) above to match reality, or fix "
@@ -286,7 +293,8 @@ def main() -> int:
         f"Agent/hook consistency OK — {truth.n_agents} agents "
         f"({truth.n_opus} opus / {truth.n_sonnet} sonnet / "
         f"{truth.n_fable} fable; "
-        f"{truth.n_effort_max} max / {truth.n_effort_high} high) · "
+        f"{truth.n_effort_ultracode} ultracode / {truth.n_effort_max} max "
+        f"/ {truth.n_effort_high} high) · "
         f"{truth.n_hooks} hooks · {truth.n_flows} flows."
     )
     return 0
