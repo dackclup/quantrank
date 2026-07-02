@@ -10279,6 +10279,31 @@ has exercised this diff yet. Gated on quantrank-reviewer +
 defense-layer-auditor (byte-identical claim) + schema-sentinel (triple
 lockstep) per the task brief.
 
+**UPDATE 2026-07-02**: MERGED as **#684** (squash `684e36ec`). Reviews
+cleared: quantrank-reviewer READY-TO-PUSH · schema-sentinel PASS ·
+defense-layer-auditor PASS (obs-first, defense UNCHANGED at 38) ·
+agent-output-verifier TRUSTWORTHY (zero test regression — the 21 sandbox
+failures are pre-existing `openassetpricing`-missing gaps, identical on
+parent `bf216aa2`).
+
+---
+
+## Housekeeping note — 2026-07-02 Mode C reconciliation
+
+This file is append-only — entries above are never deleted. The following
+entries were "in flight" as of the last Mode C and are now MERGED on `main`
+(reconciled into CLAUDE.md / SKILL.md / PHASE_STATUS.md / WORKFLOW.md /
+AGENTS.md by the same pass that appended this note):
+
+- **#665** (squash `ca3b1f06`) — Phase 9.1 Broad Investable US universe coverage probe (schema 0.10.41→0.10.42-phase9pilot)
+- **#652** (squash `135bf9f7`) — restatement_history weight demotion, issue #16 (schema 0.10.42→0.10.43-phase9pilot)
+- **#684** (squash `684e36ec`) — broad_investable_us ADV-floor decoupling + shadow floor-sweep, PR-1 of 2 (schema 0.10.43→0.10.44-phase9pilot)
+
+Also merged, no schema bump: #667 (Phase 9.1b cron-wiring), #668 (Phase 9.3
+runtime pre-req), #676 (Phase 9.3 RANKED-path wiring), #681 (gate-C1 precache
+split), plus the #259 orchestrator-extraction series (R1-R7b) and assorted
+frontend/agent-roster PRs.
+
 ---
 
 ## PR (branch `claude/subagents-ultracode-effort-sm1bew`) — raise all subagents to `effort: ultracode` (in flight, 2026-07-02)
