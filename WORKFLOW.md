@@ -42,8 +42,8 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-26: schema `0.10.40-phase8pilot` (#628 `eb20b005` — Proposal E, legendary-fund program complete; chain 0.10.33→0.10.40 across #601/#604/#607/#615/#617/#624/#628; defense UNCHANGED at 36). Cron ranks full S&P 1500 (~1504) by default. v2.0.0-phase8 SHIPPED 2026-06-23; legendary-fund program byte-identical at launch, live-flip gates target Q3 2026-08-19. Full lineage: SKILL.md §schema-version. Defense
-layer **36 declared** = 9 vetoes + 27 annotates; release tag
+schema PR; this prose stays stable). As of 2026-07-02: schema `0.10.44-phase9pilot` (#684 `684e36ec` — `broad_investable_us` ADV-floor decoupling + shadow floor-sweep PR-1; chain since v2.0: 0.10.41→0.10.42 (#665, Phase 9.1 probe)→0.10.43 (#652, `restatement_history` weight demotion)→0.10.44 (#684); defense UNCHANGED at 38). Cron ranks full S&P 1500 (~1504) by default; `broad_investable_us` is a SEPARATE dispatch-only RANKED path (Phase 9.3, #676) — NOT the cron default. v2.0.0-phase8 SHIPPED 2026-06-23; all post-tag work byte-identical at launch, live-flip gates target Q3 2026-08-19. Full lineage: SKILL.md §schema-version. Defense
+layer **38 declared** = 10 vetoes + 28 annotates; release tag
 [`v2.0.0-phase8`](https://github.com/dackclup/quantrank/releases/tag/v2.0.0-phase8);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
