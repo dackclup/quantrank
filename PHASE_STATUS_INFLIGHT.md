@@ -10005,3 +10005,18 @@ Schema triple UNTOUCHED; defense layer UNCHANGED at 38.
 **Verification ladder** (green — run independently by both `frontend-builder` and the orchestrator): `cd frontend && npx --no -- tsc --noEmit` → PASS (clean exit) · `cd frontend && npx --no -- next build` → PASS (1509 static pages generated, exit 0). No compute/schema surface touched, so pytest/schema_check rungs not applicable. Spot-check surface: the search box + empty-state on `/` and `/ranking` (search a nonexistent ticker to trigger both sub-line branches).
 
 ---
+
+## PR (branch `claude/subagents-ultracode-effort-sm1bew`) — uniform `effort: max` across all subagents (in flight, 2026-07-02)
+
+Agent-config meta-infrastructure chore: lift the two remaining `effort: high` carve-outs so **all 29 subagents run at `effort: max`** (uniform top-effort roster). The user's request ("subagents ทั้งหมดใช้ effort ultracode") resolved to `max` — `ultracode` is the multi-agent-orchestration keyword, not a valid per-agent `effort` tier (valid ladder: `low`/`medium`/`high`/`xhigh`/`max`), and `max` is the top valid tier; 27 of 29 were already there.
+
+- **Frontmatter flips**: `.claude/agents/schema-sentinel.md` + `.claude/agents/vercel-preview-auditor.md` `effort: high` → `effort: max`. These were the deliberate deterministic-script-runner token-economy carve-outs (set 2026-06-03); this PR overrides that carve-out per explicit owner request. No capability regression — `high` only saved thinking tokens on their fixed procedures.
+- **Doc lockstep** (effort-split prose, all re-derived to `29 max / 0 high`): `.claude/agents/README.md` (§Effort heading + carve-out paragraph + §Authoring #3 — the two guard-anchored `29 of 29` phrases), `CLAUDE.md` §Spawn discipline effort policy, `AGENTS.md` layout line, `PHASE_STATUS.md` §Current-state subagent-inventory row.
+
+Model split UNCHANGED (6 opus / 21 sonnet / 2 fable); agent count UNCHANGED at 29; hooks/flows/tiers UNTOUCHED; schema triple UNTOUCHED; no code/scoring/frontend surface; defense layer UNCHANGED at 38. The consistency guard still accepts `high` for a future pure-mechanical-lookup agent (`VALID_EFFORTS = {"max","high"}`) — this PR just leaves zero at `high` today.
+
+**Files**: `.claude/agents/schema-sentinel.md`, `.claude/agents/vercel-preview-auditor.md`, `.claude/agents/README.md`, `CLAUDE.md`, `AGENTS.md`, `PHASE_STATUS.md`, `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification**: `python tools/check_agent_hook_consistency.py` → `OK — 29 agents (6 opus / 21 sonnet / 2 fable; 29 max / 0 high) · 4 hooks · 9 flows` (exit 0); `grep -h '^effort:' .claude/agents/*.md | sort | uniq -c` → `29 effort: max`. Docs-only + frontmatter, no compute/schema/frontend surface, so pytest/schema_check/tsc rungs not applicable.
+
+---

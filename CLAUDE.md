@@ -386,10 +386,11 @@ command needs user authorization. Pattern not in the table → walk the
   sonnet tokens drain the under-utilized Sonnet-only pool. Keep the
   6-opus / 21-sonnet / 2-fable model split (the two Fable 5 seats are
   the Tier-6 read-only prose agents `narrative-copywriter` +
-  `ux-microcopy-writer`) and the effort policy (27 of 29 at
-  `effort: max`; the two deterministic script-runners `schema-sentinel`
-  + `vercel-preview-auditor` at `high`; a new agent gets `max` unless
-  it's a pure mechanical lookup). Rationale + authoring conventions:
+  `ux-microcopy-writer`) and the effort policy (all 29 at
+  `effort: max` since 2026-07-02 — the former `schema-sentinel` +
+  `vercel-preview-auditor` `high` script-runner carve-outs were lifted;
+  a new agent gets `max` unless it's a pure mechanical lookup, then
+  `high` with a note — the guard accepts both). Rationale + authoring conventions:
   README §Model split + §Authoring #3.
 - **Ask before authorizing a destructive command** an agent proposes
   (e.g. `release-captain`'s `git tag` + push); honor "skip the X
