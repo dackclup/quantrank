@@ -10116,3 +10116,22 @@ Verified offline via a synthetic end-to-end smoke test (all 4 `run_stage_*()` fu
 **Gate**: DRAFT PR only — do NOT merge, do NOT flip Ready. Per the task brief: security-reviewer (new workflow — esp. the unpinned `download-artifact` SHA) + `quantrank-reviewer` + `agent-output-verifier` (re-derive the "default weekday sp1500 cron path is byte-identical" claim for the `history.py` extraction) gate this next, then the gate-C2 calibration dry-run.
 
 ---
+
+## PR (branch `claude/fable-5-subagent-test-665lii`) — compute-pending panel copy + defense-count doc truing (in flight, 2026-07-02)
+
+Two small, unrelated-but-batched follow-ups from the Fable-5 microcopy session (the first PR, #683 "warmer ranking-table empty-state", already merged as `cc2711f7`). Branch was reset off the post-merge `origin/main` tip per the "merged PR is finished — restart the branch" rule.
+
+**Item 1 — frontend microcopy (`frontend/components/RankingView.tsx`)**: reword the compute-pending empty-cohort fallback panel (shown before the first compute cron populates `rankings.json`, or when a filtered cohort has zero rows). Drafted by the `ux-microcopy-writer` (Fable 5) seat, wired by `frontend-builder`, owner-approved **neutral** tone.
+- Headline: `Compute pending.` → `No rankings yet`
+- Sub-line: `The first compute hasn't run yet. Scheduled cron: Mon-Fri 22:00 UTC (after US market close), or trigger manually from the GitHub Actions tab.` → `The first compute run hasn't finished. It runs Mon–Fri at 22:00 UTC, after US markets close — or trigger it from the GitHub Actions tab.`
+- Text-only: amber panel styling / layout / icon / dark pairs (`dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200`) untouched. Apostrophe kept as the file's existing `&rsquo;` HTML entity (`react/no-unescaped-entities`, enforced by `next build`). GitHub Actions pointer retained (only a maintainer on a fresh deploy sees this state).
+
+**Item 2 — defense-count doc truing (`CLAUDE.md:510`)**: one-line fix, `defense layer UNCHANGED at 36` → `... at 38`, in the `broad_universe_*` (Phase 9.1) §Gotchas entry. Ground truth: `compute/warehouse/flag_registry.py` = 10 `KNOWN_RISK_FLAGS` (vetoes) + 28 `KNOWN_VALUATION_WARNINGS` (annotates) = **38**; the CI ratchet `tools/check_defense_layer_counts.py` passes (exit 0, "38 declared boolean flags"). This line was category-A drift (a present-tense authoritative assertion), NOT historical record: `docs-reviewer` traced it to PR #665 (`ca3b1f06`), which introduced this exact sentence ~46h **after** PR #641 (`b8853009`) had already reconciled the baseline to 38 and ruled "no flag added/removed" — so 38 was true both immediately before and after #665. All remaining `36`/`35`/`34` occurrences in CLAUDE.md sit inside dated merged-PR bullets (#527/#519/#512/#501/#499/#493/#487/#624/#628/#631/…, all merged before #641's 2026-06-27 reconciliation) and are correct historical snapshots — LEFT UNTOUCHED (rewriting them would misrepresent what the doc said at that point in time, which the ratchet is explicitly built not to flag). `AGENTS.md` / `docs/METHODOLOGY.md` / `PHASE_STATUS.md` checked by `docs-reviewer` — already correct, no lockstep fix needed (AGENTS.md defers to CLAUDE.md for the canonical count and carries no independent present-tense headline).
+
+Schema triple (`schemas.py` ↔ `types.ts` ↔ snapshot) UNTOUCHED. Defense layer **UNCHANGED at 38** (this PR corrects a stale mention of it, adds no flag). No scoring / valuation / composite / token surface touched.
+
+**Files**: `frontend/components/RankingView.tsx` (item 1), `CLAUDE.md` (item 2, line 510), `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification ladder** (green): `frontend-builder` ran `tsc --noEmit` PASS + `next build` PASS (1509/1509 static pages). `tools/check_defense_layer_counts.py` → exit 0, "10 active vetoes + 28 annotates = 38". No compute/schema surface → pytest / schema_check rungs n/a.
+
+---
