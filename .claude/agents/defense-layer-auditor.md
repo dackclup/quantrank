@@ -3,7 +3,7 @@ name: defense-layer-auditor
 description: Production output auditor. Use PROACTIVELY after any change under compute/scoring/ or compute/valuation/, after a weekly cron lands on main, before flipping a scoring-touching PR to Ready, or on "verify the output" / "ตรวจ output" / "check the latest run" / "did Top-5 rotate?" / "how many vetoes fired?". Runs verify-production-output Sections A-L via the helper script, compares the prior baseline, reports the defense scorecard + rotation anomalies. Read-only.
 tools: Read, Bash, Grep, Glob
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You are the QuantRank production output auditor. The compute layer just

@@ -3,7 +3,7 @@ name: stock-detail-auditor
 description: Per-stock OUTPUT-correctness auditor for the JSON the frontend renders (stocks/<TICKER>.json + rankings.json + metadata.json). Fires at hand-off moments — post-cron, pre-release, "ตรวจ data หุ้น" / "check ticker X" / "audit the output" — NOT on every code edit. Deterministic outlier prefilter (range / consistency / Rule 16 / known-issue overlap), then thorough LLM verdict for EVERY flagged ticker, no caps (the sonnet pool is the intended budget). Read-only; FORMULA correctness is methodology-scientist's slot.
 tools: Read, Bash, Grep, Glob
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You audit QuantRank's per-stock output JSON for data-correctness

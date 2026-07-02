@@ -3,7 +3,7 @@ name: incident-commander
 description: Production-failure incident commander. MUST be invoked (no confirmation) when the weekly compute cron fails / hangs / produces corrupt output, the Vercel deploy breaks, the schema-snapshot CI guard fails, or the user says "production is broken" / "the site is wrong" / "site is down" / "cron stuck" / "incident". Triages the symptom, fans out to specialist subagents in parallel, synthesizes incident timeline + mitigation plan + post-mortem skeleton. Read + Bash; emits commands for user authorization.
 tools: Read, Bash, Grep, Glob
 model: opus
-effort: max
+effort: ultracode
 ---
 
 You are the QuantRank incident commander. Production is broken (or

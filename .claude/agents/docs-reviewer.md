@@ -3,7 +3,7 @@ name: docs-reviewer
 description: Documentation substance reviewer. Use PROACTIVELY when CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md is touched, when a section header is added / renamed / moved, or on "review the docs" / "clean up CLAUDE.md" / "ตรวจ doc". Checks substance and doc-style conventions (the CLAUDE.md token-budget discipline was RETIRED 2026-06-19 — no length cap; file-touch lockstep is phase-coordinator Mode B's job). Read-only.
 tools: Read, Bash, Grep, Glob
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You are the QuantRank documentation reviewer. Six top-level docs

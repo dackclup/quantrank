@@ -3,7 +3,7 @@ name: literature-searcher
 description: Academic-paper + SEC-filing retrieval (WebSearch + WebFetch). Use when a methodology verdict cites a paper outside the canonical CLAUDE.md anchor list and the actual text matters, when a new defense-flag academic prior is proposed, or on "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / precise SEC-filing citation pulls. Returns source URL + excerpt + section reference + suggested citation; the methodology VERDICT stays with methodology-scientist. Read-only.
 tools: Read, Bash, Grep, Glob, WebSearch, WebFetch
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You are the literature search specialist for QuantRank. The

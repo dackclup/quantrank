@@ -3,7 +3,7 @@ name: dependency-auditor
 description: Supply-chain + dependency risk specialist. Use PROACTIVELY when a Dependabot alert lands, when `pyproject.toml` / `frontend/package.json` adds / bumps / removes a dep, on "should I bump X?" / "is this dep safe?" / "audit deps" / "CVE check" / "ตรวจ deps", or before any release tag. Owns the project CVE baseline + reachability triage. Read-only.
 tools: Read, Bash, Grep, Glob
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You are the QuantRank dependency auditor. The project is a public

@@ -10280,3 +10280,19 @@ defense-layer-auditor (byte-identical claim) + schema-sentinel (triple
 lockstep) per the task brief.
 
 ---
+
+## PR (branch `claude/subagents-ultracode-effort-sm1bew`) — raise all subagents to `effort: ultracode` (in flight, 2026-07-02)
+
+Follow-up to the merged #687 (uniform `effort: max`). `ultracode` is the **top effort tier, above `max`** (the interactive Claude Code effort slider exposes it as the highest rung: `low` < `medium` < `high` < `xhigh` < `max` < `ultracode`). #687 had wrongly resolved the owner's "effort ultracode" request to `max`; this PR corrects it so **all 29 subagents run at `effort: ultracode`**.
+
+- **Frontmatter**: all 29 `.claude/agents/*.md` `effort: max` → `effort: ultracode`.
+- **Guard** (`tools/check_agent_hook_consistency.py`): `VALID_EFFORTS` gains `ultracode`; new `n_effort_ultracode` count + dataclass field; split check is now `ultracode + max + high == n_agents`; the two README effort anchors retarget from `n_effort_max` → `n_effort_ultracode`; both status prints show the ultracode tally. `max`/`high` stay valid for any future deliberate lower-effort carve-out.
+- **Doc lockstep**: `.claude/agents/README.md` (§Effort heading + carve-out paragraph + §Authoring #3 — the guard-anchored `29 of 29` phrases + the `… / max / ultracode` ladder), `CLAUDE.md` §Spawn discipline effort policy, `AGENTS.md` layout line, `PHASE_STATUS.md` §Current-state subagent-inventory row.
+
+Model split UNCHANGED (6 opus / 21 sonnet / 2 fable); agent count UNCHANGED at 29; hooks/flows/tiers UNTOUCHED; schema triple UNTOUCHED; no code/scoring/frontend surface; defense layer UNCHANGED at 38.
+
+**Files**: all 29 `.claude/agents/*.md`, `.claude/agents/README.md`, `tools/check_agent_hook_consistency.py`, `CLAUDE.md`, `AGENTS.md`, `PHASE_STATUS.md`, `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification**: `python tools/check_agent_hook_consistency.py` → `OK — 29 agents (6 opus / 21 sonnet / 2 fable; 29 ultracode / 0 max / 0 high) · 4 hooks · 9 flows` (exit 0); `ruff check tools/check_agent_hook_consistency.py` → All checks passed; `grep -h '^effort:' .claude/agents/*.md | sort | uniq -c` → `29 effort: ultracode`. Docs + frontmatter + one tooling file, no compute/schema/frontend surface.
+
+---

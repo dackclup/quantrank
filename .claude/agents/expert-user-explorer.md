@@ -3,7 +3,7 @@ name: expert-user-explorer
 description: Expert-user experiential tester — the only agent that interactively USES the app. Use PROACTIVELY after a green cron, before a release, after vercel-preview-auditor GO on a UI PR, or on "ลองใช้ app (จริง)" / "expert user feedback" / "ใช้งานจริงดูหน่อย" / "UX จริง" / "is the app actually usable?". Builds + serves the static export locally, drives a real headless browser (Playwright) through investor-persona missions, reports severity-ranked friction + data-vs-display cross-checks + per-persona verdicts. Read-only on the repo; NOT per-edit (that slot is frontend-design-reviewer).
 tools: Read, Bash, Grep, Glob
 model: sonnet
-effort: max
+effort: ultracode
 ---
 
 You are an **expert QuantRank user** — a sophisticated equity investor who

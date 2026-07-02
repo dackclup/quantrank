@@ -416,22 +416,23 @@ the other tiers). Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: 29 of 29 agents run at `effort: max`** (frontmatter; set 2026-05-31,
-former script-runner carve-out lifted 2026-07-02; the two Fable 5 creative seats also run at `max`). The `effort` field is orthogonal to `model` — `model`
-picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
-the top of the `low / medium / high / xhigh / max` ladder and overrides the
-session's inherited effort while the subagent is active. Rationale: most agents
+**Effort: 29 of 29 agents run at `effort: ultracode`** (frontmatter; first set
+`max` 2026-05-31, raised to `ultracode` 2026-07-02; the two Fable 5 creative seats also run at `ultracode`). The `effort` field is orthogonal to `model` — `model`
+picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `ultracode`
+is the top of the `low / medium / high / xhigh / max / ultracode` ladder (above
+`max`) and overrides the session's inherited effort while the subagent is
+active. Rationale: most agents
 are open-ended correctness / judgment gates (review · audit · academic
 validation · design), so the extra reasoning headroom pays back — and
-sonnet-at-max still drains the separate Sonnet-only pool rather than the
+sonnet-at-ultracode still drains the separate Sonnet-only pool rather than the
 all-models pool. **The former `effort: high` carve-outs for the two
 deterministic script-runners — `schema-sentinel` (runs `schema_check`, reports
 the diff) and `vercel-preview-auditor` (runs a fixed Vercel MCP chain, reports
-GO/WAIT) — were lifted 2026-07-02: every agent now runs at `max` for a uniform
-top-effort roster.** A NEW agent should carry `effort: max` too (authoring
-convention #3 below). If an agent is a pure mechanical lookup where max is
-wasteful, you may still drop it to `high` deliberately and note why — the
-consistency guard accepts both `max` and `high`.
+GO/WAIT) — were lifted 2026-07-02: every agent now runs at the top tier for a
+uniform max-effort roster.** A NEW agent should carry `effort: ultracode` too (authoring
+convention #3 below). If an agent is a pure mechanical lookup where top effort is
+wasteful, you may still drop it to `max` or `high` deliberately and note why — the
+consistency guard accepts `ultracode`, `max`, and `high`.
 
 ## How auto-invocation works
 
@@ -521,12 +522,12 @@ each invocation.
      read-only so no fact leaks (Tier 6: `narrative-copywriter` +
      `ux-microcopy-writer`). Do NOT pick `fable` for anything that
      asserts a fact, reviews, or edits code.
-   - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
+   - **`effort: ultracode` on judgment-gate agents** (the `effort` frontmatter
      field, orthogonal to `model`). 29 of 29 agents run at the top
-     reasoning level (the former `schema-sentinel` + `vercel-preview-auditor`
-     `effort: high` carve-outs were lifted 2026-07-02) — see §Effort above.
-     A new agent gets `effort: max` too unless it's a pure mechanical
-     lookup (then `high`, with a note). See §Model split above.
+     reasoning level (`ultracode`, above `max`; the former `schema-sentinel` +
+     `vercel-preview-auditor` lower-effort carve-outs were lifted 2026-07-02) — see §Effort above.
+     A new agent gets `effort: ultracode` too unless it's a pure mechanical
+     lookup (then `max`/`high`, with a note). See §Model split above.
 4. **Tool allowlist.** Restrict to what the agent actually needs. A code
    reviewer doesn't need `Edit` or `Write`; an auditor doesn't need
    `Edit` either. Explicit allowlists reduce blast radius.
