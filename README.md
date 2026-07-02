@@ -249,7 +249,7 @@ academic bibliography backing each defense layer.
 ```mermaid
 flowchart LR
     A[GitHub Actions cron<br/>Mon-Fri 22:00 UTC] -->|run daily| B[Python compute pipeline]
-    B -->|fetch| C[(yfinance / SEC EDGAR<br/>FRED / Finnhub / Reddit)]
+    B -->|fetch| C[(yfinance prices / SEC EDGAR filings<br/>Wikipedia index constituents)]
     B -->|write| D[JSON files in<br/>frontend/public/data/]
     D -->|git push| E[GitHub repo]
     E -->|webhook| F[Vercel build]
@@ -274,12 +274,12 @@ live-data system. See `SKILL.md` for the full architecture rules.
 |---|---|
 | Compute language | Python 3.11+ |
 | Compute runtime | GitHub Actions (`ubuntu-latest`) |
-| Frontend framework | Next.js 14 (App Router, static export) |
+| Frontend framework | Next.js 16.2 (App Router, static export) |
 | Styling | Tailwind CSS |
 | Charts | Recharts |
 | Data storage | JSON files in `frontend/public/data/` |
 | Hosting | Vercel (frontend) + GitHub (data) |
-| Free data sources | yfinance, edgartools, fredapi, finnhub-python, PRAW |
+| Free data sources | yfinance (prices), edgartools (SEC EDGAR), Wikipedia (index constituents) |
 | ML | LightGBM + SHAP (Phase 5+) |
 
 ---
@@ -297,8 +297,8 @@ You don't need to run anything locally. The whole app builds in CI.
    - Output directory: `out`.
    - Production branch: `main`.
    - Click Deploy.
-3. **Trigger first compute** (after Phase 1 lands): GitHub → Actions → "Compute Rankings" → "Run workflow".
-4. **Done.** From now on, every Sunday at 22:00 UTC the pipeline refreshes the JSON, commits it, and Vercel auto-deploys.
+3. **Trigger first compute**: GitHub → Actions → "Compute Rankings" → "Run workflow".
+4. **Done.** From now on, every US trading day (Mon-Fri) at 22:00 UTC the pipeline refreshes the JSON, commits it, and Vercel auto-deploys.
 
 ### Required GitHub secrets — by phase
 
@@ -307,8 +307,6 @@ You don't need to run anything locally. The whole app builds in CI.
 | 0 | _none_ | Stub workflow only |
 | 1 | _none_ | yfinance + Wikipedia are unauthenticated |
 | 2 | `EDGAR_USER_AGENT` | SEC requires `"<Your Name> <email>"` for EDGAR access |
-| 4 | `FINNHUB_API_KEY`, `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` | News + Reddit sentiment |
-| 6 | `FRED_API_KEY` | Macro / regime detection |
 
 Add secrets at: **Repo → Settings → Secrets and variables → Actions → New repository secret**.
 

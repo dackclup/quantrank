@@ -9942,9 +9942,14 @@ Docs-only refresh of the README opening pitch (lines 1-~9), drafted by the new `
 
 Deliberately **omits any hard defense-flag count** from the pitch (CLAUDE.md itself oscillates 36/38) to avoid making the README another count-drift surface. For the record, ground truth is **38 declared boolean flags** (`flag_registry.py`: `KNOWN_RISK_FLAGS`=10 active vetoes + `KNOWN_VALUATION_WARNINGS`=28 annotates) — not stated in the pitch, just verified.
 
-Adjacent README drift (Architecture mermaid data sources, Next.js version) is being scoped by a parallel `docs-reviewer` pass and will land as separate corrections if confirmed. Schema triple UNTOUCHED; no code/scoring/frontend surface; defense layer UNCHANGED at 38.
+Adjacent README drift, surfaced by the copywriter and confirmed by a `docs-reviewer` pass (each item independently re-derived from repo ground truth, NOT just CLAUDE.md prose), is FOLDED into the same PR:
+- **Architecture mermaid (data sources)**: `FRED / Finnhub / Reddit` → `yfinance prices / SEC EDGAR filings / Wikipedia index constituents`. Verified phantom: zero `fredapi`/`finnhub-python`/`praw` in `pyproject.toml`; no `compute/ingest/{macro,news,reddit}.py` in tree. Wikipedia (the real 3rd source) was also missing from the diagram.
+- **Tech-stack table**: `Next.js 14` → `Next.js 16.2` (verified `frontend/package.json` `"next": "16.2.9"`); `Free data sources` row `fredapi, finnhub-python, PRAW` → `yfinance / edgartools / Wikipedia`.
+- **Setup section**: dropped stale "(after Phase 1 lands)" gate (Phase 1 landed long ago); "every **Sunday** at 22:00 UTC" → "every US trading day (Mon-Fri) at 22:00 UTC" (verified `compute-rankings.yml` `cron: "0 22 * * 1-5"`; was self-contradicting README's own "Mon-Fri cron" line); removed the phantom `FINNHUB_API_KEY` / `REDDIT_*` / `FRED_API_KEY` secret rows (they gate integrations that don't exist).
 
-**Files**: `README.md` (pitch section), `PHASE_STATUS_INFLIGHT.md` (this entry).
+Schema triple UNTOUCHED; no code/scoring/frontend surface; defense layer UNCHANGED at 38.
+
+**Files**: `README.md` (pitch + Architecture + Tech-stack + Setup sections), `PHASE_STATUS_INFLIGHT.md` (this entry).
 
 **Verification**: universe + flag counts re-derived from ground truth (metadata.json / rankings.json / flag_registry.py); `ruff check .` unaffected (docs-only); `python tools/check_agent_hook_consistency.py` still green.
 
