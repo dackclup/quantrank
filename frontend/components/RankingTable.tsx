@@ -385,7 +385,7 @@ export default function RankingTable({
             ref={inputRef}
             type="search"
             placeholder="Search ticker or name…"
-            aria-label="Search by ticker or company name"
+            aria-label="Search stocks by ticker or company name"
             defaultValue=""
             onChange={(e) => startTransition(() => setSearch(e.target.value))}
             className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-500 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-400 dark:focus:border-slate-500 dark:focus:ring-slate-500"
@@ -623,8 +623,8 @@ export default function RankingTable({
           </p>
           <p className="mt-1 max-w-xs text-xs text-slate-500 dark:text-slate-400">
             {hasActiveFilters
-              ? 'Try a different ticker or name, or loosen a filter to see more of the ranking.'
-              : 'Try a different ticker or company name.'}
+              ? 'Try another ticker or name, or loosen a filter to let more of the ranking through.'
+              : "It may be outside the stocks we rank — try another ticker or the company's full name."}
           </p>
           {(search || hasActiveFilters) && (
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">

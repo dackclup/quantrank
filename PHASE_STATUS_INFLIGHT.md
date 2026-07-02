@@ -9954,3 +9954,21 @@ Schema triple UNTOUCHED; no code/scoring/frontend surface; defense layer UNCHANG
 **Verification**: universe + flag counts re-derived from ground truth (metadata.json / rankings.json / flag_registry.py); `ruff check .` unaffected (docs-only); `python tools/check_agent_hook_consistency.py` still green.
 
 ---
+
+## PR (branch `claude/fable-5-subagent-test-665lii`) — ranking-table microcopy polish (in flight, 2026-07-02)
+
+Frontend-only microcopy refresh of the ranking-table empty-state + search a11y label, drafted by the `ux-microcopy-writer` (Fable 5) seat and wired by `frontend-builder`. Three literal string swaps in `frontend/components/RankingTable.tsx` — no new logic, no interpolation, no schema/scoring/token change:
+
+- **Empty-state sub-line, search-only branch** (line 627): `Try a different ticker or company name.` → `It may be outside the stocks we rank — try another ticker or the company's full name.` The old sub-line only restated the obvious; the new one adds the one genuinely useful fact (the ranked universe is finite) and names the recovery path. Phrasing avoids naming a specific index because the cohort varies by tab (SPX/MID/SML/All), so "the stocks we rank" is the only line true on every tab. Switched that one literal to double quotes for the apostrophe (matches the existing `"Stockholders' equity"` convention).
+- **Empty-state sub-line, search+filters branch** (line 626): `Try a different ticker or name, or loosen a filter to see more of the ranking.` → `Try another ticker or name, or loosen a filter to let more of the ranking through.`
+- **Search input `aria-label`** (line 388): `Search by ticker or company name` → `Search stocks by ticker or company name` (names the filtered collection for SR users).
+
+Untouched: both headlines, the placeholder, the Clear search / Clear filters buttons, and the RankingView compute-pending panel (deferred pending owner tone preference on the `"No rankings yet"` variant the Fable seat proposed). This PR started as a Fable-5 subagent test but lands a real, verified improvement.
+
+Schema triple UNTOUCHED; defense layer UNCHANGED at 38.
+
+**Files**: `frontend/components/RankingTable.tsx` (3 string swaps), `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification ladder** (green — run independently by both `frontend-builder` and the orchestrator): `cd frontend && npx --no -- tsc --noEmit` → PASS (clean exit) · `cd frontend && npx --no -- next build` → PASS (1509 static pages generated, exit 0). No compute/schema surface touched, so pytest/schema_check rungs not applicable. Spot-check surface: the search box + empty-state on `/` and `/ranking` (search a nonexistent ticker to trigger both sub-line branches).
+
+---
