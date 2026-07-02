@@ -208,6 +208,27 @@ def _extract_canary_block(text: str) -> str:
     return "\n".join(lines)
 
 
+def _extract_step_block(text: str, step_name_literal: str) -> str:
+    """Return a step's block, from its ``- name:`` line to the next sibling
+    ``- name:`` at the same 6-space indent (exclusive boundary), with
+    trailing blank/comment-only lines dropped.
+
+    Generalizes ``_extract_canary_block`` (which is hardcoded to the canary
+    step's literal name) to any step — see that function's docstring for the
+    full delimiting rationale; this is the same strategy.
+    """
+    next_step_re = re.compile(r"^      - name:", re.MULTILINE)
+    start_idx = text.find(step_name_literal)
+    assert start_idx != -1, f"step not found in workflow text: {step_name_literal!r}"
+    search_from = start_idx + len(step_name_literal)
+    match = next_step_re.search(text, search_from)
+    block = text[start_idx : match.start()] if match else text[start_idx:]
+    lines = block.rstrip().splitlines()
+    while lines and (not lines[-1].strip() or lines[-1].lstrip().startswith("#")):
+        lines.pop()
+    return "\n".join(lines)
+
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
@@ -1012,3 +1033,200 @@ def test_precache_has_universe_dispatch_input() -> None:
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
         "${{ github.event.inputs.universe }}"
     )[0][-200:], "universe input must not feed a run: shell line (script-injection)"
+
+
+# ---------------------------------------------------------------------------
+# Production-safety commit-guard (Phase 9.3 / P1-G4, broad-universe
+# floor-scoping PR-2 prerequisite, 2026-07-02) — error->regression ratchet
+# ---------------------------------------------------------------------------
+#
+# WHY (CLAUDE.md's error->regression-ratchet convention): a production-clobber
+# risk was caught and fixed — the `broad_investable_us` dispatch-only RANKED
+# path (#676) re-bases every cross-sectional percentile against a ~3,545-name
+# candidate pool with sector="Unknown"; its rankings.json / metadata.json are
+# NOT the S&P 1500 the live site serves. Committing them would corrupt
+# production (Vercel rebuilds from whatever `main` holds) and
+# `prune_orphan_stock_files()` would delete every sp1500 per-stock JSON. The
+# fix is two complementary `if:` guards on the SAME `env.QR_UNIVERSE ==
+# 'broad_investable_us'` predicate: the "Commit JSON outputs" step is SKIPPED
+# on that universe (guard `!=`), and a new "Upload broad-universe sweep
+# output" step captures the sweep data as a CI artifact instead (guard `==`)
+# so it isn't silently lost. These 5 tests lock the guard deterministically so
+# a future workflow edit can't silently regress a step back to an
+# unconditional commit/push.
+
+
+def test_commit_json_outputs_step_gated_off_for_broad_universe() -> None:
+    """The `Commit JSON outputs` step carries
+    `if: ${{ env.QR_UNIVERSE != 'broad_investable_us' }}` immediately
+    preceding its `run:` block.
+
+    WHY: this is the load-bearing half of the production-safety guard — a
+    broad-universe dispatch run's rankings.json / metadata.json / warehouse
+    snapshot must never reach `git commit` / `git push`. Asserting the `if:`
+    line sits directly before `run: |` (not merely present somewhere in the
+    step) protects against a future edit that adds the guard but attaches it
+    to the wrong step, or interposes an ungated `run:` block between the
+    guard and the commit logic.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    block = _extract_step_block(text, "      - name: Commit JSON outputs")
+    guard_then_run = "if: ${{ env.QR_UNIVERSE != 'broad_investable_us' }}\n        run: |"
+    assert guard_then_run in block, (
+        "The `Commit JSON outputs` step must carry "
+        "`if: ${{ env.QR_UNIVERSE != 'broad_investable_us' }}` immediately "
+        "preceding its `run:` block — a broad-universe dispatch run's JSON "
+        "output must never be committed/pushed to `main` (production-clobber "
+        "risk: it would overwrite the live S&P 1500 site with a re-based, "
+        "sector='Unknown' ~3,545-name universe)."
+    )
+
+
+def test_upload_broad_universe_sweep_output_step_shape() -> None:
+    """A dedicated `Upload broad-universe sweep output` step exists,
+    gated `if: ${{ env.QR_UNIVERSE == 'broad_investable_us' }}`, pins
+    `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`, and
+    its `path:` block lists BOTH `frontend/public/data/metadata.json` and
+    `frontend/public/data/rankings.json`.
+
+    WHY: this is the complementary half of the production-safety guard — when
+    the commit step above is skipped, the broad-universe sweep data (the 6
+    `broad_universe_*` Metadata fields + rankings.json for rank-stability
+    comparison) must not simply evaporate with the discarded runner checkout.
+    Pinning the action to its full-length commit SHA (not a floating tag)
+    guards against a supply-chain substitution on `actions/upload-artifact`.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    step_name = "      - name: Upload broad-universe sweep output (artifact, NOT committed)"
+    block = _extract_step_block(text, step_name)
+
+    assert "if: ${{ env.QR_UNIVERSE == 'broad_investable_us' }}" in block, (
+        "The broad-universe sweep upload step must be gated "
+        "`if: ${{ env.QR_UNIVERSE == 'broad_investable_us' }}` — it must fire "
+        "ONLY on the universe whose JSON the commit step above skips."
+    )
+    assert (
+        "uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+        in block
+    ), (
+        "The broad-universe sweep upload step must pin "
+        "`actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` "
+        "(full-length commit SHA, not a floating tag)."
+    )
+
+    path_blocks = _extract_path_blocks(block)
+    assert path_blocks, (
+        "No `path: |` block found inside the broad-universe sweep upload "
+        "step — the step may have been restructured."
+    )
+    uploaded_lines = {
+        line.strip() for pb in path_blocks for line in pb.splitlines()
+    }
+    for required_path in (
+        "frontend/public/data/metadata.json",
+        "frontend/public/data/rankings.json",
+    ):
+        assert required_path in uploaded_lines, (
+            f"The broad-universe sweep upload step's `path:` block is "
+            f"missing `{required_path}` — without it the broad-universe "
+            f"run's data is lost entirely once the runner checkout is "
+            f"discarded (the commit step is skipped on this universe, so "
+            f"this upload is the ONLY way the data leaves the runner)."
+        )
+
+
+def test_broad_universe_guard_conditions_are_exact_negations() -> None:
+    """The two production-safety `if:` guards are exact `!=`/`==` negations
+    of the SAME predicate: `env.QR_UNIVERSE <op> 'broad_investable_us'`.
+
+    WHY: the commit step (skip-on-broad) and the upload step (fire-on-broad)
+    must partition every possible `QR_UNIVERSE` value into exactly the two
+    intended behaviors with no overlap and no gap. If either guard drifted to
+    reference a different env var, a different literal, or the same operator
+    as its sibling, either both steps would fire together (double-write risk)
+    or neither would (silent data loss). This regex is deliberately anchored
+    to the FULL predicate shape (`if: ${{ env.QR_UNIVERSE <op>
+    'broad_investable_us' }}`) so it can't accidentally match unrelated `if:`
+    conditions elsewhere in the file.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    guard_re = re.compile(
+        r"if: \$\{\{ env\.QR_UNIVERSE (!=|==) 'broad_investable_us' \}\}"
+    )
+    operators = guard_re.findall(text)
+    assert operators.count("!=") == 1, (
+        f"Expected exactly one `!=` production-safety guard "
+        f"(the commit-step skip), found {operators.count('!=')}: {operators!r}"
+    )
+    assert operators.count("==") == 1, (
+        f"Expected exactly one `==` production-safety guard "
+        f"(the upload-step fire-on), found {operators.count('==')}: {operators!r}"
+    )
+    assert set(operators) == {"!=", "=="}, (
+        f"The two `env.QR_UNIVERSE ... 'broad_investable_us'` guards must be "
+        f"exact opposite-operator negations of each other, found {operators!r}"
+    )
+
+
+def test_git_add_warehouse_still_inside_guarded_commit_step() -> None:
+    """`git add data/warehouse/` still lives textually INSIDE the guarded
+    `Commit JSON outputs` step block.
+
+    WHY (regression guard): the research-warehouse commit line was folded
+    into the SAME step as the rankings commit specifically so it inherits the
+    production-safety `if:` guard for free — a broad-universe run's PIT
+    warehouse snapshot is just as re-based / not-comparable as its
+    rankings.json and must not be committed either. A future edit that moves
+    `git add data/warehouse/` into its own step (with no `if:` of its own)
+    would silently regain an unconditional commit path for the warehouse
+    data even though this test file already locks the JSON side.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    block = _extract_step_block(text, "      - name: Commit JSON outputs")
+    assert "git add data/warehouse/" in block, (
+        "`git add data/warehouse/` must remain textually inside the "
+        "`Commit JSON outputs` step block so it stays covered by that "
+        "step's `if: ${{ env.QR_UNIVERSE != 'broad_investable_us' }}` guard "
+        "— moving it to an unguarded step would silently regain an "
+        "unconditional commit path for the research-warehouse snapshot on "
+        "a broad-universe run."
+    )
+    # Belt-and-suspenders: also confirm the guard precedes it within the
+    # block (not merely present somewhere in the same step, in case a
+    # future refactor reorders lines and accidentally hoists the git-add
+    # ABOVE the if: guard — which YAML step syntax doesn't actually permit,
+    # but a textual reorder mistake during editing could still happen).
+    guard_idx = block.find("if: ${{ env.QR_UNIVERSE != 'broad_investable_us' }}")
+    add_idx = block.find("git add data/warehouse/")
+    assert guard_idx != -1 and add_idx != -1 and guard_idx < add_idx, (
+        "`git add data/warehouse/` must appear AFTER the production-safety "
+        "`if:` guard within the `Commit JSON outputs` step block."
+    )
+
+
+def test_production_safety_new_steps_have_no_excessive_timeout() -> None:
+    """Neither the `Commit JSON outputs` step nor the `Upload broad-universe
+    sweep output` step declares its own `timeout-minutes:` above GitHub's
+    360-minute hard per-job/step cap.
+
+    WHY: mirrors `test_gate_c1_workflows_at_or_under_six_hour_hard_cap`'s
+    ratchet (which already covers `compute-rankings.yml` as a whole via
+    `_GATE_C1_FIXED_WORKFLOWS`) at the finer grain of the two specific steps
+    this PR touches — a future edit that adds a step-level
+    `timeout-minutes:` here (e.g. to bound the broad-universe upload) must
+    not silently exceed the same unmovable cap the gate-C1 fix established
+    for the whole job.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    for step_name in (
+        "      - name: Commit JSON outputs",
+        "      - name: Upload broad-universe sweep output (artifact, NOT committed)",
+    ):
+        block = _extract_step_block(text, step_name)
+        for t in _all_job_timeout_minutes(block):
+            assert t <= 360, (
+                f"Step {step_name!r} declares timeout-minutes: {t}, above "
+                f"GitHub Actions' hard 6-hour (360-minute) per-job/step "
+                f"ceiling — see test_gate_c1_workflows_at_or_under_six_hour_"
+                f"hard_cap for the full gate-C1 rationale."
+            )

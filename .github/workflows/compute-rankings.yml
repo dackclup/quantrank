@@ -437,6 +437,44 @@ jobs:
       - name: Run weekly compute
         run: python -m compute.main
 
+      # PRODUCTION-SAFETY GUARD, complementary half (Phase 9.3 / P1-G4,
+      # broad-universe floor-scoping PR-2 prerequisite): the `broad_investable_us`
+      # dispatch-only RANKED path (#676) re-bases every cross-sectional
+      # percentile + sector median against a ~3,545-name universe with
+      # sector="Unknown" (SEC company-tickers has no GICS sector) and a flat-10%
+      # CoE fallback — its rankings.json / metadata.json are NOT the S&P 1500 the
+      # live site serves and must NEVER be committed (see the "Commit JSON
+      # outputs" step's if: below, which skips entirely on this universe). This
+      # step is the ONLY way the broad-universe sweep data (the 6
+      # broad_universe_survivors_at_*/adr_suspect/coverage/sector_unknown
+      # Metadata fields in metadata.json, plus rankings.json for the C5
+      # rank-stability comparison) leaves the runner — everything else written
+      # to frontend/public/data/ this run evaporates with the discarded
+      # checkout once the job ends.
+      #
+      # Deliberately placed HERE — immediately after compute writes the JSON,
+      # BEFORE the optional "Refresh portfolio backtest" step below — rather
+      # than at the end of the job next to its complementary commit-step guard.
+      # The broad-universe warm runtime is NOT YET empirically confirmed (see
+      # the job's timeout-minutes history above: compute alone projects
+      # ~280-320 min warm-worst-case against this job's 360-min hard cap), so
+      # capturing the artifact right after the data exists — before the
+      # skippable-but-still-time-consuming backtest-refresh step gets a chance
+      # to run the job past its cap — avoids losing the sweep data to the same
+      # "job cancelled, nothing salvaged" failure class the gate-C1 incident
+      # hit. An artifact already uploaded by a completed step is retained even
+      # if a later step in this same job times out or gets cancelled.
+      - name: Upload broad-universe sweep output (artifact, NOT committed)
+        if: ${{ env.QR_UNIVERSE == 'broad_investable_us' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: broad-universe-sweep-output
+          path: |
+            frontend/public/data/metadata.json
+            frontend/public/data/rankings.json
+          if-no-files-found: error
+          retention-days: 30
+
       # Per-stage timing into the Actions run Summary tab — answers "which stage
       # is slow?" at a glance (e.g. surfaces tier2 at 80m so the cache fix is
       # visibly confirmed when it drops to ~5m next run). `if: always()` so a
@@ -529,12 +567,45 @@ jobs:
           PY
 
       - name: Commit JSON outputs
+        # PRODUCTION-SAFETY GUARD (Phase 9.3 / P1-G4, broad-universe
+        # floor-scoping PR-2 prerequisite): SKIPPED entirely when the resolved
+        # universe is `broad_investable_us`. That dispatch-only RANKED path
+        # (#676) re-bases every cross-sectional percentile + sector median
+        # against a ~3,545-name candidate pool with sector="Unknown" (SEC
+        # company-tickers carries no GICS sector) and a flat-10%-CoE fallback —
+        # its rankings.json / metadata.json / stocks/*.json are NOT comparable
+        # to the S&P 1500 the live site serves and must NEVER land on `main`:
+        # Vercel rebuilds from whatever frontend/public/data/ holds on `main`,
+        # so committing here would make the live site show broad-universe
+        # scores instead of the S&P 1500, AND prune_orphan_stock_files() would
+        # delete every sp1500 per-stock JSON (the ~3,545-name broad ticker set
+        # only partially overlaps the ~1504-name sp1500 set). The frontend
+        # disclaimer needed to safely surface a broad-universe run is Phase 9.4
+        # scope — until it ships, this if: is the ONLY thing standing between a
+        # broad dispatch and a corrupted production site.
+        #
+        # env.QR_UNIVERSE (line ~34: `${{ github.event.inputs.universe ||
+        # 'sp1500' }}`) is the single resolved value already fed to `python -m
+        # compute.main` above — reusing it here (rather than re-deriving from
+        # github.event.inputs) keeps this guard in lockstep with whatever that
+        # fallback resolves to. Every other value — sp500 / sp900 / sp1500, AND
+        # the scheduled cron, where github.event.inputs is null and
+        # QR_UNIVERSE resolves to sp1500 — takes this branch and commits
+        # EXACTLY as before (pure add-on; the non-broad paths are
+        # byte-identical). The broad-universe sweep data itself is captured by
+        # the "Upload broad-universe sweep output" step above instead — see
+        # its comment for why that step is placed there rather than directly
+        # adjacent to this one.
+        if: ${{ env.QR_UNIVERSE != 'broad_investable_us' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add frontend/public/data/
           # Research warehouse (Slice 1): the per-run PIT snapshot + run manifest
           # under data/warehouse/ (gitignore-whitelisted) ride the same commit.
+          # Also covered by this step's if: above — a broad-universe run's
+          # warehouse snapshot is skipped alongside the JSON commit, for the
+          # same re-basing / not-comparable reason.
           git add data/warehouse/
           if git diff --cached --quiet; then
             echo "No JSON changes to commit."
