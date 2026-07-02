@@ -35,7 +35,7 @@ const INDICES_US: IndexOption[] = [
   { code: 'COMP', label: 'NASDAQ Composite',  name: 'NASDAQ Composite' },
   { code: 'DJI',  label: 'Dow 30',            name: 'Dow Jones Industrial Average' },
   { code: 'RUI',  label: 'Russell 1000',      name: 'Russell 1000 (large-cap)' },
-  { code: 'RUA',  label: 'Broad Investable US', name: 'Broad Investable US (broad market)' },
+  { code: 'RUA',  label: 'Broad Investable US', name: 'Broad Investable US (all market caps)' },
 ];
 
 // Mirrors the CountryTabs / TopNav tab shape: 44px target, border-b-2 underline
