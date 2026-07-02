@@ -1,12 +1,36 @@
 # QuantRank
 
-> **Open-source US equity stock ranking — fundamental, technical, factor, sentiment, and ML signals combined into a single 0–100 composite StockRank, refreshed every US trading day.**
+> **Open-source stock ranking for ~1,500 US equities — eight fundamental
+> and price-based pillars combined into a single 0–100 composite score,
+> recomputed after every US trading day. A research tool, not advice.**
 
-QuantRank is a static web app. A Python pipeline runs in GitHub Actions on a
-Mon-Fri cron (after US market close), computes scores for the S&P 500, and writes JSON files into the
-repo. A Next.js static site reads those JSON files at build time and is served
-from Vercel's free tier. No backend. No database. No live API calls from the
-browser.
+QuantRank ranks the S&P 1500 — the S&P 500 large-caps plus the S&P 400
+mid-caps and S&P 600 small-caps. Each stock gets a score on eight pillars
+(value, quality, profitability, growth, health, momentum, technical, risk)
+built from SEC filings and market data. The pillars roll up into one
+composite rank. A defense layer of risk flags then checks each name for
+accounting red flags — the kind documented in academic fraud research —
+and marks suspicious ones "cautious" rather than letting them quietly top
+the list.
+
+Alongside the rank, every stock gets a fair-price estimate: six valuation
+methods (Graham number, three sector-relative multiples, residual income,
+and discounted cash flow) reduced to a median, with a margin of safety
+against the current price. When the inputs look corrupt, the pipeline
+prints nothing rather than a confident wrong number.
+
+The whole thing is a static web app. A Python pipeline runs in GitHub
+Actions on a Mon-Fri cron (after US market close), computes every score,
+and writes JSON files into the repo. A Next.js static site reads those
+files at build time and is served from Vercel's free tier. No backend.
+No database. No live API calls from the browser. Every score traces to a
+git commit, so any ranking you see can be reproduced and audited.
+
+**What it's for:** screening and research. QuantRank tells you which
+stocks score well on its model and why — it does not tell you what to buy.
+Historical performance shown anywhere in the app comes from a backtest,
+and a backtest is not a live track record. Read the disclaimer below
+before doing anything else.
 
 ---
 

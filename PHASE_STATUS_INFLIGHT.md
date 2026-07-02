@@ -9931,3 +9931,21 @@ Adds a new **Tier 6 — Creative** to the subagent roster: two read-only agents 
 **Verification ladder** (green): `ruff check .` PASS · `python tools/check_agent_hook_consistency.py` → "29 agents (6 opus / 21 sonnet / 2 fable; 27 max / 2 high)" · `python -m pytest tests/test_agent_hook_consistency.py -q` → 9 passed (incl. `test_no_dead_anchors` confirming the four new fable anchors match real doc lines) · `python tools/preflight.py` rungs green except the compute-stack pytest collection (env has no pandas in this container — unrelated to this docs/agents diff). No schema / scoring / frontend surface touched.
 
 ---
+
+## PR (branch `claude/subagents-fable5-routing-crysgq`) — README pitch refresh (in flight, 2026-07-02)
+
+Docs-only refresh of the README opening pitch (lines 1-~9), drafted by the new `narrative-copywriter` (Fable 5) seat and fact-checked against ground truth before landing. Corrects two stale facts and enriches the pitch:
+
+- **`S&P 500` → `S&P 1500`** — the cron has ranked the full ~1,500-name S&P 1500 since Slice 7 (#534, 2026-06-21). Ground-truth verified: `frontend/public/data/metadata.json` `universe="SP1500"`, `universe_size=1502`, `rankings.json` = 1502 rows. Pitch says "~1,500" (safe round).
+- **Dropped `sentiment, and ML signals` from the tagline** — the live composite is the 8 pillars only; ML is Phase 5+ per the README's own tech-stack table. New tagline leads with the concrete universe + 8-pillar composite.
+- **Added** short paragraphs on the 8 pillars + defense layer (accounting-red-flag "cautious" marking), the 6-method fair-price ensemble (null-on-corrupt-input honesty), and static-site reproducibility ("every score traces to a git commit"). Kept the load-bearing caveats verbatim: "research tool, not advice" + "a backtest is not a live track record" (the `AnnualReturnsTable` gotcha).
+
+Deliberately **omits any hard defense-flag count** from the pitch (CLAUDE.md itself oscillates 36/38) to avoid making the README another count-drift surface. For the record, ground truth is **38 declared boolean flags** (`flag_registry.py`: `KNOWN_RISK_FLAGS`=10 active vetoes + `KNOWN_VALUATION_WARNINGS`=28 annotates) — not stated in the pitch, just verified.
+
+Adjacent README drift (Architecture mermaid data sources, Next.js version) is being scoped by a parallel `docs-reviewer` pass and will land as separate corrections if confirmed. Schema triple UNTOUCHED; no code/scoring/frontend surface; defense layer UNCHANGED at 38.
+
+**Files**: `README.md` (pitch section), `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification**: universe + flag counts re-derived from ground truth (metadata.json / rankings.json / flag_registry.py); `ruff check .` unaffected (docs-only); `python tools/check_agent_hook_consistency.py` still green.
+
+---
