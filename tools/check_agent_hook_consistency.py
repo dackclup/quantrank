@@ -32,7 +32,7 @@ Two layers of checking:
 
 Scope notes:
   - PHASE_STATUS.md is a chronological log; only its single current-state
-    "**N** in 5 tiers" table row is anchored (precise regex), not its prose.
+    "**N** in 6 tiers" table row is anchored (precise regex), not its prose.
   - Adding a new agent / hook / flow? Update the docs and this guard PASSES
     automatically (it reads reality) — no number lives in this file.
 """
@@ -53,7 +53,7 @@ README = AGENTS_DIR / "README.md"
 # Agent-catalog files that are NOT themselves subagents.
 NON_AGENT_FILES = {"README.md", "TEAMS.md"}
 
-VALID_MODELS = {"opus", "sonnet"}
+VALID_MODELS = {"opus", "sonnet", "fable"}
 VALID_EFFORTS = {"max", "high"}
 
 
@@ -62,6 +62,7 @@ class GroundTruth:
     n_agents: int
     n_opus: int
     n_sonnet: int
+    n_fable: int
     n_effort_max: int
     n_effort_high: int
     n_hooks: int
@@ -102,7 +103,7 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
     errors: list[str] = []
 
     agents = _agent_files()
-    n_opus = n_sonnet = n_max = n_high = 0
+    n_opus = n_sonnet = n_fable = n_max = n_high = 0
     for path in agents:
         fm = _parse_frontmatter(path.read_text())
         model = fm.get("model", "")
@@ -111,6 +112,8 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
             n_opus += 1
         elif model == "sonnet":
             n_sonnet += 1
+        elif model == "fable":
+            n_fable += 1
         else:
             errors.append(
                 f".claude/agents/{path.name}: model '{model}' not in "
@@ -136,10 +139,10 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
     tier_sum = sum(tier_counts)
 
     # --- Internal consistency (filesystem only) ---
-    if n_opus + n_sonnet != n_agents:
+    if n_opus + n_sonnet + n_fable != n_agents:
         errors.append(
             f"model split inconsistent: {n_opus} opus + {n_sonnet} sonnet "
-            f"!= {n_agents} agents"
+            f"+ {n_fable} fable != {n_agents} agents"
         )
     if n_max + n_high != n_agents:
         errors.append(
@@ -176,6 +179,7 @@ def compute_ground_truth() -> tuple[GroundTruth, list[str]]:
         n_agents=n_agents,
         n_opus=n_opus,
         n_sonnet=n_sonnet,
+        n_fable=n_fable,
         n_effort_max=n_max,
         n_effort_high=n_high,
         n_hooks=n_hooks,
@@ -198,20 +202,25 @@ class Anchor:
 # prose does not false-positive. Capture group 1 is always the integer.
 ANCHORS: tuple[Anchor, ...] = (
     # --- agent count ---
-    Anchor("CLAUDE.md", r"(\d+) project subagents in 5 tiers", "n_agents", "subagent count"),
+    Anchor("CLAUDE.md", r"(\d+) project subagents in 6 tiers", "n_agents", "subagent count"),
     Anchor("CLAUDE.md", r"orchestrator / tech lead\*\* of the (\d+)-agent", "n_agents", "orchestrator N-agent team"),
     Anchor("CLAUDE.md", r"`description:` fields of all (\d+) agents", "n_agents", "walk-all-N-agents"),
     Anchor("AGENTS.md", r"The (\d+) subagents under", "n_agents", "AGENTS subagent count"),
     Anchor("AGENTS.md", r"(\d+) agent prompts are kept tight", "n_agents", "AGENTS prompt-count"),
     Anchor(".claude/agents/README.md", r"## The current set \((\d+)\)", "n_agents", "README current set"),
-    Anchor("CONTEXT.md", r"(\d+) agents in 5 tiers", "n_agents", "CONTEXT roster"),
-    Anchor("CONTEXT.md", r"(\d+) project-specific sub-agents in 5 tiers", "n_agents", "CONTEXT layout"),
-    Anchor("PHASE_STATUS.md", r"\*\*(\d+)\*\* in 5 tiers", "n_agents", "PHASE_STATUS current-state"),
+    Anchor("CONTEXT.md", r"(\d+) agents in 6 tiers", "n_agents", "CONTEXT roster"),
+    Anchor("CONTEXT.md", r"(\d+) project-specific sub-agents in 6 tiers", "n_agents", "CONTEXT layout"),
+    Anchor("PHASE_STATUS.md", r"\*\*(\d+)\*\* in 6 tiers", "n_agents", "PHASE_STATUS current-state"),
     # --- opus split ---
     Anchor("AGENTS.md", r"(\d+) opus / 21 sonnet", "n_opus", "AGENTS opus split"),
     Anchor("CONTEXT.md", r"(\d+) opus \+ 21 sonnet", "n_opus", "CONTEXT opus split"),
     Anchor("PHASE_STATUS.md", r"(\d+) opus \+ 21 sonnet", "n_opus", "PHASE_STATUS opus split"),
     Anchor(".claude/agents/README.md", r"why (\d+) opus / 21 sonnet", "n_opus", "README model-split heading"),
+    # --- fable split (the Fable 5 creative seat, Tier 6) ---
+    Anchor("AGENTS.md", r"21 sonnet / (\d+) fable", "n_fable", "AGENTS fable split"),
+    Anchor("CONTEXT.md", r"21 sonnet \+ (\d+) fable", "n_fable", "CONTEXT fable split"),
+    Anchor("PHASE_STATUS.md", r"21 sonnet \+ (\d+) fable", "n_fable", "PHASE_STATUS fable split"),
+    Anchor(".claude/agents/README.md", r"21 sonnet / (\d+) fable", "n_fable", "README fable split"),
     # --- effort max ---
     Anchor(".claude/agents/README.md", r"Effort: (\d+) of \d+ agents run at", "n_effort_max", "README effort heading"),
     Anchor(".claude/agents/README.md", r"(\d+) of \d+ agents run at the top", "n_effort_max", "README authoring effort"),
@@ -262,7 +271,8 @@ def main() -> int:
             print(f"  {p}")
         print(
             f"\nGround truth: {truth.n_agents} agents "
-            f"({truth.n_opus} opus / {truth.n_sonnet} sonnet; "
+            f"({truth.n_opus} opus / {truth.n_sonnet} sonnet / "
+            f"{truth.n_fable} fable; "
             f"{truth.n_effort_max} max / {truth.n_effort_high} high) · "
             f"{truth.n_hooks} hooks · {truth.n_flows} flows · "
             f"tier sum {truth.tier_sum}.\n"
@@ -274,7 +284,8 @@ def main() -> int:
         return 1
     print(
         f"Agent/hook consistency OK — {truth.n_agents} agents "
-        f"({truth.n_opus} opus / {truth.n_sonnet} sonnet; "
+        f"({truth.n_opus} opus / {truth.n_sonnet} sonnet / "
+        f"{truth.n_fable} fable; "
         f"{truth.n_effort_max} max / {truth.n_effort_high} high) · "
         f"{truth.n_hooks} hooks · {truth.n_flows} flows."
     )

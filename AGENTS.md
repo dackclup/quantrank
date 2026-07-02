@@ -112,7 +112,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # first-party + vendored skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
-.claude/agents/                   # 27 subagents (6 opus / 21 sonnet; 25 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 5 (incl. ci-triage-engineer + the cross-cutting agent-output-verifier "จับผิด" fact-checker for other agents' claims + loop-engineer the work-loop architect) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 29 subagents (6 opus / 21 sonnet / 2 fable; 27 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 5 (incl. ci-triage-engineer + the cross-cutting agent-output-verifier "จับผิด" fact-checker for other agents' claims + loop-engineer the work-loop architect) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md) + Tier 6 Creative 2 (read-only **Fable 5** prose seats: narrative-copywriter for long-form + ux-microcopy-writer for in-product strings); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + TWO UserPromptSubmit hooks (delegate-first.sh — orchestrator reminder + agent-team auto-propose; verify-claims.sh — verify-before-acting reminder to spawn agent-output-verifier on high-stakes agent claims) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -849,7 +849,7 @@ turn (`ps … | grep next | awk '{print $2}' | xargs kill` — NOT a broad
 cancel the rest of the tool batch). Full rationale in CLAUDE.md
 §Gotchas "Background runs default to SYNC".
 
-The 27 subagents under `.claude/agents/` follow the **gate-moment
+The 29 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
 policy — most cues fire at "ready to push" / explicit ask / signal
 event, not on every edit. This is the reduced-token policy
@@ -873,6 +873,16 @@ CHECK commands from the verification ladder + FIX-routing to the owning
 agent + convergence guard); the iteration runs autonomously (no human
 between rounds) and the ONLY human gate is authorizing the irreversible
 publish (push main / merge / release / destructive). Never executes it.
+Newest tier: **Tier 6 Creative** — the two read-only **Fable 5** prose
+seats. `narrative-copywriter` drafts long-form reader-facing copy
+(README pitch / release-notes narrative / announcement / plain-English
+methodology explainer) and `ux-microcopy-writer` drafts in-product
+strings (empty-state / tooltip / label / error copy). Fable 5 is the
+creative-writing model, so the orchestrator routes a task here ONLY
+when the deliverable is the prose itself; both are read-only proposers
+(they never assert a fact or edit a file — `[VERIFY]` placeholders for
+figures, and the accuracy gate / wiring stays with `docs-reviewer` /
+`agent-output-verifier` / `frontend-builder`).
 
 Every subagent ends its report with a parseable `HANDOFF · status=… ·
 next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:…>`
@@ -881,7 +891,7 @@ from it — the documented coordination flows are canonical examples, not
 an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
 §Dynamic workflow.
 
-The 27 agent prompts are kept tight (total ~4k lines across the 27
+The 29 agent prompts are kept tight (total ~4k lines across the 29
 agent files in `.claude/agents/`) so per-spawn context cost stays bounded —
 trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
