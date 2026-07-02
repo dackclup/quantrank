@@ -10354,3 +10354,15 @@ NO schema change — `IndexCode` is a frontend-only presentation type, not the `
 **Verification**: `npx --no -- tsc --noEmit` PASS (catches any dangling `RUT` reference) · `npx --no -- vitest run` PASS (9 files / 329 tests, incl. `lib/sml-tab.test.ts`) · `npx --no -- next build` PASS (static export, 1509 pages) · final grep: 0 live "Russell 3000" strings + 0 `RUT` code references under `frontend/`. Scope provenance: financial-engineer scope (per-tab BLOCKED-ON verdict) → owner decision 1a + 2b.
 
 ---
+
+## PR (branch `claude/nasdaq-russell-indices-da25zv`) — tighten the "Broad Investable US" tab tooltip parenthetical (in flight, 2026-07-02)
+
+Fast-follow to the merged #691 (squash `9a814004`). ux-microcopy-writer's merge-gate pass on #691 approved the `label` "Broad Investable US" as-is but flagged the tooltip `name` parenthetical `"(broad market)"` as self-repeating ("Broad … (broad market)" adds nothing). This PR changes the RUA tab `name` in `frontend/components/IndexTabs.tsx` from `'Broad Investable US (broad market)'` → `'Broad Investable US (all market caps)'` — the parenthetical now carries real information (the pool spans large through small, unlike the cap-sliced peers) and parallels the existing cap-band tooltip family `"(large-cap)"` / `"(small-cap)"`. Renders cleanly in the SOON placeholder path too: "Broad Investable US (all market caps) — coming soon".
+
+Single user-visible string, `title=`/aria tooltip only — the `label` in the tab row is unchanged, COMP/RUI/all other tabs untouched. NO schema change (`IndexCode`/`INDICES_US` are frontend presentation only). Rankings/scores/flags BYTE-IDENTICAL. Defense layer UNCHANGED at 38.
+
+**Files**: `frontend/components/IndexTabs.tsx`, `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification**: `npx --no -- tsc --noEmit` (string-literal change, cannot break types — sanity only). Owner-requested fast-follow off the #691 microcopy review.
+
+---
