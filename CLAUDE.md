@@ -47,7 +47,7 @@ design-system spec.
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | Invocation-triggerable skills (first-party + vendored — license posture per source in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)) + `phase-N/` planning stubs. Index: [`.claude/skills/README.md`](.claude/skills/README.md). |
 | `.agents/skills/` | Vendored third-party skills in the cross-tool [skills.sh](https://skills.sh) layout (currently 1: `impeccable`, Apache-2.0, symlinked into `.claude/skills/`, pinned by `skills-lock.json`). Dev-session tooling only — never runs in CI / the export / the cron. |
-| `.claude/agents/` | 27 project subagents in 5 tiers (Core · Lifecycle · Specialized · Operations incl. the cross-cutting `agent-output-verifier` "จับผิด" seat + the `loop-engineer` work-loop architect · write-capable Builders: `compute-builder` owns `compute/**`, `frontend-builder` owns `frontend/**`). Routing matrix + 9 coordination flows: [`.claude/agents/README.md`](.claude/agents/README.md); agent-team recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md). |
+| `.claude/agents/` | 29 project subagents in 6 tiers (Core · Lifecycle · Specialized · Operations incl. the cross-cutting `agent-output-verifier` "จับผิด" seat + the `loop-engineer` work-loop architect · write-capable Builders: `compute-builder` owns `compute/**`, `frontend-builder` owns `frontend/**` · Creative: the two **Fable 5** read-only prose seats `narrative-copywriter` (long-form) + `ux-microcopy-writer` (in-product strings)). Routing matrix + 9 coordination flows: [`.claude/agents/README.md`](.claude/agents/README.md); agent-team recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md). |
 | `.claude/hooks/` | 4 bash hooks wired by `.claude/settings.json`: `log-bash.sh` (Bash audit log → `.claude/session.log`) · `schema-reminder.sh` (schema-triple edit reminder) · `delegate-first.sh` (orchestrator-role + team auto-proposal nudge every turn) · `verify-claims.sh` (verify-before-acting nudge every turn — spawn `agent-output-verifier` before acting on a high-stakes agent claim). Both UserPromptSubmit injectors (`delegate-first` + `verify-claims`) fire every turn. All fail-open, 5s timeout. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for `isolation: "worktree"` subagent spawns. Transient, gitignored — never commit. |
 | `docs/agents/` | Config consumed by the vendored mattpocock skills: `issue-tracker.md` + `domain.md`. See §Agent skills. |
@@ -314,7 +314,7 @@ delegate the connector-bound step to a sibling session
 
 ### Main agent role — orchestrator, not laborer
 
-The main session is the **orchestrator / tech lead** of the 27-agent
+The main session is the **orchestrator / tech lead** of the 29-agent
 team, not the laborer. Default on any task: **spawn the matching
 sub-agent from `.claude/agents/`**, not inline work (the
 `UserPromptSubmit` hook re-injects this rule every turn). Main-session
@@ -340,7 +340,7 @@ domain; the six **opus** agents (`quantrank-reviewer` ·
 comment / whitespace / single-line fixes don't trigger). Spawn
 read-only agents **without asking** — only a proposed destructive
 command needs user authorization. Pattern not in the table → walk the
-`description:` fields of all 27 agents before defaulting to inline.
+`description:` fields of all 29 agents before defaulting to inline.
 
 | Trigger (user ask OR event) | Spawn |
 |---|---|
@@ -371,6 +371,8 @@ command needs user authorization. Pattern not in the table → walk the
 | "implement X in compute/" / "build the Y component / route" / cross-layer feature build | `compute-builder` / `frontend-builder` (**write**, disjoint layers) — or propose a **Feature Squad** team ([`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)) |
 | "ออกแบบ loop / workflow ให้งานนี้" / "design a loop for X" / "set up the work-loop" / "how do we iterate to done on X" / "make this self-verifying" / "automate this end to end" / "loop engineering" — a task needing a planned plan→act→check→fix→repeat cycle, not a one-shot pass | `loop-engineer` — DESIGNS the Goal → Context → Action → Check/Fix → Repeat/Review loop (verifiable definition-of-done + each iteration's exact CHECK command from the verification ladder + FIX-routing to the owning agent + convergence guard); AUTONOMOUS up to the publish boundary — the iteration self-drives with no human between rounds, and the ONE human gate is authorizing the irreversible/outward publish (push main / merge / release / destructive); read-only, COMPOSES the loop, the orchestrator runs it |
 | Before ACTING on a high-stakes agent claim (release GO / destructive command / Mark-Ready / merge / "Top-5 rotated" / "coverage 99%" / "threshold matches <paper>") OR two agent reports disagree OR "จับผิด" / "fact-check this report" / "verify the agent's claims" / "ข้อมูลที่ ai พ่นมาถูกไหม" | `agent-output-verifier` (opus) — **MUST-invoke at these gates** (no confirmation; the `verify-claims.sh` UserPromptSubmit hook nudges it every turn) — re-derives each checkable claim from ground truth; per-claim CONFIRMED/REFUTED/STALE/UNSUPPORTED/UNVERIFIABLE; routes the fix back to the owning agent. NOT per-report (cost) — fires at the act-on-a-claim gate, not on every agent report |
+| Task IS reader-facing long-form PROSE (README pitch / release-notes or changelog narrative / announcement / blog / social / plain-English methodology explainer) — "make the pitch compelling" / "draft the release story" / "เขียนให้อ่านลื่น" / "เกริ่นนำ" | `narrative-copywriter` (**fable**, read-only) — drafts voice & tone; `[VERIFY]` for any unsourced figure; accuracy gate stays `docs-reviewer` / `agent-output-verifier`. Route here ONLY when the deliverable is the prose itself — a factual/code task never lands on a fable seat |
+| Task IS in-product MICROCOPY (empty-state / "no matches" copy · tooltip · badge/chip/button label · loading/error/toast string · `aria-label`) — "write the empty-state copy" / "microcopy for X" / "reword this label" / "make this string friendlier" / "ข้อความปุ่ม" | `ux-microcopy-writer` (**fable**, read-only) — drafts the STRING; `frontend-builder` wires it, `frontend-design-reviewer` tone-checks. Not code, not design tokens, not long-form prose |
 
 ### Spawn discipline
 
@@ -382,7 +384,9 @@ command needs user authorization. Pattern not in the table → walk the
   examples, not an exhaustive script.
 - **Don't gatekeep sub-agent effort** — no word caps / "≤ N items";
   sonnet tokens drain the under-utilized Sonnet-only pool. Keep the
-  6-opus / 21-sonnet model split and the effort policy (25 of 27 at
+  6-opus / 21-sonnet / 2-fable model split (the two Fable 5 seats are
+  the Tier-6 read-only prose agents `narrative-copywriter` +
+  `ux-microcopy-writer`) and the effort policy (27 of 29 at
   `effort: max`; the two deterministic script-runners `schema-sentinel`
   + `vercel-preview-auditor` at `high`; a new agent gets `max` unless
   it's a pure mechanical lookup). Rationale + authoring conventions:

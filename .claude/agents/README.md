@@ -22,16 +22,16 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (27)
+## The current set (29)
 
-Organized into five tiers — **core** (narrow project invariants),
+Organized into six tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
 boundaries), **specialized expertise** (domain specialists with deep
-project knowledge), **operations** (orchestrators + ops roles), and
+project knowledge), **operations** (orchestrators + ops roles),
 **builders** (write-capable implementers for agent-team parallel
-builds — see [`TEAMS.md`](TEAMS.md)). This is the "full enterprise dev
-team" topology — every tier maps to roles a 25-person engineering org
-would have:
+builds — see [`TEAMS.md`](TEAMS.md)), and **creative** (the Fable 5
+prose seats). This is the "full enterprise dev team" topology — every
+tier maps to roles a 25-person engineering org would have:
 
 ### Tier 1 — Core (5)
 
@@ -93,6 +93,23 @@ others audit.
 | [`compute-builder`](compute-builder.md) | Backend SWE (Python) | Explicit "implement X in compute/"; `compute/**` owner in a Feature Squad | sonnet | Read, Bash, Grep, Glob, Edit, Write |
 | [`frontend-builder`](frontend-builder.md) | Frontend SWE (TS/React) | Explicit "build the X component/route"; `frontend/**` owner in a Feature Squad | sonnet | Read, Bash, Grep, Glob, Edit, Write |
 
+### Tier 6 — Creative (2)
+
+The **Fable 5** seats — the only agents on a third model besides the
+`opus` + `sonnet` split. Fable 5 is the creative-writing model, so
+these own reader-facing *words* where voice / tone / readability are the
+deliverable, not correctness. Both are **read-only**: they draft/polish
+text and propose it — a builder wires it, and the substance / accuracy
+gate stays with `docs-reviewer` / `agent-output-verifier`
+(long-form) or `frontend-builder` / `frontend-design-reviewer`
+(microcopy). The orchestrator routes a task here only when the job is
+*the prose itself*; a factual or code task never lands on a fable seat.
+
+| Subagent | Enterprise role analogue | Trigger | Model | Tools |
+|---|---|---|---|---|
+| [`narrative-copywriter`](narrative-copywriter.md) | Content designer / technical marketing writer | Long-form user-facing prose — README pitch, release-notes / changelog narrative, announcement / blog / social copy, plain-English methodology explainer; "make the pitch compelling" / "draft the release story" / "เขียนให้อ่านลื่น". Drafts voice & tone; never invents a figure (`[VERIFY]` placeholders) and never touches machine-facing artifacts. Read-only. | fable | Read, Grep, Glob, Bash |
+| [`ux-microcopy-writer`](ux-microcopy-writer.md) | UX writer | In-product microcopy — empty-state / "no matches" warm-delight copy, tooltips, badge / chip / button labels, loading / error / toast strings, `aria-label` phrasing; "write the empty-state copy" / "microcopy for X" / "reword this label". Drafts the STRING; `frontend-builder` wires it. Read-only. | fable | Read, Grep, Glob, Bash |
+
 ### Tier rationale
 
 The four tiers reflect QuantRank's actual workload distribution + the
@@ -131,6 +148,16 @@ The four tiers reflect QuantRank's actual workload distribution + the
   agent-team Feature Squad (or run as scoped write-subagents). They map
   to the "feature engineers" who build; the other four tiers review what
   they ship. See [`TEAMS.md`](TEAMS.md).
+- **Tier 6 (Creative)** is the **Fable 5** prose layer —
+  `narrative-copywriter` (long-form) + `ux-microcopy-writer`
+  (in-product strings). They map to the "content / UX writers" a
+  product org has alongside its engineers: called in when the
+  deliverable is *words a human reads* and voice/tone/readability decide
+  quality. They stay read-only proposers — the accuracy gate and the
+  code that ships their words live in the other tiers — so no fable seat
+  ever asserts a fact or edits a file. The orchestrator routes to them
+  by fit: a copy/prose task goes here; a correctness/code task never
+  does.
 
 ## Coordination patterns — how the team works together
 
@@ -368,24 +395,29 @@ HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> 
   command, an ambiguous requirement) — the orchestrator surfaces it via
   `AskUserQuestion` rather than guessing.
 
-**Model split (why 6 opus / 21 sonnet under an Opus 4.8 main):** the
-orchestrator carries cross-agent synthesis, so most agents are **sonnet**
-— focused, well-scoped work handing a crisp verdict back up. The six
-**opus** agents (`quantrank-reviewer` · `methodology-scientist` ·
-`release-captain` · `incident-commander` · `financial-engineer` ·
-`agent-output-verifier`) run on opus because their job IS
-breadth-of-judgment (full-diff review · academic-prior weighing ·
-release-ladder orchestration · P1 incident triage · generative quant
-design · adversarial cross-checking of another model's output) that
-doesn't compress to a sonnet pass. `agent-output-verifier` is opus on
-purpose: catching a fluent, confident, wrong sentence that a capable
-model produced needs at least as much reasoning headroom as producing
-it did. Sonnet agents also drain the separate Max-plan
+**Model split (why 6 opus / 21 sonnet / 2 fable under an Opus 4.8
+main):** the orchestrator carries cross-agent synthesis, so most agents
+are **sonnet** — focused, well-scoped work handing a crisp verdict back
+up. The six **opus** agents (`quantrank-reviewer` ·
+`methodology-scientist` · `release-captain` · `incident-commander` ·
+`financial-engineer` · `agent-output-verifier`) run on opus because
+their job IS breadth-of-judgment (full-diff review · academic-prior
+weighing · release-ladder orchestration · P1 incident triage ·
+generative quant design · adversarial cross-checking of another model's
+output) that doesn't compress to a sonnet pass. `agent-output-verifier`
+is opus on purpose: catching a fluent, confident, wrong sentence that a
+capable model produced needs at least as much reasoning headroom as
+producing it did. The two **fable** agents (`narrative-copywriter` ·
+`ux-microcopy-writer`, Tier 6) run on **Fable 5** because their job is
+reader-facing *prose* — the creative-writing model earns its keep on
+voice/tone/rhythm where opus/sonnet reasoning headroom is wasted, and
+they're read-only so a wrong fact can't leak (they route accuracy to
+the other tiers). Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: 25 of 27 agents run at `effort: max`** (frontmatter; set 2026-05-31,
-carve-out 2026-06-03). The `effort` field is orthogonal to `model` — `model`
+**Effort: 27 of 29 agents run at `effort: max`** (frontmatter; set 2026-05-31,
+carve-out 2026-06-03; the two Fable 5 creative seats also run at `max`). The `effort` field is orthogonal to `model` — `model`
 picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
 the top of the `low / medium / high / xhigh / max` ladder and overrides the
 session's inherited effort while the subagent is active. Rationale: most agents
@@ -478,14 +510,20 @@ each invocation.
    from `THIRD_PARTY_NOTICES.md` "Description divergence" — concrete
    keywords ("verify the output", "ตรวจ output", "check the latest run"),
    false-positive guardrails, and a fail-fast verdict format.
-3. **Model selection (this project uses `opus` + `sonnet` only — no `haiku`):**
+3. **Model selection (this project uses `opus` + `sonnet` for judgment/code
+   work, plus `fable` for the two Tier-6 creative-prose seats — no `haiku`):**
    - `sonnet` — default for deterministic checks (schema drift) AND
      multi-step audits with judgment (defense scorecard, debug).
    - `opus` — full code review where breadth + nuance matter (one or
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
+   - `fable` — reader-facing PROSE only (voice/tone/readability), where
+     the creative-writing model beats reasoning models and the seat is
+     read-only so no fact leaks (Tier 6: `narrative-copywriter` +
+     `ux-microcopy-writer`). Do NOT pick `fable` for anything that
+     asserts a fact, reviews, or edits code.
    - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
-     field, orthogonal to `model`). 25 of 27 agents run at the top
+     field, orthogonal to `model`). 27 of 29 agents run at the top
      reasoning level; the 2 deterministic script-runners (`schema-sentinel`
      + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
      A new agent gets `effort: max` too unless it's a pure mechanical

@@ -9908,3 +9908,26 @@ the same design tokens.
 **R7b follow**: the ~700-line per-ticker Step-8 loop body itself — fair-price ensemble + the ~20 `valuation_warnings.append` sites + StockSummary/StockDetail writes. Kept a pure move; smells #5 (WarningEmitter) / #8 (double `check_rim_applicability`) folded in only if provably byte-identical, else deferred to a small follow-up.
 
 ---
+
+## PR (branch `claude/subagents-fable5-routing-crysgq`) — Tier 6: two Fable 5 read-only prose subagents (in flight, 2026-07-02)
+
+Adds a new **Tier 6 — Creative** to the subagent roster: two read-only agents on the **Fable 5** model (`model: fable`, `effort: max`) that the Opus 4.8 orchestrator routes to *by fit* — the deliverable being reader-facing prose, not correctness. Fable 5 is the creative-writing model in the Claude 5 family, so voice/tone/readability tasks land here where opus/sonnet reasoning headroom is wasted; a factual or code task never routes to a fable seat.
+
+- `narrative-copywriter` — long-form user-facing prose (README pitch · release-notes / changelog narrative · announcement / blog / social copy · plain-English methodology explainer). Drafts voice & tone; every unsourced figure becomes a `[VERIFY]` placeholder; the accuracy gate stays with `docs-reviewer` / `agent-output-verifier`. Never touches machine-facing artifacts (code · comments · commits · PR bodies · logs — thai-token-economy).
+- `ux-microcopy-writer` — in-product microcopy (empty-state / "no matches" warm-delight copy · tooltip · badge/chip/button label · loading/error/toast string · `aria-label` phrasing). Drafts the STRING; `frontend-builder` wires it and `frontend-design-reviewer` tone-checks. Reads the `frontend-design-system` + `impeccable` skills first.
+
+**Model/tooling change**: this is the FIRST third model in the roster (previously `opus` + `sonnet` only). `tools/check_agent_hook_consistency.py` now recognizes `fable` in `VALID_MODELS`, counts `n_fable`, and asserts `n_opus + n_sonnet + n_fable == n_agents`; four tier-count anchors moved `5 tiers` → `6 tiers` and four new `n_fable` anchors were added. Both read-only (tools: Read, Grep, Glob, Bash) — no write surface, no collision with `frontend-builder`'s `frontend/**` ownership or `docs-reviewer`'s substance gate.
+
+**Lockstep counts bumped in lockstep** (guard-verified): 27 → **29** agents · 5 → **6** tiers · 25 → **27** at `effort: max` · model split now **6 opus / 21 sonnet / 2 fable** — across CLAUDE.md (§Layout · §Auto-routing orchestrator/walk-all counts · two new routing-table rows · Spawn-discipline split) · AGENTS.md (roster line · §Boundaries prose · prompt-count) · CONTEXT.md (roster · catalog · layout) · PHASE_STATUS.md (inventory row) · `.claude/agents/README.md` (current-set count · new Tier 6 table + rationale · model-split · effort · authoring #3). Schema triple UNTOUCHED (no `schemas.py` / `types.ts` / snapshot change). Defense layer UNCHANGED at 38.
+
+**Files**:
+- `.claude/agents/narrative-copywriter.md` (new)
+- `.claude/agents/ux-microcopy-writer.md` (new)
+- `tools/check_agent_hook_consistency.py` (fable model support + anchors)
+- `tests/test_agent_hook_consistency.py` (invariant + docstring updated for fable)
+- `CLAUDE.md` · `AGENTS.md` · `CONTEXT.md` · `PHASE_STATUS.md` · `.claude/agents/README.md` (lockstep counts + Tier 6 documentation)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verification ladder** (green): `ruff check .` PASS · `python tools/check_agent_hook_consistency.py` → "29 agents (6 opus / 21 sonnet / 2 fable; 27 max / 2 high)" · `python -m pytest tests/test_agent_hook_consistency.py -q` → 9 passed (incl. `test_no_dead_anchors` confirming the four new fable anchors match real doc lines) · `python tools/preflight.py` rungs green except the compute-stack pytest collection (env has no pandas in this container — unrelated to this docs/agents diff). No schema / scoring / frontend surface touched.
+
+---

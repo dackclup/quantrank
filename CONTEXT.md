@@ -49,7 +49,7 @@ See [`README.md`](README.md) for the user-facing pitch +
 | Post-tag patches | PR #292 GOOG/GOOGL XBRL · #293 NVR DQIC retire · #294 sector-CoE flip · #295 housekeeping · #296 CONTEXT.md · #297 Issue #287 PR A wall-clocks · #298 cache-v5 · #299 housekeeping · #300 per-sector delta · #301 .md sweep · #302 Site-2 dead-code removal (2026-05-28); PR #303 `847c21b` Form-4 negation guard (schema `0.10.11-phase4.6`) · #304 `e070db6` expert-user-explorer (19th agent) · #306 `6ce7c1b` RiskFlagsCard · #307 `bb1d7fd` Phase B orchestrator tuning · #308 `e77efbf` RiskFlagsCard footer fix · #310 `a941e2e` stale_filing_hard Rule-16 fix (2026-05-29) |
 | Universe provider | historical S&P 500 membership (PR #274 Hou-Xue-Zhang 2020) |
 | Sector-CoE | `USE_SECTOR_COE = True` (PR #294 flip; Damodaran 2019 Ch. 8.4 11-sector Ke; cron Run #71 confirmed `value_trap_risk` 132 → 109) |
-| Sub-agent roster | 27 agents in 5 tiers (6 opus + 21 sonnet) |
+| Sub-agent roster | 29 agents in 6 tiers (6 opus + 21 sonnet + 2 fable) |
 | Skill inventory | 47 (vendored + project-internal) |
 | Cron status | weekday cron Run #71 green (2026-05-28 08:44 UTC, `368dccd9`, 14m 32s warm cache; empirically validated PR #297 wall-clock fields) |
 
@@ -71,7 +71,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | Cross-tool agent rules (Copilot / Cursor / Devin) | [`AGENTS.md`](AGENTS.md) |
 | Visual / design-system spec (LedgerCraft) | [`docs/design.md`](docs/design.md) |
 | Vendor + license posture per third-party source | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) |
-| Sub-agent catalog (27 agents, 5 tiers, 9 coordination flows) + agent-team recipes | [`.claude/agents/README.md`](.claude/agents/README.md) · [`TEAMS.md`](.claude/agents/TEAMS.md) |
+| Sub-agent catalog (29 agents, 6 tiers, 9 coordination flows) + agent-team recipes | [`.claude/agents/README.md`](.claude/agents/README.md) · [`TEAMS.md`](.claude/agents/TEAMS.md) |
 | Skill index (47 vendored + project-internal) | [`.claude/skills/README.md`](.claude/skills/README.md) |
 | mattpocock harness consumer rules (issue-tracker, domain) | [`docs/agents/`](docs/agents/) |
 | User-facing pitch + Honest Limitations | [`README.md`](README.md) |
@@ -165,7 +165,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated) |
 | `.claude/skills/` | 47 invocation-triggerable skills + phase planning docs |
-| `.claude/agents/` | 27 project-specific sub-agents in 5 tiers |
+| `.claude/agents/` | 29 project-specific sub-agents in 6 tiers |
 | `.claude/hooks/` | 4 hook scripts (`log-bash.sh` + `schema-reminder.sh` + `delegate-first.sh` + `verify-claims.sh`) |
 | `docs/` | METHODOLOGY.md, design.md, agents/ |
 
