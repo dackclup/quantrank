@@ -47,13 +47,12 @@ on:
   workflow_dispatch:
     inputs:
       universe:
-        description: "Universe to precache. sp1500 = warms the full S&P 1500 (~1500 names: sp500 + sp400 + sp600; Slice 7 cron-default 2026-06-20 — the scheduled Saturday precache now matches Monday's cron default). sp900 = S&P 500 + S&P 400 (~903 names; prior default pre-Slice 7; use for diagnostics or rollback testing). sp500 = large-cap only (diagnostic / fallback). Default sp1500 for the scheduled Saturday run so it warms the same universe as Monday's cron (precache-must-match-cron invariant)."
+        description: "Universe to precache. sp1500 = warms the full S&P 1500 (~1500 names: sp500 + sp400 + sp600; Slice 7 cron-default 2026-06-20 — the scheduled Saturday precache now matches Monday's cron default). sp900 = S&P 500 + S&P 400 (~903 names; prior default pre-Slice 7; use for diagnostics or rollback testing). sp500 = large-cap only (diagnostic / fallback). Default sp1500 for the scheduled Saturday run so it warms the same universe as Monday's cron (precache-must-match-cron invariant). broad_investable_us is NOT an option here — Phase 9.3 gate-C1 moved broad-universe precaching to the dedicated .github/workflows/precache-broad-universe.yml 4-job split (a single-job cold broad-universe run does not fit this workflow's budget; see that workflow's header comment)."
         type: choice
         options:
           - sp500
           - sp900
           - sp1500
-          - broad_investable_us
         default: sp1500
 
 env:
@@ -92,25 +91,28 @@ jobs:
     #   Ceiling:                   ~225 min cold worst-case (sp1500)
     # Typical warm Saturday ≈ 15-25 min (exact-key fast-cache hit).
     #
-    # Phase 9.3 scale-up (Broad Investable US dry-run, ~3,545 names):
-    #   Cold compute: ~280-320 min (1.43-1.63× sp1500 cold; EDGAR loops
-    #   dominate and scale ~linearly with name-count; cached sp1500 overlap
-    #   names do not need re-fetch).
-    #   + 10% SEC throttle spike:  ~310-350 min
-    #   + runner overhead:         ~5-10 min
-    #   Cold worst-case ceiling:   ~360 min (no folded backtest step here)
-    # Typical warm Saturday (exact-key fast-cache hit): ~15-25 min unchanged.
-    # 540 min ceiling (2× sp1500) absorbs the cold ~462-524 min rebuild so
-    # the weekday cron is always warm — the proven SP1500 precache-absorbs-
-    # cold pattern (#492/#520). The 270-min budget was adequate for sp1500
-    # (~225 min cold) but is insufficient for broad-investable-US scale.
+    # Phase 9.3 gate-C1 fix (2026-07-02): the "Broad Investable US dry-run"
+    # scale-up estimate that used to live here (~280-320 min projected) was
+    # WRONG and the 540-min ceiling it justified was UNREACHABLE anyway —
+    # GitHub Actions hard-caps every job at 6 hours (360 minutes) regardless
+    # of `timeout-minutes:`. A single-job cold `universe: broad_investable_us`
+    # dispatch on THIS workflow was CANCELLED at the 360-min hard cap with NO
+    # cache saved (~480-510 min observed cold — 1.5-1.8× the wrong estimate
+    # above). Broad-universe precaching moved OUT of this workflow entirely
+    # to the dedicated `.github/workflows/precache-broad-universe.yml`
+    # 4-job sequential split (each job individually ≤ 360 min; see its
+    # header comment for the full design). This workflow's `universe`
+    # dispatch input no longer offers `broad_investable_us` (removed,
+    # 2026-07-02) — it stays scoped to sp500/sp900/sp1500, all of which fit
+    # comfortably under the 360-min hard cap per the sp1500 baseline above.
+    # 360 min = the GitHub Actions hard per-job ceiling; there is no
+    # headroom to grant beyond it, so this is now simply "the max".
     # actions/cache post-job save only runs on job SUCCESS — the precache's
     # entire purpose is to complete and save; the ceiling must cover cold.
-    # Owner has authorised the GHA billing increase (2026-06-29).
     # Monthly cost: warm Saturdays ≈ ~15-25 min (< 1 run × 4 weeks);
-    # cold worst-case at 540m × 4 Saturdays/month = 2,160 min/month max.
-    # The cron universe default STAYS sp1500; 540 min is a headroom grant.
-    timeout-minutes: 540
+    # cold worst-case at 360m × 4 Saturdays/month = 1,440 min/month max.
+    # The cron universe default STAYS sp1500.
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6

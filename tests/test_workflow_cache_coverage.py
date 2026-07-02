@@ -39,7 +39,45 @@ _WORKFLOW_PATH = _WORKFLOWS_DIR / "compute-rankings.yml"
 # Both workflows that restore AND save the compute cache bundles. They must
 # stay in lockstep (paths + key families) — see precache-edgar.yml's header
 # comment for the exact-key save semantics that depend on it.
+#
+# ``precache-broad-universe.yml`` (Phase 9.3 gate-C1 fix, 2026-07-02) is
+# DELIBERATELY EXCLUDED from this tuple — same precedent as
+# ``backfill-portfolio.yml`` / ``pre-merge-prod-sim.yml`` / ``backfill-
+# warehouse.yml``, none of which are in ``_CACHE_WARMING_WORKFLOWS`` either.
+# Its save-key strategy is fundamentally different from the two canonical
+# workflows' EXACT-KEY parity contract this tuple's tests enforce: every
+# job in that workflow SAVES under a unique per-job/per-run "-broad-"
+# namespaced key (never the bare canonical key), by design — see that
+# workflow's own dedicated tests below
+# (``test_precache_broad_universe_*``), which check the properties that
+# actually matter for ITS strategy instead of the exact-key-parity
+# properties above, which do not apply to it.
 _CACHE_WARMING_WORKFLOWS = ("compute-rankings.yml", "precache-edgar.yml")
+
+# The three workflows this PR (Phase 9.3 gate-C1 fix) is responsible for
+# keeping at-or-under GitHub Actions' hard 6-hour (360-minute) per-job
+# ceiling: the two files whose `timeout-minutes:` were LOWERED to 360 in
+# this PR (they were previously set ABOVE the unmovable hard cap — dead
+# configuration that masked the real ceiling) plus the new 4-job split
+# workflow, whose whole reason to exist is respecting that same cap.  Used
+# by the gate-C1 regression ratchet
+# (``test_gate_c1_workflows_at_or_under_six_hour_hard_cap``) below.
+#
+# Deliberately NOT scope-widened to EVERY timeout-bearing workflow in the
+# repo: ``pre-merge-prod-sim.yml`` still declares `timeout-minutes: 420`
+# (also technically unreachable past the same 360-min hard cap, but fixing
+# that value is OUT OF SCOPE for this PR — only its stale numeric comment
+# was corrected here; see that workflow's own timeout comment). Widening
+# this tuple to include it would make this new ratchet fail immediately on
+# a PRE-EXISTING, not-this-PR's-doing value. ``backfill-portfolio.yml``
+# (120) and ``backfill-warehouse.yml`` (300) already comply but are also
+# left out of this specific PR's ratchet scope — narrower is more honest
+# here than implying this PR audited every workflow in the repo.
+_GATE_C1_FIXED_WORKFLOWS = (
+    "compute-rankings.yml",
+    "precache-edgar.yml",
+    "precache-broad-universe.yml",
+)
 
 # Cache locations declared in compute/config.py that the workflows MUST
 # preserve across CI runs. Adding a new entry to compute.config (e.g.,
@@ -671,6 +709,277 @@ def test_compute_rankings_has_universe_dispatch_input() -> None:
     assert "${{ github.event.inputs.universe }}" not in text or "run:" not in text.split(
         "${{ github.event.inputs.universe }}"
     )[0][-200:], "universe input must not feed a run: shell line (script-injection)"
+
+
+def test_precache_edgar_no_longer_offers_broad_investable_us_dispatch_option() -> None:
+    """precache-edgar.yml's `universe` dispatch no longer offers
+    `broad_investable_us` as a choice (Phase 9.3 gate-C1 fix, 2026-07-02).
+
+    WHY: a single-job cold `universe: broad_investable_us` dispatch on this
+    workflow was CANCELLED at GitHub Actions' 6-hour per-job hard cap with
+    no cache saved. Broad-universe precaching moved to the dedicated
+    ``precache-broad-universe.yml`` 4-job split; offering the option here
+    would let an operator re-trigger the exact failure mode this PR fixes.
+    sp500/sp900/sp1500 remain (all fit comfortably in one job).
+
+    Matches on the literal YAML list-item bullet (``- broad_investable_us``
+    at the same indent as the other choices), NOT a bare substring check —
+    the string ``broad_investable_us`` legitimately still appears elsewhere
+    in this file's descriptive comments (explaining WHERE the option went),
+    so a naive ``"broad_investable_us" not in text`` assertion would be a
+    false positive.
+    """
+    text = _workflow_text("precache-edgar.yml")
+    assert "          - broad_investable_us" not in text, (
+        "precache-edgar.yml must NOT offer `broad_investable_us` as a `universe` "
+        "dispatch choice — it belongs to the dedicated "
+        "precache-broad-universe.yml 4-job split (Phase 9.3 gate-C1 fix)."
+    )
+    # The three that DO fit in one job remain.
+    for choice in ("- sp500", "- sp900", "- sp1500"):
+        assert choice in text, f"precache-edgar.yml `universe` input missing choice {choice!r}"
+
+
+def test_compute_rankings_still_offers_broad_investable_us_dispatch_option() -> None:
+    """compute-rankings.yml's `universe` dispatch KEEPS `broad_investable_us`
+    (Phase 9.3 gate-C1 fix, 2026-07-02) — this is the dedicated, deliberate
+    asymmetry vs. precache-edgar.yml: the WARM ranked run still dispatches
+    through this workflow; only the COLD precaching moved to
+    precache-broad-universe.yml. Losing this option here would silently
+    remove the only way to actually RANK the broad-investable-US universe.
+    """
+    text = _workflow_text("compute-rankings.yml")
+    assert "          - broad_investable_us" in text, (
+        "compute-rankings.yml must KEEP `broad_investable_us` as a `universe` "
+        "dispatch choice — only the COLD precaching moved to "
+        "precache-broad-universe.yml; the warm RANKED dispatch still lives here."
+    )
+
+
+def _all_job_timeout_minutes(text: str) -> list[int]:
+    """Return every ``timeout-minutes: <N>`` value in a workflow file (job-level
+    and step-level alike — unlike ``_job_timeout_minutes``, which returns only
+    the first). Used by the gate-C1 ratchet, which must check ALL FOUR jobs in
+    ``precache-broad-universe.yml``, not just the first.
+    """
+    return [int(m) for m in re.findall(r"^\s*timeout-minutes:\s*(\d+)\s*$", text, re.MULTILINE)]
+
+
+def test_gate_c1_workflows_at_or_under_six_hour_hard_cap() -> None:
+    """Every `timeout-minutes:` value in the 3 gate-C1-fixed workflows is
+    <= 360 — GitHub Actions' HARD, unmovable 6-hour per-job ceiling.
+
+    WHY (Phase 9.3 gate-C1, 2026-07-02): `compute-rankings.yml` and
+    `precache-edgar.yml` previously declared `timeout-minutes: 420` / `540`
+    — both ABOVE the hard cap, which is dead configuration: GitHub silently
+    clamps the actual enforcement to 360 regardless of what YAML says, so
+    the visible number lied about the real ceiling. This was discovered
+    when a single-job cold `universe: broad_investable_us` dispatch was
+    CANCELLED at 360 min with no cache saved (the gate-C1 finding). Per
+    CLAUDE.md's error->regression-ratchet convention, this mechanical,
+    structural invariant ("every job timeout must be a REACHABLE number")
+    is converted into a deterministic guard here, in the same PR that fixed
+    the two stale values and introduced the new 4-job workflow whose own
+    ENTIRE PURPOSE is fitting under this exact cap.
+
+    Deliberately scoped to `_GATE_C1_FIXED_WORKFLOWS` only — see that
+    tuple's comment for why `pre-merge-prod-sim.yml` (still 420, a
+    pre-existing and out-of-this-PR's-scope value) is excluded.
+    """
+    for workflow in _GATE_C1_FIXED_WORKFLOWS:
+        text = _workflow_text(workflow)
+        timeouts = _all_job_timeout_minutes(text)
+        assert timeouts, f"{workflow}: no `timeout-minutes:` found at all"
+        for t in timeouts:
+            assert t <= 360, (
+                f"{workflow} declares timeout-minutes: {t}, which is ABOVE "
+                f"GitHub Actions' hard 6-hour (360-minute) per-job ceiling. "
+                f"A value above 360 is dead configuration — GitHub silently "
+                f"clamps enforcement to 360 regardless, exactly the gate-C1 "
+                f"finding (a single-job cold broad-universe dispatch was "
+                f"CANCELLED at the real 360-min cap with NO cache saved, "
+                f"despite `timeout-minutes: 540` implying much more headroom)."
+            )
+
+
+def test_precache_broad_universe_is_dispatch_only_no_schedule() -> None:
+    """precache-broad-universe.yml has NO `schedule:` trigger — it is an
+    occasional, manually-triggered cold-warming pass, not a recurring cron
+    (unlike precache-edgar.yml's Saturday schedule).
+    """
+    text = _workflow_text("precache-broad-universe.yml")
+    assert "workflow_dispatch:" in text, (
+        "precache-broad-universe.yml must expose a workflow_dispatch trigger"
+    )
+    # Match the STRUCTURED `on:`-block trigger key (2-space indent, per this
+    # repo's YAML style — see `schedule:` under `on:` in precache-edgar.yml),
+    # NOT a bare substring: this file's own header comment legitimately says
+    # "deliberately NO `schedule:` trigger" (discussing the absence), and a
+    # naive `"schedule:" not in text` check would trip on that comment text.
+    assert "\n  schedule:\n" not in text, (
+        "precache-broad-universe.yml must NOT declare a `schedule:` trigger — "
+        "it is a manually-triggered, occasional cold-warming pass, not a "
+        "recurring cron. A schedule here would repeatedly re-run an ~hours-long "
+        "4-job EDGAR crawl with no corresponding consumer."
+    )
+
+
+def test_precache_broad_universe_concurrency_group_matches_canonical() -> None:
+    """precache-broad-universe.yml joins the SAME `edgar-cache-writers`
+    concurrency group as compute-rankings.yml / precache-edgar.yml, so it
+    never races either for the cache-write surface.
+    """
+    text = _workflow_text("precache-broad-universe.yml")
+    assert "group: edgar-cache-writers" in text
+    assert "cancel-in-progress: false" in text, (
+        "must queue (not cancel) a concurrent run — a cancelled run must "
+        "still eventually run, never silently disappear"
+    )
+
+
+def test_precache_broad_universe_needs_chain_is_sequential() -> None:
+    """The 4 jobs form a strict LINEAR `needs:` chain (job2->job1,
+    job3->job2, job4->job3) — never parallel.
+
+    WHY: running the jobs in parallel would risk amplifying the sustained
+    EDGAR request rate beyond what each stage's timeout budget assumes (a
+    budget derived from running ALONE), and the whole point of the split is
+    to stay a well-behaved, serialized, single cache-writing sequence — the
+    same invariant `concurrency: group: edgar-cache-writers` enforces
+    against the OTHER cache-writing workflows.
+    """
+    text = _workflow_text("precache-broad-universe.yml")
+    # Plain-regex parse (module convention — no PyYAML dependency). Job
+    # blocks are 2-space-indented `<job-id>:` lines directly under `jobs:`;
+    # split on that boundary FIRST so each block's `needs:` search cannot
+    # bleed into a LATER sibling job (a lazy single-pass regex without this
+    # boundary would incorrectly attribute a later job's `needs:` line back
+    # to an earlier job that has none — caught while writing this test).
+    job_start_re = re.compile(r"^  (\S+):\s*$", re.MULTILINE)
+    starts = list(job_start_re.finditer(text))
+    assert len(starts) == 4, f"expected exactly 4 top-level jobs, found {[m.group(1) for m in starts]!r}"
+
+    blocks: dict[str, str] = {}
+    for i, m in enumerate(starts):
+        job_id = m.group(1)
+        block_start = m.end()
+        block_end = starts[i + 1].start() if i + 1 < len(starts) else len(text)
+        blocks[job_id] = text[block_start:block_end]
+
+    needs_re = re.compile(r"^\s*needs:\s*(\S+)\s*$", re.MULTILINE)
+
+    def _needs_of(job_id: str) -> str | None:
+        m = needs_re.search(blocks[job_id])
+        return m.group(1) if m else None
+
+    assert _needs_of("price-screen") is None, "price-screen (job 1) must have no `needs:` at all"
+    assert _needs_of("fundamentals-history") == "price-screen", (
+        f"fundamentals-history must declare `needs: price-screen`, "
+        f"found {_needs_of('fundamentals-history')!r}"
+    )
+    assert _needs_of("form4") == "fundamentals-history", (
+        f"form4 must declare `needs: fundamentals-history`, found {_needs_of('form4')!r}"
+    )
+    assert _needs_of("tier2") == "form4", f"tier2 must declare `needs: form4`, found {_needs_of('tier2')!r}"
+
+
+def test_precache_broad_universe_save_keys_are_broad_namespaced_and_unique() -> None:
+    """Every cache `key:` (the SAVE key) in precache-broad-universe.yml is
+    `-broad-`-namespaced, includes `${{ github.run_id }}` + a per-job label,
+    and NEVER equals the bare canonical key literal used by
+    compute-rankings.yml / precache-edgar.yml.
+
+    WHY (the exact-key-skip-save trap): `actions/cache` SKIPS the post-job
+    save when the computed `key:` exact-hits an existing cache entry. If any
+    job here saved under the bare canonical key (or a key some EARLIER job
+    in the SAME run just saved), its own contribution would silently vanish
+    — the same class of bug as the #471 frozen-fast-cache gotcha. Using a
+    `-broad-<run_id>-<job label>` key guarantees the exact key has NEVER
+    existed before, so the save is NEVER skipped.
+    """
+    text = _workflow_text("precache-broad-universe.yml")
+    # `.+` (not `\S+`) because the key value contains `${{ github.run_id }}`
+    # — an internal-space interpolation — so a whitespace-stopped token
+    # would truncate mid-key and never reach the trailing newline anchor.
+    save_key_re = re.compile(r"^\s*key: (cache-v.+)$", re.MULTILINE)
+    save_keys = save_key_re.findall(text)
+    assert len(save_keys) == 4, f"expected exactly 4 cache SAVE keys (one per job), found {save_keys!r}"
+
+    canonical_fast = "cache-v12-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}"
+    canonical_slow = "cache-v5-text-${{ runner.os }}-${{ github.run_id }}"
+    for key in save_keys:
+        assert key != canonical_fast, (
+            f"SAVE key {key!r} must never equal the bare canonical fast key "
+            f"{canonical_fast!r} — that would poison the sp1500 bundle and/or "
+            f"trip the exact-key-skip-save trap."
+        )
+        assert key != canonical_slow, (
+            f"SAVE key {key!r} must never equal the bare canonical slow-text key "
+            f"{canonical_slow!r}."
+        )
+        assert "-broad-" in key, f"SAVE key {key!r} must be namespaced with '-broad-'"
+        assert "${{ github.run_id }}" in key, (
+            f"SAVE key {key!r} must include ${{{{ github.run_id }}}} so it is "
+            f"unique per workflow run (never re-used, so the save is never skipped)"
+        )
+    # Each job's key carries its own distinguishing label, so jobs never
+    # collide with EACH OTHER's save key within the same run either.
+    assert save_keys == sorted(set(save_keys)) or len(set(save_keys)) == 4, (
+        f"all 4 SAVE keys must be pairwise distinct, found {save_keys!r}"
+    )
+    for job_label in ("job1", "job2", "job3", "job4"):
+        assert any(key.endswith(job_label) for key in save_keys), (
+            f"no SAVE key ends with the expected per-job label {job_label!r}: {save_keys!r}"
+        )
+
+
+def test_precache_broad_universe_restore_keys_fall_back_to_canonical() -> None:
+    """Every cache step's `restore-keys:` include the broad-namespaced
+    quarter/os prefix FIRST, then fall back to the CANONICAL prefix the
+    weekday cron / Saturday precache maintain — so a first-ever run (no
+    prior broad-namespaced save yet) still inherits sp1500 warmth for the
+    survivor-set overlap, and a later run inherits ITS OWN prior warm state.
+    """
+    text = _workflow_text("precache-broad-universe.yml")
+    # Fast-bundle jobs (price-screen, fundamentals-history).
+    assert "cache-v12-fast-${{ steps.quarter.outputs.q }}-broad-\n" in text, (
+        "fast-bundle cache steps must restore the broad-namespaced quarter "
+        "prefix (no run-id/job suffix) so THIS run's earlier jobs' saves are "
+        "picked up by prefix match"
+    )
+    assert "cache-v12-fast-${{ steps.quarter.outputs.q }}-\n" in text, (
+        "fast-bundle cache steps must ALSO restore the CANONICAL quarter "
+        "prefix as a fallback, inheriting sp1500 warmth for the survivor-set "
+        "overlap on a first-ever run"
+    )
+    # Slow-text-bundle jobs (form4, tier2).
+    assert "cache-v5-text-${{ runner.os }}-broad-\n" in text, (
+        "slow-text-bundle cache steps must restore the broad-namespaced "
+        "os prefix (no run-id/job suffix)"
+    )
+    assert "cache-v5-text-${{ runner.os }}-\n" in text, (
+        "slow-text-bundle cache steps must ALSO restore the CANONICAL "
+        "os prefix as a fallback, inheriting the cron's warm Form-4/tier2 cache"
+    )
+    # Ordering: within each restore-keys block, the broad-namespaced prefix
+    # must come BEFORE the canonical one (actions/cache tries restore-keys
+    # in order; the more-specific/fresher entry should win first).
+    fast_block_re = re.compile(
+        r"restore-keys: \|\n\s*(cache-v12-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}-broad-)\n"
+        r"\s*(cache-v12-fast-\$\{\{ steps\.quarter\.outputs\.q \}\}-)\n"
+    )
+    assert fast_block_re.search(text), (
+        "fast-bundle restore-keys must list the broad-namespaced prefix BEFORE "
+        "the canonical prefix (actions/cache tries them in declared order)"
+    )
+    slow_block_re = re.compile(
+        r"restore-keys: \|\n\s*(cache-v5-text-\$\{\{ runner\.os \}\}-broad-)\n"
+        r"\s*(cache-v5-text-\$\{\{ runner\.os \}\}-)\n"
+    )
+    assert slow_block_re.search(text), (
+        "slow-text-bundle restore-keys must list the broad-namespaced prefix "
+        "BEFORE the canonical prefix"
+    )
 
 
 def test_precache_has_universe_dispatch_input() -> None:

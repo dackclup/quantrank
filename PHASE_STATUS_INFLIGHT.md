@@ -10003,5 +10003,116 @@ Schema triple UNTOUCHED; defense layer UNCHANGED at 38.
 **Files**: `frontend/components/RankingTable.tsx` (3 string swaps), `PHASE_STATUS_INFLIGHT.md` (this entry).
 
 **Verification ladder** (green — run independently by both `frontend-builder` and the orchestrator): `cd frontend && npx --no -- tsc --noEmit` → PASS (clean exit) · `cd frontend && npx --no -- next build` → PASS (1509 static pages generated, exit 0). No compute/schema surface touched, so pytest/schema_check rungs not applicable. Spot-check surface: the search box + empty-state on `/` and `/ranking` (search a nonexistent ticker to trigger both sub-line branches).
+## Phase 9.3 gate-C1 fix — broad-universe 4-job precache split + Step-3 history orchestrator extraction (in flight, 2026-07-02)
+
+**Branch**: `claude/phase-9-3-precache-broad-split` (off post-#676/#677/#678 `origin/main`, tip `ce0b74226`). Owner-authorised. **DRAFT PR — do NOT merge.**
+
+**The gate-C1 finding**: a single-job cold run of the `QR_UNIVERSE=broad_investable_us` RANKED path (wired by #676 — ~6,883-name candidate pool → Step-1 prices → `select_broad_universe_survivors` → ~3,545 survivors → fundamentals/history/form4/tier2 fetched only for survivors) was CANCELLED at GitHub Actions' HARD, unmovable 6-hour (360-minute) per-job ceiling with NO cache saved. The observed cold runtime was ~480-510 min — past even the Phase-9.3-runtime-prereq PR's `precache-edgar.yml timeout-minutes: 540`, and wildly past that same PR's ~280-320 min *projection* for broad-universe cold compute. **The root fix is architectural, not a bigger number**: `timeout-minutes:` values above 360 were ALWAYS dead configuration — GitHub Actions silently clamps job enforcement to 360 minutes regardless of the declared YAML value, so `compute-rankings.yml: 420` and `precache-edgar.yml: 540` never actually granted the headroom their comments claimed. The fix is to split the single broad-universe cold-warming job into 4 sequential jobs, each individually respecting the real 360-min ceiling.
+
+### 1 — Prerequisite: `compute/orchestrator/history.py` extraction
+
+Today's `compute/main.py` Step 3 (annual-history fetch) was the one EDGAR-bound parallel loop NOT already independently callable — unlike prices/fundamentals/form4/tier2, each extracted into `compute/orchestrator/{prices,fundamentals,form4,tier2}.py` in PRs #259-R2..R5. The new `scripts/precache_broad_stage_fundamentals.py` stage script (see below) needs to call the Step-3 loop directly, outside `run_weekly_compute`, so this extraction is a hard prerequisite.
+
+**Mirrors the `compute/orchestrator/fundamentals.py` (R3) pattern EXACTLY**, per the task brief's explicit instruction — same docstring shape, same "PURE CODE MOVE" framing, same "what stays in `compute.main`" convention (the step-orchestration-level `logger.info("Fetching annual fundamentals history…")` log line stays in `main.py`, firing in the same position exactly once; the low-level per-ticker debug log lives inside the new module's private helper).
+
+**Public surface**: `fetch_all_history(df, *, max_workers=config.EDGAR_MAX_WORKERS, timeout=45) -> dict[str, pd.DataFrame]` — a single dict (unlike `fetch_all_fundamentals`'s 2-tuple), matching the original inline loop's behaviour exactly: `_history_one` returns `(history_df, elapsed_seconds)` but the orchestrating loop always discarded the elapsed component (bound to the throwaway `_hist_elapsed` name) — no history-latency Metadata field exists anywhere downstream (grep-confirmed).
+
+**`compute/main.py` changes** (byte-identical output):
+- Removed the `_history_one` function definition (22 lines) — moved verbatim to the new module.
+- Removed now-fully-unused imports: `import concurrent.futures as _cf` and `from concurrent.futures import ThreadPoolExecutor, as_completed` (both were used ONLY inside the Step-3 block being extracted — grep-confirmed zero other call sites in the file) + `fetch_fundamentals_history` from the `compute.ingest.fundamentals` import block (its sole caller, `_history_one`, moved with it).
+- Added `from compute.orchestrator.history import fetch_all_history` (alphabetically slotted between the `fundamentals` and `osap` orchestrator imports).
+- Replaced the Step-3 `with ThreadPoolExecutor(...)` block with `histories: dict[str, pd.DataFrame] = fetch_all_history(df, timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)`, keeping the `logger.info("Fetching annual fundamentals history…")` line immediately above it (same position, same single firing).
+- `_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS = 45` STAYS in `compute.main` (Step 2's `fetch_all_fundamentals` call also needs it — same R3 precedent).
+
+**NOT part of the `#259` R-numbered series**: R7a (merged as #678, "pre-loop membership maps") and the still-pending R7b are reserved for the UNRELATED per-ticker Step-8 scoring loop. This extraction is a standalone prerequisite for the gate-C1 fix, deliberately not claiming an R-number that belongs to different, larger, already-planned work.
+
+**Existing test patch targets updated** (2 files, mirroring the R3 precedent exactly):
+- `tests/test_main.py`: `_history_one` removed from the `compute.main` import block; added `from compute.orchestrator.history import _history_one`. The `monkeypatch.setattr("compute.main.fetch_fundamentals_history", ...)` unit test updated to `"compute.orchestrator.history.fetch_fundamentals_history"`. The `patch("compute.main._history_one", ...)` in the Step-4 `run_weekly_compute` integration harness (`test_step4_sectors_dict_passed_to_compute_risk_flags`) updated to `"compute.orchestrator.history._history_one"`.
+- `tests/test_output/test_wall_clock_schema.py`: same `patch("compute.main._history_one", ...)` → `"compute.orchestrator.history._history_one"` retarget in the shared `_run_orchestrator` harness used by all wall-clock-schema tests; docstring comment updated.
+
+**New tests**: `tests/test_orchestrator/test_history.py` — 19 offline synthetic tests mirroring `test_fundamentals.py` section-for-section (A `_history_one` happy/missing-CIK/exception/object-identity; B `fetch_all_history` happy-path aggregation incl. the plain-dict-not-tuple shape difference; C timeout handling; D exception handling) PLUS a new Section E of 4 behaviour-preservation regression guards specific to this extraction: E1 asserts `compute.main` no longer defines `_history_one` at all (locks "fully moved, not duplicated"); E2 asserts `compute.main` no longer imports `fetch_fundamentals_history` directly; E3 pins `fetch_all_history`'s default `timeout=45` against `compute.main._FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS` independently of the call site (which always passes it explicitly today); E4 pins the shared `max_workers` default against `fetch_all_fundamentals`'s sibling default.
+
+### 2 — New workflow: `.github/workflows/precache-broad-universe.yml`
+
+`workflow_dispatch`-ONLY (deliberately no `schedule:` — an occasional, manually-triggered cold-warming pass, not a recurring cron, unlike `precache-edgar.yml`'s Saturday schedule which stays scoped to sp500/sp900/sp1500). 4 jobs in a strict SEQUENTIAL `needs:` chain (never parallel — keeps sustained EDGAR request rate within each stage's timeout budget, which assumes running alone):
+
+| Job | Timeout | Bundle touched | Stage script |
+|---|---|---|---|
+| 1 `price-screen` | 120 min | fast | `scripts/precache_broad_stage_prices.py` |
+| 2 `fundamentals-history` (needs 1) | 150 min | fast | `scripts/precache_broad_stage_fundamentals.py` |
+| 3 `form4` (needs 2) | 300 min | slow-text | `scripts/precache_broad_stage_form4.py` |
+| 4 `tier2` (needs 3) | 330 min | slow-text | `scripts/precache_broad_stage_tier2.py` |
+
+All four ≤ 360 (the hard cap); form4 + tier2 get the largest budgets because they are historically the two single most expensive EDGAR loops at scale (empirical sp1500 baselines in `precache-edgar.yml`: tier2 ~89 min cold, form4 ~72 min cold, both at ~1504 names — scaling to ~3,545 survivors).
+
+**Job handoff (NOT a scoring artifact)**: job 1 uploads the investability-screen survivor ticker frame (`ticker`/`cik`/`name`/`sector`/`cohort`, ~3,545 rows) as an `actions/upload-artifact` build artifact (name `broad-universe-precache-survivors`, `if-no-files-found: error`, `retention-days: 1`); jobs 2-4 each independently `actions/download-artifact` it and feed it as `df` to the relevant orchestrator helper(s). This bounds each job's EDGAR load to roughly sp1500 scale, never the full ~6,883-name candidate pool.
+
+**Cache-key strategy (the load-bearing design decision — avoids the exact-key-skip-save trap, same bug class as the #471 frozen-fast-cache gotcha)**: every job RESTORES the `-broad-`-namespaced quarter/os prefix FIRST (e.g. `cache-v12-fast-<quarter>-broad-`), falling back to the CANONICAL quarter/os prefix the weekday cron / Saturday precache maintain (`cache-v12-fast-<quarter>-` / `cache-v5-text-<os>-` — inherits sp1500 warmth for the ~1,500-name survivor-set overlap). Every job SAVES under a UNIQUE per-job key (`cache-v12-fast-<quarter>-broad-${{ github.run_id }}-job2`, `cache-v5-text-<os>-broad-${{ github.run_id }}-job3`, etc.) — NEVER the bare canonical key. This guarantees (a) the save is NEVER skipped by `actions/cache`'s exact-key immutability optimization (a canonical-key restore-HIT would silently skip the post-job save — the exact trap), and (b) the sp1500 canonical bundle a real cron/precache run maintains can never be overwritten mid-precache with a partial/broad-scoped snapshot. Because a broad-namespaced key like `cache-v12-fast-<quarter>-broad-<run_id>-job2` STARTS WITH the canonical restore-key prefix `cache-v12-fast-<quarter>-`, a LATER `compute-rankings.yml universe=broad_investable_us` dispatch restoring via that prefix will naturally pick up this workflow's freshly-warmed broad-universe data too (GitHub Actions restore-keys are prefix matches against the MOST RECENTLY created matching entry, and the restored data is a strict superset of the canonical bundle at restore time) — no extra cron-side wiring needed. Fast bundle (jobs 1-2) and slow-text bundle (jobs 3-4) are restored/saved independently — neither pair needs the other bundle (job 1/2's stage scripts never touch `edgar_form4`/`edgar_10k_text`/`edgar_8k`; job 3/4's never touch `prices`/`fundamentals`/`fundamentals_history`).
+
+Joins `concurrency: group: edgar-cache-writers` (the same group `compute-rankings.yml` + `precache-edgar.yml` already share) so it never races either for the cache-write surface.
+
+**Action pins**: `actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0` (v7), `actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1` (v6), `actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` (v5), `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` (v7) — all copied VERBATIM from existing pins already in this repo (checkout/setup-python/cache from compute-rankings.yml/precache-edgar.yml; upload-artifact from backfill-warehouse.yml/pre-merge-prod-sim.yml). **`actions/download-artifact@v7` is UNPINNED (tag only)** — this repo has NO existing pin for `download-artifact` to copy (it was never used before this PR), and this sandboxed build session's egress proxy scopes git/GitHub-API access to the `quantrank` repo only (`git ls-remote` against `github.com/actions/download-artifact` returned a 403 from the proxy: "destination host is not allowed by your organization's egress policy for this session… do not retry or route around it"). Flagged inline (`TODO(security-reviewer)`) at all 3 call sites (jobs 2-4) — **security-reviewer or dependency-auditor should pin this to a verified commit SHA before this PR leaves Draft.** The `@v7` tag choice matches `upload-artifact`'s v7 major deliberately (GitHub releases the artifact-backend actions in lockstep — v3 artifacts are not readable by v4+ download, so major-version pairing is a functional requirement, not just cosmetic).
+
+### 3 — 4 new thin stage scripts (`scripts/precache_broad_stage_{prices,fundamentals,form4,tier2}.py`)
+
+Each is a THIN wrapper (no `argparse`, config purely from `compute.config` + env-vars) that: (a) honours the `QR_SKIP_BROAD_UNIVERSE` escape hatch (mirrors `_run_broad_universe_probe`'s gate in `compute.main`) — exits 0 immediately if set; (b) for stage 1, calls `fetch_broad_universe_candidates` → `candidates_to_universe_frame` → `fetch_all_prices` → `select_broad_universe_survivors`, writes the survivor frame to `config.BROAD_UNIVERSE_PRECACHE_SURVIVOR_PATH` (new constant, `compute/cache/precache_broad/survivors.parquet` — deliberately OUTSIDE both `actions/cache` bundles' `path:` blocks so it's never accidentally swept into a persistent TTL'd cache; it's a single-workflow-run-lifetime handoff file); (c) for stages 2-4, reads that parquet back and calls the relevant orchestrator helper(s) directly (`fetch_all_fundamentals` + `fetch_all_history`; `fetch_all_form4`; `fetch_all_tier2`) — **never calling `run_weekly_compute()` and never writing scoring output**. Each script's `main()` returns a non-zero exit code on abort (missing/empty survivor artifact, too-few-priced-candidates, or an unexpected exception) so the `needs:` chain correctly SKIPS downstream jobs on a genuine failure rather than burning CI minutes on an empty/garbage survivor set — this is the opposite exit-code convention from `run_weekly_compute` itself (which returns 0 tickers on an abort so the *count* semantics stay uniform; the `if __name__` block there does the 0→1 exit-code translation) but the right one for CI job orchestration specifically.
+
+Verified offline via a synthetic end-to-end smoke test (all 4 `run_stage_*()` functions driven with monkeypatched orchestrator calls + a real parquet round-trip through `config.BROAD_UNIVERSE_PRECACHE_SURVIVOR_PATH`) — confirms the wiring (column shapes, kwarg names, summary print lines) is correct without touching the network. Not committed as a test file (throwaway scratch verification); the offline unit-test coverage for the underlying orchestrator calls themselves already exists (`tests/test_orchestrator/test_{prices,fundamentals,history,form4,tier2}.py`).
+
+### 4 — Timeout corrections in the two canonical workflows
+
+- `compute-rankings.yml`: `timeout-minutes: 420` → `360`, with the job comment rewritten to explain WHY (420 was unreachable dead configuration past the hard cap) and to note that a warm `universe: broad_investable_us` dispatch's actual runtime under the new budget is NOT YET empirically confirmed — that is the explicit gate-C2 calibration dry-run scheduled as this PR's follow-up.
+- `precache-edgar.yml`: `timeout-minutes: 540` → `360`; the stale "~280-320 min projected / ~360 min ceiling" broad-universe scale-up comment block (which was simply WRONG — observed ~480-510 min) is replaced with an explanation that broad-universe COLD precaching moved entirely to the new dedicated workflow, so this workflow's ceiling only ever needs to cover sp500/sp900/sp1500 (all comfortably under 360 per the existing sp1500 empirical baseline, ~225 min cold worst-case).
+- `precache-edgar.yml`'s `universe` `workflow_dispatch` input DROPS the `broad_investable_us` choice (moved to the dedicated workflow; sp500/sp900/sp1500 remain, all fit in one job). `compute-rankings.yml`'s `universe` input KEEPS `broad_investable_us` — the WARM ranked dispatch still lives there; only the COLD precaching moved.
+- `pre-merge-prod-sim.yml`: **left untouched in substance** (still `timeout-minutes: 420`, out of this PR's scope — the sim never runs a live broad-universe dispatch). ONE comment-accuracy fix: the stale "Matches (≥) the weekly cron's `timeout-minutes: 420`" citation is corrected to note the cron dropped to 360 (the ≥ relationship the test guard checks still holds trivially, 420 ≥ 360, with a wider margin than before).
+
+### 5 — New `compute/config.py` constant
+
+`BROAD_UNIVERSE_PRECACHE_SURVIVOR_PATH: Path = CACHE_DIR / "precache_broad" / "survivors.parquet"` — the shared handoff-artifact path all 4 stage scripts import, so the path can never drift between the script that writes it (stage 1) and the three that read it (stages 2-4).
+
+### 6 — Tests
+
+`tests/test_workflow_cache_coverage.py` updated per the task brief's explicit choice: **scoped the existing `_CACHE_WARMING_WORKFLOWS` guard to the canonical workflows** (added a comment explaining `precache-broad-universe.yml` is deliberately excluded — same precedent as `backfill-portfolio.yml`/`pre-merge-prod-sim.yml`/`backfill-warehouse.yml`, none of which share the two canonical workflows' EXACT-KEY parity contract) rather than trying to force the new file's fundamentally-different broad-namespaced-key strategy through that guard's assertions. Added 8 new dedicated tests instead:
+
+- `test_gate_c1_workflows_at_or_under_six_hour_hard_cap` — the deterministic regression ratchet for the actual root-cause bug (every `timeout-minutes:` in the 3 gate-C1-fixed workflows ≤ 360). Scoped to `_GATE_C1_FIXED_WORKFLOWS` (the 3 files this PR touches/creates), deliberately NOT widened to `pre-merge-prod-sim.yml` (still 420, out of scope) or the two backfill workflows (already compliant but not this PR's concern) — a blanket "every timeout-bearing workflow" version was drafted and immediately self-failed on the pre-existing `pre-merge-prod-sim.yml` value, which is exactly why the narrower scope was chosen instead of papering over it. Verified to have real teeth: temporarily bumped a job's timeout to 400 in a scratch copy, confirmed the test fails with a clear message, reverted, confirmed green again.
+- `test_precache_edgar_no_longer_offers_broad_investable_us_dispatch_option` / `test_compute_rankings_still_offers_broad_investable_us_dispatch_option` — the asymmetric dispatch-option assertion (matches the literal YAML list-item bullet, not a bare substring — the string `broad_investable_us` legitimately still appears in `precache-edgar.yml`'s descriptive comments explaining where the option went, so a naive substring check would false-positive).
+- `test_precache_broad_universe_is_dispatch_only_no_schedule` — asserts no `schedule:` trigger (matched as the structured 2-space-indented YAML key, not a bare substring — the workflow's own header comment contains the literal text "schedule:" while discussing its absence, which tripped a naive version of this test during authoring).
+- `test_precache_broad_universe_concurrency_group_matches_canonical`, `test_precache_broad_universe_needs_chain_is_sequential` (job-block-bounded regex parse — an earlier lazy-regex version incorrectly attributed a LATER job's `needs:` line back to an EARLIER job with none, caught while writing this test and fixed with a proper per-block boundary), `test_precache_broad_universe_save_keys_are_broad_namespaced_and_unique`, `test_precache_broad_universe_restore_keys_fall_back_to_canonical` — lock in the cache-key design decision described in §2 above.
+
+**`tests/test_orchestrator/test_history.py`** — see §1 above (19 tests).
+
+**Existing-test retargeting** — see §1 above (`tests/test_main.py`, `tests/test_output/test_wall_clock_schema.py`).
+
+### Files
+
+- `compute/orchestrator/history.py` (new)
+- `compute/main.py` (Step-3 loop replaced with a call; 2 dead imports removed, 1 added)
+- `compute/config.py` (new `BROAD_UNIVERSE_PRECACHE_SURVIVOR_PATH` constant)
+- `scripts/precache_broad_stage_prices.py` (new)
+- `scripts/precache_broad_stage_fundamentals.py` (new)
+- `scripts/precache_broad_stage_form4.py` (new)
+- `scripts/precache_broad_stage_tier2.py` (new)
+- `.github/workflows/precache-broad-universe.yml` (new)
+- `.github/workflows/compute-rankings.yml` (timeout 420→360 + comment)
+- `.github/workflows/precache-edgar.yml` (timeout 540→360 + comment; `broad_investable_us` dispatch option removed)
+- `.github/workflows/pre-merge-prod-sim.yml` (comment-only correction, no functional change)
+- `tests/test_orchestrator/test_history.py` (new — 19 tests)
+- `tests/test_main.py` (retargeted imports/patches — 0 new tests, 0 removed)
+- `tests/test_output/test_wall_clock_schema.py` (retargeted patch + docstring — 0 new tests)
+- `tests/test_workflow_cache_coverage.py` (8 new tests + scoping comment)
+- `CLAUDE.md` (§Gotchas: 1 new entry + 1 lightly-amended entry; §Phase status In-flight paragraph updated)
+- `AGENTS.md` (§Phase + version state In-flight paragraph updated)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Schema triple**: untouched. No `schemas.py` / `types.ts` / `schema-snapshot.json` change.
+
+**Verification ladder** (all green): `ruff check .` PASS (whole repo) · offline pytest 3418 passed / 10 skipped (pre-existing env gaps: `ipca`/`qlib` optional packages absent, no live price cache, shallow git clone — identical skip set to an unmodified `origin/main` checkout) / 0 failed, of which 27 are new (19 `test_history.py` + 8 `test_workflow_cache_coverage.py`) and the rest are the full pre-existing suite re-run green · all 4 touched/new workflow YAML files parse cleanly under PyYAML (`yaml.safe_load`, via the system `python3.11` interpreter — the project's own `.venv` lacks PyYAML) · `schema_check` N/A (no schema touch). **Known sandbox-only gap**: `tests/test_orchestrator/test_osap.py` (21 tests) + 2 collection-blocking files (`tests/test_ingest/test_osap.py`, `tests/test_features/test_osap_e2e_integration.py`) fail/error in THIS sandboxed session because `openassetpricing` (the `factors` extra) cannot be installed here (`.venv` has no `pip`, and installing it would need network access this session's proxy scopes away) — confirmed via `git stash` that the IDENTICAL failures pre-exist on an unmodified checkout, i.e. NOT a regression from this PR; real CI installs the `factors` extra via `pip install -e ".[factors]"` and would not see this gap.
+
+**Known gaps / follow-ups**:
+- `actions/download-artifact@v7` is unpinned (tag only) pending a session with cross-repo GitHub access to confirm the exact commit SHA — flagged inline + here for security-reviewer / dependency-auditor.
+- No live sp1500/sp900/sp500/`broad_investable_us` dispatch has exercised either the new workflow or the `history.py` extraction on real EDGAR/yfinance data yet — DRAFT PR, untested end-to-end until a manual `workflow_dispatch` run of `precache-broad-universe.yml`, followed by the explicit **gate-C2 calibration dry-run** (a warm `compute-rankings.yml universe=broad_investable_us` dispatch, confirming it now completes comfortably under the corrected 360-min budget).
+- `pre-merge-prod-sim.yml`'s own `timeout-minutes: 420` is ALSO technically above the same 360-min hard cap (same root-cause class as the two workflows this PR fixes) but is explicitly OUT OF SCOPE here — flagged for a future, separate fix.
+
+**Gate**: DRAFT PR only — do NOT merge, do NOT flip Ready. Per the task brief: security-reviewer (new workflow — esp. the unpinned `download-artifact` SHA) + `quantrank-reviewer` + `agent-output-verifier` (re-derive the "default weekday sp1500 cron path is byte-identical" claim for the `history.py` extraction) gate this next, then the gate-C2 calibration dry-run.
 
 ---

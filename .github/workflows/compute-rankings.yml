@@ -193,7 +193,28 @@ jobs:
     #   increase. The cron universe default STAYS sp1500; 420 min is a headroom
     #   grant for the future wiring PR, not a permanent sp1500 cost shift.
     #   Monthly worst-case at 420m × 5 × 4 = 8,400 min/month (new ceiling).
-    timeout-minutes: 420
+    # - Phase 9.3 gate-C1 fix (2026-07-02): LOWERED 420 → 360 — 420 was
+    #   UNREACHABLE: GitHub Actions hard-caps every job at 6 hours (360
+    #   minutes) regardless of `timeout-minutes:`, so a value above 360 is
+    #   dead configuration that silently masked the real ceiling. This was
+    #   discovered when a single-job cold `universe: broad_investable_us`
+    #   dispatch was CANCELLED at the 360-min hard cap with no cache saved
+    #   (~480-510 min observed cold — well past both the 360-min hard cap
+    #   AND the 280-320 min projection above). The fix is
+    #   `.github/workflows/precache-broad-universe.yml`: a dedicated 4-job
+    #   sequential split that does the COLD broad-universe EDGAR warming
+    #   (each job individually ≤ 360 min) so THIS workflow only ever needs
+    #   to run broad-investable-US WARM. sp1500 (the cron default, UNCHANGED)
+    #   was already comfortably under 360 min (~223 min cold measured on
+    #   run 27902140692) — this bump-down only removes unreachable headroom
+    #   for sp1500 and formalises the true ceiling for the dispatch-only
+    #   broad-universe path. A warm broad-universe dispatch's actual runtime
+    #   is NOT YET empirically confirmed under this new budget — that is the
+    #   explicit gate-C2 calibration dry-run scheduled as a follow-up to the
+    #   PR that introduced this comment. Monthly worst-case at
+    #   360m × 5 × 4 = 7,200 min/month (sp1500 path; the dedicated precache
+    #   workflow's own cost is tracked separately, workflow_dispatch-only).
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:

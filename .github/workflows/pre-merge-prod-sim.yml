@@ -228,9 +228,15 @@ jobs:
     # always visible to a PR run — run #100's main cron saved
     # cache-v8-fast-2026Q2-Linux at 15:50 yet this PR run missed it 8 min
     # later), so the timeout is the must-have safety net regardless of cache.
-    # Matches (≥) the weekly cron's `timeout-minutes: 420` (raised in the
-    # #249 era + Phase 7.0 folded backtest; bumped 240→270 for sp1500 scale,
-    # then 270→420 for Phase 9.3 broad-investable-US scale — owner-authorised).
+    # Matches (≥) the weekly cron's `timeout-minutes` (raised in the #249 era
+    # + Phase 7.0 folded backtest; bumped 240→270 for sp1500 scale, then
+    # 270→420 for Phase 9.3 broad-investable-US scale — owner-authorised).
+    # Phase 9.3 gate-C1 fix (2026-07-02): the cron's own ceiling came back
+    # DOWN 420→360 (420 was above GitHub Actions' unmovable 6h/360-min
+    # per-job hard cap — dead configuration; see compute-rankings.yml's
+    # timeout comment). This sim job's 420 is left AS-IS (still comfortably
+    # >= the cron's new 360, satisfying the guard below with wider margin);
+    # lowering it to exactly match isn't required and isn't this PR's scope.
     # Simulate runs FEWER loops than the cron (5 skip vars + no committed
     # output + no PIT backtest), so 420 is an upper bound it should never
     # approach on a warm restore. Simulate IS informational-only (workflow

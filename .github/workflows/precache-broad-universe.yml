@@ -1,0 +1,339 @@
+name: Precache Broad Universe (4-job split)
+
+# Phase 9.3 runtime pre-req — gate-C1 fix (owner-authorised).
+#
+# WHY: a single-job cold run of the `QR_UNIVERSE=broad_investable_us` RANKED
+# path (~6,883-name candidate pool -> Step-1 prices -> investability screen
+# -> ~3,545 survivors -> fundamentals/history/form4/tier2 fetched ONLY for
+# survivors) was CANCELLED at GitHub Actions' HARD 6-hour (360-minute)
+# per-job ceiling with NO cache saved (gate-C1 finding — the observed cold
+# run took ~480-510 min, well past both the ceiling and the ~280-320 min
+# projection in the Phase-9.1-era precache-edgar.yml comment). This
+# workflow is the fix: it splits that single job into 4 SEQUENTIAL jobs,
+# each budgeted under the 360-min hard cap, so the whole cold-warming pass
+# completes and SAVES its cache progressively. A LATER warm
+# `compute-rankings.yml` dispatch with `universe: broad_investable_us`
+# then restores a hot cache and fits comfortably under 6h (validated by a
+# separate gate-C2 calibration dry-run after this PR).
+#
+# `workflow_dispatch`-ONLY — deliberately NO `schedule:` trigger. This is
+# an occasional, manually-triggered cold-warming pass (e.g. after a cache
+# eviction or before a broad-universe dispatch), not a recurring cron —
+# unlike precache-edgar.yml's Saturday schedule, which stays scoped to
+# sp500/sp900/sp1500 (all of which fit comfortably in ONE job well under
+# the 6h cap; see the dispatch-option removal there).
+#
+# Job handoff (NOT a scoring artifact): job 1 (price-screen) uploads the
+# investability-screen survivor ticker frame (ticker/cik/name/sector/
+# cohort, ~3,545 rows) as a build artifact; jobs 2-4 download it and fetch
+# EDGAR data for exactly that survivor set — never the full ~6,883-name
+# candidate pool — bounding each job's EDGAR load to roughly sp1500 scale.
+# The 4 stage scripts (scripts/precache_broad_stage_*.py) call the SAME
+# orchestrator helpers `compute.main.run_weekly_compute` calls for the
+# broad-universe ranked path, so their on-disk cache writes are
+# byte-identical to what that path would produce for the same tickers.
+#
+# Cache-key strategy (critical — avoids the exact-key-skip-save trap that
+# has bitten this repo before, e.g. the #471 frozen-fast-cache class of
+# bug): every job RESTORES the broad-namespaced quarter prefix FIRST
+# (inherits a PRIOR precache-broad-universe run's warm state, if any),
+# falling back to the CANONICAL quarter prefix the weekday cron / Saturday
+# precache maintain (inherits sp1500 warmth for the survivor-set overlap —
+# roughly 1,500 of the ~3,545 survivors are already S&P 1500 members).
+# Every job SAVES under a UNIQUE per-job key (namespaced `-broad-` +
+# `${{ github.run_id }}` + a job label) — NEVER the bare canonical key, so
+# (a) the save is NEVER skipped by actions/cache's exact-key immutability
+# optimization (a bare-canonical-key restore-hit would silently skip the
+# post-job save, exactly the trap this comment warns about) and (b) the
+# sp1500 canonical bundle a real cron/precache run maintains can never be
+# overwritten mid-precache with a partial/broad-scoped snapshot. Because a
+# broad-namespaced key like `cache-v12-fast-<quarter>-broad-<run_id>-job2`
+# STARTS WITH the canonical restore-key prefix `cache-v12-fast-<quarter>-`,
+# a LATER compute-rankings.yml run restoring via that prefix will naturally
+# pick up this workflow's freshly-warmed broad-universe data too (GitHub
+# Actions restore-keys are prefix matches against the MOST RECENTLY
+# created matching cache entry, and the restored data is a strict superset
+# of the canonical bundle at restore time) — no extra wiring needed on the
+# cron side. See tests/test_workflow_cache_coverage.py for the guards on
+# this shape; `_CACHE_WARMING_WORKFLOWS` there deliberately does NOT
+# include this file (its save-key strategy is fundamentally different from
+# the two canonical workflows' exact-key parity contract — mirrors why
+# backfill-portfolio.yml is also excluded from that tuple).
+#
+# Fast bundle (job 1 price-screen + job 2 fundamentals-history): the ONLY
+# two jobs whose stage script touches compute/cache/{fundamentals,
+# fundamentals_history,prices,*.parquet,yfinance_info}. Slow-text bundle
+# (job 3 form4 + job 4 tier2): the ONLY two jobs whose stage script
+# touches compute/cache/{edgar_form4,edgar_10k_text,edgar_8k,...}. Neither
+# pair needs the other bundle — see each stage script's module docstring.
+#
+# Sequential (not parallel) `needs:` chain: keeps the sustained EDGAR
+# request rate within the single-job budget each stage's timeout assumes
+# (a fan-out would risk amplifying SEC throttling across concurrent
+# runners), and pairs with `concurrency: group: edgar-cache-writers` so
+# this workflow never races the weekday cron / Saturday precache for the
+# cache-write surface.
+
+on:
+  workflow_dispatch: {}
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+
+# Read is all this workflow needs — it never commits/pushes (mirrors
+# precache-edgar.yml, which is also a cache-warm-only, no-commit workflow).
+permissions:
+  contents: read
+
+# Shared with compute-rankings.yml + precache-edgar.yml: all THREE cache
+# WRITERS must never run concurrently against the same EDGAR-cache-backed
+# surface. `cancel-in-progress: false` queues instead of cancels — a
+# queued run must RUN later, never silently disappear.
+concurrency:
+  group: edgar-cache-writers
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------
+  # Job 1/4 — price screen + investability-survivor selection (fast bundle)
+  # ---------------------------------------------------------------------
+  price-screen:
+    name: "Job 1/4 — price screen + survivor selection"
+    runs-on: ubuntu-latest
+    # ~6,883-name candidate pool price fetch (perf-engineer budget).
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[factors]"
+
+      - name: Compute current quarter id
+        id: quarter
+        run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
+
+      # FAST bundle only (this job touches compute/cache/{prices,
+      # broad_universe-v1.parquet} — NOT fundamentals/fundamentals_history).
+      # `path:` mirrors compute-rankings.yml / precache-edgar.yml EXACTLY so
+      # the restored/saved bundle is a drop-in match for their own restores.
+      - name: Restore fast cache (broad-namespaced, falls back to canonical)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            compute/cache/fundamentals
+            compute/cache/fundamentals_history
+            compute/cache/prices
+            compute/cache/universe-v2.parquet
+            compute/cache/universe_sp400-v1.parquet
+            compute/cache/universe_sp900-v1.parquet
+            compute/cache/universe_sp600-v1.parquet
+            compute/cache/universe_sp1500-v1.parquet
+            compute/cache/yfinance_info
+            compute/cache/broad_universe-v1.parquet
+          key: cache-v12-fast-${{ steps.quarter.outputs.q }}-broad-${{ github.run_id }}-job1
+          restore-keys: |
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-broad-
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-
+
+      - name: Cache restore snapshot (quick canary)
+        run: |
+          echo "=== compute/cache/ restore snapshot (job 1) ==="
+          for d in compute/cache/prices compute/cache/fundamentals compute/cache/fundamentals_history; do
+            n=$(find "$d" -type f 2>/dev/null | wc -l)
+            echo "  $d: $n files"
+          done
+
+      - name: Run stage 1 — price screen
+        run: python -m scripts.precache_broad_stage_prices
+
+      - name: Upload survivor artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: broad-universe-precache-survivors
+          path: compute/cache/precache_broad/survivors.parquet
+          if-no-files-found: error
+          retention-days: 1
+
+  # ---------------------------------------------------------------------
+  # Job 2/4 — fundamentals + annual history (fast bundle)
+  # ---------------------------------------------------------------------
+  fundamentals-history:
+    name: "Job 2/4 — fundamentals + annual history"
+    needs: price-screen
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[factors]"
+
+      - name: Compute current quarter id
+        id: quarter
+        run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
+
+      # Pinned to the v7.0.0 release commit (resolved 2026-07-02, corroborated
+      # via the GitHub release-tag page + the commit page). Pairs with
+      # actions/upload-artifact@v7 above — GitHub releases the artifact-backend
+      # actions in lockstep (v3 artifacts are not readable by v4+ download, so
+      # major-version pairing is a functional requirement, not cosmetic).
+      - name: Download survivor artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: broad-universe-precache-survivors
+          path: compute/cache/precache_broad/
+
+      # FAST bundle only — same path: block as job 1 (this job additionally
+      # touches compute/cache/{fundamentals,fundamentals_history}).
+      - name: Restore fast cache (broad-namespaced, falls back to canonical)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            compute/cache/fundamentals
+            compute/cache/fundamentals_history
+            compute/cache/prices
+            compute/cache/universe-v2.parquet
+            compute/cache/universe_sp400-v1.parquet
+            compute/cache/universe_sp900-v1.parquet
+            compute/cache/universe_sp600-v1.parquet
+            compute/cache/universe_sp1500-v1.parquet
+            compute/cache/yfinance_info
+            compute/cache/broad_universe-v1.parquet
+          key: cache-v12-fast-${{ steps.quarter.outputs.q }}-broad-${{ github.run_id }}-job2
+          restore-keys: |
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-broad-
+            cache-v12-fast-${{ steps.quarter.outputs.q }}-
+
+      - name: Cache restore snapshot (quick canary)
+        run: |
+          echo "=== compute/cache/ restore snapshot (job 2) ==="
+          for d in compute/cache/fundamentals compute/cache/fundamentals_history; do
+            n=$(find "$d" -type f 2>/dev/null | wc -l)
+            echo "  $d: $n files"
+          done
+
+      - name: Run stage 2 — fundamentals + history
+        run: python -m scripts.precache_broad_stage_fundamentals
+
+  # ---------------------------------------------------------------------
+  # Job 3/4 — Form-4 insider-transaction fetch (slow-text bundle)
+  # ---------------------------------------------------------------------
+  form4:
+    name: "Job 3/4 — Form-4 insider transactions"
+    needs: fundamentals-history
+    runs-on: ubuntu-latest
+    # Historically the single most expensive EDGAR loop at scale (~72 min
+    # cold at sp1500's ~1504 names, precache-edgar.yml empirical baseline).
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[factors]"
+
+      # Pinned to the v7.0.0 release commit — see job 2's download-artifact step above.
+      - name: Download survivor artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: broad-universe-precache-survivors
+          path: compute/cache/precache_broad/
+
+      # SLOW-TEXT bundle only — this job touches ONLY
+      # compute/cache/edgar_form4 (no fast-bundle paths, no 10-K/8-K).
+      - name: Restore slow-text cache (broad-namespaced, falls back to canonical)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            compute/cache/edgar_10k_text
+            compute/cache/edgar_8k
+            compute/cache/edgar_amendments
+            compute/cache/edgar_late_filings
+            compute/cache/edgar_form4
+            compute/cache/osap
+          key: cache-v5-text-${{ runner.os }}-broad-${{ github.run_id }}-job3
+          restore-keys: |
+            cache-v5-text-${{ runner.os }}-broad-
+            cache-v5-text-${{ runner.os }}-
+
+      - name: Cache restore snapshot (quick canary)
+        run: |
+          echo "=== compute/cache/ restore snapshot (job 3) ==="
+          n=$(find compute/cache/edgar_form4 -type f 2>/dev/null | wc -l)
+          echo "  compute/cache/edgar_form4: $n files"
+
+      - name: Run stage 3 — Form-4
+        run: python -m scripts.precache_broad_stage_form4
+
+  # ---------------------------------------------------------------------
+  # Job 4/4 — Tier-2 event defenses: 10-K text + 8-K events (slow-text bundle)
+  # ---------------------------------------------------------------------
+  tier2:
+    name: "Job 4/4 — Tier-2 event defenses (10-K + 8-K)"
+    needs: form4
+    runs-on: ubuntu-latest
+    # Historically the single most expensive EDGAR loop at scale (~89 min
+    # cold at sp1500's ~1504 names, precache-edgar.yml empirical baseline)
+    # — the largest budget of the four stages.
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[factors]"
+
+      # Pinned to the v7.0.0 release commit — see job 2's download-artifact step above.
+      - name: Download survivor artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: broad-universe-precache-survivors
+          path: compute/cache/precache_broad/
+
+      # SLOW-TEXT bundle only — this job touches
+      # compute/cache/{edgar_10k_text,edgar_8k} (no fast-bundle paths, no
+      # Form-4).
+      - name: Restore slow-text cache (broad-namespaced, falls back to canonical)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            compute/cache/edgar_10k_text
+            compute/cache/edgar_8k
+            compute/cache/edgar_amendments
+            compute/cache/edgar_late_filings
+            compute/cache/edgar_form4
+            compute/cache/osap
+          key: cache-v5-text-${{ runner.os }}-broad-${{ github.run_id }}-job4
+          restore-keys: |
+            cache-v5-text-${{ runner.os }}-broad-
+            cache-v5-text-${{ runner.os }}-
+
+      - name: Cache restore snapshot (quick canary)
+        run: |
+          echo "=== compute/cache/ restore snapshot (job 4) ==="
+          for d in compute/cache/edgar_10k_text compute/cache/edgar_8k; do
+            n=$(find "$d" -type f 2>/dev/null | wc -l)
+            echo "  $d: $n files"
+          done
+
+      - name: Run stage 4 — Tier-2
+        run: python -m scripts.precache_broad_stage_tier2
