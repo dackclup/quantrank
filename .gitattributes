@@ -4,3 +4,11 @@
 # / agents/*.toml stay visible. See THIRD_PARTY_NOTICES.md §pbakaus/impeccable.
 .agents/skills/impeccable/scripts/** linguist-vendored
 .agents/skills/impeccable/LICENSE linguist-vendored
+
+# Append-only tracker side-file (Parallel-PR §Phase-status collision pattern, #230):
+# it only ever grows by appended per-PR entries, so `merge=union` — which keeps
+# BOTH sides' lines on a merge/rebase instead of emitting conflict markers — is the
+# correct semantic and eliminates the recurring benign "keep both chronological"
+# rebase churn when parallel PRs each append an entry. Do NOT add union to
+# CLAUDE.md/AGENTS.md — those carry substantive edits where interleaving would corrupt.
+PHASE_STATUS_INFLIGHT.md merge=union
