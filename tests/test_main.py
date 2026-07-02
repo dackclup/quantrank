@@ -908,7 +908,7 @@ def test_step8_exchange_mapping_known_code(monkeypatch) -> None:
     which is exactly how exchange_by_ticker / country_by_ticker are populated
     inside the Step-8 loop in run_weekly_compute.
     """
-    monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: "NMS")
+    monkeypatch.setattr("compute.orchestrator.per_ticker.fetch_yfinance_exchange", lambda _t: "NMS")
 
     code = "NMS"  # what fetch_yfinance_exchange returns
     exchange_by_ticker = {"AAPL": exchange_name(code)}
@@ -925,7 +925,7 @@ def test_step8_exchange_mapping_none_code(monkeypatch) -> None:
     These tickers are excluded from the coverage numerator — confirmed by the
     coverage formula test_coverage_pct_partial_resolution above.
     """
-    monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: None)
+    monkeypatch.setattr("compute.orchestrator.per_ticker.fetch_yfinance_exchange", lambda _t: None)
 
     code = None
     exchange_by_ticker = {"MISS": exchange_name(code)}
@@ -943,7 +943,7 @@ def test_step8_exchange_mapping_non_us_code_passthrough(monkeypatch) -> None:
     This is the forward-safe design: showing a raw exchange code like "XLON"
     is better than dropping the field entirely.
     """
-    monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: "XLON")
+    monkeypatch.setattr("compute.orchestrator.per_ticker.fetch_yfinance_exchange", lambda _t: "XLON")
 
     code = "XLON"
     exchange_by_ticker = {"INTL": exchange_name(code)}
@@ -965,7 +965,7 @@ def test_step8_exchange_coverage_excludes_none_entries(monkeypatch) -> None:
     """
     exchange_results = {"AAPL": "NMS", "MISS": None}
     monkeypatch.setattr(
-        "compute.main.fetch_yfinance_exchange",
+        "compute.orchestrator.per_ticker.fetch_yfinance_exchange",
         lambda t: exchange_results.get(t),
     )
 

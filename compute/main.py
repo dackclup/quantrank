@@ -38,7 +38,6 @@ import concurrent.futures as _cf
 import logging
 import math
 import os
-import statistics
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -49,25 +48,10 @@ import pandas as pd
 
 from compute import config
 from compute.ingest.cross_source import (
-    BUCKET_KEYS as CROSS_SOURCE_BUCKET_KEYS,
-)
-from compute.ingest.cross_source import (
-    bucket_delta as cross_source_bucket_delta,
-)
-from compute.ingest.cross_source import (
-    country_for_exchange,
-    exchange_name,
-    fetch_yfinance_dividend,
-    fetch_yfinance_exchange,
     fetch_yfinance_market_cap,
-    fetch_yfinance_security_type,
     fetch_yfinance_shares_outstanding,
 )
-from compute.ingest.cross_source import (
-    validate_market_cap as cross_source_validate_market_cap,
-)
 from compute.ingest.fundamentals import (
-    ALL_METRIC_KEYS,
     FundamentalsSnapshot,
     fetch_fundamentals,
     fetch_fundamentals_history,
@@ -93,16 +77,16 @@ from compute.orchestrator import ComputeState
 from compute.orchestrator.form4 import fetch_all_form4
 from compute.orchestrator.fundamentals import fetch_all_fundamentals
 from compute.orchestrator.osap import run_osap_pipeline
-from compute.orchestrator.per_ticker import build_ticker_membership_maps
+from compute.orchestrator.per_ticker import (
+    build_ticker_membership_maps,
+    run_per_ticker_loop,
+)
 from compute.orchestrator.prices import fetch_all_prices
 from compute.orchestrator.tier2 import fetch_all_tier2
 from compute.output.schemas import (
-    DataQuality,
     Metadata,
     OsapGateDiagnostic,
-    PillarScores,
     RawMetrics,
-    StockDetail,
     StockSummary,
 )
 from compute.output.writer import (
@@ -111,8 +95,6 @@ from compute.output.writer import (
     write_benchmarks_json,
     write_metadata_json,
     write_rankings_json,
-    write_stock_detail,
-    write_stock_history,
 )
 from compute.portfolio.weights import (
     HIGH_CONVICTION_COMPOSITE_MIN,
@@ -137,61 +119,22 @@ from compute.scoring.composite import (
 # collection green in base-install environments (Phase 4a). The existing
 # call-site try/except (graceful degradation per Rule 18) already catches
 # ImportError as a subclass of Exception.
-from compute.scoring.cost_of_equity import get_cost_of_equity
 from compute.scoring.dechow_f import DechowResult, compute_dechow_f
-from compute.scoring.earnings_quality import (
-    check_accruals_momentum,
-    check_loss_avoidance,
-    check_loss_avoidance_size_invariant,
-)
-from compute.scoring.eight_k_events import get_non_reliance_filing_dates
-from compute.scoring.form4_insider import (
-    fetch_recent_form4,
-)
-from compute.scoring.form4_signals import (
-    count_10b5_1_filtered_transactions,
-    detect_c_suite_unusual_sell,
-    detect_insider_sell_cluster,
-)
-from compute.scoring.loss_chance import derive_loss_chance
-from compute.scoring.manipulation_index import (
-    compute_adjusted_composite,
-    compute_manipulation_index,
-    manipulation_components,
-)
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
-from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.regime import compute_market_regime
 from compute.scoring.rem import compute_rem_flags
-from compute.scoring.restatement_filings import (
-    check_late_filing,
-    check_restatement_history,
-    compute_high_confidence_restatement,
-    get_amendment_filing_dates,
-)
 from compute.scoring.risk_overlay import (
     PostSplitResult,
-    _snapshot_has_no_usable_fundamentals,
     check_post_split_share_lag,
-    check_share_count_extraction_missing,
     compute_cross_source_corruption_shadow,
     compute_risk_flags,
 )
 from compute.scoring.sanity import compute_mos_trailing_ic
-from compute.scoring.tier2 import (
-    _EIGHT_K_DEFENSES_ENABLED,
-    tier2_events_dict,
-)
+from compute.scoring.tier2 import _EIGHT_K_DEFENSES_ENABLED
 from compute.scoring.tier2 import (
     coverage_pct as tier2_coverage_pct_calc,
 )
-from compute.valuation.applicability import check_rim_applicability, stale_filing_status
-from compute.valuation.ensemble import (
-    EnsembleResult,
-    compute_fair_price_ensemble,
-    ensemble_result_to_dict,
-)
-from compute.valuation.tangible_book import tangible_book_value_per_share
+from compute.valuation.applicability import stale_filing_status
 
 logger = logging.getLogger(__name__)
 
@@ -471,32 +414,6 @@ def _build_raw_metrics(
     )
 
 
-def _build_data_quality(
-    snapshot: FundamentalsSnapshot | None,
-    today: datetime,
-    imputed_pillars: list[str],
-) -> DataQuality:
-    if snapshot is None:
-        return DataQuality(
-            missing_metrics=list(ALL_METRIC_KEYS),
-            imputed_metrics=imputed_pillars,
-        )
-    filing_lag: int | None = None
-    if snapshot.latest_filed_date is not None:
-        filing_lag = (today.date() - snapshot.latest_filed_date).days
-    return DataQuality(
-        missing_metrics=snapshot.missing_fields(),
-        imputed_metrics=imputed_pillars,
-        filing_lag_days=filing_lag,
-        latest_period_end=str(snapshot.latest_period_end)
-        if snapshot.latest_period_end
-        else None,
-        latest_filed_date=str(snapshot.latest_filed_date)
-        if snapshot.latest_filed_date
-        else None,
-    )
-
-
 # --- Phase 3c cross-sectional builders for fair-price ensemble --------------
 
 def _filing_lag(snap: FundamentalsSnapshot | None, asof: date) -> int | None:
@@ -727,30 +644,6 @@ def _fcf_5y(hist: pd.DataFrame | None) -> list[float | None]:
         except (KeyError, TypeError, ValueError):
             out.append(None)
     return out
-
-
-def _pillar_scores_to_schema(row: pd.Series) -> PillarScores:
-    """Convert a one-ticker pillar score row into a PillarScores model.
-
-    Rounds to 2 decimals; null pillars (sentiment, ml) stay None.
-    """
-    def r(v):
-        if v is None or (isinstance(v, float) and math.isnan(v)):
-            return None
-        return round(float(v), 2)
-
-    return PillarScores(
-        quality=r(row.get("quality")),
-        value=r(row.get("value")),
-        growth=r(row.get("growth")),
-        momentum=r(row.get("momentum")),
-        health=r(row.get("health")),
-        profitability=r(row.get("profitability")),
-        technical=r(row.get("technical")),
-        risk=r(row.get("risk")),
-        sentiment=None,
-        ml=None,
-    )
 
 
 def _coverage_pct(by_ticker: dict[str, object | None]) -> float | None:
@@ -2175,167 +2068,6 @@ def run_weekly_compute() -> int:
         alpha158_survivorship_bias_corrected = None
         alpha158_wall_clock_seconds = None
 
-    # Step 8 — combined per-ticker loop: fair-price ensemble + price history
-    # write + StockSummary + StockDetail. Single pass so per-ticker outputs
-    # stay synchronized (e.g., has_history reflects the actual write result;
-    # ensemble warnings flow into both summary and detail consistently).
-    # Issue #287 PR A — wall-clock for the entire Step 8 loop. Documented
-    # limitation: this includes fair-price ensemble + manipulation_index
-    # + StockDetail write — not just the cross_source_validate_market_cap
-    # sub-call. On cold-cache cross-source (502 × 2-8s serial yfinance.info
-    # = 17-67 min) the sub-call dominates; on warm cache the other Step 8
-    # work (~50s total) dominates.
-    _cross_source_wc_start = time.monotonic()
-    cross_source_wall_clock_seconds: float | None = None
-    summaries: list[StockSummary] = []
-    all_details: list[StockDetail] = []  # Step 13.5 warehouse accumulator
-    detail_count = 0
-    history_count = 0
-    fair_price_count = 0
-    # Phase 4b — observability surface for the new Roychowdhury 2006
-    # size-invariant loss-avoidance annotate. Counter increments inside
-    # the per-ticker loop when the flag is appended to valuation_warnings;
-    # written to Metadata.loss_avoidance_size_invariant_firing_count so
-    # the next cron's firing rate is visible without grepping per-stock
-    # JSONs (Rule 18 observability-before-wiring).
-    loss_avoidance_size_invariant_firing_count: int = 0
-    # Issue #176 — same Rule 18 observability surface for the new
-    # ``share_count_extraction_missing`` annotate. Counter increments
-    # inside the per-ticker loop when the flag is appended to
-    # valuation_warnings; written to
-    # Metadata.share_count_extraction_missing_count so the universe-
-    # wide firing rate of the STZ-style partial-XBRL-extraction pattern
-    # is visible at-a-glance from the next cron without grepping
-    # per-stock JSONs.
-    share_count_extraction_missing_count: int = 0
-    # OZK/PBF flip-blocker (0.10.22-phase8pilot) — Rule 18 observability
-    # surface for the new ``fundamentals_unavailable`` direct veto. Counter
-    # increments when ``snap is None`` (complete EDGAR ingest failure) inside
-    # the per-ticker loop. Written to Metadata.fundamentals_unavailable_count
-    # so a non-zero value on a production sp500 cron is immediately visible
-    # as a data-pipeline health signal without grepping per-stock JSONs.
-    fundamentals_unavailable_count: int = 0
-    # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
-    # 0.10.29-phase8pilot, Rule 18 observability-before-wiring).
-    # Counter increments inside the per-ticker loop when the
-    # ``low_liquidity`` annotate fires (``average_dollar_volume is not None
-    # and average_dollar_volume < config.ADV_FLOOR_USD``). Written to
-    # Metadata.low_liquidity_annotate_count so the universe-wide firing
-    # rate is visible from the first cron without grepping per-stock JSONs.
-    # Expected base rate for S&P 900: near-zero (large-caps all clear
-    # $5M/day comfortably); the counter is designed for S&P 1500 small-cap
-    # exposure where thinly-traded names may appear.
-    low_liquidity_annotate_count: int = 0
-    # Issue #177 — same Rule 18 observability surface for the new
-    # ``extreme_estimate_majority`` annotate. The flag itself is
-    # appended by ``compute.valuation.ensemble`` when ≥
-    # ``config.EXTREME_MAJORITY_THRESHOLD`` of the 6 methods fire
-    # Defense #4 outlier guard; this counter increments here when the
-    # flag is observed on the ensemble's ``valuation_warnings`` list.
-    # Written to Metadata.extreme_estimate_majority_count so the next
-    # cron's firing rate (gates the follow-up median-exclusion PR per
-    # methodology-scientist Mode B 2026-05-21) is visible at-a-glance.
-    extreme_estimate_majority_count: int = 0
-    # Issue #587 (0.10.32-phase8pilot) — Rule 18 delta counter for the
-    # low-applicability floor recalibration. Counts tickers that fire
-    # ``extreme_estimate_majority`` via the new low-applicability floor ONLY
-    # (n_applicable ≤ LOWAPP_MAX AND n_extreme ≥ LOWAPP_MIN AND strict-majority)
-    # but would NOT have fired under the old 3-of-6 baseline rule. This is
-    # the delta population (pre-measured: 16 tickers on cron 8c89a5af0).
-    # Relies on EnsembleResult.extreme_majority_lowapp set in the ensemble.
-    extreme_estimate_majority_lowapp_count: int = 0
-    # Issue #248 PR2a (0.10.3-phase4.5e) — Rule 18 observability for the
-    # cross-source market-cap validator. Counter + histogram + per-ticker
-    # delta all populated from the validator's tuple-return refactor
-    # (`compute/ingest/cross_source.validate_market_cap` now returns
-    # ``(disagreement: bool, delta: float | None)``). Histogram buckets
-    # init to zero across all 9 keys so the schema-snapshot key set is
-    # stable even on a no-fire run.
-    cross_source_disagreement_count: int = 0
-    cross_source_delta_histogram: dict[str, int] = {
-        key: 0 for key in CROSS_SOURCE_BUCKET_KEYS
-    }
-    cross_source_delta_by_ticker: dict[str, float | None] = {}
-    # PR-1 cross-source corruption shadow — per-ticker yfinance data collected
-    # as a zero-cost side-channel in the Step 8 loop.  Both values are already
-    # in the 24h on-disk cache from the validate_market_cap + Step 3b calls
-    # earlier this run (pure cache reads at this point — no new network call).
-    # Consumed after the loop by compute_cross_source_corruption_shadow().
-    _cs_yf_market_cap_by_ticker: dict[str, float | None] = {}
-    _cs_yf_shares_by_ticker: dict[str, float | None] = {}
-    # Issue #177 PR-A (0.10.24-phase8pilot) — per-ticker shadow trimmed
-    # median cache. Populated in the Step 8 per-ticker loop alongside the
-    # ensemble computation; consumed after the loop to compute the
-    # universe-wide blast-radius metric ``median_trim_delta_count``. Only
-    # entries where ensemble.median_trimmed is not None are stored.
-    _median_trimmed_by_ticker: dict[str, float] = {}
-    # PR-A2 — listing-metadata wiring (StockDetail.exchange / .country).
-    # Display-mapped exchange name + derived country, one entry per ticker
-    # iterated in Step 8. Skip-safe: fetch_yfinance_exchange honors
-    # QR_SKIP_CROSS_SOURCE internally (returns None on cold simulate cache).
-    exchange_by_ticker: dict[str, str | None] = {}
-    country_by_ticker: dict[str, str | None] = {}
-    # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot,
-    # Rule 18 observability-first) — per-ticker dividend data collected as
-    # a zero-cost side-channel in the Step 8 loop.  All three fields derive
-    # from a pure cache-read off the ``yfinance_info/<ticker>.json`` file
-    # already populated by ``fetch_yfinance_market_cap`` earlier in the
-    # same ticker iteration.  No new network round-trips.
-    # Post-loop: aggregate ``dividend_coverage_pct`` from the non-None
-    # ``dividend_yield_pct`` values across all tickers.
-    _dividend_yield_pct_by_ticker: dict[str, float | None] = {}
-    _pays_dividend_by_ticker: dict[str, bool | None] = {}
-    _payout_ratio_by_ticker: dict[str, float | None] = {}
-    # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
-    # Rule 18 observability-first) — per-ticker security_type label collected
-    # as a zero-cost side-channel in the Step 8 loop.  Derives from a pure
-    # cache-read off ``yfinance_info/<ticker>.json``; the ``quote_type`` key
-    # is written during ``fetch_yfinance_exchange``'s live fast_info call
-    # (earlier in the same ticker iteration — no new network round-trips).
-    # Post-loop: aggregate ``security_type_coverage_pct`` from the non-None
-    # values (same formula as ``dividend_coverage_pct`` / ``exchange_coverage_pct``).
-    _security_type_by_ticker: dict[str, str | None] = {}
-    # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
-    # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
-    # so the delta (flat-10% vs per-sector) is observable before the flag
-    # is flipped.  ``_without_sector_coe`` = baseline (ROE ≤ flat 0.10);
-    # ``_with_sector_coe`` = count under SECTOR_COST_OF_EQUITY dict lookup.
-    # See compute/scoring/cost_of_equity.py for the Damodaran 2019 table.
-    value_trap_risk_count_without_sector_coe: int = 0
-    value_trap_risk_count_with_sector_coe: int = 0
-    # Two-factor value_trap_risk shadow counter (0.10.32-phase8pilot, Rule 18).
-    # Shadow gate: fires iff (a) live ROE≤Ke fires AND (b) eps_ttm > 0 AND
-    # (c) ticker P/E < sector-peer median P/E.  Live warnings are UNCHANGED.
-    value_trap_risk_two_factor_shadow_count: int = 0
-    # Issue #67 follow-up (0.10.10-phase4.6) — per-sector breakdown of the
-    # same counts, keyed by GICS sector name. Methodology-scientist Q2
-    # verdict 2026-05-28 (deferred from PR #294) requested this for
-    # Q3 2026-08-19 quarterly cohort audit visibility — confirms the
-    # Damodaran 2019 Ch. 8.4 shape (lower-Ke sectors drop flags, higher-
-    # Ke sectors gain flags) before ≥ 12 cron weeks of post-flip data
-    # accumulate. The delta is computed below at Metadata-construction
-    # time as `_without - _with` per sector.
-    value_trap_risk_count_without_sector_coe_by_sector: dict[str, int] = {}
-    value_trap_risk_count_with_sector_coe_by_sector: dict[str, int] = {}
-    # Phase 4.5e PR 3 — Rule 18 observability for the new Form-4 annotates.
-    # Counters increment inside the per-ticker loop when the flag is
-    # appended to valuation_warnings; written to
-    # Metadata.insider_sell_cluster_firing_count +
-    # Metadata.c_suite_unusual_sell_firing_count so the first cron with
-    # the flags wired shows the universe-wide firing rate at-a-glance.
-    # Gates the methodology-scientist Q3 2026-08-19 cohort-acceptance
-    # check that may promote INSIDER_SELL_CLUSTER_WEIGHT from 5.0 → 10.0.
-    insider_sell_cluster_firing_count: int = 0
-    c_suite_unusual_sell_firing_count: int = 0
-    # Phase 4.5e PR 4-eq — Rule 18 observability for the 10b5-1
-    # contamination filter applied in _is_opportunistic_sell. Counts
-    # the universe-wide total of transactions excluded by the filter
-    # (would have been opportunistic absent the gate) — the empirical
-    # lever for the methodology-scientist Q3 2026-08-19 cohort-
-    # acceptance check (issue #130). Expected delta vs PR #222 baseline:
-    # -30% to -45% on insider_sell_cluster_firing_count per
-    # Jagolinzer 2009 §3.2 + SEC 2022 economic analysis.
-    form4_rule10b5_one_excluded_count: int = 0
     # PR #259-R7a — pre-loop membership-map building moved to
     # compute.orchestrator.per_ticker.build_ticker_membership_maps (pure
     # code move; see that module's docstring for the byte-identical
@@ -2346,770 +2078,88 @@ def run_weekly_compute() -> int:
             df, snapshots, dow30=_dow30_tickers, ndx=_ndx_tickers
         )
     )
-    multi_class_aggregate_shares_suspected_count: int = 0
-    for _, r in df.iterrows():
-        ticker = str(r["ticker"])
-        snap = snapshots.get(ticker)
-        current_price = float(r["current_price"])
-        sector = str(r["sector"])
-        sub_industry_raw = r.get("industry")
-        sub_industry = (
-            str(sub_industry_raw)
-            if sub_industry_raw is not None and pd.notna(sub_industry_raw)
-            else None
-        )
-        pillar_row = pillar_df.loc[ticker] if ticker in pillar_df.index else pd.Series(dtype=float)
-
-        # OZK/PBF flip-blocker (0.10.22-phase8pilot) — Rule 18 counter for
-        # the ``fundamentals_unavailable`` direct veto.  Extended from the
-        # original snap-is-None-only check to also count the "empty-snap"
-        # case (FDXF fix): snap is NOT None but ALL 34 tracked metrics are
-        # null (EDGAR returned a Company object but the filer has no
-        # financial history yet).  Both cases fire the flag in
-        # compute_risk_flags; the counter must agree so
-        # Metadata.fundamentals_unavailable_count reflects the true
-        # universe-wide "no usable fundamentals" count (OZK + FDXF = 2 on
-        # the #107 sp900 run).
-        if snap is None or _snapshot_has_no_usable_fundamentals(snap):
-            fundamentals_unavailable_count += 1
-
-        # Fair-price ensemble (skipped when snapshot is missing — without
-        # fundamentals there's no input to any of the 6 methods).
-        ensemble: EnsembleResult | None = None
-        ensemble_dict: dict | None = None
-        valuation_warnings: list[str] = []
-        tbvps_value: float | None = None
-        if snap is not None:
-            tbvps_value = tangible_book_value_per_share(snap)
-            sub_panel = (
-                [t for t in by_sub_industry.get(sub_industry, []) if t != ticker]
-                if sub_industry is not None
-                else []
-            )
-            sector_panel = [t for t in by_sector.get(sector, []) if t != ticker]
-            broad_panel = [t for t in broad_ex_fin_util if t != ticker]
-            tier_panel = {
-                "sub_industry": sub_panel,
-                "industry": [],  # GICS level-2 not parsed; falls through to sector
-                "sector": sector_panel,
-                "broad": broad_panel,
-            }
-            peer_panels = {
-                "pe": tier_panel,
-                "pb": tier_panel,
-                "ev_ebitda": tier_panel,
-            }
-            ensemble, extra_flags = compute_fair_price_ensemble(
-                ticker=ticker,
-                snap=snap,
-                sector=sector,
-                sub_industry=sub_industry,
-                industry=None,
-                current_price=current_price,
-                filing_lag_days_value=_filing_lag(snap, asof_date),
-                peer_panels=peer_panels,
-                universe_metrics=universe_metrics,
-                historical_metrics=historical_metrics,
-            )
-            ensemble_dict = ensemble_result_to_dict(ensemble)
-            valuation_warnings = list(ensemble.valuation_warnings)
-            # Issue #177 PR-A — cache shadow trimmed median for the
-            # post-loop blast-radius computation (median_trim_delta_count).
-            if ensemble.median_trimmed is not None:
-                _median_trimmed_by_ticker[ticker] = ensemble.median_trimmed
-            if extra_flags:
-                merged = list(risk_flags.get(ticker, []))
-                for f in extra_flags:
-                    if f not in merged:
-                        merged.append(f)
-                risk_flags[ticker] = merged
-            if ensemble.median is not None or ensemble.max is not None:
-                fair_price_count += 1
-
-        # Issue #262 (2026-05-26) — writer-parity for the input-level
-        # ``data_quality_input_corruption`` veto. When the veto fires
-        # in ``risk_flags`` (input-level corruption per
-        # ``compute/scoring/risk_overlay.py::_data_quality_input_corruption``:
-        # TBVPS > $10K/share / TTM revenue < $50M / |NI| > |revenue|),
-        # ALSO append the parallel ``valuation_output_anomalous``
-        # annotate to ``valuation_warnings`` so the UI surface
-        # (``FairPriceCard.tsx``) renders the explanation chip for the
-        # all-null fair-price ensemble. Closes the veto-only-cohort
-        # UI explainability gap surfaced by methodology-scientist
-        # Mode B 2026-05-26 — 4 tickers (MTB / CPT / MRNA / HBAN on
-        # the 2026-05-23 cron #3) carried the veto but had no UI
-        # annotate because the ensemble-layer Site-2 check didn't
-        # additionally fire. Composite rank UNCHANGED — the veto
-        # surface already handles Top-5 suppression; this only adds
-        # the annotate for UI parity.
-        if (
-            "data_quality_input_corruption" in risk_flags.get(ticker, [])
-            and "valuation_output_anomalous" not in valuation_warnings
-        ):
-            valuation_warnings.append("valuation_output_anomalous")
-
-        # Post-split share-lag defense (defense layer 35).
-        #
-        # Tier-1 ANNOTATE (post_split_results tier==1, NOT in risk_flags):
-        #   shares were already corrected in Step 3b; add a transparency
-        #   valuation_warning so the UI surface shows the adjustment.
-        #   Tier-1 is routed through valuation_warnings ONLY — routing it
-        #   through risk_flags was a double-penalty bug (PR-2 fix 2026-06-18):
-        #   the Step-7 Top-5 rotation skips any ticker with non-empty
-        #   risk_flags, so a Tier-1-corrected stock (data IS correct) was
-        #   being silently excluded from entered_top5.  All other annotates
-        #   in the defense layer use valuation_warnings for the same reason.
-        #
-        # Tier-2 VETO (post_split_share_lag_unreconciled in risk_flags):
-        #   the fair-price ensemble is nulled — same contract as DQIC
-        #   (computed but untrustworthy because we couldn't determine the
-        #   correct share count).  Append valuation_output_anomalous for
-        #   UI parity (FairPriceCard.tsx renders the explanation chip).
-        _ticker_flags = set(risk_flags.get(ticker) or [])
-        _psr_for_ticker = post_split_results.get(ticker)
-        if _psr_for_ticker is not None and _psr_for_ticker.tier == 1:
-            # Emit the canonical flag key so flagLabel('post_split_share_lag')
-            # resolves to 'Post-split share count adjusted' on the FairPriceCard.
-            # The structured key is the only valuation_warnings entry for this
-            # path — free-text ratio/date detail was removed (#552) because it
-            # produced an unregistered, unparseable literal that rendered as a
-            # duplicate "Pending Edgar Refresh" chip via flagLabel()'s Title-Case
-            # fallback.  A structured post_split_event field is the future path
-            # for surfacing that detail (not this PR).
-            if "post_split_share_lag" not in valuation_warnings:
-                valuation_warnings.append("post_split_share_lag")
-        if "post_split_share_lag_unreconciled" in _ticker_flags:
-            # Null the ensemble (unreconciled split → fair price untrustworthy).
-            ensemble = None
-            ensemble_dict = None
-            if "valuation_output_anomalous" not in valuation_warnings:
-                valuation_warnings.append("valuation_output_anomalous")
-
-        # Beneish M-score (PR 3e.1 ANNOTATE at M > -2.22 + PR 4.5a.2
-        # soft-veto promotion at M > -1.78). The active-veto path is
-        # already wired into ``risk_flags`` above via
-        # ``beneish_m_scores`` injection; this block keeps the
-        # ``beneish_high`` annotate (M > -2.22 band) on
-        # `valuation_warnings` and the numeric m_score on StockDetail
-        # for transparency. Cached from the pre-compute pass to avoid
-        # recomputing the 8-ratio model twice per ticker.
-        beneish_result = beneish_results[ticker]
-        if beneish_result.is_high and "beneish_high" not in valuation_warnings:
-            valuation_warnings.append("beneish_high")
-
-        # Dechow F-score (PR 3e.2 ANNOTATE at F > 2.45 + PR 4.5a.3
-        # soft-veto promotion at F > 3.0). Active-veto path is wired
-        # into ``risk_flags`` above via ``dechow_f_scores`` injection;
-        # this block keeps the ``dechow_high`` annotate (F > 2.45 band)
-        # on `valuation_warnings`. Cached from pre-compute pass.
-        dechow_result = dechow_results[ticker]
-        if dechow_result.is_high and "dechow_high" not in valuation_warnings:
-            valuation_warnings.append("dechow_high")
-
-        # PR 4.5a.3 — `manipulation_triple_flag` joint-gate badge.
-        # Fires when Sloan (cross-sectional or sector-relative)
-        # AND Beneish annotate AND Dechow annotate all fire on the
-        # SAME ticker. Rare but high-confidence — typically 0-3
-        # tickers per universe. UI-only badge in `valuation_warnings`;
-        # does NOT add a third veto on top of the individual vetoes
-        # already doing that work. Per PR #86 plan §4.5a.3.
-        ticker_risk = set(risk_flags.get(ticker) or [])
-        if (
-            "sloan_accruals_top_decile" in ticker_risk
-            and "beneish_high" in valuation_warnings
-            and "dechow_high" in valuation_warnings
-            and "manipulation_triple_flag" not in valuation_warnings
-        ):
-            valuation_warnings.append("manipulation_triple_flag")
-
-        # Cross-source market-cap validator (PR 4b §1 + PR2a Issue #248
-        # tuple-return refactor 0.10.3). Compares SEC-derived market cap
-        # (shares × current_price) vs yfinance .info marketCap. Delta > 5%
-        # surfaces as ``cross_source_disagreement`` annotate. Catches
-        # yfinance scraper drift (pre-split share counts, intraday vs EOD,
-        # M&A ticker rotation) AND multi-class XBRL extraction failures
-        # (V/Visa Class A-only, FOXA, NWS/NWSA — issue #248). The delta
-        # is now ALSO recorded per-ticker (StockDetail.cross_source_delta)
-        # and aggregated into a universe histogram
-        # (Metadata.cross_source_delta_histogram) for PR2b severe-threshold
-        # calibration per methodology-scientist Mode B verdict 2026-05-25.
-        disagreement, csd_delta = cross_source_validate_market_cap(
-            ticker=ticker,
-            snap=snap,
-            current_price=current_price,
-        )
-        cross_source_delta_by_ticker[ticker] = csd_delta
-        cross_source_delta_histogram[cross_source_bucket_delta(csd_delta)] += 1
-        if disagreement:
-            cross_source_disagreement_count += 1
-            if "cross_source_disagreement" not in valuation_warnings:
-                valuation_warnings.append("cross_source_disagreement")
-
-        # PR-1 cross-source corruption shadow — cache-read side-channel.
-        # Both fetch_yfinance_market_cap and fetch_yfinance_shares_outstanding
-        # are pure cache reads at this point (the cache was already primed
-        # either by Step 3b or by the validate_market_cap call above which
-        # calls fetch_yfinance_market_cap internally).  No new network call.
-        _cs_yf_market_cap_by_ticker[ticker] = fetch_yfinance_market_cap(ticker)
-        _cs_yf_shares_by_ticker[ticker] = fetch_yfinance_shares_outstanding(ticker)
-
-        # PR-A2 — listing metadata (display-only; no scoring/ranking impact).
-        # Piggybacks the cross_source yfinance loop; skip-safe via
-        # QR_SKIP_CROSS_SOURCE inside fetch_yfinance_exchange.
-        exchange_code = fetch_yfinance_exchange(ticker)
-        exchange_by_ticker[ticker] = exchange_name(exchange_code)
-        country_by_ticker[ticker] = country_for_exchange(exchange_code)
-
-        # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot,
-        # Rule 18 observability-first) — pure cache-read; no new network call.
-        # The ``yfinance_info/<ticker>.json`` cache was already populated
-        # (with dividend_yield_pct + payout_ratio) by ``fetch_yfinance_market_cap``
-        # earlier in this loop iteration.  Wrapped in try/except so any
-        # unexpected failure is non-fatal — fields remain None and the cron
-        # continues unchanged.  Rankings/scores/vetoes are NOT touched.
-        try:
-            _dy_pct, _pays_div, _pr = fetch_yfinance_dividend(ticker)
-        except Exception as _div_exc:  # noqa: BLE001
-            logger.debug(
-                "fetch_yfinance_dividend failed for %s (non-fatal): %s",
-                ticker, _div_exc,
-            )
-            _dy_pct, _pays_div, _pr = None, None, None
-        _dividend_yield_pct_by_ticker[ticker] = _dy_pct
-        _pays_dividend_by_ticker[ticker] = _pays_div
-        _payout_ratio_by_ticker[ticker] = _pr
-
-        # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
-        # Rule 18 observability-first) — pure cache-read; no new network call.
-        # The ``yfinance_info/<ticker>.json`` cache was already populated
-        # (with quote_type) by ``fetch_yfinance_exchange`` earlier in this
-        # loop iteration.  Wrapped in try/except so any unexpected failure
-        # is non-fatal — field remains None and the cron continues unchanged.
-        # Rankings/scores/vetoes are NOT touched.
-        try:
-            _sec_type = fetch_yfinance_security_type(ticker)
-        except Exception as _sec_type_exc:  # noqa: BLE001
-            logger.debug(
-                "fetch_yfinance_security_type failed for %s (non-fatal): %s",
-                ticker, _sec_type_exc,
-            )
-            _sec_type = None
-        _security_type_by_ticker[ticker] = _sec_type
-
-        # Issue #261 — multi_class_aggregate_shares_suspected annotate.
-        # CIK-collision detector (precomputed before this loop) flags
-        # tickers from multi-class issuers where the SEC companyfacts
-        # API returns the AGGREGATE share count rather than the per-
-        # class breakdown — the GOOG/GOOGL overcount pattern (opposite
-        # direction to the PR #257 allowlist which corrects undercount
-        # via per-filing XBRL dimensional sum). Annotate-only —
-        # composite rank unchanged; surfaces the structural pattern
-        # for Q3 2026-08-19 quarterly-audit cohort visibility while
-        # PR-B (reverse-allowlist per-class XBRL extraction) lands as
-        # the structural fix.
-        if ticker in multi_class_flagged_tickers:
-            multi_class_aggregate_shares_suspected_count += 1
-            if "multi_class_aggregate_shares_suspected" not in valuation_warnings:
-                valuation_warnings.append("multi_class_aggregate_shares_suspected")
-
-        # PR 4.5b §1 — restatement_history annotate. 10-K/A or 10-Q/A
-        # filings in the trailing 5 years from SEC EDGAR. Hennes-Leone-
-        # Miller 2008 *TAR* — restating firms see -9% abnormal return
-        # on announcement; recurrent restaters compound the effect.
-        # ANNOTATE-only (sector-agnostic base rate, no veto).
-        restatement_result = check_restatement_history(ticker, asof=asof_date)
-        if (
-            restatement_result.fired
-            and "restatement_history" not in valuation_warnings
-        ):
-            valuation_warnings.append("restatement_history")
-
-        # Epic #150 Phase 2.2 — restatement_high_confidence annotate.
-        # Co-occurrence of a 10-K/A or 10-Q/A amendment with an 8-K
-        # Item 4.02 (non-reliance) filing within 90 days. Hennes-Leone-
-        # Miller 2008 *TAR* "irregularity" signature — PPV ~70% vs
-        # bare `restatement_history`'s ~30%. Annotate path (lands in
-        # `valuation_warnings`, not `risk_flags`): composite-rank
-        # source stays raw composite per SKILL.md Rule 16, but the
-        # flag contributes to `manipulation_index` (delta +3.0 on top
-        # of bare flag's +5.0 → 8.0 total when both fire), which
-        # feeds the 10-pt-max soft penalty into `composite_score_adjusted`
-        # on the detail-page Manipulation Risk card. Existing
-        # `restatement_history` semantics + weight unchanged in this
-        # PR (Phase 2.2 follow-up will decide whether to retire the
-        # bare flag after a cohort acceptance check).
-        amendment_dates = get_amendment_filing_dates(ticker, asof=asof_date)
-        non_reliance_dates = get_non_reliance_filing_dates(ticker, asof=asof_date)
-        high_conf_result = compute_high_confidence_restatement(
-            amendment_dates, non_reliance_dates
-        )
-        if (
-            high_conf_result.fired
-            and "restatement_high_confidence" not in valuation_warnings
-        ):
-            valuation_warnings.append("restatement_high_confidence")
-
-        # PR 4.5b §2 — late_filing_notification annotate. SEC Form
-        # 12b-25 (NT 10-K / NT 10-Q) within the trailing 365 days.
-        # Bartov-Lai-Yeung 2002 *JAR* — late filers see -5-7%
-        # abnormal returns. ANNOTATE-only.
-        late_filing_result = check_late_filing(ticker, asof=asof_date)
-        if (
-            late_filing_result.fired
-            and "late_filing_notification" not in valuation_warnings
-        ):
-            valuation_warnings.append("late_filing_notification")
-
-        # PR 4.5c — Roychowdhury 2006 REM. `rem_suspect` annotate
-        # fires when 2 of 3 abnormal proxies (CFO, production,
-        # discretionary expenses) sit in their respective worst
-        # decile within sector. Results pre-computed above; this is
-        # just the per-ticker append. Catches REAL manipulation —
-        # cutting R&D, channel stuffing, deferring maintenance —
-        # invisible to Sloan/Beneish/Dechow accrual targets.
-        rem_result = rem_results.get(ticker)
-        if (
-            rem_result is not None
-            and rem_result.fired
-            and "rem_suspect" not in valuation_warnings
-        ):
-            valuation_warnings.append("rem_suspect")
-
-        # PR 4.5d §1 — accruals_momentum_high annotate.
-        # Δ(TATA = (NI − CFO)/TA) over trailing 3 fiscal years.
-        # Threshold +0.05 ≈ Beneish 1999 ΔM > +0.5 via the β_TATA
-        # coefficient. Catches manipulation gathering steam — the
-        # snapshot-only Sloan + Beneish flags miss the trajectory.
-        accruals_mom = check_accruals_momentum(snap, histories.get(ticker))
-        if (
-            accruals_mom.fired
-            and "accruals_momentum_high" not in valuation_warnings
-        ):
-            valuation_warnings.append("accruals_momentum_high")
-
-        # PR 4.5d §2 — loss_avoidance_pattern annotate.
-        # Burgstahler-Dichev 1997 *JAE* kink at zero. 3+ consecutive
-        # fiscal years of tiny-positive NI (∈ [0, $50M]) OR tiny-
-        # positive EPS (∈ [0, $0.50]) = managers shading reported
-        # earnings just enough to clear the loss threshold. (Phase
-        # 2.4 of epic #150 rescaled the bands 10× for S&P 500 scale.)
-        loss_avoid = check_loss_avoidance(snap, histories.get(ticker))
-        if (
-            loss_avoid.fired
-            and "loss_avoidance_pattern" not in valuation_warnings
-        ):
-            valuation_warnings.append("loss_avoidance_pattern")
-
-        # Phase 4b — loss_avoidance_pattern_size_invariant annotate.
-        # Roychowdhury 2006 *JAE* §5.2 suspect-firm definition:
-        # NI / TotalAssets ∈ [0, 0.005] for 3+ consecutive fiscal years.
-        # Size-invariant sibling of the absolute-$ variant above; catches
-        # chronically thin-margin large caps the BD 1997 dollar band misses.
-        loss_avoid_si = check_loss_avoidance_size_invariant(
-            snap, histories.get(ticker)
-        )
-        if (
-            loss_avoid_si.fired
-            and "loss_avoidance_pattern_size_invariant" not in valuation_warnings
-        ):
-            valuation_warnings.append("loss_avoidance_pattern_size_invariant")
-            loss_avoidance_size_invariant_firing_count += 1
-
-        # Issue #176 — share_count_extraction_missing annotate.
-        # Fires when the snapshot has revenue + total_assets but
-        # shares_outstanding is None (STZ 2026-05-14 pattern). Annotate-
-        # only — distinct from the data_quality_input_corruption veto,
-        # which keeps its shares_outstanding=None silence contract per
-        # issue #18 / test_D3.
-        if (
-            check_share_count_extraction_missing(snap)
-            and "share_count_extraction_missing" not in valuation_warnings
-        ):
-            valuation_warnings.append("share_count_extraction_missing")
-            share_count_extraction_missing_count += 1
-
-        # S&P 1500 Slice 4 — low_liquidity ANNOTATE (defense layer 36,
-        # ANNOTATE-ONLY per Rule 16 / ``portable-annotate-before-veto``).
-        #
-        # Fires when the trailing-30-day mean dollar volume (close × volume)
-        # is known AND below the $5M ADV floor (config.ADV_FLOOR_USD).
-        # Academic anchor: Amihud 2002 *J. Financial Markets* §2 — sub-$5M
-        # names sit in the bottom decile of the US-equity illiquidity measure;
-        # microstructure noise dominates any fundamental signal at this scale.
-        #
-        # ANNOTATE-ONLY invariants (enforced by this placement in
-        # ``valuation_warnings``, NOT ``risk_flags``):
-        #   - Does NOT set ``cautious`` (recommendation unchanged).
-        #   - Does NOT suppress Top-5 badge.
-        #   - Does NOT null fair-price or change the composite score.
-        # Veto promotion is gated on ≥ 1 cron of firing-rate data +
-        # methodology ratification (WORKFLOW.md §8.6 "Liquidity backstop").
-        _ticker_adv = adv_by_ticker.get(ticker)
-        if (
-            _ticker_adv is not None
-            and _ticker_adv < config.ADV_FLOOR_USD
-            and "low_liquidity" not in valuation_warnings
-        ):
-            valuation_warnings.append("low_liquidity")
-            low_liquidity_annotate_count += 1
-
-        # Issue #177 — extreme_estimate_majority annotate count.
-        # The flag is appended by ``compute.valuation.ensemble`` when
-        # ≥ config.EXTREME_MAJORITY_THRESHOLD of the 6 methods fire
-        # Defense #4; we just count here so the universe-wide firing
-        # rate is surfaced on Metadata for the next cron's audit (gates
-        # the follow-up median-exclusion PR).
-        if "extreme_estimate_majority" in valuation_warnings:
-            extreme_estimate_majority_count += 1
-        # Issue #587 — low-applicability floor delta counter.
-        # Increments only when the annotate fired via the new floor AND
-        # NOT the old 3-of-6 baseline. Relies on ensemble.extreme_majority_lowapp
-        # set by _extreme_majority_fires() in the ensemble module.
-        if ensemble is not None and ensemble.extreme_majority_lowapp:
-            extreme_estimate_majority_lowapp_count += 1
-
-        # Phase 4.5e PR 3 — Form-4 insider-cluster annotates.
-        #
-        # The per-ticker `fetch_recent_form4` is gated on PR 2's
-        # diagnostic dict — we ONLY consult the cache when PR 2's fetch
-        # loop above confirmed a populated entry (``fetch_status="ok"``).
-        # This is critical for pre-merge-prod-sim which sets
-        # ``FORM4_FETCH_SKIP=1`` to skip PR 2's bulk loop (cache is
-        # cold; 502 × per-filing HTTP would exceed the 45-min CI cap —
-        # confirmed by the 2026-05-23 cancellation on PR #222
-        # workflow_run 26330610740). Without the gate,
-        # ``fetch_recent_form4`` would cache-miss → fall through to a
-        # live SEC fetch in the scoring loop and reproduce the same
-        # blast radius PR 2 was carved out to avoid.
-        #
-        # On the weekly cron (compute-rankings.yml, no FORM4_FETCH_SKIP),
-        # the diagnostic check is essentially free (dict lookup) and
-        # all 502 tickers normally pass — the fast-path runs the
-        # predicates over the full universe.
-        #
-        # Annotate-only per Rule 16 + portable-annotate-before-veto:
-        # composite rank unchanged; only ``manipulation_index`` +
-        # ``composite_score_adjusted`` soft penalty is impacted.
-        _form4_diag = form4_diagnostics.get(ticker)
-        if _form4_diag and _form4_diag.get("fetch_status") == "ok":
-            _form4_txns = fetch_recent_form4(ticker)
-            if detect_insider_sell_cluster(_form4_txns, asof_date):
-                if "insider_sell_cluster" not in valuation_warnings:
-                    valuation_warnings.append("insider_sell_cluster")
-                insider_sell_cluster_firing_count += 1
-            if detect_c_suite_unusual_sell(_form4_txns, asof_date):
-                if "c_suite_unusual_sell" not in valuation_warnings:
-                    valuation_warnings.append("c_suite_unusual_sell")
-                c_suite_unusual_sell_firing_count += 1
-            # PR 4-eq Rule 18 diagnostic — sum the count of transactions
-            # excluded by the 10b5-1 filter (within the 30d cluster window
-            # only) so the universe-wide contamination-eliminated metric
-            # is visible on metadata.json for the Q3 cohort audit.
-            form4_rule10b5_one_excluded_count += (
-                count_10b5_1_filtered_transactions(_form4_txns, asof_date)
-            )
-
-        # Issue #67 — Rule 18 dual-count for sector-adjusted CoE delta.
-        # We call check_rim_applicability twice — once with the flat 0.10
-        # baseline and once with the per-sector Ke — so the universe-wide
-        # delta is visible in Metadata on every cron regardless of the
-        # USE_SECTOR_COE flag.  The per-ticker inputs (avg_3y_roe, tbvps,
-        # lag_status) are already computed above; we just reuse them here.
-        # This is a read-only measurement pass — no risk_flags or
-        # valuation_warnings are modified by these calls.
-        _hist_67 = historical_metrics.get(ticker, {})
-        _avg_roe_67 = _hist_67.get("avg_3y_roe")
-        _tbvps_67 = tangible_book_value_per_share(snap) if snap is not None else None
-        _lag_67 = _filing_lag(snap, asof_date)
-        _lag_status_67 = stale_filing_status(_lag_67)
-        _rim_flat = check_rim_applicability(
-            avg_3y_roe=_avg_roe_67,
-            tbvps=_tbvps_67,
-            lag_status=_lag_status_67,
-            cost_of_equity=config.COST_OF_EQUITY,
-        )
-        if (
-            not _rim_flat.applicable
-            and _rim_flat.reason == "value_trap_risk_roe_below_cost_of_equity"
-        ):
-            value_trap_risk_count_without_sector_coe += 1
-            value_trap_risk_count_without_sector_coe_by_sector[sector] = (
-                value_trap_risk_count_without_sector_coe_by_sector.get(sector, 0) + 1
-            )
-        _rim_sector = check_rim_applicability(
-            avg_3y_roe=_avg_roe_67,
-            tbvps=_tbvps_67,
-            lag_status=_lag_status_67,
-            cost_of_equity=get_cost_of_equity(sector),
-        )
-        if (
-            not _rim_sector.applicable
-            and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
-        ):
-            value_trap_risk_count_with_sector_coe += 1
-            value_trap_risk_count_with_sector_coe_by_sector[sector] = (
-                value_trap_risk_count_with_sector_coe_by_sector.get(sector, 0) + 1
-            )
-
-        # Two-factor value_trap_risk LIVE gate (issue #586 PR-2, 0.10.34-phase8pilot).
-        # FLIPPED from SHADOW to LIVE: the first sp1500 cron confirmed
-        # value_trap_risk_two_factor_shadow_count = 155 (10.3% of 1504),
-        # squarely in the methodology-ratified 5-12% LSV band.  Acceptance
-        # gate cleared; the two-factor gate is now the live emission.
-        #
-        # The warning is emitted HERE (main.py), NOT in ensemble.py, because
-        # the P/E cross-sectional comparison requires sector_panel +
-        # universe_metrics which are only in scope in this per-ticker loop.
-        # ensemble.py no longer appends "value_trap_risk" (PR-2 change).
-        #
-        # Gate (identical to the former shadow gate):
-        #   (a) live ROE≤Ke skip fires (reuses _rim_sector from above, same
-        #       sector Ke as the live path post-USE_SECTOR_COE flip)
-        #   (b) eps_ttm > 0 (positive earnings, P/E defined)
-        #   (c) ticker P/E < sector-peer median P/E from universe_metrics
-        # Loss-making firms (eps_ttm ≤ 0) are EXEMPT — does NOT emit.
-        #
-        # value_trap_risk_two_factor_shadow_count is kept for one additional
-        # cron as a structural cross-check (it now equals the live count);
-        # documented in Metadata.value_trap_risk_two_factor_shadow_count docstring.
-        #
-        # RIPPLE: value_trap_risk feeds VALUE_TRAP_PENALTY into derive_loss_chance
-        # (scoring/loss_chance.py), so the ~393 stocks that DROP out of the firing
-        # set under the two-factor gate also LOSE that loss-chance penalty — their
-        # displayed loss_chance_pct shifts down this cron. Intended + rank-neutral
-        # (loss_chance_pct is display-derived; composite_score is passed in
-        # pre-computed and is unaffected). A post-cron stock-detail-auditor should
-        # treat this one-time loss_chance_pct shift as the expected flip effect,
-        # NOT data drift.
-        if (
-            not _rim_sector.applicable
-            and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
-            and snap is not None
-        ):
-            # Derive eps_ttm exactly as the ensemble does (NI_TTM / shares_out).
-            _vtr_eps_ttm: float | None = None
-            if (
-                snap.net_income is not None
-                and snap.shares_outstanding is not None
-                and snap.shares_outstanding > 0
-                and snap.net_income > 0
-            ):
-                _vtr_eps_ttm = snap.net_income / snap.shares_outstanding
-
-            if _vtr_eps_ttm is not None and _vtr_eps_ttm > 0 and current_price > 0:
-                _vtr_pe_ttm = current_price / _vtr_eps_ttm
-                # Sector-peer median P/E: all tickers in the same sector panel
-                # (excluding the target ticker itself) with a positive P/E.
-                # Uses universe_metrics (same dict that feeds the multiples_pe
-                # peer walk in compute_fair_price_ensemble).
-                # NOTE: sector_panel is only defined when snap is not None (the
-                # enclosing if-block). We are inside that block so it is in scope.
-                _vtr_sector_pe_values: list[float] = [
-                    float(universe_metrics[t]["pe_ttm"])
-                    for t in sector_panel
-                    if t in universe_metrics
-                    and universe_metrics[t].get("pe_ttm") is not None
-                    and universe_metrics[t]["pe_ttm"] > 0  # type: ignore[operator]
-                ]
-                if _vtr_sector_pe_values:
-                    _vtr_sector_median_pe = statistics.median(_vtr_sector_pe_values)
-                    if _vtr_pe_ttm < _vtr_sector_median_pe:
-                        # Live emission — two-factor gate satisfied.
-                        if "value_trap_risk" not in valuation_warnings:
-                            valuation_warnings.append("value_trap_risk")
-                        # Shadow counter now equals the live count; kept for one
-                        # more cron as a structural cross-check.
-                        value_trap_risk_two_factor_shadow_count += 1
-
-        # Price history JSON (sliced from already-fetched prices, no new
-        # fetches per Step 5 spec).
-        prices_df = prices_by_ticker.get(ticker)
-        has_history = False
-        if prices_df is not None:
-            has_history = write_stock_history(
-                ticker=ticker,
-                prices_df=prices_df,
-                output_dir=config.DATA_DIR,
-            )
-            if has_history:
-                history_count += 1
-
-        # PR 4d — recommendation tier (Option B locked: bullish / lean_bullish
-        # / neutral / cautious). Deterministic derivation from composite +
-        # risk_flags + valuation_warnings + MoS. See
-        # `compute/scoring/recommendation.py` for the rubric.
-        recommendation = derive_recommendation(
-            composite_score=float(r["composite_score"]),
-            risk_flags=risk_flags.get(ticker, []),
-            valuation_warnings=valuation_warnings,
-            mos_pct=ensemble.mos_pct if ensemble is not None else None,
-        )
-
-        # PR 4e — Loss Chance % heuristic (Option D locked: "Loss Chance %"
-        # label + small italic "heuristic" qualifier in the UI). Pure
-        # combiner over composite + risk_flags + valuation_warnings + MoS.
-        # Returns None when MoS unavailable (no ensemble) — frontend
-        # renders em-dash placeholder. See `compute/scoring/loss_chance.py`.
-        loss_chance_pct = derive_loss_chance(
-            composite_score=float(r["composite_score"]),
-            risk_flags=risk_flags.get(ticker, []),
-            valuation_warnings=valuation_warnings,
-            mos_pct=ensemble.mos_pct if ensemble is not None else None,
-        )
-
-        # PR 4.5f — manipulation_index rollup + soft composite penalty.
-        # Rank stays the raw composite per SKILL.md Rule 16 ("composite
-        # rank unchanged"); composite_score_adjusted is informational.
-        m_index = compute_manipulation_index(
-            risk_flags=risk_flags.get(ticker, []),
-            valuation_warnings=valuation_warnings,
-        )
-        composite_adj = compute_adjusted_composite(
-            composite_score=float(r["composite_score"]),
-            manipulation_index=m_index,
-        )
-        m_components = manipulation_components(
-            risk_flags=risk_flags.get(ticker, []),
-            valuation_warnings=valuation_warnings,
-        )
-
-        summaries.append(
-            StockSummary(
-                rank=int(r["rank"]),
-                ticker=ticker,
-                name=str(r["name"]),
-                sector=sector,
-                composite_score=round(float(r["composite_score"]), 2),
-                current_price=round(current_price, 4),
-                fair_price=ensemble.median if ensemble is not None else None,
-                max_fair_price=ensemble.max if ensemble is not None else None,
-                margin_of_safety_pct=ensemble.mos_pct if ensemble is not None else None,
-                pillar_scores=_pillar_scores_to_schema(pillar_row),
-                risk_flags=risk_flags.get(ticker, []),
-                valuation_warnings=valuation_warnings,
-                recommendation=recommendation,
-                loss_chance_pct=loss_chance_pct,
-                price_change_1d_pct=(
-                    round(float(r["price_change_1d_pct"]), 4)
-                    if r.get("price_change_1d_pct") is not None
-                    and not math.isnan(float(r["price_change_1d_pct"]))
-                    else None
-                ),
-                manipulation_index=m_index,
-                composite_score_adjusted=composite_adj,
-                entered_top5=ticker in entered,
-                exited_top5=ticker in exited,
-                # Phase 8 pilot PR 3a — index membership from cohort column.
-                index_membership=cohort_by_ticker.get(ticker, "sp500"),
-                # Multi-index membership (0.10.23-phase8pilot) — cohort + Dow30/NDX overlap.
-                index_memberships=memberships_by_ticker.get(
-                    ticker, [cohort_by_ticker.get(ticker, "sp500")]
-                ),
-            )
-        )
-
-        _psr_for_raw = post_split_results.get(ticker)
-        raw_metrics = _build_raw_metrics(
-            snap,
-            current_price,
-            shares_outstanding_pre_split_raw=(
-                _psr_for_raw.edgar_shares
-                if _psr_for_raw is not None and _psr_for_raw.tier == 1
-                else None
-            ),
-        )
-        imputed = imputed_by_ticker.get(ticker, [])
-        tier2_result = tier2_results.get(ticker)
-        tier2_dict = tier2_events_dict(tier2_result) if tier2_result is not None else None
-        detail = StockDetail(
-            ticker=ticker,
-            name=str(r["name"]),
-            sector=sector,
-            industry=sub_industry,
-            exchange=exchange_by_ticker.get(ticker),
-            country=country_by_ticker.get(ticker),
-            market_cap=raw_metrics.market_cap,
-            current_price=round(current_price, 4),
-            rank=int(r["rank"]),
-            composite_score=round(float(r["composite_score"]), 2),
-            pillar_scores=_pillar_scores_to_schema(pillar_row),
-            raw_metrics=raw_metrics,
-            fair_price=ensemble_dict,
-            data_quality=_build_data_quality(snap, now, imputed),
-            risk_flags=risk_flags.get(ticker, []),
-            valuation_warnings=valuation_warnings,
-            has_history=has_history,
-            tangible_book_value=tbvps_value,
-            tier2_events=tier2_dict,
-            pillar_baseline=sector_pillar_baselines.get(sector),
-            beneish_m_score=beneish_result.m_score,
-            dechow_f_score=dechow_result.f_score,
-            recommendation=recommendation,
-            loss_chance_pct=loss_chance_pct,
-            price_change_1d_pct=(
-                round(float(r["price_change_1d_pct"]), 4)
-                if r.get("price_change_1d_pct") is not None
-                and not math.isnan(float(r["price_change_1d_pct"]))
-                else None
-            ),
-            manipulation_index=m_index,
-            composite_score_adjusted=composite_adj,
-            manipulation_components=m_components,
-            valuation_methods_applicable=(
-                ensemble.valuation_methods_applicable if ensemble is not None else None
-            ),
-            osap_signals=osap_signal_map.get(ticker),
-            osap_blended_score=(
-                round(float(composite_osap_adjusted[ticker]), 2)
-                if ticker in composite_osap_adjusted.index
-                and not pd.isna(composite_osap_adjusted[ticker])
-                else None
-            ),
-            entered_top5=ticker in entered,
-            exited_top5=ticker in exited,
-            # Phase 8 pilot PR 3a — index membership from cohort column.
-            index_membership=cohort_by_ticker.get(ticker, "sp500"),
-            # Multi-index membership (0.10.23-phase8pilot) — cohort + Dow30/NDX overlap.
-            index_memberships=memberships_by_ticker.get(
-                ticker, [cohort_by_ticker.get(ticker, "sp500")]
-            ),
-            form4_diagnostics=form4_diagnostics.get(ticker),
-            cross_source_delta=cross_source_delta_by_ticker.get(ticker),
-            # Dividend signal PR-1 (roadmap item #5 / 7a, 0.10.27-phase8pilot).
-            # Display-only; does NOT influence composite score / risk_flags /
-            # recommendation / any defense flag.  All three default to None
-            # so legacy consumers are unaffected.
-            dividend_yield_pct=_dividend_yield_pct_by_ticker.get(ticker),
-            pays_dividend=_pays_dividend_by_ticker.get(ticker),
-            payout_ratio=_payout_ratio_by_ticker.get(ticker),
-            # S&P 1500 Slice 4 — ADV liquidity backstop (defense layer 36,
-            # 0.10.29-phase8pilot, ANNOTATE-ONLY per Rule 16). Display-only
-            # diagnostic; does NOT influence composite score / risk_flags /
-            # recommendation / Top-5 eligibility. None when price DataFrame
-            # was unavailable or missing Close/Volume column (graceful
-            # degradation per Rule 18).
-            average_dollar_volume=adv_by_ticker.get(ticker),
-            # Security-type signal PR-1 (roadmap item #5 / 7b, 0.10.30-phase8pilot,
-            # Rule 18 observability-first). Display-only; does NOT influence
-            # composite score / risk_flags / recommendation / any defense flag.
-            # Defaults to None so legacy consumers are unaffected.
-            security_type=_security_type_by_ticker.get(ticker),
-        )
-        write_stock_detail(detail, config.DATA_DIR)
-        all_details.append(detail)  # Step 13.5 warehouse accumulator
-        detail_count += 1
-
-    # Issue #287 PR A — wall-clock end marker for Step 8 (cross_source umbrella).
-    cross_source_wall_clock_seconds = round(
-        time.monotonic() - _cross_source_wc_start, 1
+    # Step 8 — combined per-ticker loop: fair-price ensemble + price history
+    # write + StockSummary + StockDetail. Extracted to
+    # compute.orchestrator.per_ticker.run_per_ticker_loop as part of PR
+    # #259-R7b (final slice of the incremental refactor of
+    # run_weekly_compute, issue #259) — a PURE CODE MOVE, no behaviour
+    # change. See that module's docstring for the full byte-identical
+    # guarantee (incl. why ``_filing_lag`` / ``_build_raw_metrics`` are
+    # injected as callables rather than moved).
+    result = run_per_ticker_loop(
+        df=df,
+        snapshots=snapshots,
+        pillar_df=pillar_df,
+        risk_flags=risk_flags,
+        beneish_results=beneish_results,
+        dechow_results=dechow_results,
+        rem_results=rem_results,
+        post_split_results=post_split_results,
+        tier2_results=tier2_results,
+        histories=histories,
+        historical_metrics=historical_metrics,
+        universe_metrics=universe_metrics,
+        by_sector=by_sector,
+        by_sub_industry=by_sub_industry,
+        broad_ex_fin_util=broad_ex_fin_util,
+        adv_by_ticker=adv_by_ticker,
+        prices_by_ticker=prices_by_ticker,
+        imputed_by_ticker=imputed_by_ticker,
+        sector_pillar_baselines=sector_pillar_baselines,
+        form4_diagnostics=form4_diagnostics,
+        osap_signal_map=osap_signal_map,
+        composite_osap_adjusted=composite_osap_adjusted,
+        cohort_by_ticker=cohort_by_ticker,
+        memberships_by_ticker=memberships_by_ticker,
+        multi_class_flagged_tickers=multi_class_flagged_tickers,
+        entered=entered,
+        exited=exited,
+        asof_date=asof_date,
+        now=now,
+        filing_lag_fn=_filing_lag,
+        build_raw_metrics_fn=_build_raw_metrics,
     )
-    logger.info(
-        "Wrote %d stock detail JSON files; %d with fair_price; %d with price history; "
-        "Step 8 wall_clock=%ss",
-        detail_count,
-        fair_price_count,
-        history_count,
-        cross_source_wall_clock_seconds,
+    cross_source_wall_clock_seconds = result.cross_source_wall_clock_seconds
+    summaries = result.summaries
+    all_details = result.all_details
+    loss_avoidance_size_invariant_firing_count = (
+        result.loss_avoidance_size_invariant_firing_count
+    )
+    share_count_extraction_missing_count = result.share_count_extraction_missing_count
+    fundamentals_unavailable_count = result.fundamentals_unavailable_count
+    low_liquidity_annotate_count = result.low_liquidity_annotate_count
+    extreme_estimate_majority_count = result.extreme_estimate_majority_count
+    extreme_estimate_majority_lowapp_count = (
+        result.extreme_estimate_majority_lowapp_count
+    )
+    cross_source_disagreement_count = result.cross_source_disagreement_count
+    cross_source_delta_histogram = result.cross_source_delta_histogram
+    cross_source_delta_by_ticker = result.cross_source_delta_by_ticker
+    _cs_yf_market_cap_by_ticker = result._cs_yf_market_cap_by_ticker
+    _cs_yf_shares_by_ticker = result._cs_yf_shares_by_ticker
+    _median_trimmed_by_ticker = result._median_trimmed_by_ticker
+    exchange_by_ticker = result.exchange_by_ticker
+    country_by_ticker = result.country_by_ticker
+    _dividend_yield_pct_by_ticker = result._dividend_yield_pct_by_ticker
+    _security_type_by_ticker = result._security_type_by_ticker
+    value_trap_risk_count_without_sector_coe = (
+        result.value_trap_risk_count_without_sector_coe
+    )
+    value_trap_risk_count_with_sector_coe = result.value_trap_risk_count_with_sector_coe
+    value_trap_risk_two_factor_shadow_count = (
+        result.value_trap_risk_two_factor_shadow_count
+    )
+    value_trap_risk_count_without_sector_coe_by_sector = (
+        result.value_trap_risk_count_without_sector_coe_by_sector
+    )
+    value_trap_risk_count_with_sector_coe_by_sector = (
+        result.value_trap_risk_count_with_sector_coe_by_sector
+    )
+    insider_sell_cluster_firing_count = result.insider_sell_cluster_firing_count
+    c_suite_unusual_sell_firing_count = result.c_suite_unusual_sell_firing_count
+    form4_rule10b5_one_excluded_count = result.form4_rule10b5_one_excluded_count
+    multi_class_aggregate_shares_suspected_count = (
+        result.multi_class_aggregate_shares_suspected_count
     )
 
     # Step 9 — sanity smoke test (Phase 3c Step 8). Cross-sectional Spearman
