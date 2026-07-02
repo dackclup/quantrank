@@ -871,3 +871,26 @@ BROAD_UNIVERSE_ELIGIBLE_EXCHANGES: tuple[str, ...] = ("Nasdaq", "NYSE", "CBOE")
 # The cron does NOT set this flag (the probe is gated by QR_UNIVERSE instead,
 # but the flag is available for the pre-merge sim which cannot hit the SEC).
 BROAD_UNIVERSE_SKIP_ENV_VAR: str = "QR_SKIP_BROAD_UNIVERSE"
+
+# ---------------------------------------------------------------------------
+# Phase 9.3 runtime pre-req — broad-universe 4-job precache split
+# ---------------------------------------------------------------------------
+#
+# A single-job cold run of the QR_UNIVERSE=broad_investable_us ranked path
+# (~6,883 candidates -> Step-1 prices -> select_broad_universe_survivors ->
+# ~3,545 survivors -> fundamentals/history/form4/tier2 on survivors) was
+# CANCELLED at GitHub Actions' HARD 6-hour (360-minute) per-job ceiling with
+# no cache saved (gate-C1 finding). The fix is
+# ``.github/workflows/precache-broad-universe.yml``: 4 SEQUENTIAL jobs, each
+# under the 360-min cap, handing the investability-screen survivor set from
+# job 1 to jobs 2-4 via a small uploaded/downloaded Parquet artifact (NOT a
+# scoring input — purely a CI job-to-job handoff file, read by
+# ``scripts/precache_broad_stage_{fundamentals,form4,tier2}.py``).
+#
+# This path lives OUTSIDE ``compute/cache/`` proper so it is never swept
+# into either the fast (``cache-v12-fast-``) or slow-text (``cache-v5-
+# text-``) ``actions/cache`` bundle ``path:`` blocks by accident — it is a
+# single-workflow-run-lifetime handoff file, not a persistent TTL'd cache.
+BROAD_UNIVERSE_PRECACHE_SURVIVOR_PATH: Path = (
+    CACHE_DIR / "precache_broad" / "survivors.parquet"
+)

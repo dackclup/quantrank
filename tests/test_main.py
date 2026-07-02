@@ -34,11 +34,11 @@ from compute.main import (
     _eps_3y_avg,
     _fcf_5y,
     _filing_lag,
-    _history_one,
     _latency_histogram,
     _percentile,
 )
 from compute.orchestrator.fundamentals import _fundamentals_one
+from compute.orchestrator.history import _history_one
 from compute.output.schemas import Metadata  # noqa: F401 — used by step-4 fixture
 from compute.scoring.eight_k_events import ItemFlag
 from compute.scoring.tier2 import Tier2Result
@@ -562,7 +562,11 @@ def test_history_one_failure_returns_empty_with_elapsed(monkeypatch):
     def boom(*a, **k):
         raise RuntimeError("synthetic")
 
-    monkeypatch.setattr("compute.main.fetch_fundamentals_history", boom)
+    # _history_one now lives in compute.orchestrator.history (Phase 9.3
+    # precache-split prerequisite extraction) — patch target moved with it,
+    # mirroring the compute.orchestrator.fundamentals._fundamentals_one
+    # precedent above.
+    monkeypatch.setattr("compute.orchestrator.history.fetch_fundamentals_history", boom)
     df, elapsed = _history_one("TST", "0000000001")
     assert df.empty
     assert elapsed >= 0.0
@@ -1267,7 +1271,7 @@ def test_step4_sectors_dict_passed_to_compute_risk_flags(
     with (
         patch("compute.orchestrator.prices._fetch_prices_one", side_effect=_fake_prices_for_step4),
         patch("compute.orchestrator.fundamentals._fundamentals_one", return_value=(_STEP4_SNAP, 0.1)),
-        patch("compute.main._history_one", return_value=(pd.DataFrame(), 0.1)),
+        patch("compute.orchestrator.history._history_one", return_value=(pd.DataFrame(), 0.1)),
         patch("compute.main.get_sp500_constituents", return_value=_STEP4_UNIVERSE),
         patch("compute.main.fetch_spy_benchmark", return_value=None),
         patch("compute.main.fetch_benchmarks", return_value={}),

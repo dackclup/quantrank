@@ -34,13 +34,11 @@ Pipeline:
 
 from __future__ import annotations
 
-import concurrent.futures as _cf
 import logging
 import math
 import os
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, date, datetime, timedelta
 
 import numpy as np
@@ -54,7 +52,6 @@ from compute.ingest.cross_source import (
 from compute.ingest.fundamentals import (
     FundamentalsSnapshot,
     fetch_fundamentals,
-    fetch_fundamentals_history,
 )
 from compute.ingest.fundamentals import (
     get_filing_precheck_skip_count as get_fundamentals_filing_precheck_skip_count,
@@ -76,6 +73,7 @@ from compute.ingest.universe import (
 from compute.orchestrator import ComputeState
 from compute.orchestrator.form4 import fetch_all_form4
 from compute.orchestrator.fundamentals import fetch_all_fundamentals
+from compute.orchestrator.history import fetch_all_history
 from compute.orchestrator.osap import run_osap_pipeline
 from compute.orchestrator.per_ticker import (
     build_ticker_membership_maps,
@@ -274,30 +272,6 @@ def _count_restatement_demote_delta(summaries: list[StockSummary]) -> int:
 # truly stuck task (e.g., SEC's HTTP layer hanging mid-stream past the
 # inner retry's wall-clock cap).
 _FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS = 45
-
-
-def _history_one(ticker: str, cik: str) -> tuple[pd.DataFrame, float]:
-    """Fetch annual history for one CIK, timed.
-
-    Returns (history_df, elapsed_seconds). Empty DataFrame on missing
-    CIK or any failure. Elapsed always captured.
-    """
-    t0 = time.perf_counter()
-    if not cik:
-        return pd.DataFrame(), 0.0
-    df: pd.DataFrame = pd.DataFrame()
-    try:
-        df = fetch_fundamentals_history(cik)
-    except Exception as e:  # noqa: BLE001
-        logger.warning("fetch_fundamentals_history raised for cik=%s: %s", cik, e)
-    elapsed = time.perf_counter() - t0
-    logger.debug(
-        "fundamentals_history_fetch ticker=%s elapsed_seconds=%.2f status=%s",
-        ticker,
-        elapsed,
-        "success" if not df.empty else "empty",
-    )
-    return df, elapsed
 
 
 def _latency_histogram(elapsed_values: list[float]) -> dict[str, int]:
@@ -1460,32 +1434,18 @@ def run_weekly_compute() -> int:
         return 0
 
     # Step 3 — annual history in parallel (feeds growth CAGRs).
+    # Loop extracted to compute.orchestrator.history (Phase 9.3 precache-split
+    # prerequisite — mirrors the #259-R2..R5 extraction pattern so
+    # scripts/precache_broad_stage_fundamentals.py can call it independently
+    # of run_weekly_compute).  The "Fetching annual fundamentals history…"
+    # info log stays here so it fires in the same position, exactly once —
+    # same fundamentals.py (R3) precedent.  Everything else (the
+    # ThreadPoolExecutor loop, the per-ticker timeout/exception handling)
+    # moved into fetch_all_history; behaviour is byte-identical.
     logger.info("Fetching annual fundamentals history…")
-    histories: dict[str, pd.DataFrame] = {}
-    with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
-        futures = {
-            ex.submit(
-                _history_one, r["ticker"], str(r.get("cik") or "")
-            ): r["ticker"]
-            for _, r in df.iterrows()
-        }
-        for fut in as_completed(futures):
-            ticker = futures[fut]
-            try:
-                hist_df, _hist_elapsed = fut.result(
-                    timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS
-                )
-                histories[ticker] = hist_df
-            except _cf.TimeoutError:
-                logger.warning(
-                    "History task timed out (>%ds) for %s — skipping ticker.",
-                    _FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS,
-                    ticker,
-                )
-                histories[ticker] = pd.DataFrame()
-            except Exception as e:  # noqa: BLE001
-                logger.warning("History task raised for %s: %s", ticker, e)
-                histories[ticker] = pd.DataFrame()
+    histories: dict[str, pd.DataFrame] = fetch_all_history(
+        df, timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS
+    )
 
     # Phase 4.5e PR 2 — Form-4 insider-transaction fetch loop.
     # Extracted to compute.orchestrator.form4 as part of PR #259-R4.
