@@ -183,17 +183,13 @@ jobs:
         id: quarter
         run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
 
-      # TODO(security-reviewer): pin to a verified commit SHA once a
-      # session with cross-repo GitHub access can confirm it (this
-      # sandboxed build session's egress proxy scopes git/API access to
-      # THIS repo only — actions/download-artifact has no existing pin
-      # elsewhere in this repo to copy, unlike checkout/setup-python/cache/
-      # upload-artifact above). Matches actions/upload-artifact's v7 major
-      # (GitHub releases the artifact-backend actions in lockstep — v3
-      # artifacts are not readable by v4+ download, so major-version
-      # pairing is a functional requirement, not just cosmetic).
+      # Pinned to the v7.0.0 release commit (resolved 2026-07-02, corroborated
+      # via the GitHub release-tag page + the commit page). Pairs with
+      # actions/upload-artifact@v7 above — GitHub releases the artifact-backend
+      # actions in lockstep (v3 artifacts are not readable by v4+ download, so
+      # major-version pairing is a functional requirement, not cosmetic).
       - name: Download survivor artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
           name: broad-universe-precache-survivors
           path: compute/cache/precache_broad/
@@ -251,10 +247,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[factors]"
 
-      # TODO(security-reviewer): pin to a verified commit SHA — see the
-      # identical TODO on job 2's download-artifact step above.
+      # Pinned to the v7.0.0 release commit — see job 2's download-artifact step above.
       - name: Download survivor artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
           name: broad-universe-precache-survivors
           path: compute/cache/precache_broad/
@@ -307,10 +302,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[factors]"
 
-      # TODO(security-reviewer): pin to a verified commit SHA — see the
-      # identical TODO on job 2's download-artifact step above.
+      # Pinned to the v7.0.0 release commit — see job 2's download-artifact step above.
       - name: Download survivor artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
           name: broad-universe-precache-survivors
           path: compute/cache/precache_broad/
