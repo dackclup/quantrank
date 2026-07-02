@@ -77,6 +77,39 @@ E — run_per_ticker_loop (PR #259-R7b)
     E7  Degenerate empty-universe call (``df`` with zero rows) returns a
         ``PerTickerLoopResult`` with empty ``summaries`` / ``all_details``
         and every counter at its zero/empty init value — no exception.
+
+F — WarningEmitter (#259 smell-#5 cleanup)
+    Pure unit tests on the class itself — no loop, no fixtures.
+    F1  ``add()`` returns True on the first add of a new flag, and the
+        flag lands in the wrapped list.
+    F2  ``add()`` returns False on a duplicate add, and the wrapped list
+        is NOT mutated a second time (length + contents unchanged).
+    F3  Insertion order is preserved across several distinct ``add()``
+        calls (plain list-append order — first-fired-wins).
+    F4  Dedups against a PRE-SEEDED list: constructing the emitter around
+        a list that already contains a flag, then calling ``add()`` on
+        that same flag, returns False and does not duplicate it. Mirrors
+        the production ordering where the emitter wraps
+        ``valuation_warnings`` AFTER it has already been seeded from
+        ``ensemble.valuation_warnings``.
+    F5  The emitter mutates the EXACT list object passed to its
+        constructor (identity, not a copy) — the invariant the
+        byte-identical guarantee depends on, since ``run_per_ticker_loop``
+        reads the same ``valuation_warnings`` local after every
+        ``emitter.add()`` call.
+
+G — _tally_value_trap (#259 smell-#8 local cleanup)
+    Pure unit tests on the helper itself.
+    G1  Fires (returns True) and increments ``by_sector[sector]`` when
+        ``rim_result`` is ``applicable=False`` with the
+        ``"value_trap_risk_roe_below_cost_of_equity"`` reason.
+    G2  Does not fire (returns False) and does not touch ``by_sector``
+        when ``rim_result`` is applicable (RIM ran fine).
+    G3  Does not fire when ``rim_result`` is non-applicable for a
+        DIFFERENT skip reason (e.g. ``"stale_filing_hard"``) — the check
+        is reason-specific, not just an ``applicable`` bit.
+    G4  Increments an EXISTING ``by_sector`` entry (rather than
+        overwriting it) across repeated calls for the same sector.
 """
 
 from __future__ import annotations
@@ -93,6 +126,8 @@ from compute.main import _build_raw_metrics, _filing_lag
 from compute.orchestrator import per_ticker
 from compute.orchestrator.per_ticker import (
     PerTickerLoopResult,
+    WarningEmitter,
+    _tally_value_trap,
     build_ticker_membership_maps,
     run_per_ticker_loop,
 )
@@ -103,6 +138,7 @@ from compute.scoring.restatement_filings import (
     LateFilingResult,
     RestatementHistoryResult,
 )
+from compute.valuation.applicability import MethodApplicability
 
 # ---------------------------------------------------------------------------
 # Shared test helpers
@@ -839,3 +875,145 @@ def test_E7_empty_universe_returns_empty_result_no_exception(tmp_path, monkeypat
     assert result.multi_class_aggregate_shares_suspected_count == 0
     assert result.cross_source_delta_by_ticker == {}
     assert result.cross_source_wall_clock_seconds is not None
+
+
+# ---------------------------------------------------------------------------
+# Section F: WarningEmitter (#259 smell-#5 cleanup)
+# ---------------------------------------------------------------------------
+
+
+def test_F1_add_returns_true_and_appends_on_first_add():
+    """First add() of a new flag returns True and the flag lands in the
+    wrapped list."""
+    warnings: list[str] = []
+    emitter = WarningEmitter(warnings)
+
+    result = emitter.add("beneish_high")
+
+    assert result is True
+    assert warnings == ["beneish_high"]
+
+
+def test_F2_add_returns_false_and_does_not_duplicate_on_repeat_add():
+    """A second add() of the SAME flag returns False and the wrapped list
+    is not mutated again (mirrors the original
+    `if "X" not in warnings: warnings.append("X")` guard exactly)."""
+    warnings: list[str] = []
+    emitter = WarningEmitter(warnings)
+
+    first = emitter.add("dechow_high")
+    second = emitter.add("dechow_high")
+
+    assert first is True
+    assert second is False
+    assert warnings == ["dechow_high"]  # not ["dechow_high", "dechow_high"]
+
+
+def test_F3_add_preserves_insertion_order_across_distinct_flags():
+    """Several distinct add() calls land in the wrapped list in the exact
+    order they were called — plain list-append order, first-fired-wins."""
+    warnings: list[str] = []
+    emitter = WarningEmitter(warnings)
+
+    emitter.add("beneish_high")
+    emitter.add("dechow_high")
+    emitter.add("rem_suspect")
+    # A duplicate mid-sequence must not re-order or re-append.
+    emitter.add("beneish_high")
+    emitter.add("low_liquidity")
+
+    assert warnings == ["beneish_high", "dechow_high", "rem_suspect", "low_liquidity"]
+
+
+def test_F4_add_dedups_against_a_pre_seeded_list():
+    """Constructing the emitter around a list that ALREADY contains a flag
+    (mirrors wrapping valuation_warnings AFTER
+    `valuation_warnings = list(ensemble.valuation_warnings)` has already
+    seeded it) — add() on that pre-existing flag returns False and does
+    not duplicate it. New flags still append normally, after the seeded
+    contents, in call order."""
+    warnings: list[str] = ["extreme_estimate_majority"]  # ensemble-seeded
+    emitter = WarningEmitter(warnings)
+
+    dup_result = emitter.add("extreme_estimate_majority")
+    new_result = emitter.add("beneish_high")
+
+    assert dup_result is False
+    assert new_result is True
+    assert warnings == ["extreme_estimate_majority", "beneish_high"]
+
+
+def test_F5_add_mutates_the_exact_list_object_not_a_copy():
+    """The emitter mutates the SAME list object passed to its constructor
+    (identity, not a copy) — the invariant run_per_ticker_loop's
+    byte-identical guarantee depends on, since every downstream read of
+    the per-ticker `valuation_warnings` local (StockSummary/StockDetail
+    construction, the manipulation_triple_flag membership check, ...)
+    must see emitter.add()'s mutations without any rebinding."""
+    warnings: list[str] = []
+    emitter = WarningEmitter(warnings)
+
+    emitter.add("cross_source_disagreement")
+
+    # Identity check, not just equality — the exact object was mutated.
+    assert emitter._warnings is warnings
+    assert "cross_source_disagreement" in warnings
+
+
+# ---------------------------------------------------------------------------
+# Section G: _tally_value_trap (#259 smell-#8 local cleanup)
+# ---------------------------------------------------------------------------
+
+
+def test_G1_fires_and_increments_by_sector_on_value_trap_reason():
+    """applicable=False + the value-trap reason -> returns True and
+    increments by_sector[sector] from its (absent) zero default."""
+    rim_result = MethodApplicability(
+        applicable=False, reason="value_trap_risk_roe_below_cost_of_equity"
+    )
+    by_sector: dict[str, int] = {}
+
+    fired = _tally_value_trap(rim_result, "Technology", by_sector)
+
+    assert fired is True
+    assert by_sector == {"Technology": 1}
+
+
+def test_G2_does_not_fire_when_applicable():
+    """applicable=True (RIM ran fine, reason=None) -> returns False and
+    by_sector is untouched."""
+    rim_result = MethodApplicability(applicable=True)
+    by_sector: dict[str, int] = {}
+
+    fired = _tally_value_trap(rim_result, "Health Care", by_sector)
+
+    assert fired is False
+    assert by_sector == {}
+
+
+def test_G3_does_not_fire_for_a_different_skip_reason():
+    """applicable=False but a DIFFERENT skip reason (e.g. stale-filing) ->
+    returns False and by_sector is untouched. The check is reason-
+    specific, not just an `applicable` bit."""
+    rim_result = MethodApplicability(applicable=False, reason="stale_filing_hard")
+    by_sector: dict[str, int] = {}
+
+    fired = _tally_value_trap(rim_result, "Industrials", by_sector)
+
+    assert fired is False
+    assert by_sector == {}
+
+
+def test_G4_increments_an_existing_by_sector_entry():
+    """Repeated firings for the SAME sector increment the existing entry
+    rather than overwriting it (mirrors the inline
+    `by_sector.get(sector, 0) + 1` accumulation)."""
+    rim_result = MethodApplicability(
+        applicable=False, reason="value_trap_risk_roe_below_cost_of_equity"
+    )
+    by_sector: dict[str, int] = {"Technology": 2, "Energy": 5}
+
+    fired = _tally_value_trap(rim_result, "Technology", by_sector)
+
+    assert fired is True
+    assert by_sector == {"Technology": 3, "Energy": 5}

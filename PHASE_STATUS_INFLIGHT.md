@@ -10150,3 +10150,28 @@ Model split UNCHANGED (6 opus / 21 sonnet / 2 fable); agent count UNCHANGED at 2
 **Verification**: `python tools/check_agent_hook_consistency.py` → `OK — 29 agents (6 opus / 21 sonnet / 2 fable; 29 max / 0 high) · 4 hooks · 9 flows` (exit 0); `grep -h '^effort:' .claude/agents/*.md | sort | uniq -c` → `29 effort: max`. Docs-only + frontmatter, no compute/schema/frontend surface, so pytest/schema_check/tsc rungs not applicable.
 
 ---
+
+## PR (branch `claude/orchestrator-smell5-8-cleanup`) — #259 follow-up: WarningEmitter + value-trap tally (smells #5/#8) (in flight, 2026-07-02)
+
+The two per-ticker-loop spaghetti smells DEFERRED from #259 R7b (left verbatim there to keep that a pure move) — now consolidated in a dedicated **byte-identical** readability PR. Target: `compute/orchestrator/per_ticker.py::run_per_ticker_loop` ONLY (+ its tests). Closes out the #259 orchestrator-refactor epic's cleanup tail.
+
+**Smell #5 — `WarningEmitter`**: the 20 dedup-then-append `valuation_warnings.append("X")` sites collapse into a single `emitter.add("X")` call. `WarningEmitter` (`__slots__`, wraps — never copies — the exact per-ticker list) exposes `add(flag) -> bool` = `if flag not in self._warnings: self._warnings.append(flag); return True` else `False`. Instantiated AFTER the `valuation_warnings = list(ensemble.valuation_warnings)` (or `= []`) rebind so it wraps the seeded list the dedup checks against (and that flows into StockSummary/StockDetail). Append ORDER + dedup semantics preserved exactly.
+
+**The counter-coupling split (the byte-identity-critical part)** — the 8 counter-coupled sites keep their ORIGINAL gating, NOT a single template:
+- **3 INSIDE sites** (`loss_avoidance_pattern_size_invariant` · `share_count_extraction_missing` · `low_liquidity`): counter incremented only on a genuinely-new append → `if <cond> and emitter.add("X"): count += 1`.
+- **5 OUTSIDE sites** (`cross_source_disagreement` · `multi_class_aggregate_shares_suspected` · `insider_sell_cluster` · `c_suite_unusual_sell` · `value_trap_risk`): counter incremented REGARDLESS of dedup (tied to the domain condition) → counter increment stays tied to `<cond>` with a PLAIN `emitter.add("X")` (bool ignored). Folding these into `if <cond> and emitter.add("X"):` would suppress the counter whenever the flag was ensemble-seeded — a latent Rule-18 counter bug. Each of the 5 OUTSIDE sites now carries an inline `# OUTSIDE-count:` guard comment (error→regression ratchet) so a future editor can't silently fold it.
+
+**Smell #8 — `_tally_value_trap(rim_result, sector, by_sector) -> bool`**: factors ONLY the duplicated per-sector-dict increment block that followed each of the two `check_rim_applicability` calls; caller still owns the scalar counter, gated on the helper's return (lockstep preserved). Both calls (`_rim_flat` flat `config.COST_OF_EQUITY` + `_rim_sector` `get_cost_of_equity(sector)`, issue #67 flat-vs-sector delta) and the two-factor `value_trap_risk` gate (reuses `_rim_sector`) UNTOUCHED. The deeper redundancy — `_rim_sector` re-deriving the rim-applicability `compute_fair_price_ensemble` already computes internally — is DOCUMENTED as out of scope (eliminating it needs a `compute/valuation/` return-signature change → byte-identity risk).
+
+**Byte-identical — verified two ways**: (1) `agent-output-verifier` adversarially re-derived all 26 claims OLD-vs-NEW from the diff → **TRUSTWORTHY**, zero refuted, the 5 OUTSIDE sites confirmed dedup-independent (no suppression bug), order/scope/signature/`PerTickerLoopResult`/both rim calls unchanged. (2) full offline suite (its `run_weekly_compute`/`test_main.py` harness drives this loop) → 3429 passed, same signature as main (the one `test_alpha158_replicate.py::test_C1` hypothesis DeadlineExceeded is the pre-existing sandbox flake). `quantrank-reviewer` (opus): code PASS-WITH-NITS (design clean, invariants intact) — the OUTSIDE-site guard comments + the F5-tautology fix address its WARN/NIT.
+
+**Schema triple**: untouched. `compute/main.py` / `compute/scoring/**` / `compute/valuation/**` / `compute/ingest/**`: NOT modified. Defense layer UNCHANGED at 38. `run_per_ticker_loop` signature + `PerTickerLoopResult` fields unchanged.
+
+**Files**:
+- `compute/orchestrator/per_ticker.py` (`WarningEmitter` + `_tally_value_trap` + 20 site rewrites + 5 OUTSIDE-guard comments)
+- `tests/test_orchestrator/test_per_ticker.py` (+9 offline unit tests — `WarningEmitter` ×5 incl. dedup-vs-pre-seeded-list + identity, `_tally_value_trap` ×4)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verification ladder** (all green): `ruff check compute/ tests/` PASS · `python -m compute.output.schema_check` in-sync · `python -m pytest tests/test_orchestrator/ -m "not network" -q` → 136 passed (127 pre-existing + 9 new) · `python -c "import compute.main"` clean · full offline suite 3429 passed / 10 skipped (env-gap) / 1 pre-existing alpha158 hypothesis flake.
+
+---
