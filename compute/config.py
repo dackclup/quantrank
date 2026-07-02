@@ -57,7 +57,21 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # ``StockSummary`` + ``StockDetail`` for Dow 30 / NDX 100 overlap tabs.
 # ``index_membership`` (singular) is kept unchanged — MidcapChip + the
 # membership-ledger script depend on it as the sp500/sp400 partition.
-SCHEMA_VERSION: str = "0.10.43-phase9pilot"
+#
+# 0.10.44-phase9pilot — PR-1 of the ``broad_investable_us`` universe-floor
+# scoping shadow-observability slice (SHADOW-ONLY, Rule 18). Adds 6 new
+# ``Metadata`` fields (``broad_universe_survivors_at_5m_count`` /
+# ``_at_10m_count`` / ``_at_15m_count`` / ``broad_universe_adr_suspect_count``
+# / ``broad_universe_survivor_fundamentals_coverage_pct`` /
+# ``broad_universe_sector_unknown_pct``) emitted by the new
+# ``sweep_broad_universe_floors`` in ``compute/ingest/broad_universe.py``.
+# Also decouples ``BROAD_UNIVERSE_ADV_FLOOR_USD`` (new constant, initial
+# value identical to ``ADV_FLOOR_USD``) from the RANKED-path investability
+# screen — a latent-coupling fix, byte-identical at launch. No floor is
+# flipped in this PR; rankings/scores/flags are BYTE-IDENTICAL on every
+# path. See ``compute/ingest/broad_universe.py`` module docstring +
+# ``PHASE_STATUS_INFLIGHT.md`` for the full PR-1/PR-2 plan.
+SCHEMA_VERSION: str = "0.10.44-phase9pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
@@ -859,6 +873,58 @@ BROAD_UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
 # named constant so a future recalibration is a visible config diff.  Do
 # NOT change without methodology-scientist ratification.
 BROAD_UNIVERSE_PRICE_FLOOR_USD: float = 5.0
+
+# --- Broad-universe RANKED-PATH ADV floor (PR-1 of the ADV-floor-scoping ---
+# --- shadow-observability slice; issue-tracked, financial-engineer design, ---
+# --- methodology-scientist RATIFY-WITH-CONDITIONS)                        ---
+#
+# ``BROAD_UNIVERSE_ADV_FLOOR_USD`` is a DISTINCT constant from ``ADV_FLOOR_USD``
+# above.  Before this PR, ``select_broad_universe_survivors`` (the Phase 9.3
+# RANKED-path investability screen) defaulted its ``adv_floor`` parameter
+# directly to ``config.ADV_FLOOR_USD`` — the SAME constant the sp1500
+# ``low_liquidity`` ANNOTATE threshold uses.  That is a latent coupling
+# defect: re-tuning the sp1500 annotate floor (a curated-index, rank-neutral
+# diagnostic) would have silently also re-tuned the un-pre-screened
+# Broad-Investable-US RANKED-path screen (a hard membership gate — P1-G3,
+# non-survivors are REMOVED from the peer set entirely), and vice versa.
+# This constant decouples the two so each can be recalibrated independently.
+#
+# Initial value: 5_000_000.0 — IDENTICAL to ``ADV_FLOOR_USD``, so this PR is a
+# byte-identical decoupling, not a behavior change (rankings/scores/flags on
+# every path are unaffected; the RANKED path's survivor set is unchanged
+# because the two constants currently hold the same float).
+#
+# Tier: GUT-FEEL CALIBRATION, sweep-pending.  PR-2 will re-pin this constant
+# to the empirically-swept broad-pool ADV knee once
+# ``sweep_broad_universe_floors``'s ``survivors_at_5m`` / ``_at_10m`` /
+# ``_at_15m`` counters (``compute/ingest/broad_universe.py``, this same PR)
+# have accumulated enough dispatch-only-run history (``QR_UNIVERSE=
+# broad_investable_us`` is manual-dispatch-only — see ``QR_UNIVERSE``
+# docstring above) to locate where the survivor-count curve knees over,
+# gated on owner sign-off per methodology-scientist RATIFY-WITH-CONDITIONS.
+#
+# Academic anchor:
+#   - Amihud 2002 *J. Financial Markets* 5(1) "Illiquidity and stock
+#     returns: cross-section and time-series effects" + Novy-Marx-Velikov
+#     2016 *RFS* 29(7) "A taxonomy of anomalies and their trading costs" —
+#     same illiquidity-premium / trading-cost family that anchors the
+#     DOLLAR LEVEL of ``ADV_FLOOR_USD`` above; illiquidity is a *capacity
+#     constraint*, not an alpha claim (the guard suppresses un-tradeable
+#     names for this audience, it does not dispute that illiquid names may
+#     carry a return premium).
+#   - Fama-French 2008 *JF* 63(4) "Dissecting Anomalies" + Hou-Xue-Zhang
+#     2020 *RFS* 33(5) "Replicating Anomalies" — both papers show
+#     documented cross-sectional anomalies are disproportionately driven by
+#     microcap noise and often fail to replicate under value-weighting or
+#     once microcaps are excluded/controlled for.  This anchors WHY a
+#     stricter-than-sp600-$5M floor SHOULD EXIST for the Broad Investable US
+#     pool specifically: unlike sp600 (already a curated, exchange-listed,
+#     analyst-covered S&P index), the broad pool has NO pre-screen at all
+#     before this floor applies, so it structurally contains far more of
+#     the microcap noise these two papers document. Neither paper pins an
+#     exact dollar cutoff — the RE-PIN VALUE itself is PR-2's empirical-sweep
+#     job, not a value read off a table.
+BROAD_UNIVERSE_ADV_FLOOR_USD: float = 5_000_000.0  # $5M — byte-identical to ADV_FLOOR_USD at launch
 
 # Exchange filter for the broad-universe candidate pool.  Only Nasdaq, NYSE,
 # and CBOE main-market listings are considered investable for this audience.

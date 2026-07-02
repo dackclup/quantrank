@@ -281,8 +281,28 @@ def test_schema_version_pinned():
     both flags; their combined total is preserved at 8.0 (0.0 + 8.0).
     RESTATEMENT_HISTORY_WEIGHT demoted 5.0→0.0;
     RESTATEMENT_HIGH_CONFIDENCE_WEIGHT raised 3.0→8.0.
-    OBSERVABILITY-ONLY; defense layer UNCHANGED at 38."""
-    assert config.SCHEMA_VERSION == "0.10.43-phase9pilot"
+    OBSERVABILITY-ONLY; defense layer UNCHANGED at 38.
+
+    PR-1 of the ``broad_investable_us`` universe-floor-scoping shadow-
+    observability slice (0.10.44-phase9pilot) — SHADOW-ONLY, Rule 18.  Adds
+    six new nullable ``Metadata`` fields
+    (``broad_universe_survivors_at_5m_count`` / ``_at_10m_count`` /
+    ``_at_15m_count`` / ``broad_universe_adr_suspect_count`` /
+    ``broad_universe_survivor_fundamentals_coverage_pct`` /
+    ``broad_universe_sector_unknown_pct``) emitted by the new
+    ``sweep_broad_universe_floors`` in ``compute/ingest/broad_universe.py``.
+    Also decouples the new ``config.BROAD_UNIVERSE_ADV_FLOOR_USD`` constant
+    (initial value identical to ``ADV_FLOOR_USD``) from
+    ``select_broad_universe_survivors``'s RANKED-path screen — fixes a
+    latent coupling defect, byte-identical at launch.  No floor is flipped;
+    rankings/scores/flags are BYTE-IDENTICAL on every path.  Defense layer
+    UNCHANGED at 38.  Anchored by Fama-French 2008 *JF* + Hou-Xue-Zhang 2020
+    *RFS* (why a stricter-than-sp600 floor should exist for the
+    un-pre-screened broad pool) + Amihud 2002 *JFM* + Novy-Marx-Velikov 2016
+    *RFS* (the dollar-level illiquidity-premium family); methodology-
+    scientist RATIFY-WITH-CONDITIONS. The exact re-pin value is PR-2 scope,
+    gated on this sweep's data + owner sign-off."""
+    assert config.SCHEMA_VERSION == "0.10.44-phase9pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

@@ -92,6 +92,11 @@
       "required": false,
       "default": null
     },
+    "broad_universe_adr_suspect_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "broad_universe_adv_fail_pct": {
       "type": "float | None",
       "required": false,
@@ -118,6 +123,31 @@
       "default": null
     },
     "broad_universe_screened_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "broad_universe_sector_unknown_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "broad_universe_survivor_fundamentals_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "broad_universe_survivors_at_10m_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "broad_universe_survivors_at_15m_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "broad_universe_survivors_at_5m_count": {
       "type": "int | None",
       "required": false,
       "default": null
