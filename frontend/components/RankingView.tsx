@@ -81,7 +81,7 @@ function tabConfig(code: IndexCode, universeCode: string): TabConfig {
     case 'NDX': return { h1: 'NASDAQ 100 ranking',           countLabel: 'NASDAQ 100 companies' };
     case 'RUI': return { h1: 'Russell 1000 ranking',         countLabel: 'Russell 1000 companies' };
     case 'ALL': return { h1: `${universeLabel(universeCode)} ranking`, countLabel: 'companies' };
-    // For future tabs (RUT / RUA / COMP / …) — should never be reachable as
+    // For future tabs (RUA / COMP / …) — should never be reachable as
     // active while still SOON, but guard defensively.
     default:    return { h1: 'Ranking',                      countLabel: 'companies' };
   }
@@ -122,7 +122,7 @@ function filterAndRerank(data: StockSummary[], code: IndexCode): StockSummary[] 
     // Optional-chain so legacy/empty index_memberships ([]) yields empty → tab stays SOON.
     filtered = data.filter((r) => r.index_memberships?.includes('russell1000'));
   } else {
-    // Not yet wired (future: RUT / RUA / COMP).
+    // Not yet wired (future: RUA / COMP).
     filtered = [];
   }
 
