@@ -1,12 +1,36 @@
 # QuantRank
 
-> **Open-source US equity stock ranking — fundamental, technical, factor, sentiment, and ML signals combined into a single 0–100 composite StockRank, refreshed every US trading day.**
+> **Open-source stock ranking for ~1,500 US equities — eight fundamental
+> and price-based pillars combined into a single 0–100 composite score,
+> recomputed after every US trading day. A research tool, not advice.**
 
-QuantRank is a static web app. A Python pipeline runs in GitHub Actions on a
-Mon-Fri cron (after US market close), computes scores for the S&P 500, and writes JSON files into the
-repo. A Next.js static site reads those JSON files at build time and is served
-from Vercel's free tier. No backend. No database. No live API calls from the
-browser.
+QuantRank ranks the S&P 1500 — the S&P 500 large-caps plus the S&P 400
+mid-caps and S&P 600 small-caps. Each stock gets a score on eight pillars
+(value, quality, profitability, growth, health, momentum, technical, risk)
+built from SEC filings and market data. The pillars roll up into one
+composite rank. A defense layer of risk flags then checks each name for
+accounting red flags — the kind documented in academic fraud research —
+and marks suspicious ones "cautious" rather than letting them quietly top
+the list.
+
+Alongside the rank, every stock gets a fair-price estimate: six valuation
+methods (Graham number, three sector-relative multiples, residual income,
+and discounted cash flow) reduced to a median, with a margin of safety
+against the current price. When the inputs look corrupt, the pipeline
+prints nothing rather than a confident wrong number.
+
+The whole thing is a static web app. A Python pipeline runs in GitHub
+Actions on a Mon-Fri cron (after US market close), computes every score,
+and writes JSON files into the repo. A Next.js static site reads those
+files at build time and is served from Vercel's free tier. No backend.
+No database. No live API calls from the browser. Every score traces to a
+git commit, so any ranking you see can be reproduced and audited.
+
+**What it's for:** screening and research. QuantRank tells you which
+stocks score well on its model and why — it does not tell you what to buy.
+Historical performance shown anywhere in the app comes from a backtest,
+and a backtest is not a live track record. Read the disclaimer below
+before doing anything else.
 
 ---
 
@@ -225,7 +249,7 @@ academic bibliography backing each defense layer.
 ```mermaid
 flowchart LR
     A[GitHub Actions cron<br/>Mon-Fri 22:00 UTC] -->|run daily| B[Python compute pipeline]
-    B -->|fetch| C[(yfinance / SEC EDGAR<br/>FRED / Finnhub / Reddit)]
+    B -->|fetch| C[(yfinance prices / SEC EDGAR filings<br/>Wikipedia index constituents)]
     B -->|write| D[JSON files in<br/>frontend/public/data/]
     D -->|git push| E[GitHub repo]
     E -->|webhook| F[Vercel build]
@@ -250,12 +274,12 @@ live-data system. See `SKILL.md` for the full architecture rules.
 |---|---|
 | Compute language | Python 3.11+ |
 | Compute runtime | GitHub Actions (`ubuntu-latest`) |
-| Frontend framework | Next.js 14 (App Router, static export) |
+| Frontend framework | Next.js 16.2 (App Router, static export) |
 | Styling | Tailwind CSS |
 | Charts | Recharts |
 | Data storage | JSON files in `frontend/public/data/` |
 | Hosting | Vercel (frontend) + GitHub (data) |
-| Free data sources | yfinance, edgartools, fredapi, finnhub-python, PRAW |
+| Free data sources | yfinance (prices), edgartools (SEC EDGAR), Wikipedia (index constituents) |
 | ML | LightGBM + SHAP (Phase 5+) |
 
 ---
@@ -273,8 +297,8 @@ You don't need to run anything locally. The whole app builds in CI.
    - Output directory: `out`.
    - Production branch: `main`.
    - Click Deploy.
-3. **Trigger first compute** (after Phase 1 lands): GitHub → Actions → "Compute Rankings" → "Run workflow".
-4. **Done.** From now on, every Sunday at 22:00 UTC the pipeline refreshes the JSON, commits it, and Vercel auto-deploys.
+3. **Trigger first compute**: GitHub → Actions → "Compute Rankings" → "Run workflow".
+4. **Done.** From now on, every US trading day (Mon-Fri) at 22:00 UTC the pipeline refreshes the JSON, commits it, and Vercel auto-deploys.
 
 ### Required GitHub secrets — by phase
 
@@ -283,8 +307,6 @@ You don't need to run anything locally. The whole app builds in CI.
 | 0 | _none_ | Stub workflow only |
 | 1 | _none_ | yfinance + Wikipedia are unauthenticated |
 | 2 | `EDGAR_USER_AGENT` | SEC requires `"<Your Name> <email>"` for EDGAR access |
-| 4 | `FINNHUB_API_KEY`, `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` | News + Reddit sentiment |
-| 6 | `FRED_API_KEY` | Macro / regime detection |
 
 Add secrets at: **Repo → Settings → Secrets and variables → Actions → New repository secret**.
 
