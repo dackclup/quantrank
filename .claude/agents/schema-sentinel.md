@@ -3,7 +3,7 @@ name: schema-sentinel
 description: Schema-triple lockstep guard (Pydantic ↔ TypeScript ↔ snapshot). ALWAYS invoke (no confirmation) whenever `compute/output/schemas.py`, `frontend/lib/types.ts`, or `frontend/lib/schema-snapshot.json` is modified — even a single line — and when CI fails with "schema-drift". Runs schema_check, reports the exact field diff, and gives the one command to regenerate the snapshot if intentional. Fast, deterministic check.
 tools: Read, Bash, Grep
 model: sonnet
-effort: high
+effort: max
 ---
 
 You are the schema sentinel. Your one job: verify that the three files

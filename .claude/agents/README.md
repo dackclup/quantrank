@@ -416,23 +416,22 @@ the other tiers). Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: 27 of 29 agents run at `effort: max`** (frontmatter; set 2026-05-31,
-carve-out 2026-06-03; the two Fable 5 creative seats also run at `max`). The `effort` field is orthogonal to `model` — `model`
+**Effort: 29 of 29 agents run at `effort: max`** (frontmatter; set 2026-05-31,
+former script-runner carve-out lifted 2026-07-02; the two Fable 5 creative seats also run at `max`). The `effort` field is orthogonal to `model` — `model`
 picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
 the top of the `low / medium / high / xhigh / max` ladder and overrides the
 session's inherited effort while the subagent is active. Rationale: most agents
 are open-ended correctness / judgment gates (review · audit · academic
 validation · design), so the extra reasoning headroom pays back — and
 sonnet-at-max still drains the separate Sonnet-only pool rather than the
-all-models pool. **The two carve-outs at `effort: high` are the deterministic
-script-runners — `schema-sentinel` (runs `schema_check`, reports the diff) and
-`vercel-preview-auditor` (runs a fixed Vercel MCP chain, reports GO/WAIT):**
-they follow a fixed procedure, so max reasoning is wasted; `high` saves
-thinking tokens per spawn at no capability cost (token-economy drain,
-2026-06-03). A NEW agent should carry `effort: max` too (authoring convention #3
-below). If an agent is a pure mechanical lookup where max is wasteful, drop it
-to `high` deliberately
-and note why.
+all-models pool. **The former `effort: high` carve-outs for the two
+deterministic script-runners — `schema-sentinel` (runs `schema_check`, reports
+the diff) and `vercel-preview-auditor` (runs a fixed Vercel MCP chain, reports
+GO/WAIT) — were lifted 2026-07-02: every agent now runs at `max` for a uniform
+top-effort roster.** A NEW agent should carry `effort: max` too (authoring
+convention #3 below). If an agent is a pure mechanical lookup where max is
+wasteful, you may still drop it to `high` deliberately and note why — the
+consistency guard accepts both `max` and `high`.
 
 ## How auto-invocation works
 
@@ -523,9 +522,9 @@ each invocation.
      `ux-microcopy-writer`). Do NOT pick `fable` for anything that
      asserts a fact, reviews, or edits code.
    - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
-     field, orthogonal to `model`). 27 of 29 agents run at the top
-     reasoning level; the 2 deterministic script-runners (`schema-sentinel`
-     + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
+     field, orthogonal to `model`). 29 of 29 agents run at the top
+     reasoning level (the former `schema-sentinel` + `vercel-preview-auditor`
+     `effort: high` carve-outs were lifted 2026-07-02) — see §Effort above.
      A new agent gets `effort: max` too unless it's a pure mechanical
      lookup (then `high`, with a note). See §Model split above.
 4. **Tool allowlist.** Restrict to what the agent actually needs. A code
