@@ -34,7 +34,10 @@ def test_ground_truth_internal_invariants() -> None:
     truth, errors = compute_ground_truth()
     assert errors == [], errors
     assert truth.n_opus + truth.n_sonnet + truth.n_fable == truth.n_agents
-    assert truth.n_effort_max + truth.n_effort_high == truth.n_agents
+    assert (
+        truth.n_effort_ultracode + truth.n_effort_max + truth.n_effort_high
+        == truth.n_agents
+    )
     assert truth.tier_sum == truth.n_agents
     assert truth.n_hooks >= 1
     assert truth.n_flows >= 1
@@ -53,7 +56,7 @@ def test_anchors_fire_on_mismatch() -> None:
         n_opus=truth.n_opus + 100,
         n_hooks=truth.n_hooks + 100,
         n_flows=truth.n_flows + 100,
-        n_effort_max=truth.n_effort_max + 100,
+        n_effort_ultracode=truth.n_effort_ultracode + 100,
     )
     violations = check_anchors(bogus)
     assert violations, "anchors did not fire on an obviously-wrong ground truth"
@@ -66,7 +69,7 @@ def test_anchors_match_real_ground_truth() -> None:
 
 
 def test_every_agent_has_valid_frontmatter() -> None:
-    """Each agent file declares model ∈ {opus,sonnet,fable} and effort ∈ {max,high}.
+    """Each agent file declares model ∈ {opus,sonnet,fable} and effort ∈ {ultracode,max,high}.
 
     This is the regression guard for the malformed-frontmatter error class —
     compute_ground_truth() records such files as internal errors.
