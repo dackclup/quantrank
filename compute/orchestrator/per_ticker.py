@@ -197,8 +197,10 @@ from compute.ingest.cross_source import (
     fetch_yfinance_dividend,
     fetch_yfinance_exchange,
     fetch_yfinance_market_cap,
+    fetch_yfinance_sector,
     fetch_yfinance_security_type,
     fetch_yfinance_shares_outstanding,
+    map_yfinance_sector_to_gics,
 )
 from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
@@ -488,6 +490,9 @@ class PerTickerLoopResult:
     _dividend_yield_pct_by_ticker: dict[str, float | None]
     # Security-type signal PR-1 — feeds Metadata.security_type_coverage_pct.
     _security_type_by_ticker: dict[str, str | None]
+    # Phase 9.4 PR-1 — feeds Metadata.broad_universe_sector_resolved_pct
+    # (aggregated ONLY on the broad_investable_us path in compute.main).
+    _yf_sector_resolved_by_ticker: dict[str, str | None]
     # Issue #67 — Metadata.value_trap_risk_count_{without,with}_sector_coe
     # (+ the two per-sector breakdown dicts, Q3 cohort-audit visibility).
     value_trap_risk_count_without_sector_coe: int
@@ -851,6 +856,19 @@ def run_per_ticker_loop(
     # Post-loop: aggregate ``security_type_coverage_pct`` from the non-None
     # values (same formula as ``dividend_coverage_pct`` / ``exchange_coverage_pct``).
     _security_type_by_ticker: dict[str, str | None] = {}
+    # Phase 9.4 PR-1 sector-resolution coverage canary (observability-only,
+    # Rule 18) — per-ticker GICS-mapped sector collected as a zero-cost
+    # side-channel in the Step 8 loop.  Derives from a pure cache-read off
+    # ``yfinance_info/<ticker>.json`` (populated by ``fetch_yfinance_market_cap``
+    # earlier in the same ticker iteration) followed by
+    # ``map_yfinance_sector_to_gics``.  Collected on EVERY universe path
+    # (zero-cost — no new network round-trip) but only AGGREGATED into a
+    # ``Metadata`` field on the ``broad_investable_us`` ranked path in
+    # ``compute.main`` — see that module's Phase 9.4 PR-1 canary comment for
+    # the full Rule-18 constraint (this dict is NEVER used to set a scored
+    # ticker's ``sector`` field, never read by scoring/composite/pillar/
+    # veto/fair-price/select_picks).
+    _yf_sector_resolved_by_ticker: dict[str, str | None] = {}
     # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
     # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
     # so the delta (flat-10% vs per-sector) is observable before the flag
@@ -1154,6 +1172,26 @@ def run_per_ticker_loop(
             )
             _sec_type = None
         _security_type_by_ticker[ticker] = _sec_type
+
+        # Phase 9.4 PR-1 sector-resolution coverage canary (observability-
+        # only, Rule 18) — pure cache-read; no new network call. The
+        # ``yfinance_info/<ticker>.json`` cache was already populated (with
+        # ``sector``) by ``fetch_yfinance_market_cap`` earlier in this loop
+        # iteration. Wrapped in try/except so any unexpected failure is
+        # non-fatal — field remains None and the cron continues unchanged.
+        # Stores the GICS-MAPPED value (or None if unmapped/absent) — the
+        # scored ticker's ``sector`` column is NOT touched here or anywhere
+        # else this PR (see compute/main.py's Phase 9.4 PR-1 canary comment).
+        try:
+            _yf_sector_resolved_by_ticker[ticker] = map_yfinance_sector_to_gics(
+                fetch_yfinance_sector(ticker)
+            )
+        except Exception as _sector_exc:  # noqa: BLE001
+            logger.debug(
+                "fetch_yfinance_sector failed for %s (non-fatal): %s",
+                ticker, _sector_exc,
+            )
+            _yf_sector_resolved_by_ticker[ticker] = None
 
         # Issue #261 — multi_class_aggregate_shares_suspected annotate.
         # CIK-collision detector (precomputed before this loop) flags
@@ -1672,6 +1710,7 @@ def run_per_ticker_loop(
         country_by_ticker=country_by_ticker,
         _dividend_yield_pct_by_ticker=_dividend_yield_pct_by_ticker,
         _security_type_by_ticker=_security_type_by_ticker,
+        _yf_sector_resolved_by_ticker=_yf_sector_resolved_by_ticker,
         value_trap_risk_count_without_sector_coe=value_trap_risk_count_without_sector_coe,
         value_trap_risk_count_with_sector_coe=value_trap_risk_count_with_sector_coe,
         value_trap_risk_two_factor_shadow_count=value_trap_risk_two_factor_shadow_count,

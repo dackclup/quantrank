@@ -297,8 +297,10 @@ def test_CS_DIV6_live_path_writes_dividend_fields_to_cache(
     monkeypatch.setattr(config, "YFINANCE_INFO_CACHE_DIR", tmp_path)
     monkeypatch.delenv("QR_SKIP_CROSS_SOURCE", raising=False)
 
-    # Simulate _yf_info_fetch returning (market_cap, shares_out, yield_pct_as_percent, payout_ratio).
-    mocked_return = (3.5e12, 15_000_000_000.0, 1.5, 0.28)
+    # Simulate _yf_info_fetch returning (market_cap, shares_out,
+    # yield_pct_as_percent, payout_ratio, sector, industry) — 6-tuple since
+    # Phase 9.4 PR-1 (sector-resolution coverage canary).
+    mocked_return = (3.5e12, 15_000_000_000.0, 1.5, 0.28, "Technology", "Consumer Electronics")
 
     with patch(
         "compute.ingest.cross_source._yf_info_fetch", return_value=mocked_return
@@ -390,7 +392,7 @@ def test_CS_DIV7A_normal_percent_value_passes_through(
         "payoutRatio": 0.73,
     }
     with patch("yfinance.Ticker", return_value=_make_ticker_mock(ko_info)):
-        _, _, dividend_yield_pct, payout_ratio = _yf_info_fetch("KO")
+        _, _, dividend_yield_pct, payout_ratio, _, _ = _yf_info_fetch("KO")
 
     assert dividend_yield_pct == pytest.approx(2.67), (
         f"Expected dividend_yield_pct=2.67 (no ×100), got {dividend_yield_pct}"
@@ -410,7 +412,7 @@ def test_CS_DIV7B_zero_yield_non_payer(
         "payoutRatio": None,
     }
     with patch("yfinance.Ticker", return_value=_make_ticker_mock(amzn_info)):
-        _, _, dividend_yield_pct, payout_ratio = _yf_info_fetch("AMZN")
+        _, _, dividend_yield_pct, payout_ratio, _, _ = _yf_info_fetch("AMZN")
 
     assert dividend_yield_pct == 0.0, (
         f"Expected dividend_yield_pct=0.0 for non-payer, got {dividend_yield_pct}"
@@ -429,7 +431,7 @@ def test_CS_DIV7C_missing_dividend_key_returns_none(
         # dividendYield intentionally absent
     }
     with patch("yfinance.Ticker", return_value=_make_ticker_mock(info_no_div)):
-        _, _, dividend_yield_pct, payout_ratio = _yf_info_fetch("GOOGL")
+        _, _, dividend_yield_pct, payout_ratio, _, _ = _yf_info_fetch("GOOGL")
 
     assert dividend_yield_pct is None, (
         f"Absent dividendYield must yield None, got {dividend_yield_pct}"
@@ -455,7 +457,7 @@ def test_CS_DIV7D_implausible_gt100_guard_discards_value(
         "payoutRatio": 0.73,
     }
     with patch("yfinance.Ticker", return_value=_make_ticker_mock(bugged_info)):
-        _, _, dividend_yield_pct, _ = _yf_info_fetch("KO")
+        _, _, dividend_yield_pct, _, _, _ = _yf_info_fetch("KO")
 
     assert dividend_yield_pct is None, (
         f"dividendYield=267.0 is implausible (>100) and must be discarded, got {dividend_yield_pct}"
@@ -609,7 +611,7 @@ def test_CS_DIV9A_live_path_clamps_implausible_payout_ratio(
         "payoutRatio": 153.75,  # percent-format bug: should be 1.5375
     }
     with patch("yfinance.Ticker", return_value=_make_ticker_mock(slg_info)):
-        _, _, _, payout_ratio = _yf_info_fetch("SLG")
+        _, _, _, payout_ratio, _, _ = _yf_info_fetch("SLG")
     assert payout_ratio is None, (
         f"payout_ratio=153.75 is implausible (>20) and must be discarded, got {payout_ratio}"
     )
@@ -622,7 +624,7 @@ def test_CS_DIV9A_live_path_clamps_implausible_payout_ratio(
         "payoutRatio": 1.5,  # 150% payout — high but real (REIT distributes >100% of GAAP income)
     }
     with patch("yfinance.Ticker", return_value=_make_ticker_mock(reit_info)):
-        _, _, _, payout_ratio_reit = _yf_info_fetch("O")
+        _, _, _, payout_ratio_reit, _, _ = _yf_info_fetch("O")
     assert payout_ratio_reit == pytest.approx(1.5), (
         f"payout_ratio=1.5 (150% REIT) must pass through unclamped, got {payout_ratio_reit}"
     )

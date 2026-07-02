@@ -158,6 +158,55 @@ def security_type_label(quote_type: str | None) -> str | None:
     return _QUOTE_TYPE_LABEL.get(quote_type.upper(), quote_type)
 
 
+# yfinance `.info["sector"]` returns its own 11-sector vocabulary, which is
+# a near-but-not-exact match for GICS sector names — 5 are verbatim, 6 are
+# renamed. Phase 9.4 PR-1 (sector-resolution coverage canary, observability
+# only — see the module-level Rule-18 note on ``fetch_yfinance_sector``).
+#
+# The 11 target (mapped-to) keys MUST exactly match the keys of
+# ``compute.scoring.cost_of_equity.SECTOR_COST_OF_EQUITY`` — a test pins
+# this equality so the two vocabularies can never silently drift apart.
+#
+# yfinance's own category vocabulary HAS drifted before elsewhere in this
+# codebase (dividend_yield_pct format-reversion #533, payout_ratio
+# format-reversion #554) — treat an unmapped raw sector string as the
+# drift TELL this canary exists to surface, not a bug to silently patch
+# around. Unmapped / missing / None → None (stays "Unknown" downstream;
+# this PR does NOT wire the mapped value into any scored field — see
+# ``compute/main.py``'s Phase 9.4 PR-1 canary comment).
+_YF_SECTOR_TO_GICS: dict[str, str] = {
+    # Verbatim (5).
+    "Communication Services": "Communication Services",
+    "Energy": "Energy",
+    "Industrials": "Industrials",
+    "Real Estate": "Real Estate",
+    "Utilities": "Utilities",
+    # Renamed (6).
+    "Basic Materials": "Materials",
+    "Consumer Cyclical": "Consumer Discretionary",
+    "Consumer Defensive": "Consumer Staples",
+    "Financial Services": "Financials",
+    "Healthcare": "Health Care",
+    "Technology": "Information Technology",
+}
+
+
+def map_yfinance_sector_to_gics(raw_sector: str | None) -> str | None:
+    """Map a RAW yfinance ``.info["sector"]`` string to the 11-key GICS
+    vocabulary used by ``SECTOR_COST_OF_EQUITY`` (Damodaran 2019/2025
+    sector-Ke table), or ``None`` if unmapped / absent.
+
+    Diagnostic-only helper for the Phase 9.4 PR-1 sector-resolution
+    coverage canary (``Metadata.broad_universe_sector_resolved_pct``).
+    NEVER used to set a scored ticker's ``sector`` field this PR — that
+    is explicitly out of scope (observability-before-wiring, Rule 18);
+    see the ``compute/main.py`` canary comment + CLAUDE.md §Gotchas.
+    """
+    if not raw_sector:
+        return None
+    return _YF_SECTOR_TO_GICS.get(raw_sector)
+
+
 def exchange_name(code: str | None) -> str | None:
     """Map a yfinance exchange code to a display name (passthrough on unknown)."""
     if not code:
@@ -279,12 +328,44 @@ def _dividend_cache_read(ticker: str) -> tuple[float | None, float | None]:
     return (dividend_yield_pct, payout_ratio)
 
 
+def _sector_cache_read(ticker: str) -> tuple[str | None, str | None]:
+    """Return cached (sector, industry) RAW yfinance strings, or (None, None).
+
+    Phase 9.4 PR-1 sector-resolution coverage canary.  Reuses the same
+    ``yfinance_info/<ticker>.json`` file as the market-cap cache — the
+    ``.info["sector"]`` / ``.info["industry"]`` values are written to the
+    cache as a zero-cost side-channel during the live ``_yf_info_fetch``
+    call that already fetches ``marketCap`` + ``sharesOutstanding``.
+
+    Backward-compatible: cache entries written before this field existed
+    simply have no ``sector`` / ``industry`` keys and return (None, None).
+    """
+    path = _cache_path(ticker)
+    if not path.exists():
+        return (None, None)
+    try:
+        age_seconds = time.time() - path.stat().st_mtime
+        if age_seconds > _CACHE_TTL_SECONDS:
+            return (None, None)
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning("yfinance_info sector cache read failed for %s: %s", ticker, e)
+        return (None, None)
+    sector_val = payload.get("sector")
+    industry_val = payload.get("industry")
+    sector = sector_val if isinstance(sector_val, str) and sector_val else None
+    industry = industry_val if isinstance(industry_val, str) and industry_val else None
+    return (sector, industry)
+
+
 def _cache_write(
     ticker: str,
     market_cap: float,
     shares_outstanding: float | None = None,
     dividend_yield_pct: float | None = None,
     payout_ratio: float | None = None,
+    sector: str | None = None,
+    industry: str | None = None,
 ) -> None:
     """Merge-write market_cap (and optionally other fields) into the cache.
 
@@ -297,6 +378,9 @@ def _cache_write(
     yfinance now returns ``dividendYield`` already in percent, so no
     ×100 conversion is needed by the caller.  ``payout_ratio`` is the
     raw 0-1 fraction from yfinance.
+
+    ``sector`` / ``industry`` (Phase 9.4 PR-1) are the RAW yfinance
+    ``.info`` strings — stored verbatim, un-mapped.  Diagnostic-only.
     """
     path = _cache_path(ticker)
     payload: dict[str, object] = {}
@@ -317,6 +401,10 @@ def _cache_write(
         payload["dividend_yield_pct"] = float(dividend_yield_pct)
     if payout_ratio is not None and payout_ratio >= 0:
         payload["payout_ratio"] = float(payout_ratio)
+    if sector is not None and isinstance(sector, str) and sector:
+        payload["sector"] = sector
+    if industry is not None and isinstance(industry, str) and industry:
+        payload["industry"] = industry
     tmp = path.with_suffix(path.suffix + ".tmp")
     try:
         with tmp.open("w", encoding="utf-8") as f:
@@ -336,23 +424,39 @@ def _cache_write(
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
 def _yf_info_fetch(
     ticker: str,
-) -> tuple[float | None, float | None, float | None, float | None]:
-    """Pull marketCap + sharesOutstanding + dividendYield + payoutRatio in one call.
+) -> tuple[
+    float | None, float | None, float | None, float | None, str | None, str | None
+]:
+    """Pull marketCap + sharesOutstanding + dividendYield + payoutRatio +
+    sector + industry in one call.
 
-    Returns ``(market_cap, shares_outstanding, dividend_yield_pct, payout_ratio)``.
-    Any element may be None when the field is absent or invalid.  Raises on
-    persistent network errors (tenacity retries the caller).
+    Returns ``(market_cap, shares_outstanding, dividend_yield_pct,
+    payout_ratio, sector, industry)``. Any element may be None when the
+    field is absent or invalid.  Raises on persistent network errors
+    (tenacity retries the caller).
 
     ``dividend_yield_pct`` is returned as a PERCENT.  yfinance now returns
     ``dividendYield`` already in percent (e.g. 2.67 = 2.67%) — no ×100
     conversion is applied.  Values > 100 are discarded as implausible
     (format-reversion guard).  ``payout_ratio`` is returned as-is (0-1 fraction).
+
+    ``sector`` / ``industry`` (Phase 9.4 PR-1, sector-resolution coverage
+    canary) are the RAW yfinance ``.info["sector"]`` / ``.info["industry"]``
+    strings — un-mapped, whatever vocabulary yfinance happens to use this
+    week (its category names have drifted before — see the dividend #533 /
+    payout-ratio #554 format-reversion precedents — so treat these two as
+    display/diagnostic-only, never as a scoring input).  ``None`` when the
+    key is absent, empty, or not a string (e.g. yfinance's ``"Industrials"``
+    placeholder is real data; a missing key on a delisted/thin ticker is
+    the common failure mode).
     """
     info = yf.Ticker(ticker).info
     mc_val = info.get("marketCap") if isinstance(info, dict) else None
     so_val = info.get("sharesOutstanding") if isinstance(info, dict) else None
     dy_val = info.get("dividendYield") if isinstance(info, dict) else None
     pr_val = info.get("payoutRatio") if isinstance(info, dict) else None
+    sector_val = info.get("sector") if isinstance(info, dict) else None
+    industry_val = info.get("industry") if isinstance(info, dict) else None
     market_cap = float(mc_val) if isinstance(mc_val, (int, float)) and mc_val > 0 else None
     shares_out = float(so_val) if isinstance(so_val, (int, float)) and so_val > 0 else None
     # dividendYield was a fraction pre-2025; yfinance now returns percent directly
@@ -389,7 +493,9 @@ def _yf_info_fetch(
             ticker,
         )
         payout_ratio = None
-    return (market_cap, shares_out, dividend_yield_pct, payout_ratio)
+    sector = sector_val if isinstance(sector_val, str) and sector_val else None
+    industry = industry_val if isinstance(industry_val, str) and industry_val else None
+    return (market_cap, shares_out, dividend_yield_pct, payout_ratio, sector, industry)
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
@@ -462,9 +568,14 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
         return cached
 
     try:
-        market_cap, shares_outstanding, dividend_yield_pct, payout_ratio = (
-            _yf_info_fetch(ticker)
-        )
+        (
+            market_cap,
+            shares_outstanding,
+            dividend_yield_pct,
+            payout_ratio,
+            sector,
+            industry,
+        ) = _yf_info_fetch(ticker)
     except Exception as e:  # noqa: BLE001
         logger.warning("yfinance info fetch failed for %s: %s", ticker, e)
         return None
@@ -473,14 +584,17 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
         return None
 
     # Populate all fields in a single cache write so subsequent calls to
-    # fetch_yfinance_shares_outstanding and fetch_yfinance_dividend hit the
-    # cache without a second Ticker.info round-trip.
+    # fetch_yfinance_shares_outstanding, fetch_yfinance_dividend, and
+    # fetch_yfinance_sector hit the cache without a second Ticker.info
+    # round-trip.
     _cache_write(
         ticker,
         market_cap,
         shares_outstanding,
         dividend_yield_pct=dividend_yield_pct,
         payout_ratio=payout_ratio,
+        sector=sector,
+        industry=industry,
     )
     return market_cap
 
@@ -906,6 +1020,78 @@ def fetch_yfinance_security_type(ticker: str) -> str | None:
     # fast_info round-trip and populated both exchange + quote_type into cache.
     raw = _security_type_cache_read(ticker)
     return security_type_label(raw)
+
+
+def fetch_yfinance_sector(ticker: str) -> str | None:
+    """Return the RAW yfinance ``.info["sector"]`` string for ``ticker``, or
+    ``None``.
+
+    Phase 9.4 PR-1 (sector-resolution coverage canary — OBSERVABILITY ONLY,
+    Rule 18).  This is a PURE CACHE-READ off the existing
+    ``yfinance_info/<ticker>.json`` cache file populated by
+    ``fetch_yfinance_market_cap`` during the Step-8 cross-source loop.  No
+    new network round-trip is introduced; ``sector`` (and ``industry``) are
+    written to the cache as a zero-cost side-channel during the live
+    ``_yf_info_fetch`` call that already fetches ``marketCap`` +
+    ``sharesOutstanding`` + the dividend fields.
+
+    Returns the RAW, UN-MAPPED yfinance string (e.g. ``"Technology"``, not
+    the GICS-renamed ``"Information Technology"``) — callers that need the
+    GICS-mapped 11-key vocabulary call ``map_yfinance_sector_to_gics()``
+    separately.  ``None`` on cold cache, corrupt cache, or an absent
+    ``sector`` key (both are common failure modes: a cold cache before
+    ``fetch_yfinance_market_cap`` has run for this ticker this cycle, or a
+    thinly-covered / delisted ticker yfinance has no sector data for).
+
+    This function NEVER triggers a live yfinance fetch.  Callers that need
+    live data must call ``fetch_yfinance_market_cap`` first (which
+    populates all fields in one round-trip), then call this function.  In
+    practice the Step-8 loop already calls ``fetch_yfinance_market_cap``
+    earlier in the same ticker iteration, so the cache is warm by the time
+    this function is called.
+
+    QR_SKIP_CROSS_SOURCE
+    ---------------------
+    When ``QR_SKIP_CROSS_SOURCE=1`` is set (pre-merge-prod-sim escape
+    hatch), reads the cache with the same stale-tolerant path as
+    ``fetch_yfinance_shares_outstanding`` / ``fetch_yfinance_dividend``:
+    warm cache → return value; cold cache → ``None`` (no live fetch).
+
+    **DIAGNOSTIC / OBSERVABILITY-ONLY** — NOT a scoring input, NOT a
+    defense flag, and NOT wired into any scored ticker's ``sector`` field
+    this PR.  Does NOT influence composite score, risk_flags, fair-price,
+    peer-medians, or ``select_picks``. See the Phase 9.4 PR-1 canary
+    comment in ``compute/main.py`` for the full Rule-18 constraint.
+    """
+    if os.environ.get("QR_SKIP_CROSS_SOURCE"):
+        cache_file = _cache_path(ticker)
+        if cache_file.exists():
+            try:
+                payload = json.loads(cache_file.read_text(encoding="utf-8"))
+                sector_val = payload.get("sector")
+                if not isinstance(sector_val, str) or not sector_val:
+                    return None
+                logger.debug(
+                    "yfinance_info sector FORCE-HIT (QR_SKIP_CROSS_SOURCE=1) "
+                    "for %s (stale-tolerant)",
+                    ticker,
+                )
+                return sector_val
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "QR_SKIP_CROSS_SOURCE sector stale-read failed for %s: %s — "
+                    "returning None",
+                    ticker,
+                    e,
+                )
+                return None
+        return None
+
+    # Normal path: TTL-gated cache read only.  No live fetch here — the
+    # market_cap call (earlier in the same loop iteration) already did the
+    # Ticker.info round-trip and populated sector + industry into cache.
+    sector, _industry = _sector_cache_read(ticker)
+    return sector
 
 
 def validate_market_cap(
