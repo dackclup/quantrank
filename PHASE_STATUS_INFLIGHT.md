@@ -10339,3 +10339,18 @@ Schema triple UNTOUCHED. Defense layer UNCHANGED at 38. No routing-count / agent
 **Verification**: docs-only — `ruff check .` unaffected; `python tools/check_agent_hook_consistency.py` expected green (no count change). No frontend/compute/schema surface.
 
 ---
+
+## PR (branch `claude/nasdaq-russell-indices-da25zv`) — rankings index-tab row: rename RUA off the forbidden "Russell 3000" trademark string + drop the RUT (Russell 2000) tab (in flight, 2026-07-02)
+
+Frontend-only fix to the rankings-page index-tab row (`IndexTabs.tsx` + `RankingView.tsx`). Two owner decisions:
+
+- **(1a) Trademark defect fix + RUT drop.** `IndexTabs.tsx:39` shipped the user-visible strings `label: 'Russell 3000'` / `name: 'Russell 3000 (broad market)'` — a live violation of the HARD naming/trademark constraint (CLAUDE.md §Gotchas, Phase 9.1: the string "Russell 3000" is FORBIDDEN in every field name, label, comment, log line, and user-visible string). Even as a disabled SOON placeholder the string rendered in the DOM (label + `title`). The RUA tab is renamed to the project's deliberately-renamed name for that ~3,545-name broad universe: `label: 'Broad Investable US'` / `name: 'Broad Investable US (broad market)'`. The RUT (`Russell 2000`) tab is REMOVED entirely — it stacked three independent unfixable-today blockers (no free/legal FTSE Russell constituent source; requires sub-S&P-600 small-cap ingest we don't perform; a pure-small-cap ranking is methodologically incoherent with the 8-pillar composite that is cross-sectionally normalized on a large/mid-cap frame — P1-G4 re-basing). `'RUT'` dropped from the `IndexCode` union + the `INDICES_US` array; the two RankingView comments that listed RUT as a future tab updated to `(RUA / COMP / …)`. RUI (Russell 1000) is UNTOUCHED — it is a live shipped market-cap-proxy tab and "Russell 1000" is not the forbidden string.
+- **(2b) COMP unchanged.** The COMP (NASDAQ Composite) tab stays a non-interactive SOON placeholder — NOT wired to data. A true Composite depends on the broad-universe/small-cap ingest (Phase 9.4); a partial tag-overlay was declined by the owner.
+
+NO schema change — `IndexCode` is a frontend-only presentation type, not the `index_memberships` data contract; the schema triple (`schemas.py` ↔ `types.ts` ↔ `schema-snapshot.json`) is untouched. Defense layer UNCHANGED at 38. Rankings/scores/flags BYTE-IDENTICAL (presentation-only; the removed/renamed tabs never carried data). Note: `frontend/lib/types.ts` retains one "Russell 3000" occurrence, but only inside a comment that *documents the prohibition itself* (mirrors how CLAUDE.md states the rule) — pre-existing, out of scope, not a violation.
+
+**Files**: `frontend/components/IndexTabs.tsx`, `frontend/components/RankingView.tsx`, `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**Verification**: `npx --no -- tsc --noEmit` PASS (catches any dangling `RUT` reference) · `npx --no -- vitest run` PASS (9 files / 329 tests, incl. `lib/sml-tab.test.ts`) · `npx --no -- next build` PASS (static export, 1509 pages) · final grep: 0 live "Russell 3000" strings + 0 `RUT` code references under `frontend/`. Scope provenance: financial-engineer scope (per-tab BLOCKED-ON verdict) → owner decision 1a + 2b.
+
+---

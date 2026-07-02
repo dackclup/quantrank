@@ -19,7 +19,7 @@
 
 'use client';
 
-export type IndexCode = 'SPX' | 'MID' | 'SML' | 'NDX' | 'COMP' | 'DJI' | 'RUI' | 'RUT' | 'RUA' | 'ALL';
+export type IndexCode = 'SPX' | 'MID' | 'SML' | 'NDX' | 'COMP' | 'DJI' | 'RUI' | 'RUA' | 'ALL';
 
 type IndexOption = { code: IndexCode; label: string; name: string };
 
@@ -35,8 +35,7 @@ const INDICES_US: IndexOption[] = [
   { code: 'COMP', label: 'NASDAQ Composite',  name: 'NASDAQ Composite' },
   { code: 'DJI',  label: 'Dow 30',            name: 'Dow Jones Industrial Average' },
   { code: 'RUI',  label: 'Russell 1000',      name: 'Russell 1000 (large-cap)' },
-  { code: 'RUT',  label: 'Russell 2000',      name: 'Russell 2000 (small-cap)' },
-  { code: 'RUA',  label: 'Russell 3000',      name: 'Russell 3000 (broad market)' },
+  { code: 'RUA',  label: 'Broad Investable US', name: 'Broad Investable US (broad market)' },
 ];
 
 // Mirrors the CountryTabs / TopNav tab shape: 44px target, border-b-2 underline
