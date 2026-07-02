@@ -43,15 +43,66 @@ D — return shape / snapshot isolation
         value (internal only) — return tuple has exactly 3 elements and
         none of them is a mapping keyed the same way with float|None cap
         values under an unexpected 4th slot.
+
+E — run_per_ticker_loop (PR #259-R7b)
+    Mostly-REAL exercise of the Step-8 per-ticker loop: a tiny 2-3 ticker
+    synthetic universe with real ``FundamentalsSnapshot`` / ``BeneishResult``
+    / ``DechowResult`` instances, real ``_filing_lag`` / ``_build_raw_metrics``
+    injected from ``compute.main`` (the actual production wiring), and the
+    real (pure, no-network) scoring/valuation/recommendation functions. Only
+    the network-touching cross-source + EDGAR-filing lookups are
+    monkeypatched (deterministic no-fire stand-ins) and ``config.DATA_DIR``
+    is redirected to ``tmp_path`` so the real ``write_stock_detail`` /
+    ``write_stock_history`` calls land on disk safely.
+
+    E1  Result is a ``PerTickerLoopResult`` whose field set matches
+        ``dataclasses.fields`` exactly (28 fields) — the return-contract
+        shape lock.
+    E2  ``summaries`` / ``all_details`` have one entry per ticker, in
+        ``StockSummary`` / ``StockDetail`` instances, and both stock-detail
+        + stock-history JSON files are actually written to ``tmp_path``.
+    E3  ``fundamentals_unavailable_count == 1`` for the one ticker with
+        ``snap=None``.
+    E4  ``low_liquidity_annotate_count == 1`` for the one ticker whose
+        ``adv_by_ticker`` value sits below ``config.ADV_FLOOR_USD`` — and
+        the ``"low_liquidity"`` annotate lands in that ticker's
+        ``valuation_warnings`` (rank-neutral: no ``risk_flags`` change).
+    E5  ``multi_class_aggregate_shares_suspected_count == 1`` for the one
+        ticker in the injected ``multi_class_flagged_tickers`` set, and the
+        matching annotate lands in ``valuation_warnings``.
+    E6  The injected ``filing_lag_fn`` / ``build_raw_metrics_fn`` callables
+        (the real ``compute.main._filing_lag`` / ``_build_raw_metrics``) are
+        actually invoked (call-count > 0 via a counting wrapper) — locks the
+        injection contract described in the module docstring.
+    E7  Degenerate empty-universe call (``df`` with zero rows) returns a
+        ``PerTickerLoopResult`` with empty ``summaries`` / ``all_details``
+        and every counter at its zero/empty init value — no exception.
 """
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass
+from datetime import UTC, date, datetime
 
 import pandas as pd
 
-from compute.orchestrator.per_ticker import build_ticker_membership_maps
+from compute import config
+from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.main import _build_raw_metrics, _filing_lag
+from compute.orchestrator import per_ticker
+from compute.orchestrator.per_ticker import (
+    PerTickerLoopResult,
+    build_ticker_membership_maps,
+    run_per_ticker_loop,
+)
+from compute.output.schemas import StockDetail, StockSummary
+from compute.scoring.beneish import BeneishResult
+from compute.scoring.dechow_f import DechowResult
+from compute.scoring.restatement_filings import (
+    LateFilingResult,
+    RestatementHistoryResult,
+)
 
 # ---------------------------------------------------------------------------
 # Shared test helpers
@@ -377,3 +428,414 @@ def test_D2_internal_maps_not_leaked_into_return_value():
     # memberships_by_ticker values are lists of membership code strings.
     assert isinstance(memberships_by_ticker["T"], list)
     assert all(isinstance(code, str) for code in memberships_by_ticker["T"])
+
+
+# ---------------------------------------------------------------------------
+# Section E: run_per_ticker_loop (PR #259-R7b)
+# ---------------------------------------------------------------------------
+#
+# Mostly-REAL exercise: only the network-touching cross-source + EDGAR-filing
+# lookups are monkeypatched (deterministic no-fire stand-ins bound directly
+# on the `per_ticker` module namespace, since they were imported there via
+# `from X import Y`). Everything else — the fair-price ensemble, the earnings
+# -quality checks, recommendation/loss-chance/manipulation-index, the RIM
+# applicability dual-count, and the real `write_stock_detail` /
+# `write_stock_history` I/O against `tmp_path` — runs for real.
+
+
+ASOF_DATE = date(2026, 6, 30)
+NOW = datetime(2026, 6, 30, 12, 0, tzinfo=UTC)
+
+
+def _snap(**overrides) -> FundamentalsSnapshot:
+    """A minimal-but-real FundamentalsSnapshot (mirrors tests/test_main.py's
+    own ``_snap()`` fixture) — real dataclass, not a stand-in, so every real
+    (non-network) function the loop calls on it behaves exactly as in
+    production."""
+    defaults = {
+        "ticker": "TST",
+        "cik": "0000000001",
+        "net_income": 50.0,
+        "stockholders_equity": 100.0,
+        "shares_outstanding": 10.0,
+        "eps_diluted": 5.0,
+        "revenue": 500.0,
+        "total_assets": 400.0,
+        "ebitda": 50.0,
+        "long_term_debt": 20.0,
+        "short_term_debt": 5.0,
+        "cash": 10.0,
+        "goodwill": 0.0,
+        "intangibles_net": 0.0,
+        "latest_period_end": date(2025, 12, 31),
+        "latest_filed_date": date(2026, 5, 1),
+    }
+    defaults.update(overrides)
+    return FundamentalsSnapshot(**defaults)
+
+
+def _valid_prices_df() -> pd.DataFrame:
+    """A minimal-but-real OHLCV DataFrame satisfying write_stock_history's
+    required-column + DatetimeIndex contract."""
+    idx = pd.date_range("2026-06-01", periods=5, freq="D")
+    return pd.DataFrame(
+        {
+            "Open": [10.0, 10.1, 10.2, 10.3, 10.4],
+            "High": [10.5, 10.6, 10.7, 10.8, 10.9],
+            "Low": [9.5, 9.6, 9.7, 9.8, 9.9],
+            "Close": [10.2, 10.3, 10.4, 10.5, 10.6],
+            "Volume": [1_000_000, 1_100_000, 1_200_000, 1_300_000, 1_400_000],
+        },
+        index=idx,
+    )
+
+
+def _patch_network_and_edgar_calls(monkeypatch, *, call_counts: dict | None = None):
+    """Monkeypatch every network/EDGAR-touching name the loop calls, bound
+    directly on ``compute.orchestrator.per_ticker`` (the module namespace
+    they were imported into). All stand-ins are deterministic non-firing
+    defaults — no annotate should fire from these paths in the test universe
+    (the annotates under test — low_liquidity, multi_class — come from
+    pure-Python threshold checks, not these patched fetchers).
+
+    ``call_counts``, if supplied, is incremented per call under each key so
+    a test can assert the patched paths were actually exercised.
+    """
+    counts = call_counts if call_counts is not None else {}
+
+    def _bump(key: str):
+        counts[key] = counts.get(key, 0) + 1
+
+    def _fake_validate_market_cap(*, ticker, snap, current_price):
+        _bump("cross_source_validate_market_cap")
+        return False, None
+
+    def _fake_yf_market_cap(ticker):
+        _bump("fetch_yfinance_market_cap")
+        return None
+
+    def _fake_yf_shares_outstanding(ticker):
+        _bump("fetch_yfinance_shares_outstanding")
+        return None
+
+    def _fake_yf_exchange(ticker):
+        _bump("fetch_yfinance_exchange")
+        return None
+
+    def _fake_yf_dividend(ticker):
+        _bump("fetch_yfinance_dividend")
+        return None, None, None
+
+    def _fake_yf_security_type(ticker):
+        _bump("fetch_yfinance_security_type")
+        return None
+
+    def _fake_check_restatement_history(ticker, *, asof=None):
+        _bump("check_restatement_history")
+        return RestatementHistoryResult(
+            fired=False, count=0, latest_filing_date=None, latest_filing_url=None
+        )
+
+    def _fake_check_late_filing(ticker, *, asof=None):
+        _bump("check_late_filing")
+        return LateFilingResult(
+            fired=False,
+            count=0,
+            latest_filing_date=None,
+            latest_filing_url=None,
+            latest_form=None,
+        )
+
+    def _fake_get_amendment_filing_dates(ticker, *, asof=None):
+        _bump("get_amendment_filing_dates")
+        return ()
+
+    def _fake_get_non_reliance_filing_dates(ticker, *, asof=None):
+        _bump("get_non_reliance_filing_dates")
+        return ()
+
+    monkeypatch.setattr(per_ticker, "cross_source_validate_market_cap", _fake_validate_market_cap)
+    monkeypatch.setattr(per_ticker, "fetch_yfinance_market_cap", _fake_yf_market_cap)
+    monkeypatch.setattr(
+        per_ticker, "fetch_yfinance_shares_outstanding", _fake_yf_shares_outstanding
+    )
+    monkeypatch.setattr(per_ticker, "fetch_yfinance_exchange", _fake_yf_exchange)
+    monkeypatch.setattr(per_ticker, "fetch_yfinance_dividend", _fake_yf_dividend)
+    monkeypatch.setattr(per_ticker, "fetch_yfinance_security_type", _fake_yf_security_type)
+    monkeypatch.setattr(
+        per_ticker, "check_restatement_history", _fake_check_restatement_history
+    )
+    monkeypatch.setattr(per_ticker, "check_late_filing", _fake_check_late_filing)
+    monkeypatch.setattr(
+        per_ticker, "get_amendment_filing_dates", _fake_get_amendment_filing_dates
+    )
+    monkeypatch.setattr(
+        per_ticker, "get_non_reliance_filing_dates", _fake_get_non_reliance_filing_dates
+    )
+    return counts
+
+
+def _run_loop_kwargs(*, df, snapshots, tickers, tmp_path, monkeypatch, call_counts=None):
+    """Assemble the full keyword-argument set for run_per_ticker_loop from a
+    3-ticker (or fewer) synthetic universe, with every other pillar-5b /
+    Step-4b/4.5e input at its safe "nothing fired yet" default (empty dict /
+    ``.get()``-safe — none of these are direct-indexed except
+    beneish_results/dechow_results, which this helper populates for every
+    ticker key)."""
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr(per_ticker.config, "DATA_DIR", tmp_path)
+    _patch_network_and_edgar_calls(monkeypatch, call_counts=call_counts)
+
+    beneish_results = {t: BeneishResult(m_score=None, is_high=False) for t in tickers}
+    dechow_results = {t: DechowResult(f_score=None, is_high=False) for t in tickers}
+
+    return dict(
+        df=df,
+        snapshots=snapshots,
+        pillar_df=pd.DataFrame(),
+        risk_flags={t: [] for t in tickers},
+        beneish_results=beneish_results,
+        dechow_results=dechow_results,
+        rem_results={},
+        post_split_results={},
+        tier2_results={},
+        histories={},
+        historical_metrics={},
+        universe_metrics={},
+        by_sector={},
+        by_sub_industry={},
+        broad_ex_fin_util=[],
+        adv_by_ticker={},
+        prices_by_ticker={},
+        imputed_by_ticker={},
+        sector_pillar_baselines={},
+        form4_diagnostics={},
+        osap_signal_map={},
+        composite_osap_adjusted=pd.Series(dtype=float),
+        cohort_by_ticker={t: "sp500" for t in tickers},
+        memberships_by_ticker={t: ["sp500"] for t in tickers},
+        multi_class_flagged_tickers=set(),
+        entered=set(),
+        exited=set(),
+        asof_date=ASOF_DATE,
+        now=NOW,
+        filing_lag_fn=_filing_lag,
+        build_raw_metrics_fn=_build_raw_metrics,
+    )
+
+
+def test_E1_result_field_set_matches_dataclass_shape(tmp_path, monkeypatch):
+    """PerTickerLoopResult's actual field set (28 fields) is exactly what
+    dataclasses.fields() reports — the return-contract shape lock."""
+    tickers = ["GOOD"]
+    df = _make_df(
+        [
+            {
+                "ticker": "GOOD",
+                "name": "Good Corp",
+                "current_price": 100.0,
+                "sector": "Technology",
+                "composite_score": 75.0,
+                "rank": 1,
+            }
+        ]
+    )
+    snapshots = {"GOOD": _snap(ticker="GOOD")}
+    kwargs = _run_loop_kwargs(
+        df=df, snapshots=snapshots, tickers=tickers, tmp_path=tmp_path, monkeypatch=monkeypatch
+    )
+
+    result = run_per_ticker_loop(**kwargs)
+
+    assert isinstance(result, PerTickerLoopResult)
+    field_names = {f.name for f in dataclasses.fields(PerTickerLoopResult)}
+    assert len(field_names) == 28
+    for name in field_names:
+        # every declared field is actually set (dataclass would have raised
+        # in __init__ already if not, but this locks the attribute-access
+        # contract callers rely on, e.g. result.summaries).
+        assert hasattr(result, name)
+
+
+def test_E2_three_ticker_universe_wiring_and_disk_writes(tmp_path, monkeypatch):
+    """The main integration exercise: 3 tickers covering the happy path
+    (GOOD), the fundamentals_unavailable path (NOSNAP, snap=None), and a
+    combined low_liquidity + multi_class_aggregate_shares_suspected path
+    (LOWLIQ, also no price history). Asserts summaries/all_details shape,
+    the 3 targeted counters, has_history per ticker, and real JSON writes to
+    tmp_path (write_stock_detail / write_stock_history are NOT mocked)."""
+    tickers = ["GOOD", "NOSNAP", "LOWLIQ"]
+    df = _make_df(
+        [
+            {
+                "ticker": "GOOD",
+                "name": "Good Corp",
+                "current_price": 100.0,
+                "sector": "Technology",
+                "composite_score": 75.0,
+                "rank": 1,
+            },
+            {
+                "ticker": "NOSNAP",
+                "name": "No Snapshot Inc",
+                "current_price": 50.0,
+                "sector": "Health Care",
+                "composite_score": 40.0,
+                "rank": 2,
+            },
+            {
+                "ticker": "LOWLIQ",
+                "name": "Low Liquidity Co",
+                "current_price": 20.0,
+                "sector": "Industrials",
+                "composite_score": 30.0,
+                "rank": 3,
+            },
+        ]
+    )
+    snapshots = {
+        "GOOD": _snap(ticker="GOOD", cik="1"),
+        "NOSNAP": None,
+        "LOWLIQ": _snap(ticker="LOWLIQ", cik="2"),
+    }
+    call_counts: dict = {}
+    kwargs = _run_loop_kwargs(
+        df=df,
+        snapshots=snapshots,
+        tickers=tickers,
+        tmp_path=tmp_path,
+        monkeypatch=monkeypatch,
+        call_counts=call_counts,
+    )
+    # ADV: GOOD clears the $5M floor comfortably; LOWLIQ sits below it.
+    kwargs["adv_by_ticker"] = {
+        "GOOD": 10_000_000.0,
+        "NOSNAP": 10_000_000.0,
+        "LOWLIQ": 1_000_000.0,
+    }
+    assert kwargs["adv_by_ticker"]["LOWLIQ"] < config.ADV_FLOOR_USD
+    # Prices: GOOD + NOSNAP get real history; LOWLIQ has none (has_history=False).
+    kwargs["prices_by_ticker"] = {
+        "GOOD": _valid_prices_df(),
+        "NOSNAP": _valid_prices_df(),
+    }
+    # CIK-collision set (from build_ticker_membership_maps in production) —
+    # inject LOWLIQ directly to exercise the annotate + counter.
+    kwargs["multi_class_flagged_tickers"] = {"LOWLIQ"}
+
+    result = run_per_ticker_loop(**kwargs)
+
+    # E2 — shape.
+    assert len(result.summaries) == 3
+    assert len(result.all_details) == 3
+    assert all(isinstance(s, StockSummary) for s in result.summaries)
+    assert all(isinstance(d, StockDetail) for d in result.all_details)
+    by_ticker_detail = {d.ticker: d for d in result.all_details}
+    assert by_ticker_detail["GOOD"].has_history is True
+    assert by_ticker_detail["NOSNAP"].has_history is True
+    assert by_ticker_detail["LOWLIQ"].has_history is False
+
+    # Real disk writes — write_stock_detail runs for every ticker;
+    # write_stock_history only for GOOD/NOSNAP (LOWLIQ has no price frame).
+    for t in tickers:
+        assert (tmp_path / "stocks" / f"{t}.json").exists()
+    assert (tmp_path / "stocks" / "history" / "GOOD.json").exists()
+    assert (tmp_path / "stocks" / "history" / "NOSNAP.json").exists()
+    assert not (tmp_path / "stocks" / "history" / "LOWLIQ.json").exists()
+
+    # E3 — fundamentals_unavailable_count: exactly NOSNAP (snap=None).
+    assert result.fundamentals_unavailable_count == 1
+
+    # E4 — low_liquidity_annotate_count: exactly LOWLIQ (below ADV floor).
+    assert result.low_liquidity_annotate_count == 1
+    assert "low_liquidity" in by_ticker_detail["LOWLIQ"].valuation_warnings
+    assert "low_liquidity" not in by_ticker_detail["GOOD"].valuation_warnings
+    # Rank-neutral per Rule 16 — never in risk_flags, never forces `cautious`.
+    assert "low_liquidity" not in by_ticker_detail["LOWLIQ"].risk_flags
+
+    # E5 — multi_class_aggregate_shares_suspected_count: exactly LOWLIQ.
+    assert result.multi_class_aggregate_shares_suspected_count == 1
+    assert (
+        "multi_class_aggregate_shares_suspected"
+        in by_ticker_detail["LOWLIQ"].valuation_warnings
+    )
+    assert (
+        "multi_class_aggregate_shares_suspected"
+        not in by_ticker_detail["GOOD"].valuation_warnings
+    )
+
+    # cross_source_wall_clock_seconds is a real (non-negative) measurement.
+    assert result.cross_source_wall_clock_seconds is not None
+    assert result.cross_source_wall_clock_seconds >= 0.0
+
+    # The patched network/EDGAR stand-ins were actually reached (sanity that
+    # this is exercising the real call sites, not silently skipping them).
+    assert call_counts.get("check_restatement_history", 0) == 3
+    assert call_counts.get("fetch_yfinance_exchange", 0) == 3
+
+
+def test_E6_injected_filing_lag_and_raw_metrics_callables_are_invoked(tmp_path, monkeypatch):
+    """filing_lag_fn / build_raw_metrics_fn — the two compute.main helpers
+    injected as callables (see the module docstring's R7b section) — are
+    each invoked at least once per ticker with a non-None snapshot."""
+    tickers = ["GOOD"]
+    df = _make_df(
+        [
+            {
+                "ticker": "GOOD",
+                "name": "Good Corp",
+                "current_price": 100.0,
+                "sector": "Technology",
+                "composite_score": 75.0,
+                "rank": 1,
+            }
+        ]
+    )
+    snapshots = {"GOOD": _snap(ticker="GOOD")}
+    kwargs = _run_loop_kwargs(
+        df=df, snapshots=snapshots, tickers=tickers, tmp_path=tmp_path, monkeypatch=monkeypatch
+    )
+
+    lag_calls = {"n": 0}
+    raw_metrics_calls = {"n": 0}
+
+    def _counting_filing_lag(snap, asof):
+        lag_calls["n"] += 1
+        return _filing_lag(snap, asof)
+
+    def _counting_build_raw_metrics(*args, **kw):
+        raw_metrics_calls["n"] += 1
+        return _build_raw_metrics(*args, **kw)
+
+    kwargs["filing_lag_fn"] = _counting_filing_lag
+    kwargs["build_raw_metrics_fn"] = _counting_build_raw_metrics
+
+    result = run_per_ticker_loop(**kwargs)
+
+    # _filing_lag is called twice per non-None-snapshot ticker (once for the
+    # ensemble's filing_lag_days_value, once for the issue #67 dual RIM count).
+    assert lag_calls["n"] == 2
+    # _build_raw_metrics is called once per ticker (StockDetail.raw_metrics).
+    assert raw_metrics_calls["n"] == 1
+    assert len(result.summaries) == 1
+
+
+def test_E7_empty_universe_returns_empty_result_no_exception(tmp_path, monkeypatch):
+    """Zero-row df -> PerTickerLoopResult with empty summaries/all_details
+    and every counter at its zero/empty init value. No exception, no
+    KeyError on the direct beneish_results[ticker] / dechow_results[ticker]
+    indexing (loop body never executes)."""
+    df = _make_df([])
+    kwargs = _run_loop_kwargs(
+        df=df, snapshots={}, tickers=[], tmp_path=tmp_path, monkeypatch=monkeypatch
+    )
+
+    result = run_per_ticker_loop(**kwargs)
+
+    assert result.summaries == []
+    assert result.all_details == []
+    assert result.fundamentals_unavailable_count == 0
+    assert result.low_liquidity_annotate_count == 0
+    assert result.multi_class_aggregate_shares_suspected_count == 0
+    assert result.cross_source_delta_by_ticker == {}
+    assert result.cross_source_wall_clock_seconds is not None
