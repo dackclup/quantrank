@@ -119,9 +119,49 @@ Byte-identical guarantee (R7b)
   respectively) — same function objects, same arguments, same call order.
 * Smells #5 (the ~20 ``valuation_warnings.append`` dedup-then-append
   sites) and #8 (the double ``check_rim_applicability`` call, once with
-  the flat Ke and once with the sector Ke) are DELIBERATELY left
-  untouched — this is a pure code move, not a consolidation. A future
-  tiny follow-up may address them.
+  the flat Ke and once with the sector Ke) were DELIBERATELY left
+  untouched by R7b — that was a pure code move, not a consolidation.
+
+Follow-up cleanup (#259 smell5-8 cleanup, post-R7b)
+-----------------------------------------------------
+A later, purely-local readability pass addressed the SAFE parts of both
+smells with zero behaviour change (verified by the same byte-identical
+proof R7b used — the full offline test suite, whose ``run_weekly_compute``
+harness drives this loop):
+
+* Smell #5 — every ``if "X" not in valuation_warnings:
+  valuation_warnings.append("X")`` site (and its counter-coupled
+  variants) now goes through :class:`WarningEmitter`, a tiny wrapper
+  around the SAME per-ticker ``valuation_warnings`` list constructed at
+  its usual place (``valuation_warnings = list(ensemble.valuation_warnings)``
+  when a snapshot exists, ``[]`` otherwise). ``emitter.add(flag)`` performs
+  the identical two-step "append iff not already present" the inline
+  pattern did, in the same order, and returns whether it was a NEW
+  append. Sites where the ORIGINAL counter increment lived inside the
+  same ``if <cond> and "X" not in valuation_warnings:`` guard (so it only
+  fired on a genuinely new append) now read
+  ``if <cond> and emitter.add("X"): count += 1``. Sites where the counter
+  incremented on every firing of ``<cond>`` REGARDLESS of dedup outcome
+  (``cross_source_disagreement_count``, ``multi_class_aggregate_shares_suspected_count``,
+  ``insider_sell_cluster_firing_count``, ``c_suite_unusual_sell_firing_count``,
+  ``value_trap_risk_two_factor_shadow_count``) keep the increment tied to
+  ``<cond>`` exactly as before, with a plain ``emitter.add("X")`` call
+  alongside it (not gating the count on the emitter's return value) — the
+  two coupling shapes are NOT interchangeable and this pass preserves
+  each site's original shape.
+* Smell #8 — the two ``check_rim_applicability`` calls (flat Ke /
+  ``_rim_flat`` vs sector Ke / ``_rim_sector``) are UNCHANGED — issue #67
+  needs both for the flat-vs-sector delta measurement. Only the
+  IDENTICAL 3-line "if the RIM skip reason is the value-trap-risk one:
+  bump the scalar counter + bump the per-sector dict" block that used to
+  follow EACH call is now the shared ``_tally_value_trap`` helper. The
+  DEEPER redundancy — ``_rim_sector`` re-deriving inputs
+  ``compute_fair_price_ensemble`` already computed internally for its own
+  RIM-applicability check — is intentionally NOT addressed: fixing that
+  would mean changing ``compute_fair_price_ensemble``'s return signature
+  (a ``compute/valuation/`` change), which is out of scope for this
+  ``compute/orchestrator/`` -only cleanup and carries real byte-identity
+  risk of its own.
 * Accumulators/counters read only WITHIN the original inline block
   (``detail_count``, ``history_count``, ``fair_price_count``,
   ``_pays_dividend_by_ticker``, ``_payout_ratio_by_ticker``, the internal
@@ -211,7 +251,11 @@ from compute.scoring.risk_overlay import (
     check_share_count_extraction_missing,
 )
 from compute.scoring.tier2 import Tier2Result, tier2_events_dict
-from compute.valuation.applicability import check_rim_applicability, stale_filing_status
+from compute.valuation.applicability import (
+    MethodApplicability,
+    check_rim_applicability,
+    stale_filing_status,
+)
 from compute.valuation.ensemble import (
     EnsembleResult,
     compute_fair_price_ensemble,
@@ -461,6 +505,90 @@ class PerTickerLoopResult:
     form4_rule10b5_one_excluded_count: int
     # Issue #261 — Metadata.multi_class_aggregate_shares_suspected_count.
     multi_class_aggregate_shares_suspected_count: int
+
+
+class WarningEmitter:
+    """Append-with-dedup wrapper around a per-ticker ``valuation_warnings``
+    list — the #259 smell-#5 cleanup.
+
+    Consolidates the ~20 ``if "X" not in valuation_warnings:
+    valuation_warnings.append("X")`` sites inside :func:`run_per_ticker_loop`
+    into a single ``emitter.add("X")`` call. Wraps (never copies) the exact
+    list object passed to its constructor, so every later read of
+    ``valuation_warnings`` in the same loop iteration — the
+    ``StockSummary``/``StockDetail`` construction, the
+    ``manipulation_triple_flag`` membership check, ``derive_recommendation``,
+    ``derive_loss_chance``, ``compute_manipulation_index`` — sees the exact
+    same, in-place-mutated list it always did. This class changes nothing
+    about WHERE or WHEN ``valuation_warnings`` is built, reset, or consumed
+    — only how each append site is spelled.
+
+    Byte-identical by construction: :meth:`add` performs the exact same two
+    operations the pattern it replaces did, in the same order —
+    ``if flag not in warnings: warnings.append(flag)`` — so append ORDER is
+    untouched (still simple list-append order, first-fired-wins), and
+    returns whether a NEW append happened, mirroring the original
+    ``"X" not in valuation_warnings`` guard exactly. That return value lets
+    counter-coupled call sites whose ORIGINAL counter increment was gated
+    by the same dedup check (i.e. only fired on a genuinely new append)
+    write ``if <cond> and emitter.add("X"): count += 1`` with no behaviour
+    change. Sites whose original counter incremented on every firing of
+    ``<cond>`` regardless of dedup outcome do NOT use the return value —
+    see the module docstring's "Follow-up cleanup" section.
+    """
+
+    __slots__ = ("_warnings",)
+
+    def __init__(self, warnings: list[str]) -> None:
+        self._warnings = warnings
+
+    def add(self, flag: str) -> bool:
+        """Append ``flag`` to the wrapped list iff not already present.
+
+        Returns True iff this call performed a NEW append (mirrors
+        ``if flag not in warnings: warnings.append(flag)`` exactly — same
+        check, same order, same mutation).
+        """
+        if flag not in self._warnings:
+            self._warnings.append(flag)
+            return True
+        return False
+
+
+def _tally_value_trap(
+    rim_result: MethodApplicability,
+    sector: str,
+    by_sector: dict[str, int],
+) -> bool:
+    """Issue #67 dual-count tally — the #259 smell-#8 local cleanup.
+
+    Factors out the IDENTICAL 3-line "value-trap-risk skip? bump the
+    per-sector dict" block that otherwise appears twice in
+    :func:`run_per_ticker_loop` — once after the flat-Ke ``_rim_flat``
+    ``check_rim_applicability`` call and once after the sector-Ke
+    ``_rim_sector`` call. Those two calls themselves are NOT merged here
+    (and must not be — issue #67's flat-vs-sector delta measurement
+    needs both; see the caller's comment + the module docstring's
+    "Follow-up cleanup" section for why the DEEPER redundancy between
+    ``_rim_sector`` and ``compute_fair_price_ensemble``'s internal RIM
+    check is intentionally out of scope for this pass).
+
+    Returns True iff ``rim_result`` is the specific
+    ``"value_trap_risk_roe_below_cost_of_equity"`` non-applicability
+    reason, incrementing ``by_sector[sector]`` as a side effect exactly
+    like the inline block did. Does NOT touch the universe-wide scalar
+    counter (``value_trap_risk_count_{without,with}_sector_coe``) — the
+    caller increments that itself, gated on this function's return value,
+    so the two increments stay in lockstep exactly as the original single
+    ``if`` block guaranteed.
+    """
+    if (
+        not rim_result.applicable
+        and rim_result.reason == "value_trap_risk_roe_below_cost_of_equity"
+    ):
+        by_sector[sector] = by_sector.get(sector, 0) + 1
+        return True
+    return False
 
 
 def run_per_ticker_loop(
@@ -844,6 +972,22 @@ def run_per_ticker_loop(
             if ensemble.median is not None or ensemble.max is not None:
                 fair_price_count += 1
 
+        # #259 smell-#5 cleanup — wrap the per-ticker valuation_warnings
+        # list (just settled above to either [] or the ensemble-seeded
+        # list) in a WarningEmitter so every dedup-then-append site below
+        # can call emitter.add(flag) instead of repeating "flag not in
+        # valuation_warnings: valuation_warnings.append(flag)". MUST be
+        # constructed HERE, after the `if snap is not None:` block above,
+        # not before it: valuation_warnings is REBOUND (not mutated) to a
+        # NEW list object at `valuation_warnings = list(ensemble.valuation_warnings)`
+        # when a snapshot exists, so an emitter built earlier would wrap a
+        # stale list once that rebind happens. Wrapping the settled,
+        # already-seeded list means every emitter.add() dedup check below
+        # correctly accounts for any warnings compute_fair_price_ensemble
+        # already emitted — exactly what the original per-site
+        # "flag not in valuation_warnings" checks tested against.
+        emitter = WarningEmitter(valuation_warnings)
+
         # Issue #262 (2026-05-26) — writer-parity for the input-level
         # ``data_quality_input_corruption`` veto. When the veto fires
         # in ``risk_flags`` (input-level corruption per
@@ -860,11 +1004,8 @@ def run_per_ticker_loop(
         # additionally fire. Composite rank UNCHANGED — the veto
         # surface already handles Top-5 suppression; this only adds
         # the annotate for UI parity.
-        if (
-            "data_quality_input_corruption" in risk_flags.get(ticker, [])
-            and "valuation_output_anomalous" not in valuation_warnings
-        ):
-            valuation_warnings.append("valuation_output_anomalous")
+        if "data_quality_input_corruption" in risk_flags.get(ticker, []):
+            emitter.add("valuation_output_anomalous")
 
         # Post-split share-lag defense (defense layer 35).
         #
@@ -894,14 +1035,12 @@ def run_per_ticker_loop(
             # duplicate "Pending Edgar Refresh" chip via flagLabel()'s Title-Case
             # fallback.  A structured post_split_event field is the future path
             # for surfacing that detail (not this PR).
-            if "post_split_share_lag" not in valuation_warnings:
-                valuation_warnings.append("post_split_share_lag")
+            emitter.add("post_split_share_lag")
         if "post_split_share_lag_unreconciled" in _ticker_flags:
             # Null the ensemble (unreconciled split → fair price untrustworthy).
             ensemble = None
             ensemble_dict = None
-            if "valuation_output_anomalous" not in valuation_warnings:
-                valuation_warnings.append("valuation_output_anomalous")
+            emitter.add("valuation_output_anomalous")
 
         # Beneish M-score (PR 3e.1 ANNOTATE at M > -2.22 + PR 4.5a.2
         # soft-veto promotion at M > -1.78). The active-veto path is
@@ -912,8 +1051,8 @@ def run_per_ticker_loop(
         # for transparency. Cached from the pre-compute pass to avoid
         # recomputing the 8-ratio model twice per ticker.
         beneish_result = beneish_results[ticker]
-        if beneish_result.is_high and "beneish_high" not in valuation_warnings:
-            valuation_warnings.append("beneish_high")
+        if beneish_result.is_high:
+            emitter.add("beneish_high")
 
         # Dechow F-score (PR 3e.2 ANNOTATE at F > 2.45 + PR 4.5a.3
         # soft-veto promotion at F > 3.0). Active-veto path is wired
@@ -921,8 +1060,8 @@ def run_per_ticker_loop(
         # this block keeps the ``dechow_high`` annotate (F > 2.45 band)
         # on `valuation_warnings`. Cached from pre-compute pass.
         dechow_result = dechow_results[ticker]
-        if dechow_result.is_high and "dechow_high" not in valuation_warnings:
-            valuation_warnings.append("dechow_high")
+        if dechow_result.is_high:
+            emitter.add("dechow_high")
 
         # PR 4.5a.3 — `manipulation_triple_flag` joint-gate badge.
         # Fires when Sloan (cross-sectional or sector-relative)
@@ -936,9 +1075,8 @@ def run_per_ticker_loop(
             "sloan_accruals_top_decile" in ticker_risk
             and "beneish_high" in valuation_warnings
             and "dechow_high" in valuation_warnings
-            and "manipulation_triple_flag" not in valuation_warnings
         ):
-            valuation_warnings.append("manipulation_triple_flag")
+            emitter.add("manipulation_triple_flag")
 
         # Cross-source market-cap validator (PR 4b §1 + PR2a Issue #248
         # tuple-return refactor 0.10.3). Compares SEC-derived market cap
@@ -959,9 +1097,12 @@ def run_per_ticker_loop(
         cross_source_delta_by_ticker[ticker] = csd_delta
         cross_source_delta_histogram[cross_source_bucket_delta(csd_delta)] += 1
         if disagreement:
+            # OUTSIDE-count: the counter is tied to `disagreement`, NOT the
+            # dedup — do NOT fold into `if disagreement and emitter.add(...)`
+            # (that would suppress the count on an ensemble-seeded flag). See
+            # the module docstring "Follow-up cleanup" note.
             cross_source_disagreement_count += 1
-            if "cross_source_disagreement" not in valuation_warnings:
-                valuation_warnings.append("cross_source_disagreement")
+            emitter.add("cross_source_disagreement")
 
         # PR-1 cross-source corruption shadow — cache-read side-channel.
         # Both fetch_yfinance_market_cap and fetch_yfinance_shares_outstanding
@@ -1026,9 +1167,11 @@ def run_per_ticker_loop(
         # PR-B (reverse-allowlist per-class XBRL extraction) lands as
         # the structural fix.
         if ticker in multi_class_flagged_tickers:
+            # OUTSIDE-count: counter tied to the membership test, NOT the dedup
+            # — keep the plain `emitter.add(...)`; do NOT fold into the `and
+            # emitter.add(...)` guard (module docstring "Follow-up cleanup").
             multi_class_aggregate_shares_suspected_count += 1
-            if "multi_class_aggregate_shares_suspected" not in valuation_warnings:
-                valuation_warnings.append("multi_class_aggregate_shares_suspected")
+            emitter.add("multi_class_aggregate_shares_suspected")
 
         # PR 4.5b §1 — restatement_history annotate. 10-K/A or 10-Q/A
         # filings in the trailing 5 years from SEC EDGAR. Hennes-Leone-
@@ -1036,11 +1179,8 @@ def run_per_ticker_loop(
         # on announcement; recurrent restaters compound the effect.
         # ANNOTATE-only (sector-agnostic base rate, no veto).
         restatement_result = check_restatement_history(ticker, asof=asof_date)
-        if (
-            restatement_result.fired
-            and "restatement_history" not in valuation_warnings
-        ):
-            valuation_warnings.append("restatement_history")
+        if restatement_result.fired:
+            emitter.add("restatement_history")
 
         # Epic #150 Phase 2.2 — restatement_high_confidence annotate.
         # Co-occurrence of a 10-K/A or 10-Q/A amendment with an 8-K
@@ -1061,22 +1201,16 @@ def run_per_ticker_loop(
         high_conf_result = compute_high_confidence_restatement(
             amendment_dates, non_reliance_dates
         )
-        if (
-            high_conf_result.fired
-            and "restatement_high_confidence" not in valuation_warnings
-        ):
-            valuation_warnings.append("restatement_high_confidence")
+        if high_conf_result.fired:
+            emitter.add("restatement_high_confidence")
 
         # PR 4.5b §2 — late_filing_notification annotate. SEC Form
         # 12b-25 (NT 10-K / NT 10-Q) within the trailing 365 days.
         # Bartov-Lai-Yeung 2002 *JAR* — late filers see -5-7%
         # abnormal returns. ANNOTATE-only.
         late_filing_result = check_late_filing(ticker, asof=asof_date)
-        if (
-            late_filing_result.fired
-            and "late_filing_notification" not in valuation_warnings
-        ):
-            valuation_warnings.append("late_filing_notification")
+        if late_filing_result.fired:
+            emitter.add("late_filing_notification")
 
         # PR 4.5c — Roychowdhury 2006 REM. `rem_suspect` annotate
         # fires when 2 of 3 abnormal proxies (CFO, production,
@@ -1086,12 +1220,8 @@ def run_per_ticker_loop(
         # cutting R&D, channel stuffing, deferring maintenance —
         # invisible to Sloan/Beneish/Dechow accrual targets.
         rem_result = rem_results.get(ticker)
-        if (
-            rem_result is not None
-            and rem_result.fired
-            and "rem_suspect" not in valuation_warnings
-        ):
-            valuation_warnings.append("rem_suspect")
+        if rem_result is not None and rem_result.fired:
+            emitter.add("rem_suspect")
 
         # PR 4.5d §1 — accruals_momentum_high annotate.
         # Δ(TATA = (NI − CFO)/TA) over trailing 3 fiscal years.
@@ -1099,11 +1229,8 @@ def run_per_ticker_loop(
         # coefficient. Catches manipulation gathering steam — the
         # snapshot-only Sloan + Beneish flags miss the trajectory.
         accruals_mom = check_accruals_momentum(snap, histories.get(ticker))
-        if (
-            accruals_mom.fired
-            and "accruals_momentum_high" not in valuation_warnings
-        ):
-            valuation_warnings.append("accruals_momentum_high")
+        if accruals_mom.fired:
+            emitter.add("accruals_momentum_high")
 
         # PR 4.5d §2 — loss_avoidance_pattern annotate.
         # Burgstahler-Dichev 1997 *JAE* kink at zero. 3+ consecutive
@@ -1112,11 +1239,8 @@ def run_per_ticker_loop(
         # earnings just enough to clear the loss threshold. (Phase
         # 2.4 of epic #150 rescaled the bands 10× for S&P 500 scale.)
         loss_avoid = check_loss_avoidance(snap, histories.get(ticker))
-        if (
-            loss_avoid.fired
-            and "loss_avoidance_pattern" not in valuation_warnings
-        ):
-            valuation_warnings.append("loss_avoidance_pattern")
+        if loss_avoid.fired:
+            emitter.add("loss_avoidance_pattern")
 
         # Phase 4b — loss_avoidance_pattern_size_invariant annotate.
         # Roychowdhury 2006 *JAE* §5.2 suspect-firm definition:
@@ -1126,11 +1250,9 @@ def run_per_ticker_loop(
         loss_avoid_si = check_loss_avoidance_size_invariant(
             snap, histories.get(ticker)
         )
-        if (
-            loss_avoid_si.fired
-            and "loss_avoidance_pattern_size_invariant" not in valuation_warnings
+        if loss_avoid_si.fired and emitter.add(
+            "loss_avoidance_pattern_size_invariant"
         ):
-            valuation_warnings.append("loss_avoidance_pattern_size_invariant")
             loss_avoidance_size_invariant_firing_count += 1
 
         # Issue #176 — share_count_extraction_missing annotate.
@@ -1139,11 +1261,9 @@ def run_per_ticker_loop(
         # only — distinct from the data_quality_input_corruption veto,
         # which keeps its shares_outstanding=None silence contract per
         # issue #18 / test_D3.
-        if (
-            check_share_count_extraction_missing(snap)
-            and "share_count_extraction_missing" not in valuation_warnings
+        if check_share_count_extraction_missing(snap) and emitter.add(
+            "share_count_extraction_missing"
         ):
-            valuation_warnings.append("share_count_extraction_missing")
             share_count_extraction_missing_count += 1
 
         # S&P 1500 Slice 4 — low_liquidity ANNOTATE (defense layer 36,
@@ -1166,9 +1286,8 @@ def run_per_ticker_loop(
         if (
             _ticker_adv is not None
             and _ticker_adv < config.ADV_FLOOR_USD
-            and "low_liquidity" not in valuation_warnings
+            and emitter.add("low_liquidity")
         ):
-            valuation_warnings.append("low_liquidity")
             low_liquidity_annotate_count += 1
 
         # Issue #177 — extreme_estimate_majority annotate count.
@@ -1211,13 +1330,15 @@ def run_per_ticker_loop(
         _form4_diag = form4_diagnostics.get(ticker)
         if _form4_diag and _form4_diag.get("fetch_status") == "ok":
             _form4_txns = fetch_recent_form4(ticker)
+            # OUTSIDE-count (both below): counters tied to the detector fire,
+            # NOT the dedup — plain `emitter.add(...)` then unconditional
+            # increment; do NOT fold into `and emitter.add(...)` (module
+            # docstring "Follow-up cleanup").
             if detect_insider_sell_cluster(_form4_txns, asof_date):
-                if "insider_sell_cluster" not in valuation_warnings:
-                    valuation_warnings.append("insider_sell_cluster")
+                emitter.add("insider_sell_cluster")
                 insider_sell_cluster_firing_count += 1
             if detect_c_suite_unusual_sell(_form4_txns, asof_date):
-                if "c_suite_unusual_sell" not in valuation_warnings:
-                    valuation_warnings.append("c_suite_unusual_sell")
+                emitter.add("c_suite_unusual_sell")
                 c_suite_unusual_sell_firing_count += 1
             # PR 4-eq Rule 18 diagnostic — sum the count of transactions
             # excluded by the 10b5-1 filter (within the 30d cluster window
@@ -1246,28 +1367,26 @@ def run_per_ticker_loop(
             lag_status=_lag_status_67,
             cost_of_equity=config.COST_OF_EQUITY,
         )
-        if (
-            not _rim_flat.applicable
-            and _rim_flat.reason == "value_trap_risk_roe_below_cost_of_equity"
+        # #259 smell-#8 cleanup — the two check_rim_applicability calls
+        # (flat Ke here, sector Ke below) stay separate per issue #67's
+        # flat-vs-sector delta measurement; only the repeated "value-trap
+        # skip? bump scalar + per-sector dict" 3-line block is factored
+        # into _tally_value_trap. See that helper's docstring for the
+        # DEEPER redundancy this pass intentionally does NOT address.
+        if _tally_value_trap(
+            _rim_flat, sector, value_trap_risk_count_without_sector_coe_by_sector
         ):
             value_trap_risk_count_without_sector_coe += 1
-            value_trap_risk_count_without_sector_coe_by_sector[sector] = (
-                value_trap_risk_count_without_sector_coe_by_sector.get(sector, 0) + 1
-            )
         _rim_sector = check_rim_applicability(
             avg_3y_roe=_avg_roe_67,
             tbvps=_tbvps_67,
             lag_status=_lag_status_67,
             cost_of_equity=get_cost_of_equity(sector),
         )
-        if (
-            not _rim_sector.applicable
-            and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
+        if _tally_value_trap(
+            _rim_sector, sector, value_trap_risk_count_with_sector_coe_by_sector
         ):
             value_trap_risk_count_with_sector_coe += 1
-            value_trap_risk_count_with_sector_coe_by_sector[sector] = (
-                value_trap_risk_count_with_sector_coe_by_sector.get(sector, 0) + 1
-            )
 
         # Two-factor value_trap_risk LIVE gate (issue #586 PR-2, 0.10.34-phase8pilot).
         # FLIPPED from SHADOW to LIVE: the first sp1500 cron confirmed
@@ -1333,8 +1452,11 @@ def run_per_ticker_loop(
                     _vtr_sector_median_pe = statistics.median(_vtr_sector_pe_values)
                     if _vtr_pe_ttm < _vtr_sector_median_pe:
                         # Live emission — two-factor gate satisfied.
-                        if "value_trap_risk" not in valuation_warnings:
-                            valuation_warnings.append("value_trap_risk")
+                        # OUTSIDE-count: shadow counter tied to the P/E gate,
+                        # NOT the dedup — plain `emitter.add(...)`; do NOT fold
+                        # into `and emitter.add(...)` (module docstring
+                        # "Follow-up cleanup").
+                        emitter.add("value_trap_risk")
                         # Shadow counter now equals the live count; kept for one
                         # more cron as a structural cross-check.
                         value_trap_risk_two_factor_shadow_count += 1
