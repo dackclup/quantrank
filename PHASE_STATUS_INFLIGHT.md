@@ -10173,5 +10173,110 @@ The two per-ticker-loop spaghetti smells DEFERRED from #259 R7b (left verbatim t
 - `PHASE_STATUS_INFLIGHT.md` (this entry)
 
 **Verification ladder** (all green): `ruff check compute/ tests/` PASS · `python -m compute.output.schema_check` in-sync · `python -m pytest tests/test_orchestrator/ -m "not network" -q` → 136 passed (127 pre-existing + 9 new) · `python -c "import compute.main"` clean · full offline suite 3429 passed / 10 skipped (env-gap) / 1 pre-existing alpha158 hypothesis flake.
+## PR (branch `claude/broad-investable-us-6jw9gv`) — `broad_investable_us` universe-floor scoping PR-1: ADV-floor decoupling + shadow floor-sweep (in flight, 2026-07-02)
+
+**Scope**: SHADOW-ONLY, Rule 18 observability-before-wiring. Designed by
+financial-engineer, anchored by literature-searcher (Fama-French 2008 +
+Hou-Xue-Zhang 2020), RATIFIED-WITH-CONDITIONS by methodology-scientist.
+No floor is flipped in this PR. Rankings/scores/flags are BYTE-IDENTICAL
+on every path (sp500 / sp900 / sp1500 / `broad_investable_us`). Defense
+layer UNCHANGED at 38. Schema `0.10.43-phase9pilot` → **`0.10.44-phase9pilot`**
+(6 new additive nullable `Metadata` fields).
+
+**1 — Latent coupling defect fix**: `select_broad_universe_survivors` (the
+Phase 9.3 RANKED-path investability screen) previously defaulted its
+`adv_floor` parameter directly to `config.ADV_FLOOR_USD` — the SAME
+constant the sp1500 `low_liquidity` ANNOTATE threshold uses. Re-tuning
+one would have silently re-tuned the other. New
+`config.BROAD_UNIVERSE_ADV_FLOOR_USD` constant decouples them; initial
+value is IDENTICAL to `ADV_FLOOR_USD` ($5M) so this is a byte-identical
+decoupling. `screen_broad_universe_investability` (the Phase 9.1 probe
+diagnostic) intentionally KEEPS `ADV_FLOOR_USD` as its default for
+probe-continuity — task-specified, not touched.
+
+**2 — Shadow floor-sweep**: new `sweep_broad_universe_floors` (+ private
+helper `_adv_survivors_at_floors`) in `compute/ingest/broad_universe.py` —
+a pure function returning survivor counts at 3 ADV floors ($5M/$10M/$15M,
+MONOTONE-NESTED by construction — a real-number threshold-comparison
+property) plus 3 single-value diagnostics: `broad_universe_adr_suspect_count`
+(structurally `None` today — the SEC foreign-filer signal doesn't exist
+anywhere in this codebase yet, per issue #541 PR-1b, and no new EDGAR
+round-trip is added to fetch it), `broad_universe_survivor_fundamentals_coverage_pct`
+(structurally `None` today — the sweep runs immediately after Step 1
+prices, before Step 2 fundamentals), and `broad_universe_sector_unknown_pct`
+(DOES populate today — real ~100% measurement documenting the P1-G4
+flat-10%-CoE degradation surface, since the SEC company-tickers source
+carries no GICS classification for any candidate).
+
+**3 — Wiring**: `compute/main.py` calls the sweep in the SAME place the
+existing 6 Phase-9.1 `broad_universe_*` probe fields are assembled
+(immediately after Step 1 prices, before the dispatch-only survivor-
+reduction block) — same lifecycle: gated on the same
+`QR_SKIP_BROAD_UNIVERSE` escape hatch, wrapped in its own try/except
+(all-6-None on failure, never blocks the cron). Sits OUTSIDE every
+universe-selector branch — every path (sp500/sp900/sp1500/broad_investable_us)
+reaches it identically; the sp900/sp1500/else branches themselves are
+untouched (locked by the pre-existing `TestDefaultPathUnchangedRegressionGuard`
++ 5 new positional-guard tests in this PR).
+
+**4 — Schema triple**: 6 new `Metadata` fields added to `schemas.py` +
+mirrored in `types.ts` + `schema-snapshot.json` regenerated via
+`--update-snapshot`. `schema_check` confirms in-sync.
+
+**Files**:
+- `compute/config.py` (new `BROAD_UNIVERSE_ADV_FLOOR_USD` constant with
+  full provenance comment; `SCHEMA_VERSION` bump)
+- `compute/ingest/broad_universe.py` (module docstring extended;
+  `select_broad_universe_survivors`'s `adv_floor` default decoupled; two
+  new functions: `_adv_survivors_at_floors`, `sweep_broad_universe_floors`)
+- `compute/main.py` (6 new None-initialized locals; new sweep-wiring
+  try/except block right after the Phase 9.1 probe; 6 new `Metadata(...)`
+  kwargs)
+- `compute/output/schemas.py` (6 new nullable `Metadata` fields)
+- `frontend/lib/types.ts` (mechanical additive mirror)
+- `frontend/lib/schema-snapshot.json` (regenerated via `--update-snapshot`)
+- `tests/test_config.py` (`SCHEMA_VERSION` pin bumped + new docstring
+  paragraph)
+- `tests/test_ingest/test_broad_universe_floor_sweep.py` (new — 33 offline
+  tests: monotone-nesting with custom floors, default-floor arithmetic,
+  graceful-degradation/None-semantics, ADR-suspect + fundamentals-coverage
+  + sector-unknown-pct arithmetic, the constant-decoupling regression
+  guards, and 5 `compute/main.py` wiring-position guards)
+- `PHASE_STATUS_INFLIGHT.md` (this entry)
+
+**Verification ladder** (all green): `ruff check .` PASS (whole repo) ·
+`python -m compute.output.schema_check` in-sync (no drift) ·
+`pytest tests/ -m "not network"` → 3424 passed / 10 skipped (pre-existing
+env gaps: `ipca`/`qlib` optional packages need Python <3.10, no live
+price cache, shallow git clone) / 0 failed (21 pre-existing
+`tests/test_orchestrator/test_osap.py` failures + 2 pre-existing
+`openassetpricing`-missing collection errors reproduced identically on
+the unmodified tree before this diff — confirmed via `git stash`,
+unrelated to this PR, deselected). `tsc --noEmit` NOT run (no
+`node_modules` in this sandbox; task guidance marks it optional for a
+Metadata-only additive `types.ts` change — reviewed the diff by eye
+instead, syntactically clean).
+
+**Test-isolation observation (pre-existing, out of scope)**: a full
+offline `pytest` run leaves `data/warehouse/_manifest.parquet` + 3
+sibling warehouse parquet files modified on disk, reproduced identically
+on the unmodified tree — same gap already documented in this file's
+Phase-9.3 entry above. Reverted both times (`git checkout -- data/warehouse/`);
+zero relationship to this PR's touched files (`compute/warehouse/**` is
+untouched).
+
+**Coverage handoff for test-engineer** (optional expansion beyond the 33
+tests this PR ships): property-based (Hypothesis) coverage of the
+monotone-nesting invariant across randomized ADV distributions; an
+end-to-end `run_weekly_compute`-level test once fixtures support it;
+tests for `sweep_broad_universe_floors` once a future slice actually
+wires `security_types_by_ticker` / `foreign_filer_by_ticker` /
+`fundamentals_ok_by_ticker` with real data (this PR only tests the
+arithmetic in isolation, since production always passes `None` today).
+
+**Gate**: DRAFT / SHADOW-ONLY. No live `broad_investable_us` dispatch run
+has exercised this diff yet. Gated on quantrank-reviewer +
+defense-layer-auditor (byte-identical claim) + schema-sentinel (triple
+lockstep) per the task brief.
 
 ---

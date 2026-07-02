@@ -1241,6 +1241,67 @@ class Metadata(BaseModel):
     # None when the probe is skipped or the candidate pool is empty.
     broad_universe_coverage_pct: float | None = None
 
+    # ------------------------------------------------------------------ #
+    #  PR-1 — ADV-floor-scoping shadow-observability slice                #
+    #  (SHADOW-ONLY, Rule 18; financial-engineer design, Fama-French 2008 #
+    #  + Hou-Xue-Zhang 2020 anchor, methodology-scientist RATIFY-WITH-    #
+    #  CONDITIONS)                                                        #
+    # ------------------------------------------------------------------ #
+    #
+    # Six NEW fields emitted by ``sweep_broad_universe_floors`` in
+    # ``compute/ingest/broad_universe.py``, called from the SAME place in
+    # ``compute/main.py`` as the six Phase 9.1 probe fields directly above.
+    #
+    # NO FLOOR IS FLIPPED BY THIS SLICE.  The new
+    # ``config.BROAD_UNIVERSE_ADV_FLOOR_USD`` constant that decouples the
+    # RANKED-path screen from ``ADV_FLOOR_USD`` (a latent-coupling fix) is
+    # initialized to the SAME value ($5M) — ``select_broad_universe_survivors``'s
+    # survivor set, and therefore rankings/scores/flags on every path, are
+    # BYTE-IDENTICAL to before this PR.
+    #
+    # HARD RULE 18 CONSTRAINT (same as the six fields above): all six of
+    # these fields MUST NEVER be read by scoring, composite, pillar
+    # computation, veto/flag logic, fair-price, or ``select_picks``.  They
+    # feed ONLY the ``Metadata`` constructor.  Defense layer UNCHANGED.
+    #
+    # ``broad_universe_survivors_at_5m_count`` / ``_at_10m_count`` /
+    # ``_at_15m_count`` — investability-screen survivor counts (price >= $5
+    # AND trailing-30d ADV >= the named floor) swept at 3 ascending ADV
+    # cutoffs.  MONOTONE-NESTED by construction: ``_at_15m_count <=
+    # _at_10m_count <= _at_5m_count`` always (a single ticker's ADV is one
+    # real number, so clearing a higher floor implies clearing every lower
+    # one).  ``_at_5m_count`` is computed against the SAME floor as today's
+    # production ``BROAD_UNIVERSE_ADV_FLOOR_USD`` — feeds PR-2's empirical
+    # re-pin of that constant.  All three ``None`` together when no
+    # candidate has any price data, or the candidate pool is empty.
+    broad_universe_survivors_at_5m_count: int | None = None
+    broad_universe_survivors_at_10m_count: int | None = None
+    broad_universe_survivors_at_15m_count: int | None = None
+    # ``broad_universe_adr_suspect_count`` — count of candidates whose
+    # yfinance security-type resolves to "equity" AND whose (currently
+    # unwired) SEC foreign-filer signal is True.  STRUCTURALLY ``None`` on
+    # every run today: neither the security-type-by-ticker mapping nor the
+    # SEC foreign-filer signal is threaded into the callsite yet (the
+    # foreign-filer signal does not exist anywhere in this codebase — see
+    # issue #541 PR-1b, the same deferral this field documents). Shipped
+    # now per Rule 18 (field first, signal later) so a future slice can
+    # populate it without another schema bump.
+    broad_universe_adr_suspect_count: int | None = None
+    # ``broad_universe_survivor_fundamentals_coverage_pct`` — % of the
+    # chosen-floor ($5M) survivors with usable fundamentals.  STRUCTURALLY
+    # ``None`` on every run today: this field's computation runs
+    # immediately after Step 1 (prices), before Step 2 (fundamentals) has
+    # fetched anything, in the SAME place as the Phase 9.1 probe above.
+    broad_universe_survivor_fundamentals_coverage_pct: float | None = None
+    # ``broad_universe_sector_unknown_pct`` — % of the chosen-floor ($5M)
+    # survivors whose sector is "Unknown".  Unlike the two fields above,
+    # this ONE actually populates today: the SEC company-tickers source
+    # carries NO GICS classification for any candidate, so the value is a
+    # real measured percentage that documents the P1-G4 flat-10%-CoE
+    # degradation surface (expected ~100% "until a future SIC crosswalk").
+    # None only when the chosen-floor survivor set is empty.
+    broad_universe_sector_unknown_pct: float | None = None
+
 
 class RawMetrics(BaseModel):
     """Latest fundamentals — TTM for flow items, point-in-time for balance items."""

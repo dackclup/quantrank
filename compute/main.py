@@ -1042,6 +1042,18 @@ def run_weekly_compute() -> int:
     _broad_universe_price_fail_pct: float | None = None
     _broad_universe_adv_fail_pct: float | None = None
     _broad_universe_coverage_pct: float | None = None
+    # PR-1 — ADV-floor-scoping shadow-observability slice (Rule 18, SHADOW-
+    # ONLY).  Same lifecycle as the six probe variables above: initialized to
+    # None here, populated by the floor-sweep block right after the Phase 9.1
+    # probe (below), all six None on any failure or skip path.  See
+    # ``sweep_broad_universe_floors`` in ``compute/ingest/broad_universe.py``
+    # for the full field-by-field description.
+    _broad_universe_survivors_at_5m_count: int | None = None
+    _broad_universe_survivors_at_10m_count: int | None = None
+    _broad_universe_survivors_at_15m_count: int | None = None
+    _broad_universe_adr_suspect_count: int | None = None
+    _broad_universe_survivor_fundamentals_coverage_pct: float | None = None
+    _broad_universe_sector_unknown_pct: float | None = None
     if config.QR_UNIVERSE == "sp900":
         logger.info("[sp900] Loading SP900 universe (sp500 + sp400 de-duped)…")
         universe = get_sp900_constituents()
@@ -1271,6 +1283,98 @@ def run_weekly_compute() -> int:
             "[broad-universe-probe] Outer block failed (non-fatal): %s", _broad_exc
         )
         # _broad_universe_* variables remain at their None-initialized defaults.
+
+    # PR-1 — ADV-floor-scoping shadow-observability slice (Rule 18, SHADOW-
+    # ONLY; financial-engineer design, Fama-French 2008 + Hou-Xue-Zhang 2020
+    # anchor, methodology-scientist RATIFY-WITH-CONDITIONS).  Runs in the
+    # SAME place as the Phase 9.1 probe immediately above — same lifecycle:
+    # WRITE-ONLY / OBSERVABILITY-ONLY, gated on the SAME QR_SKIP_BROAD_UNIVERSE
+    # escape hatch, graceful degradation to all-None on any failure.
+    #
+    # Re-fetches the candidate pool via ``fetch_broad_universe_candidates()``
+    # — this is a disk-cache HIT (the probe call above just warmed it, or it
+    # was already warm), NOT a new network round-trip, so this block costs a
+    # local parquet re-read, never a live SEC call beyond what the probe
+    # above already may have made.
+    #
+    # ``security_types_by_ticker`` / ``foreign_filer_by_ticker`` /
+    # ``fundamentals_ok_by_ticker`` are all passed as ``None`` — none of
+    # these signals are available this early in the pipeline (security-type
+    # resolution happens later in the Step 8 per-ticker loop; Step 2
+    # fundamentals have not run yet; the SEC foreign-filer signal does not
+    # exist anywhere in this codebase yet, see issue #541 PR-1b).  This
+    # means ``broad_universe_adr_suspect_count`` and
+    # ``broad_universe_survivor_fundamentals_coverage_pct`` are structurally
+    # ``None`` on every run today — shipped now per Rule 18 (field first,
+    # signal later) so a future slice can light them up without another
+    # schema bump.  ``sweep_broad_universe_floors`` documents the None
+    # degradation for each field individually.
+    #
+    # HARD RULE 18 CONSTRAINT: these 6 fields MUST NEVER be read by scoring,
+    # composite, pillar computation, veto/flag logic, fair-price, or
+    # ``select_picks`` — write-only, feed ONLY the ``Metadata`` constructor.
+    # No floor is flipped by this block; ``select_broad_universe_survivors``
+    # (the survivor-reduction block below, on the ranked path only) is the
+    # only code that actually gates universe membership, and it is untouched
+    # by anything here.
+    if os.environ.get(config.BROAD_UNIVERSE_SKIP_ENV_VAR, "").lower() not in (
+        "1", "true", "yes"
+    ):
+        try:
+            from compute.ingest.broad_universe import (  # noqa: PLC0415
+                fetch_broad_universe_candidates,
+                sweep_broad_universe_floors,
+            )
+
+            _sweep_candidates = fetch_broad_universe_candidates()
+            _sweep_result = sweep_broad_universe_floors(
+                candidates=_sweep_candidates,
+                prices_by_ticker=prices_by_ticker,
+                security_types_by_ticker=None,
+                foreign_filer_by_ticker=None,
+                fundamentals_ok_by_ticker=None,
+            )
+            _broad_universe_survivors_at_5m_count = _sweep_result.get(
+                "broad_universe_survivors_at_5m_count"
+            )
+            _broad_universe_survivors_at_10m_count = _sweep_result.get(
+                "broad_universe_survivors_at_10m_count"
+            )
+            _broad_universe_survivors_at_15m_count = _sweep_result.get(
+                "broad_universe_survivors_at_15m_count"
+            )
+            _broad_universe_adr_suspect_count = _sweep_result.get(
+                "broad_universe_adr_suspect_count"
+            )
+            _broad_universe_survivor_fundamentals_coverage_pct = _sweep_result.get(
+                "broad_universe_survivor_fundamentals_coverage_pct"
+            )
+            _broad_universe_sector_unknown_pct = _sweep_result.get(
+                "broad_universe_sector_unknown_pct"
+            )
+            logger.info(
+                "[broad-universe-sweep] Complete: at_5m=%s at_10m=%s at_15m=%s "
+                "adr_suspect=%s survivor_fundamentals_coverage=%s%% sector_unknown=%s%%",
+                _broad_universe_survivors_at_5m_count,
+                _broad_universe_survivors_at_10m_count,
+                _broad_universe_survivors_at_15m_count,
+                _broad_universe_adr_suspect_count,
+                _broad_universe_survivor_fundamentals_coverage_pct,
+                _broad_universe_sector_unknown_pct,
+            )
+        except Exception as _broad_sweep_exc:  # noqa: BLE001
+            logger.error(
+                "[broad-universe-sweep] Floor-sweep block failed (non-fatal): %s",
+                _broad_sweep_exc,
+            )
+            # _broad_universe_survivors_at_*m_count / _adr_suspect_count /
+            # _survivor_fundamentals_coverage_pct / _sector_unknown_pct
+            # remain at their None-initialized defaults.
+    else:
+        logger.info(
+            "[broad-universe-sweep] Skipped via %s env-var.",
+            config.BROAD_UNIVERSE_SKIP_ENV_VAR,
+        )
 
     # Phase 9.3 — Broad Investable US RANKED path: reduce the scored frame to
     # investability-screen survivors BEFORE fundamentals (Step 2).  DISPATCH-
@@ -3153,6 +3257,28 @@ def run_weekly_compute() -> int:
         broad_universe_price_fail_pct=_broad_universe_price_fail_pct,
         broad_universe_adv_fail_pct=_broad_universe_adv_fail_pct,
         broad_universe_coverage_pct=_broad_universe_coverage_pct,
+        # PR-1 — ADV-floor-scoping shadow-observability slice (0.10.44-phase9pilot,
+        # Rule 18 observability-before-wiring; Fama-French 2008 + Hou-Xue-Zhang
+        # 2020 anchor, methodology-scientist RATIFY-WITH-CONDITIONS).
+        # WRITE-ONLY / OBSERVABILITY-ONLY — live scores, flags, rankings
+        # byte-identical.  Defense layer UNCHANGED at 38.  No floor is flipped
+        # by this PR — BROAD_UNIVERSE_ADV_FLOOR_USD's initial value equals
+        # ADV_FLOOR_USD, so the RANKED-path survivor set is unaffected.
+        # adr_suspect_count / survivor_fundamentals_coverage_pct are
+        # structurally None on every run today (neither signal is wired into
+        # any callsite yet — see sweep_broad_universe_floors docstring).
+        #
+        # HARD RULE 18 CONSTRAINT: these six fields MUST NEVER be read by
+        # scoring, composite, pillar computation, veto/flag logic, fair-price,
+        # or ``select_picks``.
+        broad_universe_survivors_at_5m_count=_broad_universe_survivors_at_5m_count,
+        broad_universe_survivors_at_10m_count=_broad_universe_survivors_at_10m_count,
+        broad_universe_survivors_at_15m_count=_broad_universe_survivors_at_15m_count,
+        broad_universe_adr_suspect_count=_broad_universe_adr_suspect_count,
+        broad_universe_survivor_fundamentals_coverage_pct=(
+            _broad_universe_survivor_fundamentals_coverage_pct
+        ),
+        broad_universe_sector_unknown_pct=_broad_universe_sector_unknown_pct,
         # Issue #16 — restatement_history weight-demotion delta counter
         # (Q3 2026 cohort audit, 0.10.43-phase9pilot, Rule 18 observability-first).
         # OBSERVABILITY-ONLY — never read by scoring or selection logic.

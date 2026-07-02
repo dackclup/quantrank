@@ -81,6 +81,42 @@ ADR detection note:
 Escape hatch:
     Set ``QR_SKIP_BROAD_UNIVERSE=1`` to skip the probe entirely (useful in
     CI pre-merge simulations that cannot reach the SEC endpoint).
+
+PR-1 — ADV-floor-scoping shadow-observability slice (SHADOW-ONLY, Rule 18):
+    Two additions, both write-only / observability-only — NO behavioral
+    change, rankings/scores/flags are BYTE-IDENTICAL on every path.
+
+    1. ``select_broad_universe_survivors`` now defaults its ``adv_floor``
+       parameter to the NEW ``config.BROAD_UNIVERSE_ADV_FLOOR_USD`` constant
+       instead of ``config.ADV_FLOOR_USD``.  This fixes a latent coupling
+       defect (the RANKED-path investability screen and the sp1500
+       ``low_liquidity`` annotate threshold were the SAME constant, so
+       re-tuning one would silently re-tune the other).  The new constant's
+       initial value is IDENTICAL to ``ADV_FLOOR_USD`` ($5M), so survivors
+       are unchanged.  ``screen_broad_universe_investability`` (the Phase 9.1
+       probe diagnostic) intentionally keeps ``config.ADV_FLOOR_USD`` as its
+       default — that function measures against the SAME floor the
+       sp1500-cron ``low_liquidity`` annotate uses, for continuity of the
+       probe's historical coverage numbers.
+
+    2. ``sweep_broad_universe_floors`` (new) is a PURE diagnostic that
+       returns survivor counts at 3 ADV floors ($5M / $10M / $15M,
+       MONOTONE-NESTED by construction — a real-number threshold-comparison
+       property, not extra bookkeeping) plus 3 single-value diagnostics
+       (ADR-suspect count, chosen-floor survivor fundamentals coverage,
+       chosen-floor survivor sector-unknown rate) for 6 new ``Metadata``
+       fields.  Feeds PR-2's empirical re-pin of
+       ``BROAD_UNIVERSE_ADV_FLOOR_USD`` — see that constant's docstring in
+       ``compute/config.py`` for the full academic anchor (Amihud 2002 +
+       Novy-Marx-Velikov 2016 on the dollar level; Fama-French 2008 +
+       Hou-Xue-Zhang 2020 on why a stricter-than-sp600 floor should exist
+       for this un-pre-screened pool).  Called from ``compute/main.py`` in
+       the SAME place as the Phase 9.1 probe above (immediately after
+       Step 1 prices) — at that point in the pipeline, security-type and
+       fundamentals data are NOT yet available, so ``adr_suspect_count`` and
+       ``survivor_fundamentals_coverage_pct`` are structurally ``None`` on
+       every run until a future slice threads those signals through (ship
+       the field first, populate the signal later — Rule 18).
 """
 
 from __future__ import annotations
@@ -692,7 +728,7 @@ def select_broad_universe_survivors(
     prices_by_ticker: dict[str, pd.DataFrame],
     *,
     price_floor: float = config.BROAD_UNIVERSE_PRICE_FLOOR_USD,
-    adv_floor: float = config.ADV_FLOOR_USD,
+    adv_floor: float = config.BROAD_UNIVERSE_ADV_FLOOR_USD,
     adv_lookback_days: int = config.ADV_LOOKBACK_DAYS,
 ) -> set[str]:
     """Return the set of ticker survivors of the investability screen.
@@ -713,6 +749,17 @@ def select_broad_universe_survivors(
     on the broad-universe path, sub-floor names are excluded from the peer
     set before scoring begins, so there is no ticker to annotate.
 
+    PR-1 of the ADV-floor-scoping shadow-observability slice DECOUPLED
+    ``adv_floor``'s default from ``config.ADV_FLOOR_USD`` to the new
+    ``config.BROAD_UNIVERSE_ADV_FLOOR_USD`` (fixes a latent coupling defect —
+    the RANKED-path screen and the sp1500 ``low_liquidity`` annotate
+    threshold were previously the SAME constant, so re-tuning one would have
+    silently re-tuned the other).  The new constant's initial value is
+    IDENTICAL to ``ADV_FLOOR_USD`` ($5M) — this change is byte-identical;
+    the survivor set is unaffected.  See ``BROAD_UNIVERSE_ADV_FLOOR_USD``'s
+    docstring in ``compute/config.py`` for the full academic anchor + the
+    PR-2 empirical re-pin plan.
+
     Parameters
     ----------
     candidates:
@@ -729,7 +776,9 @@ def select_broad_universe_survivors(
         Same floors as ``screen_broad_universe_investability`` — kept as
         separate keyword defaults (not a shared call) so the two functions
         remain independently testable and cannot silently diverge without a
-        visible diff on both call sites.
+        visible diff on both call sites.  NOTE: ``adv_floor`` here defaults
+        to ``BROAD_UNIVERSE_ADV_FLOOR_USD``, NOT the sibling function's
+        ``ADV_FLOOR_USD`` — see the PR-1 paragraph above.
 
     Returns
     -------
@@ -769,3 +818,349 @@ def select_broad_universe_survivors(
         len(survivors), len(candidates), price_floor, adv_lookback_days, adv_floor,
     )
     return survivors
+
+
+# ---------------------------------------------------------------------------
+# PR-1 — ADV-floor-scoping shadow-observability slice (SHADOW-ONLY, Rule 18)
+# ---------------------------------------------------------------------------
+#
+# HARD RULE 18 CONSTRAINT: every field this section computes is WRITE-ONLY /
+# OBSERVABILITY-ONLY.  ``sweep_broad_universe_floors``'s return values MUST
+# NEVER be read by scoring, composite, pillar computation, veto/flag logic,
+# fair-price, or ``select_picks`` — they feed ONLY the ``Metadata``
+# constructor in ``compute/main.py``.  No floor is flipped by this PR;
+# ``select_broad_universe_survivors`` (the only function that actually
+# gates universe membership) is untouched by anything below this line.
+
+
+def _adv_survivors_at_floors(
+    candidates: pd.DataFrame,
+    prices_by_ticker: dict[str, pd.DataFrame],
+    floors: tuple[float, ...],
+    *,
+    price_floor: float,
+    adv_lookback_days: int,
+) -> tuple[dict[float, set[str]], int]:
+    """Return ``(survivors_by_floor, n_with_prices)`` for the given floors.
+
+    ``survivors_by_floor`` maps each floor in ``floors`` (as given — NOT
+    de-duplicated, but see the sort note below) to the SET of candidate
+    tickers whose last close >= ``price_floor`` AND whose trailing-
+    ``adv_lookback_days`` mean dollar volume (reusing
+    ``compute.ingest.prices.compute_average_dollar_volume`` — the identical
+    "same price >= $5 leg" as ``select_broad_universe_survivors`` /
+    ``screen_broad_universe_investability``) is >= that floor.
+
+    MONOTONE-NESTED BY CONSTRUCTION: for any two floors ``f1 <= f2``, a
+    ticker's ADV is a single real number, so ``adv >= f2`` implies
+    ``adv >= f1``.  This means ``survivors_by_floor[f2]`` is always a subset
+    of ``survivors_by_floor[f1]`` whenever ``f1 <= f2`` — a mathematical
+    property of the threshold comparison, not extra bookkeeping this
+    function performs.  The floors are visited in ascending order purely for
+    readability; the subset property holds regardless of iteration order.
+
+    ``n_with_prices`` is the count of candidates for which price data was
+    found in ``prices_by_ticker`` at all (regardless of whether they passed
+    any floor) — the "had data" denominator callers use to distinguish a
+    genuine zero-survivor measurement (``n_with_prices > 0``, all floor
+    counts are real integers, possibly 0) from "no data available"
+    (``n_with_prices == 0`` → callers degrade every field to ``None``).
+    Mirrors the identical None-vs-zero convention already used by
+    ``screen_broad_universe_investability``.
+
+    Pure / no I/O / never raises (matches every other Rule-18 diagnostic
+    function in this module) — any per-ticker parsing failure is treated as
+    "no usable data" for that ticker and silently skipped.
+    """
+    from compute.ingest.prices import compute_average_dollar_volume  # noqa: PLC0415
+
+    sorted_floors = tuple(sorted(floors))
+    survivors_by_floor: dict[float, set[str]] = {f: set() for f in sorted_floors}
+    n_with_prices = 0
+
+    if candidates is None or candidates.empty:
+        return survivors_by_floor, n_with_prices
+
+    for ticker in candidates["ticker"].astype(str):
+        df_prices = prices_by_ticker.get(ticker)
+        if df_prices is None or df_prices.empty:
+            continue
+
+        close_col = "Adj Close" if "Adj Close" in df_prices.columns else "Close"
+        try:
+            last_close = float(df_prices[close_col].dropna().iloc[-1])
+        except (IndexError, KeyError, TypeError, ValueError):
+            continue
+
+        n_with_prices += 1
+
+        if last_close < price_floor:
+            continue
+
+        adv = compute_average_dollar_volume(df_prices, adv_lookback_days)
+        if adv is None:
+            continue
+
+        for f in sorted_floors:
+            if adv >= f:
+                survivors_by_floor[f].add(ticker)
+            # No early `break`: floors is ascending, so once adv < f for the
+            # smallest failing floor, adv < every larger floor too — the
+            # remaining comparisons correctly also miss.  Not short-
+            # circuiting costs at most 2 extra float comparisons per ticker
+            # (len(floors) is always small — 3 by default) and keeps the
+            # loop trivially easy to reason about / test.
+
+    return survivors_by_floor, n_with_prices
+
+
+def sweep_broad_universe_floors(
+    candidates: pd.DataFrame,
+    prices_by_ticker: dict[str, pd.DataFrame],
+    *,
+    floors: tuple[float, ...] = (
+        config.BROAD_UNIVERSE_ADV_FLOOR_USD,  # $5M — today's production floor
+        10_000_000.0,                          # $10M
+        15_000_000.0,                          # $15M
+    ),
+    price_floor: float = config.BROAD_UNIVERSE_PRICE_FLOOR_USD,
+    adv_lookback_days: int = config.ADV_LOOKBACK_DAYS,
+    security_types_by_ticker: dict[str, str | None] | None = None,
+    foreign_filer_by_ticker: dict[str, bool] | None = None,
+    fundamentals_ok_by_ticker: dict[str, bool] | None = None,
+) -> dict[str, int | float | None]:
+    """PR-1 shadow floor-sweep — survivor counts at 3 ADV floors + 3 diagnostics.
+
+    PURE function (no I/O, no network, no disk-cache read) feeding 6 NEW
+    ``Metadata`` fields.  SHADOW-ONLY / OBSERVABILITY-ONLY (Rule 18): no
+    floor is flipped by this function — ``select_broad_universe_survivors``
+    is the only function that actually gates universe membership, and it is
+    untouched by this one.  Rankings/scores/flags are BYTE-IDENTICAL whether
+    or not this function runs.  Defense layer is UNCHANGED.
+
+    Reuses ``compute.ingest.prices.compute_average_dollar_volume`` and the
+    identical "price >= ``price_floor``" leg as
+    ``select_broad_universe_survivors`` / ``screen_broad_universe_investability``
+    (via the private ``_adv_survivors_at_floors`` helper) — the floor-sweep
+    counts are computed with the SAME screen logic as the production RANKED
+    path, just evaluated at 3 candidate cutoffs instead of 1.
+
+    Parameters
+    ----------
+    candidates:
+        DataFrame with at least a ``ticker`` column.  Works with either the
+        raw ``fetch_broad_universe_candidates`` output (no ``sector``
+        column — the Phase 9.1 probe callsite) or the shaped
+        ``candidates_to_universe_frame`` output (has a ``sector`` column,
+        always ``"Unknown"`` — the Phase 9.3 ranked-path callsite).
+    prices_by_ticker:
+        Ticker → OHLCV DataFrame already fetched (Step 1).  Same contract
+        as the sibling screen functions.
+    floors:
+        Ascending-sortable tuple of ADV dollar floors to sweep.  Defaults to
+        ``(BROAD_UNIVERSE_ADV_FLOOR_USD, 10_000_000.0, 15_000_000.0)`` — the
+        FIRST entry is tied to the live production constant (not a literal)
+        so the sweep always includes "today's floor" as a data point even
+        after a future PR-2 re-pin.  The 3 named
+        ``broad_universe_survivors_at_{5,10,15}m_count`` output keys map
+        positionally to ``sorted(floors)[0:3]`` — a caller passing custom
+        floors (e.g. a test exercising the general monotone-nesting
+        property with arbitrary cutoffs) still gets internally-consistent,
+        correctly-nested counts under those same 3 keys; only the "5m /
+        10m / 15m" NAMING assumes the literal default values. Fewer than 3
+        floors pads the remaining keys with ``None``; more than 3 floors
+        only the first 3 (ascending) are surfaced under these 3 fixed keys.
+    price_floor, adv_lookback_days:
+        Same floors/window as the sibling screen functions.
+    security_types_by_ticker:
+        Optional ticker → security-type LABEL mapping (the value shape
+        ``fetch_yfinance_security_type`` returns via
+        ``compute.ingest.cross_source.security_type_label`` — e.g.
+        ``"Common stock"`` for yfinance's ``EQUITY`` quote-type).  Required
+        (together with ``foreign_filer_by_ticker``) to compute
+        ``broad_universe_adr_suspect_count``.  ``None`` = signal unavailable
+        this run (graceful degradation — see that field's description
+        below).  NOT populated by the current ``compute/main.py`` callsite
+        (security-type resolution happens later, in the Step 8 per-ticker
+        loop) — always ``None`` in this PR; wired for a future slice.
+    foreign_filer_by_ticker:
+        Optional ticker → bool mapping, ``True`` when SEC signals a foreign
+        private issuer (e.g. a 20-F filer, or EDGAR submissions-JSON
+        ``entityType`` == "foreign private issuer").  THIS SIGNAL DOES NOT
+        EXIST ANYWHERE IN THIS CODEBASE YET — per issue #541 PR-1b (see the
+        ``cross_source.py`` module comment), wiring it requires a new SEC
+        submissions-JSON fetch with no existing cache surface, which this
+        PR deliberately does NOT add (no new EDGAR round-trip).  Always
+        ``None`` at every current callsite; the parameter exists so a
+        future slice can populate it without another schema bump.
+    fundamentals_ok_by_ticker:
+        Optional ticker → bool mapping ("this ticker's fundamentals
+        snapshot is usable" — e.g. not ``_snapshot_has_no_usable_fundamentals``).
+        Required to compute ``broad_universe_survivor_fundamentals_coverage_pct``.
+        ``None`` = signal unavailable this run.  The current
+        ``compute/main.py`` callsite calls this function immediately after
+        Step 1 (prices) — BEFORE Step 2 (fundamentals) has run — so this is
+        structurally ``None`` on every run until a future slice moves (or
+        duplicates) the call after fundamentals are available.
+
+    Returns
+    -------
+    dict with keys:
+        broad_universe_survivors_at_5m_count    int | None
+        broad_universe_survivors_at_10m_count   int | None
+        broad_universe_survivors_at_15m_count   int | None
+            Survivor counts at each ascending floor (MONOTONE-NESTED: count
+            at a larger floor is always <= count at a smaller floor). All
+            three ``None`` together when no candidate has any price data
+            (``n_with_prices == 0``) or ``candidates`` is empty.
+        broad_universe_adr_suspect_count        int | None
+            Count of candidates whose security type resolves to "equity"
+            (heuristic: case-insensitive match against ``"EQUITY"`` — the
+            raw yfinance quote-type code — or ``"Common stock"`` — the
+            mapped display label ``security_type_label`` returns) AND whose
+            ``foreign_filer_by_ticker`` entry is ``True``.  ``None`` when
+            EITHER input mapping is ``None`` (today: always, since neither
+            signal is wired into any callsite yet — see the parameter docs
+            above).  This is a DELIBERATELY CONSERVATIVE heuristic per
+            issue #541 PR-1b: it never guesses at a ticker missing from
+            ``foreign_filer_by_ticker`` (treated as "not known foreign",
+              i.e. NOT counted, avoiding false positives from an
+              incomplete mapping).
+        broad_universe_survivor_fundamentals_coverage_pct   float | None
+            % of the CHOSEN-FLOOR (the smallest floor in ``floors``, i.e.
+            "today's production floor") survivors with usable fundamentals,
+            per ``fundamentals_ok_by_ticker``.  ``None`` when that mapping
+            is ``None`` (today: always — see the parameter docs above) or
+            when the chosen-floor survivor set is empty.
+        broad_universe_sector_unknown_pct   float | None
+            % of the chosen-floor survivors whose ``sector`` is
+            ``"Unknown"``.  When ``candidates`` HAS a ``sector`` column
+            (the Phase 9.3 ranked-path callsite, always ``"Unknown"`` per
+            ``candidates_to_universe_frame``), computed directly from it.
+            When ``candidates`` has NO ``sector`` column at all (the Phase
+            9.1 probe callsite — the raw SEC company-tickers source never
+            carries GICS classification for any row), every chosen-floor
+            survivor is counted as unknown-sector — this is a STRUCTURAL
+            fact of the data source, not a per-run coincidence, so the
+            value is a real measured percentage (documented to land
+            ~100% "until a future SIC crosswalk" — see the module
+            docstring's P1-G4 cross-reference), not a placeholder ``None``.
+            ``None`` only when the chosen-floor survivor set is empty.
+
+    Never raises — any internal failure degrades individual fields to
+    ``None``, matching the graceful-degradation contract of every other
+    function in this module. The caller (``compute/main.py``) additionally
+    wraps the call site in its own try/except so a failure here can never
+    block the cron.
+    """
+    _empty: dict[str, int | float | None] = {
+        "broad_universe_survivors_at_5m_count": None,
+        "broad_universe_survivors_at_10m_count": None,
+        "broad_universe_survivors_at_15m_count": None,
+        "broad_universe_adr_suspect_count": None,
+        "broad_universe_survivor_fundamentals_coverage_pct": None,
+        "broad_universe_sector_unknown_pct": None,
+    }
+    if candidates is None or candidates.empty:
+        return dict(_empty)
+
+    survivors_by_floor, n_with_prices = _adv_survivors_at_floors(
+        candidates,
+        prices_by_ticker,
+        floors,
+        price_floor=price_floor,
+        adv_lookback_days=adv_lookback_days,
+    )
+    if n_with_prices == 0:
+        return dict(_empty)
+
+    sorted_floors = tuple(sorted(floors))
+    raw_counts = [len(survivors_by_floor[f]) for f in sorted_floors]
+    # Pad/truncate to exactly the 3 named slots this schema exposes — see
+    # the ``floors`` parameter doc above for the positional-mapping contract.
+    counts: list[int | None] = (raw_counts + [None, None, None])[:3]
+
+    chosen_floor_survivors = survivors_by_floor[sorted_floors[0]]
+
+    # --- ADR-suspect count (candidates, NOT restricted to survivors) -------
+    adr_suspect_count: int | None
+    if security_types_by_ticker is None or foreign_filer_by_ticker is None:
+        adr_suspect_count = None
+        logger.info(
+            "[broad-universe-sweep] broad_universe_adr_suspect_count = None: "
+            "%s unavailable this run (obs-first — field ships now, populates "
+            "once a future slice wires the signal; see #541 PR-1b)",
+            "security_types_by_ticker"
+            if security_types_by_ticker is None
+            else "foreign_filer_by_ticker",
+        )
+    else:
+        adr_suspect_count = 0
+        for ticker in candidates["ticker"].astype(str):
+            st = security_types_by_ticker.get(ticker)
+            is_equity = bool(st) and st.strip().upper() in ("EQUITY", "COMMON STOCK")
+            if is_equity and bool(foreign_filer_by_ticker.get(ticker)):
+                adr_suspect_count += 1
+
+    # --- Chosen-floor survivor fundamentals coverage ------------------------
+    survivor_fundamentals_coverage_pct: float | None
+    if fundamentals_ok_by_ticker is None:
+        survivor_fundamentals_coverage_pct = None
+        logger.info(
+            "[broad-universe-sweep] broad_universe_survivor_fundamentals_coverage_pct "
+            "= None: fundamentals_ok_by_ticker unavailable — this function runs "
+            "immediately after Step 1 (prices), before Step 2 (fundamentals) "
+            "has fetched anything (obs-first — field ships now, populates "
+            "once a future slice moves/duplicates the call after Step 2)"
+        )
+    elif not chosen_floor_survivors:
+        survivor_fundamentals_coverage_pct = None
+    else:
+        n_ok = sum(
+            1 for t in chosen_floor_survivors if fundamentals_ok_by_ticker.get(t)
+        )
+        survivor_fundamentals_coverage_pct = round(
+            100.0 * n_ok / len(chosen_floor_survivors), 2
+        )
+
+    # --- Chosen-floor survivor sector-unknown rate ---------------------------
+    sector_unknown_pct: float | None
+    if not chosen_floor_survivors:
+        sector_unknown_pct = None
+    elif "sector" in candidates.columns:
+        sector_by_ticker = candidates.assign(
+            ticker=candidates["ticker"].astype(str)
+        ).set_index("ticker")["sector"]
+        n_unknown = sum(
+            1
+            for t in chosen_floor_survivors
+            if str(sector_by_ticker.get(t, "Unknown")) == "Unknown"
+        )
+        sector_unknown_pct = round(100.0 * n_unknown / len(chosen_floor_survivors), 2)
+    else:
+        # No `sector` column at all — structurally every candidate from this
+        # data source is sector-unknown (see module docstring /
+        # candidates_to_universe_frame): the SEC company-tickers endpoint
+        # carries no GICS classification for any row, so the ENTIRE
+        # chosen-floor survivor cohort is "Unknown" regardless of whether a
+        # caller happened to materialize an explicit column for it.
+        sector_unknown_pct = 100.0
+
+    logger.info(
+        "[broad-universe-sweep] Survivors at $%s: %s | adr_suspect=%s | "
+        "survivor_fundamentals_coverage=%s%% | sector_unknown=%s%%",
+        [f"{f / 1e6:.0f}M" for f in sorted_floors],
+        counts,
+        adr_suspect_count,
+        survivor_fundamentals_coverage_pct,
+        sector_unknown_pct,
+    )
+
+    return {
+        "broad_universe_survivors_at_5m_count": counts[0],
+        "broad_universe_survivors_at_10m_count": counts[1],
+        "broad_universe_survivors_at_15m_count": counts[2],
+        "broad_universe_adr_suspect_count": adr_suspect_count,
+        "broad_universe_survivor_fundamentals_coverage_pct": survivor_fundamentals_coverage_pct,
+        "broad_universe_sector_unknown_pct": sector_unknown_pct,
+    }

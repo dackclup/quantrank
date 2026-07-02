@@ -685,6 +685,47 @@ export type Metadata = {
   // price data. Expected ~40–45% on 9.1 Probe (SP1500 ∩ Broad / Broad total).
   // Acts as a Rule-18 gate: Phase 9.3 should push this toward ~95%+.
   broad_universe_coverage_pct?: number | null;
+  // PR-1 — ADV-floor-scoping shadow-observability slice (SHADOW-ONLY, Rule 18;
+  // financial-engineer design, Fama-French 2008 + Hou-Xue-Zhang 2020 anchor,
+  // methodology-scientist RATIFY-WITH-CONDITIONS). Six NEW fields from
+  // `sweep_broad_universe_floors`, called in the SAME place as the six Phase
+  // 9.1 probe fields above. NO FLOOR IS FLIPPED — the new
+  // BROAD_UNIVERSE_ADV_FLOOR_USD constant starts equal to ADV_FLOOR_USD, so
+  // rankings/scores/flags are byte-identical. Same HARD RULE 18 CONSTRAINT as
+  // the six fields above (write-only, feed ONLY Metadata). Defense layer
+  // UNCHANGED.
+  //
+  // `broad_universe_survivors_at_5m_count` / `_at_10m_count` / `_at_15m_count`
+  // — investability-screen survivor counts swept at 3 ascending ADV floors.
+  // MONOTONE-NESTED by construction (`_at_15m_count <= _at_10m_count <=
+  // _at_5m_count` always). `_at_5m_count` uses the same floor as today's
+  // production BROAD_UNIVERSE_ADV_FLOOR_USD — feeds PR-2's empirical re-pin.
+  // All three null together when no candidate has price data, or the pool
+  // is empty.
+  broad_universe_survivors_at_5m_count?: number | null;
+  broad_universe_survivors_at_10m_count?: number | null;
+  broad_universe_survivors_at_15m_count?: number | null;
+  // `broad_universe_adr_suspect_count` — count of candidates whose yfinance
+  // security-type resolves to "equity" AND whose (currently unwired) SEC
+  // foreign-filer signal is true. STRUCTURALLY null on every run today —
+  // neither signal is threaded into the callsite yet (the foreign-filer
+  // signal does not exist anywhere in this codebase; see issue #541 PR-1b).
+  // Shipped now per Rule 18 so a future slice can populate it without
+  // another schema bump.
+  broad_universe_adr_suspect_count?: number | null;
+  // `broad_universe_survivor_fundamentals_coverage_pct` — % of the
+  // chosen-floor ($5M) survivors with usable fundamentals. STRUCTURALLY null
+  // on every run today: this field's computation runs immediately after
+  // Step 1 (prices), before Step 2 (fundamentals) has fetched anything.
+  broad_universe_survivor_fundamentals_coverage_pct?: number | null;
+  // `broad_universe_sector_unknown_pct` — % of the chosen-floor ($5M)
+  // survivors whose sector is "Unknown". Unlike the two fields above, this
+  // ONE actually populates today: the SEC company-tickers source carries no
+  // GICS classification for any candidate, so the value is a real measured
+  // percentage documenting the P1-G4 flat-10%-CoE degradation surface
+  // (expected ~100% "until a future SIC crosswalk"). Null only when the
+  // chosen-floor survivor set is empty.
+  broad_universe_sector_unknown_pct?: number | null;
   // Issue #16 — restatement_history weight-demotion delta counter
   // (Q3 2026 cohort audit, 0.10.43-phase9pilot, Rule 18 observability-first).
   // SHADOW / OBSERVABILITY-ONLY — live scores, rankings, flags are BYTE-IDENTICAL.
