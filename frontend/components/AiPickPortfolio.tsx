@@ -59,6 +59,13 @@ function firstFiniteFrom(series: (number | null)[], start: number): number | nul
   return null;
 }
 
+function lastFiniteFrom(series: (number | null)[], start: number): number | null {
+  for (let i = series.length - 1; i >= start; i -= 1) {
+    if (isFinite_(series[i])) return series[i] as number;
+  }
+  return null;
+}
+
 
 function startIndexForYears(dates: string[], years: number): number {
   if (dates.length === 0) return 0;
@@ -132,19 +139,28 @@ function buildView(
   if (lastPoint && thinPoints[thinPoints.length - 1] !== lastPoint) {
     thinPoints.push(lastPoint);
   }
-  const retFromBase = (v: number | null | undefined) =>
-    v === null || v === undefined ? null : (v / capital - 1) * 100;
   const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
   const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
   const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
   const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
+  // Headline outperformance MUST be derived from unrounded NAV-series ratios
+  // (last finite value from startIdx onward / anchor), not from the chart
+  // points' Math.round-ed dollar values — those are quantized to ~1bp of
+  // CHART_BASE before the delta is taken, which can flip the displayed sign
+  // on a near-zero spread. Chart-point rounding stays (it's display-only);
+  // this mirrors the periodGross/periodConservative pattern above but uses a
+  // last-FINITE lookup since the benchmark series can have trailing nulls.
+  const lastPortfolio = pAnchor != null ? lastFiniteFrom(net, startIdx) : null;
+  const lastBenchmark = bAnchor != null ? lastFiniteFrom(bser, startIdx) : null;
+  const periodPortfolio = pAnchor && lastPortfolio != null ? (lastPortfolio / pAnchor - 1) * 100 : null;
+  const periodBenchmark = bAnchor && lastBenchmark != null ? (lastBenchmark / bAnchor - 1) * 100 : null;
   return {
     points: thinPoints,
     tickMode,
     endPortfolio: lastPoint ? lastPoint.portfolio : null,
     endBenchmark: lastPoint ? lastPoint.benchmark : null,
-    periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
-    periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
+    periodPortfolio,
+    periodBenchmark,
     periodGross,
     periodConservative,
     periodStart: dates[startIdx] ?? null,

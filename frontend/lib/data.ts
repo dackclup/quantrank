@@ -155,7 +155,13 @@ export function getAiPickData(): AiPickData | null {
   // since dropped out of last.holdings. Sourced from the per-ticker price-history
   // files the stock-detail chart already ships (yfinance auto-adjusted closes →
   // split + dividend adjusted, i.e. total-return basis, same as the NAV lines).
-  const rebalanceDates = rebalances.map((r) => r.date);
+  // Prefer the optional execution_date (the trading day the basket is actually
+  // priced into position) over the nominal rebalance `date` for entry-price
+  // resolution — additive, backward-compatible: absent on pre-convention
+  // artifacts, where this is byte-identical to `r.date`. execution_date is
+  // itself a trading day, so closeOnOrAfter resolves to exactly it. The
+  // displayed rotation timeline continues to use `r.date` (unchanged below).
+  const rebalanceDates = rebalances.map((r) => r.execution_date ?? r.date);
   const entryCloses: Record<string, (number | null)[]> = {};
   const lastCloses: Record<string, number | null> = {};
 

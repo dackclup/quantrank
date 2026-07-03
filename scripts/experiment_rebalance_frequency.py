@@ -105,6 +105,11 @@ from pathlib import Path
 # Engine imports — reuse production NAV math, no re-implementation.
 from compute.ingest.prices import fetch_prices
 from compute.portfolio.backtest import build_portfolio_nav
+
+# _snap_to_trading_day now resolves to the T+1-fill trading day (first close
+# STRICTLY AFTER the rebalance date, F1 ratified 2026-07-03) — this scout
+# inherits that fill-timing convention unchanged, so its NAV legs stay
+# consistent with the production backfill's execution assumption.
 from scripts.backfill_portfolio_pit import _snap_to_trading_day
 
 _DEFAULT_ARTIFACT = Path("frontend/public/data/portfolio/backtest_pit.json")

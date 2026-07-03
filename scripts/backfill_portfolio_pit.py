@@ -370,6 +370,17 @@ _DISCLAIMER_STATIC = (
     "pre-registered). Incumbents are retained while scoring "
     ">= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is "
     "a turnover/implementation-cost device — no performance claims). "
+    "Execution timing corrected to T+1 close (F1, ratified 2026-07-03): trades "
+    "are assumed filled at the first trading-day close strictly AFTER each "
+    "rebalance's decision date — the earliest executable print, given the "
+    "cron publishes after the US market close — never at that decision "
+    "day's own close and never at the next open (no intraday signal exists "
+    "in a daily close series). Selection thresholds were NOT re-optimized "
+    "for the new convention. The T+1-close proxy forgoes any intraday T+1 "
+    "open-to-close return, a conservative simplification. This restated "
+    "roughly 40 displayed legs by one trading day each; the change is an "
+    "ex-ante correction of publish-after-close execution mechanics, not a "
+    "response to observed backtest outcomes. "
 )
 
 _DISCLAIMER_TAIL = (
@@ -1000,6 +1011,10 @@ def run_backfill(
     _scoring_universe_removed_candidates_count: int = len(_removed_tickers)
     _scoring_universe_removed_fetched_count: int = 0
     _scoring_universe_removed_unavailable_count: int = 0
+    # F4 (survivorship-drop disclosure, ratified 2026-07-03): accumulate the
+    # ACTUAL dropped tickers (not just the count) across all three failure
+    # paths below, so the run-level disclosure can name them.
+    _scoring_universe_removed_unavailable_tickers: list[str] = []
 
     for ticker in sorted(_removed_tickers):
         cik = _resolve_cik_for_removed_ticker(ticker)
@@ -1010,6 +1025,7 @@ def run_backfill(
                 ticker,
             )
             _scoring_universe_removed_unavailable_count += 1
+            _scoring_universe_removed_unavailable_tickers.append(ticker)
             continue
         try:
             rows = _annual_rows(fetch_fundamentals_history(cik))
@@ -1030,6 +1046,7 @@ def run_backfill(
                     ticker, cik,
                 )
                 _scoring_universe_removed_unavailable_count += 1
+                _scoring_universe_removed_unavailable_tickers.append(ticker)
         except Exception as exc:  # noqa: BLE001 — one bad removed ticker never kills the backfill
             logger.warning(
                 "backfill: removed ticker %s (CIK=%s) fetch-error — %s"
@@ -1037,6 +1054,7 @@ def run_backfill(
                 ticker, cik, exc,
             )
             _scoring_universe_removed_unavailable_count += 1
+            _scoring_universe_removed_unavailable_tickers.append(ticker)
 
     # Removed tickers only need sector assignment for the rebalances where they
     # appear.  We insert "Unknown" into sector_by_ticker so the fallback-detection
@@ -1817,6 +1835,18 @@ def run_backfill(
         _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav, grid_legs)
     )
 
+    # F1 (execution-timing fix, ratified 2026-07-03): rebalances_out[].date
+    # stays the DECISION date T_iso — it is the join key for the
+    # position_returns injection below (~line 2063-2069) and must NOT change.
+    # Record the actual T+1-fill trading day this leg's trades executed on in
+    # a SEPARATE field, computed from the already-assembled NAV's date axis
+    # (mirrors the same fill convention _assemble_nav used to build the legs).
+    _nav_dates_axis: list[str] = nav.get("dates", []) if nav else []
+    for _rebal_entry_exec in rebalances_out:
+        _rebal_entry_exec["execution_date"] = _snap_to_trading_day(
+            _rebal_entry_exec["date"], _nav_dates_axis
+        )
+
     restate_pct = (
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
     )
@@ -1830,11 +1860,49 @@ def run_backfill(
         "parquet was present at backfill time — so a name that filed an Item 4.02 in "
         "the trailing year at a historical rebalance will appear in this backtest un-vetoed. "
     )
+
+    # F2 (benchmark price-basis guard, ratified 2026-07-03): surface whether any
+    # benchmark's series was built from raw Close (dividend-drag understatement)
+    # rather than the dividend-adjusted Adj Close. None-safe on artifacts/files
+    # that predate this field.
+    _bench_price_basis = _benchmark_price_basis(data_dir)
+    _raw_close_benchmarks = sorted(
+        sym for sym, basis in (_bench_price_basis or {}).items() if basis == "close"
+    )
+    _benchmark_basis_clause = (
+        (
+            "Benchmark price-basis note: "
+            + ", ".join(s.upper() for s in _raw_close_benchmarks)
+            + " could not be built from a dividend-adjusted close and fell back to "
+            "raw Close — this UNDERSTATES the benchmark's total return (dividend "
+            "drag is not reflected), so any comparison against those benchmark "
+            "lines is biased in the AI-pick book's favor. "
+        )
+        if _raw_close_benchmarks
+        else ""
+    )
+
+    # F4 (survivorship-drop disclosure, ratified 2026-07-03): disclose historically-
+    # removed index members that could not be loaded into the scoring universe.
+    _survivorship_drop_clause = (
+        (
+            f"Survivorship-drop note: {len(_scoring_universe_removed_unavailable_tickers)} "
+            "historically-removed index member(s) could not be scored (unresolvable "
+            "CIK or no price history) and are absent from the historical selection "
+            "universe — a residual survivorship bias. See "
+            "meta.scoring_universe_removed_unavailable_tickers for the list. "
+        )
+        if _scoring_universe_removed_unavailable_tickers
+        else ""
+    )
+
     _footprint_sentence = _selection_footprint_sentence(nav)
     _tail = _DISCLAIMER_TAIL.format(n_trials=BASKET_RULE_N_TRIALS)
     disclaimer = (
         _DISCLAIMER_STATIC
         + _nr_clause
+        + _benchmark_basis_clause
+        + _survivorship_drop_clause
         + _footprint_sentence
         + _tail
         + _insample_lag_clause(nav, start, end)
@@ -1850,6 +1918,27 @@ def run_backfill(
             "rule_version": RULE_VERSION,
             "as_of_start": start.isoformat(),
             "as_of_end": end.isoformat(),
+            # F1 (execution-timing fix, ratified 2026-07-03): every rebalance's
+            # trades execute at the T+1 CLOSE — the first trading-day close
+            # STRICTLY AFTER the decision date (rebalances[].date) — because the
+            # cron publishes rankings after the US market close, so that is the
+            # earliest executable print. This is a PROXY, never "next open": no
+            # intraday execution signal exists in a daily close series.
+            "execution_convention": "t_plus_1_close",
+            "execution_convention_note": (
+                "Trades are assumed filled at the T+1 close (first trading-day "
+                "close strictly after each rebalance's decision date) as the "
+                "executable-price proxy — never at that day's own close (the "
+                "cron publishes after the US market close) and never at the "
+                "next open (no intraday signal exists). This restated ~40 "
+                "displayed legs by one trading day each vs. the prior "
+                "on-or-after convention; the T+1-close proxy also forgoes any "
+                "intraday T+1 open-to-close return (a conservative simplification, "
+                "not an outcome-driven choice — see rebalances[].execution_date "
+                "for the actual fill day). Selection thresholds (composite >= 65 "
+                "hold-band 55, min-picks floor 5) were NOT re-optimized for the "
+                "new convention."
+            ),
             "rebalance_count": len(rebalances_out),
             "max_holdings": MAX_PICKS,
             "default_count": DEFAULT_COUNT,
@@ -1972,6 +2061,14 @@ def run_backfill(
             "scoring_universe_removed_candidates_count": _scoring_universe_removed_candidates_count,
             "scoring_universe_removed_fetched_count": _scoring_universe_removed_fetched_count,
             "scoring_universe_removed_unavailable_count": _scoring_universe_removed_unavailable_count,
+            # F4 (survivorship-drop disclosure, ratified 2026-07-03): the ACTUAL
+            # tickers behind scoring_universe_removed_unavailable_count above —
+            # unresolvable CIK, no price history, or a fetch error. These names
+            # are absent from the historical scoring universe, a residual
+            # survivorship bias (disclosed dynamically below when non-empty).
+            "scoring_universe_removed_unavailable_tickers": sorted(
+                _scoring_universe_removed_unavailable_tickers
+            ),
             # GAP 2: item402 PIT veto replay observability (Rule 18).
             # item402_pit_rows: number of rows in the item402 parquet (0 = absent).
             # item402_veto_fired_count: number of (ticker, rebalance) pairs where
@@ -1993,6 +2090,11 @@ def run_backfill(
                 else None
             ),
             "historical_sector_fallback_count": _historical_sector_fallback_count,
+            # F2 (benchmark price-basis guard, ratified 2026-07-03): per-symbol
+            # "adjusted" | "close" basis read from benchmarks.json's price_basis
+            # (compute/output/writer.py::write_benchmarks_json). None-safe on
+            # files/artifacts that predate this field (old benchmarks.json).
+            "benchmark_price_basis": _bench_price_basis,
             "disclaimer": disclaimer,
             # ── Proposal C-2 shadow meta (Rule 18 observability-first) ─────────
             # mos_tilt_kappa: the κ constant used for the MoS-conviction tilt.
@@ -2311,12 +2413,31 @@ def run_backfill(
 
 
 def _snap_to_trading_day(date_iso: str, dates: list[str]) -> str | None:
-    """First trading day in ``dates`` on or after ``date_iso`` (decide at T, trade the
-    next open); falls back to the last trading day before it if none follows. ``dates``
-    is sorted-ascending ISO strings (lexical == chronological). None only if empty."""
+    """First trading day in ``dates`` STRICTLY AFTER ``date_iso`` (the T+1 fill).
+
+    F1 (AI-pick backtest methodology fix, ratified 2026-07-03): the decision to
+    rebalance is made using data known as of the close at T (``date_iso``); the
+    cron publishes rankings AFTER the US market close, so the earliest the
+    resulting basket can actually be traded is the first executable print
+    STRICTLY AFTER T — the T+1-CLOSE proxy. This is NEVER "next open": the
+    cron has no intraday execution signal, only the daily close series, so
+    "next open" is false under both this convention and the superseded
+    on-or-after one. Falls back to the LAST trading day in ``dates`` when
+    nothing trades strictly after ``date_iso`` — this only affects the
+    newest/last leg (the artifact hasn't observed a later close yet) and
+    self-corrects at the next regen once a later close exists. ``dates`` is
+    sorted-ascending ISO strings (lexical == chronological). ``None`` only if
+    ``dates`` is empty.
+
+    This is a FILL site (every call site below builds NAV legs from actual
+    trade executions) — it is intentionally NOT used by ``_snap_monthly_nav``
+    (a MEASUREMENT MARK: month-end resampling of an already-built NAV series,
+    on-or-before, no execution involved) or any other on-or-before boundary
+    mark in this module.
+    """
     if not dates:
         return None
-    i = bisect.bisect_left(dates, date_iso)
+    i = bisect.bisect_right(dates, date_iso)
     return dates[i] if i < len(dates) else dates[-1]
 
 
@@ -2384,8 +2505,14 @@ def _snap_monthly_nav(
 ) -> tuple[list[str], list[float | None]]:
     """Resample a daily NAV series to month-end (last trading day <= calendar month-end).
 
-    Uses an on-or-before discipline (mirrors ``basket_rule_validation._snap_to_trading_day``
-    and ``_extract_quarterly_returns`` boundary semantics) — NO look-ahead.
+    This is a MEASUREMENT MARK on an already-built daily NAV series (month-end
+    resampling for display), NOT a trade fill — it intentionally keeps its
+    ON-OR-BEFORE discipline unchanged by F1 (2026-07-03), and does NOT call
+    ``_snap_to_trading_day`` (that helper was flipped to STRICTLY-AFTER for fill
+    sites; ``basket_rule_validation._snap_to_trading_day`` was flipped alongside
+    it, for the different reason that it's a fill-aligned mirror sampling the
+    NAV curve's own leg boundaries — see that module's docstring). NO look-ahead
+    either way: on-or-before never reads a future value.
 
     Parameters
     ----------
@@ -2682,6 +2809,32 @@ def _benchmark_navs(portfolio_dates: list[str], data_dir: Path) -> dict[str, lis
         if closes:
             out[sym] = align_benchmark_nav(portfolio_dates, bench_dates, closes)
     return out
+
+
+def _benchmark_price_basis(data_dir: Path) -> dict[str, str] | None:
+    """F2 (benchmark price-basis guard): read benchmarks.json's ``price_basis``.
+
+    ``write_benchmarks_json`` (compute/output/writer.py) tags each symbol
+    ``"adjusted"`` (Adj Close available — total-return-correct) or ``"close"``
+    (fell back to raw Close — understates total return for a dividend-paying
+    benchmark, e.g. SPY/DIA/IWM). Returns ``None`` when the file is absent,
+    unreadable, or predates this field (None-safe on old artifacts) — never
+    raises.
+    """
+    import json
+
+    path = data_dir / BENCHMARKS_JSON
+    if not path.exists():
+        return None
+    try:
+        bench = json.loads(path.read_text())
+    except Exception as e:  # noqa: BLE001
+        logger.warning("backfill: could not read %s for price_basis: %s", path, e)
+        return None
+    basis = bench.get("price_basis")
+    if not isinstance(basis, dict) or not basis:
+        return None
+    return {str(k): str(v) for k, v in basis.items()}
 
 
 def main(argv: list[str] | None = None) -> int:

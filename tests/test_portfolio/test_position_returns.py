@@ -27,8 +27,8 @@ from compute.portfolio.position_returns import (
     PositionReturn,
     _build_carino_grid,
     _carino_coefficient,
-    _close_on_or_after,
     _close_on_or_before,
+    _close_strictly_after,
     _compute_carino_contribution_for_streak,
     _compute_contribution_from_sub_periods,
     _compute_mwr,
@@ -325,7 +325,16 @@ class TestNullIntermediatePrice:
 
 
 def test_re_entry_after_gap_uses_current_streak():
-    """compute_position_returns uses only the LATEST streak for a re-entered name."""
+    """compute_position_returns uses only the LATEST streak for a re-entered name.
+
+    F1 (2026-07-03): every leg's stored price is now the T+1-fill close (first
+    close STRICTLY AFTER that leg's own rebalance date) — the closes panel
+    needs a "day + 1" print at each queried boundary (2020-07-02 / 2020-10-02)
+    carrying the SAME price as the old on-or-after exact-match value, so the
+    fixture's intended prices (2500 / 3000) still resolve under the new
+    convention. This mirrors real production data (daily prices always have a
+    next trading day, except at the panel's true last date).
+    """
     band_legs = [
         ("2020-01-01", {"AMZN": 0.4}),
         ("2020-04-01", {"AMZN": 0.0}),    # sold
@@ -336,7 +345,9 @@ def test_re_entry_after_gap_uses_current_streak():
         "AMZN": {
             "2020-01-01": 2000.0,
             "2020-07-01": 2500.0,
+            "2020-07-02": 2500.0,   # T+1 fill for the re-entry leg
             "2020-10-01": 3000.0,
+            "2020-10-02": 3000.0,   # T+1 fill for the latest leg (+ _last_close mark)
         }
     }
     nav_net = [100.0, 105.0, 110.0, 115.0]
@@ -449,14 +460,20 @@ def test_current_holder_marks_to_latest_close():
 
 
 def test_compute_position_returns_two_tickers():
-    """Two tickers with clean price history produce non-None MWR and TWR."""
+    """Two tickers with clean price history produce non-None MWR and TWR.
+
+    F1 (2026-07-03): every leg's stored price is the T+1-fill close (first
+    close STRICTLY AFTER that leg's own date), so the closes panel carries a
+    "day + 1" print at each boundary (same price as the old exact-match
+    value) — matching real daily production data.
+    """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
         ("2020-04-01", {"AAPL": 0.5, "MSFT": 0.5}),
     ]
     closes = {
-        "AAPL": {"2020-01-01": 100.0, "2020-04-01": 120.0},
-        "MSFT": {"2020-01-01": 200.0, "2020-04-01": 220.0},
+        "AAPL": {"2020-01-01": 100.0, "2020-01-02": 100.0, "2020-04-01": 120.0, "2020-04-02": 120.0},
+        "MSFT": {"2020-01-01": 200.0, "2020-01-02": 200.0, "2020-04-01": 220.0, "2020-04-02": 220.0},
     }
     nav_net = [100.0, 110.0]
     nav_dates = ["2020-01-01", "2020-04-01"]
@@ -686,18 +703,28 @@ def test_per_quarter_pit_no_lookahead():
         TWR = (110/100) × (121/110) − 1 = 21%
       - quarter-2 (latest) has 3 legs → same TWR = 21% (no additional leg in
         our data, since latest-close matches 2020-07-01)
+
+    F1 (2026-07-03): every leg's stored price, AND the non-latest-quarter
+    terminal mark, is now the T+1-fill close (first close STRICTLY AFTER the
+    boundary date) — the closes panel carries a "day + 1" print immediately
+    after each rebalance date (same price as the old exact-match value) so
+    the fixture's intended prices still resolve, matching real daily
+    production data.
     """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.5}),
         ("2020-04-01", {"AAPL": 0.5}),
         ("2020-07-01", {"AAPL": 0.5}),
     ]
-    # Prices at each rebalance boundary; no later-date closes beyond 2020-07-01.
+    # Prices at each rebalance boundary plus a T+1 print for each (F1).
     closes = {
         "AAPL": {
             "2020-01-01": 100.0,
+            "2020-01-02": 100.0,
             "2020-04-01": 110.0,
+            "2020-04-02": 110.0,
             "2020-07-01": 121.0,
+            "2020-07-02": 121.0,
         }
     }
     nav_net = [100.0, 106.0, 111.8]
@@ -886,6 +913,12 @@ def test_sold_name_included_in_flat_field_excluded_from_last_per_quarter():
     compute_position_returns() is the flat field.  It must cover MSFT (sold row).
     compute_position_returns_per_quarter()[-1] covers only current holders at Q2;
     MSFT must be absent from it.
+
+    F1 (2026-07-03): every leg's stored price is the T+1-fill close (first
+    close STRICTLY AFTER that leg's own date) — the closes panel carries a
+    "day + 1" print immediately after each rebalance date (same price as the
+    old exact-match value) so MSFT's intended sold-leg entry price (220, not
+    the later 230 exit close) still resolves under the new convention.
     """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.5, "MSFT": 0.5}),
@@ -895,12 +928,17 @@ def test_sold_name_included_in_flat_field_excluded_from_last_per_quarter():
     closes = {
         "AAPL": {
             "2020-01-01": 100.0,
+            "2020-01-02": 100.0,
             "2020-04-01": 110.0,
+            "2020-04-02": 110.0,
             "2020-07-01": 121.0,
+            "2020-07-02": 121.0,
         },
         "MSFT": {
             "2020-01-01": 200.0,
+            "2020-01-02": 200.0,
             "2020-04-01": 220.0,
+            "2020-04-02": 220.0,   # T+1 fill for MSFT's own Q1 leg (last held leg)
             "2020-07-01": 230.0,  # exit close for the sold leg
         },
     }
@@ -958,24 +996,37 @@ def test_per_quarter_injecting_future_price_does_not_change_historical_quarter()
     WITH it.  The values must be byte-identical because Fix #3 truncates
     the leg window to dates <= rebal_date, so the 2020-07-01 entry is
     invisible to the Q0 computation.
+
+    F1 (2026-07-03): the terminal mark for a non-latest quarter is now the
+    first close STRICTLY AFTER the boundary (T+1 fill) rather than on/before
+    it, so both fixtures carry a "day + 1" print (2020-01-02 / 2020-04-02,
+    same prices as the old exact-match values) immediately after each
+    rebalance date — this is the LEGITIMATE T+1 fill, distinct from the
+    injected FAR-future 2020-07-01 price three months out, which must still
+    NOT leak into Q0's mark (that's the invariant this test locks): with a
+    closer T+1 print available, the far-future price is never selected.
     """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.5}),
         ("2020-04-01", {"AAPL": 0.5}),
     ]
-    # Closes WITHOUT any price after Q1's rebal date.
+    # Closes WITHOUT any price after Q1's rebal date (T+1 prints only).
     closes_without_future = {
         "AAPL": {
             "2020-01-01": 100.0,
+            "2020-01-02": 100.0,
             "2020-04-01": 110.0,
+            "2020-04-02": 110.0,
         }
     }
     # Closes WITH a price 3 months after Q1 that would corrupt Q0 if look-ahead leaked.
     closes_with_future = {
         "AAPL": {
             "2020-01-01": 100.0,
+            "2020-01-02": 100.0,
             "2020-04-01": 110.0,
-            "2020-07-01": 999.0,   # injected future price — must NOT affect Q0
+            "2020-04-02": 110.0,
+            "2020-07-01": 999.0,   # injected FAR-future price — must NOT affect Q0
         }
     }
     nav_net = [100.0, 108.0]
@@ -1001,10 +1052,11 @@ def test_per_quarter_injecting_future_price_does_not_change_historical_quarter()
         f"to {twr_q0_with:.4f}%.  Fix #3 (PIT look-ahead elimination) is broken."
     )
 
-    # Also verify the baseline correctness: Q0 should mark to close on/before
-    # the NEXT rebal date (2020-04-01 = 110), so TWR = 110/100 - 1 = 10%.
-    # For quarter-0 (is_last_rebal=False), is_current=True, end_date=2020-04-01.
-    # terminal = _close_on_or_before(AAPL, 2020-04-01, closes) = 110.
+    # Also verify the baseline correctness: Q0 should mark to the T+1-fill
+    # close strictly after the NEXT rebal date (2020-04-02 = 110), so
+    # TWR = 110/100 - 1 = 10%. For quarter-0 (is_last_rebal=False),
+    # is_current=True, end_date=2020-04-01.
+    # terminal = _terminal_close(AAPL, 2020-04-01, closes) = 110 (2020-04-02 print).
     # prices = [100, 110] → TWR = 10%.
     assert twr_q0_without == pytest.approx(10.0, abs=0.01), (
         f"Unexpected Q0 TWR: {twr_q0_without} (expected 10.0%)"
@@ -1037,6 +1089,12 @@ def test_re_entry_after_gap_per_quarter_streak_resets():
       - per_quarter[2]["AAPL"].since_date == "2020-07-01"  (re-entry, not original Q0).
       - per_quarter[3]["AAPL"].since_date == "2020-07-01"  (still the re-entry date).
       - per_quarter[3]["AAPL"].twr_pct uses only the post-re-entry leg (80 → 96 = 20%).
+
+    F1 (2026-07-03): every leg's stored price is the T+1-fill close (first
+    close STRICTLY AFTER that leg's own date) — the closes panel carries a
+    "day + 1" print after the re-entry (2020-07-02) and latest (2020-10-02)
+    dates, same prices as the old exact-match values, matching real daily
+    production data.
     """
     band_legs = [
         ("2020-01-01", {"AAPL": 0.3}),
@@ -1049,7 +1107,9 @@ def test_re_entry_after_gap_per_quarter_streak_resets():
             "2020-01-01": 100.0,
             "2020-04-01": 90.0,    # exit close (not used for re-entry streak)
             "2020-07-01": 80.0,    # re-entry price
+            "2020-07-02": 80.0,    # T+1 fill for the re-entry leg
             "2020-10-01": 96.0,    # latest
+            "2020-10-02": 96.0,    # T+1 fill for the latest leg (+ _last_close mark)
         }
     }
     nav_net = [100.0, 98.0, 102.0, 106.0]
@@ -2318,7 +2378,9 @@ def test_flat_path_since_date_equals_re_entry_date_when_gap_present():
         "ALL": {
             "2021-01-01": 100.0,
             "2021-07-01": 110.0,
+            "2021-07-02": 110.0,   # F1 T+1 fill for the re-entry leg
             "2021-10-01": 120.0,
+            "2021-10-02": 120.0,   # F1 T+1 fill for the latest leg (+ _last_close mark)
         },
         "OTHER": {"2021-04-01": 50.0},
     }
@@ -2634,18 +2696,33 @@ def test_gap_aware_streak_partition_invariant(
 
 
 # ---------------------------------------------------------------------------
-# Weekend-rebalance / on-or-after entry-price fix (supersedes #638 direction)
+# Weekend-rebalance entry-price fix (supersedes #638 direction) +
+# F1 T+1-close execution-timing fix (ratified 2026-07-03).
 #
-# Root cause: the NAV path snaps each rebalance date to the FIRST trading day
-# ON-OR-AFTER (_snap_to_trading_day in backfill_portfolio_pit.py), so the
-# initial basket (rb[0] = Sunday 2016-08-14) fills on Monday 2016-08-15.
-# The entry-price lookup must match that convention (on-or-after = the actual
-# fill day), otherwise the entry price resolves to None and "Your return" is
-# null for the initial basket.
+# Root cause (original #638-superseding fix): the NAV path snaps each
+# rebalance date to a trading day (_snap_to_trading_day in
+# backfill_portfolio_pit.py), so the initial basket (rb[0] = Sunday
+# 2016-08-14) fills on Monday 2016-08-15.  The entry-price lookup must match
+# that convention, otherwise the entry price resolves to None and "Your
+# return" is null for the initial basket.
 #
-# Convention (asymmetric):
-#   entry  price = _close_on_or_after   (fill day; forward search)
-#   terminal price = _close_on_or_before  (last mark before rotating out; unchanged)
+# F1 (2026-07-03): the fill-timing convention was further tightened from
+# ON-OR-AFTER to STRICTLY AFTER at every genuine trade-fill site. A decision
+# is made using data known as of the close at T (close <= T); the actual
+# TRADE FILL is the first executable print AFTER that — the cron publishes
+# after the US market close, so the earliest tradeable print is the T+1
+# close. Resolving to the SAME day's close (the old on-or-after convention)
+# double-counted the very close the decision was based on. This is the
+# T+1-CLOSE proxy — never "next open" (no intraday signal exists in a daily
+# close series).
+#
+# Convention (now SYMMETRIC for entry vs. non-latest-quarter terminal):
+#   entry    price = _close_strictly_after  (T+1 fill; forward search, exclusive)
+#   terminal price (non-latest quarter) = _terminal_close = _close_strictly_after,
+#     falling back to _close_on_or_before ONLY when nothing trades after the
+#     boundary (delisting / newest leg, Shumway 1997).
+#   terminal price (LATEST/current quarter) = _last_close — UNCHANGED, this is
+#     a MEASUREMENT MARK (no trade has executed), not a fill.
 #
 # Tests added (error→regression ratchet, CLAUDE.md §Conventions):
 #   WR-1  POSITIVE: Sunday rebalance (2016-08-14) → entry on Monday 2016-08-15;
@@ -2655,30 +2732,36 @@ def test_gap_aware_streak_partition_invariant(
 #         no longer dropped; legs_used >= 1 (increment vs #638-style baseline).
 #   WR-2  NEGATIVE: panel hole spanning full sub-period → entry=None → legs_used=0
 #         (not_after bound prevents degenerate ρ=1).
-#   WR-3  INTERIOR trading-day invariance (regression guard): for a leg date that
-#         IS a trading day, _close_on_or_after == _close_on == _close_on_or_before
-#         on that day → interior legs byte-identical to pre-fix.
+#   WR-3  STRICT boundary (regression guard, updated for F1): for a leg date
+#         that IS a trading day, _close_strictly_after now resolves to the
+#         NEXT trading day's close (NOT the same day) — the T+1-fill
+#         semantics, distinct from _close_on / _close_on_or_before which both
+#         still resolve to the same-day close.
 #   WR-4  RECONCILIATION-INVARIANCE: the DISPLAY-ONLY-SAFE claim; Carino GROSS /
 #         cost-line residual outputs byte-identical; the pp_twr cross-check stays
-#         coherent (now uses _close_on_or_after for entry too).
-#   WR-5  Hypothesis property: _close_on_or_after returns None OR the MIN date
-#         >= date (and <= not_after when bounded).
+#         coherent (now uses _close_strictly_after for entry too).
+#   WR-5  Hypothesis property: _close_strictly_after returns None OR the MIN date
+#         > date (strict; and <= not_after when bounded).
 # ---------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------
-# _close_on_or_after unit tests (new helper)
+# _close_strictly_after unit tests (new helper)
 # ---------------------------------------------------------------------------
 
 
-def test_close_on_or_after_exact_date():
-    """Returns the close ON the exact date when available (trivial case)."""
+def test_close_strictly_after_exact_date_excludes_same_day():
+    """A close available exactly ON the target date is EXCLUDED (strict) — the
+    first close STRICTLY AFTER it is returned instead (F1 T+1-fill semantics,
+    2026-07-03; was inclusive ``>=`` pre-fix, which returned the same-day close)."""
     closes = {"AAPL": {"2016-08-15": 100.0, "2016-08-16": 101.0}}
-    px = _close_on_or_after("AAPL", "2016-08-15", closes)
-    assert px == pytest.approx(100.0)
+    px = _close_strictly_after("AAPL", "2016-08-15", closes)
+    assert px == pytest.approx(101.0), (
+        f"Expected the NEXT day's close 101.0 (strict — same-day 100.0 excluded), got {px}"
+    )
 
 
-def test_close_on_or_after_sunday_resolves_to_monday():
+def test_close_strictly_after_sunday_resolves_to_monday():
     """A Sunday date with no close resolves to the Monday close (forward search)."""
     closes = {
         "AAPL": {
@@ -2686,26 +2769,26 @@ def test_close_on_or_after_sunday_resolves_to_monday():
             "2016-08-15": 100.0,   # Monday — the fill day
         }
     }
-    px = _close_on_or_after("AAPL", "2016-08-14", closes)
+    px = _close_strictly_after("AAPL", "2016-08-14", closes)
     assert px == pytest.approx(100.0), (
         f"Expected Monday close 100.0 (forward from Sunday), got {px}"
     )
 
 
-def test_close_on_or_after_no_eligible_date():
+def test_close_strictly_after_no_eligible_date():
     """Returns None when no close exists on or after the target date."""
     closes = {"AAPL": {"2016-08-12": 100.0}}
-    px = _close_on_or_after("AAPL", "2016-08-14", closes)
+    px = _close_strictly_after("AAPL", "2016-08-14", closes)
     assert px is None
 
 
-def test_close_on_or_after_missing_ticker():
+def test_close_strictly_after_missing_ticker():
     """Returns None for a ticker not in the closes panel."""
-    px = _close_on_or_after("NOTHERE", "2020-01-01", {})
+    px = _close_strictly_after("NOTHERE", "2020-01-01", {})
     assert px is None
 
 
-def test_close_on_or_after_not_after_bound():
+def test_close_strictly_after_not_after_bound():
     """not_after bounds the forward search so entry cannot leap past the terminal date."""
     closes = {
         "AAPL": {
@@ -2714,11 +2797,11 @@ def test_close_on_or_after_not_after_bound():
         }
     }
     # not_after = 2016-10-01 → only 2016-08-15 is eligible
-    px = _close_on_or_after("AAPL", "2016-08-14", closes, not_after="2016-10-01")
+    px = _close_strictly_after("AAPL", "2016-08-14", closes, not_after="2016-10-01")
     assert px == pytest.approx(100.0)
 
 
-def test_close_on_or_after_not_after_panel_hole():
+def test_close_strictly_after_not_after_panel_hole():
     """When the entire sub-period is a panel hole (no date in [date, not_after]), returns None."""
     closes = {
         "AAPL": {
@@ -2726,7 +2809,7 @@ def test_close_on_or_after_not_after_panel_hole():
             "2016-12-01": 120.0,   # after not_after
         }
     }
-    px = _close_on_or_after("AAPL", "2016-08-14", closes, not_after="2016-11-18")
+    px = _close_strictly_after("AAPL", "2016-08-14", closes, not_after="2016-11-18")
     assert px is None, (
         f"Panel hole spanning full sub-period must return None, got {px}"
     )
@@ -2745,7 +2828,7 @@ def test_weekend_rebalance_resolves_entry_price_to_monday_fill():
     (_snap_to_trading_day on-or-after), so the fill price is Monday's close.
     The closes panel starts on Monday (no Friday close in the panel).
 
-    With _close_on_or_after, _extract_streaks must price the entry at 100.0
+    With _close_strictly_after, _extract_streaks must price the entry at 100.0
     (Monday Aug-15), so compute_position_returns_per_quarter[0] yields
     legs_used >= 1 with a real forward return, not null.
     partial_history must be False (no dropped legs).
@@ -2776,13 +2859,13 @@ def test_weekend_rebalance_resolves_entry_price_to_monday_fill():
     # Core invariant: legs_used >= 1 (entry price resolved via forward lookup).
     assert pr_q0.legs_used >= 1, (
         f"legs_used={pr_q0.legs_used}: entry price was not resolved for the Sunday "
-        "rebalance date 2016-08-14.  _close_on_or_after fix may not be active."
+        "rebalance date 2016-08-14.  _close_strictly_after fix may not be active."
     )
 
     # The forward return must be real (not None).
     assert pr_q0.twr_pct is not None, (
         "twr_pct is None for the initial basket — the Sunday-rebalance entry "
-        "price was not resolved.  _close_on_or_after fix may not be active."
+        "price was not resolved.  _close_strictly_after fix may not be active."
     )
 
     # partial_history must be False: both entry (100) and terminal (110) resolved.
@@ -2805,7 +2888,7 @@ def test_weekend_rebalance_resolves_entry_price_to_monday_fill():
     first_entry_price = streaks[0][0][2]
     assert first_entry_price == pytest.approx(100.0), (
         f"Entry price stored in streak should be the Monday close 100.0, "
-        f"got {first_entry_price} — _close_on_or_after not active at the entry lookup"
+        f"got {first_entry_price} — _close_strictly_after not active at the entry lookup"
     )
 
 
@@ -2821,7 +2904,7 @@ def test_rb1_two_legs_not_dropped_after_on_or_after_fix():
     (panel starts 2016-08-15) → entry None → leg dropped → legs_used=0 for the
     whole streak.
 
-    After the fix, _close_on_or_after("AAPL", "2016-08-14") returns 100.0
+    After the fix, _close_strictly_after("AAPL", "2016-08-14") returns 100.0
     (Monday Aug-15) → entry valid → legs_used >= 1.
     """
     closes = {
@@ -2851,7 +2934,7 @@ def test_rb1_two_legs_not_dropped_after_on_or_after_fix():
     assert pr_q0.legs_used >= 1, (
         f"rb[1] two-leg restoration FAILED: legs_used={pr_q0.legs_used} at Q0.  "
         "The Aug-14 Sunday entry → Nov-14 terminal leg must no longer be dropped after "
-        "the _close_on_or_after fix."
+        "the _close_strictly_after fix."
     )
 
     # Quarter-1 (Aug-14 → Nov-14 → Feb-13): cumulative streak legs_used >= 2.
@@ -2863,19 +2946,23 @@ def test_rb1_two_legs_not_dropped_after_on_or_after_fix():
 
 
 # ---------------------------------------------------------------------------
-# WR-2: INTERIOR trading-day invariance — for a leg date that IS a trading day,
-#        _close_on_or_after == _close_on == _close_on_or_before on that day.
+# WR-3: STRICT boundary (F1, 2026-07-03) — for a leg date that IS a trading
+#        day, _close_strictly_after resolves to the NEXT trading day's close,
+#        NOT the same day (unlike _close_on / _close_on_or_before, which both
+#        still resolve to the same-day close). This replaces the pre-F1
+#        "interior trading-day invariance" test, whose premise (all three
+#        helpers agree on a trading day) was true only under the superseded
+#        on-or-after convention.
 # ---------------------------------------------------------------------------
 
 
-def test_interior_trading_day_invariance():
-    """For a leg that falls on a trading day, all three price helpers agree.
+def test_close_strictly_after_excludes_same_day_resolves_to_next_trading_day():
+    """On a trading day, _close_strictly_after != _close_on / _close_on_or_before.
 
-    _close_on_or_after(date) == _close_on(date) == _close_on_or_before(date)
-    when ``date`` is a key in the closes panel (a real trading day).
-
-    This ensures the fix is a strict superset of the old behaviour for interior
-    legs and does not introduce any asymmetry on clean data.
+    _close_on(date) == _close_on_or_before(date) == the SAME-day close (both
+    inclusive-at-date helpers, unaffected by F1). _close_strictly_after(date)
+    instead resolves to the NEXT trading day's close — the T+1-fill proxy — and
+    is None at the panel's last date (nothing trades after it).
     """
     from compute.portfolio.position_returns import _close_on
 
@@ -2887,19 +2974,29 @@ def test_interior_trading_day_invariance():
         }
     }
 
-    for date in ("2020-01-02", "2020-04-01", "2020-07-01"):
+    expected_next = {"2020-01-02": 160.0, "2020-04-01": 170.0}
+    for date, next_px in expected_next.items():
         px_before = _close_on_or_before("MSFT", date, closes)
         px_on = _close_on("MSFT", date, closes)
-        px_after = _close_on_or_after("MSFT", date, closes)
+        px_after = _close_strictly_after("MSFT", date, closes)
 
         assert px_before == pytest.approx(px_on), (
             f"_close_on_or_before != _close_on at trading-day date {date}: "
             f"{px_before} != {px_on}"
         )
-        assert px_after == pytest.approx(px_on), (
-            f"_close_on_or_after != _close_on at trading-day date {date}: "
-            f"{px_after} != {px_on}"
+        assert px_after == pytest.approx(next_px), (
+            f"_close_strictly_after at trading-day date {date} must resolve to "
+            f"the NEXT trading day's close {next_px} (T+1 fill), got {px_after}"
         )
+        assert px_after != pytest.approx(px_on), (
+            f"_close_strictly_after must NOT equal the same-day close {px_on} "
+            f"at {date} — same-day is excluded under the strict (F1) convention"
+        )
+
+    # The panel's last trading day has nothing strictly after it.
+    assert _close_strictly_after("MSFT", "2020-07-01", closes) is None, (
+        "no close exists strictly after the panel's last date"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -2946,11 +3043,11 @@ def test_no_price_in_sub_period_yields_none_entry():
         f"twr_pct={pr_q0.twr_pct}: should be None when no valid entry price exists."
     )
 
-    # Verify _close_on_or_after behaviour directly:
+    # Verify _close_strictly_after behaviour directly:
     # not_after = next leg date = 2020-04-01
-    px = _close_on_or_after("XYZ", "2020-02-01", closes, not_after="2020-04-01")
+    px = _close_strictly_after("XYZ", "2020-02-01", closes, not_after="2020-04-01")
     assert px is None, (
-        f"_close_on_or_after must return None when no close exists in [Feb-1, Apr-1], "
+        f"_close_strictly_after must return None when no close exists in [Feb-1, Apr-1], "
         f"got {px}.  The not_after bound is not enforced."
     )
 
@@ -2964,10 +3061,10 @@ def test_no_price_in_sub_period_yields_none_entry():
 def test_weekend_rebalance_reconciliation_errors_are_display_only_safe():
     """reconciliation_errors outputs are byte-identical before/after the entry-price fix.
 
-    The _close_on_or_after change is DISPLAY-ONLY-SAFE:
+    The _close_strictly_after change is DISPLAY-ONLY-SAFE:
       - Carino GROSS identity (sub_periods-based BHB/chain) is immune: it never
         reads the entry price from the closes panel.
-      - pp_twr cross-check now uses _close_on_or_after for entry too, so it
+      - pp_twr cross-check now uses _close_strictly_after for entry too, so it
         stays coherent with the engine TWR for clean single-streak names.
 
     Fixture: Sunday initial basket with a Monday close.  sub_periods=None path
@@ -3073,8 +3170,8 @@ def test_close_on_or_before_never_looks_ahead(
 
 
 # ---------------------------------------------------------------------------
-# WR-5: Hypothesis property — _close_on_or_after returns None OR the MIN date
-#        >= date (and <= not_after when bounded).
+# WR-5: Hypothesis property — _close_strictly_after returns None OR the MIN date
+#        > date (strict; and <= not_after when bounded).
 # ---------------------------------------------------------------------------
 
 
@@ -3095,20 +3192,20 @@ def test_close_on_or_before_never_looks_ahead(
     use_not_after=st.booleans(),
     not_after_delta=st.integers(min_value=0, max_value=365),
 )
-def test_close_on_or_after_returns_min_eligible_date(
+def test_close_strictly_after_returns_min_eligible_date(
     dates_prices: dict[str, float],
     query_date: str,
     use_not_after: bool,
     not_after_delta: int,
 ) -> None:
-    """_close_on_or_after(ticker, date, closes) returns None OR the MIN date >= date.
+    """_close_strictly_after(ticker, date, closes) returns None OR the MIN date > date.
 
-    When not_after is provided the result must also satisfy date <= result <= not_after.
+    When not_after is provided the result must also satisfy date < result <= not_after.
     The returned price must be > 0 (already _is_valid_price-guarded).
 
     This is the Hypothesis property covering:
       - Positivity: returned price > 0
-      - Minimality: returned date == min(eligible) where eligible = dates >= date
+      - Minimality: returned date == min(eligible) where eligible = dates > date (strict)
         (and <= not_after when bounded)
       - Boundedness: result date <= not_after when provided
     """
@@ -3125,12 +3222,12 @@ def test_close_on_or_after_returns_min_eligible_date(
         not_after = na_date_obj.isoformat()
 
     closes = {"T": dates_prices}
-    px = _close_on_or_after("T", query_date, closes, not_after=not_after)
+    px = _close_strictly_after("T", query_date, closes, not_after=not_after)
 
     series = dates_prices
     eligible = [
         d for d in series
-        if d >= query_date
+        if d > query_date
         and (not_after is None or d <= not_after)
         and series[d] > 0
     ]
@@ -3140,12 +3237,12 @@ def test_close_on_or_after_returns_min_eligible_date(
         # We only constructed positive floats (min_value=0.01) so any eligible date
         # should have a valid price → None iff eligible is empty.
         assert not eligible, (
-            f"_close_on_or_after returned None but eligible dates exist: {eligible}. "
+            f"_close_strictly_after returned None but eligible dates exist: {eligible}. "
             f"query_date={query_date}, not_after={not_after}"
         )
     else:
         # Price must be positive.
-        assert px > 0.0, f"_close_on_or_after returned non-positive price: {px}"
+        assert px > 0.0, f"_close_strictly_after returned non-positive price: {px}"
 
         # The selected date must be the MINIMUM eligible date.
         assert eligible, "Got a non-None result but eligible is empty — internal inconsistency"
@@ -3153,18 +3250,18 @@ def test_close_on_or_after_returns_min_eligible_date(
 
         # Verify the returned price matches the min-eligible date's price.
         assert px == pytest.approx(series[min_eligible]), (
-            f"_close_on_or_after returned price {px} but the min eligible date "
+            f"_close_strictly_after returned price {px} but the min eligible date "
             f"{min_eligible} has price {series[min_eligible]}. "
             f"The helper is not returning the MINIMUM eligible date."
         )
 
-        # Boundedness: the resolved date must satisfy date <= resolved <= not_after.
-        assert min_eligible >= query_date, (
-            f"_close_on_or_after resolved to date {min_eligible} < query_date {query_date}: "
-            "look-back occurred!"
+        # Boundedness: the resolved date must satisfy date < resolved <= not_after.
+        assert min_eligible > query_date, (
+            f"_close_strictly_after resolved to date {min_eligible} <= query_date "
+            f"{query_date}: look-back (or same-day) occurred!"
         )
         if not_after is not None:
             assert min_eligible <= not_after, (
-                f"_close_on_or_after resolved to date {min_eligible} > not_after {not_after}: "
+                f"_close_strictly_after resolved to date {min_eligible} > not_after {not_after}: "
                 "the not_after bound was violated!"
             )

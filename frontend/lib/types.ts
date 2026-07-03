@@ -1138,6 +1138,14 @@ export type BacktestHolding = {
 
 export type BacktestRebalance = {
   date: string;
+  // Optional execution-date convention (issue TBD) — the trading day on which
+  // the rebalance's basket is actually priced into position (vs `date`, the
+  // rebalance's nominal/decision date). Frontend-view-model-only field (this
+  // interface mirrors the backtest artifact, not the Pydantic<->TS schema
+  // triple); absent on artifacts predating the convention. When present,
+  // entry-price resolution in lib/data.ts prefers it over `date`; the
+  // displayed timeline still uses `date`.
+  execution_date?: string;
   members_complete: boolean;
   holdings: BacktestHolding[];
   // { "1": { TICKER: weight, ... }, ..., "10": {...} } — inverse-vol weights
@@ -1265,6 +1273,10 @@ export type BacktestMeta = {
   // Ticker rename micro-leakage note — free-text caveat from the engine
   // when a rename event is detected that may have caused a minor PIT leak.
   ticker_rename_microleakage_note?: string | null;
+  // Free-text label describing how `BacktestRebalance.execution_date` (when
+  // present) relates to `date`. View-model-only, like `execution_date` itself;
+  // absent on artifacts predating the convention.
+  execution_convention?: string | null;
   disclaimer: string;
 };
 

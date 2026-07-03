@@ -213,6 +213,17 @@ def write_benchmarks_json(
     not a frontend-payload concern. Aligned to the UNION of all benchmarks' trading
     dates (a symbol missing a date → ``null``). NaN → null.
 
+    F2 (AI-pick backtest methodology fix, price-basis guard): tracks, per symbol,
+    whether the series was built from the dividend-adjusted ``"Adj Close"`` column or
+    fell back to the raw ``"Close"`` column (no ``"Adj Close"`` in the fetched frame).
+    A raw-``Close`` benchmark understates total return for a dividend-paying index ETF
+    (SPY/DIA/IWM) — this is logged loudly (``logger.warning``, named per-symbol) and
+    disclosed in ``payload["price_basis"]`` so a downstream consumer (the backfill's
+    ``meta.benchmark_price_basis`` + disclaimer clause) can flag any raw-basis
+    comparison rather than silently mixing adjusted and unadjusted series. Fallback
+    behavior (use raw ``Close``) is UNCHANGED from before this fix — this is
+    observability only, never a functional change to which column is used.
+
     Returns
     -------
     tuple[Path | None, float]
@@ -225,15 +236,25 @@ def write_benchmarks_json(
     """
     requested = list(benchmarks.keys())
     series_by_sym: dict[str, pd.Series] = {}
+    basis_by_sym: dict[str, str] = {}
     for sym, df in benchmarks.items():
         if df is None or len(df) == 0:
             continue
-        close_col = "Adj Close" if "Adj Close" in df.columns else "Close"
+        has_adj_close = "Adj Close" in df.columns
+        close_col = "Adj Close" if has_adj_close else "Close"
         if close_col not in df.columns:
             continue
+        if not has_adj_close:
+            logger.warning(
+                "write_benchmarks_json: %s has no 'Adj Close' column — falling back "
+                "to raw 'Close'. This UNDERSTATES total return for a dividend-paying "
+                "benchmark (dividend drag is not reflected in the series).",
+                sym,
+            )
         # Full window (not HISTORY_TAIL_DAYS-capped) — the backtest needs the whole
         # fixed-floor span for its Max benchmark line; benchmarks.json is backfill-only.
         series_by_sym[sym] = df[close_col]
+        basis_by_sym[sym] = "adjusted" if has_adj_close else "close"
 
     coverage_pct = (
         round(100.0 * len(series_by_sym) / len(requested), 1) if requested else 0.0
@@ -243,6 +264,9 @@ def write_benchmarks_json(
 
     all_dates = sorted(set().union(*(set(s.index) for s in series_by_sym.values())))
     payload: dict[str, Any] = {"dates": [d.strftime("%Y-%m-%d") for d in all_dates]}
+    payload["price_basis"] = {
+        sym.lower(): basis_by_sym[sym] for sym in requested if sym in basis_by_sym
+    }
     for sym in requested:
         s = series_by_sym.get(sym)
         if s is None:
