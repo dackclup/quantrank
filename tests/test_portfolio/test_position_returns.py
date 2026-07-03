@@ -38,6 +38,7 @@ from compute.portfolio.position_returns import (
     _extract_streaks,
     _is_valid_price,
     _modified_dietz,
+    _terminal_close,
     compute_position_returns,
     compute_position_returns_per_quarter,
     position_returns_to_dict,
@@ -3265,3 +3266,157 @@ def test_close_strictly_after_returns_min_eligible_date(
                 f"_close_strictly_after resolved to date {min_eligible} > not_after {not_after}: "
                 "the not_after bound was violated!"
             )
+
+
+# ---------------------------------------------------------------------------
+# Deterministic pin tests — F1 T+1-close execution convention (commit 3a0865b8,
+# methodology-ratified 2026-07-03, RATIFY-WITH-CONDITIONS). Error->regression
+# ratchet (CLAUDE.md §Conventions): these pin the ``_terminal_close`` helper
+# directly (it had NO dedicated unit test before this pass — only comment
+# references) and the reconciliation counters actually wired into the
+# backfill artifact (``position_return_twr_vs_clientside_max_abs_pp``).
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# _terminal_close unit tests (new helper, F1)
+# ---------------------------------------------------------------------------
+
+
+def test_terminal_close_strictly_after_hit():
+    """When a close exists STRICTLY AFTER end_date, _terminal_close resolves to
+    it — the T+1-fill terminal, symmetric with the entry-side
+    _close_strictly_after convention (F1, ratified 2026-07-03)."""
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 105.0, "2020-04-02": 110.0}}
+    px = _terminal_close("AAPL", "2020-04-01", closes)
+    assert px == pytest.approx(110.0), (
+        f"Expected the first close STRICTLY AFTER end_date (110.0 on 2020-04-02), got {px}"
+    )
+
+
+def test_terminal_close_delisting_fallback_to_on_or_before():
+    """When NOTHING trades strictly after end_date (delisting / newest leg),
+    _terminal_close falls back to the close ON OR BEFORE end_date (Shumway 1997
+    delisting-fallback convention) — the ONLY case where _terminal_close diverges
+    from the pure strictly-after entry convention."""
+    closes = {"AAPL": {"2020-01-01": 100.0, "2020-04-01": 105.0}}  # nothing after 04-01
+    px = _terminal_close("AAPL", "2020-04-01", closes)
+    assert px == pytest.approx(105.0), (
+        f"Expected the on-or-before fallback (105.0, the 2020-04-01 close itself), got {px}"
+    )
+
+
+def test_terminal_close_both_none_when_no_eligible_price_either_side():
+    """Returns None when there is no close either strictly after OR on/before
+    end_date — e.g. a ticker entirely absent from the closes panel."""
+    px = _terminal_close("MISSING", "2020-04-01", {})
+    assert px is None
+
+
+# ---------------------------------------------------------------------------
+# Reconciliation guard: pp_twr / Carino-vs-clientside counters stay at
+# machine epsilon under the new (F1) strictly-after / symmetric-terminal
+# convention. "Machine epsilon" language mirrors the commit-message claim
+# ("Carino/TWR reconciliation counters stay at machine epsilon").
+# ---------------------------------------------------------------------------
+
+
+def test_reconciliation_errors_pp_twr_multi_leg_machine_epsilon():
+    """The PRODUCTION counter (``payload["meta"]["position_return_twr_vs_clientside_max_abs_pp"]``,
+    computed by ``reconciliation_errors()`` from the FLAT ``compute_position_returns()``
+    map) stays at machine epsilon (<= 1e-9) for a realistic multi-rebalance (3-leg)
+    single-streak current holder — tighter than the pre-existing near-zero
+    (abs=1e-6) sibling pin (``test_reconciliation_errors_with_closes_pp_twr_near_zero``).
+
+    Every leg boundary in the streak (2020-01-01 / 2020-04-01 / 2020-07-01) resolves
+    its price via ``_close_strictly_after`` (F1, 2026-07-03) rather than the
+    superseded on-or-after convention; the TWR chain telescopes to the same
+    entry->exit ratio the client-side point-to-point check computes, so the two
+    must agree to within floating-point noise, not just "near zero".
+    """
+    band_legs = [
+        ("2020-01-01", {"AAPL": 1.0}),
+        ("2020-04-01", {"AAPL": 1.0}),
+        ("2020-07-01", {"AAPL": 1.0}),
+    ]
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,
+            "2020-07-01": 120.0,
+            "2020-09-30": 130.0,   # latest close in the panel (mark-to-market)
+        }
+    }
+    nav_net = [100.0, 108.0, 115.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    pos_returns = compute_position_returns(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    _gross_err, _cost_residual, pp_twr_err, _clamp = reconciliation_errors(
+        pos_returns, nav_net, nav_dates, band_legs, closes=closes
+    )
+    assert pp_twr_err is not None, (
+        "pp_twr_err must be computed for a clean 3-leg single-streak current holder"
+    )
+    assert pp_twr_err <= 1e-9, (
+        f"pp_twr reconciliation error {pp_twr_err:.2e} exceeds machine epsilon (1e-9) "
+        "for a clean 3-leg single-streak holder under the T+1-close entry convention"
+    )
+
+
+def test_non_latest_quarter_twr_reconciles_with_terminal_close_point_to_point():
+    """Integration-style pin (F1, ratified 2026-07-03): for a NON-LATEST quarter,
+    ``_compute_twr``'s internal terminal mark (``_terminal_close``, symmetric with
+    the entry-side ``_close_strictly_after`` convention) reconciles with a
+    manually-computed client-side point-to-point return to machine epsilon.
+
+    ``reconciliation_errors()`` in production only ever receives the FLAT/latest
+    ``compute_position_returns()`` map (which never invokes ``_terminal_close`` —
+    its terminal mark is always ``_last_close``), so this test independently
+    verifies the SAME reconciliation invariant for the per-quarter
+    (``compute_position_returns_per_quarter``) path where ``_terminal_close`` is
+    actually exercised — the strictly-after HIT branch specifically (not the
+    on-or-before fallback), so the symmetric-terminal convention is genuinely
+    under test, not just the fallback.
+    """
+    closes = {
+        "AAPL": {
+            "2020-01-01": 100.0,
+            "2020-04-01": 110.0,   # rebal-1 boundary (a trading day)
+            "2020-04-02": 112.0,   # T+1 fill for rebal-1's terminal (strictly after 04-01)
+            "2020-07-01": 120.0,   # rebal-2 (latest) boundary
+        }
+    }
+    band_legs = [
+        ("2020-01-01", {"AAPL": 1.0}),
+        ("2020-04-01", {"AAPL": 1.0}),
+        ("2020-07-01", {"AAPL": 1.0}),
+    ]
+    nav_net = [100.0, 108.0, 115.0]
+    nav_dates = ["2020-01-01", "2020-04-01", "2020-07-01"]
+
+    per_quarter = compute_position_returns_per_quarter(
+        band_legs, closes, portfolio_nav_net=nav_net, portfolio_nav_dates=nav_dates
+    )
+    pr_q0 = per_quarter[0]["AAPL"]
+    assert pr_q0.twr_pct is not None, "quarter-0 TWR must resolve for a clean fixture"
+
+    # Manually replicate the client-side point-to-point check using the SAME
+    # symmetric convention: entry = _close_strictly_after(since_date), terminal
+    # = _terminal_close(end_date).
+    entry_px = _close_strictly_after("AAPL", pr_q0.since_date, closes)
+    terminal_px = _terminal_close("AAPL", "2020-04-01", closes)
+    assert terminal_px == pytest.approx(112.0), (
+        "expected the strictly-after HIT (112.0 on 2020-04-02), not the "
+        "on-or-before fallback (110.0 on 2020-04-01) — the fixture must exercise "
+        "the symmetric-terminal convention's primary branch"
+    )
+    assert entry_px is not None and terminal_px is not None
+    pp_return = (terminal_px / entry_px - 1.0) * 100.0
+
+    error = abs(pr_q0.twr_pct - pp_return)
+    assert error <= 1e-9, (
+        f"non-latest-quarter TWR vs client-side point-to-point reconciliation error "
+        f"{error:.2e} exceeds 1e-9 under the new symmetric terminal convention"
+    )

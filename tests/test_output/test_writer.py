@@ -200,6 +200,80 @@ def test_write_benchmarks_json_all_empty_returns_none(tmp_path):
     assert coverage == 0.0
 
 
+# ---------------------------------------------------------------------------
+# F2 (benchmark price-basis guard, commit 3a0865b8, ratified 2026-07-03):
+# write_benchmarks_json now tracks, per symbol, whether the series was built
+# from the dividend-adjusted "Adj Close" column or fell back to raw "Close",
+# and logs a warning on fallback (a raw-Close benchmark understates total
+# return for a dividend-paying index ETF). Deterministic pins for the
+# error->regression ratchet (CLAUDE.md §Conventions).
+# ---------------------------------------------------------------------------
+
+
+def test_write_benchmarks_json_price_basis_all_adjusted(tmp_path):
+    """Every symbol built from Adj Close → price_basis maps every (lowercase)
+    symbol to "adjusted"."""
+    import pandas as pd
+
+    from compute.output.writer import write_benchmarks_json
+
+    idx = pd.to_datetime(["2024-01-02", "2024-01-03"])
+    spy = pd.DataFrame({"Adj Close": [470.0, 472.0]}, index=idx)
+    qqq = pd.DataFrame({"Adj Close": [400.0, 401.0]}, index=idx)
+    path, _coverage = write_benchmarks_json({"SPY": spy, "QQQ": qqq}, tmp_path)
+    payload = json.loads(path.read_text())
+    assert payload["price_basis"] == {"spy": "adjusted", "qqq": "adjusted"}
+
+
+def test_write_benchmarks_json_price_basis_mixed(tmp_path):
+    """A mix of Adj-Close and Close-fallback symbols → price_basis reflects
+    each symbol's own basis independently."""
+    import pandas as pd
+
+    from compute.output.writer import write_benchmarks_json
+
+    idx = pd.to_datetime(["2024-01-02", "2024-01-03"])
+    spy = pd.DataFrame({"Adj Close": [470.0, 472.0]}, index=idx)
+    qqq = pd.DataFrame({"Close": [400.0, 401.0]}, index=idx)  # no Adj Close
+    path, _coverage = write_benchmarks_json({"SPY": spy, "QQQ": qqq}, tmp_path)
+    payload = json.loads(path.read_text())
+    assert payload["price_basis"] == {"spy": "adjusted", "qqq": "close"}
+
+
+def test_write_benchmarks_json_price_basis_all_close(tmp_path):
+    """Every symbol falls back to raw Close → price_basis is "close" for all."""
+    import pandas as pd
+
+    from compute.output.writer import write_benchmarks_json
+
+    idx = pd.to_datetime(["2024-01-02", "2024-01-03"])
+    dia = pd.DataFrame({"Close": [340.0, 341.0]}, index=idx)
+    iwm = pd.DataFrame({"Close": [200.0, 201.0]}, index=idx)
+    path, _coverage = write_benchmarks_json({"DIA": dia, "IWM": iwm}, tmp_path)
+    payload = json.loads(path.read_text())
+    assert payload["price_basis"] == {"dia": "close", "iwm": "close"}
+
+
+def test_write_benchmarks_json_close_fallback_logs_warning(tmp_path, caplog):
+    """Falling back to raw Close logs a per-symbol warning naming the symbol —
+    a silent fallback would hide a dividend-drag total-return understatement
+    from anyone reading the benchmark comparison."""
+    import logging
+
+    import pandas as pd
+
+    from compute.output.writer import write_benchmarks_json
+
+    idx = pd.to_datetime(["2024-01-02", "2024-01-03"])
+    dia = pd.DataFrame({"Close": [340.0, 341.0]}, index=idx)
+    with caplog.at_level(logging.WARNING, logger="compute.output.writer"):
+        write_benchmarks_json({"DIA": dia}, tmp_path)
+    assert any(
+        "DIA" in record.message and "Adj Close" in record.message
+        for record in caplog.records
+    ), "Expected a per-symbol warning naming DIA when Adj Close is absent"
+
+
 def test_write_stock_detail_round_trip(tmp_path):
     detail = StockDetail(
         ticker="AAPL",

@@ -21,6 +21,7 @@ import pytest
 from compute.validation.basket_rule_validation import (
     BASKET_RULE_N_TRIALS,
     _extract_quarterly_returns,
+    _snap_to_trading_day,
     _walk_forward_anchored_sharpe_stability,
     compute_basket_rule_validation,
     compute_grid_pbo,
@@ -191,6 +192,51 @@ def test_extract_quarterly_returns_raises_on_missing_rebalances() -> None:
     artifact["rebalances"] = []
     with pytest.raises(ValueError):
         _extract_quarterly_returns(artifact)
+
+
+# ---------------------------------------------------------------- _snap_to_trading_day
+#
+# Deterministic pin (F1, ratified 2026-07-03, commit 3a0865b8): this DSR mirror
+# of scripts.backfill_portfolio_pit._snap_to_trading_day was flipped from
+# bisect_left (on-or-after) to bisect_right (strictly after) by the same fix,
+# so the quarterly-return partitions this module derives stay in sync with the
+# NAV path's T+1-fill leg boundaries. Same bisect_right boundary pin as the
+# backfill sibling (tests/test_portfolio/test_backfill_integration.py).
+
+
+def test_snap_to_trading_day_on_trading_day_resolves_to_next_day() -> None:
+    """For a date_iso that IS itself present in ``dates``, the strictly-after
+    (bisect_right) convention resolves to the NEXT trading day — NOT the same
+    day, which is what the superseded bisect_left (on-or-after) convention
+    would have returned. This is the load-bearing semantic of the F1 fix."""
+    trading_days = ["2022-01-03", "2022-01-04", "2022-01-05", "2022-01-06", "2022-01-07"]
+    assert _snap_to_trading_day("2022-01-04", trading_days) == "2022-01-05", (
+        "must resolve to the NEXT trading day (strictly after), not the same day "
+        "— the pre-fix bisect_left convention would have returned '2022-01-04' itself"
+    )
+
+
+def test_snap_to_trading_day_weekend_input_unchanged() -> None:
+    """A date NOT present in ``dates`` (e.g. a weekend) is unaffected by the
+    bisect_left -> bisect_right flip: bisect_left and bisect_right agree when
+    the target value is absent from the list."""
+    trading_days = ["2022-01-03", "2022-01-04", "2022-01-06", "2022-01-07"]  # 01-05 skipped
+    # 2022-01-05 is absent (weekend-like gap) -> resolves to the next trading day.
+    assert _snap_to_trading_day("2022-01-05", trading_days) == "2022-01-06"
+
+
+def test_snap_to_trading_day_newest_leg_falls_back_to_last_date() -> None:
+    """Nothing trades strictly after the LAST date in ``dates`` -> falls back to
+    ``dates[-1]`` (the newest-leg fallback)."""
+    trading_days = ["2022-01-03", "2022-01-04", "2022-01-05"]
+    assert _snap_to_trading_day("2022-01-05", trading_days) == "2022-01-05"
+    # Also holds for a date entirely past the panel's end.
+    assert _snap_to_trading_day("2099-06-30", trading_days) == "2022-01-05"
+
+
+def test_snap_to_trading_day_returns_none_on_empty_dates() -> None:
+    """The documented ``None`` only if ``dates`` is empty guard."""
+    assert _snap_to_trading_day("2022-01-03", []) is None
 
 
 # ---------------------------------------------------------------- _walk_forward_anchored_sharpe_stability

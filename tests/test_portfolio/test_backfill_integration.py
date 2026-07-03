@@ -534,6 +534,54 @@ def test_snap_to_trading_day_returns_none_on_empty_dates() -> None:
 
 
 # ---------------------------------------------------------------------------
+# F1 (T+1-close execution convention, commit 3a0865b8, ratified 2026-07-03):
+# _snap_to_trading_day flipped from bisect_left (on-or-after) to bisect_right
+# (strictly after) — the load-bearing semantic of the whole fix. Deterministic
+# pin (error->regression ratchet, CLAUDE.md §Conventions).
+# ---------------------------------------------------------------------------
+
+
+def test_snap_to_trading_day_on_trading_day_resolves_to_next_day() -> None:
+    """For a date_iso that IS itself present in ``dates``, the strictly-after
+    (bisect_right) convention resolves to the NEXT trading day, not the same
+    day — a decision made using the close AT T cannot fill AT T; the earliest
+    fill is T+1. The pre-fix bisect_left (on-or-after) convention would have
+    returned '2022-01-04' itself."""
+    trading_days = ["2022-01-03", "2022-01-04", "2022-01-05", "2022-01-06", "2022-01-07"]
+    assert bf._snap_to_trading_day("2022-01-04", trading_days) == "2022-01-05"
+
+
+def test_snap_to_trading_day_newest_leg_exactly_at_last_date_falls_back() -> None:
+    """When date_iso equals the LAST date in ``dates`` (nothing trades strictly
+    after it), falls back to that same last date (the newest/last-leg fallback
+    — distinct from the pre-existing 'past all prices' fallback test above,
+    which exercises a date BEYOND the panel rather than exactly AT its end)."""
+    trading_days = ["2022-01-03", "2022-01-04", "2022-01-05"]
+    assert bf._snap_to_trading_day("2022-01-05", trading_days) == "2022-01-05"
+
+
+def test_snap_monthly_nav_stays_on_or_before_not_flipped_by_f1() -> None:
+    """``_snap_monthly_nav`` is a MEASUREMENT MARK (month-end resampling of an
+    already-built daily NAV series for display), NOT a trade fill — F1 flips
+    FILL sites only (``_snap_to_trading_day``); this helper must keep its
+    on-or-before discipline UNCHANGED, i.e. no look-ahead is ever injected into
+    the monthly-resampled series."""
+    daily_dates = ["2020-01-30", "2020-01-31", "2020-02-27", "2020-02-28", "2020-03-02"]
+    daily_net = [100.0, 101.0, 105.0, 106.0, 110.0]
+
+    labels, values = bf._snap_monthly_nav(daily_net, daily_dates)
+
+    assert labels == ["2020-01", "2020-02", "2020-03"]
+    # January: last date <= month-end within the panel -> 2020-01-31 (101.0).
+    assert values[0] == pytest.approx(101.0)
+    # February: last date <= month-end within the panel -> 2020-02-28 (106.0),
+    # NOT the 2020-03-02 value (110.0) -- no look-ahead into March.
+    assert values[1] == pytest.approx(106.0)
+    # March: only 2020-03-02 is present in the panel for this month.
+    assert values[2] == pytest.approx(110.0)
+
+
+# ---------------------------------------------------------------------------
 # Phase 7.0c new-coverage tests
 # ---------------------------------------------------------------------------
 
@@ -2873,3 +2921,214 @@ def test_band_sectors_covers_carry_name_absent_from_holdings_and_full_ranked(
         "the _band_book injection mock did not fire or CARRY was filtered out "
         "before band_book was built. Check the members_at / _band_book mocks."
     )
+
+
+# ---------------------------------------------------------------------------
+# Deterministic pin tests — commit 3a0865b8 (F1 T+1-close execution
+# convention + F2 benchmark price-basis guard + F4 survivorship-drop
+# disclosure), methodology-ratified 2026-07-03. Error->regression ratchet
+# (CLAUDE.md §Conventions): a mechanical structural fix gets a deterministic
+# guard in the same pass, not just an LLM-review catch.
+# ---------------------------------------------------------------------------
+
+
+def _run_backfill_default(tmp_path, _universe):
+    """Shared minimal ``run_backfill`` invocation for the artifact-field pins
+    below — mirrors ``test_disclaimer_mentions_adaptive_threshold_tokens``'s
+    mock set exactly."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        return bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+
+# ---------------------------------------------------------------- F1: execution_date / execution_convention
+
+
+def test_execution_date_present_and_matches_strictly_after_snap(tmp_path, _universe) -> None:
+    """F1 (T+1-close execution convention, ratified 2026-07-03): every rebalance
+    entry carries an ``execution_date`` — the strictly-after snap of its
+    DECISION ``date`` onto the NAV's own trading-day axis — while ``date``
+    itself stays the unchanged decision date T (the position_returns join key,
+    see the commit's own comment at ~line 1838-1844)."""
+    out = _run_backfill_default(tmp_path, _universe)
+    payload = json.loads(out.read_text())
+    nav_dates = payload["nav"]["dates"]
+    assert nav_dates, "NAV date axis must be non-empty for this assertion to be meaningful"
+
+    assert payload["rebalances"], "expected at least one rebalance"
+    for reb in payload["rebalances"]:
+        assert "execution_date" in reb
+        expected = bf._snap_to_trading_day(reb["date"], nav_dates)
+        assert reb["execution_date"] == expected, (
+            f"execution_date {reb['execution_date']!r} != the strictly-after snap "
+            f"of decision date {reb['date']!r} onto the NAV axis ({expected!r})"
+        )
+        assert reb["execution_date"] is not None
+
+
+def test_meta_execution_convention_is_t_plus_1_close(tmp_path, _universe) -> None:
+    """``meta.execution_convention`` pins the T+1-close label + a non-empty
+    explanatory ``execution_convention_note`` (F1, ratified 2026-07-03)."""
+    out = _run_backfill_default(tmp_path, _universe)
+    meta = json.loads(out.read_text())["meta"]
+
+    assert meta["execution_convention"] == "t_plus_1_close"
+    assert isinstance(meta["execution_convention_note"], str)
+    assert meta["execution_convention_note"], "execution_convention_note must be non-empty"
+    assert "T+1" in meta["execution_convention_note"]
+    assert "strictly after" in meta["execution_convention_note"].lower()
+
+
+# ---------------------------------------------------------------- F2: _benchmark_price_basis helper
+
+
+def test_benchmark_price_basis_absent_file_returns_none(tmp_path) -> None:
+    """No ``benchmarks.json`` in ``data_dir`` → None (never raises)."""
+    assert bf._benchmark_price_basis(tmp_path) is None
+
+
+def test_benchmark_price_basis_malformed_json_returns_none(tmp_path) -> None:
+    """Unparseable JSON → None (graceful degrade, never raises)."""
+    path = tmp_path / "portfolio" / "benchmarks.json"
+    path.parent.mkdir(parents=True)
+    path.write_text("{not valid json")
+    assert bf._benchmark_price_basis(tmp_path) is None
+
+
+def test_benchmark_price_basis_missing_key_returns_none(tmp_path) -> None:
+    """An old-style ``benchmarks.json`` that predates F2 (no "price_basis" key)
+    is None-safe."""
+    path = tmp_path / "portfolio" / "benchmarks.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({"dates": ["2024-01-02"], "spy": [470.0]}))
+    assert bf._benchmark_price_basis(tmp_path) is None
+
+
+def test_benchmark_price_basis_present_and_populated(tmp_path) -> None:
+    """A well-formed "price_basis" dict round-trips exactly."""
+    path = tmp_path / "portfolio" / "benchmarks.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({
+        "dates": ["2024-01-02"],
+        "price_basis": {"spy": "adjusted", "dia": "close"},
+    }))
+    assert bf._benchmark_price_basis(tmp_path) == {"spy": "adjusted", "dia": "close"}
+
+
+# ---------------------------------------------------------------- F2: meta.benchmark_price_basis + disclaimer clause
+
+
+def test_meta_benchmark_price_basis_propagates_with_disclaimer_when_raw_close(
+    tmp_path, _universe
+) -> None:
+    """F2: when ``benchmarks.json`` declares >=1 raw-Close benchmark,
+    ``meta.benchmark_price_basis`` carries the dict AND the disclaimer gains the
+    "Benchmark price-basis note" clause naming the raw-close symbol(s)."""
+    bench_path = tmp_path / "portfolio" / "benchmarks.json"
+    bench_path.parent.mkdir(parents=True)
+    bench_path.write_text(json.dumps({
+        "dates": ["2022-06-01"],
+        "price_basis": {"spy": "adjusted", "dia": "close"},
+    }))
+
+    out = _run_backfill_default(tmp_path, _universe)
+    meta = json.loads(out.read_text())["meta"]
+
+    assert meta["benchmark_price_basis"] == {"spy": "adjusted", "dia": "close"}
+    assert "Benchmark price-basis note" in meta["disclaimer"]
+    assert "DIA" in meta["disclaimer"]
+
+
+def test_meta_benchmark_price_basis_no_clause_when_all_adjusted(tmp_path, _universe) -> None:
+    """When every benchmark is dividend-adjusted, ``meta.benchmark_price_basis``
+    is still populated but the disclaimer clause is ABSENT (nothing to
+    disclose — the guard is silent when there is no raw-close basis)."""
+    bench_path = tmp_path / "portfolio" / "benchmarks.json"
+    bench_path.parent.mkdir(parents=True)
+    bench_path.write_text(json.dumps({
+        "dates": ["2022-06-01"],
+        "price_basis": {"spy": "adjusted", "qqq": "adjusted"},
+    }))
+
+    out = _run_backfill_default(tmp_path, _universe)
+    meta = json.loads(out.read_text())["meta"]
+
+    assert meta["benchmark_price_basis"] == {"spy": "adjusted", "qqq": "adjusted"}
+    assert "Benchmark price-basis note" not in meta["disclaimer"]
+
+
+def test_meta_benchmark_price_basis_none_when_no_benchmarks_json(tmp_path, _universe) -> None:
+    """BYTE-IDENTITY guard: no ``benchmarks.json`` present at all (the synthetic-
+    universe test default) → ``meta.benchmark_price_basis`` is None and no
+    price-basis clause appears in the disclaimer."""
+    out = _run_backfill_default(tmp_path, _universe)
+    meta = json.loads(out.read_text())["meta"]
+
+    assert meta["benchmark_price_basis"] is None
+    assert "Benchmark price-basis note" not in meta["disclaimer"]
+
+
+def test_meta_benchmark_price_basis_none_for_old_style_benchmarks_json(tmp_path, _universe) -> None:
+    """BYTE-IDENTITY guard: an old-style ``benchmarks.json`` that predates F2
+    (no "price_basis" key) is None-safe — same outcome as the no-file case, and
+    no disclaimer clause appears."""
+    bench_path = tmp_path / "portfolio" / "benchmarks.json"
+    bench_path.parent.mkdir(parents=True)
+    bench_path.write_text(json.dumps({"dates": ["2022-06-01"], "spy": [470.0]}))
+
+    out = _run_backfill_default(tmp_path, _universe)
+    meta = json.loads(out.read_text())["meta"]
+
+    assert meta["benchmark_price_basis"] is None
+    assert "Benchmark price-basis note" not in meta["disclaimer"]
+
+
+# ---------------------------------------------------------------- F4: scoring_universe_removed_unavailable_tickers
+
+
+def test_scoring_universe_removed_unavailable_tickers_matches_count(tmp_path, _universe) -> None:
+    """F4 (survivorship-drop disclosure, ratified 2026-07-03):
+    ``meta.scoring_universe_removed_unavailable_tickers`` is the ACTUAL ticker
+    list behind ``scoring_universe_removed_unavailable_count``, and the
+    disclaimer gains the "Survivorship-drop note" clause naming the count."""
+    remove_event = _removed_event("NOCIK", "2022-09-01")
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+        # CIK resolution fails for the removed ticker (mirrors
+        # test_survivorship_fix_removed_ticker_gracefully_skipped_no_cik).
+        mock.patch.object(bf, "_resolve_cik_for_removed_ticker", return_value=None),
+        mock.patch.object(bf, "list_known_events", return_value=(remove_event,)),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    meta = json.loads(out.read_text())["meta"]
+    assert meta["scoring_universe_removed_unavailable_count"] == 1
+    assert meta["scoring_universe_removed_unavailable_tickers"] == ["NOCIK"]
+    assert (
+        len(meta["scoring_universe_removed_unavailable_tickers"])
+        == meta["scoring_universe_removed_unavailable_count"]
+    )
+    assert "Survivorship-drop note" in meta["disclaimer"]
+    assert "1 historically-removed" in meta["disclaimer"]
+
+
+def test_scoring_universe_removed_unavailable_tickers_empty_no_clause(tmp_path, _universe) -> None:
+    """BYTE-IDENTITY guard: no removed-unavailable tickers (the default autouse
+    ``list_known_events`` mock returns no REMOVE events) → empty list, count 0,
+    and NO survivorship-drop disclaimer clause (nothing to disclose)."""
+    out = _run_backfill_default(tmp_path, _universe)
+    meta = json.loads(out.read_text())["meta"]
+
+    assert meta["scoring_universe_removed_unavailable_count"] == 0
+    assert meta["scoring_universe_removed_unavailable_tickers"] == []
+    assert "Survivorship-drop note" not in meta["disclaimer"]
