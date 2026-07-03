@@ -301,8 +301,26 @@ def test_schema_version_pinned():
     un-pre-screened broad pool) + Amihud 2002 *JFM* + Novy-Marx-Velikov 2016
     *RFS* (the dollar-level illiquidity-premium family); methodology-
     scientist RATIFY-WITH-CONDITIONS. The exact re-pin value is PR-2 scope,
-    gated on this sweep's data + owner sign-off."""
-    assert config.SCHEMA_VERSION == "0.10.44-phase9pilot"
+    gated on this sweep's data + owner sign-off.
+
+    Phase 9.4 PR-1 (0.10.45-phase9pilot) — sector-resolution coverage
+    canary for the ``broad_investable_us`` ranked path (OBSERVABILITY-ONLY,
+    Rule 18). ``_yf_info_fetch`` widened 4-tuple → 6-tuple, appending raw
+    yfinance ``sector`` / ``industry`` strings. New
+    ``compute.ingest.cross_source.map_yfinance_sector_to_gics`` maps the raw
+    string to one of the 11 GICS ``SECTOR_COST_OF_EQUITY`` keys (5 verbatim,
+    6 renamed); unmapped/absent → None. New pure cache-read
+    ``fetch_yfinance_sector`` mirrors ``fetch_yfinance_dividend`` /
+    ``fetch_yfinance_security_type`` (zero new network round-trips). New
+    ``Metadata.broad_universe_sector_resolved_pct: float | None`` — % of
+    scored ``broad_investable_us`` survivors whose yfinance sector maps to
+    a GICS key; populated ONLY on that universe path, None elsewhere. Does
+    NOT change the scored ``sector`` column (stays "Unknown" on this path);
+    NEVER read by scoring/composite/pillar/veto/fair-price/select_picks.
+    ``PerTickerLoopResult`` grew 28 → 29 fields
+    (``_yf_sector_resolved_by_ticker``). Rankings/scores/flags
+    BYTE-IDENTICAL on every path. Defense layer UNCHANGED at 38."""
+    assert config.SCHEMA_VERSION == "0.10.45-phase9pilot"
 
 
 def test_multi_class_overcount_allowlist_membership():

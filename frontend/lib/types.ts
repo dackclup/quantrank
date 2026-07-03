@@ -741,6 +741,20 @@ export type Metadata = {
   // methodology-scientist RATIFIED 2026-06-27, issue #16). Null on legacy snapshots
   // (pre-0.10.42) or when the helper failed (non-fatal try/except).
   restatement_history_weight_demote_delta_count?: number | null;
+  // Phase 9.4 PR-1 — sector-resolution coverage canary (0.10.45-phase9pilot,
+  // Rule 18 OBSERVABILITY-ONLY). % of the SCORED `broad_investable_us`
+  // survivors (Metadata.universe === "BROAD_INVESTABLE_US") whose yfinance
+  // `.info["sector"]` string maps to one of the 11 GICS keys in
+  // `SECTOR_COST_OF_EQUITY`. Measured, not wired — the scored `sector`
+  // column stays "Unknown" on this path regardless of this canary's value.
+  // Zero new network round-trips (pure cache-read off the yfinance_info
+  // cache already warmed by fetch_yfinance_market_cap in the Step-8 loop).
+  // null on every other universe path, and null on the broad path too if
+  // the aggregation fails or the scored frame is empty (non-fatal
+  // try/except — cron never blocked). HARD RULE 18 CONSTRAINT: MUST NEVER
+  // be read by scoring, composite, pillar, veto/flag logic, fair-price, or
+  // select_picks. Defense layer UNCHANGED at 38.
+  broad_universe_sector_resolved_pct?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

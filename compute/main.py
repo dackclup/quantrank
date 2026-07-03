@@ -1054,6 +1054,13 @@ def run_weekly_compute() -> int:
     _broad_universe_adr_suspect_count: int | None = None
     _broad_universe_survivor_fundamentals_coverage_pct: float | None = None
     _broad_universe_sector_unknown_pct: float | None = None
+    # Phase 9.4 PR-1 — sector-resolution coverage canary (Rule 18,
+    # OBSERVABILITY-ONLY).  Populated ONLY on the ``broad_investable_us``
+    # ranked path, after the Step-8 per-ticker loop (needs the warm
+    # ``yfinance_info`` cache the loop populates).  None on every other
+    # universe path, and None on the broad path itself if the aggregation
+    # block below fails or the scored frame is empty.
+    _broad_universe_sector_resolved_pct: float | None = None
     if config.QR_UNIVERSE == "sp900":
         logger.info("[sp900] Loading SP900 universe (sp500 + sp400 de-duped)…")
         universe = get_sp900_constituents()
@@ -2206,6 +2213,7 @@ def run_weekly_compute() -> int:
     country_by_ticker = result.country_by_ticker
     _dividend_yield_pct_by_ticker = result._dividend_yield_pct_by_ticker
     _security_type_by_ticker = result._security_type_by_ticker
+    _yf_sector_resolved_by_ticker = result._yf_sector_resolved_by_ticker
     value_trap_risk_count_without_sector_coe = (
         result.value_trap_risk_count_without_sector_coe
     )
@@ -2471,6 +2479,48 @@ def run_weekly_compute() -> int:
         len(_security_type_by_ticker),
         security_type_coverage_pct if security_type_coverage_pct is not None else 0.0,
     )
+
+    # Phase 9.4 PR-1 — sector-resolution coverage canary (Rule 18,
+    # OBSERVABILITY-ONLY). Measures how many of the broad-universe SCORED
+    # survivors could get a real GICS sector from yfinance — it does NOT
+    # change any scored ticker's ``sector`` column (which stays "Unknown"
+    # on this path per the P1-G4 disclosure, Phase 9.3), does NOT touch
+    # fair-price / cost-of-equity / sector-peer-medians / rankings, and is
+    # NEVER read by scoring/composite/pillar/veto/select_picks — write-only,
+    # feeds ONLY the Metadata constructor. Gated to the broad_investable_us
+    # RANKED path ONLY (the field is structurally uninteresting elsewhere —
+    # sp500/sp900/sp1500 already carry a real Wikipedia-sourced sector, so
+    # "could yfinance resolve one too" is not a meaningful canary there).
+    # ``_yf_sector_resolved_by_ticker`` (populated in the Step 8 loop, pure
+    # cache-read, zero new network round-trips) already holds the
+    # GICS-mapped value (or None if yfinance's raw sector didn't map).
+    # Own try/except so a bug here NEVER blocks the cron — falls to None.
+    if config.QR_UNIVERSE == "broad_investable_us":
+        try:
+            _broad_universe_sector_resolved_pct = _coverage_pct(
+                _yf_sector_resolved_by_ticker
+            )
+            _n_sector_resolved = sum(
+                1 for v in _yf_sector_resolved_by_ticker.values() if v is not None
+            )
+            logger.info(
+                "[broad-investable-us] Sector-resolution canary: %d / %d (%.1f%%) "
+                "of scored survivors have a yfinance sector mapping to one of the "
+                "11 GICS SECTOR_COST_OF_EQUITY keys (Phase 9.4 PR-1, observability-"
+                "only — sector column stays 'Unknown' this PR)",
+                _n_sector_resolved,
+                len(_yf_sector_resolved_by_ticker),
+                _broad_universe_sector_resolved_pct
+                if _broad_universe_sector_resolved_pct is not None
+                else 0.0,
+            )
+        except Exception as _sector_resolve_exc:  # noqa: BLE001
+            logger.warning(
+                "[broad-investable-us] Sector-resolution canary computation "
+                "failed (non-fatal, Phase 9.4 PR-1): %s",
+                _sector_resolve_exc,
+            )
+            _broad_universe_sector_resolved_pct = None
 
     # PR-A2 — Rule 18 observability: exchange-resolution coverage across the
     # universe (display-only fields). Watch this for >= 1 cron before PR-B
@@ -3288,6 +3338,15 @@ def run_weekly_compute() -> int:
         # Irregularity subset (both flags) nets zero delta (hc weight rose 3→8).
         # None on failure (non-fatal try/except — cron never blocked).
         restatement_history_weight_demote_delta_count=restatement_history_weight_demote_delta_count,
+        # Phase 9.4 PR-1 — sector-resolution coverage canary (0.10.45-phase9pilot,
+        # Rule 18 observability-only). % of scored broad_investable_us survivors
+        # whose yfinance raw sector maps to one of the 11 GICS
+        # SECTOR_COST_OF_EQUITY keys. WRITE-ONLY — never read by scoring,
+        # composite, pillar, veto/flag, fair-price, or select_picks; does NOT
+        # change the scored ``sector`` column (stays "Unknown" this PR).
+        # None on every path except broad_investable_us, and None there too
+        # on a computation failure (non-fatal try/except — cron never blocked).
+        broad_universe_sector_resolved_pct=_broad_universe_sector_resolved_pct,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

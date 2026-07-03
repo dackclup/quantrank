@@ -1302,6 +1302,37 @@ class Metadata(BaseModel):
     # None only when the chosen-floor survivor set is empty.
     broad_universe_sector_unknown_pct: float | None = None
 
+    # ------------------------------------------------------------------ #
+    #  Phase 9.4 PR-1 — sector-resolution coverage canary                 #
+    #  (OBSERVABILITY-ONLY, Rule 18)                                      #
+    # ------------------------------------------------------------------ #
+    #
+    # ``broad_universe_sector_resolved_pct`` — % of the SCORED
+    # ``broad_investable_us`` survivors (the RANKED path, ``Metadata.universe
+    # == "BROAD_INVESTABLE_US"``) whose yfinance ``.info["sector"]`` string
+    # maps to one of the 11 GICS keys in
+    # ``compute.scoring.cost_of_equity.SECTOR_COST_OF_EQUITY``.  Answers "how
+    # many broad-universe names COULD get a real sector from yfinance" —
+    # measured, not wired: the scored ``sector`` column stays "Unknown" on
+    # this path (P1-G4, Phase 9.3) regardless of this canary's value.  Zero
+    # new network round-trips — a pure cache-read off the ``yfinance_info``
+    # cache the Step-8 loop already warms for every ticker via
+    # ``fetch_yfinance_market_cap``.
+    #
+    # Computed ONLY on the ``broad_investable_us`` ranked path (structurally
+    # uninteresting elsewhere — sp500/sp900/sp1500 already carry a real
+    # Wikipedia-sourced sector).  ``None`` on every other universe path, and
+    # ``None`` on the broad path too if the aggregation fails (non-fatal
+    # try/except — the cron is never blocked) or the scored frame is empty.
+    #
+    # HARD RULE 18 CONSTRAINT: this field MUST NEVER be read by scoring,
+    # composite, pillar computation, veto/flag logic, fair-price, or
+    # ``select_picks``.  It feeds ONLY the ``Metadata`` constructor. Defense
+    # layer UNCHANGED. Wiring the mapped sector into the scored frame (if
+    # ever) is a SEPARATE future PR gated on this canary confirming coverage
+    # on ≥ 1 real ``broad_investable_us`` dispatch.
+    broad_universe_sector_resolved_pct: float | None = None
+
 
 class RawMetrics(BaseModel):
     """Latest fundamentals — TTM for flow items, point-in-time for balance items."""

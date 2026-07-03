@@ -71,7 +71,19 @@ QR_UNIVERSE: str = __import__("os").environ.get("QR_UNIVERSE", "sp500").lower()
 # flipped in this PR; rankings/scores/flags are BYTE-IDENTICAL on every
 # path. See ``compute/ingest/broad_universe.py`` module docstring +
 # ``PHASE_STATUS_INFLIGHT.md`` for the full PR-1/PR-2 plan.
-SCHEMA_VERSION: str = "0.10.44-phase9pilot"
+#
+# 0.10.45-phase9pilot — Phase 9.4 PR-1: sector-resolution coverage canary for
+# the ``broad_investable_us`` ranked path (OBSERVABILITY-ONLY, Rule 18). Adds
+# 1 new ``Metadata`` field (``broad_universe_sector_resolved_pct``) measuring
+# what fraction of scored broad-universe survivors have a yfinance raw
+# ``.info["sector"]`` that maps to one of the 11 GICS
+# ``SECTOR_COST_OF_EQUITY`` keys. Zero new network round-trips — pure
+# cache-read off the ``yfinance_info`` cache the Step-8 loop already warms
+# via ``fetch_yfinance_market_cap``. Does NOT change the scored ``sector``
+# column (stays "Unknown" on this path); NEVER read by scoring, composite,
+# pillar, veto/flag, fair-price, or ``select_picks``. Rankings/scores/flags
+# BYTE-IDENTICAL on every path. Defense layer UNCHANGED at 38.
+SCHEMA_VERSION: str = "0.10.45-phase9pilot"
 
 # 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
 # survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI

@@ -56,8 +56,9 @@ E — run_per_ticker_loop (PR #259-R7b)
     ``write_stock_history`` calls land on disk safely.
 
     E1  Result is a ``PerTickerLoopResult`` whose field set matches
-        ``dataclasses.fields`` exactly (28 fields) — the return-contract
-        shape lock.
+        ``dataclasses.fields`` exactly (29 fields, incl.
+        ``_yf_sector_resolved_by_ticker`` — Phase 9.4 PR-1) — the
+        return-contract shape lock.
     E2  ``summaries`` / ``all_details`` have one entry per ticker, in
         ``StockSummary`` / ``StockDetail`` instances, and both stock-detail
         + stock-history JSON files are actually written to ``tmp_path``.
@@ -661,7 +662,8 @@ def _run_loop_kwargs(*, df, snapshots, tickers, tmp_path, monkeypatch, call_coun
 
 
 def test_E1_result_field_set_matches_dataclass_shape(tmp_path, monkeypatch):
-    """PerTickerLoopResult's actual field set (28 fields) is exactly what
+    """PerTickerLoopResult's actual field set (29 fields, since Phase 9.4
+    PR-1's ``_yf_sector_resolved_by_ticker`` addition) is exactly what
     dataclasses.fields() reports — the return-contract shape lock."""
     tickers = ["GOOD"]
     df = _make_df(
@@ -685,7 +687,10 @@ def test_E1_result_field_set_matches_dataclass_shape(tmp_path, monkeypatch):
 
     assert isinstance(result, PerTickerLoopResult)
     field_names = {f.name for f in dataclasses.fields(PerTickerLoopResult)}
-    assert len(field_names) == 28
+    assert len(field_names) == 29
+    assert "_yf_sector_resolved_by_ticker" in field_names, (
+        "Phase 9.4 PR-1 field must be present in the dataclass shape"
+    )
     for name in field_names:
         # every declared field is actually set (dataclass would have raised
         # in __init__ already if not, but this locks the attribute-access
