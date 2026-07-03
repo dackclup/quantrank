@@ -103,18 +103,33 @@ def _norm_cdf(x: float) -> float:
 
 
 def _snap_to_trading_day(date_iso: str, dates: list[str]) -> str | None:
-    """First trading day in ``dates`` on or after ``date_iso``.
+    """First trading day in ``dates`` STRICTLY AFTER ``date_iso`` (the T+1 fill).
+
+    F1 (AI-pick backtest methodology fix, ratified 2026-07-03): decisions are
+    made using data known as of the close at T (``date_iso``); the actual
+    TRADE FILL is the first executable print AFTER that — the T+1-close proxy
+    (never "next open" — no intraday signal exists in a daily close series).
+    This helper is a FILL-aligned mirror, not a measurement mark: it snaps
+    each rebalance's decision date to the same trading day the NAV curve's
+    leg boundary actually sits on, so the DSR quarterly-return partitions
+    (:func:`_extract_quarterly_returns`) land on the correct fill day rather
+    than the (pre-fill) decision day — the NAV series in the artifact is
+    built with fills at T+1 close (see the flipped ``_snap_to_trading_day``
+    in :mod:`scripts.backfill_portfolio_pit`), so sampling this module's
+    quarterly-return legs on the SAME convention keeps the two in sync.
 
     Falls back to the last available date when ``date_iso`` is past the end of the
-    series. Returns ``None`` only when ``dates`` is empty.
+    series (or when nothing trades strictly after it — the newest leg). Returns
+    ``None`` only when ``dates`` is empty.
 
     Mirrors the private ``_snap_to_trading_day`` in
     :mod:`scripts.backfill_portfolio_pit` (kept private there, duplicated here to
-    avoid cross-layer import).
+    avoid cross-layer import) — both were flipped from ``bisect_left``
+    (on-or-after) to ``bisect_right`` (strictly after) by the same F1 fix.
     """
     if not dates:
         return None
-    i = bisect.bisect_left(dates, date_iso)
+    i = bisect.bisect_right(dates, date_iso)
     return dates[i] if i < len(dates) else dates[-1]
 
 
@@ -123,8 +138,9 @@ def _extract_quarterly_returns(artifact: dict) -> pd.Series:
 
     The artifact's ``nav.adaptive.net`` is a daily NAV series indexed by
     ``nav.dates``. At each rebalance boundary the NAV is sampled on the snapped
-    trading day (first trading day on/after the calendar rebalance date) and the
-    per-leg return is computed as (NAV_end / NAV_start) - 1.
+    trading day (first trading day STRICTLY AFTER the calendar rebalance date —
+    the T+1-fill day, F1 2026-07-03) and the per-leg return is computed as
+    (NAV_end / NAV_start) - 1.
 
     The final leg runs from the last rebalance snap to the LAST day of the NAV
     series (the as-of date of the artifact), so the series always has exactly

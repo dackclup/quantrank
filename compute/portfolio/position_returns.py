@@ -199,31 +199,45 @@ def _close_on_or_before(
     return px if _is_valid_price(px) else None
 
 
-def _close_on_or_after(
+def _close_strictly_after(
     ticker: str,
     date_iso: str,
     closes: Mapping[str, Mapping[str, float]],
     *,
     not_after: str | None = None,
 ) -> float | None:
-    """First available valid close ON OR AFTER ``date_iso`` (the fill day).
+    """First available valid close STRICTLY AFTER ``date_iso`` (the T+1 fill day).
+
+    F1 (AI-pick backtest methodology fix, ratified 2026-07-03): decisions are
+    made using data known as of ``date_iso`` (close <= T), but the actual TRADE
+    FILL is the first executable print AFTER that decision — the cron publishes
+    rankings after the US market close, so the earliest the basket can actually
+    be traded is the T+1 close. This is the T+1-CLOSE proxy, NOT "next open" —
+    "next open" is false under both the pre-fix on-or-after and this
+    strictly-after convention; the cron has no intraday execution signal, only
+    the daily close series. Renamed (was ``_close_on_or_after``, ``d >=
+    date_iso``) from an on-or-after convention that could resolve to the SAME
+    day as the decision — which double-counts same-day information the
+    decision itself was already based on.
 
     Used for entry-price lookups so that a rebalance date that falls on a
     non-trading day (e.g. Sunday 2016-08-14 for the initial basket) resolves
-    to the FIRST trading-day close *after* that date, matching the NAV path's
-    ``_snap_to_trading_day`` on-or-after convention.
+    to the FIRST trading-day close strictly after that date, matching the NAV
+    path's ``_snap_to_trading_day`` (also flipped to strictly-after by this
+    fix).
 
-    This is asymmetric with the terminal-price convention: terminal prices use
-    ``_close_on_or_before`` (the last mark before rotating out), while entry
-    prices use this helper (the actual fill day).
+    This is now SYMMETRIC with the terminal-price convention for non-latest
+    (historical) quarters: both entry and terminal (sell) prices use the first
+    close strictly after the boundary date, with ``_close_on_or_before`` as
+    the delisting / newest-leg fallback (Shumway 1997) — see ``_terminal_close``.
 
     Parameters
     ----------
     ticker:
         The ticker symbol.
     date_iso:
-        ISO date string (YYYY-MM-DD).  The search starts on this date
-        (inclusive) and scans forward.
+        ISO date string (YYYY-MM-DD).  The search starts strictly after this
+        date (exclusive) and scans forward.
     closes:
         ``{ticker: {date_iso: close}}`` — the shared adjusted-close panel.
     not_after:
@@ -235,18 +249,41 @@ def _close_on_or_after(
     Returns
     -------
     float | None
-        The close on the first trading day on or after ``date_iso`` (and on or
-        before ``not_after`` when supplied).  None when no eligible close
+        The close on the first trading day strictly after ``date_iso`` (and on
+        or before ``not_after`` when supplied).  None when no eligible close
         exists or the eligible close is not a valid price.
     """
     series = closes.get(ticker)
     if not series:
         return None
-    eligible = [d for d in series if d >= date_iso and (not_after is None or d <= not_after)]
+    eligible = [d for d in series if d > date_iso and (not_after is None or d <= not_after)]
     if not eligible:
         return None
     px = series[min(eligible)]
     return px if _is_valid_price(px) else None
+
+
+def _terminal_close(
+    ticker: str,
+    end_date: str,
+    closes: Mapping[str, Mapping[str, float]],
+) -> float | None:
+    """Terminal (sell) mark for a NON-LATEST quarter — SYMMETRIC T+1 convention.
+
+    F1 (ratified terminal convention (i), 2026-07-03): the first close STRICTLY
+    AFTER ``end_date`` — the actual T+1 fill price for the trade that closes
+    this leg out at the rebalance decided on ``end_date`` — matching the entry
+    side's ``_close_strictly_after`` convention. Falls back to
+    ``_close_on_or_before`` (Shumway 1997 delisting-fallback convention) ONLY
+    when nothing trades after ``end_date`` (the series simply ends at/before
+    that date — a delisting, or ``end_date`` is beyond the panel's newest leg).
+    The LATEST (currently-open) quarter is unaffected by this helper — it
+    keeps marking to the last-available close via ``_last_close`` (unchanged).
+    """
+    px = _close_strictly_after(ticker, end_date, closes)
+    if px is not None:
+        return px
+    return _close_on_or_before(ticker, end_date, closes)
 
 
 def _modified_dietz(
@@ -416,13 +453,15 @@ def _extract_streaks(
                     streaks.append(current)
                     current = []
 
-            # Entry price: use _close_on_or_after (not _close_on_or_before) so
-            # that a rebalance date that falls on a non-trading day (e.g.
-            # 2016-08-14 = Sunday for rb[0]) resolves to the FIRST trading-day
-            # close ON OR AFTER that date — matching the NAV path's
-            # _snap_to_trading_day on-or-after fill convention (asymmetric:
-            # terminal prices still use _close_on_or_before, i.e. the last mark
-            # before rotating out).
+            # Entry price: use _close_strictly_after (not _close_on_or_before) so
+            # that a rebalance date — trading day or not (e.g. 2016-08-14 =
+            # Sunday for rb[0]) — resolves to the FIRST trading-day close
+            # STRICTLY AFTER that date — the T+1-close fill proxy, matching the
+            # NAV path's ``_snap_to_trading_day`` strictly-after convention
+            # (F1, ratified 2026-07-03). SYMMETRIC with the terminal-price
+            # convention for non-latest quarters: both use "first close
+            # strictly after the boundary date", with _close_on_or_before as
+            # the Shumway-1997 delisting fallback — see ``_terminal_close``.
             #
             # not_after: bound the forward search by the next leg's date so that
             # a panel hole spanning the whole sub-period cannot let the entry
@@ -443,7 +482,7 @@ def _extract_streaks(
             # empty.  This prevents a panel hole from leaping the entry price
             # past the sub-period boundary via an unconstrained forward search.
             effective_not_after = next_leg_date if next_leg_date is not None else entry_not_after
-            px = _close_on_or_after(ticker, date_iso, closes, not_after=effective_not_after)
+            px = _close_strictly_after(ticker, date_iso, closes, not_after=effective_not_after)
             current.append((date_iso, weight, px))
             prev_date = date_iso
 
@@ -480,12 +519,16 @@ def _compute_twr(
     is_current_holder:
         When True, the position is still open at the end of the period.  When
         ``end_date`` is None, mark to the latest available close; when ``end_date``
-        is provided (non-latest rebalance), mark to the close on or before that date.
+        is provided (non-latest rebalance), mark to the T+1-fill terminal close
+        (see ``_terminal_close``).
     end_date:
         ISO date marking the end of this sub-period (the next rebalance date).
         None for the latest/current rebalance (mark to last available close).
         When provided and ``is_current_holder`` is True, uses
-        ``_close_on_or_before(ticker, end_date, closes)`` as the terminal price.
+        ``_terminal_close(ticker, end_date, closes)`` as the terminal price —
+        the first close STRICTLY AFTER ``end_date`` (the T+1 fill), falling
+        back to ``_close_on_or_before`` only when nothing trades after it
+        (delisting / newest leg, Shumway 1997) — F1, ratified 2026-07-03.
 
     Returns
     -------
@@ -504,10 +547,13 @@ def _compute_twr(
     # Add terminal price.
     if is_current_holder:
         if end_date is not None:
-            # Non-latest quarter: mark to close on or before the next rebalance date.
-            terminal_px = _close_on_or_before(ticker, end_date, closes)
+            # Non-latest (historical) quarter: mark to the T+1-fill terminal
+            # close — first close strictly after the next rebalance date,
+            # falling back to on-or-before only when nothing trades after it.
+            terminal_px = _terminal_close(ticker, end_date, closes)
         else:
-            # Latest quarter: mark to the most recent close.
+            # Latest quarter: mark to the most recent close (unchanged — this
+            # is a MEASUREMENT MARK, not a fill; no trade has executed yet).
             terminal_px = _last_close(ticker, closes)
         prices.append(terminal_px)
     else:
@@ -574,8 +620,12 @@ def _compute_mwr(
     end_date:
         ISO date marking the end of this sub-period (next rebalance date).
         When provided and ``is_current_holder`` is True, uses
-        ``_close_on_or_before(ticker, end_date, closes)`` as the terminal price.
-        None = latest quarter (mark to last close).
+        ``_terminal_close(ticker, end_date, closes)`` as the terminal price —
+        the first close STRICTLY AFTER ``end_date`` (the T+1 fill), falling
+        back to ``_close_on_or_before`` only when nothing trades after it
+        (delisting / newest leg, Shumway 1997) — F1, ratified 2026-07-03.
+        None = latest quarter (mark to last close — a MEASUREMENT MARK, no
+        trade has executed).
     """
     if not streak:
         return None
@@ -584,17 +634,23 @@ def _compute_mwr(
     all_entries: list[tuple[str, float, float | None]] = list(streak)
     if is_current_holder:
         if end_date is not None:
-            terminal_px = _close_on_or_before(ticker, end_date, closes)
+            terminal_px = _terminal_close(ticker, end_date, closes)
         else:
             terminal_px = _last_close(ticker, closes)
         if terminal_px is not None:
             # Append a synthetic terminal entry (date = terminal date, weight = last weight).
             if end_date is not None:
-                # Find the actual date of the terminal close (on or before end_date).
+                # Find the actual date of the terminal close used by
+                # _terminal_close above: first date strictly after end_date,
+                # falling back to the latest date on or before it.
                 series = closes.get(ticker)
                 if series:
-                    eligible = [d for d in series if d <= end_date]
-                    terminal_date = max(eligible) if eligible else streak[-1][0]
+                    after = [d for d in series if d > end_date]
+                    if after:
+                        terminal_date = min(after)
+                    else:
+                        before = [d for d in series if d <= end_date]
+                        terminal_date = max(before) if before else streak[-1][0]
                 else:
                     terminal_date = streak[-1][0]
             else:
@@ -799,7 +855,11 @@ def _compute_carino_contribution_for_streak(
     (``_build_carino_grid`` + ``_compute_contribution_from_sub_periods``).
 
     This implementation is correct for the old per-streak formulation and
-    will continue to pass the existing tests.
+    will continue to pass the existing tests. F1 (ratified 2026-07-03): the
+    ``is_current_holder=True`` + ``end_date`` terminal branch was updated to
+    the same T+1-fill ``_terminal_close`` convention as ``_compute_twr`` /
+    ``_compute_mwr`` for consistency, though this deprecated path is not
+    exercised by any test with that combination as of this fix.
     """
     if not streak or not date_to_nav:
         return None
@@ -813,11 +873,15 @@ def _compute_carino_contribution_for_streak(
     price_seq: list[tuple[str, float, float | None]] = list(streak)
     if is_current_holder:
         if end_date is not None:
-            terminal_px = _close_on_or_before(ticker, end_date, closes)
+            terminal_px = _terminal_close(ticker, end_date, closes)
             series = closes.get(ticker)
             if series and terminal_px is not None:
-                eligible = [d for d in series if d <= end_date]
-                terminal_date = max(eligible) if eligible else streak[-1][0]
+                after = [d for d in series if d > end_date]
+                if after:
+                    terminal_date = min(after)
+                else:
+                    before = [d for d in series if d <= end_date]
+                    terminal_date = max(before) if before else streak[-1][0]
             else:
                 terminal_date = end_date
         else:
@@ -1473,13 +1537,14 @@ def reconciliation_errors(
                 continue  # skip multi-streak names
 
             # For clean single-streak names, compute the point-to-point HPR.
-            # Entry price = close on-or-after since_date (matching the engine's
-            # _close_on_or_after entry convention — a since_date that falls on a
-            # non-trading day, e.g. rb[0] Sunday 2016-08-14, would return None
-            # here if we used _close_on, producing a spurious skip and masking
-            # the initial-basket discrepancy).  Exit price = last close in series
-            # (for current holders, same as what _compute_twr marks to).
-            entry_px = _close_on_or_after(ticker, pr.since_date, closes)
+            # Entry price = close strictly after since_date (matching the
+            # engine's _close_strictly_after T+1-fill entry convention — a
+            # since_date that falls on a non-trading day, e.g. rb[0] Sunday
+            # 2016-08-14, would return None here if we used _close_on,
+            # producing a spurious skip and masking the initial-basket
+            # discrepancy).  Exit price = last close in series (for current
+            # holders, same as what _compute_twr marks to).
+            entry_px = _close_strictly_after(ticker, pr.since_date, closes)
             exit_px = _last_close(ticker, closes)
             if entry_px is None or exit_px is None:
                 continue
