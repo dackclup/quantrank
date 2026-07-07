@@ -5,19 +5,19 @@
   "industry": "Independent Power Producers & Energy Traders",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 10440629163.163269,
-  "current_price": 14.64,
-  "rank": 517,
-  "composite_score": 53.9,
+  "market_cap": 10390707660.771538,
+  "current_price": 14.57,
+  "rank": 585,
+  "composite_score": 52.82,
   "pillar_scores": {
-    "quality": 63.54,
-    "value": 62.08,
-    "growth": 56.46,
-    "momentum": 54.73,
-    "health": 13.1,
-    "profitability": 51.25,
-    "technical": 47.64,
-    "risk": 44.49,
+    "quality": 63.56,
+    "value": 62.43,
+    "growth": 56.78,
+    "momentum": 52.12,
+    "health": 13.22,
+    "profitability": 51.13,
+    "technical": 30.38,
+    "risk": 43.98,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 713157713.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 10440629163.163269,
-    "pe_ratio_ttm": 3.9607849632637597,
+    "market_cap": 10390707660.771538,
+    "pe_ratio_ttm": 3.9418466087904167,
     "goodwill": 342000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.72115386185772,
+        "value": 76.43602106344497,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 12.365821660580439,
+        "value": 12.497496778591518,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 10.818781065568018,
-    "max": 12.365821660580439,
+    "median": 10.884618624573557,
+    "max": 12.497496778591518,
     "low": 6.895340345834429,
-    "high": 75.72115386185772,
-    "mos_pct": -35.32023852406251,
+    "high": 76.43602106344497,
+    "mos_pct": -33.858614595190275,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pe_estimate"
@@ -106,7 +106,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 58,
+    "filing_lag_days": 63,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -126,25 +126,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Utilities median (n=60)",
+    "label": "Utilities median (n=59)",
     "values": {
-      "Quality": 51.67,
-      "Value": 45.28,
-      "Growth": 51.04,
-      "Momentum": 48.09,
-      "Health": 15.81,
-      "Profitability": 51.53,
-      "Technical": 51.84,
-      "Risk": 73.56
+      "Quality": 51.69,
+      "Value": 47.18,
+      "Growth": 50.85,
+      "Momentum": 53.03,
+      "Health": 15.82,
+      "Profitability": 51.13,
+      "Technical": 52.38,
+      "Risk": 74.97
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.15063629569373063,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 52.410279638548374,
-  "price_change_1d_pct": -0.1364,
+  "loss_chance_pct": 52.439015194887894,
+  "price_change_1d_pct": -0.0686,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.9,
+  "composite_score_adjusted": 52.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.88,
+  "osap_blended_score": 52.34,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,10 +206,10 @@
     "latest_filing_date": "2026-05-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 8.125633966231943e-09,
-  "dividend_yield_pct": 4.8,
+  "cross_source_delta": 4.434457717642575e-08,
+  "dividend_yield_pct": 4.83,
   "pays_dividend": true,
   "payout_ratio": 0.3666,
-  "average_dollar_volume": 121306264.6513404,
+  "average_dollar_volume": 122150263.9446219,
   "security_type": "Common stock"
 }

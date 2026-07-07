@@ -5,19 +5,19 @@
   "industry": "Home Furnishings",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1586718741.3235703,
-  "current_price": 39.77,
-  "rank": 546,
-  "composite_score": 53.4,
+  "market_cap": 1571956754.0785675,
+  "current_price": 39.4,
+  "rank": 581,
+  "composite_score": 52.86,
   "pillar_scores": {
     "quality": 45.66,
-    "value": 74.74,
+    "value": 75.34,
     "growth": 20.92,
-    "momentum": 54.51,
-    "health": 70.85,
+    "momentum": 49.9,
+    "health": 70.83,
     "profitability": 52.89,
-    "technical": 47.77,
-    "risk": 48.59,
+    "technical": 47.4,
+    "risk": 46.5,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 39897378.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1586718741.3235703,
-    "pe_ratio_ttm": 15.418358983233766,
+    "market_cap": 1571956754.0785675,
+    "pe_ratio_ttm": 15.274914771779182,
     "goodwill": 243300000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 48.301849785350406,
+        "value": 49.60168841518545,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 77.95813737965972,
+        "value": 76.85599871362118,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 57.32504686352127,
+        "value": 57.498769945877186,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 46.06463704555803,
-    "max": 77.95813737965972,
+    "median": 46.71455636047555,
+    "max": 76.85599871362118,
     "low": 18.748217518335057,
-    "high": 77.95813737965972,
-    "mos_pct": 13.664791457205986,
+    "high": 76.85599871362118,
+    "mos_pct": 15.65797773643286,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 46.06463704555803,
+    "median_trimmed": 46.71455636047555,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,12 +98,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-06-09",
     "latest_filed_date": "2026-06-16"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster"
+  ],
   "has_history": true,
   "tangible_book_value": 18.274759810030623,
   "tier2_events": {
@@ -117,22 +119,22 @@
     "label": "Consumer Discretionary median (n=196)",
     "values": {
       "Quality": 48.37,
-      "Value": 49.83,
+      "Value": 50.06,
       "Growth": 49.11,
-      "Momentum": 45.67,
-      "Health": 42.67,
+      "Momentum": 43.62,
+      "Health": 42.65,
       "Profitability": 50.26,
-      "Technical": 53.86,
-      "Risk": 40.3
+      "Technical": 51.44,
+      "Risk": 39.09
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 33.515065738875066,
-  "price_change_1d_pct": -0.8724,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.4,
+  "loss_chance_pct": 33.08797492255165,
+  "price_change_1d_pct": -1.2779,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 52.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,7 +150,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -180,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.63,
+  "osap_blended_score": 52.36,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -190,13 +192,13 @@
   "valuation_methods_applicable": 6,
   "form4_diagnostics": {
     "insider_count": 10,
-    "latest_filing_date": "2026-06-26",
+    "latest_filing_date": "2026-07-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3438783885339168e-08,
-  "dividend_yield_pct": 2.41,
+  "cross_source_delta": 1.1500677393303935e-08,
+  "dividend_yield_pct": 2.43,
   "pays_dividend": true,
   "payout_ratio": 0.3741,
-  "average_dollar_volume": 26649603.345946502,
+  "average_dollar_volume": 26758715.647556305,
   "security_type": "Common stock"
 }
