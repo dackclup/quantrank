@@ -5,19 +5,19 @@
   "industry": "Insurance Brokers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 76355897122.7024,
-  "current_price": 357.51,
-  "rank": 781,
-  "composite_score": 49.81,
+  "market_cap": 75939419465.0119,
+  "current_price": 355.56,
+  "rank": 774,
+  "composite_score": 49.96,
   "pillar_scores": {
-    "quality": 70.61,
-    "value": 22.36,
-    "growth": 65.33,
-    "momentum": 43.94,
-    "health": 25.09,
-    "profitability": 61.56,
-    "technical": 60.28,
-    "risk": 62.28,
+    "quality": 70.64,
+    "value": 22.51,
+    "growth": 65.5,
+    "momentum": 44.4,
+    "health": 25.13,
+    "profitability": 61.53,
+    "technical": 61.35,
+    "risk": 61.36,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 213576949.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 76355897122.7024,
-    "pe_ratio_ttm": 19.055626933541898,
+    "market_cap": 75939419465.0119,
+    "pe_ratio_ttm": 18.95168940978585,
     "goodwill": 15925000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 255.4793379421511,
+        "value": 257.7607917150124,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 74.5300290011638,
+        "value": 77.20285726398458,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 165.00468347165744,
-    "max": 255.4793379421511,
-    "low": 74.5300290011638,
-    "high": 255.4793379421511,
-    "mos_pct": -116.66658318037007,
+    "median": 167.48182448949848,
+    "max": 257.7607917150124,
+    "low": 77.20285726398458,
+    "high": 257.7607917150124,
+    "mos_pct": -112.29766193578112,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 165.00468347165744,
+    "median_trimmed": 167.48182448949848,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -101,7 +101,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 69,
+    "filing_lag_days": 70,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-01"
   },
@@ -121,25 +121,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=256)",
+    "label": "Financials median (n=258)",
     "values": {
-      "Quality": 50.2,
-      "Value": 51.14,
-      "Growth": 50.2,
-      "Momentum": 55.6,
-      "Health": 53.94,
-      "Profitability": 51.14,
-      "Technical": 58.54,
-      "Risk": 60.62
+      "Quality": 50.19,
+      "Value": 51.02,
+      "Growth": 50.22,
+      "Momentum": 55.66,
+      "Health": 54.5,
+      "Profitability": 51.03,
+      "Technical": 57.39,
+      "Risk": 60.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 72.09374411741999,
-  "price_change_1d_pct": -0.642,
+  "loss_chance_pct": 72.02168313438068,
+  "price_change_1d_pct": -0.5454,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.81,
+  "composite_score_adjusted": 49.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.83,
+  "osap_blended_score": 50.9,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -201,10 +201,10 @@
     "latest_filing_date": "2026-07-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.392352734252668e-08,
+  "cross_source_delta": 7.175472159575871e-08,
   "dividend_yield_pct": 0.91,
   "pays_dividend": true,
   "payout_ratio": 0.16360001,
-  "average_dollar_volume": 564634593.3071533,
+  "average_dollar_volume": 556503592.5068563,
   "security_type": "Common stock"
 }

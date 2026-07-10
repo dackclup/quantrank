@@ -5,19 +5,19 @@
   "industry": "Biotechnology",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 29580572852.230545,
-  "current_price": 200.36,
-  "rank": 609,
-  "composite_score": 52.57,
+  "market_cap": 29366499483.13327,
+  "current_price": 198.91,
+  "rank": 616,
+  "composite_score": 52.48,
   "pillar_scores": {
-    "quality": 43.68,
-    "value": 63.0,
-    "growth": 32.44,
-    "momentum": 64.62,
-    "health": 65.26,
-    "profitability": 49.85,
-    "technical": 50.43,
-    "risk": 55.69,
+    "quality": 43.3,
+    "value": 64.06,
+    "growth": 32.08,
+    "momentum": 66.69,
+    "health": 66.82,
+    "profitability": 49.55,
+    "technical": 40.08,
+    "risk": 54.13,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 147637117.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 29580572852.230545,
-    "pe_ratio_ttm": 21.561755851177594,
+    "market_cap": 29366499483.13327,
+    "pe_ratio_ttm": 21.405714325485288,
     "goodwill": 6488700000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 229.37219562950492,
+        "value": 229.6709902861385,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 545.230269891985,
+        "value": 551.7778314061055,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 229.37219562950492,
-    "max": 545.230269891985,
+    "median": 229.6709902861385,
+    "max": 551.7778314061055,
     "low": 156.7106111436351,
-    "high": 545.230269891985,
-    "mos_pct": 12.64852304331407,
+    "high": 551.7778314061055,
+    "mos_pct": 13.393501105953852,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 229.37219562950492,
+    "median_trimmed": 229.6709902861385,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,7 +100,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 71,
+    "filing_lag_days": 72,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,25 +118,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=168)",
+    "label": "Health Care median (n=166)",
     "values": {
-      "Quality": 50.07,
-      "Value": 51.56,
-      "Growth": 49.11,
-      "Momentum": 50.77,
-      "Health": 56.62,
-      "Profitability": 48.51,
-      "Technical": 61.96,
-      "Risk": 44.69
+      "Quality": 49.92,
+      "Value": 51.86,
+      "Growth": 50.19,
+      "Momentum": 51.73,
+      "Health": 57.37,
+      "Profitability": 48.39,
+      "Technical": 61.5,
+      "Risk": 45.21
     }
   },
   "beneish_m_score": -2.6681306562666594,
   "dechow_f_score": 1.305785398533103,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.28813592297497,
-  "price_change_1d_pct": -2.596,
+  "loss_chance_pct": 36.073116684660576,
+  "price_change_1d_pct": -0.7237,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.57,
+  "composite_score_adjusted": 52.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.21,
+  "osap_blended_score": 52.17,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,10 +198,10 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.092868652148327e-09,
+  "cross_source_delta": 5.282661297536436e-09,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 235418387.82822773,
+  "average_dollar_volume": 240625462.1676666,
   "security_type": "Common stock"
 }

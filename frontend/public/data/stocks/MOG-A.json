@@ -5,19 +5,19 @@
   "industry": "Aerospace & Defense",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13018907787.142273,
-  "current_price": 405.92,
-  "rank": 843,
-  "composite_score": 48.51,
+  "market_cap": 13100371471.18219,
+  "current_price": 408.46,
+  "rank": 870,
+  "composite_score": 48.27,
   "pillar_scores": {
-    "quality": 39.41,
+    "quality": 39.3,
     "value": 25.29,
-    "growth": 49.41,
-    "momentum": 85.06,
-    "health": 61.2,
-    "profitability": 42.94,
-    "technical": 68.49,
-    "risk": 78.48,
+    "growth": 49.42,
+    "momentum": 85.42,
+    "health": 61.36,
+    "profitability": 42.93,
+    "technical": 63.23,
+    "risk": 78.44,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 32072594.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 13018907787.142273,
-    "pe_ratio_ttm": 45.57962324385489,
+    "market_cap": 13100371471.18219,
+    "pe_ratio_ttm": 45.86483027406852,
     "goodwill": 873510000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 308.78340573347344,
+        "value": 308.92608638869575,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 278.07731337081776,
+        "value": 274.76697471292215,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 433.91489933604356,
+        "value": 439.5397931036513,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 175.1305400667972,
-    "max": 433.91489933604356,
+    "median": 173.4753707378494,
+    "max": 439.5397931036513,
     "low": 17.485820923669046,
-    "high": 433.91489933604356,
-    "mos_pct": -131.78139762083237,
+    "high": 439.5397931036513,
+    "mos_pct": -135.45705059903298,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -91,7 +91,7 @@
       "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 308.78340573347344,
+    "median_trimmed": 308.92608638869575,
     "methods_excluded_from_median": [
       "graham",
       "rim",
@@ -103,7 +103,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 76,
+    "filing_lag_days": 77,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-04-24"
   },
@@ -125,25 +125,25 @@
     "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/67887/0001628280-25-054108-index.html"
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=255)",
+    "label": "Industrials median (n=257)",
     "values": {
-      "Quality": 49.41,
-      "Value": 49.8,
-      "Growth": 50.2,
-      "Momentum": 49.95,
-      "Health": 58.72,
-      "Profitability": 49.41,
-      "Technical": 47.04,
-      "Risk": 50.21
+      "Quality": 49.42,
+      "Value": 50.19,
+      "Growth": 50.19,
+      "Momentum": 50.7,
+      "Health": 59.16,
+      "Profitability": 49.48,
+      "Technical": 46.71,
+      "Risk": 50.63
     }
   },
   "beneish_m_score": -2.153478585130282,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 66.74522867108202,
-  "price_change_1d_pct": -1.4781,
+  "loss_chance_pct": 66.86269628806538,
+  "price_change_1d_pct": 0.6257,
   "manipulation_index": 3.0,
-  "composite_score_adjusted": 48.21,
+  "composite_score_adjusted": 47.97,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.18,
+  "osap_blended_score": 50.06,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,10 +205,10 @@
     "latest_filing_date": "2026-06-25",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.012161070170466732,
-  "dividend_yield_pct": 0.29,
+  "cross_source_delta": 0.012161063335695874,
+  "dividend_yield_pct": 0.3,
   "pays_dividend": true,
   "payout_ratio": 0.1322,
-  "average_dollar_volume": 142117469.18423972,
+  "average_dollar_volume": 137356285.5051076,
   "security_type": "Common stock"
 }

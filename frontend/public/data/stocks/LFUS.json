@@ -5,19 +5,19 @@
   "industry": "Electronic Components",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 10155012228.499512,
-  "current_price": 401.56,
+  "market_cap": 10382612364.499512,
+  "current_price": 410.56,
   "rank": 1164,
-  "composite_score": 42.84,
+  "composite_score": 42.96,
   "pillar_scores": {
-    "quality": 18.39,
-    "value": 53.79,
-    "growth": 37.83,
-    "momentum": 79.03,
-    "health": 65.22,
-    "profitability": 24.87,
-    "technical": 20.35,
-    "risk": 52.84,
+    "quality": 18.12,
+    "value": 53.88,
+    "growth": 37.7,
+    "momentum": 78.24,
+    "health": 65.31,
+    "profitability": 24.69,
+    "technical": 26.25,
+    "risk": 52.59,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 25288904.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 10155012228.499512,
+    "market_cap": 10382612364.499512,
     "pe_ratio_ttm": null,
     "goodwill": 1209792000.0
   },
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 591.3508609358139,
+        "value": 602.6834320575106,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 2077.830341929579,
+        "value": 2078.2867076502857,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 371.33358709146034,
-    "max": 591.3508609358139,
+    "median": 376.9998726523087,
+    "max": 602.6834320575106,
     "low": 49.93320719005142,
-    "high": 2077.830341929579,
-    "mos_pct": -8.139961349547562,
+    "high": 2078.2867076502857,
+    "mos_pct": -8.901892902557073,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 371.33358709146034,
+    "median_trimmed": 376.9998726523087,
     "methods_excluded_from_median": [
       "graham",
       "multiples_ev_ebitda"
@@ -101,7 +101,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 64,
+    "filing_lag_days": 65,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -126,23 +126,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=189)",
     "values": {
-      "Quality": 50.4,
-      "Value": 51.32,
+      "Quality": 50.26,
+      "Value": 51.23,
       "Growth": 50.93,
-      "Momentum": 68.34,
-      "Health": 65.0,
-      "Profitability": 49.56,
-      "Technical": 47.57,
-      "Risk": 41.26
+      "Momentum": 66.31,
+      "Health": 64.63,
+      "Profitability": 49.47,
+      "Technical": 49.88,
+      "Risk": 41.3
     }
   },
   "beneish_m_score": -2.8970827440314117,
   "dechow_f_score": 1.2257090236200465,
   "recommendation": "neutral",
-  "loss_chance_pct": 52.427556446856,
-  "price_change_1d_pct": -0.6924,
+  "loss_chance_pct": 52.63700148206162,
+  "price_change_1d_pct": 2.2413,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 42.34,
+  "composite_score_adjusted": 42.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.35,
+  "osap_blended_score": 47.4,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,10 +204,10 @@
     "latest_filing_date": "2026-06-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3047695929591994e-08,
-  "dividend_yield_pct": 0.74,
+  "cross_source_delta": 1.1124414957084612e-08,
+  "dividend_yield_pct": 0.75,
   "pays_dividend": true,
   "payout_ratio": 0.6,
-  "average_dollar_volume": 152081047.04933676,
+  "average_dollar_volume": 151697803.82063803,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Health Care Facilities",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 3371380403.05777,
-  "current_price": 21.47,
-  "rank": 517,
-  "composite_score": 53.95,
+  "market_cap": 3402786023.660248,
+  "current_price": 21.67,
+  "rank": 519,
+  "composite_score": 53.94,
   "pillar_scores": {
-    "quality": 63.54,
-    "value": 76.98,
-    "growth": 58.04,
-    "momentum": 5.63,
-    "health": 46.53,
-    "profitability": 48.41,
-    "technical": 45.19,
-    "risk": 33.48,
+    "quality": 62.8,
+    "value": 77.91,
+    "growth": 57.38,
+    "momentum": 6.27,
+    "health": 47.07,
+    "profitability": 48.29,
+    "technical": 44.1,
+    "risk": 33.31,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 157027504.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3371380403.05777,
-    "pe_ratio_ttm": 16.351160617392885,
+    "market_cap": 3402786023.660248,
+    "pe_ratio_ttm": 16.50347755744933,
     "goodwill": 1606743000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 17.711524672073427,
+        "value": 22.845087328527523,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 26.088754296496337,
+        "value": 27.212481281503855,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 36.80404335320537,
+        "value": 37.61986115544391,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 21.90013948428488,
-    "max": 36.80404335320537,
+    "median": 25.02878430501569,
+    "max": 37.61986115544391,
     "low": 12.814791746503579,
-    "high": 36.80404335320537,
-    "mos_pct": 1.9640978599202525,
+    "high": 37.61986115544391,
+    "mos_pct": 13.419685861644728,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 21.90013948428488,
+    "median_trimmed": 25.02878430501569,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -97,14 +97,13 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 70,
+    "filing_lag_days": 71,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "restatement_history",
-    "rem_suspect"
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -116,32 +115,32 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=168)",
+    "label": "Health Care median (n=166)",
     "values": {
-      "Quality": 50.07,
-      "Value": 51.56,
-      "Growth": 49.11,
-      "Momentum": 50.77,
-      "Health": 56.62,
-      "Profitability": 48.51,
-      "Technical": 61.96,
-      "Risk": 44.69
+      "Quality": 49.92,
+      "Value": 51.86,
+      "Growth": 50.19,
+      "Momentum": 51.73,
+      "Health": 57.37,
+      "Profitability": 48.39,
+      "Technical": 61.5,
+      "Risk": 45.21
     }
   },
   "beneish_m_score": -2.405655655770779,
   "dechow_f_score": 0.7272416057778407,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 37.339075440318375,
-  "price_change_1d_pct": -0.4636,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 53.15,
+  "loss_chance_pct": 33.33505404796078,
+  "price_change_1d_pct": 0.9315,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 53.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -182,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.9,
+  "osap_blended_score": 52.89,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -196,10 +195,10 @@
     "latest_filing_date": "2026-05-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.282217401359527e-08,
+  "cross_source_delta": 7.152889434723926e-09,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 58172830.85681419,
+  "average_dollar_volume": 58024303.33251489,
   "security_type": "Common stock"
 }

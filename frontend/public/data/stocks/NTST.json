@@ -1,23 +1,23 @@
 {
   "ticker": "NTST",
   "name": "NETSTREIT Corp.",
-  "sector": "Financials",
-  "industry": "Mortgage REITs",
+  "sector": "Real Estate",
+  "industry": "Retail REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 2128061999.5356503,
-  "current_price": 21.88,
-  "rank": 1055,
-  "composite_score": 44.87,
+  "market_cap": 2106664732.7792091,
+  "current_price": 21.66,
+  "rank": 1101,
+  "composite_score": 44.19,
   "pillar_scores": {
-    "quality": 27.83,
-    "value": 39.29,
-    "growth": 50.29,
-    "momentum": 70.02,
-    "health": 47.79,
-    "profitability": 36.26,
-    "technical": 66.31,
-    "risk": 79.26,
+    "quality": 33.64,
+    "value": 39.25,
+    "growth": 52.34,
+    "momentum": 68.92,
+    "health": 26.41,
+    "profitability": 32.71,
+    "technical": 66.41,
+    "risk": 78.52,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 97260607.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2128061999.5356503,
-    "pe_ratio_ttm": 188.85889239755505,
+    "market_cap": 2106664732.7792091,
+    "pe_ratio_ttm": 186.95995143585455,
     "goodwill": null
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 0.9160624444171185,
+        "value": 2.924443477765958,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 9.32070016041798,
+        "value": 31.769582052422003,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -63,7 +63,7 @@
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "sector_excluded_financials",
+        "reason": "non_positive_or_missing_ebitda",
         "tier_used": null
       },
       "rim": {
@@ -75,15 +75,15 @@
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "sector_excluded_financials",
+        "reason": "non_positive_fcf_5y_median",
         "tier_used": null
       }
     },
-    "median": 1.7497567957063107,
-    "max": 9.32070016041798,
-    "low": 0.9160624444171185,
-    "high": 9.32070016041798,
-    "mos_pct": -1150.4594475333627,
+    "median": 2.924443477765958,
+    "max": 31.769582052422003,
+    "low": 1.7497567957063107,
+    "high": 31.769582052422003,
+    "mos_pct": -640.6537350470054,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -117,7 +117,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 80,
+    "filing_lag_days": 81,
     "latest_period_end": "2026-04-14",
     "latest_filed_date": "2026-04-20"
   },
@@ -139,25 +139,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=256)",
+    "label": "Real Estate median (n=107)",
     "values": {
-      "Quality": 50.2,
-      "Value": 51.14,
-      "Growth": 50.2,
-      "Momentum": 55.6,
-      "Health": 53.94,
-      "Profitability": 51.14,
-      "Technical": 58.54,
-      "Risk": 60.62
+      "Quality": 49.53,
+      "Value": 48.6,
+      "Growth": 49.77,
+      "Momentum": 64.05,
+      "Health": 26.91,
+      "Profitability": 50.78,
+      "Technical": 51.53,
+      "Risk": 63.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.56667289081585,
-  "price_change_1d_pct": -0.3643,
+  "loss_chance_pct": 67.90449688680653,
+  "price_change_1d_pct": -1.0055,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.87,
+  "composite_score_adjusted": 44.19,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -205,7 +205,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.36,
+  "osap_blended_score": 48.02,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -218,10 +218,10 @@
     "latest_filing_date": "2026-06-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.004237508336842363,
-  "dividend_yield_pct": 4.01,
+  "cross_source_delta": 0.004237539596067503,
+  "dividend_yield_pct": 4.02,
   "pays_dividend": true,
   "payout_ratio": 7.1667,
-  "average_dollar_volume": 51567722.15367006,
+  "average_dollar_volume": 51801268.2870135,
   "security_type": "Common stock"
 }
