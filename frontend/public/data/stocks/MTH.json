@@ -5,19 +5,19 @@
   "industry": "Homebuilding",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4917303442.183868,
-  "current_price": 73.72,
-  "rank": 1042,
-  "composite_score": 45.3,
+  "market_cap": 5014021766.474197,
+  "current_price": 75.17,
+  "rank": 1025,
+  "composite_score": 45.51,
   "pillar_scores": {
     "quality": 41.96,
-    "value": 61.86,
+    "value": 60.97,
     "growth": 17.54,
-    "momentum": 47.94,
+    "momentum": 48.31,
     "health": 46.2,
     "profitability": 49.45,
-    "technical": 49.07,
-    "risk": 39.87,
+    "technical": 55.3,
+    "risk": 41.33,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 66702433.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4917303442.183868,
-    "pe_ratio_ttm": 12.755121557040093,
+    "market_cap": 5014021766.474197,
+    "pe_ratio_ttm": 13.006001739160494,
     "goodwill": 32962000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.4285157762204,
+        "value": 75.4323658184589,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 132.97349499671355,
+        "value": 133.96638703309358,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -83,7 +83,7 @@
     "max": 145.0808170135634,
     "low": 59.43429232915039,
     "high": 145.0808170135634,
-    "mos_pct": 16.319629916358235,
+    "mos_pct": 14.673722710174115,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
     "median_trimmed": 88.0971261802704,
@@ -107,11 +107,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 82,
+    "filing_lag_days": 83,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-24"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 75.85024672188494,
@@ -125,25 +127,25 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=196)",
     "values": {
-      "Quality": 47.93,
-      "Value": 50.23,
-      "Growth": 49.27,
-      "Momentum": 45.0,
-      "Health": 42.54,
+      "Quality": 47.8,
+      "Value": 50.13,
+      "Growth": 49.33,
+      "Momentum": 45.25,
+      "Health": 42.55,
       "Profitability": 50.26,
-      "Technical": 49.41,
-      "Risk": 38.95
+      "Technical": 48.35,
+      "Risk": 38.99
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.63683287364429,
-  "price_change_1d_pct": -0.149,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.3,
+  "loss_chance_pct": 40.106710354965266,
+  "price_change_1d_pct": 1.9669,
+  "manipulation_index": 20.0,
+  "composite_score_adjusted": 43.51,
   "manipulation_components": {
-    "sloan_accruals_top_decile": false,
+    "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
@@ -189,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.58,
+  "osap_blended_score": 48.68,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -202,10 +204,10 @@
     "latest_filing_date": "2026-05-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0014726733668718778,
+  "cross_source_delta": 0.0014726560572940845,
   "dividend_yield_pct": 2.6,
   "pays_dividend": true,
   "payout_ratio": 0.32299998,
-  "average_dollar_volume": 76372525.23444723,
+  "average_dollar_volume": 75314901.48253886,
   "security_type": "Common stock"
 }

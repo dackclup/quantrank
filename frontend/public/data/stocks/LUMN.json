@@ -5,19 +5,19 @@
   "industry": "Alternative Carriers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6563081397.990255,
-  "current_price": 6.37,
-  "rank": 1066,
-  "composite_score": 44.87,
+  "market_cap": 6645506204.983759,
+  "current_price": 6.45,
+  "rank": 1111,
+  "composite_score": 43.91,
   "pillar_scores": {
     "quality": 55.1,
     "value": 51.7,
     "growth": 40.82,
-    "momentum": 51.4,
-    "health": 32.96,
+    "momentum": 42.75,
+    "health": 32.97,
     "profitability": 13.61,
-    "technical": 24.64,
-    "risk": 31.51,
+    "technical": 27.06,
+    "risk": 31.39,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 1030311070.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6563081397.990255,
+    "market_cap": 6645506204.983759,
     "pe_ratio_ttm": null,
     "goodwill": 0.0
   },
@@ -61,10 +61,10 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "ev_ebitda_negative_equity_post_debt",
-        "tier_used": null
+        "value": 0.033205149975923214,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -81,13 +81,17 @@
     },
     "median": null,
     "max": null,
-    "low": null,
-    "high": null,
+    "low": 0.033205149975923214,
+    "high": 0.033205149975923214,
     "mos_pct": null,
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate"
+    ],
     "valuation_methods_applicable": 0,
     "median_trimmed": null,
-    "methods_excluded_from_median": []
+    "methods_excluded_from_median": [
+      "multiples_ev_ebitda"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,12 +102,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 71,
+    "filing_lag_days": 72,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -117,22 +123,22 @@
     "label": "Communication Services median (n=49)",
     "values": {
       "Quality": 51.02,
-      "Value": 52.21,
+      "Value": 52.38,
       "Growth": 51.02,
-      "Momentum": 38.51,
-      "Health": 37.54,
+      "Momentum": 39.93,
+      "Health": 37.53,
       "Profitability": 51.7,
-      "Technical": 56.6,
-      "Risk": 40.53
+      "Technical": 57.38,
+      "Risk": 41.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
   "loss_chance_pct": null,
-  "price_change_1d_pct": -1.2403,
+  "price_change_1d_pct": 1.2559,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.87,
+  "composite_score_adjusted": 43.91,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.36,
+  "osap_blended_score": 47.88,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -193,10 +199,10 @@
     "latest_filing_date": "2026-05-26",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.7729391778009025e-08,
+  "cross_source_delta": 2.3622543427716995e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 114424558.85682933,
+  "average_dollar_volume": 109988744.36555815,
   "security_type": "Common stock"
 }
