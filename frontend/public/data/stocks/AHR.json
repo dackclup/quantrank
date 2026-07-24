@@ -5,19 +5,19 @@
   "industry": "Health Care REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 11000589693.525085,
-  "current_price": 57.08,
-  "rank": 965,
-  "composite_score": 46.62,
+  "market_cap": 10865683930.889633,
+  "current_price": 56.38,
+  "rank": 981,
+  "composite_score": 46.33,
   "pillar_scores": {
-    "quality": 39.15,
-    "value": 39.54,
-    "growth": 60.26,
-    "momentum": 61.91,
-    "health": 32.11,
-    "profitability": 29.87,
-    "technical": 63.49,
-    "risk": 91.44,
+    "quality": 39.29,
+    "value": 39.52,
+    "growth": 60.24,
+    "momentum": 61.0,
+    "health": 32.09,
+    "profitability": 30.0,
+    "technical": 59.47,
+    "risk": 91.32,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 192722308.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 11000589693.525085,
-    "pe_ratio_ttm": 108.20003829608913,
+    "market_cap": 10865683930.889633,
+    "pe_ratio_ttm": 106.87312682223326,
     "goodwill": 234942000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 17.245809133588963,
+        "value": 17.261523321515114,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 39.86082807396117,
+        "value": 39.88621549687485,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 50.51778021512867,
+        "value": 50.5510856295079,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 39.86082807396117,
-    "max": 50.51778021512867,
-    "low": 17.245809133588963,
-    "high": 50.51778021512867,
-    "mos_pct": -43.19823392816525,
+    "median": 39.88621549687485,
+    "max": 50.5510856295079,
+    "low": 17.261523321515114,
+    "high": 50.5510856295079,
+    "mos_pct": -41.352094616579265,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 39.86082807396117,
+    "median_trimmed": 39.88621549687485,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -106,14 +106,16 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 76,
+    "filing_lag_days": 77,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [
     "net_issuance_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 15.547286824730223,
   "tier2_events": {
@@ -124,25 +126,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Real Estate median (n=106)",
+    "label": "Real Estate median (n=105)",
     "values": {
-      "Quality": 49.53,
-      "Value": 47.52,
-      "Growth": 50.0,
-      "Momentum": 61.59,
-      "Health": 26.9,
-      "Profitability": 50.75,
-      "Technical": 56.35,
-      "Risk": 63.88
+      "Quality": 50.0,
+      "Value": 48.89,
+      "Growth": 49.76,
+      "Momentum": 60.79,
+      "Health": 26.91,
+      "Profitability": 50.63,
+      "Technical": 56.19,
+      "Risk": 63.84
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.81111024986882,
-  "price_change_1d_pct": -0.9028,
+  "loss_chance_pct": 59.306417837760776,
+  "price_change_1d_pct": -1.2264,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.62,
+  "composite_score_adjusted": 46.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.23,
+  "osap_blended_score": 49.09,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,10 +206,10 @@
     "latest_filing_date": "2026-07-22",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.4682239414290974e-08,
-  "dividend_yield_pct": 1.74,
+  "cross_source_delta": 0.07264340046432226,
+  "dividend_yield_pct": 1.75,
   "pays_dividend": true,
   "payout_ratio": 1.6949,
-  "average_dollar_volume": 201976181.4561793,
+  "average_dollar_volume": 200039344.48142877,
   "security_type": "Common stock"
 }

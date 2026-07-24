@@ -5,19 +5,19 @@
   "industry": "Passenger Airlines",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4942989532.090851,
-  "current_price": 44.36,
-  "rank": 1381,
-  "composite_score": 36.78,
+  "market_cap": 4986446765.5,
+  "current_price": 44.75,
+  "rank": 1377,
+  "composite_score": 36.98,
   "pillar_scores": {
-    "quality": 21.89,
-    "value": 57.65,
-    "growth": 56.42,
-    "momentum": 42.85,
-    "health": 20.28,
-    "profitability": 27.69,
-    "technical": 17.03,
-    "risk": 20.47,
+    "quality": 21.85,
+    "value": 57.4,
+    "growth": 56.25,
+    "momentum": 41.46,
+    "health": 20.29,
+    "profitability": 27.65,
+    "technical": 25.9,
+    "risk": 21.11,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 111428978.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4942989532.090851,
-    "pe_ratio_ttm": 67.71218537110755,
+    "market_cap": 4986446765.5,
+    "pe_ratio_ttm": 68.30748993835617,
     "goodwill": 2723000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 17.92877146574619,
+        "value": 17.842516516253237,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 135.57365421728045,
+        "value": 138.66715057436056,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 101.5718810589386,
+        "value": 102.74651072988513,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,20 @@
         "tier_used": null
       }
     },
-    "median": 59.7503262623424,
-    "max": 135.57365421728045,
+    "median": 60.294513623069186,
+    "max": 138.66715057436056,
     "low": 8.94278267911685,
-    "high": 135.57365421728045,
-    "mos_pct": 25.757726551010613,
+    "high": 138.66715057436056,
+    "mos_pct": 25.780975231420932,
     "valuation_warnings": [
-      "goodwill_heavy"
+      "goodwill_heavy",
+      "extreme_graham_estimate"
     ],
-    "valuation_methods_applicable": 4,
-    "median_trimmed": 59.7503262623424,
-    "methods_excluded_from_median": []
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 102.74651072988513,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,13 +107,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
+    "filing_lag_days": 78,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "extreme_graham_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 1.8576855295217731,
@@ -122,25 +126,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=257)",
+    "label": "Industrials median (n=258)",
     "values": {
-      "Quality": 49.51,
+      "Quality": 49.42,
       "Value": 49.87,
       "Growth": 50.19,
-      "Momentum": 54.87,
-      "Health": 59.21,
-      "Profitability": 49.42,
-      "Technical": 47.16,
-      "Risk": 50.11
+      "Momentum": 52.55,
+      "Health": 59.42,
+      "Profitability": 49.56,
+      "Technical": 52.36,
+      "Risk": 50.75
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.596218128192646,
-  "price_change_1d_pct": -2.4197,
+  "loss_chance_pct": 39.486568689922244,
+  "price_change_1d_pct": 0.8792,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.78,
+  "composite_score_adjusted": 36.98,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.31,
+  "osap_blended_score": 44.42,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -196,16 +200,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 19,
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0012383703969852274,
+  "cross_source_delta": 0.0012383171405181625,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 166087649.4791626,
+  "average_dollar_volume": 164453177.43166962,
   "security_type": "Common stock"
 }

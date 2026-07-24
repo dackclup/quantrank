@@ -5,19 +5,19 @@
   "industry": "Automobile Manufacturers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 880010615.3658009,
-  "current_price": 31.13,
-  "rank": 1467,
-  "composite_score": 32.3,
+  "market_cap": 850045603.8830185,
+  "current_price": 30.07,
+  "rank": 1456,
+  "composite_score": 32.91,
   "pillar_scores": {
     "quality": 17.56,
-    "value": 69.49,
+    "value": 71.79,
     "growth": 2.31,
-    "momentum": 14.89,
-    "health": 54.5,
-    "profitability": 23.68,
-    "technical": 33.3,
-    "risk": 28.99,
+    "momentum": 13.78,
+    "health": 54.47,
+    "profitability": 23.59,
+    "technical": 40.08,
+    "risk": 26.49,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 28268893.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 880010615.3658009,
-    "pe_ratio_ttm": 19.340892645402217,
+    "market_cap": 850045603.8830185,
+    "pe_ratio_ttm": 18.682320964461944,
     "goodwill": 484200000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 29.728886508206514,
+        "value": 30.401770230710937,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 141.27798455334576,
+        "value": 137.7601823314694,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 38.39010738048575,
+        "value": 38.036713348409776,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 38.39010738048575,
-    "max": 141.27798455334576,
+    "median": 38.036713348409776,
+    "max": 137.7601823314694,
     "low": 24.948311629569677,
-    "high": 141.27798455334576,
-    "mos_pct": 18.91140378369863,
+    "high": 137.7601823314694,
+    "mos_pct": 20.94480030546232,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 38.39010738048575,
+    "median_trimmed": 38.036713348409776,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,14 +98,15 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 29,
     "latest_period_end": "2026-06-17",
     "latest_filed_date": "2026-06-25"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "loss_avoidance_pattern"
+    "loss_avoidance_pattern",
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 10.948430134848223,
@@ -120,22 +121,22 @@
     "label": "Consumer Discretionary median (n=195)",
     "values": {
       "Quality": 47.82,
-      "Value": 51.28,
+      "Value": 50.09,
       "Growth": 49.1,
-      "Momentum": 41.62,
-      "Health": 42.36,
+      "Momentum": 43.24,
+      "Health": 42.3,
       "Profitability": 50.26,
-      "Technical": 47.12,
-      "Risk": 39.86
+      "Technical": 45.77,
+      "Risk": 38.96
     }
   },
   "beneish_m_score": -2.848272302710714,
   "dechow_f_score": 0.47764332295030265,
   "recommendation": "neutral",
-  "loss_chance_pct": 43.232910641005645,
-  "price_change_1d_pct": 2.4687,
+  "loss_chance_pct": 44.2122423639817,
+  "price_change_1d_pct": -3.4051,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 31.8,
+  "composite_score_adjusted": 32.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.07,
+  "osap_blended_score": 42.38,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -196,10 +197,10 @@
     "latest_filing_date": "2026-05-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.291492385524192e-08,
-  "dividend_yield_pct": 4.61,
+  "cross_source_delta": 4.2213051076010846e-08,
+  "dividend_yield_pct": 4.5,
   "pays_dividend": true,
   "payout_ratio": 1.0221,
-  "average_dollar_volume": 25900591.989442825,
+  "average_dollar_volume": 26013581.24131012,
   "security_type": "Common stock"
 }

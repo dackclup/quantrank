@@ -5,19 +5,19 @@
   "industry": "Packaged Foods & Meats",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1366875954.7911568,
-  "current_price": 28.73,
-  "rank": 1288,
-  "composite_score": 39.95,
+  "market_cap": 1348321106.3196144,
+  "current_price": 28.34,
+  "rank": 1312,
+  "composite_score": 39.24,
   "pillar_scores": {
     "quality": 17.43,
-    "value": 72.37,
+    "value": 71.93,
     "growth": 29.11,
-    "momentum": 10.66,
-    "health": 69.31,
-    "profitability": 24.56,
-    "technical": 70.83,
-    "risk": 50.44,
+    "momentum": 11.06,
+    "health": 69.28,
+    "profitability": 24.78,
+    "technical": 57.89,
+    "risk": 49.9,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 47576609.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1366875954.7911568,
-    "pe_ratio_ttm": 18.905614865714476,
+    "market_cap": 1348321106.3196144,
+    "pe_ratio_ttm": 18.64897795739439,
     "goodwill": 389800000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 29.64188492679166,
+        "value": 29.753630915755412,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 76.94525809425132,
+        "value": 75.5649521210468,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 28.126065823906444,
+        "value": 27.827650199206555,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 31.658279832795895,
-    "max": 76.94525809425132,
-    "low": 28.126065823906444,
-    "high": 76.94525809425132,
-    "mos_pct": 9.249650663350511,
+    "median": 31.714152827277772,
+    "max": 75.5649521210468,
+    "low": 27.827650199206555,
+    "high": 75.5649521210468,
+    "mos_pct": 10.639264725330221,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 31.658279832795895,
+    "median_trimmed": 31.714152827277772,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,12 +98,13 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 78,
+    "filing_lag_days": 79,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "rem_suspect",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -119,29 +120,29 @@
     "label": "Consumer Staples median (n=76)",
     "values": {
       "Quality": 49.67,
-      "Value": 52.3,
+      "Value": 52.85,
       "Growth": 48.85,
-      "Momentum": 42.18,
-      "Health": 40.43,
+      "Momentum": 42.98,
+      "Health": 40.39,
       "Profitability": 48.9,
-      "Technical": 52.41,
-      "Risk": 52.32
+      "Technical": 48.42,
+      "Risk": 51.66
     }
   },
   "beneish_m_score": -2.674282333414704,
   "dechow_f_score": 0.3676478892640251,
   "recommendation": "neutral",
-  "loss_chance_pct": 43.7883840665982,
-  "price_change_1d_pct": 1.4477,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.95,
+  "loss_chance_pct": 43.65488281188769,
+  "price_change_1d_pct": -1.3575,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 38.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -182,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.9,
+  "osap_blended_score": 45.55,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -195,10 +196,10 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.7158570674073456e-08,
-  "dividend_yield_pct": 4.24,
+  "cross_source_delta": 6.105341971179292e-08,
+  "dividend_yield_pct": 4.18,
   "pays_dividend": true,
   "payout_ratio": 0.8276,
-  "average_dollar_volume": 14653958.301297378,
+  "average_dollar_volume": 14424890.156424712,
   "security_type": "Common stock"
 }

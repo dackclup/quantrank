@@ -1,23 +1,23 @@
 {
   "ticker": "TOST",
   "name": "Toast, Inc.",
-  "sector": "nan",
-  "industry": null,
+  "sector": "Financials",
+  "industry": "Transaction & Payment Processing Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 17584419448.85254,
-  "current_price": 29.21,
-  "rank": 140,
-  "composite_score": 62.56,
+  "market_cap": 17096799770.355225,
+  "current_price": 28.4,
+  "rank": 995,
+  "composite_score": 46.06,
   "pillar_scores": {
-    "quality": 100.0,
-    "value": 16.67,
-    "growth": 100.0,
-    "momentum": 7.65,
-    "health": 77.61,
-    "profitability": 100.0,
-    "technical": 63.07,
-    "risk": 18.43,
+    "quality": 62.11,
+    "value": 22.0,
+    "growth": 69.19,
+    "momentum": 9.0,
+    "health": 81.05,
+    "profitability": 34.63,
+    "technical": 65.19,
+    "risk": 19.45,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 602000000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 17584419448.85254,
-    "pe_ratio_ttm": 42.68062973022461,
+    "market_cap": 17096799770.355225,
+    "pe_ratio_ttm": 41.49708682125054,
     "goodwill": 113000000.0
   },
   "fair_price": {
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 17.441392472255668,
+        "value": 13.962344959701232,
         "applicable": true,
         "reason": null,
-        "tier_used": "broad_ex_financials_utilities"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 10.843080902943605,
+        "value": 14.367186996724838,
         "applicable": true,
         "reason": null,
-        "tier_used": "broad_ex_financials_utilities"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 11.979021995037304,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "broad_ex_financials_utilities"
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,20 +75,20 @@
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_fcf_5y_median",
+        "reason": "sector_excluded_financials",
         "tier_used": null
       }
     },
-    "median": 11.411051448990454,
-    "max": 17.441392472255668,
+    "median": 13.962344959701232,
+    "max": 14.367186996724838,
     "low": 1.6693444711787775,
-    "high": 17.441392472255668,
-    "mos_pct": -155.9799087318714,
+    "high": 14.367186996724838,
+    "mos_pct": -103.40422543992193,
     "valuation_warnings": [
       "extreme_graham_estimate"
     ],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 11.979021995037304,
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 14.164765978213035,
     "methods_excluded_from_median": [
       "graham"
     ]
@@ -102,7 +102,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 76,
+    "filing_lag_days": 77,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -121,14 +121,26 @@
     "latest_8k_filing_date": null,
     "latest_8k_filing_url": null
   },
-  "pillar_baseline": null,
+  "pillar_baseline": {
+    "label": "Financials median (n=258)",
+    "values": {
+      "Quality": 50.19,
+      "Value": 51.26,
+      "Growth": 50.31,
+      "Momentum": 59.86,
+      "Health": 54.48,
+      "Profitability": 51.2,
+      "Technical": 55.33,
+      "Risk": 61.21
+    }
+  },
   "beneish_m_score": -2.8132380554478664,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.7188123752495,
-  "price_change_1d_pct": -3.8196,
+  "loss_chance_pct": 62.969332341546334,
+  "price_change_1d_pct": -2.773,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 61.76,
+  "composite_score_adjusted": 45.26,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -176,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.21,
+  "osap_blended_score": 48.96,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -184,16 +196,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 11,
     "latest_filing_date": "2026-07-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03654485305708929,
+  "cross_source_delta": 0.036544867504302705,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 347634006.70885795,
+  "average_dollar_volume": 351915792.10973066,
   "security_type": "Common stock"
 }
