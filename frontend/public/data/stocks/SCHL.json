@@ -5,63 +5,63 @@
   "industry": "Publishing",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1992275941.0858154,
-  "current_price": 46.44,
-  "rank": 1192,
-  "composite_score": 42.07,
+  "market_cap": 1044230036.9262695,
+  "current_price": 43.15,
+  "rank": 959,
+  "composite_score": 46.64,
   "pillar_scores": {
-    "quality": 37.05,
-    "value": 29.32,
-    "growth": 35.26,
-    "momentum": 77.45,
-    "health": 36.26,
-    "profitability": 45.38,
-    "technical": 50.52,
-    "risk": 59.02,
+    "quality": 37.89,
+    "value": 54.73,
+    "growth": 37.44,
+    "momentum": 72.49,
+    "health": 36.77,
+    "profitability": 45.53,
+    "technical": 30.14,
+    "risk": 57.0,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1614100000.0,
-    "net_income": 62700000.0,
-    "total_assets": 1780800000.0,
+    "revenue": 1581900000.0,
+    "net_income": 56700000.0,
+    "total_assets": 1728100000.0,
     "total_liabilities": null,
-    "stockholders_equity": 871900000.0,
-    "cash": 104600000.0,
-    "operating_cash_flow": 169500000.0,
+    "stockholders_equity": 750800000.0,
+    "cash": 134900000.0,
+    "operating_cash_flow": 188300000.0,
     "capex": 72400000.0,
-    "free_cash_flow": 97100000.0,
-    "eps_basic": 1.4615384615384615,
-    "eps_diluted": 1.4615384615384615,
-    "shares_outstanding": 42900000.0,
+    "free_cash_flow": 115900000.0,
+    "eps_basic": 2.34297520661157,
+    "eps_diluted": 2.34297520661157,
+    "shares_outstanding": 24200000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1992275941.0858154,
-    "pe_ratio_ttm": 31.774735902485098,
-    "goodwill": 200300000.0
+    "market_cap": 1044230036.9262695,
+    "pe_ratio_ttm": 18.416755501345143,
+    "goodwill": 199400000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 17.05358687123695,
+        "value": 19.794228121908386,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 27.304930640367456,
+        "value": 44.049494483320316,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 64.11888821712377,
+        "value": 100.5958239064095,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 23.384916009860326,
+        "value": 39.99299579383663,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -73,22 +73,20 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 16.91644721191883,
+        "value": 31.24031344592222,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 23.384916009860326,
-    "max": 64.11888821712377,
-    "low": 16.91644721191883,
-    "high": 64.11888821712377,
-    "mos_pct": -98.58954638591564,
-    "valuation_warnings": [
-      "stale_filing_soft"
-    ],
+    "median": 39.99299579383663,
+    "max": 100.5958239064095,
+    "low": 19.794228121908386,
+    "high": 100.5958239064095,
+    "mos_pct": -7.89389659208478,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 23.384916009860326,
+    "median_trimmed": 39.99299579383663,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,20 +98,18 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 126,
-    "latest_period_end": "2026-02-28",
-    "latest_filed_date": "2026-03-20"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-05-31",
+    "latest_filed_date": "2026-07-24"
   },
-  "risk_flags": [
-    "net_issuance_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
-    "stale_filing_soft",
     "cross_source_disagreement",
-    "restatement_history"
+    "restatement_history",
+    "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 13.750582750582751,
+  "tangible_book_value": 19.56611570247934,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -122,25 +118,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Discretionary median (n=195)",
+    "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 47.82,
+      "Quality": 47.84,
       "Value": 50.09,
-      "Growth": 49.1,
-      "Momentum": 43.24,
-      "Health": 42.3,
-      "Profitability": 50.26,
-      "Technical": 45.77,
-      "Risk": 38.96
+      "Growth": 49.19,
+      "Momentum": 45.76,
+      "Health": 42.48,
+      "Profitability": 50.47,
+      "Technical": 48.86,
+      "Risk": 39.05
     }
   },
-  "beneish_m_score": -2.7102047751881444,
-  "dechow_f_score": 1.3292076445689618,
+  "beneish_m_score": -2.8329841460654928,
+  "dechow_f_score": 0.4337800316389378,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.96269077127933,
-  "price_change_1d_pct": 0.1726,
+  "loss_chance_pct": 46.44339354713961,
+  "price_change_1d_pct": -7.0844,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.07,
+  "composite_score_adjusted": 46.64,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.96,
+  "osap_blended_score": 49.25,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -201,10 +197,10 @@
     "latest_filing_date": "2026-07-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.5698323438404234,
-  "dividend_yield_pct": 1.72,
+  "cross_source_delta": 0.2374300644100083,
+  "dividend_yield_pct": 2.16,
   "pays_dividend": true,
   "payout_ratio": 0.33200002,
-  "average_dollar_volume": 15628357.354492951,
+  "average_dollar_volume": 16293886.504140472,
   "security_type": "Common stock"
 }
