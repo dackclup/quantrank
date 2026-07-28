@@ -5,19 +5,19 @@
   "industry": "Restaurants",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8019158790.963593,
-  "current_price": 186.98,
-  "rank": 127,
-  "composite_score": 63.35,
+  "market_cap": 8381989782.306519,
+  "current_price": 195.44,
+  "rank": 102,
+  "composite_score": 64.42,
   "pillar_scores": {
     "quality": 82.15,
-    "value": 43.51,
+    "value": 42.91,
     "growth": 91.88,
-    "momentum": 63.79,
-    "health": 26.53,
+    "momentum": 70.74,
+    "health": 26.55,
     "profitability": 68.13,
-    "technical": 56.36,
-    "risk": 47.52,
+    "technical": 60.8,
+    "risk": 50.38,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 42887790.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8019158790.963593,
-    "pe_ratio_ttm": 17.32373901698767,
+    "market_cap": 8381989782.306519,
+    "pe_ratio_ttm": 18.107560558017973,
     "goodwill": 194700000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 341.9758352088275,
+        "value": 352.15428533317595,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 84.41382999838453,
+        "value": 87.8579069963794,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,19 +79,21 @@
         "tier_used": null
       }
     },
-    "median": 61.15849441873654,
-    "max": 341.9758352088275,
+    "median": 62.88053291773397,
+    "max": 352.15428533317595,
     "low": 21.87208048653056,
-    "high": 341.9758352088275,
-    "mos_pct": -205.73021377428776,
+    "high": 352.15428533317595,
+    "mos_pct": -210.81161906992523,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate"
+      "extreme_graham_estimate",
+      "extreme_dcf_estimate"
     ],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 84.41382999838453,
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 220.00609616477766,
     "methods_excluded_from_median": [
-      "graham"
+      "graham",
+      "dcf"
     ]
   },
   "top5_factors": [],
@@ -107,14 +109,15 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 86,
+    "filing_lag_days": 90,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_graham_estimate"
+    "extreme_graham_estimate",
+    "extreme_dcf_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 4.556075283897818,
@@ -129,22 +132,22 @@
     "label": "Consumer Discretionary median (n=194)",
     "values": {
       "Quality": 47.84,
-      "Value": 50.09,
+      "Value": 49.87,
       "Growth": 49.19,
-      "Momentum": 45.76,
-      "Health": 42.48,
+      "Momentum": 44.74,
+      "Health": 42.49,
       "Profitability": 50.47,
-      "Technical": 48.86,
-      "Risk": 39.05
+      "Technical": 51.21,
+      "Risk": 40.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.32619886999993714,
   "recommendation": "cautious",
-  "loss_chance_pct": 55.32372386765066,
-  "price_change_1d_pct": 1.0703,
+  "loss_chance_pct": 55.79172914909014,
+  "price_change_1d_pct": 4.5246,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.35,
+  "composite_score_adjusted": 64.42,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,23 +195,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.6,
+  "osap_blended_score": 58.13,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 15,
     "latest_filing_date": "2026-06-09",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.105517847474605e-08,
+  "cross_source_delta": 7.36929413525649e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 179072628.73754424,
+  "average_dollar_volume": 179809221.63667807,
   "security_type": "Common stock"
 }

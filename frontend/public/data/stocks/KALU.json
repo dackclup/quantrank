@@ -5,19 +5,19 @@
   "industry": "Aluminum",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2667681311.7039185,
-  "current_price": 163.17,
+  "market_cap": 2646754493.901306,
+  "current_price": 161.89,
   "rank": 4,
-  "composite_score": 72.06,
+  "composite_score": 72.11,
   "pillar_scores": {
     "quality": 86.22,
-    "value": 80.98,
+    "value": 77.99,
     "growth": 62.18,
-    "momentum": 63.66,
-    "health": 67.74,
+    "momentum": 69.99,
+    "health": 68.94,
     "profitability": 56.2,
-    "technical": 43.35,
-    "risk": 51.88,
+    "technical": 39.01,
+    "risk": 52.53,
     "sentiment": null,
     "ml": null
   },
@@ -28,16 +28,16 @@
     "total_liabilities": 1965800000.0,
     "stockholders_equity": 943800000.0,
     "cash": 58500000.0,
-    "operating_cash_flow": 222400000.0,
+    "operating_cash_flow": 185900000.0,
     "capex": 98900000.0,
-    "free_cash_flow": 123500000.0,
+    "free_cash_flow": 87000000.0,
     "eps_basic": 13.884563130478439,
     "eps_diluted": 13.884563130478439,
     "shares_outstanding": 16349092.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2667681311.7039185,
-    "pe_ratio_ttm": 11.751900051559112,
+    "market_cap": 2646754493.901306,
+    "pe_ratio_ttm": 11.659711426878001,
     "goodwill": 18800000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 291.675004011977,
+        "value": 291.75427025978155,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 146.57902711011602,
+        "value": 145.3476209305229,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 352.6733361043644,
+        "value": 350.95746486671965,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 219.1270155610465,
-    "max": 352.6733361043644,
+    "median": 218.55094559515223,
+    "max": 350.95746486671965,
     "low": 71.46098649435883,
-    "high": 352.6733361043644,
-    "mos_pct": 25.536338935128768,
+    "high": 350.95746486671965,
+    "mos_pct": 25.92573829923553,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 219.1270155610465,
+    "median_trimmed": 218.55094559515223,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,14 +98,16 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-07-20",
     "latest_filed_date": "2026-07-23"
   },
   "risk_flags": [
+    "sloan_accruals_top_decile",
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
+    "rem_suspect",
     "accruals_momentum_high",
     "value_trap_risk"
   ],
@@ -122,29 +124,29 @@
     "label": "Materials median (n=78)",
     "values": {
       "Quality": 51.52,
-      "Value": 52.35,
+      "Value": 52.56,
       "Growth": 45.03,
-      "Momentum": 45.13,
-      "Health": 52.61,
+      "Momentum": 44.2,
+      "Health": 52.63,
       "Profitability": 53.79,
-      "Technical": 50.82,
-      "Risk": 46.48
+      "Technical": 50.15,
+      "Risk": 45.97
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": 0.4038488019420066,
+  "dechow_f_score": 0.4081191715765325,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 25.032156868812933,
-  "price_change_1d_pct": -9.6512,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 71.56,
+  "loss_chance_pct": 27.87289586365387,
+  "price_change_1d_pct": -0.7845,
+  "manipulation_index": 33.0,
+  "composite_score_adjusted": 68.81,
   "manipulation_components": {
-    "sloan_accruals_top_decile": false,
+    "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -185,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 61.96,
+  "osap_blended_score": 61.98,
   "entered_top5": false,
   "exited_top5": true,
   "index_membership": "sp600",
@@ -198,10 +200,10 @@
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0005190783838546254,
-  "dividend_yield_pct": 1.71,
+  "cross_source_delta": 0.0005190832411815611,
+  "dividend_yield_pct": 1.89,
   "pays_dividend": true,
   "payout_ratio": 0.22850001,
-  "average_dollar_volume": 53578713.925662234,
+  "average_dollar_volume": 53533142.48917643,
   "security_type": "Common stock"
 }

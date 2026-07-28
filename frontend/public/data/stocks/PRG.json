@@ -5,19 +5,19 @@
   "industry": "Consumer Finance",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1751265765.7588806,
-  "current_price": 43.71,
-  "rank": 167,
-  "composite_score": 61.78,
+  "market_cap": 1734438302.2411194,
+  "current_price": 43.29,
+  "rank": 158,
+  "composite_score": 62.33,
   "pillar_scores": {
-    "quality": 60.17,
-    "value": 73.09,
-    "growth": 61.63,
-    "momentum": 75.22,
-    "health": 40.07,
-    "profitability": 41.44,
-    "technical": 70.92,
-    "risk": 40.97,
+    "quality": 60.04,
+    "value": 73.49,
+    "growth": 61.58,
+    "momentum": 79.94,
+    "health": 40.15,
+    "profitability": 41.38,
+    "technical": 69.1,
+    "risk": 41.04,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 40065564.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1751265765.7588806,
-    "pe_ratio_ttm": 11.82297106315574,
+    "market_cap": 1734438302.2411194,
+    "pe_ratio_ttm": 11.709367166975772,
     "goodwill": 406714000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.22242971101898,
+        "value": 62.98337262089348,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 37.80759206131718,
+        "value": 39.608751629552664,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 31.59094849333797,
-    "max": 60.22242971101898,
+    "median": 32.491528277455714,
+    "max": 62.98337262089348,
     "low": 15.38052385260939,
-    "high": 60.22242971101898,
-    "mos_pct": -38.362414454540364,
+    "high": 62.98337262089348,
+    "mos_pct": -33.23473289978841,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 31.59094849333797,
+    "median_trimmed": 32.491528277455714,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -105,7 +105,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 86,
+    "filing_lag_days": 90,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -123,25 +123,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=258)",
+    "label": "Financials median (n=259)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.07,
-      "Growth": 50.31,
-      "Momentum": 60.67,
-      "Health": 54.45,
-      "Profitability": 51.16,
-      "Technical": 54.53,
-      "Risk": 61.67
+      "Value": 51.22,
+      "Growth": 50.39,
+      "Momentum": 59.48,
+      "Health": 54.49,
+      "Profitability": 51.09,
+      "Technical": 53.43,
+      "Risk": 61.93
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 48.537070697853636,
-  "price_change_1d_pct": 0.2523,
+  "loss_chance_pct": 46.46704336927388,
+  "price_change_1d_pct": -0.9609,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.78,
+  "composite_score_adjusted": 62.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.82,
+  "osap_blended_score": 57.09,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -202,10 +202,10 @@
     "latest_filing_date": "2026-05-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.4984087451395185e-08,
+  "cross_source_delta": 1.7435684708813323e-08,
   "dividend_yield_pct": 1.28,
   "pays_dividend": true,
   "payout_ratio": 0.1349,
-  "average_dollar_volume": 24999158.909538016,
+  "average_dollar_volume": 25092995.934254963,
   "security_type": "Common stock"
 }
