@@ -5,19 +5,19 @@
   "industry": "Health Care Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1341567099.6069336,
-  "current_price": 43.51,
-  "rank": 926,
-  "composite_score": 47.15,
+  "market_cap": 1364383968.0,
+  "current_price": 44.25,
+  "rank": 870,
+  "composite_score": 48.36,
   "pillar_scores": {
-    "quality": 43.6,
-    "value": 68.29,
-    "growth": 50.23,
-    "momentum": 21.62,
-    "health": 40.71,
-    "profitability": 43.5,
-    "technical": 64.49,
-    "risk": 21.45,
+    "quality": 43.87,
+    "value": 72.8,
+    "growth": 50.15,
+    "momentum": 23.17,
+    "health": 40.69,
+    "profitability": 43.56,
+    "technical": 63.58,
+    "risk": 20.91,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 30833536.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1341567099.6069336,
-    "pe_ratio_ttm": 28.510617354307374,
+    "market_cap": 1364383968.0,
+    "pe_ratio_ttm": 28.995515205610456,
     "goodwill": 807011000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 43.43330442678606,
+        "value": 44.831906066027635,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 109.45342837152168,
+        "value": 108.07035240724522,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 50.331340894335334,
+        "value": 52.55794454572519,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 46.882322660560696,
-    "max": 109.45342837152168,
+    "median": 48.69492530587641,
+    "max": 108.07035240724522,
     "low": 19.218400731026772,
-    "high": 109.45342837152168,
-    "mos_pct": 7.19316822983352,
+    "high": 108.07035240724522,
+    "mos_pct": 9.128107863305429,
     "valuation_warnings": [
       "stale_filing_soft"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 46.882322660560696,
+    "median_trimmed": 48.69492530587641,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -96,13 +96,14 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 161,
+    "filing_lag_days": 162,
     "latest_period_end": "2026-02-11",
     "latest_filed_date": "2026-02-17"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "stale_filing_soft"
+    "stale_filing_soft",
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -114,25 +115,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=164)",
+    "label": "Health Care median (n=163)",
     "values": {
-      "Quality": 50.46,
-      "Value": 50.97,
-      "Growth": 50.27,
-      "Momentum": 54.65,
-      "Health": 57.26,
-      "Profitability": 48.68,
-      "Technical": 51.79,
-      "Risk": 44.67
+      "Quality": 50.61,
+      "Value": 51.53,
+      "Growth": 50.31,
+      "Momentum": 54.45,
+      "Health": 56.45,
+      "Profitability": 48.47,
+      "Technical": 53.19,
+      "Risk": 46.3
     }
   },
   "beneish_m_score": -2.8803957374596134,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 40.90522925933563,
-  "price_change_1d_pct": 1.9447,
+  "loss_chance_pct": 41.62336763674468,
+  "price_change_1d_pct": 1.7008,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.15,
+  "composite_score_adjusted": 48.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.5,
+  "osap_blended_score": 50.11,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -193,10 +194,10 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0234920456950439,
-  "dividend_yield_pct": 1.87,
+  "cross_source_delta": 0.023492061437063148,
+  "dividend_yield_pct": 1.84,
   "pays_dividend": true,
   "payout_ratio": 0.22600001,
-  "average_dollar_volume": 27999963.026212055,
+  "average_dollar_volume": 28662855.9200943,
   "security_type": "Common stock"
 }
