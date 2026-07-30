@@ -5,19 +5,19 @@
   "industry": "Metal, Glass & Plastic Containers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 3933041282.7172394,
-  "current_price": 83.36,
-  "rank": 77,
-  "composite_score": 65.4,
+  "market_cap": 4114689589.174141,
+  "current_price": 87.21,
+  "rank": 106,
+  "composite_score": 64.35,
   "pillar_scores": {
     "quality": 66.03,
-    "value": 85.47,
+    "value": 77.88,
     "growth": 44.39,
-    "momentum": 66.09,
-    "health": 46.21,
+    "momentum": 68.57,
+    "health": 46.26,
     "profitability": 58.97,
-    "technical": 64.07,
-    "risk": 71.81,
+    "technical": 67.59,
+    "risk": 76.21,
     "sentiment": null,
     "ml": null
   },
@@ -28,16 +28,16 @@
     "total_liabilities": null,
     "stockholders_equity": 2942200000.0,
     "cash": 286100000.0,
-    "operating_cash_flow": 426300000.0,
+    "operating_cash_flow": 45200000.0,
     "capex": 168300000.0,
-    "free_cash_flow": 258000000.0,
+    "free_cash_flow": -123100000.0,
     "eps_basic": 21.01251898073302,
     "eps_diluted": 21.01251898073302,
     "shares_outstanding": 47181397.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3933041282.7172394,
-    "pe_ratio_ttm": 3.9671588488170664,
+    "market_cap": 4114689589.174141,
+    "pe_ratio_ttm": 4.150382881958988,
     "goodwill": 1693200000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 451.0705032583287,
+        "value": 439.08052738929257,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 172.90038809449536,
+        "value": 166.53672938902764,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 143.85904695961705,
+        "value": 143.9031641976472,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 143.85904695961705,
-    "max": 172.90038809449536,
+    "median": 143.9031641976472,
+    "max": 166.53672938902764,
     "low": 16.4005056106007,
-    "high": 451.0705032583287,
-    "mos_pct": 42.05439117516765,
+    "high": 439.08052738929257,
+    "mos_pct": 39.3967467145531,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pe_estimate",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 143.85904695961705,
+    "median_trimmed": 143.9031641976472,
     "methods_excluded_from_median": [
       "multiples_pe",
       "rim"
@@ -107,12 +107,13 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
+    "filing_lag_days": 92,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
-    "sloan_accruals_top_decile"
+    "sloan_accruals_top_decile",
+    "beneish_manipulation_veto"
   ],
   "valuation_warnings": [
     "goodwill_heavy",
@@ -135,25 +136,25 @@
     "label": "Materials median (n=78)",
     "values": {
       "Quality": 51.52,
-      "Value": 52.62,
-      "Growth": 45.03,
-      "Momentum": 46.51,
-      "Health": 52.64,
-      "Profitability": 53.74,
-      "Technical": 49.79,
-      "Risk": 45.52
+      "Value": 51.71,
+      "Growth": 45.35,
+      "Momentum": 44.02,
+      "Health": 52.63,
+      "Profitability": 53.79,
+      "Technical": 50.98,
+      "Risk": 45.35
     }
   },
-  "beneish_m_score": -1.9799554301449338,
+  "beneish_m_score": -1.6613393239375935,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 26.58032824315123,
-  "price_change_1d_pct": 3.7719,
-  "manipulation_index": 28.0,
-  "composite_score_adjusted": 62.6,
+  "loss_chance_pct": 28.035827300683835,
+  "price_change_1d_pct": 4.6185,
+  "manipulation_index": 48.0,
+  "composite_score_adjusted": 59.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
-    "beneish_manipulation_veto": false,
+    "beneish_manipulation_veto": true,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
@@ -198,7 +199,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.63,
+  "osap_blended_score": 58.1,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -212,10 +213,10 @@
     "latest_filing_date": "2026-07-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.20420654337192276,
-  "dividend_yield_pct": 2.86,
+  "cross_source_delta": 0.2042064657894412,
+  "dividend_yield_pct": 2.76,
   "pays_dividend": true,
   "payout_ratio": 0.8926,
-  "average_dollar_volume": 17436003.66501363,
+  "average_dollar_volume": 18437988.405671947,
   "security_type": "Common stock"
 }

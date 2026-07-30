@@ -5,19 +5,19 @@
   "industry": "Real Estate Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 15916707088.039398,
-  "current_price": 343.08,
-  "rank": 74,
-  "composite_score": 65.49,
+  "market_cap": 15773815500.0,
+  "current_price": 340.0,
+  "rank": 78,
+  "composite_score": 65.55,
   "pillar_scores": {
     "quality": 75.84,
-    "value": 83.49,
+    "value": 83.65,
     "growth": 69.59,
-    "momentum": 40.69,
-    "health": 43.05,
+    "momentum": 38.81,
+    "health": 41.88,
     "profitability": 50.96,
-    "technical": 50.73,
-    "risk": 54.26,
+    "technical": 57.8,
+    "risk": 54.9,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 46393575.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 15916707088.039398,
-    "pe_ratio_ttm": 16.456479619560998,
+    "market_cap": 15773815500.0,
+    "pe_ratio_ttm": 16.308742245657566,
     "goodwill": 4691000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 586.0256235536917,
+        "value": 578.7519889043532,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 316.97919913682574,
+        "value": 310.883002982004,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 472.78653741633883,
+        "value": 472.7410884429481,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 316.97919913682574,
-    "max": 586.0256235536917,
+    "median": 310.883002982004,
+    "max": 578.7519889043532,
     "low": 43.17499032660709,
-    "high": 586.0256235536917,
-    "mos_pct": -8.23422720055941,
+    "high": 578.7519889043532,
+    "mos_pct": -9.36590187906848,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 394.88286827658226,
+    "median_trimmed": 391.81204571247605,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -108,7 +108,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 90,
+    "filing_lag_days": 91,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -129,23 +129,23 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=104)",
     "values": {
-      "Quality": 49.76,
-      "Value": 47.64,
-      "Growth": 50.0,
-      "Momentum": 60.38,
-      "Health": 26.89,
-      "Profitability": 50.6,
-      "Technical": 54.26,
-      "Risk": 64.4
+      "Quality": 49.16,
+      "Value": 48.52,
+      "Growth": 50.06,
+      "Momentum": 60.31,
+      "Health": 27.47,
+      "Profitability": 50.76,
+      "Technical": 57.22,
+      "Risk": 64.58
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 37.13770783443475,
-  "price_change_1d_pct": 2.9806,
+  "loss_chance_pct": 37.503007479482484,
+  "price_change_1d_pct": -0.8977,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.49,
+  "composite_score_adjusted": 65.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -193,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.67,
+  "osap_blended_score": 58.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -207,10 +207,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.724347804149145e-08,
+  "cross_source_delta": 1.9526030338062468e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 125708965.29623413,
+  "average_dollar_volume": 128711051.7131958,
   "security_type": "Common stock"
 }

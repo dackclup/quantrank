@@ -5,19 +5,19 @@
   "industry": "Mortgage REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 2322885463.2607193,
-  "current_price": 16.41,
-  "rank": 361,
-  "composite_score": 56.79,
+  "market_cap": 2315807918.957123,
+  "current_price": 16.36,
+  "rank": 326,
+  "composite_score": 57.31,
   "pillar_scores": {
     "quality": 70.43,
-    "value": 64.42,
-    "growth": 57.57,
-    "momentum": 47.32,
-    "health": 26.56,
+    "value": 64.26,
+    "growth": 57.81,
+    "momentum": 50.63,
+    "health": 27.17,
     "profitability": 47.52,
-    "technical": 46.54,
-    "risk": 49.56,
+    "technical": 47.12,
+    "risk": 50.18,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 141553046.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2322885463.2607193,
-    "pe_ratio_ttm": 5.390425925585526,
+    "market_cap": 2315807918.957123,
+    "pe_ratio_ttm": 5.374001965426064,
     "goodwill": null
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 23.577224031473108,
+        "value": 23.222096965832463,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 9.791269808785792,
+        "value": 9.723820865670467,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -80,10 +80,10 @@
       }
     },
     "median": 11.273170667811335,
-    "max": 23.577224031473108,
-    "low": 9.791269808785792,
-    "high": 23.577224031473108,
-    "mos_pct": -45.56685364720092,
+    "max": 23.222096965832463,
+    "low": 9.723820865670467,
+    "high": 23.222096965832463,
+    "mos_pct": -45.12332947344463,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
     "median_trimmed": 11.273170667811335,
@@ -118,7 +118,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 8,
     "latest_period_end": "2026-07-21",
     "latest_filed_date": "2026-07-22"
   },
@@ -127,7 +127,6 @@
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -142,23 +141,23 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=104)",
     "values": {
-      "Quality": 49.76,
-      "Value": 47.64,
-      "Growth": 50.0,
-      "Momentum": 60.38,
-      "Health": 26.89,
-      "Profitability": 50.6,
-      "Technical": 54.26,
-      "Risk": 64.4
+      "Quality": 49.16,
+      "Value": 48.52,
+      "Growth": 50.06,
+      "Momentum": 60.31,
+      "Health": 27.47,
+      "Profitability": 50.76,
+      "Technical": 57.22,
+      "Risk": 64.58
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 60.554559058503415,
-  "price_change_1d_pct": 1.2338,
+  "loss_chance_pct": 60.13882475378527,
+  "price_change_1d_pct": -0.3047,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 54.79,
+  "composite_score_adjusted": 55.31,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -206,7 +205,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.32,
+  "osap_blended_score": 54.58,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -219,10 +218,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.12367755354473721,
-  "dividend_yield_pct": 17.77,
+  "cross_source_delta": 7.554906491619683e-08,
+  "dividend_yield_pct": 17.55,
   "pays_dividend": true,
   "payout_ratio": 0.65309995,
-  "average_dollar_volume": 72535175.31972758,
+  "average_dollar_volume": 72298233.76525702,
   "security_type": "Common stock"
 }
