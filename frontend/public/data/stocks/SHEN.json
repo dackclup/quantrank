@@ -5,19 +5,19 @@
   "industry": "Wireless Telecommunication Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 703142634.8203669,
-  "current_price": 12.71,
-  "rank": 1276,
-  "composite_score": 40.28,
+  "market_cap": 653906034.9370651,
+  "current_price": 11.82,
+  "rank": 1350,
+  "composite_score": 37.99,
   "pillar_scores": {
-    "quality": 23.47,
+    "quality": 22.45,
     "value": 56.46,
     "growth": 57.65,
-    "momentum": 48.12,
-    "health": 21.22,
+    "momentum": 39.84,
+    "health": 21.17,
     "profitability": 22.11,
-    "technical": 67.25,
-    "risk": 27.52,
+    "technical": 48.44,
+    "risk": 26.89,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 55322001.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 703142634.8203669,
+    "market_cap": 653906034.9370651,
     "pe_ratio_ttm": null,
     "goodwill": 67538000.0
   },
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 42.62751654293921,
+        "value": 41.98282824130771,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 13.170397329678659,
+        "value": 13.129049263984193,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,10 +80,10 @@
       }
     },
     "median": 16.970205503825056,
-    "max": 42.62751654293921,
-    "low": 13.170397329678659,
-    "high": 42.62751654293921,
-    "mos_pct": 25.104029911233784,
+    "max": 41.98282824130771,
+    "low": 13.129049263984193,
+    "high": 41.98282824130771,
+    "mos_pct": 30.348517628970313,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
     "median_trimmed": 16.970205503825056,
@@ -99,12 +99,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 90,
+    "filing_lag_days": 91,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "restatement_history"
+  ],
   "has_history": true,
   "tangible_book_value": 12.842268666312341,
   "tier2_events": {
@@ -117,23 +119,23 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=49)",
     "values": {
-      "Quality": 51.53,
-      "Value": 52.72,
-      "Growth": 53.06,
-      "Momentum": 41.62,
-      "Health": 37.66,
-      "Profitability": 51.7,
-      "Technical": 55.92,
-      "Risk": 42.64
+      "Quality": 52.55,
+      "Value": 53.06,
+      "Growth": 53.57,
+      "Momentum": 36.09,
+      "Health": 37.62,
+      "Profitability": 51.36,
+      "Technical": 55.57,
+      "Risk": 42.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4017067437278268,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.07424965282965,
-  "price_change_1d_pct": 7.348,
+  "loss_chance_pct": 35.381062866624035,
+  "price_change_1d_pct": -7.0024,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.28,
+  "composite_score_adjusted": 37.99,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,7 +143,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.07,
+  "osap_blended_score": 44.92,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -194,10 +196,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.089854993699171e-08,
-  "dividend_yield_pct": 0.95,
+  "cross_source_delta": 0.0007714580321673085,
+  "dividend_yield_pct": 0.87,
   "pays_dividend": true,
   "payout_ratio": 1.2857001,
-  "average_dollar_volume": 6804939.781001282,
+  "average_dollar_volume": 6965069.868513616,
   "security_type": "Common stock"
 }

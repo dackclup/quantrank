@@ -5,19 +5,19 @@
   "industry": "Automotive Retail",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 51297039444.93164,
-  "current_price": 3142.1699,
-  "rank": 1136,
-  "composite_score": 43.23,
+  "market_cap": 49083323698.341064,
+  "current_price": 3006.5701,
+  "rank": 1152,
+  "composite_score": 42.74,
   "pillar_scores": {
     "quality": 45.68,
-    "value": 37.33,
+    "value": 38.19,
     "growth": 49.29,
-    "momentum": 16.99,
-    "health": 41.69,
-    "profitability": 74.23,
-    "technical": 65.84,
-    "risk": 50.23,
+    "momentum": 15.79,
+    "health": 42.83,
+    "profitability": 73.8,
+    "technical": 54.26,
+    "risk": 49.24,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 16325355.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 51297039444.93164,
-    "pe_ratio_ttm": 20.699948608274504,
+    "market_cap": 49083323698.341064,
+    "pe_ratio_ttm": 19.806645550562067,
     "goodwill": 302645000.0
   },
   "fair_price": {
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 3273.3018498919405,
+        "value": 3009.8100370236057,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 2217.763004749115,
+        "value": 1774.5282116580402,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 2217.763004749115,
-    "max": 3273.3018498919405,
+    "median": 1774.5282116580402,
+    "max": 3009.8100370236057,
     "low": 1405.0543700008873,
-    "high": 3273.3018498919405,
-    "mos_pct": -41.68195227111106,
+    "high": 3009.8100370236057,
+    "mos_pct": -69.42926286588421,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 2217.763004749115,
+    "median_trimmed": 1774.5282116580402,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,7 +100,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-06-05",
     "latest_filed_date": "2026-06-12"
   },
@@ -118,23 +118,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 47.84,
-      "Value": 50.11,
+      "Quality": 47.45,
+      "Value": 50.26,
       "Growth": 49.19,
-      "Momentum": 47.86,
-      "Health": 42.59,
-      "Profitability": 50.69,
-      "Technical": 53.8,
-      "Risk": 39.47
+      "Momentum": 47.61,
+      "Health": 44.8,
+      "Profitability": 50.47,
+      "Technical": 50.78,
+      "Risk": 39.63
     }
   },
   "beneish_m_score": -2.3997072702725264,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.973478051825694,
-  "price_change_1d_pct": 0.7493,
+  "loss_chance_pct": 63.62753290766433,
+  "price_change_1d_pct": -4.3155,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.23,
+  "composite_score_adjusted": 42.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.54,
+  "osap_blended_score": 47.3,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -192,14 +192,14 @@
   ],
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
-    "insider_count": 11,
+    "insider_count": 10,
     "latest_filing_date": "2026-07-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.161784876133952e-08,
+  "cross_source_delta": null,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 1223083215.849642,
+  "average_dollar_volume": 1176855134.8051596,
   "security_type": "Common stock"
 }

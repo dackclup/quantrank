@@ -5,19 +5,19 @@
   "industry": "Retail REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 76564161071.37071,
-  "current_price": 235.61,
-  "rank": 229,
-  "composite_score": 59.87,
+  "market_cap": 74884111109.48285,
+  "current_price": 230.44,
+  "rank": 251,
+  "composite_score": 59.56,
   "pillar_scores": {
-    "quality": 82.09,
+    "quality": 82.33,
     "value": 22.76,
     "growth": 76.32,
-    "momentum": 79.64,
-    "health": 22.52,
-    "profitability": 75.64,
-    "technical": 50.47,
-    "risk": 84.81,
+    "momentum": 74.9,
+    "health": 22.51,
+    "profitability": 75.48,
+    "technical": 55.68,
+    "risk": 83.9,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 324961423.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 76564161071.37071,
-    "pe_ratio_ttm": 14.036123283733668,
+    "market_cap": 74884111109.48285,
+    "pe_ratio_ttm": 13.72812815836544,
     "goodwill": 20098000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 431.42812132975314,
+        "value": 428.2365279876118,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 30.655411828208855,
+        "value": 30.21442877589332,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 132.19277663604893,
+        "value": 129.94378334770468,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 132.19277663604893,
-    "max": 431.42812132975314,
-    "low": 30.655411828208855,
-    "high": 431.42812132975314,
-    "mos_pct": -78.23212932354792,
+    "median": 129.94378334770468,
+    "max": 428.2365279876118,
+    "low": 30.21442877589332,
+    "high": 428.2365279876118,
+    "mos_pct": -77.33822773559928,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 170.8226849239836,
+    "median_trimmed": 169.69818827981146,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -112,7 +112,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 80,
+    "filing_lag_days": 81,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-11"
   },
@@ -135,23 +135,23 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=104)",
     "values": {
-      "Quality": 49.16,
-      "Value": 48.52,
-      "Growth": 50.06,
-      "Momentum": 60.31,
-      "Health": 27.47,
-      "Profitability": 50.76,
-      "Technical": 57.22,
-      "Risk": 64.58
+      "Quality": 49.22,
+      "Value": 48.24,
+      "Growth": 50.78,
+      "Momentum": 58.29,
+      "Health": 27.49,
+      "Profitability": 51.4,
+      "Technical": 56.69,
+      "Risk": 63.64
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 59.06330980632843,
-  "price_change_1d_pct": -0.4605,
+  "loss_chance_pct": 59.218567793576106,
+  "price_change_1d_pct": -2.1943,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 57.37,
+  "composite_score_adjusted": 57.06,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -199,7 +199,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.86,
+  "osap_blended_score": 55.71,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -217,6 +217,6 @@
   "dividend_yield_pct": 3.93,
   "pays_dividend": true,
   "payout_ratio": 0.60150003,
-  "average_dollar_volume": 489173652.0932302,
+  "average_dollar_volume": 477785693.9024068,
   "security_type": "Common stock"
 }
