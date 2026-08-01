@@ -5,19 +5,19 @@
   "industry": "Building Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8284371988.446575,
-  "current_price": 59.81,
-  "rank": 82,
-  "composite_score": 65.44,
+  "market_cap": 8328695620.736225,
+  "current_price": 60.13,
+  "rank": 80,
+  "composite_score": 65.58,
   "pillar_scores": {
     "quality": 83.87,
     "value": 72.71,
     "growth": 53.2,
-    "momentum": 26.33,
-    "health": 71.74,
+    "momentum": 26.2,
+    "health": 71.78,
     "profitability": 79.07,
-    "technical": 50.1,
-    "risk": 38.77,
+    "technical": 52.59,
+    "risk": 39.42,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 138511483.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8284371988.446575,
-    "pe_ratio_ttm": 16.558808691678145,
+    "market_cap": 8328695620.736225,
+    "pe_ratio_ttm": 16.647402799792577,
     "goodwill": 915200000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 80.8552869443925,
+        "value": 81.39012280649382,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 45.1984328343512,
+        "value": 45.3523476281212,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 80.2587435779862,
+        "value": 80.79307388522739,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 45.1984328343512,
-    "max": 80.8552869443925,
+    "median": 45.3523476281212,
+    "max": 81.39012280649382,
     "low": 4.605423805256358,
-    "high": 80.8552869443925,
-    "mos_pct": -32.32759992473654,
+    "high": 81.39012280649382,
+    "mos_pct": -32.58409809601785,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 62.728588206168695,
+    "median_trimmed": 63.0727107566743,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -103,7 +103,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-30"
   },
@@ -124,23 +124,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=262)",
     "values": {
-      "Quality": 49.43,
+      "Quality": 49.95,
       "Value": 49.87,
-      "Growth": 50.76,
-      "Momentum": 53.35,
-      "Health": 58.71,
-      "Profitability": 49.97,
-      "Technical": 49.58,
-      "Risk": 48.62
+      "Growth": 51.17,
+      "Momentum": 53.21,
+      "Health": 58.59,
+      "Profitability": 50.1,
+      "Technical": 52.85,
+      "Risk": 49.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 45.59412476390331,
-  "price_change_1d_pct": -3.5945,
+  "loss_chance_pct": 45.61583063980922,
+  "price_change_1d_pct": 0.535,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.44,
+  "composite_score_adjusted": 65.58,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.65,
+  "osap_blended_score": 58.71,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -202,10 +202,10 @@
     "latest_filing_date": "2026-04-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.004929975199512197,
-  "dividend_yield_pct": 2.32,
+  "cross_source_delta": 0.004929963418761072,
+  "dividend_yield_pct": 2.41,
   "pays_dividend": true,
-  "payout_ratio": 0.37330002,
-  "average_dollar_volume": 113550150.0648454,
+  "payout_ratio": 0.3955,
+  "average_dollar_volume": 113936857.07434858,
   "security_type": "Common stock"
 }

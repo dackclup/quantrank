@@ -5,19 +5,19 @@
   "industry": "Diversified Metals & Mining",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4328997056.046219,
-  "current_price": 208.11,
-  "rank": 1216,
-  "composite_score": 41.69,
+  "market_cap": 4385785021.222687,
+  "current_price": 210.84,
+  "rank": 1198,
+  "composite_score": 42.08,
   "pillar_scores": {
-    "quality": 44.23,
-    "value": 11.75,
+    "quality": 45.19,
+    "value": 11.32,
     "growth": 41.19,
-    "momentum": 77.78,
-    "health": 57.71,
-    "profitability": 44.66,
-    "technical": 28.7,
-    "risk": 53.7,
+    "momentum": 78.06,
+    "health": 57.72,
+    "profitability": 45.3,
+    "technical": 32.33,
+    "risk": 52.64,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 20801485.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4328997056.046219,
-    "pe_ratio_ttm": 56.58967627972259,
+    "market_cap": 4385785021.222687,
+    "pe_ratio_ttm": 57.332022029630664,
     "goodwill": 280335000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 78.96271721823113,
+        "value": 80.34539990842805,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 117.54049221682988,
+        "value": 113.7701786607138,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 84.51524140407818,
+        "value": 81.0540457027226,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 81.73897931115465,
-    "max": 117.54049221682988,
+    "median": 80.69972280557533,
+    "max": 113.7701786607138,
     "low": 41.78964051705475,
-    "high": 117.54049221682988,
-    "mos_pct": -154.60313104491075,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 4,
-    "median_trimmed": 81.73897931115465,
-    "methods_excluded_from_median": []
+    "high": 113.7701786607138,
+    "mos_pct": -161.26483339460026,
+    "valuation_warnings": [
+      "extreme_graham_estimate"
+    ],
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 81.0540457027226,
+    "methods_excluded_from_median": [
+      "graham"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,14 +100,14 @@
       "total_liabilities"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 93,
+    "filing_lag_days": 94,
     "latest_period_end": "2026-04-03",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "beneish_high",
-    "rem_suspect"
+    "extreme_graham_estimate",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": 27.588847623138445,
@@ -117,30 +121,30 @@
   "pillar_baseline": {
     "label": "Materials median (n=78)",
     "values": {
-      "Quality": 49.76,
-      "Value": 51.39,
+      "Quality": 49.6,
+      "Value": 51.07,
       "Growth": 46.55,
-      "Momentum": 46.47,
-      "Health": 50.91,
-      "Profitability": 55.34,
-      "Technical": 51.23,
-      "Risk": 46.2
+      "Momentum": 46.51,
+      "Health": 51.24,
+      "Profitability": 55.77,
+      "Technical": 51.55,
+      "Risk": 45.55
     }
   },
   "beneish_m_score": -2.1099773913362383,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 67.15580744794508,
-  "price_change_1d_pct": 9.9134,
-  "manipulation_index": 11.0,
-  "composite_score_adjusted": 40.59,
+  "loss_chance_pct": 67.96246192489544,
+  "price_change_1d_pct": 1.3118,
+  "manipulation_index": 3.0,
+  "composite_score_adjusted": 41.78,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -181,23 +185,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.77,
+  "osap_blended_score": 46.96,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 12,
     "latest_filing_date": "2026-07-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.436275109123565e-08,
-  "dividend_yield_pct": 0.31,
+  "cross_source_delta": 4.3144542163360726e-08,
+  "dividend_yield_pct": 0.28,
   "pays_dividend": true,
   "payout_ratio": 0.1534,
-  "average_dollar_volume": 103087548.94726767,
+  "average_dollar_volume": 100109447.9119873,
   "security_type": "Common stock"
 }

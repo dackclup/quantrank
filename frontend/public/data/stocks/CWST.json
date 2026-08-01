@@ -5,19 +5,19 @@
   "industry": "Environmental & Facilities Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 5687188000.0,
-  "current_price": 89.5,
-  "rank": 1499,
-  "composite_score": 28.15,
+  "market_cap": 5700532181.82373,
+  "current_price": 89.71,
+  "rank": 1498,
+  "composite_score": 28.23,
   "pillar_scores": {
     "quality": 13.26,
-    "value": 29.93,
+    "value": 29.9,
     "growth": 27.0,
-    "momentum": 43.04,
-    "health": 49.39,
+    "momentum": 43.62,
+    "health": 48.96,
     "profitability": 18.83,
-    "technical": 25.17,
-    "risk": 43.62,
+    "technical": 25.91,
+    "risk": 44.36,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 63544000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5687188000.0,
-    "pe_ratio_ttm": 796.301876225147,
+    "market_cap": 5700532181.82373,
+    "pe_ratio_ttm": 798.170285889629,
     "goodwill": 1194100000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 2.382009643414465,
+        "value": 2.364082437759714,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 141.4909951383575,
+        "value": 140.24052745764752,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 114.50078351711676,
+        "value": 115.08916037647441,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,20 +80,23 @@
       }
     },
     "median": 17.902810224257518,
-    "max": 141.4909951383575,
-    "low": 2.382009643414465,
-    "high": 141.4909951383575,
-    "mos_pct": -399.921514437613,
+    "max": 140.24052745764752,
+    "low": 2.364082437759714,
+    "high": 140.24052745764752,
+    "mos_pct": -401.09450952521166,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_multiples_pe_estimate"
+      "extreme_multiples_pe_estimate",
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 114.50078351711676,
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 127.66484391706096,
     "methods_excluded_from_median": [
       "graham",
-      "multiples_pe"
+      "multiples_pe",
+      "dcf"
     ]
   },
   "top5_factors": [],
@@ -108,7 +111,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
+    "filing_lag_days": 92,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -117,6 +120,8 @@
     "goodwill_heavy",
     "extreme_graham_estimate",
     "extreme_multiples_pe_estimate",
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority",
     "loss_avoidance_pattern",
     "loss_avoidance_pattern_size_invariant"
   ],
@@ -132,23 +137,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=262)",
     "values": {
-      "Quality": 49.43,
+      "Quality": 49.95,
       "Value": 49.87,
-      "Growth": 50.76,
-      "Momentum": 53.35,
-      "Health": 58.71,
-      "Profitability": 49.97,
-      "Technical": 49.58,
-      "Risk": 48.62
+      "Growth": 51.17,
+      "Momentum": 53.21,
+      "Health": 58.59,
+      "Profitability": 50.1,
+      "Technical": 52.85,
+      "Risk": 49.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 73.92690727610173,
-  "price_change_1d_pct": -1.0831,
+  "loss_chance_pct": 74.88277940335526,
+  "price_change_1d_pct": 0.2346,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 27.15,
+  "composite_score_adjusted": 27.23,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -196,23 +201,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 40.0,
+  "osap_blended_score": 40.04,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 15,
     "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0010377346414431876,
+  "cross_source_delta": 0.001037743492639483,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 71933001.54163411,
+  "average_dollar_volume": 71865081.8208847,
   "security_type": "Common stock"
 }
