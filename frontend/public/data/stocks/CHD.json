@@ -5,19 +5,19 @@
   "industry": "Household Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 23438117471.5589,
-  "current_price": 98.81,
-  "rank": 792,
-  "composite_score": 49.42,
+  "market_cap": 23722763245.792213,
+  "current_price": 100.01,
+  "rank": 790,
+  "composite_score": 49.5,
   "pillar_scores": {
     "quality": 61.51,
-    "value": 23.25,
+    "value": 23.03,
     "growth": 62.83,
-    "momentum": 45.36,
-    "health": 51.3,
+    "momentum": 46.19,
+    "health": 51.26,
     "profitability": 63.38,
-    "technical": 46.63,
-    "risk": 62.1,
+    "technical": 46.24,
+    "risk": 63.41,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 237203907.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 23438117471.5589,
-    "pe_ratio_ttm": 31.46900842046039,
+    "market_cap": 23722763245.792213,
+    "pe_ratio_ttm": 31.851185883179664,
     "goodwill": 2649900000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.320371119339924,
+        "value": 50.905489700065914,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 82.92747241251307,
+        "value": 83.17382134163017,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 67.1989370100833,
+        "value": 66.51079451177335,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 58.75965406471161,
-    "max": 82.92747241251307,
+    "median": 58.708142105919634,
+    "max": 83.17382134163017,
     "low": 39.45887981355641,
-    "high": 82.92747241251307,
-    "mos_pct": -68.15959714428367,
+    "high": 83.17382134163017,
+    "mos_pct": -70.35116177888094,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 58.75965406471161,
+    "median_trimmed": 58.708142105919634,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -94,7 +94,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-07-29",
     "latest_filed_date": "2026-07-31"
   },
@@ -112,23 +112,23 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=76)",
     "values": {
-      "Quality": 48.19,
-      "Value": 50.55,
+      "Quality": 48.03,
+      "Value": 50.99,
       "Growth": 49.18,
-      "Momentum": 39.03,
-      "Health": 39.69,
+      "Momentum": 39.28,
+      "Health": 39.66,
       "Profitability": 49.01,
-      "Technical": 51.43,
-      "Risk": 51.93
+      "Technical": 48.97,
+      "Risk": 51.34
     }
   },
   "beneish_m_score": -2.617815232462478,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.28911863685144,
-  "price_change_1d_pct": 1.1568,
+  "loss_chance_pct": 60.24887945012132,
+  "price_change_1d_pct": 1.2145,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.42,
+  "composite_score_adjusted": 49.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -176,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.64,
+  "osap_blended_score": 50.68,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -190,10 +190,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null,
-  "dividend_yield_pct": 1.27,
+  "cross_source_delta": 0.0010973904482577941,
+  "dividend_yield_pct": 1.24,
   "pays_dividend": true,
-  "payout_ratio": 0.3923,
-  "average_dollar_volume": 189995219.75336102,
+  "payout_ratio": 0.38619998,
+  "average_dollar_volume": 179776004.45866725,
   "security_type": "Common stock"
 }
