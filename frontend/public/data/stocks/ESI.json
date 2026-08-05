@@ -5,19 +5,19 @@
   "industry": "Specialty Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 9181554958.076424,
-  "current_price": 37.69,
-  "rank": 1179,
-  "composite_score": 42.35,
+  "market_cap": 9473883781.533966,
+  "current_price": 38.89,
+  "rank": 1166,
+  "composite_score": 42.66,
   "pillar_scores": {
     "quality": 40.38,
-    "value": 22.12,
-    "growth": 44.55,
-    "momentum": 61.87,
+    "value": 21.26,
+    "growth": 44.87,
+    "momentum": 61.79,
     "health": 52.37,
-    "profitability": 55.77,
-    "technical": 45.01,
-    "risk": 53.1,
+    "profitability": 55.34,
+    "technical": 54.59,
+    "risk": 53.56,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 243607198.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 9181554958.076424,
-    "pe_ratio_ttm": 61.62117421527802,
+    "market_cap": 9473883781.533966,
+    "pe_ratio_ttm": 63.58311262774475,
     "goodwill": 2535500000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 14.734054667693433,
+        "value": 14.712931259318873,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 23.540668484570336,
+        "value": 20.769590340279485,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 27.06362058614664,
+        "value": 28.238249013723053,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 19.137361576131884,
-    "max": 27.06362058614664,
+    "median": 17.74126079979918,
+    "max": 28.238249013723053,
     "low": 0.7903923561594447,
-    "high": 27.06362058614664,
-    "mos_pct": -96.94459174411978,
+    "high": 28.238249013723053,
+    "mos_pct": -119.20651428611349,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 23.540668484570336,
+    "median_trimmed": 20.769590340279485,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -100,13 +100,11 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 97,
+    "filing_lag_days": 98,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-29"
   },
-  "risk_flags": [
-    "sloan_accruals_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
     "beneish_high"
@@ -123,25 +121,25 @@
   "pillar_baseline": {
     "label": "Materials median (n=78)",
     "values": {
-      "Quality": 49.6,
-      "Value": 51.18,
-      "Growth": 46.55,
-      "Momentum": 43.26,
-      "Health": 51.21,
+      "Quality": 49.76,
+      "Value": 52.14,
+      "Growth": 46.88,
+      "Momentum": 43.27,
+      "Health": 51.5,
       "Profitability": 55.77,
-      "Technical": 51.35,
-      "Risk": 46.25
+      "Technical": 53.61,
+      "Risk": 46.61
     }
   },
   "beneish_m_score": -1.8625155984003592,
   "dechow_f_score": 0.7350864675690424,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.8254249352155,
-  "price_change_1d_pct": 2.6137,
-  "manipulation_index": 23.0,
-  "composite_score_adjusted": 40.05,
+  "loss_chance_pct": 67.67221526072922,
+  "price_change_1d_pct": 3.1839,
+  "manipulation_index": 3.0,
+  "composite_score_adjusted": 42.36,
   "manipulation_components": {
-    "sloan_accruals_top_decile": true,
+    "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
@@ -187,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.1,
+  "osap_blended_score": 47.25,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -200,10 +198,10 @@
     "latest_filing_date": "2026-05-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0003237362230197973,
+  "cross_source_delta": 0.0003237593511556989,
   "dividend_yield_pct": 0.87,
   "pays_dividend": true,
   "payout_ratio": 0.43240002,
-  "average_dollar_volume": 262058140.8009927,
+  "average_dollar_volume": 258838914.78071848,
   "security_type": "Common stock"
 }

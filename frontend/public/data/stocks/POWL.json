@@ -5,90 +5,90 @@
   "industry": "Electrical Components & Equipment",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 8004761962.752228,
-  "current_price": 219.72,
-  "rank": 245,
-  "composite_score": 59.8,
+  "market_cap": 7701115556.213379,
+  "current_price": 211.38,
+  "rank": 388,
+  "composite_score": 56.14,
   "pillar_scores": {
-    "quality": 79.1,
-    "value": 13.61,
-    "growth": 82.68,
-    "momentum": 55.52,
-    "health": 84.22,
-    "profitability": 72.26,
-    "technical": 53.34,
-    "risk": 55.98,
+    "quality": 67.84,
+    "value": 19.08,
+    "growth": 81.92,
+    "momentum": 53.64,
+    "health": 81.75,
+    "profitability": 62.21,
+    "technical": 42.07,
+    "risk": 55.49,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1132055000.0,
-    "net_income": 186931000.0,
-    "total_assets": 1180039000.0,
-    "total_liabilities": 470970000.0,
-    "stockholders_equity": 709069000.0,
-    "cash": 537712000.0,
-    "operating_cash_flow": 203268000.0,
-    "capex": 10747000.0,
-    "free_cash_flow": 192521000.0,
-    "eps_basic": 5.131005736248722,
-    "eps_diluted": 5.131005736248722,
-    "shares_outstanding": 36431649.0,
+    "revenue": 1157522000.0,
+    "net_income": 190857000.0,
+    "total_assets": 1406698000.0,
+    "total_liabilities": 650514000.0,
+    "stockholders_equity": 756184000.0,
+    "cash": 633561000.0,
+    "operating_cash_flow": 256113000.0,
+    "capex": 12155000.0,
+    "free_cash_flow": 243958000.0,
+    "eps_basic": 5.238637610023824,
+    "eps_diluted": 5.238637610023824,
+    "shares_outstanding": 36432564.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8004761962.752228,
-    "pe_ratio_ttm": 42.82201434086496,
-    "goodwill": 6039000.0
+    "market_cap": 7701115556.213379,
+    "pe_ratio_ttm": 40.350186559640875,
+    "goodwill": 6049000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 67.41034014159125,
+        "value": 69.65854160770112,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 210.40471210506598,
+        "value": 212.5203754744426,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 99.58995986567025,
+        "value": 107.35438253273412,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 163.66451378389976,
+        "value": 162.41354202573095,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 37.12574517294209,
+        "value": 39.643400296038855,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 69.68357415150393,
+        "value": 72.3126847331707,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 84.6367670085871,
-    "max": 210.40471210506598,
-    "low": 37.12574517294209,
-    "high": 210.40471210506598,
-    "mos_pct": -159.6034902873957,
+    "median": 89.83353363295241,
+    "max": 212.5203754744426,
+    "low": 39.643400296038855,
+    "high": 212.5203754744426,
+    "mos_pct": -135.30189266124432,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 99.58995986567025,
+    "median_trimmed": 107.35438253273412,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -100,9 +100,9 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
-    "latest_period_end": "2026-05-04",
-    "latest_filed_date": "2026-05-05"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-08-03",
+    "latest_filed_date": "2026-08-04"
   },
   "risk_flags": [
     "net_issuance_top_decile"
@@ -112,7 +112,7 @@
     "accruals_momentum_high"
   ],
   "has_history": true,
-  "tangible_book_value": 19.14335527332293,
+  "tangible_book_value": 20.441547841650674,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,23 +123,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=262)",
     "values": {
-      "Quality": 49.95,
+      "Quality": 49.86,
       "Value": 49.87,
       "Growth": 51.17,
-      "Momentum": 50.62,
-      "Health": 58.54,
-      "Profitability": 50.1,
-      "Technical": 52.73,
-      "Risk": 48.63
+      "Momentum": 51.9,
+      "Health": 58.64,
+      "Profitability": 50.0,
+      "Technical": 53.62,
+      "Risk": 48.67
     }
   },
-  "beneish_m_score": -2.519415236354151,
-  "dechow_f_score": 0.7175848109615856,
+  "beneish_m_score": -2.3032188462889525,
+  "dechow_f_score": 0.9478513488109093,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.10174543033675,
-  "price_change_1d_pct": 5.2904,
+  "loss_chance_pct": 60.928438921146665,
+  "price_change_1d_pct": -3.7957,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 59.3,
+  "composite_score_adjusted": 55.64,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.82,
+  "osap_blended_score": 54.0,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -196,14 +196,14 @@
   ],
   "valuation_methods_applicable": 5,
   "form4_diagnostics": {
-    "insider_count": 17,
+    "insider_count": 16,
     "latest_filing_date": "2026-07-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.5317053707675806e-08,
+  "cross_source_delta": 2.515222787724902e-05,
   "dividend_yield_pct": 0.17,
   "pays_dividend": true,
   "payout_ratio": 0.0698,
-  "average_dollar_volume": 219204114.2231598,
+  "average_dollar_volume": 222523727.3110962,
   "security_type": "Common stock"
 }

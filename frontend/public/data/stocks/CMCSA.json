@@ -5,19 +5,19 @@
   "industry": "Cable & Satellite",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 88244078081.13098,
-  "current_price": 24.56,
-  "rank": 465,
-  "composite_score": 54.9,
+  "market_cap": 89573491096.49658,
+  "current_price": 24.93,
+  "rank": 470,
+  "composite_score": 54.78,
   "pillar_scores": {
     "quality": 53.06,
-    "value": 91.84,
+    "value": 91.67,
     "growth": 54.59,
-    "momentum": 15.61,
-    "health": 32.25,
+    "momentum": 15.66,
+    "health": 32.22,
     "profitability": 51.7,
-    "technical": 61.85,
-    "risk": 35.23,
+    "technical": 59.86,
+    "risk": 35.58,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 3593000000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 88244078081.13098,
-    "pe_ratio_ttm": 7.878935542958123,
+    "market_cap": 89573491096.49658,
+    "pe_ratio_ttm": 7.997633133615766,
     "goodwill": 53070000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 62.880228819768455,
+        "value": 66.45375331526085,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 63.69610916844785,
+        "value": 65.40992019295506,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 122.91403578944764,
+        "value": 123.40679317396962,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,20 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 60.90398211143526,
-    "max": 63.69610916844785,
+    "median": 62.16882779802856,
+    "max": 123.40679317396962,
     "low": 7.292949711473222,
-    "high": 122.91403578944764,
-    "mos_pct": 59.67423046163836,
+    "high": 123.40679317396962,
+    "mos_pct": 59.89951686692999,
     "valuation_warnings": [
-      "goodwill_heavy",
-      "extreme_multiples_ev_ebitda_estimate"
+      "goodwill_heavy"
     ],
-    "valuation_methods_applicable": 5,
-    "median_trimmed": 58.92773540310207,
-    "methods_excluded_from_median": [
-      "multiples_ev_ebitda"
-    ]
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 62.16882779802856,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,14 +104,13 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-23"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy",
-    "extreme_multiples_ev_ebitda_estimate"
+    "goodwill_heavy"
   ],
   "has_history": true,
   "tangible_book_value": 4.733092123573615,
@@ -128,23 +124,23 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=49)",
     "values": {
-      "Quality": 53.06,
-      "Value": 53.4,
+      "Quality": 52.55,
+      "Value": 52.72,
       "Growth": 52.55,
-      "Momentum": 40.36,
-      "Health": 38.11,
+      "Momentum": 39.81,
+      "Health": 38.1,
       "Profitability": 51.36,
-      "Technical": 55.32,
-      "Risk": 42.31
+      "Technical": 53.42,
+      "Risk": 43.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 18.66411816785197,
-  "price_change_1d_pct": 2.5042,
+  "loss_chance_pct": 17.645831762571756,
+  "price_change_1d_pct": 1.5065,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.9,
+  "composite_score_adjusted": 54.78,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.38,
+  "osap_blended_score": 53.32,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,16 +196,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 6,
   "form4_diagnostics": {
     "insider_count": 12,
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.012347141437969875,
+  "cross_source_delta": 0.01234715471014883,
   "dividend_yield_pct": 5.51,
   "pays_dividend": true,
   "payout_ratio": 0.42310002,
-  "average_dollar_volume": 944133939.9912592,
+  "average_dollar_volume": 933139101.0828146,
   "security_type": "Common stock"
 }
