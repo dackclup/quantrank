@@ -5,19 +5,19 @@
   "industry": "Restaurants",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1276715371.326065,
-  "current_price": 57.12,
-  "rank": 1265,
-  "composite_score": 40.49,
+  "market_cap": 1313148275.0,
+  "current_price": 58.75,
+  "rank": 1237,
+  "composite_score": 41.16,
   "pillar_scores": {
-    "quality": 39.56,
-    "value": 40.51,
+    "quality": 39.63,
+    "value": 39.99,
     "growth": 16.11,
-    "momentum": 70.17,
-    "health": 20.8,
-    "profitability": 51.12,
-    "technical": 68.92,
-    "risk": 26.45,
+    "momentum": 74.13,
+    "health": 20.9,
+    "profitability": 51.16,
+    "technical": 72.64,
+    "risk": 28.37,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 22351460.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1276715371.326065,
-    "pe_ratio_ttm": 48.68314094665644,
+    "market_cap": 1313148275.0,
+    "pe_ratio_ttm": 50.07238417540515,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 35.37615032871609,
+        "value": 36.08743930673322,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 211.32374400672867,
+        "value": 210.2853877008168,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 52.59526520969681,
+        "value": 56.35962250645216,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 36.88755614489006,
-    "max": 211.32374400672867,
+    "median": 37.243200633898624,
+    "max": 210.2853877008168,
     "low": 22.85234066313843,
-    "high": 211.32374400672867,
-    "mos_pct": -54.84896507517062,
+    "high": 210.2853877008168,
+    "mos_pct": -57.74691487317008,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 36.88755614489006,
+    "median_trimmed": 37.243200633898624,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,7 +99,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 57,
+    "filing_lag_days": 58,
     "latest_period_end": "2026-06-01",
     "latest_filed_date": "2026-06-09"
   },
@@ -119,23 +119,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 47.2,
-      "Value": 50.84,
+      "Quality": 47.45,
+      "Value": 51.25,
       "Growth": 49.13,
-      "Momentum": 46.46,
-      "Health": 44.07,
+      "Momentum": 47.01,
+      "Health": 44.11,
       "Profitability": 50.77,
-      "Technical": 50.54,
-      "Risk": 39.85
+      "Technical": 51.03,
+      "Risk": 39.62
     }
   },
   "beneish_m_score": -2.8773770352040904,
   "dechow_f_score": 0.2701871743245987,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.95139139609567,
-  "price_change_1d_pct": -1.1423,
+  "loss_chance_pct": 64.4210989337711,
+  "price_change_1d_pct": 2.8536,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 39.99,
+  "composite_score_adjusted": 40.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.17,
+  "osap_blended_score": 46.5,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -196,10 +196,10 @@
     "latest_filing_date": "2026-07-31",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.6193064954681622e-08,
+  "cross_source_delta": 9.899872122209505e-09,
   "dividend_yield_pct": 1.73,
   "pays_dividend": true,
   "payout_ratio": 0.8696,
-  "average_dollar_volume": 53793840.94275284,
+  "average_dollar_volume": 53745199.59518687,
   "security_type": "Common stock"
 }

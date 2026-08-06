@@ -5,40 +5,40 @@
   "industry": "Apparel, Accessories & Luxury Goods",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1902846935.4472504,
-  "current_price": 16.52,
-  "rank": 900,
-  "composite_score": 47.37,
+  "market_cap": 1820698972.385582,
+  "current_price": 16.02,
+  "rank": 1049,
+  "composite_score": 45.1,
   "pillar_scores": {
-    "quality": 73.2,
-    "value": 45.45,
-    "growth": 26.93,
-    "momentum": 24.38,
-    "health": 34.85,
-    "profitability": 52.15,
-    "technical": 65.38,
-    "risk": 15.78,
+    "quality": 72.55,
+    "value": 37.97,
+    "growth": 26.42,
+    "momentum": 27.03,
+    "health": 35.25,
+    "profitability": 53.09,
+    "technical": 50.9,
+    "risk": 14.24,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 3474000000.0,
-    "net_income": 138000000.0,
-    "total_assets": 3234000000.0,
-    "total_liabilities": 3150000000.0,
-    "stockholders_equity": 80000000.0,
-    "cash": 135000000.0,
-    "operating_cash_flow": 553000000.0,
-    "capex": 63000000.0,
-    "free_cash_flow": 490000000.0,
-    "eps_basic": 1.198078532068343,
-    "eps_diluted": 1.198078532068343,
-    "shares_outstanding": 115184436.0,
+    "revenue": 3446000000.0,
+    "net_income": 155000000.0,
+    "total_assets": 3210000000.0,
+    "total_liabilities": 3067000000.0,
+    "stockholders_equity": 138000000.0,
+    "cash": 114000000.0,
+    "operating_cash_flow": 158000000.0,
+    "capex": 75000000.0,
+    "free_cash_flow": 83000000.0,
+    "eps_basic": 1.3638169233983102,
+    "eps_diluted": 1.3638169233983102,
+    "shares_outstanding": 113651618.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1902846935.4472504,
-    "pe_ratio_ttm": 13.788745909038047,
-    "goodwill": 202000000.0
+    "market_cap": 1820698972.385582,
+    "pe_ratio_ttm": 11.746444983132786,
+    "goodwill": 201000000.0
   },
   "fair_price": {
     "methods": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 23.70943763254132,
+        "value": 27.587212869631735,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 1.9201586960103343,
+        "value": 3.37004352244901,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 11.080727865781043,
+        "value": 10.993827495788597,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -73,25 +73,21 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 15.122370178710193,
+        "value": 15.141550206684721,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 13.101549022245617,
-    "max": 23.70943763254132,
-    "low": 1.9201586960103343,
-    "high": 23.70943763254132,
-    "mos_pct": -26.091963856439694,
-    "valuation_warnings": [
-      "extreme_multiples_pb_estimate"
-    ],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 15.122370178710193,
-    "methods_excluded_from_median": [
-      "multiples_pb"
-    ]
+    "median": 13.06768885123666,
+    "max": 27.587212869631735,
+    "low": 3.37004352244901,
+    "high": 27.587212869631735,
+    "mos_pct": -22.59245410673839,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 13.06768885123666,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,13 +100,12 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 70,
-    "latest_period_end": "2026-05-22",
-    "latest_filed_date": "2026-05-27"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-07-31",
+    "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -125,23 +120,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 47.2,
-      "Value": 50.84,
+      "Quality": 47.45,
+      "Value": 51.25,
       "Growth": 49.13,
-      "Momentum": 46.46,
-      "Health": 44.07,
+      "Momentum": 47.01,
+      "Health": 44.11,
       "Profitability": 50.77,
-      "Technical": 50.54,
-      "Risk": 39.85
+      "Technical": 51.03,
+      "Risk": 39.62
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.44538323175469,
-  "price_change_1d_pct": 0.9163,
+  "loss_chance_pct": 52.35838686631764,
+  "price_change_1d_pct": -3.0266,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.37,
+  "composite_score_adjusted": 45.1,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.61,
+  "osap_blended_score": 48.47,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -197,16 +192,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 5,
     "latest_filing_date": "2026-06-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.003371364941522489,
+  "cross_source_delta": 0.010070103785687852,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 55500670.8820399,
+  "average_dollar_volume": 57901995.36278852,
   "security_type": "Common stock"
 }

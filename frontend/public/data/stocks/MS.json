@@ -5,19 +5,19 @@
   "industry": "Investment Banking & Brokerage",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 340875697471.1065,
-  "current_price": 217.04,
-  "rank": 446,
-  "composite_score": 55.14,
+  "market_cap": 342807511265.02313,
+  "current_price": 218.27,
+  "rank": 425,
+  "composite_score": 55.32,
   "pillar_scores": {
-    "quality": 58.11,
-    "value": 42.21,
-    "growth": 66.12,
-    "momentum": 74.52,
-    "health": 43.58,
-    "profitability": 48.78,
-    "technical": 38.45,
-    "risk": 73.37,
+    "quality": 57.27,
+    "value": 41.7,
+    "growth": 65.84,
+    "momentum": 76.4,
+    "health": 43.32,
+    "profitability": 48.51,
+    "technical": 45.61,
+    "risk": 73.67,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 1570566292.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 340875697471.1065,
-    "pe_ratio_ttm": 16.734202134074938,
+    "market_cap": 342807511265.02313,
+    "pe_ratio_ttm": 16.829038353707567,
     "goodwill": 17105000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 214.34963004736306,
+        "value": 211.99439867464213,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 298.58791182957134,
+        "value": 290.48147168324704,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 158.17625205227756,
-    "max": 298.58791182957134,
+    "median": 156.9986363659171,
+    "max": 290.48147168324704,
     "low": 70.80210080236492,
-    "high": 298.58791182957134,
-    "mos_pct": -37.21401946886481,
+    "high": 290.48147168324704,
+    "mos_pct": -39.02668795398867,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 158.17625205227756,
+    "median_trimmed": 156.9986363659171,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -108,7 +108,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-04"
   },
@@ -126,25 +126,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=259)",
+    "label": "Financials median (n=258)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.03,
-      "Growth": 50.19,
-      "Momentum": 60.45,
-      "Health": 54.64,
-      "Profitability": 51.16,
-      "Technical": 51.18,
-      "Risk": 62.72
+      "Value": 51.07,
+      "Growth": 50.29,
+      "Momentum": 59.28,
+      "Health": 54.37,
+      "Profitability": 51.07,
+      "Technical": 51.5,
+      "Risk": 62.58
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.45611268039831,
-  "price_change_1d_pct": 2.7506,
+  "loss_chance_pct": 51.0000759981739,
+  "price_change_1d_pct": 0.5667,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 54.64,
+  "composite_score_adjusted": 54.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +192,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.49,
+  "osap_blended_score": 53.59,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,10 +206,10 @@
     "latest_filing_date": "2026-07-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0009128659719717025,
-  "dividend_yield_pct": 2.19,
+  "cross_source_delta": 0.0009128568210833032,
+  "dividend_yield_pct": 2.18,
   "pays_dividend": true,
   "payout_ratio": 0.3231,
-  "average_dollar_volume": 1273676456.1345744,
+  "average_dollar_volume": 1281267276.0638316,
   "security_type": "Common stock"
 }

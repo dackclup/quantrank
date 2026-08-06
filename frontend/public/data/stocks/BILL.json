@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4837412999.995491,
-  "current_price": 48.57,
-  "rank": 1279,
-  "composite_score": 40.2,
+  "market_cap": 4812513818.245491,
+  "current_price": 48.32,
+  "rank": 1250,
+  "composite_score": 40.81,
   "pillar_scores": {
-    "quality": 12.04,
-    "value": 66.58,
-    "growth": 49.87,
-    "momentum": 38.95,
-    "health": 58.7,
-    "profitability": 21.6,
-    "technical": 57.91,
-    "risk": 18.47,
+    "quality": 11.58,
+    "value": 66.4,
+    "growth": 49.74,
+    "momentum": 45.01,
+    "health": 58.38,
+    "profitability": 21.4,
+    "technical": 59.33,
+    "risk": 18.74,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 99596727.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4837412999.995491,
-    "pe_ratio_ttm": 494.6735862558023,
+    "market_cap": 4812513818.245491,
+    "pe_ratio_ttm": 492.12739730498936,
     "goodwill": 2396509000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 3.456270266288894,
+        "value": 3.440701382278726,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 242.4597759648771,
+        "value": 232.84082367005962,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -80,16 +80,16 @@
       }
     },
     "median": 27.620683451624707,
-    "max": 242.4597759648771,
-    "low": 3.456270266288894,
-    "high": 242.4597759648771,
-    "mos_pct": -75.8464803374271,
+    "max": 232.84082367005962,
+    "low": 3.440701382278726,
+    "high": 232.84082367005962,
+    "mos_pct": -74.94136153239153,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pe_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 135.0402297082509,
+    "median_trimmed": 130.23075356084217,
     "methods_excluded_from_median": [
       "multiples_pe"
     ]
@@ -104,7 +104,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 89,
+    "filing_lag_days": 90,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
@@ -124,25 +124,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=189)",
+    "label": "Information Technology median (n=190)",
     "values": {
-      "Quality": 48.54,
-      "Value": 50.26,
-      "Growth": 50.26,
-      "Momentum": 56.27,
-      "Health": 64.68,
-      "Profitability": 49.74,
-      "Technical": 53.34,
-      "Risk": 40.5
+      "Quality": 48.03,
+      "Value": 50.02,
+      "Growth": 50.59,
+      "Momentum": 55.34,
+      "Health": 64.8,
+      "Profitability": 49.8,
+      "Technical": 55.19,
+      "Risk": 40.59
     }
   },
   "beneish_m_score": -2.6337483611530015,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 66.89979264583098,
-  "price_change_1d_pct": 2.859,
+  "loss_chance_pct": 66.59305813153229,
+  "price_change_1d_pct": -0.5147,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.2,
+  "composite_score_adjusted": 40.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.03,
+  "osap_blended_score": 46.33,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,10 +204,10 @@
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.8113268606165898e-08,
+  "cross_source_delta": 5.453592866233142e-09,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 101183647.95858206,
+  "average_dollar_volume": 102048055.59486516,
   "security_type": "Common stock"
 }
