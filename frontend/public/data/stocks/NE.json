@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Drilling",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6495841631.184776,
-  "current_price": 40.69,
-  "rank": 1294,
-  "composite_score": 39.58,
+  "market_cap": 6508613300.938408,
+  "current_price": 40.77,
+  "rank": 1225,
+  "composite_score": 41.47,
   "pillar_scores": {
     "quality": 29.58,
-    "value": 38.5,
-    "growth": 53.87,
-    "momentum": 34.24,
-    "health": 50.09,
+    "value": 38.03,
+    "growth": 67.25,
+    "momentum": 37.03,
+    "health": 50.23,
     "profitability": 38.73,
-    "technical": 48.82,
-    "risk": 50.6,
+    "technical": 48.79,
+    "risk": 49.61,
     "sentiment": null,
     "ml": null
   },
@@ -36,26 +36,26 @@
     "shares_outstanding": 159642218.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6495841631.184776,
-    "pe_ratio_ttm": 43.42633608889229,
+    "market_cap": 6508613300.938408,
+    "pe_ratio_ttm": 43.51171791539418,
     "goodwill": 0.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
+        "value": 40.09119646208248,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 14.172934559744087,
+        "value": 13.942617620907676,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 47.523963385488784,
+        "value": 47.28681696580873,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -73,20 +73,20 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 153.06168100539236,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
         "tier_used": null
       }
     },
-    "median": 47.523963385488784,
-    "max": 153.06168100539236,
-    "low": 14.172934559744087,
-    "high": 153.06168100539236,
-    "mos_pct": 14.38003960937845,
+    "median": 40.09119646208248,
+    "max": 47.28681696580873,
+    "low": 13.942617620907676,
+    "high": 47.28681696580873,
+    "mos_pct": -1.693149757511461,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 47.523963385488784,
+    "median_trimmed": 40.09119646208248,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -122,22 +122,22 @@
     "label": "Energy median (n=71)",
     "values": {
       "Quality": 52.82,
-      "Value": 50.7,
+      "Value": 50.0,
       "Growth": 50.7,
-      "Momentum": 40.59,
-      "Health": 46.17,
-      "Profitability": 52.82,
-      "Technical": 54.16,
-      "Risk": 56.97
+      "Momentum": 45.64,
+      "Health": 46.56,
+      "Profitability": 52.58,
+      "Technical": 49.93,
+      "Risk": 56.6
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 40.1776380134032,
-  "price_change_1d_pct": 1.9799,
+  "loss_chance_pct": 44.85794354769569,
+  "price_change_1d_pct": 0.1966,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.58,
+  "composite_score_adjusted": 41.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.72,
+  "osap_blended_score": 46.66,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -198,10 +198,10 @@
     "latest_filing_date": "2026-06-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.4756641683168093e-08,
-  "dividend_yield_pct": 5.01,
+  "cross_source_delta": 5.086515003961267e-08,
+  "dividend_yield_pct": 4.92,
   "pays_dividend": true,
   "payout_ratio": 2.1277,
-  "average_dollar_volume": 72634891.57522137,
+  "average_dollar_volume": 71936569.89110197,
   "security_type": "Common stock"
 }

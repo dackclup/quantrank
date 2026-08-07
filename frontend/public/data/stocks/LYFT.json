@@ -5,66 +5,66 @@
   "industry": "Passenger Ground Transportation",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 6188824981.925217,
-  "current_price": 16.3,
-  "rank": 261,
-  "composite_score": 59.25,
+  "market_cap": 6609312400.976051,
+  "current_price": 17.46,
+  "rank": 396,
+  "composite_score": 56.24,
   "pillar_scores": {
-    "quality": 69.58,
-    "value": 76.81,
-    "growth": 72.43,
-    "momentum": 35.62,
-    "health": 14.3,
-    "profitability": 67.11,
-    "technical": 53.71,
-    "risk": 26.98,
+    "quality": 70.36,
+    "value": 59.63,
+    "growth": 72.44,
+    "momentum": 36.87,
+    "health": 14.37,
+    "profitability": 68.5,
+    "technical": 59.29,
+    "risk": 30.12,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 6516578000.0,
-    "net_income": 2855691000.0,
-    "total_assets": 8889967000.0,
-    "total_liabilities": 5864031000.0,
-    "stockholders_equity": 3025936000.0,
-    "cash": 1034869000.0,
-    "operating_cash_flow": 1188883000.0,
+    "revenue": 6771939000.0,
+    "net_income": 2865671000.0,
+    "total_assets": 9107486000.0,
+    "total_liabilities": 6083840000.0,
+    "stockholders_equity": 3023646000.0,
+    "cash": 1137942000.0,
+    "operating_cash_flow": 1195080000.0,
     "capex": null,
     "free_cash_flow": null,
-    "eps_basic": 7.521259892988703,
-    "eps_diluted": 7.521259892988703,
-    "shares_outstanding": 379682532.0,
+    "eps_basic": 7.570320481297089,
+    "eps_diluted": 7.570320481297089,
+    "shares_outstanding": 378540249.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6188824981.925217,
-    "pe_ratio_ttm": 2.167190001272973,
-    "goodwill": 435043000.0
+    "market_cap": 6609312400.976051,
+    "pe_ratio_ttm": 2.3063751564558705,
+    "goodwill": 477082000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 16.93736022427744,
+        "value": 16.813508305826897,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 209.74892275386776,
+        "value": 211.60201137456318,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 34.64386879267582,
+        "value": 34.52361344611839,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
-        "tier_used": null
+        "value": 1.2424828575614022,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -79,18 +79,20 @@
         "tier_used": null
       }
     },
-    "median": 34.64386879267582,
-    "max": 34.64386879267582,
-    "low": 16.93736022427744,
-    "high": 209.74892275386776,
-    "mos_pct": 52.94982978198271,
+    "median": 25.668560875972645,
+    "max": 34.52361344611839,
+    "low": 1.2424828575614022,
+    "high": 211.60201137456318,
+    "mos_pct": 31.979049511824048,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 25.79061450847663,
+    "median_trimmed": 25.668560875972645,
     "methods_excluded_from_median": [
-      "multiples_pe"
+      "multiples_pe",
+      "multiples_ev_ebitda"
     ]
   },
   "top5_factors": [],
@@ -105,9 +107,9 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
-    "latest_period_end": "2026-05-01",
-    "latest_filed_date": "2026-05-08"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-07-31",
+    "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [
     "altman_distress",
@@ -115,12 +117,13 @@
   ],
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
     "restatement_history",
     "accruals_momentum_high",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 6.385624293087047,
+  "tangible_book_value": 6.292577886479913,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -129,25 +132,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=263)",
+    "label": "Industrials median (n=264)",
     "values": {
-      "Quality": 49.52,
-      "Value": 49.87,
-      "Growth": 51.05,
-      "Momentum": 50.78,
-      "Health": 57.38,
-      "Profitability": 49.81,
-      "Technical": 55.24,
-      "Risk": 49.21
+      "Quality": 49.76,
+      "Value": 49.98,
+      "Growth": 51.35,
+      "Momentum": 50.06,
+      "Health": 57.44,
+      "Profitability": 49.78,
+      "Technical": 55.33,
+      "Risk": 49.69
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 34.84503775869422,
-  "price_change_1d_pct": -1.0922,
+  "loss_chance_pct": 44.686781245705774,
+  "price_change_1d_pct": 7.1166,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 56.75,
+  "composite_score_adjusted": 53.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -195,7 +198,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.55,
+  "osap_blended_score": 54.05,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -208,10 +211,10 @@
     "latest_filing_date": "2026-07-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.7139729049535608e-08,
+  "cross_source_delta": 0.00301760634298408,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 180997943.13804016,
+  "average_dollar_volume": 188289908.7938821,
   "security_type": "Common stock"
 }

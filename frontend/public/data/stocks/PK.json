@@ -5,45 +5,45 @@
   "industry": "Hotel & Resort REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 2889542409.063444,
-  "current_price": 14.35,
-  "rank": 1409,
-  "composite_score": 35.66,
+  "market_cap": 2971753796.8826866,
+  "current_price": 14.76,
+  "rank": 1367,
+  "composite_score": 37.28,
   "pillar_scores": {
-    "quality": 15.26,
+    "quality": 17.67,
     "value": 41.43,
     "growth": 29.81,
-    "momentum": 81.2,
-    "health": 21.44,
-    "profitability": 33.01,
-    "technical": 33.89,
-    "risk": 63.07,
+    "momentum": 83.91,
+    "health": 21.43,
+    "profitability": 33.49,
+    "technical": 44.68,
+    "risk": 64.46,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2533000000.0,
-    "net_income": -208000000.0,
-    "total_assets": 7658000000.0,
-    "total_liabilities": 4625000000.0,
-    "stockholders_equity": 3088000000.0,
-    "cash": 156000000.0,
-    "operating_cash_flow": 371000000.0,
-    "capex": 302000000.0,
-    "free_cash_flow": 69000000.0,
-    "eps_basic": -1.0329663513445833,
-    "eps_diluted": -1.0329663513445833,
-    "shares_outstanding": 201361835.0,
+    "revenue": 2541000000.0,
+    "net_income": -156000000.0,
+    "total_assets": 7702000000.0,
+    "total_liabilities": 4669000000.0,
+    "stockholders_equity": 3090000000.0,
+    "cash": 264000000.0,
+    "operating_cash_flow": 404000000.0,
+    "capex": 323000000.0,
+    "free_cash_flow": 81000000.0,
+    "eps_basic": -0.7748152078146272,
+    "eps_diluted": -0.7748152078146272,
+    "shares_outstanding": 201338330.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2889542409.063444,
+    "market_cap": 2971753796.8826866,
     "pe_ratio_ttm": null,
     "goodwill": 607000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 1.34819267303155,
+        "value": 1.3490999680310878,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 21.789762408861133,
+        "value": 21.711920080774938,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 7.197973940801769,
+        "value": 5.462784825007033,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 7.197973940801769,
-    "max": 21.789762408861133,
-    "low": 1.34819267303155,
-    "high": 21.789762408861133,
-    "mos_pct": -99.36166064907019,
+    "median": 5.462784825007033,
+    "max": 21.711920080774938,
+    "low": 1.3490999680310878,
+    "high": 21.711920080774938,
+    "mos_pct": -170.19186553559396,
     "valuation_warnings": [
       "extreme_graham_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 14.493868174831452,
+    "median_trimmed": 13.587352452890986,
     "methods_excluded_from_median": [
       "graham"
     ]
@@ -107,16 +107,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 98,
-    "latest_period_end": "2026-04-24",
-    "latest_filed_date": "2026-05-01"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-07-31",
+    "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_graham_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 12.117489890772996,
+  "tangible_book_value": 12.13380482494317,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -127,23 +127,23 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=104)",
     "values": {
-      "Quality": 49.4,
-      "Value": 48.52,
-      "Growth": 49.94,
-      "Momentum": 58.34,
-      "Health": 27.07,
+      "Quality": 49.64,
+      "Value": 48.12,
+      "Growth": 50.06,
+      "Momentum": 59.74,
+      "Health": 27.1,
       "Profitability": 51.88,
-      "Technical": 39.25,
-      "Risk": 62.78
+      "Technical": 42.88,
+      "Risk": 63.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.16910887206765,
-  "price_change_1d_pct": -3.9491,
+  "loss_chance_pct": 67.35900312840971,
+  "price_change_1d_pct": 2.8571,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 35.66,
+  "composite_score_adjusted": 37.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.76,
+  "osap_blended_score": 44.57,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,10 +205,10 @@
     "latest_filing_date": "2026-06-24",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.136636482352539e-09,
+  "cross_source_delta": 0.00011678865109130233,
   "dividend_yield_pct": 6.69,
   "pays_dividend": true,
   "payout_ratio": 5.3846,
-  "average_dollar_volume": 74383072.38569565,
+  "average_dollar_volume": 74943649.8090608,
   "security_type": "Common stock"
 }

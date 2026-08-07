@@ -5,40 +5,40 @@
   "industry": "Interactive Home Entertainment",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 43161929374.253876,
-  "current_price": 232.47,
-  "rank": 1415,
-  "composite_score": 35.24,
+  "market_cap": 46090679199.5,
+  "current_price": 246.5,
+  "rank": 1395,
+  "composite_score": 35.92,
   "pillar_scores": {
-    "quality": 27.6,
-    "value": 20.49,
-    "growth": 55.47,
-    "momentum": 65.28,
-    "health": 26.1,
-    "profitability": 35.76,
-    "technical": 26.76,
-    "risk": 47.12,
+    "quality": 27.04,
+    "value": 20.75,
+    "growth": 54.85,
+    "momentum": 69.81,
+    "health": 20.31,
+    "profitability": 34.35,
+    "technical": 44.22,
+    "risk": 49.28,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 6656400000.0,
-    "net_income": -298200000.0,
-    "total_assets": 9383200000.0,
-    "total_liabilities": 5872300000.0,
-    "stockholders_equity": 3510900000.0,
-    "cash": 1545500000.0,
-    "operating_cash_flow": 624300000.0,
-    "capex": 162800000.0,
-    "free_cash_flow": 461500000.0,
-    "eps_basic": -1.6061041609823083,
-    "eps_diluted": -1.6061041609823083,
-    "shares_outstanding": 185666663.0,
+    "revenue": 6686500000.0,
+    "net_income": -320400000.0,
+    "total_assets": 9064200000.0,
+    "total_liabilities": 5455800000.0,
+    "stockholders_equity": 3608400000.0,
+    "cash": 1364900000.0,
+    "operating_cash_flow": 500200000.0,
+    "capex": 162700000.0,
+    "free_cash_flow": 337500000.0,
+    "eps_basic": -1.7135481917753292,
+    "eps_diluted": -1.7135481917753292,
+    "shares_outstanding": 186980443.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 43161929374.253876,
+    "market_cap": 46090679199.5,
     "pe_ratio_ttm": null,
-    "goodwill": 1061900000.0
+    "goodwill": 1060900000.0
   },
   "fair_price": {
     "methods": {
@@ -55,16 +55,16 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 44.11255640329182,
+        "value": 47.811940429231825,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 4.284614376984246,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "ev_ebitda_negative_equity_post_debt",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -81,20 +81,17 @@
     },
     "median": null,
     "max": null,
-    "low": 4.284614376984246,
-    "high": 44.11255640329182,
+    "low": 47.811940429231825,
+    "high": 47.811940429231825,
     "mos_pct": null,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_multiples_pb_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_estimate_majority"
+      "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 0,
     "median_trimmed": null,
     "methods_excluded_from_median": [
-      "multiples_pb",
-      "multiples_ev_ebitda"
+      "multiples_pb"
     ]
   },
   "top5_factors": [],
@@ -105,9 +102,9 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
-    "latest_period_end": "2026-05-11",
-    "latest_filed_date": "2026-05-22"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-07-27",
+    "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [
     "altman_distress",
@@ -115,12 +112,10 @@
   ],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_multiples_pb_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_estimate_majority"
+    "extreme_multiples_pb_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 4.286176027195577,
+  "tangible_book_value": 5.636418349912669,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -129,25 +124,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Communication Services median (n=48)",
+    "label": "Communication Services median (n=49)",
     "values": {
-      "Quality": 52.34,
-      "Value": 51.56,
-      "Growth": 53.65,
-      "Momentum": 39.6,
-      "Health": 37.54,
-      "Profitability": 52.43,
-      "Technical": 54.22,
-      "Risk": 44.13
+      "Quality": 51.02,
+      "Value": 48.98,
+      "Growth": 52.55,
+      "Momentum": 42.27,
+      "Health": 37.31,
+      "Profitability": 51.7,
+      "Technical": 51.81,
+      "Risk": 45.45
     }
   },
-  "beneish_m_score": -2.8599390854837288,
-  "dechow_f_score": 0.8266892358396878,
+  "beneish_m_score": -2.9560965868593088,
+  "dechow_f_score": 0.8297614456918707,
   "recommendation": "cautious",
   "loss_chance_pct": null,
-  "price_change_1d_pct": -1.0387,
+  "price_change_1d_pct": 6.0352,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 35.24,
+  "composite_score_adjusted": 35.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -195,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.55,
+  "osap_blended_score": 43.89,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -209,10 +204,10 @@
     "latest_filing_date": "2026-07-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.007076063331133327,
+  "cross_source_delta": 6.874491882155584e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 535049766.95334166,
+  "average_dollar_volume": 545762452.8268311,
   "security_type": "Common stock"
 }

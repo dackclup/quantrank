@@ -1,23 +1,23 @@
 {
   "ticker": "APP",
   "name": "AppLovin",
-  "sector": "Information Technology",
-  "industry": "Application Software",
+  "sector": "Communication Services",
+  "industry": "Advertising",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 112547134472.19849,
-  "current_price": 335.67,
-  "rank": 13,
-  "composite_score": 71.26,
+  "market_cap": 116278914707.09229,
+  "current_price": 346.8,
+  "rank": 131,
+  "composite_score": 63.24,
   "pillar_scores": {
-    "quality": 97.37,
-    "value": 46.14,
-    "growth": 83.49,
-    "momentum": 60.56,
+    "quality": 96.43,
+    "value": 16.67,
+    "growth": 84.95,
+    "momentum": 48.2,
     "health": 80.21,
-    "profitability": 94.21,
-    "technical": 23.42,
-    "risk": 27.12,
+    "profitability": 95.41,
+    "technical": 26.56,
+    "risk": 27.07,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 335291000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 112547134472.19849,
-    "pe_ratio_ttm": 25.521169952008204,
+    "market_cap": 116278914707.09229,
+    "pe_ratio_ttm": 26.367387832586903,
     "goodwill": 1518587000.0
   },
   "fair_price": {
@@ -49,25 +49,25 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 466.593296892102,
+        "value": 239.36177999670036,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 55.3443845859499,
+        "value": 23.372080456015397,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 355.4814593802613,
+        "value": 187.68678969496264,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
-        "value": 92.80858620694117,
+        "value": 99.34189839495698,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 74.07648539644553,
-    "max": 466.593296892102,
+    "median": 63.14845326743047,
+    "max": 239.36177999670036,
     "low": 20.97414772409896,
-    "high": 466.593296892102,
-    "mos_pct": -353.13976713565984,
+    "high": 239.36177999670036,
+    "mos_pct": -449.18207786386876,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,7 +92,7 @@
       "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 355.4814593802613,
+    "median_trimmed": 187.68678969496264,
     "methods_excluded_from_median": [
       "graham",
       "multiples_pb",
@@ -130,25 +130,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Information Technology median (n=190)",
+    "label": "Communication Services median (n=49)",
     "values": {
-      "Quality": 49.61,
-      "Value": 50.24,
-      "Growth": 50.43,
-      "Momentum": 54.75,
-      "Health": 64.95,
-      "Profitability": 50.83,
-      "Technical": 55.71,
-      "Risk": 41.52
+      "Quality": 51.02,
+      "Value": 48.98,
+      "Growth": 52.55,
+      "Momentum": 42.27,
+      "Health": 37.31,
+      "Profitability": 51.7,
+      "Technical": 51.81,
+      "Risk": 45.45
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 53.36975083986562,
-  "price_change_1d_pct": -19.6577,
+  "loss_chance_pct": 57.38015038129614,
+  "price_change_1d_pct": 3.3157,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 71.26,
+  "composite_score_adjusted": 63.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -196,7 +196,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 61.56,
+  "osap_blended_score": 57.55,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -210,10 +210,10 @@
     "latest_filing_date": "2026-07-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0019102203997170034,
+  "cross_source_delta": 0.0019342081879097286,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 2806047268.2758484,
+  "average_dollar_volume": 2834539131.804779,
   "security_type": "Common stock"
 }
