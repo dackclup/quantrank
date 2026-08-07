@@ -5,19 +5,19 @@
   "industry": "Timber REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6622453988.131153,
-  "current_price": 22.02,
-  "rank": 1149,
-  "composite_score": 43.07,
+  "market_cap": 6445013080.670769,
+  "current_price": 21.43,
+  "rank": 1170,
+  "composite_score": 42.72,
   "pillar_scores": {
-    "quality": 34.13,
-    "value": 32.05,
-    "growth": 68.75,
-    "momentum": 39.54,
-    "health": 63.66,
-    "profitability": 35.58,
-    "technical": 51.39,
-    "risk": 47.47,
+    "quality": 34.01,
+    "value": 32.21,
+    "growth": 68.51,
+    "momentum": 38.8,
+    "health": 63.76,
+    "profitability": 35.82,
+    "technical": 47.4,
+    "risk": 45.91,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 300747223.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6622453988.131153,
-    "pe_ratio_ttm": 14.06088951669516,
+    "market_cap": 6445013080.670769,
+    "pe_ratio_ttm": 13.684144430958948,
     "goodwill": 6970000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 42.57239374224035,
+        "value": 42.282778194474126,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 34.79616392004345,
+        "value": 34.3929025833219,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 4.341315501924083,
+        "value": 4.316856753683355,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,18 +80,14 @@
       }
     },
     "median": 28.637538769372057,
-    "max": 42.57239374224035,
-    "low": 4.341315501924083,
-    "high": 42.57239374224035,
-    "mos_pct": 23.107915679841398,
-    "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate"
-    ],
-    "valuation_methods_applicable": 5,
-    "median_trimmed": 29.575065155722772,
-    "methods_excluded_from_median": [
-      "multiples_ev_ebitda"
-    ]
+    "max": 42.282778194474126,
+    "low": 4.316856753683355,
+    "high": 42.282778194474126,
+    "mos_pct": 25.168149128460588,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 28.637538769372057,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +98,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 90,
+    "filing_lag_days": 91,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
@@ -112,7 +108,6 @@
     "beneish_manipulation_veto"
   ],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
     "beneish_high",
     "accruals_momentum_high"
   ],
@@ -129,22 +124,22 @@
     "label": "Real Estate median (n=104)",
     "values": {
       "Quality": 49.4,
-      "Value": 48.0,
+      "Value": 48.52,
       "Growth": 49.94,
-      "Momentum": 59.36,
-      "Health": 27.32,
-      "Profitability": 51.16,
-      "Technical": 44.22,
-      "Risk": 64.76
+      "Momentum": 58.34,
+      "Health": 27.07,
+      "Profitability": 51.88,
+      "Technical": 39.25,
+      "Risk": 62.78
     }
   },
   "beneish_m_score": -0.33187132936592856,
   "dechow_f_score": 1.492114283028312,
   "recommendation": "neutral",
-  "loss_chance_pct": 45.37509136762016,
-  "price_change_1d_pct": 0.4104,
+  "loss_chance_pct": 43.83048137705189,
+  "price_change_1d_pct": -2.6794,
   "manipulation_index": 48.0,
-  "composite_score_adjusted": 38.27,
+  "composite_score_adjusted": 37.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -192,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.46,
+  "osap_blended_score": 47.29,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,16 +195,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 6,
   "form4_diagnostics": {
-    "insider_count": 18,
+    "insider_count": 16,
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.005595706355266714,
-  "dividend_yield_pct": 4.83,
+  "cross_source_delta": 0.005595670152693912,
+  "dividend_yield_pct": 4.72,
   "pays_dividend": true,
   "payout_ratio": 2.3424,
-  "average_dollar_volume": 54731996.91512998,
+  "average_dollar_volume": 55245256.526498415,
   "security_type": "Common stock"
 }

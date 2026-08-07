@@ -5,40 +5,40 @@
   "industry": "Specialized Consumer Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 5364543149.454025,
-  "current_price": 76.38,
-  "rank": 81,
-  "composite_score": 65.26,
+  "market_cap": 6194886848.572571,
+  "current_price": 89.92,
+  "rank": 75,
+  "composite_score": 65.83,
   "pillar_scores": {
-    "quality": 80.73,
-    "value": 39.0,
-    "growth": 88.66,
-    "momentum": 80.22,
-    "health": 42.26,
-    "profitability": 69.89,
-    "technical": 56.47,
-    "risk": 46.92,
+    "quality": 79.96,
+    "value": 36.34,
+    "growth": 88.4,
+    "momentum": 86.15,
+    "health": 44.3,
+    "profitability": 70.4,
+    "technical": 59.73,
+    "risk": 53.96,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2119000000.0,
-    "net_income": 260000000.0,
-    "total_assets": 2164000000.0,
+    "revenue": 2147000000.0,
+    "net_income": 274000000.0,
+    "total_assets": 2186000000.0,
     "total_liabilities": 1385000000.0,
-    "stockholders_equity": 230000000.0,
-    "cash": 603000000.0,
-    "operating_cash_flow": 411000000.0,
-    "capex": 25000000.0,
+    "stockholders_equity": 284000000.0,
+    "cash": 627000000.0,
+    "operating_cash_flow": 410000000.0,
+    "capex": 24000000.0,
     "free_cash_flow": 386000000.0,
-    "eps_basic": 3.701862159112243,
-    "eps_diluted": 3.701862159112243,
-    "shares_outstanding": 70234922.0,
+    "eps_basic": 3.9771637643338287,
+    "eps_diluted": 3.9771637643338287,
+    "shares_outstanding": 68893316.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5364543149.454025,
-    "pe_ratio_ttm": 20.632858267130867,
-    "goodwill": 959000000.0
+    "market_cap": 6194886848.572571,
+    "pe_ratio_ttm": 22.609076089680915,
+    "goodwill": 963000000.0
   },
   "fair_price": {
     "methods": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 72.15747233509651,
+        "value": 75.0307415083144,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 10.54343850552458,
+        "value": 12.902861202951385,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -73,22 +73,22 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 23.259427680560908,
+        "value": 24.162345283377512,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 23.259427680560908,
-    "max": 72.15747233509651,
-    "low": 10.54343850552458,
-    "high": 72.15747233509651,
-    "mos_pct": -228.38296067470588,
+    "median": 24.162345283377512,
+    "max": 75.0307415083144,
+    "low": 12.902861202951385,
+    "high": 75.0307415083144,
+    "mos_pct": -272.1492972406358,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 47.70845000782871,
+    "median_trimmed": 49.596543395845956,
     "methods_excluded_from_median": [
       "multiples_pb"
     ]
@@ -105,9 +105,9 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 98,
-    "latest_period_end": "2026-04-24",
-    "latest_filed_date": "2026-04-30"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-07-31",
+    "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
@@ -125,23 +125,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 47.45,
-      "Value": 51.25,
-      "Growth": 49.13,
-      "Momentum": 47.01,
-      "Health": 44.11,
-      "Profitability": 50.77,
-      "Technical": 51.03,
-      "Risk": 39.62
+      "Quality": 47.04,
+      "Value": 50.75,
+      "Growth": 49.07,
+      "Momentum": 44.61,
+      "Health": 44.45,
+      "Profitability": 50.86,
+      "Technical": 51.08,
+      "Risk": 38.69
     }
   },
-  "beneish_m_score": -2.890710286352658,
+  "beneish_m_score": -2.7014657208020947,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 53.36773272419025,
-  "price_change_1d_pct": -0.4821,
+  "loss_chance_pct": 53.08744879062478,
+  "price_change_1d_pct": 17.7272,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.26,
+  "composite_score_adjusted": 65.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.56,
+  "osap_blended_score": 58.84,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -202,10 +202,10 @@
     "latest_filing_date": "2026-07-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.233341972208909e-08,
+  "cross_source_delta": 0.019473680533039356,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 45697461.43560384,
+  "average_dollar_volume": 46709190.83712056,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Regional Banks",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 36384233400.858765,
-  "current_price": 251.94,
-  "rank": 704,
-  "composite_score": 51.09,
+  "market_cap": 36124283688.53531,
+  "current_price": 250.14,
+  "rank": 693,
+  "composite_score": 51.24,
   "pillar_scores": {
     "quality": 44.28,
-    "value": 50.61,
-    "growth": 39.44,
-    "momentum": 66.74,
-    "health": 49.76,
-    "profitability": 55.17,
-    "technical": 58.33,
-    "risk": 77.59,
+    "value": 50.23,
+    "growth": 39.24,
+    "momentum": 67.85,
+    "health": 49.73,
+    "profitability": 55.1,
+    "technical": 60.87,
+    "risk": 77.6,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 144416262.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 36384233400.858765,
-    "pe_ratio_ttm": 11.996120475060588,
+    "market_cap": 36124283688.53531,
+    "pe_ratio_ttm": 11.910413349335743,
     "goodwill": 8465000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 272.0271686146557,
+        "value": 266.8939822979299,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 253.33299345139255,
+        "value": 250.7697164576564,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 236.07571316322372,
-    "max": 272.0271686146557,
+    "median": 234.79407466635564,
+    "max": 266.8939822979299,
     "low": 141.6845628480944,
-    "high": 272.0271686146557,
-    "mos_pct": -6.720000573381258,
+    "high": 266.8939822979299,
+    "mos_pct": -6.53590800581296,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 236.07571316322372,
+    "median_trimmed": 234.79407466635564,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -108,7 +108,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-04"
   },
@@ -132,22 +132,22 @@
     "label": "Financials median (n=258)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.07,
-      "Growth": 50.29,
-      "Momentum": 59.28,
-      "Health": 54.37,
-      "Profitability": 51.07,
-      "Technical": 51.5,
-      "Risk": 62.58
+      "Value": 51.11,
+      "Growth": 50.19,
+      "Momentum": 60.15,
+      "Health": 54.36,
+      "Profitability": 51.2,
+      "Technical": 52.36,
+      "Risk": 62.67
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 56.80791610023124,
-  "price_change_1d_pct": -0.4426,
+  "loss_chance_pct": 56.66915499501519,
+  "price_change_1d_pct": -0.7145,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.09,
+  "composite_score_adjusted": 51.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -195,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.47,
+  "osap_blended_score": 51.54,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,14 +205,14 @@
   ],
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
-    "insider_count": 24,
-    "latest_filing_date": "2026-07-16",
+    "insider_count": 22,
+    "latest_filing_date": "2026-08-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.003578068711986732,
-  "dividend_yield_pct": 2.41,
+  "cross_source_delta": 0.0035781100762895704,
+  "dividend_yield_pct": 2.38,
   "pays_dividend": true,
   "payout_ratio": 0.3176,
-  "average_dollar_volume": 283497992.4373474,
+  "average_dollar_volume": 284027964.2209625,
   "security_type": "Common stock"
 }

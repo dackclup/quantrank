@@ -5,63 +5,63 @@
   "industry": "Household Products",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2728944305.0575256,
-  "current_price": 44.06,
-  "rank": 468,
-  "composite_score": 54.77,
+  "market_cap": 2881989556.694031,
+  "current_price": 46.54,
+  "rank": 490,
+  "composite_score": 54.36,
   "pillar_scores": {
-    "quality": 38.49,
+    "quality": 36.51,
     "value": 76.97,
-    "growth": 35.03,
-    "momentum": 71.03,
-    "health": 55.34,
+    "growth": 31.25,
+    "momentum": 71.08,
+    "health": 56.97,
     "profitability": 48.03,
-    "technical": 59.29,
-    "risk": 56.23,
+    "technical": 65.37,
+    "risk": 59.79,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 3162616000.0,
-    "net_income": 171806000.0,
-    "total_assets": 3745528000.0,
+    "revenue": 3084065000.0,
+    "net_income": 166387000.0,
+    "total_assets": 3789953000.0,
     "total_liabilities": null,
-    "stockholders_equity": 1651246000.0,
-    "cash": 653242000.0,
-    "operating_cash_flow": 309147000.0,
-    "capex": 45923000.0,
-    "free_cash_flow": 263224000.0,
-    "eps_basic": 2.7738831393189853,
-    "eps_diluted": 2.7738831393189853,
-    "shares_outstanding": 61937000.0,
+    "stockholders_equity": 1745670000.0,
+    "cash": 996710000.0,
+    "operating_cash_flow": 390321000.0,
+    "capex": 44689000.0,
+    "free_cash_flow": 345632000.0,
+    "eps_basic": 2.6869115865966897,
+    "eps_diluted": 2.6869115865966897,
+    "shares_outstanding": 61925000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2728944305.0575256,
-    "pe_ratio_ttm": 15.88387079064483,
-    "goodwill": 554692000.0
+    "market_cap": 2881989556.694031,
+    "pe_ratio_ttm": 17.321001981489122,
+    "goodwill": 545841000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 22.854799890556045,
+        "value": 24.705346084428626,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 52.51442004261996,
+        "value": 48.818359484446916,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 150.7444370533482,
+        "value": 158.96478106686232,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 66.24983748780937,
+        "value": 68.46517184062077,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -73,22 +73,22 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 55.86286780765255,
+        "value": 61.41281297380018,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 55.86286780765255,
-    "max": 150.7444370533482,
-    "low": 22.854799890556045,
-    "high": 150.7444370533482,
-    "mos_pct": 21.12828592151991,
+    "median": 61.41281297380018,
+    "max": 158.96478106686232,
+    "low": 24.705346084428626,
+    "high": 158.96478106686232,
+    "mos_pct": 24.21776716956093,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 55.86286780765255,
+    "median_trimmed": 61.41281297380018,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,20 +100,19 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
-    "latest_period_end": "2026-03-28",
-    "latest_filed_date": "2026-05-07"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-06-27",
+    "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "beneish_high",
     "multi_class_aggregate_shares_suspected",
     "low_liquidity",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 10.681837996674039,
+  "tangible_book_value": 12.481679450948729,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,23 +123,23 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=76)",
     "values": {
-      "Quality": 48.85,
-      "Value": 50.55,
-      "Growth": 49.1,
-      "Momentum": 39.93,
-      "Health": 39.88,
+      "Quality": 47.2,
+      "Value": 50.82,
+      "Growth": 49.18,
+      "Momentum": 36.73,
+      "Health": 39.97,
       "Profitability": 48.9,
-      "Technical": 49.13,
-      "Risk": 50.5
+      "Technical": 50.31,
+      "Risk": 50.66
     }
   },
-  "beneish_m_score": -1.9226748615191278,
+  "beneish_m_score": -2.3863536430934627,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.220513648772624,
-  "price_change_1d_pct": -0.0227,
-  "manipulation_index": 3.0,
-  "composite_score_adjusted": 54.47,
+  "loss_chance_pct": 32.343525331639114,
+  "price_change_1d_pct": 5.6287,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 54.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,7 +153,7 @@
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
-    "beneish_high": true,
+    "beneish_high": false,
     "dechow_high": false,
     "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
@@ -188,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.31,
+  "osap_blended_score": 53.11,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -201,10 +200,10 @@
     "latest_filing_date": "2026-07-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.01023263937293353,
+  "cross_source_delta": 0.010428377589419559,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 3751625.085306803,
+  "average_dollar_volume": 4089591.7883374533,
   "security_type": "Common stock"
 }

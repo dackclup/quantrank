@@ -5,19 +5,19 @@
   "industry": "Industrial REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4068131131.6027184,
-  "current_price": 21.2,
-  "rank": 1083,
-  "composite_score": 44.53,
+  "market_cap": 4060455237.0794563,
+  "current_price": 21.16,
+  "rank": 1097,
+  "composite_score": 44.15,
   "pillar_scores": {
     "quality": 45.91,
-    "value": 45.03,
-    "growth": 27.52,
-    "momentum": 63.71,
-    "health": 26.1,
+    "value": 43.51,
+    "growth": 27.28,
+    "momentum": 64.08,
+    "health": 25.98,
     "profitability": 45.27,
-    "technical": 36.62,
-    "risk": 82.49,
+    "technical": 35.99,
+    "risk": 82.2,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 191892971.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4068131131.6027184,
-    "pe_ratio_ttm": 26.9947188910672,
+    "market_cap": 4060455237.0794563,
+    "pe_ratio_ttm": 26.943784295256545,
     "goodwill": 339769000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 21.34915102990454,
+        "value": 21.109635781006677,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 33.332185218942776,
+        "value": 32.93213004983845,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 17.675844993261038,
-    "max": 33.332185218942776,
+    "median": 17.556087368812108,
+    "max": 32.93213004983845,
     "low": 2.4428776396642036,
-    "high": 33.332185218942776,
-    "mos_pct": -19.93769333812335,
+    "high": 32.93213004983845,
+    "mos_pct": -20.527993526634244,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 21.34915102990454,
+    "median_trimmed": 21.109635781006677,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -113,15 +113,14 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-07-24",
     "latest_filed_date": "2026-07-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
-    "restatement_history",
-    "value_trap_risk"
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 11.937357517905124,
@@ -136,22 +135,22 @@
     "label": "Real Estate median (n=104)",
     "values": {
       "Quality": 49.4,
-      "Value": 48.0,
+      "Value": 48.52,
       "Growth": 49.94,
-      "Momentum": 59.36,
-      "Health": 27.32,
-      "Profitability": 51.16,
-      "Technical": 44.22,
-      "Risk": 64.76
+      "Momentum": 58.34,
+      "Health": 27.07,
+      "Profitability": 51.88,
+      "Technical": 39.25,
+      "Risk": 62.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 52.71451013799674,
-  "price_change_1d_pct": 0.189,
+  "loss_chance_pct": 51.11173508940928,
+  "price_change_1d_pct": -0.1887,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.53,
+  "composite_score_adjusted": 44.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -199,7 +198,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.19,
+  "osap_blended_score": 48.0,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -212,10 +211,10 @@
     "latest_filing_date": "2026-05-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.04257365330528273,
-  "dividend_yield_pct": 5.5,
+  "cross_source_delta": 0.04257368418741195,
+  "dividend_yield_pct": 5.52,
   "pays_dividend": true,
   "payout_ratio": 1.5329,
-  "average_dollar_volume": 43883584.153892264,
+  "average_dollar_volume": 43421518.154808804,
   "security_type": "Common stock"
 }

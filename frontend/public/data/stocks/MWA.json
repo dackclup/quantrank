@@ -5,69 +5,69 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 4132401172.514408,
-  "current_price": 26.41,
-  "rank": 135,
-  "composite_score": 63.17,
+  "market_cap": 4229444667.932888,
+  "current_price": 27.09,
+  "rank": 107,
+  "composite_score": 64.29,
   "pillar_scores": {
-    "quality": 67.46,
-    "value": 64.31,
-    "growth": 71.33,
-    "momentum": 26.55,
-    "health": 83.34,
-    "profitability": 71.5,
-    "technical": 58.81,
-    "risk": 57.86,
+    "quality": 69.39,
+    "value": 64.45,
+    "growth": 72.43,
+    "momentum": 29.49,
+    "health": 84.0,
+    "profitability": 71.61,
+    "technical": 58.84,
+    "risk": 57.35,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1463700000.0,
-    "net_income": 207400000.0,
-    "total_assets": 1884800000.0,
-    "total_liabilities": 814000000.0,
+    "revenue": 1479300000.0,
+    "net_income": 222200000.0,
+    "total_assets": 1953300000.0,
+    "total_liabilities": 832900000.0,
     "stockholders_equity": 981700000.0,
     "cash": 154900000.0,
-    "operating_cash_flow": 226400000.0,
+    "operating_cash_flow": 237700000.0,
     "capex": 35600000.0,
-    "free_cash_flow": 190800000.0,
-    "eps_basic": 1.3254845644670221,
-    "eps_diluted": 1.3254845644670221,
-    "shares_outstanding": 156471079.0,
+    "free_cash_flow": 202100000.0,
+    "eps_basic": 1.423212385196416,
+    "eps_diluted": 1.423212385196416,
+    "shares_outstanding": 156125679.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 4132401172.514408,
-    "pe_ratio_ttm": 19.924788681361658,
+    "market_cap": 4229444667.932888,
+    "pe_ratio_ttm": 19.03440444614261,
     "goodwill": 92100000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 8.381460282748291,
+        "value": 8.427290594269097,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 39.64768445289449,
+        "value": 42.786854574120575,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 27.347233695670067,
+        "value": 27.229194520662606,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 37.416248898015624,
+        "value": 38.13844502154736,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 4.826955384214073,
+        "value": 4.879887853199413,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 27.347233695670067,
-    "max": 39.64768445289449,
-    "low": 4.826955384214073,
-    "high": 39.64768445289449,
-    "mos_pct": 3.42716144048731,
+    "median": 27.229194520662606,
+    "max": 42.786854574120575,
+    "low": 4.879887853199413,
+    "high": 42.786854574120575,
+    "mos_pct": 0.5111953200418364,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 32.38174129684285,
+    "median_trimmed": 32.683819771104986,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -100,16 +100,16 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 92,
-    "latest_period_end": "2026-05-01",
-    "latest_filed_date": "2026-05-06"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-07-31",
+    "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 3.7316800250351694,
+  "tangible_book_value": 3.772601687131814,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,25 +118,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Industrials median (n=262)",
+    "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 50.05,
+      "Quality": 49.52,
       "Value": 49.87,
-      "Growth": 51.31,
-      "Momentum": 50.64,
-      "Health": 58.68,
-      "Profitability": 49.59,
-      "Technical": 54.58,
-      "Risk": 49.54
+      "Growth": 51.05,
+      "Momentum": 50.78,
+      "Health": 57.38,
+      "Profitability": 49.81,
+      "Technical": 55.24,
+      "Risk": 49.21
     }
   },
-  "beneish_m_score": -2.5433344221837513,
-  "dechow_f_score": 0.4416146440985335,
+  "beneish_m_score": -2.5598561923022456,
+  "dechow_f_score": 0.4441269629803782,
   "recommendation": "bullish",
-  "loss_chance_pct": 33.21590375887693,
-  "price_change_1d_pct": -0.7143,
+  "loss_chance_pct": 33.674894526893354,
+  "price_change_1d_pct": 2.5748,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.17,
+  "composite_score_adjusted": 64.29,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.51,
+  "osap_blended_score": 58.07,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -197,10 +197,10 @@
     "latest_filing_date": "2026-07-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.691373769583068e-08,
-  "dividend_yield_pct": 1.09,
+  "cross_source_delta": 0.0022122857258432965,
+  "dividend_yield_pct": 1.06,
   "pays_dividend": true,
   "payout_ratio": 0.2076,
-  "average_dollar_volume": 31372821.16523183,
+  "average_dollar_volume": 31467290.74550743,
   "security_type": "Common stock"
 }
