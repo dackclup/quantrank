@@ -23,13 +23,13 @@ jobs:
     name: Python (lint + test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       # Skip the ~20-min pytest on PRs that change no Python-relevant paths
       # (docs-only / frontend-only). The job ALWAYS runs so the required check
       # still reports green; only the heavy Pytest step is gated. ruff + the
       # doc/model/schema guards keep running (cheap, and the doc-test-count
       # guard must run precisely when docs change). Always-on for `main` push.
-      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           filters: |
@@ -73,10 +73,10 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       # Skip the npm build on PRs that touch no frontend paths. Job always
       # runs (required check stays green); only the build steps are gated.
-      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           filters: |
