@@ -8,16 +8,16 @@
   "market_cap": 5087955346.09087,
   "current_price": 51.12,
   "rank": 31,
-  "composite_score": 68.76,
+  "composite_score": 68.77,
   "pillar_scores": {
     "quality": 84.15,
     "value": 36.85,
     "growth": 88.2,
-    "momentum": 84.82,
+    "momentum": 84.84,
     "health": 64.08,
     "profitability": 56.1,
-    "technical": 70.28,
-    "risk": 60.42,
+    "technical": 70.41,
+    "risk": 60.41,
     "sentiment": null,
     "ml": null
   },
@@ -107,7 +107,8 @@
   ],
   "valuation_warnings": [
     "restatement_history",
-    "accruals_momentum_high"
+    "accruals_momentum_high",
+    "insider_sell_cluster"
   ],
   "has_history": true,
   "tangible_book_value": 10.881371072909985,
@@ -124,20 +125,20 @@
       "Quality": 52.82,
       "Value": 48.83,
       "Growth": 50.7,
-      "Momentum": 52.61,
+      "Momentum": 52.56,
       "Health": 46.6,
       "Profitability": 52.58,
-      "Technical": 54.11,
+      "Technical": 54.47,
       "Risk": 58.24
     }
   },
   "beneish_m_score": -2.3375152920665485,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 53.621174715625315,
+  "loss_chance_pct": 53.61701913051893,
   "price_change_1d_pct": 6.5666,
-  "manipulation_index": 25.0,
-  "composite_score_adjusted": 66.26,
+  "manipulation_index": 30.0,
+  "composite_score_adjusted": 65.77,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -153,7 +154,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 60.3,
+  "osap_blended_score": 60.31,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -195,13 +196,13 @@
   "valuation_methods_applicable": 6,
   "form4_diagnostics": {
     "insider_count": 19,
-    "latest_filing_date": "2026-07-31",
+    "latest_filing_date": "2026-08-10",
     "fetch_status": "ok"
   },
   "cross_source_delta": 2.1601826789002758e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 50942147.89017118,
+  "average_dollar_volume": 50944139.866129555,
   "security_type": "Common stock"
 }

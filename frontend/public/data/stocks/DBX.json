@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 8017962035.369873,
   "current_price": 34.59,
-  "rank": 357,
+  "rank": 358,
   "composite_score": 57.02,
   "pillar_scores": {
     "quality": 39.93,
     "value": 81.1,
     "growth": 48.09,
-    "momentum": 60.14,
+    "momentum": 60.16,
     "health": 39.37,
     "profitability": 82.98,
-    "technical": 58.76,
-    "risk": 58.7,
+    "technical": 58.81,
+    "risk": 58.69,
     "sentiment": null,
     "ml": null
   },
@@ -107,7 +107,9 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -126,14 +128,14 @@
       "Momentum": 54.16,
       "Health": 64.72,
       "Profitability": 50.48,
-      "Technical": 53.96,
+      "Technical": 54.04,
       "Risk": 41.83
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 30.028203988465965,
+  "loss_chance_pct": 30.02612619591277,
   "price_change_1d_pct": -0.632,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 57.02,
@@ -198,10 +200,10 @@
     "latest_filing_date": "2026-08-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.006473906012668272,
+  "cross_source_delta": 0.06193863442843847,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 121957214.12486191,
+  "average_dollar_volume": 122123944.84359741,
   "security_type": "Common stock"
 }
