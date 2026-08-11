@@ -5,19 +5,19 @@
   "industry": "Health Care Facilities",
   "exchange": "NYSE American",
   "country": "US",
-  "market_cap": 3375656973.151474,
-  "current_price": 215.54,
-  "rank": 91,
-  "composite_score": 64.92,
+  "market_cap": 3461794645.651474,
+  "current_price": 221.04,
+  "rank": 126,
+  "composite_score": 63.55,
   "pillar_scores": {
     "quality": 56.13,
-    "value": 59.61,
+    "value": 53.68,
     "growth": 59.05,
-    "momentum": 85.27,
-    "health": 84.38,
-    "profitability": 58.79,
-    "technical": 55.45,
-    "risk": 83.77,
+    "momentum": 82.61,
+    "health": 84.4,
+    "profitability": 58.9,
+    "technical": 61.37,
+    "risk": 83.79,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 15661395.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3375656973.151474,
-    "pe_ratio_ttm": 23.63193837395934,
+    "market_cap": 3461794645.651474,
+    "pe_ratio_ttm": 24.234961780776615,
     "goodwill": 170478000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 150.23565691530197,
+        "value": 153.01467802945885,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 194.46910597443903,
+        "value": 199.43983459565655,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 221.79185691825728,
+        "value": 221.5267722101287,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 150.23565691530197,
-    "max": 221.79185691825728,
+    "median": 153.01467802945885,
+    "max": 221.5267722101287,
     "low": 67.22850598102207,
-    "high": 221.79185691825728,
-    "mos_pct": -43.467934118760716,
+    "high": 221.5267722101287,
+    "mos_pct": -44.456725415307886,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 150.23565691530197,
+    "median_trimmed": 153.01467802945885,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,7 +99,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-06"
   },
@@ -121,22 +121,22 @@
     "label": "Health Care median (n=163)",
     "values": {
       "Quality": 51.38,
-      "Value": 51.53,
+      "Value": 51.33,
       "Growth": 50.31,
-      "Momentum": 62.5,
-      "Health": 55.55,
-      "Profitability": 49.18,
-      "Technical": 55.45,
-      "Risk": 45.94
+      "Momentum": 63.31,
+      "Health": 55.07,
+      "Profitability": 48.26,
+      "Technical": 57.73,
+      "Risk": 46.94
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.26294368174292015,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.75576895910367,
-  "price_change_1d_pct": -1.7817,
+  "loss_chance_pct": 50.782471648833166,
+  "price_change_1d_pct": 2.5517,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 64.92,
+  "composite_score_adjusted": 63.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.38,
+  "osap_blended_score": 57.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -197,10 +197,10 @@
     "latest_filing_date": "2026-06-23",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.002666056777407685,
-  "dividend_yield_pct": 1.21,
+  "cross_source_delta": 2.4741928036261293e-08,
+  "dividend_yield_pct": 1.24,
   "pays_dividend": true,
-  "payout_ratio": 0.32529998,
-  "average_dollar_volume": 27055799.917394,
+  "payout_ratio": 0.291,
+  "average_dollar_volume": 24474567.992022198,
   "security_type": "Common stock"
 }
