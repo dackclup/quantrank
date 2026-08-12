@@ -5,19 +5,19 @@
   "industry": "Health Care REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 14359785885.055542,
-  "current_price": 47.39,
-  "rank": 390,
-  "composite_score": 56.25,
+  "market_cap": 13808302317.527771,
+  "current_price": 45.57,
+  "rank": 452,
+  "composite_score": 54.95,
   "pillar_scores": {
     "quality": 75.36,
-    "value": 35.34,
+    "value": 35.98,
     "growth": 66.95,
-    "momentum": 56.13,
-    "health": 27.89,
+    "momentum": 50.42,
+    "health": 27.85,
     "profitability": 70.99,
-    "technical": 33.38,
-    "risk": 87.8,
+    "technical": 21.72,
+    "risk": 84.08,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 303013000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 14359785885.055542,
-    "pe_ratio_ttm": 16.041370691951425,
+    "market_cap": 13808302317.527771,
+    "pe_ratio_ttm": 15.425306329429173,
     "goodwill": 644441000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 196.6400167722672,
+        "value": 190.46642941948247,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 35.990061846173056,
+        "value": 34.49842500232469,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 36.64579378512087,
+        "value": 36.50843649894268,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 35.990061846173056,
-    "max": 196.6400167722672,
+    "median": 34.49842500232469,
+    "max": 190.46642941948247,
     "low": 17.122724496508187,
-    "high": 196.6400167722672,
-    "mos_pct": -31.67523743693587,
+    "high": 190.46642941948247,
+    "mos_pct": -32.09298596023868,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 35.990061846173056,
+    "median_trimmed": 34.49842500232469,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -114,7 +114,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 15.579298577948801,
   "tier2_events": {
@@ -128,22 +130,22 @@
     "label": "Real Estate median (n=104)",
     "values": {
       "Quality": 49.64,
-      "Value": 48.2,
+      "Value": 48.92,
       "Growth": 50.06,
-      "Momentum": 56.23,
-      "Health": 27.1,
+      "Momentum": 55.01,
+      "Health": 27.04,
       "Profitability": 51.8,
-      "Technical": 34.15,
-      "Risk": 61.91
+      "Technical": 32.07,
+      "Risk": 63.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.96250519103448,
-  "price_change_1d_pct": -2.208,
+  "loss_chance_pct": 51.75730491457507,
+  "price_change_1d_pct": -3.8405,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 54.25,
+  "composite_score_adjusted": 52.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -191,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.05,
+  "osap_blended_score": 53.4,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,10 +207,10 @@
     "latest_filing_date": "2026-07-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.040863813962236414,
-  "dividend_yield_pct": 5.61,
+  "cross_source_delta": 0.05374115611086139,
+  "dividend_yield_pct": 5.74,
   "pays_dividend": true,
   "payout_ratio": 0.9537,
-  "average_dollar_volume": 90764733.03596497,
+  "average_dollar_volume": 91088534.07790476,
   "security_type": "Common stock"
 }

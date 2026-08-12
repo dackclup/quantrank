@@ -5,19 +5,19 @@
   "industry": "Aerospace & Defense",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 2599157027.9649353,
-  "current_price": 82.92,
-  "rank": 659,
-  "composite_score": 51.92,
+  "market_cap": 2524555162.0175323,
+  "current_price": 80.54,
+  "rank": 641,
+  "composite_score": 52.13,
   "pillar_scores": {
     "quality": 27.76,
-    "value": 75.73,
-    "growth": 52.85,
-    "momentum": 64.43,
+    "value": 78.77,
+    "growth": 52.76,
+    "momentum": 62.82,
     "health": 52.41,
-    "profitability": 25.16,
-    "technical": 71.28,
-    "risk": 59.01,
+    "profitability": 25.29,
+    "technical": 65.71,
+    "risk": 59.32,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 31345358.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2599157027.9649353,
-    "pe_ratio_ttm": 28.298152706778904,
+    "market_cap": 2524555162.0175323,
+    "pe_ratio_ttm": 27.48592975446148,
     "goodwill": 1676954000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 105.19295568416875,
+        "value": 106.0248099109896,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 189.35953475278566,
+        "value": 188.70596283973663,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 167.0630273189929,
+        "value": 167.25006044800918,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 167.0630273189929,
-    "max": 189.35953475278566,
-    "low": 105.19295568416875,
-    "high": 189.35953475278566,
-    "mos_pct": 50.36603879407949,
+    "median": 167.25006044800918,
+    "max": 188.70596283973663,
+    "low": 106.0248099109896,
+    "high": 188.70596283973663,
+    "mos_pct": 51.84456095275149,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 167.0630273189929,
+    "median_trimmed": 167.25006044800918,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -108,7 +108,8 @@
   "valuation_warnings": [
     "restatement_history",
     "rem_suspect",
-    "accruals_momentum_high"
+    "accruals_momentum_high",
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -123,22 +124,22 @@
     "label": "Industrials median (n=263)",
     "values": {
       "Quality": 50.19,
-      "Value": 50.0,
-      "Growth": 51.52,
-      "Momentum": 48.01,
+      "Value": 49.87,
+      "Growth": 50.57,
+      "Momentum": 47.98,
       "Health": 57.5,
-      "Profitability": 49.94,
-      "Technical": 53.86,
-      "Risk": 49.52
+      "Profitability": 50.06,
+      "Technical": 55.0,
+      "Risk": 49.3
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 21.410979838782666,
-  "price_change_1d_pct": -1.7652,
+  "loss_chance_pct": 22.787439335677828,
+  "price_change_1d_pct": -2.8702,
   "manipulation_index": 13.0,
-  "composite_score_adjusted": 50.62,
+  "composite_score_adjusted": 50.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.89,
+  "osap_blended_score": 51.99,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -199,10 +200,10 @@
     "latest_filing_date": "2026-06-29",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.3837153706289873e-08,
+  "cross_source_delta": 4.039621284007378e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 61845173.376820885,
+  "average_dollar_volume": 61669148.103856154,
   "security_type": "Common stock"
 }
