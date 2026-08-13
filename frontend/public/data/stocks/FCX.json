@@ -5,18 +5,18 @@
   "industry": "Copper",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 98898530753.14993,
-  "current_price": 68.87,
-  "rank": 322,
-  "composite_score": 57.79,
+  "market_cap": 99401134695.01108,
+  "current_price": 69.22,
+  "rank": 332,
+  "composite_score": 57.54,
   "pillar_scores": {
     "quality": 69.48,
-    "value": 43.51,
+    "value": 41.56,
     "growth": 77.92,
-    "momentum": 51.93,
-    "health": 49.75,
-    "profitability": 58.44,
-    "technical": 47.79,
+    "momentum": 52.91,
+    "health": 49.71,
+    "profitability": 58.23,
+    "technical": 49.52,
     "risk": 43.79,
     "sentiment": null,
     "ml": null
@@ -36,8 +36,8 @@
     "shares_outstanding": 1436017523.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 98898530753.14993,
-    "pe_ratio_ttm": 21.546520861252706,
+    "market_cap": 99401134695.01108,
+    "pe_ratio_ttm": 21.65602063072137,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.24895030028948,
+        "value": 74.5693738276904,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 35.12467360791245,
+        "value": 34.89396441589158,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 80.0532800495821,
+        "value": 80.17673327790548,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 35.12467360791245,
-    "max": 80.0532800495821,
+    "median": 34.89396441589158,
+    "max": 80.17673327790548,
     "low": 16.285258410809696,
-    "high": 80.0532800495821,
-    "mos_pct": -96.07300416613083,
+    "high": 80.17673327790548,
+    "mos_pct": -98.37241878191007,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 35.12467360791245,
+    "median_trimmed": 34.89396441589158,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,7 +98,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 5,
+    "filing_lag_days": 7,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-06"
   },
@@ -118,23 +118,23 @@
   "pillar_baseline": {
     "label": "Materials median (n=77)",
     "values": {
-      "Quality": 52.92,
-      "Value": 53.25,
+      "Quality": 54.22,
+      "Value": 53.68,
       "Growth": 46.1,
-      "Momentum": 38.81,
-      "Health": 51.85,
-      "Profitability": 55.84,
-      "Technical": 57.21,
-      "Risk": 47.92
+      "Momentum": 36.49,
+      "Health": 51.82,
+      "Profitability": 56.28,
+      "Technical": 57.25,
+      "Risk": 46.44
     }
   },
   "beneish_m_score": -2.801249152347484,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.10676615605139,
-  "price_change_1d_pct": -2.3259,
+  "loss_chance_pct": 56.23016778489684,
+  "price_change_1d_pct": 0.5082,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.79,
+  "composite_score_adjusted": 57.54,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.82,
+  "osap_blended_score": 54.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,10 +196,10 @@
     "latest_filing_date": "2026-08-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.02508152287258249,
-  "dividend_yield_pct": 0.85,
+  "cross_source_delta": 0.025081538783844563,
+  "dividend_yield_pct": 0.87,
   "pays_dividend": true,
   "payout_ratio": 0.2941,
-  "average_dollar_volume": 907886412.6928489,
+  "average_dollar_volume": 901735963.2621047,
   "security_type": "Common stock"
 }

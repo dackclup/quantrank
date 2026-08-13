@@ -5,19 +5,19 @@
   "industry": "Restaurants",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 13772779574.088501,
-  "current_price": 209.82,
-  "rank": 698,
-  "composite_score": 51.39,
+  "market_cap": 14065537543.151917,
+  "current_price": 214.28,
+  "rank": 693,
+  "composite_score": 51.54,
   "pillar_scores": {
     "quality": 69.52,
-    "value": 16.75,
+    "value": 16.32,
     "growth": 69.46,
-    "momentum": 57.26,
-    "health": 33.07,
+    "momentum": 57.72,
+    "health": 33.05,
     "profitability": 58.85,
-    "technical": 57.85,
-    "risk": 74.15,
+    "technical": 61.25,
+    "risk": 74.88,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 65640926.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 13772779574.088501,
-    "pe_ratio_ttm": 32.62980481527369,
+    "market_cap": 14065537543.151917,
+    "pe_ratio_ttm": 33.323392869686984,
     "goodwill": 275036000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 181.2899446995061,
+        "value": 182.27735830260076,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 232.51306867189174,
+        "value": 248.02481843146316,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 179.40705412020952,
+        "value": 182.15121790426088,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 117.2617914349267,
-    "max": 232.51306867189174,
+    "median": 118.63387332695238,
+    "max": 248.02481843146316,
     "low": 42.14201935331039,
-    "high": 232.51306867189174,
-    "mos_pct": -78.93297105277155,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 6,
-    "median_trimmed": 117.2617914349267,
-    "methods_excluded_from_median": []
+    "high": 248.02481843146316,
+    "mos_pct": -80.62294753602612,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 182.15121790426088,
+    "methods_excluded_from_median": [
+      "rim"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -99,12 +103,14 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 4,
+    "filing_lag_days": 6,
     "latest_period_end": "2026-07-29",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": 19.150110709894616,
   "tier2_events": {
@@ -118,22 +124,22 @@
     "label": "Consumer Discretionary median (n=194)",
     "values": {
       "Quality": 46.97,
-      "Value": 51.42,
+      "Value": 51.37,
       "Growth": 48.81,
-      "Momentum": 45.91,
-      "Health": 44.49,
+      "Momentum": 47.14,
+      "Health": 44.46,
       "Profitability": 50.9,
-      "Technical": 52.55,
-      "Risk": 38.62
+      "Technical": 50.98,
+      "Risk": 38.34
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.19959910106030443,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 59.306715311289025,
-  "price_change_1d_pct": 1.1376,
+  "recommendation": "neutral",
+  "loss_chance_pct": 60.22889726765281,
+  "price_change_1d_pct": 2.1256,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.39,
+  "composite_score_adjusted": 51.54,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.62,
+  "osap_blended_score": 51.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -189,16 +195,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 6,
+  "valuation_methods_applicable": 5,
   "form4_diagnostics": {
     "insider_count": 13,
     "latest_filing_date": "2026-07-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.927202979297092e-09,
-  "dividend_yield_pct": 1.45,
+  "cross_source_delta": 3.589255525764737e-08,
+  "dividend_yield_pct": 1.43,
   "pays_dividend": true,
   "payout_ratio": 0.4576,
-  "average_dollar_volume": 177362408.21621907,
+  "average_dollar_volume": 177269891.88409424,
   "security_type": "Common stock"
 }
