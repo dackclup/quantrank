@@ -5,19 +5,19 @@
   "industry": "Semiconductors",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 43136611738.74481,
-  "current_price": 79.44,
-  "rank": 1459,
-  "composite_score": 32.66,
+  "market_cap": 42186346529.49481,
+  "current_price": 77.69,
+  "rank": 1467,
+  "composite_score": 31.94,
   "pillar_scores": {
-    "quality": 30.26,
-    "value": 27.46,
+    "quality": 30.39,
+    "value": 29.12,
     "growth": 14.74,
-    "momentum": 45.31,
-    "health": 46.59,
-    "profitability": 39.82,
-    "technical": 46.13,
-    "risk": 31.96,
+    "momentum": 39.74,
+    "health": 46.58,
+    "profitability": 39.91,
+    "technical": 39.1,
+    "risk": 29.61,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 543008691.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 43136611738.74481,
-    "pe_ratio_ttm": 90.16850279837962,
+    "market_cap": 42186346529.49481,
+    "pe_ratio_ttm": 88.182162478041,
     "goodwill": 6695500000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 41.838512651437064,
+        "value": 41.142653701471716,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 81.43055463872507,
+        "value": 84.43931449693126,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 60.43188620477928,
+        "value": 59.37984928042996,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 54.962136357289936,
-    "max": 81.43055463872507,
-    "low": 41.838512651437064,
-    "high": 81.43055463872507,
-    "mos_pct": -44.53587088572055,
+    "median": 54.436117895115274,
+    "max": 84.43931449693126,
+    "low": 41.142653701471716,
+    "high": 84.43931449693126,
+    "mos_pct": -42.71774962185101,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 54.962136357289936,
+    "median_trimmed": 54.436117895115274,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -115,22 +115,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 49.28,
-      "Value": 50.55,
-      "Growth": 50.33,
-      "Momentum": 55.21,
-      "Health": 64.94,
-      "Profitability": 50.35,
-      "Technical": 55.03,
-      "Risk": 42.15
+      "Value": 50.88,
+      "Growth": 50.36,
+      "Momentum": 52.9,
+      "Health": 64.68,
+      "Profitability": 50.39,
+      "Technical": 54.58,
+      "Risk": 42.01
     }
   },
   "beneish_m_score": -2.4107898923224442,
   "dechow_f_score": 0.5963184211130813,
   "recommendation": "neutral",
-  "loss_chance_pct": 64.25808835796785,
-  "price_change_1d_pct": -1.9501,
+  "loss_chance_pct": 63.98193818068444,
+  "price_change_1d_pct": -2.2029,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 32.66,
+  "composite_score_adjusted": 31.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.26,
+  "osap_blended_score": 41.9,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -188,14 +188,14 @@
   ],
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
-    "insider_count": 6,
-    "latest_filing_date": "2026-06-08",
-    "fetch_status": "ok"
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "failed"
   },
-  "cross_source_delta": 6.169365373678554e-08,
+  "cross_source_delta": 7.939728079628956e-10,
   "dividend_yield_pct": 2.25,
   "pays_dividend": true,
   "payout_ratio": 2.6764998,
-  "average_dollar_volume": 904503777.1985117,
+  "average_dollar_volume": 882589998.8066355,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 89124425426.75781,
-  "current_price": 323.13,
-  "rank": 765,
-  "composite_score": 50.25,
+  "market_cap": 89300943289.79492,
+  "current_price": 323.77,
+  "rank": 774,
+  "composite_score": 50.02,
   "pillar_scores": {
     "quality": 64.93,
-    "value": 18.25,
-    "growth": 65.0,
-    "momentum": 52.11,
-    "health": 72.91,
+    "value": 18.6,
+    "growth": 65.13,
+    "momentum": 49.82,
+    "health": 72.88,
     "profitability": 59.74,
-    "technical": 22.32,
-    "risk": 40.1,
+    "technical": 21.74,
+    "risk": 39.96,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 275816000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 89124425426.75781,
-    "pe_ratio_ttm": 76.11168649789859,
+    "market_cap": 89300943289.79492,
+    "pe_ratio_ttm": 76.2624316184245,
     "goodwill": 4929581000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 158.70014957424232,
+        "value": 163.37094888142775,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 139.03176486867312,
+        "value": 142.3700942608876,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 151.1257074601853,
+        "value": 158.69729840600448,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 145.07873616442922,
-    "max": 158.70014957424232,
+    "median": 150.53369633344604,
+    "max": 163.37094888142775,
     "low": 56.44406689191874,
-    "high": 158.70014957424232,
-    "mos_pct": -122.7273364971857,
+    "high": 163.37094888142775,
+    "mos_pct": -115.08140496098058,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 151.1257074601853,
+    "median_trimmed": 158.69729840600448,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -126,22 +126,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 49.28,
-      "Value": 50.55,
-      "Growth": 50.33,
-      "Momentum": 55.21,
-      "Health": 64.94,
-      "Profitability": 50.35,
-      "Technical": 55.03,
-      "Risk": 42.15
+      "Value": 50.88,
+      "Growth": 50.36,
+      "Momentum": 52.9,
+      "Health": 64.68,
+      "Profitability": 50.39,
+      "Technical": 54.58,
+      "Risk": 42.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.8773708706607,
-  "price_change_1d_pct": -1.3434,
+  "loss_chance_pct": 60.991616653835386,
+  "price_change_1d_pct": 0.1981,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.25,
+  "composite_score_adjusted": 50.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.05,
+  "osap_blended_score": 50.93,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -199,14 +199,14 @@
   ],
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
-    "insider_count": 16,
-    "latest_filing_date": "2026-08-03",
-    "fetch_status": "ok"
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "failed"
   },
-  "cross_source_delta": 0.0015336683978977427,
+  "cross_source_delta": 4.947259296481442e-09,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 757658762.6295613,
+  "average_dollar_volume": 762387345.0747172,
   "security_type": "Common stock"
 }

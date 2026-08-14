@@ -5,19 +5,19 @@
   "industry": "Heavy Electrical Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 276960297384.1847,
-  "current_price": 1039.9,
-  "rank": 826,
-  "composite_score": 49.08,
+  "market_cap": 279495798277.13245,
+  "current_price": 1049.42,
+  "rank": 847,
+  "composite_score": 48.67,
   "pillar_scores": {
-    "quality": 66.73,
-    "value": 20.15,
+    "quality": 66.44,
+    "value": 20.03,
     "growth": 62.45,
-    "momentum": 64.16,
-    "health": 37.58,
+    "momentum": 61.65,
+    "health": 37.54,
     "profitability": 38.02,
-    "technical": 42.32,
-    "risk": 56.43,
+    "technical": 42.24,
+    "risk": 56.87,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 266333581.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 276960297384.1847,
-    "pe_ratio_ttm": 29.064990805350472,
+    "market_cap": 279495798277.13245,
+    "pe_ratio_ttm": 29.331073384104567,
     "goodwill": 9689000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 994.8812333337914,
+        "value": 987.2907130238594,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 191.11086397233842,
+        "value": 191.9642001966227,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 196.88519516188148,
+        "value": 196.4906096693799,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 196.88519516188148,
-    "max": 994.8812333337914,
-    "low": 191.11086397233842,
-    "high": 994.8812333337914,
-    "mos_pct": -428.1758354451403,
+    "median": 196.4906096693799,
+    "max": 987.2907130238594,
+    "low": 191.9642001966227,
+    "high": 987.2907130238594,
+    "mos_pct": -434.08152466476304,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
@@ -131,23 +131,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 50.19,
-      "Value": 49.87,
-      "Growth": 50.29,
-      "Momentum": 47.59,
-      "Health": 57.5,
+      "Quality": 50.1,
+      "Value": 49.94,
+      "Growth": 50.38,
+      "Momentum": 47.77,
+      "Health": 57.47,
       "Profitability": 50.19,
-      "Technical": 52.79,
-      "Risk": 48.83
+      "Technical": 51.93,
+      "Risk": 48.9
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 74.46076029510658,
-  "price_change_1d_pct": 2.7691,
+  "loss_chance_pct": 74.6670722970684,
+  "price_change_1d_pct": 0.9155,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.08,
+  "composite_score_adjusted": 48.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -195,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.47,
+  "osap_blended_score": 50.26,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,14 +205,14 @@
   ],
   "valuation_methods_applicable": 1,
   "form4_diagnostics": {
-    "insider_count": 16,
-    "latest_filing_date": "2026-06-03",
-    "fetch_status": "ok"
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "failed"
   },
-  "cross_source_delta": 5.7624921183120244e-08,
-  "dividend_yield_pct": 0.2,
+  "cross_source_delta": 1.6468467798385257e-08,
+  "dividend_yield_pct": 0.19,
   "pays_dividend": true,
   "payout_ratio": 0.0573,
-  "average_dollar_volume": 2753982009.1546917,
+  "average_dollar_volume": 2724573196.138574,
   "security_type": "Common stock"
 }

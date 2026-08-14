@@ -5,90 +5,90 @@
   "industry": "Leisure Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 3851553152.8798027,
-  "current_price": 50.84,
-  "rank": 137,
-  "composite_score": 63.17,
+  "market_cap": 3318800643.2176514,
+  "current_price": 45.47,
+  "rank": 82,
+  "composite_score": 65.2,
   "pillar_scores": {
-    "quality": 78.09,
-    "value": 35.31,
-    "growth": 78.61,
-    "momentum": 72.94,
-    "health": 64.2,
-    "profitability": 79.04,
-    "technical": 39.15,
-    "risk": 39.73,
+    "quality": 81.57,
+    "value": 52.75,
+    "growth": 79.77,
+    "momentum": 62.23,
+    "health": 59.86,
+    "profitability": 80.93,
+    "technical": 11.96,
+    "risk": 40.31,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1897780000.0,
-    "net_income": 158629000.0,
-    "total_assets": 1218618000.0,
-    "total_liabilities": 558691000.0,
-    "stockholders_equity": 659927000.0,
+    "revenue": 1935756000.0,
+    "net_income": 178795000.0,
+    "total_assets": 1301719000.0,
+    "total_liabilities": 692215000.0,
+    "stockholders_equity": 609504000.0,
     "cash": 19008000.0,
-    "operating_cash_flow": 302384000.0,
-    "capex": 44885000.0,
-    "free_cash_flow": 257499000.0,
-    "eps_basic": 2.093882146784057,
-    "eps_diluted": 2.093882146784057,
-    "shares_outstanding": 75758323.0,
+    "operating_cash_flow": 303639000.0,
+    "capex": 48203000.0,
+    "free_cash_flow": 255436000.0,
+    "eps_basic": 2.4496225420679636,
+    "eps_diluted": 2.4496225420679636,
+    "shares_outstanding": 72988796.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3851553152.8798027,
-    "pe_ratio_ttm": 24.280258671994417,
+    "market_cap": 3318800643.2176514,
+    "pe_ratio_ttm": 18.562043923027215,
     "goodwill": 72308000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 14.722851073176907,
+        "value": 13.872953487886873,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 38.749521013359015,
+        "value": 45.126418031395886,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 27.01021237940791,
+        "value": 26.30238850902468,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 44.33318513043469,
+        "value": 51.70756431497369,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 8.8156998149687,
+        "value": 7.827279026471474,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 35.407758628859284,
+        "value": 36.75129008719583,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 31.208985504133597,
-    "max": 44.33318513043469,
-    "low": 8.8156998149687,
-    "high": 44.33318513043469,
-    "mos_pct": -62.901803218993415,
+    "median": 31.526839298110254,
+    "max": 51.70756431497369,
+    "low": 7.827279026471474,
+    "high": 51.70756431497369,
+    "mos_pct": -44.22632345332707,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 35.407758628859284,
+    "median_trimmed": 36.75129008719583,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -102,18 +102,16 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
-    "latest_period_end": "2026-05-07",
-    "latest_filed_date": "2026-05-14"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-08-06",
+    "latest_filed_date": "2026-08-13"
   },
-  "risk_flags": [
-    "net_issuance_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 4.800937845469467,
+  "tangible_book_value": 4.262654229835494,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,23 +122,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 46.97,
-      "Value": 51.37,
-      "Growth": 48.81,
-      "Momentum": 47.14,
-      "Health": 44.46,
-      "Profitability": 50.9,
-      "Technical": 50.98,
-      "Risk": 38.34
+      "Quality": 46.91,
+      "Value": 51.55,
+      "Growth": 48.68,
+      "Momentum": 44.61,
+      "Health": 44.96,
+      "Profitability": 50.82,
+      "Technical": 51.09,
+      "Risk": 38.33
     }
   },
-  "beneish_m_score": -2.7590565707630037,
-  "dechow_f_score": 0.5967579879060175,
+  "beneish_m_score": -2.826478434674214,
+  "dechow_f_score": 0.6623823520943825,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 57.41502199746838,
-  "price_change_1d_pct": 0.0984,
+  "loss_chance_pct": 48.876723199205166,
+  "price_change_1d_pct": -10.5625,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.17,
+  "composite_score_adjusted": 65.2,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.51,
+  "osap_blended_score": 58.53,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -202,10 +200,10 @@
     "latest_filing_date": "2026-05-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.346177440326745e-08,
+  "cross_source_delta": 0.0379445017403204,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 57683080.505045824,
+  "average_dollar_volume": 65889610.023625694,
   "security_type": "Common stock"
 }
