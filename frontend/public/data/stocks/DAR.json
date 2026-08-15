@@ -5,19 +5,19 @@
   "industry": "Agricultural Products & Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 10373963360.736603,
-  "current_price": 65.74,
-  "rank": 568,
-  "composite_score": 53.38,
+  "market_cap": 10579107633.112885,
+  "current_price": 67.04,
+  "rank": 559,
+  "composite_score": 53.53,
   "pillar_scores": {
     "quality": 41.45,
-    "value": 69.52,
+    "value": 69.08,
     "growth": 39.47,
-    "momentum": 73.98,
-    "health": 48.39,
+    "momentum": 73.7,
+    "health": 48.43,
     "profitability": 43.42,
-    "technical": 47.42,
-    "risk": 59.6,
+    "technical": 52.66,
+    "risk": 60.08,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 157802916.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 10373963360.736603,
-    "pe_ratio_ttm": 17.11143811594814,
+    "market_cap": 10579107633.112885,
+    "pe_ratio_ttm": 17.449815397565867,
     "goodwill": 2554202000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 86.93564748433353,
+        "value": 86.63933545359576,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 105.27832973359932,
+        "value": 105.41090425446978,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 114.19655704450705,
+        "value": 113.89885806981512,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 86.93564748433353,
-    "max": 114.19655704450705,
+    "median": 86.63933545359576,
+    "max": 113.89885806981512,
     "low": 23.300041351424237,
-    "high": 114.19655704450705,
-    "mos_pct": 24.380849782459627,
+    "high": 113.89885806981512,
+    "mos_pct": 22.62175077343001,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 86.93564748433353,
+    "median_trimmed": 86.63933545359576,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,13 +100,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 6,
+    "filing_lag_days": 8,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
+    "insider_sell_cluster",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -122,22 +123,22 @@
     "label": "Consumer Staples median (n=76)",
     "values": {
       "Quality": 46.79,
-      "Value": 49.56,
+      "Value": 49.89,
       "Growth": 49.34,
-      "Momentum": 38.62,
-      "Health": 39.93,
+      "Momentum": 37.2,
+      "Health": 39.95,
       "Profitability": 48.9,
-      "Technical": 48.98,
-      "Risk": 50.03
+      "Technical": 49.14,
+      "Risk": 50.76
     }
   },
   "beneish_m_score": -2.74314925048949,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 32.776771558851905,
-  "price_change_1d_pct": 3.6418,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.38,
+  "loss_chance_pct": 33.31690220690308,
+  "price_change_1d_pct": 1.9775,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 53.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,7 +154,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.62,
+  "osap_blended_score": 52.69,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -196,13 +197,13 @@
   "valuation_methods_applicable": 5,
   "form4_diagnostics": {
     "insider_count": 19,
-    "latest_filing_date": "2026-08-03",
+    "latest_filing_date": "2026-08-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 5.8679270556049064e-08,
+  "cross_source_delta": 1.955619723831465e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 132803037.21641336,
+  "average_dollar_volume": 132054018.12592646,
   "security_type": "Common stock"
 }

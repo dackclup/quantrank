@@ -5,19 +5,19 @@
   "industry": "Data Processing & Outsourced Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 19639115113.860443,
-  "current_price": 172.24,
-  "rank": 199,
-  "composite_score": 61.2,
+  "market_cap": 19498867049.639557,
+  "current_price": 171.01,
+  "rank": 204,
+  "composite_score": 60.95,
   "pillar_scores": {
     "quality": 80.23,
-    "value": 59.32,
+    "value": 59.89,
     "growth": 76.52,
-    "momentum": 20.2,
-    "health": 49.85,
+    "momentum": 17.35,
+    "health": 49.87,
     "profitability": 65.4,
-    "technical": 63.5,
-    "risk": 38.74,
+    "technical": 63.02,
+    "risk": 38.7,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 114021798.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 19639115113.860443,
-    "pe_ratio_ttm": 17.466306575827502,
+    "market_cap": 19498867049.639557,
+    "pe_ratio_ttm": 17.34157510640302,
     "goodwill": 3787800000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 272.322587997241,
+        "value": 272.30797783121324,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.51992488561466,
+        "value": 105.91727355534611,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 106.51992488561466,
-    "max": 272.322587997241,
+    "median": 105.91727355534611,
+    "max": 272.30797783121324,
     "low": 88.22863749583709,
-    "high": 272.322587997241,
-    "mos_pct": -61.69745301465641,
+    "high": 272.30797783121324,
+    "mos_pct": -61.4561900684464,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 106.51992488561466,
+    "median_trimmed": 105.91727355534611,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -101,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-04"
   },
@@ -120,22 +120,22 @@
     "label": "Industrials median (n=263)",
     "values": {
       "Quality": 50.1,
-      "Value": 49.94,
-      "Growth": 50.38,
-      "Momentum": 47.77,
-      "Health": 57.47,
-      "Profitability": 50.19,
-      "Technical": 51.93,
-      "Risk": 48.9
+      "Value": 50.38,
+      "Growth": 50.29,
+      "Momentum": 48.07,
+      "Health": 57.5,
+      "Profitability": 50.13,
+      "Technical": 51.05,
+      "Risk": 49.34
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 54.4006730625809,
-  "price_change_1d_pct": 1.7546,
+  "loss_chance_pct": 54.526274358365015,
+  "price_change_1d_pct": -0.7141,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.2,
+  "composite_score_adjusted": 60.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.53,
+  "osap_blended_score": 56.4,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -193,14 +193,14 @@
   ],
   "valuation_methods_applicable": 3,
   "form4_diagnostics": {
-    "insider_count": 0,
-    "latest_filing_date": null,
-    "fetch_status": "failed"
+    "insider_count": 15,
+    "latest_filing_date": "2026-08-14",
+    "fetch_status": "ok"
   },
-  "cross_source_delta": 0.014352530473260705,
-  "dividend_yield_pct": 2.55,
+  "cross_source_delta": 0.014352464153327122,
+  "dividend_yield_pct": 2.53,
   "pays_dividend": true,
   "payout_ratio": 0.4063,
-  "average_dollar_volume": 179478398.6180537,
+  "average_dollar_volume": 178640242.4042028,
   "security_type": "Common stock"
 }

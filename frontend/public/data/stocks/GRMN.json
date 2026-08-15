@@ -5,19 +5,19 @@
   "industry": "Consumer Electronics",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 60157634925.05896,
-  "current_price": 311.93,
-  "rank": 550,
-  "composite_score": 53.63,
+  "market_cap": 59823997455.40173,
+  "current_price": 310.2,
+  "rank": 571,
+  "composite_score": 53.32,
   "pillar_scores": {
-    "quality": 65.08,
-    "value": 10.91,
+    "quality": 64.82,
+    "value": 11.0,
     "growth": 72.81,
-    "momentum": 61.25,
-    "health": 64.69,
+    "momentum": 59.03,
+    "health": 64.66,
     "profitability": 76.2,
-    "technical": 61.31,
-    "risk": 59.22,
+    "technical": 62.18,
+    "risk": 58.82,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 192856206.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 60157634925.05896,
-    "pe_ratio_ttm": 34.649103514268525,
+    "market_cap": 59823997455.40173,
+    "pe_ratio_ttm": 34.45693772788425,
     "goodwill": 750633000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 165.8428776491772,
+        "value": 164.13042176651788,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 151.41500476885938,
+        "value": 154.56391036559396,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 134.47451274341412,
+        "value": 134.63050381932393,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,19 +79,15 @@
         "tier_used": null
       }
     },
-    "median": 112.81381944524759,
-    "max": 165.8428776491772,
+    "median": 112.8918149832025,
+    "max": 164.13042176651788,
     "low": 62.18352196632609,
-    "high": 165.8428776491772,
-    "mos_pct": -176.49980668119437,
-    "valuation_warnings": [
-      "extreme_rim_estimate"
-    ],
-    "valuation_methods_applicable": 5,
-    "median_trimmed": 134.47451274341412,
-    "methods_excluded_from_median": [
-      "rim"
-    ]
+    "high": 164.13042176651788,
+    "mos_pct": -174.77635314233083,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6,
+    "median_trimmed": 112.8918149832025,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,13 +99,12 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 106,
+    "filing_lag_days": 108,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_rim_estimate",
     "restatement_history"
   ],
   "has_history": true,
@@ -124,23 +119,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 46.91,
-      "Value": 51.55,
-      "Growth": 48.68,
-      "Momentum": 44.61,
-      "Health": 44.96,
-      "Profitability": 50.82,
-      "Technical": 51.09,
-      "Risk": 38.33
+      "Quality": 46.84,
+      "Value": 51.29,
+      "Growth": 48.81,
+      "Momentum": 44.97,
+      "Health": 44.5,
+      "Profitability": 50.84,
+      "Technical": 49.48,
+      "Risk": 37.99
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.3957051794966795,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.18663660936244,
-  "price_change_1d_pct": 0.6291,
+  "loss_chance_pct": 58.3388227041749,
+  "price_change_1d_pct": -0.5546,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.63,
+  "composite_score_adjusted": 53.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.74,
+  "osap_blended_score": 52.59,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,16 +191,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 6,
   "form4_diagnostics": {
-    "insider_count": 0,
-    "latest_filing_date": null,
-    "fetch_status": "failed"
+    "insider_count": 17,
+    "latest_filing_date": "2026-08-11",
+    "fetch_status": "ok"
   },
-  "cross_source_delta": 2.7975518687454667e-08,
-  "dividend_yield_pct": 1.36,
+  "cross_source_delta": 8.815889205525105e-09,
+  "dividend_yield_pct": 1.35,
   "pays_dividend": true,
   "payout_ratio": 0.387,
-  "average_dollar_volume": 256436138.5173584,
+  "average_dollar_volume": 255838356.55413818,
   "security_type": "Common stock"
 }
