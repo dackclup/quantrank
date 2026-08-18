@@ -5,100 +5,58 @@
   "industry": "Cargo Ground Transportation",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 21503698983.163513,
-  "current_price": 143.82,
-  "rank": 709,
-  "composite_score": 51.24,
+  "market_cap": null,
+  "current_price": 139.23,
+  "rank": 795,
+  "composite_score": 49.56,
   "pillar_scores": {
     "quality": 50.19,
     "value": 49.87,
     "growth": 50.19,
-    "momentum": 40.38,
-    "health": 74.85,
+    "momentum": 39.58,
+    "health": 60.17,
     "profitability": 50.19,
-    "technical": 49.67,
-    "risk": 47.72,
+    "technical": 49.48,
+    "risk": 45.04,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
     "revenue": null,
     "net_income": null,
-    "total_assets": 6884000000.0,
+    "total_assets": null,
     "total_liabilities": null,
-    "stockholders_equity": -497000000.0,
-    "cash": 251000000.0,
+    "stockholders_equity": null,
+    "cash": null,
     "operating_cash_flow": null,
     "capex": null,
     "free_cash_flow": null,
     "eps_basic": null,
     "eps_diluted": null,
-    "shares_outstanding": 149518133.0,
+    "shares_outstanding": null,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 21503698983.163513,
+    "market_cap": null,
     "pe_ratio_ttm": null,
-    "goodwill": 602000000.0
+    "goodwill": null
   },
-  "fair_price": {
-    "methods": {
-      "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
-        "tier_used": null
-      },
-      "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
-      },
-      "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
-      },
-      "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
-        "tier_used": null
-      },
-      "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "insufficient_history_for_roe",
-        "tier_used": null
-      },
-      "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_fcf_5y_median",
-        "tier_used": null
-      }
-    },
-    "median": null,
-    "max": null,
-    "low": null,
-    "high": null,
-    "mos_pct": null,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 0,
-    "median_trimmed": null,
-    "methods_excluded_from_median": []
-  },
+  "fair_price": null,
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "revenue",
       "net_income",
+      "total_assets",
       "total_liabilities",
+      "stockholders_equity",
+      "cash",
       "operating_cash_flow",
       "capex",
       "free_cash_flow",
+      "eps_basic",
+      "eps_diluted",
+      "shares_outstanding",
       "gross_profit",
       "operating_income",
       "cost_of_revenue",
@@ -109,19 +67,27 @@
       "income_tax_expense",
       "income_before_tax",
       "dividends_paid",
+      "current_assets",
+      "current_liabilities",
       "inventory",
       "accounts_receivable",
+      "accounts_payable",
+      "long_term_debt",
       "short_term_debt",
+      "retained_earnings",
       "ebitda",
+      "goodwill",
       "intangibles_net",
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
-    "latest_period_end": "2026-08-03",
-    "latest_filed_date": "2026-08-05"
+    "filing_lag_days": null,
+    "latest_period_end": null,
+    "latest_filed_date": null
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "fundamentals_unavailable"
+  ],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -135,23 +101,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 50.1,
-      "Value": 50.06,
-      "Growth": 50.29,
-      "Momentum": 48.8,
-      "Health": 57.46,
-      "Profitability": 50.13,
-      "Technical": 53.11,
-      "Risk": 49.8
+      "Quality": 50.19,
+      "Value": 49.87,
+      "Growth": 50.19,
+      "Momentum": 48.6,
+      "Health": 60.17,
+      "Profitability": 50.19,
+      "Technical": 52.13,
+      "Risk": 48.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "lean_bullish",
+  "recommendation": "cautious",
   "loss_chance_pct": null,
-  "price_change_1d_pct": -4.305,
+  "price_change_1d_pct": -3.1915,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.24,
+  "composite_score_adjusted": 49.56,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -199,24 +165,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.55,
+  "osap_blended_score": 50.71,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "index_memberships": [
-    "sp500",
-    "russell1000"
+    "sp500"
   ],
-  "valuation_methods_applicable": 0,
+  "valuation_methods_applicable": null,
   "form4_diagnostics": {
     "insider_count": 17,
     "latest_filing_date": "2026-08-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.8212454152309853e-09,
+  "cross_source_delta": null,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 176442316.77726644,
+  "average_dollar_volume": 175871727.7835368,
   "security_type": "Common stock"
 }

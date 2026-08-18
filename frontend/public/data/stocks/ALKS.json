@@ -5,19 +5,19 @@
   "industry": "Pharmaceuticals",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 8362998853.213562,
-  "current_price": 49.85,
-  "rank": 1167,
-  "composite_score": 42.6,
+  "market_cap": 8300926621.764069,
+  "current_price": 49.48,
+  "rank": 1400,
+  "composite_score": 35.55,
   "pillar_scores": {
-    "quality": 37.88,
-    "value": 15.85,
-    "growth": 41.41,
-    "momentum": 83.88,
-    "health": 42.78,
-    "profitability": 46.01,
-    "technical": 64.3,
-    "risk": 68.97,
+    "quality": 23.62,
+    "value": 10.94,
+    "growth": 33.13,
+    "momentum": 84.56,
+    "health": 38.92,
+    "profitability": 35.38,
+    "technical": 63.23,
+    "risk": 69.87,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 167763272.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8362998853.213562,
-    "pe_ratio_ttm": 126.47639782244548,
+    "market_cap": 8300926621.764069,
+    "pe_ratio_ttm": 125.53765893507658,
     "goodwill": 594273000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 6.769722580218971,
+        "value": 6.434466539434015,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 37.374950638241906,
+        "value": 31.148522761430556,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 5.937676973379107,
+        "value": 5.997421869874391,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 14.905696733941078,
-    "max": 37.374950638241906,
-    "low": 5.937676973379107,
-    "high": 37.374950638241906,
-    "mos_pct": -234.43588289710706,
+    "median": 14.7380687135486,
+    "max": 31.148522761430556,
+    "low": 5.997421869874391,
+    "high": 31.148522761430556,
+    "mos_pct": -235.7291956221491,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 30.208310762952543,
+    "median_trimmed": 27.09509682454687,
     "methods_excluded_from_median": [
       "multiples_pe",
       "multiples_ev_ebitda"
@@ -126,23 +126,23 @@
   "pillar_baseline": {
     "label": "Health Care median (n=163)",
     "values": {
-      "Quality": 51.38,
-      "Value": 51.53,
+      "Quality": 50.31,
+      "Value": 49.8,
       "Growth": 50.31,
-      "Momentum": 59.41,
-      "Health": 55.66,
-      "Profitability": 48.88,
-      "Technical": 57.33,
-      "Risk": 46.21
+      "Momentum": 60.16,
+      "Health": 62.59,
+      "Profitability": 50.31,
+      "Technical": 57.6,
+      "Risk": 45.63
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 65.70014674569246,
-  "price_change_1d_pct": 1.6103,
+  "loss_chance_pct": 69.22350589294261,
+  "price_change_1d_pct": -0.7422,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.6,
+  "composite_score_adjusted": 35.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.23,
+  "osap_blended_score": 43.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -203,10 +203,10 @@
     "latest_filing_date": "2026-08-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.949822333030477e-08,
+  "cross_source_delta": 1.9005597301616484e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 84457781.22718836,
+  "average_dollar_volume": 84347768.4409663,
   "security_type": "Common stock"
 }

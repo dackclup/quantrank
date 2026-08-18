@@ -5,19 +5,19 @@
   "industry": "Household Products",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2684448655.5099487,
-  "current_price": 43.35,
-  "rank": 545,
-  "composite_score": 53.56,
+  "market_cap": 2742038924.407959,
+  "current_price": 44.28,
+  "rank": 822,
+  "composite_score": 49.21,
   "pillar_scores": {
-    "quality": 35.53,
-    "value": 78.73,
-    "growth": 31.58,
-    "momentum": 64.86,
-    "health": 57.01,
-    "profitability": 47.37,
-    "technical": 59.71,
-    "risk": 63.25,
+    "quality": 21.05,
+    "value": 75.0,
+    "growth": 23.03,
+    "momentum": 66.21,
+    "health": 59.57,
+    "profitability": 55.04,
+    "technical": 70.55,
+    "risk": 65.71,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 61925000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2684448655.5099487,
-    "pe_ratio_ttm": 16.133764389705618,
+    "market_cap": 2742038924.407959,
+    "pe_ratio_ttm": 16.479886796492266,
     "goodwill": 545841000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 48.481402293398126,
+        "value": 53.039623195734194,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 150.6904962325,
+        "value": 72.44024101709321,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 66.95301863728727,
+        "value": 59.450671099669826,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 61.41281297380018,
-    "max": 150.6904962325,
+    "median": 59.450671099669826,
+    "max": 72.44024101709321,
     "low": 24.705346084428626,
-    "high": 150.6904962325,
-    "mos_pct": 29.412126924368387,
+    "high": 72.44024101709321,
+    "mos_pct": 25.51808421967032,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 61.41281297380018,
+    "median_trimmed": 59.450671099669826,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -123,23 +123,23 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=76)",
     "values": {
-      "Quality": 46.79,
-      "Value": 49.23,
-      "Growth": 49.34,
-      "Momentum": 37.97,
-      "Health": 39.93,
-      "Profitability": 48.9,
-      "Technical": 47.55,
-      "Risk": 51.14
+      "Quality": 50.66,
+      "Value": 49.56,
+      "Growth": 50.66,
+      "Momentum": 38.99,
+      "Health": 36.62,
+      "Profitability": 50.66,
+      "Technical": 47.29,
+      "Risk": 51.1
     }
   },
   "beneish_m_score": -2.3863536430934627,
   "dechow_f_score": null,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 30.92683707843075,
-  "price_change_1d_pct": -0.869,
+  "recommendation": "neutral",
+  "loss_chance_pct": 34.46509219981378,
+  "price_change_1d_pct": 2.1453,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.56,
+  "composite_score_adjusted": 49.21,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.7,
+  "osap_blended_score": 50.53,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -200,10 +200,10 @@
     "latest_filing_date": "2026-08-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.010780761416557485,
+  "cross_source_delta": 0.010780738132090396,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 4290583.946371715,
+  "average_dollar_volume": 4349778.67752126,
   "security_type": "Common stock"
 }

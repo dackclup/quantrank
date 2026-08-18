@@ -5,19 +5,19 @@
   "industry": "Gas Utilities",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 7526628424.759335,
-  "current_price": 35.09,
-  "rank": 395,
-  "composite_score": 56.11,
+  "market_cap": 8234461652.212662,
+  "current_price": 38.39,
+  "rank": 216,
+  "composite_score": 59.64,
   "pillar_scores": {
-    "quality": 66.1,
-    "value": 76.84,
-    "growth": 36.44,
-    "momentum": 42.29,
-    "health": 32.66,
-    "profitability": 52.54,
-    "technical": 40.43,
-    "risk": 59.4,
+    "quality": 72.88,
+    "value": 76.55,
+    "growth": 38.98,
+    "momentum": 51.55,
+    "health": 23.22,
+    "profitability": 51.69,
+    "technical": 61.08,
+    "risk": 65.46,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 214494967.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 7526628424.759335,
-    "pe_ratio_ttm": 11.217031929596624,
+    "market_cap": 8234461652.212662,
+    "pe_ratio_ttm": 12.271924966039734,
     "goodwill": 2780000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.17965538150241,
+        "value": 65.8701815149822,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 50.36026456433224,
+        "value": 42.146862956854214,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 82.41765540011254,
+        "value": 80.00665021357881,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 50.36026456433224,
-    "max": 82.41765540011254,
-    "low": 50.17965538150241,
-    "high": 82.41765540011254,
-    "mos_pct": 30.322049623542974,
+    "median": 65.8701815149822,
+    "max": 80.00665021357881,
+    "low": 42.146862956854214,
+    "high": 80.00665021357881,
+    "mos_pct": 41.718698041060335,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 50.36026456433224,
+    "median_trimmed": 65.8701815149822,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -122,23 +122,23 @@
   "pillar_baseline": {
     "label": "Utilities median (n=59)",
     "values": {
-      "Quality": 51.69,
-      "Value": 48.02,
-      "Growth": 50.42,
-      "Momentum": 47.34,
-      "Health": 15.44,
-      "Profitability": 51.69,
-      "Technical": 41.44,
-      "Risk": 70.86
+      "Quality": 50.85,
+      "Value": 49.44,
+      "Growth": 50.85,
+      "Momentum": 50.57,
+      "Health": 11.25,
+      "Profitability": 50.85,
+      "Technical": 45.69,
+      "Risk": 70.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 29.334474301431793,
-  "price_change_1d_pct": -0.7916,
+  "loss_chance_pct": 23.57623091214349,
+  "price_change_1d_pct": 9.4044,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 55.61,
+  "composite_score_adjusted": 59.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.98,
+  "osap_blended_score": 55.75,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,10 +200,10 @@
     "latest_filing_date": "2026-06-23",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 9.666922619012573e-09,
-  "dividend_yield_pct": 4.24,
+  "cross_source_delta": 5.686014235276107e-08,
+  "dividend_yield_pct": 4.27,
   "pays_dividend": true,
   "payout_ratio": 0.49830002,
-  "average_dollar_volume": 48724388.66391767,
+  "average_dollar_volume": 62773362.11754303,
   "security_type": "Common stock"
 }

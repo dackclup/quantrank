@@ -5,19 +5,19 @@
   "industry": "Health Care Facilities",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 10580010172.87445,
-  "current_price": 181.53,
-  "rank": 603,
-  "composite_score": 52.75,
+  "market_cap": 10635961700.814972,
+  "current_price": 182.49,
+  "rank": 411,
+  "composite_score": 54.82,
   "pillar_scores": {
-    "quality": 53.99,
-    "value": 55.01,
-    "growth": 73.93,
-    "momentum": 25.2,
-    "health": 58.68,
-    "profitability": 41.1,
-    "technical": 43.62,
-    "risk": 67.18,
+    "quality": 62.12,
+    "value": 60.94,
+    "growth": 54.06,
+    "momentum": 27.23,
+    "health": 55.24,
+    "profitability": 52.97,
+    "technical": 50.07,
+    "risk": 67.5,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 58282434.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 10580010172.87445,
-    "pe_ratio_ttm": 27.913016404486264,
+    "market_cap": 10635961700.814972,
+    "pe_ratio_ttm": 28.06063213374747,
     "goodwill": 97981000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 104.8364431378362,
+        "value": 185.19591209651776,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 112.79536608172928,
+        "value": 142.49531414257996,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 188.87586238695877,
+        "value": 196.33868592466115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 85.56394568075312,
-    "max": 188.87586238695877,
+    "median": 104.393381183125,
+    "max": 196.33868592466115,
     "low": 17.0864621145698,
-    "high": 188.87586238695877,
-    "mos_pct": -112.1571151669441,
+    "high": 196.33868592466115,
+    "mos_pct": -74.80993854681589,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 104.8364431378362,
+    "median_trimmed": 142.49531414257996,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -122,23 +122,23 @@
   "pillar_baseline": {
     "label": "Health Care median (n=163)",
     "values": {
-      "Quality": 51.38,
-      "Value": 51.53,
+      "Quality": 50.31,
+      "Value": 49.8,
       "Growth": 50.31,
-      "Momentum": 59.41,
-      "Health": 55.66,
-      "Profitability": 48.88,
-      "Technical": 57.33,
-      "Risk": 46.21
+      "Momentum": 60.16,
+      "Health": 62.59,
+      "Profitability": 50.31,
+      "Technical": 57.6,
+      "Risk": 45.63
     }
   },
   "beneish_m_score": -2.602543248938417,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 59.62400316946221,
-  "price_change_1d_pct": -0.0661,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 58.58802863461581,
+  "price_change_1d_pct": 0.5288,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.75,
+  "composite_score_adjusted": 54.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.3,
+  "osap_blended_score": 53.34,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,10 +200,10 @@
     "latest_filing_date": "2026-08-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.7852010309766937e-08,
-  "dividend_yield_pct": 0.14,
+  "cross_source_delta": 3.3547974500179654e-08,
+  "dividend_yield_pct": 0.16,
   "pays_dividend": true,
-  "payout_ratio": 0.0404,
-  "average_dollar_volume": 75215061.47059123,
+  "payout_ratio": 0.041500002,
+  "average_dollar_volume": 72346785.61023457,
   "security_type": "Common stock"
 }

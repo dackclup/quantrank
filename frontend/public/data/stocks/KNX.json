@@ -5,19 +5,19 @@
   "industry": "Cargo Ground Transportation",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 11829563695.892334,
-  "current_price": 72.8,
-  "rank": 1378,
-  "composite_score": 37.0,
+  "market_cap": 11491575878.356934,
+  "current_price": 70.72,
+  "rank": 1408,
+  "composite_score": 35.26,
   "pillar_scores": {
-    "quality": 19.68,
-    "value": 42.84,
-    "growth": 30.89,
-    "momentum": 69.81,
-    "health": 24.19,
-    "profitability": 25.98,
-    "technical": 61.67,
-    "risk": 59.61,
+    "quality": 18.82,
+    "value": 43.03,
+    "growth": 28.8,
+    "momentum": 69.98,
+    "health": 21.01,
+    "profitability": 23.89,
+    "technical": 44.95,
+    "risk": 58.92,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 162494000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 11829563695.892334,
-    "pe_ratio_ttm": 348.03070596917723,
+    "market_cap": 11491575878.356934,
+    "pe_ratio_ttm": 338.0869631761381,
     "goodwill": 3934741000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.010966079619294,
+        "value": 5.359521104374041,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 132.3506536814307,
+        "value": 106.9151226130931,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 86.26190961642938,
+        "value": 81.6422615906198,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 48.99690343298361,
-    "max": 132.3506536814307,
-    "low": 11.010966079619294,
-    "high": 132.3506536814307,
-    "mos_pct": -48.58082440114062,
+    "median": 46.68707942007882,
+    "max": 106.9151226130931,
+    "low": 5.359521104374041,
+    "high": 106.9151226130931,
+    "mos_pct": -51.476601447655376,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 109.30628164893005,
+    "median_trimmed": 94.27869210185645,
     "methods_excluded_from_median": [
       "graham",
       "multiples_pe"
@@ -130,23 +130,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 50.1,
-      "Value": 50.06,
-      "Growth": 50.29,
-      "Momentum": 48.8,
-      "Health": 57.46,
-      "Profitability": 50.13,
-      "Technical": 53.11,
-      "Risk": 49.8
+      "Quality": 50.19,
+      "Value": 49.87,
+      "Growth": 50.19,
+      "Momentum": 48.6,
+      "Health": 60.17,
+      "Profitability": 50.19,
+      "Technical": 52.13,
+      "Risk": 48.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 66.50337202078443,
-  "price_change_1d_pct": 0.5247,
+  "loss_chance_pct": 68.38864915452677,
+  "price_change_1d_pct": -2.8571,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 36.5,
+  "composite_score_adjusted": 34.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.43,
+  "osap_blended_score": 43.55,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -208,10 +208,10 @@
     "latest_filing_date": "2026-08-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0016123793402701007,
-  "dividend_yield_pct": 1.1,
+  "cross_source_delta": 0.0016123276597739846,
+  "dividend_yield_pct": 1.03,
   "pays_dividend": true,
-  "payout_ratio": 2.8148,
-  "average_dollar_volume": 279501509.51484835,
+  "payout_ratio": 3.5238001,
+  "average_dollar_volume": 276224717.71132714,
   "security_type": "Common stock"
 }
