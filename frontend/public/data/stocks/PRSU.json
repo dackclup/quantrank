@@ -5,19 +5,19 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1310315326.741619,
-  "current_price": 48.06,
-  "rank": 153,
-  "composite_score": 62.28,
+  "market_cap": 1322311517.5,
+  "current_price": 48.5,
+  "rank": 168,
+  "composite_score": 61.86,
   "pillar_scores": {
-    "quality": 78.16,
-    "value": 46.39,
-    "growth": 57.15,
-    "momentum": 76.55,
-    "health": 48.62,
-    "profitability": 72.42,
-    "technical": 46.59,
-    "risk": 51.25,
+    "quality": 73.13,
+    "value": 47.94,
+    "growth": 55.61,
+    "momentum": 76.33,
+    "health": 53.52,
+    "profitability": 71.09,
+    "technical": 54.5,
+    "risk": 51.97,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 27264155.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1310315326.741619,
-    "pe_ratio_ttm": 4.55665172517003,
+    "market_cap": 1322311517.5,
+    "pe_ratio_ttm": 4.598368754803329,
     "goodwill": 127112000.0
   },
   "fair_price": {
@@ -49,16 +49,16 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 180.1288465529907,
+        "value": 234.15446359312355,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 48.27493713392505,
+        "value": 154.46275278521145,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 42.5708518840729,
-    "max": 180.1288465529907,
+    "median": 95.6647597097161,
+    "max": 234.15446359312355,
     "low": 35.89417724459287,
-    "high": 180.1288465529907,
-    "mos_pct": -12.894149978877397,
+    "high": 234.15446359312355,
+    "mos_pct": 49.302125310126975,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 42.5708518840729,
+    "median_trimmed": 95.6647597097161,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,7 +100,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-05"
   },
@@ -125,23 +125,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 50.26,
-      "Value": 49.83,
-      "Growth": 50.26,
-      "Momentum": 43.68,
-      "Health": 37.03,
-      "Profitability": 50.26,
-      "Technical": 46.59,
-      "Risk": 38.02
+      "Quality": 46.91,
+      "Value": 51.16,
+      "Growth": 48.81,
+      "Momentum": 45.47,
+      "Health": 44.5,
+      "Profitability": 50.79,
+      "Technical": 51.01,
+      "Risk": 38.18
     }
   },
   "beneish_m_score": -0.9152600761149995,
   "dechow_f_score": 0.20486049278233998,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.37129245202802,
-  "price_change_1d_pct": 0.1459,
+  "loss_chance_pct": 22.814781704444517,
+  "price_change_1d_pct": 0.9155,
   "manipulation_index": 48.0,
-  "composite_score_adjusted": 57.48,
+  "composite_score_adjusted": 57.06,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.07,
+  "osap_blended_score": 56.86,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -202,10 +202,10 @@
     "latest_filing_date": "2026-06-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00678945065879944,
+  "cross_source_delta": 0.006789494291763968,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 12460689.148165004,
+  "average_dollar_volume": 12189841.919041444,
   "security_type": "Common stock"
 }

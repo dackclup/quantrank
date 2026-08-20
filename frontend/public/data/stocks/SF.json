@@ -5,19 +5,19 @@
   "industry": "Investment Banking & Brokerage",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 14024298887.377266,
-  "current_price": 83.73,
-  "rank": 334,
-  "composite_score": 56.4,
+  "market_cap": 13855129279.500824,
+  "current_price": 82.72,
+  "rank": 518,
+  "composite_score": 53.93,
   "pillar_scores": {
-    "quality": 67.15,
-    "value": 36.63,
-    "growth": 73.79,
-    "momentum": 45.81,
-    "health": 61.6,
-    "profitability": 49.16,
-    "technical": 66.12,
-    "risk": 58.83,
+    "quality": 63.08,
+    "value": 39.99,
+    "growth": 61.39,
+    "momentum": 46.39,
+    "health": 57.17,
+    "profitability": 47.74,
+    "technical": 65.11,
+    "risk": 57.66,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 167494307.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 14024298887.377266,
-    "pe_ratio_ttm": 14.706257458230322,
+    "market_cap": 13855129279.500824,
+    "pe_ratio_ttm": 14.528861652028699,
     "goodwill": 1463858000.0
   },
   "fair_price": {
@@ -49,16 +49,16 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 72.86819585697728,
+        "value": 87.10583039670041,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 35.895685104398545,
+        "value": 98.69233926630767,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 40.154559189240096,
-    "max": 72.86819585697728,
+    "median": 65.75963183539103,
+    "max": 98.69233926630767,
     "low": 18.289717134768207,
-    "high": 72.86819585697728,
-    "mos_pct": -108.51929406653795,
+    "high": 98.69233926630767,
+    "mos_pct": -25.79146037156526,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 40.154559189240096,
+    "median_trimmed": 65.75963183539103,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -109,7 +109,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
@@ -130,22 +130,22 @@
     "label": "Financials median (n=258)",
     "values": {
       "Quality": 50.19,
-      "Value": 49.87,
+      "Value": 52.23,
       "Growth": 50.19,
-      "Momentum": 62.13,
-      "Health": 60.1,
-      "Profitability": 50.19,
-      "Technical": 53.9,
-      "Risk": 62.44
+      "Momentum": 61.17,
+      "Health": 54.38,
+      "Profitability": 51.26,
+      "Technical": 49.68,
+      "Risk": 62.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 56.79884444667795,
-  "price_change_1d_pct": -0.3096,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 47.05956944138986,
+  "price_change_1d_pct": -1.2063,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.4,
+  "composite_score_adjusted": 53.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -193,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.13,
+  "osap_blended_score": 52.89,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -207,10 +207,10 @@
     "latest_filing_date": "2026-07-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.09846651119366705,
-  "dividend_yield_pct": 1.85,
+  "cross_source_delta": 0.09846646941932945,
+  "dividend_yield_pct": 1.62,
   "pays_dividend": true,
-  "payout_ratio": 0.2455,
-  "average_dollar_volume": 88530104.6389005,
+  "payout_ratio": 0.23120001,
+  "average_dollar_volume": 86100305.24818625,
   "security_type": "Common stock"
 }

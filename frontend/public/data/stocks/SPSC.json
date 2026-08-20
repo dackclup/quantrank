@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2785693365.242569,
-  "current_price": 77.38,
-  "rank": 147,
-  "composite_score": 62.55,
+  "market_cap": 2907374129.1446686,
+  "current_price": 80.76,
+  "rank": 355,
+  "composite_score": 57.02,
   "pillar_scores": {
-    "quality": 54.61,
-    "value": 70.7,
-    "growth": 72.37,
-    "momentum": 42.17,
-    "health": 80.19,
-    "profitability": 81.4,
-    "technical": 67.75,
-    "risk": 21.78,
+    "quality": 48.82,
+    "value": 60.96,
+    "growth": 67.37,
+    "momentum": 42.9,
+    "health": 80.37,
+    "profitability": 62.89,
+    "technical": 67.35,
+    "risk": 20.26,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 36000174.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2785693365.242569,
-    "pe_ratio_ttm": 35.712643939881396,
+    "market_cap": 2907374129.1446686,
+    "pe_ratio_ttm": 37.272593735429,
     "goodwill": 539411000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 88.35220247413041,
+        "value": 86.80379579193482,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 155.09009423889185,
+        "value": 152.47705956367372,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 83.87417529791911,
+        "value": 87.14817613119777,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 83.87417529791911,
-    "max": 155.09009423889185,
+    "median": 86.80379579193482,
+    "max": 152.47705956367372,
     "low": 17.191723075824758,
-    "high": 155.09009423889185,
-    "mos_pct": 7.74276232396202,
+    "high": 152.47705956367372,
+    "mos_pct": 6.962591440345624,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 83.87417529791911,
+    "median_trimmed": 86.80379579193482,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -102,15 +102,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-07-23",
     "latest_filed_date": "2026-07-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "restatement_history",
-    "value_trap_risk"
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 6.29510846253132,
@@ -124,23 +123,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=190)",
     "values": {
-      "Quality": 50.26,
-      "Value": 49.82,
-      "Growth": 50.26,
-      "Momentum": 50.15,
-      "Health": 68.2,
-      "Profitability": 50.26,
-      "Technical": 57.48,
-      "Risk": 41.18
+      "Quality": 49.08,
+      "Value": 49.39,
+      "Growth": 50.59,
+      "Momentum": 49.17,
+      "Health": 64.73,
+      "Profitability": 50.66,
+      "Technical": 51.35,
+      "Risk": 41.07
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "bullish",
-  "loss_chance_pct": 34.013885078643895,
-  "price_change_1d_pct": 1.5086,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 35.052710594563244,
+  "price_change_1d_pct": 4.3681,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.55,
+  "composite_score_adjusted": 57.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.2,
+  "osap_blended_score": 54.44,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -201,10 +200,10 @@
     "latest_filing_date": "2026-06-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.6836202420205645e-08,
+  "cross_source_delta": 7.114850797745593e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 42370410.97166977,
+  "average_dollar_volume": 39156903.41688156,
   "security_type": "Common stock"
 }

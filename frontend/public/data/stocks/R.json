@@ -5,19 +5,19 @@
   "industry": "Cargo Ground Transportation",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 9937590608.149292,
-  "current_price": 259.15,
-  "rank": 617,
-  "composite_score": 51.97,
+  "market_cap": 9607424051.264221,
+  "current_price": 250.54,
+  "rank": 741,
+  "composite_score": 50.74,
   "pillar_scores": {
-    "quality": 62.17,
-    "value": 53.55,
-    "growth": 26.62,
-    "momentum": 75.98,
-    "health": 34.63,
-    "profitability": 37.33,
-    "technical": 31.9,
-    "risk": 69.57,
+    "quality": 52.47,
+    "value": 59.76,
+    "growth": 33.08,
+    "momentum": 73.8,
+    "health": 33.31,
+    "profitability": 41.0,
+    "technical": 21.1,
+    "risk": 68.23,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 38346868.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 9937590608.149292,
-    "pe_ratio_ttm": 20.035464935784862,
+    "market_cap": 9607424051.264221,
+    "pe_ratio_ttm": 19.36980655496819,
     "goodwill": 1158000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 332.09625896167427,
+        "value": 662.6064994624538,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 168.06907824580708,
+        "value": 182.39575852815753,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 129.63015875296492,
-    "max": 332.09625896167427,
+    "median": 136.79349889414013,
+    "max": 662.6064994624538,
     "low": 44.82026285686735,
-    "high": 332.09625896167427,
-    "mos_pct": -99.91489356295882,
+    "high": 662.6064994624538,
+    "mos_pct": -83.15197382297916,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 168.06907824580708,
+    "median_trimmed": 182.39575852815753,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -106,7 +106,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-23"
   },
@@ -127,23 +127,23 @@
   "pillar_baseline": {
     "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 50.19,
+      "Quality": 50.1,
       "Value": 49.87,
-      "Growth": 50.19,
-      "Momentum": 48.6,
-      "Health": 60.17,
-      "Profitability": 50.19,
-      "Technical": 52.13,
-      "Risk": 48.71
+      "Growth": 50.29,
+      "Momentum": 48.17,
+      "Health": 57.47,
+      "Profitability": 50.13,
+      "Technical": 49.58,
+      "Risk": 48.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.0157567252009,
-  "price_change_1d_pct": -2.0967,
+  "loss_chance_pct": 61.628375873041556,
+  "price_change_1d_pct": -3.3224,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.97,
+  "composite_score_adjusted": 50.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.91,
+  "osap_blended_score": 51.3,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -205,10 +205,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.382603542920447e-08,
-  "dividend_yield_pct": 1.53,
+  "cross_source_delta": 5.335896585584822e-09,
+  "dividend_yield_pct": 1.56,
   "pays_dividend": true,
   "payout_ratio": 0.2959,
-  "average_dollar_volume": 86956583.85729675,
+  "average_dollar_volume": 86714688.2469401,
   "security_type": "Common stock"
 }

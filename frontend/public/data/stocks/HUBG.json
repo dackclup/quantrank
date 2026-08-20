@@ -5,19 +5,19 @@
   "industry": "Air Freight & Logistics",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2441044142.4188232,
-  "current_price": 39.69,
-  "rank": 924,
-  "composite_score": 47.84,
+  "market_cap": 2460110080.0,
+  "current_price": 40.0,
+  "rank": 874,
+  "composite_score": 48.21,
   "pillar_scores": {
-    "quality": 25.76,
-    "value": 83.14,
-    "growth": 9.22,
-    "momentum": 70.25,
-    "health": 65.98,
-    "profitability": 40.87,
-    "technical": 30.52,
-    "risk": 38.42,
+    "quality": 27.19,
+    "value": 78.14,
+    "growth": 12.36,
+    "momentum": 69.23,
+    "health": 71.64,
+    "profitability": 41.13,
+    "technical": 35.57,
+    "risk": 38.39,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 61502752.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2441044142.4188232,
-    "pe_ratio_ttm": 23.132377563788896,
+    "market_cap": 2460110080.0,
+    "pe_ratio_ttm": 23.313054536839612,
     "goodwill": 818150000.0
   },
   "fair_price": {
@@ -100,7 +100,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 286,
+    "filing_lag_days": 288,
     "latest_period_end": "2025-09-30",
     "latest_filed_date": "2025-11-05"
   },
@@ -109,7 +109,8 @@
     "stale_filing_hard"
   ],
   "valuation_warnings": [
-    "late_filing_notification"
+    "late_filing_notification",
+    "rem_suspect"
   ],
   "has_history": true,
   "tangible_book_value": 10.282043964471704,
@@ -123,30 +124,30 @@
   "pillar_baseline": {
     "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 50.19,
+      "Quality": 50.1,
       "Value": 49.87,
-      "Growth": 50.19,
-      "Momentum": 48.6,
-      "Health": 60.17,
-      "Profitability": 50.19,
-      "Technical": 52.13,
-      "Risk": 48.71
+      "Growth": 50.29,
+      "Momentum": 48.17,
+      "Health": 57.47,
+      "Profitability": 50.13,
+      "Technical": 49.58,
+      "Risk": 48.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 0.5574,
-  "manipulation_index": 20.0,
-  "composite_score_adjusted": 45.84,
+  "price_change_1d_pct": 0.7811,
+  "manipulation_index": 28.0,
+  "composite_score_adjusted": 45.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": true,
     "manipulation_triple_flag": false,
-    "rem_suspect": false,
+    "rem_suspect": true,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": true,
@@ -187,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.85,
+  "osap_blended_score": 50.03,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -200,10 +201,10 @@
     "latest_filing_date": "2026-04-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.005678428414280181,
-  "dividend_yield_pct": 1.27,
+  "cross_source_delta": 0.005678471103211772,
+  "dividend_yield_pct": 1.26,
   "pays_dividend": true,
   "payout_ratio": 0.2874,
-  "average_dollar_volume": 48174445.95270538,
+  "average_dollar_volume": 48653063.94317373,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Apparel Retail",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 21208377080.037476,
-  "current_price": 336.95,
-  "rank": 388,
-  "composite_score": 55.18,
+  "market_cap": 21242994525.0,
+  "current_price": 337.5,
+  "rank": 621,
+  "composite_score": 52.48,
   "pillar_scores": {
-    "quality": 77.13,
-    "value": 23.37,
-    "growth": 86.34,
-    "momentum": 64.64,
-    "health": 26.89,
-    "profitability": 66.02,
-    "technical": 25.66,
-    "risk": 46.3,
+    "quality": 71.07,
+    "value": 28.18,
+    "growth": 70.49,
+    "momentum": 64.68,
+    "health": 27.58,
+    "profitability": 60.09,
+    "technical": 28.16,
+    "risk": 47.34,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 62942206.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 21208377080.037476,
-    "pe_ratio_ttm": 33.98424375672001,
+    "market_cap": 21242994525.0,
+    "pe_ratio_ttm": 34.03971465312107,
     "goodwill": 47064000.0
   },
   "fair_price": {
@@ -49,16 +49,16 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 168.9690720232328,
+        "value": 133.72079547770204,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 71.3449960558809,
+        "value": 110.02058375598934,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 71.3449960558809,
-    "max": 168.9690720232328,
+    "median": 78.7221996666745,
+    "max": 133.72079547770204,
     "low": 35.09671382055541,
-    "high": 168.9690720232328,
-    "mos_pct": -372.2826138263649,
+    "high": 133.72079547770204,
+    "mos_pct": -328.72277633125384,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 75.0335978612777,
+    "median_trimmed": 94.37139171133191,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -105,7 +105,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 82,
+    "filing_lag_days": 84,
     "latest_period_end": "2026-05-02",
     "latest_filed_date": "2026-05-28"
   },
@@ -125,23 +125,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 50.26,
-      "Value": 49.83,
-      "Growth": 50.26,
-      "Momentum": 43.68,
-      "Health": 37.03,
-      "Profitability": 50.26,
-      "Technical": 46.59,
-      "Risk": 38.02
+      "Quality": 46.91,
+      "Value": 51.16,
+      "Growth": 48.81,
+      "Momentum": 45.47,
+      "Health": 44.5,
+      "Profitability": 50.79,
+      "Technical": 51.01,
+      "Risk": 38.18
     }
   },
   "beneish_m_score": -2.5592227655118793,
   "dechow_f_score": 0.31976496838805046,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.41240183679719,
-  "price_change_1d_pct": 0.0297,
+  "loss_chance_pct": 59.76134588976932,
+  "price_change_1d_pct": 0.1632,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.18,
+  "composite_score_adjusted": 52.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.51,
+  "osap_blended_score": 52.16,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -203,10 +203,10 @@
     "latest_filing_date": "2026-08-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.2446144437073356e-08,
+  "cross_source_delta": 7.673117827534721e-09,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 239920427.45467937,
+  "average_dollar_volume": 244293360.90169272,
   "security_type": "Common stock"
 }

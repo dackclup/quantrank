@@ -5,90 +5,116 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": null,
-  "current_price": 321.42,
-  "rank": 478,
-  "composite_score": 53.7,
+  "market_cap": 95861059202.11792,
+  "current_price": 326.27,
+  "rank": 398,
+  "composite_score": 56.19,
   "pillar_scores": {
-    "quality": 50.26,
-    "value": 49.83,
-    "growth": 50.26,
-    "momentum": 81.62,
-    "health": 37.03,
-    "profitability": 50.26,
-    "technical": 67.67,
-    "risk": 52.29,
+    "quality": 82.54,
+    "value": 10.31,
+    "growth": 73.84,
+    "momentum": 83.46,
+    "health": 28.74,
+    "profitability": 54.64,
+    "technical": 65.01,
+    "risk": 52.58,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": null,
-    "total_assets": null,
+    "revenue": 15700000000.0,
+    "net_income": 2039000000.0,
+    "total_assets": 29061000000.0,
     "total_liabilities": null,
-    "stockholders_equity": null,
-    "cash": null,
-    "operating_cash_flow": null,
-    "capex": null,
-    "free_cash_flow": null,
-    "eps_basic": null,
-    "eps_diluted": null,
-    "shares_outstanding": null,
+    "stockholders_equity": 1209000000.0,
+    "cash": 6682000000.0,
+    "operating_cash_flow": 5216000000.0,
+    "capex": 757000000.0,
+    "free_cash_flow": 4459000000.0,
+    "eps_basic": 6.939882712918937,
+    "eps_diluted": 6.939882712918937,
+    "shares_outstanding": 293809000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": null,
-    "pe_ratio_ttm": null,
-    "goodwill": null
+    "market_cap": 95861059202.11792,
+    "pe_ratio_ttm": 47.013761256556116,
+    "goodwill": 7024000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 147.26172868228187,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 22.03450850421378,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 146.14188417341003,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 126.39082891563902,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 136.2663565445245,
+    "max": 147.26172868228187,
+    "low": 22.03450850421378,
+    "high": 147.26172868228187,
+    "mos_pct": -139.43546836306905,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ],
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 146.14188417341003,
+    "methods_excluded_from_median": [
+      "multiples_pb"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
-      "net_income",
-      "total_assets",
       "total_liabilities",
-      "stockholders_equity",
-      "cash",
-      "operating_cash_flow",
-      "capex",
-      "free_cash_flow",
-      "eps_basic",
-      "eps_diluted",
-      "shares_outstanding",
       "gross_profit",
-      "operating_income",
       "cost_of_revenue",
       "research_and_development",
-      "sga_expense",
-      "depreciation_and_amortization",
-      "interest_expense",
-      "income_tax_expense",
-      "income_before_tax",
-      "dividends_paid",
-      "current_assets",
-      "current_liabilities",
-      "inventory",
-      "accounts_receivable",
-      "accounts_payable",
-      "long_term_debt",
-      "short_term_debt",
-      "retained_earnings",
-      "ebitda",
-      "goodwill",
-      "intangibles_net",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": null,
-    "latest_period_end": null,
-    "latest_filed_date": null
+    "filing_lag_days": 14,
+    "latest_period_end": "2026-06-30",
+    "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [
-    "fundamentals_unavailable"
+    "net_issuance_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -101,23 +127,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 50.26,
-      "Value": 49.83,
-      "Growth": 50.26,
-      "Momentum": 43.68,
-      "Health": 37.03,
-      "Profitability": 50.26,
-      "Technical": 46.59,
-      "Risk": 38.02
+      "Quality": 46.91,
+      "Value": 51.16,
+      "Growth": 48.81,
+      "Momentum": 45.47,
+      "Health": 44.5,
+      "Profitability": 50.79,
+      "Technical": 51.01,
+      "Risk": 38.18
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "cautious",
-  "loss_chance_pct": null,
-  "price_change_1d_pct": 0.9168,
+  "recommendation": "neutral",
+  "loss_chance_pct": 60.904025690941,
+  "price_change_1d_pct": 1.5089,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.7,
+  "composite_score_adjusted": 56.19,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -165,23 +191,24 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.78,
+  "osap_blended_score": 54.02,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
   "index_memberships": [
-    "sp500"
+    "sp500",
+    "russell1000"
   ],
-  "valuation_methods_applicable": null,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 15,
     "latest_filing_date": "2026-08-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": null,
-  "dividend_yield_pct": 0.69,
+  "cross_source_delta": 0.5914962391826479,
+  "dividend_yield_pct": 0.6,
   "pays_dividend": true,
-  "payout_ratio": 0.14840001,
-  "average_dollar_volume": 465518275.00241697,
+  "payout_ratio": 0.1107,
+  "average_dollar_volume": 465733924.8797404,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Refining & Marketing",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 3685451744.000248,
-  "current_price": 36.66,
-  "rank": 444,
-  "composite_score": 54.25,
+  "market_cap": 3689473059.99876,
+  "current_price": 36.7,
+  "rank": 579,
+  "composite_score": 53.12,
   "pillar_scores": {
-    "quality": 69.72,
-    "value": 59.86,
-    "growth": 38.91,
-    "momentum": 63.7,
-    "health": 23.01,
-    "profitability": 28.99,
-    "technical": 55.93,
-    "risk": 50.07,
+    "quality": 64.79,
+    "value": 57.75,
+    "growth": 38.03,
+    "momentum": 64.49,
+    "health": 27.41,
+    "profitability": 28.87,
+    "technical": 61.44,
+    "risk": 50.09,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 100530599.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3685451744.000248,
-    "pe_ratio_ttm": 21.552349380118407,
+    "market_cap": 3689473059.99876,
+    "pe_ratio_ttm": 21.575865847945966,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 25.78584059570906,
+        "value": 28.119649146055373,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 8.278193243781342,
+        "value": 11.085901694431316,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 48.336281415058686,
+        "value": 50.11399250843371,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,10 +80,10 @@
       }
     },
     "median": 17.67751557785976,
-    "max": 48.336281415058686,
-    "low": 8.278193243781342,
-    "high": 48.336281415058686,
-    "mos_pct": -107.38208197834653,
+    "max": 50.11399250843371,
+    "low": 11.085901694431316,
+    "high": 50.11399250843371,
+    "mos_pct": -107.60836329797634,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
     "median_trimmed": 17.67751557785976,
@@ -98,7 +98,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-07-24",
     "latest_filed_date": "2026-07-29"
   },
@@ -116,23 +116,23 @@
   "pillar_baseline": {
     "label": "Energy median (n=71)",
     "values": {
-      "Quality": 50.7,
-      "Value": 49.53,
+      "Quality": 52.82,
+      "Value": 48.36,
       "Growth": 50.7,
-      "Momentum": 52.84,
-      "Health": 42.7,
-      "Profitability": 50.7,
-      "Technical": 59.7,
-      "Risk": 59.47
+      "Momentum": 51.99,
+      "Health": 46.57,
+      "Profitability": 52.58,
+      "Technical": 59.59,
+      "Risk": 60.74
     }
   },
   "beneish_m_score": -6.75133477250258,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.87342516981321,
-  "price_change_1d_pct": 0.659,
+  "loss_chance_pct": 58.439691339526526,
+  "price_change_1d_pct": 0.1091,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.25,
+  "composite_score_adjusted": 53.12,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.05,
+  "osap_blended_score": 52.49,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -193,10 +193,10 @@
     "latest_filing_date": "2026-02-24",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 8.682721757725335e-09,
-  "dividend_yield_pct": 1.1,
+  "cross_source_delta": 9.757154921033837e-09,
+  "dividend_yield_pct": 1.09,
   "pays_dividend": true,
   "payout_ratio": 0.1449,
-  "average_dollar_volume": 32237670.154675927,
+  "average_dollar_volume": 30791384.654188793,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Interactive Media & Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1198949215.0103989,
-  "current_price": 10.23,
-  "rank": 786,
-  "composite_score": 49.65,
+  "market_cap": 1218873112.091999,
+  "current_price": 10.4,
+  "rank": 773,
+  "composite_score": 50.04,
   "pillar_scores": {
-    "quality": 39.0,
-    "value": 75.0,
-    "growth": 61.25,
-    "momentum": 52.88,
-    "health": 25.66,
-    "profitability": 53.67,
-    "technical": 29.09,
-    "risk": 10.98,
+    "quality": 47.5,
+    "value": 69.0,
+    "growth": 44.25,
+    "momentum": 52.99,
+    "health": 37.17,
+    "profitability": 55.67,
+    "technical": 33.94,
+    "risk": 10.79,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 117199342.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1198949215.0103989,
-    "pe_ratio_ttm": 16.267967639218437,
+    "market_cap": 1218873112.091999,
+    "pe_ratio_ttm": 16.538305455793747,
     "goodwill": 724100000.0
   },
   "fair_price": {
@@ -49,22 +49,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.745990658569287,
+        "value": 10.856271663187236,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 15.006612666584124,
+        "value": 30.307946968114656,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 14.565994581648441,
+        "value": 22.532452270440917,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 14.786303624116282,
+    "median": 26.42019961927779,
     "max": 37.93849097826126,
-    "low": 11.745990658569287,
+    "low": 10.856271663187236,
     "high": 37.93849097826126,
-    "mos_pct": 30.8143549443194,
+    "mos_pct": 60.63618076927095,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 14.786303624116282,
+    "median_trimmed": 26.42019961927779,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,13 +99,12 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "rem_suspect",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -120,30 +119,30 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=50)",
     "values": {
-      "Quality": 51.0,
-      "Value": 49.33,
-      "Growth": 51.0,
-      "Momentum": 43.54,
-      "Health": 35.66,
+      "Quality": 51.25,
+      "Value": 50.08,
+      "Growth": 52.5,
+      "Momentum": 44.69,
+      "Health": 37.42,
       "Profitability": 51.0,
-      "Technical": 57.15,
-      "Risk": 43.41
+      "Technical": 58.57,
+      "Risk": 43.08
     }
   },
   "beneish_m_score": -2.6649996504077835,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 31.38865706381446,
-  "price_change_1d_pct": 0.59,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 48.85,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 20.757051934655884,
+  "price_change_1d_pct": 1.6618,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 50.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -184,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.75,
+  "osap_blended_score": 50.95,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -197,10 +196,10 @@
     "latest_filing_date": "2026-08-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.007151728282606611,
+  "cross_source_delta": 0.007151648523149232,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 44551470.374875516,
+  "average_dollar_volume": 44381821.49026394,
   "security_type": "Common stock"
 }
