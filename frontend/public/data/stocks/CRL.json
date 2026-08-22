@@ -5,19 +5,19 @@
   "industry": "Life Sciences Tools & Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13913494827.149902,
-  "current_price": 291.45,
-  "rank": 1256,
-  "composite_score": 40.46,
+  "market_cap": 14092037742.22998,
+  "current_price": 295.19,
+  "rank": 1251,
+  "composite_score": 40.39,
   "pillar_scores": {
-    "quality": 28.07,
-    "value": 26.38,
-    "growth": 42.48,
-    "momentum": 88.94,
-    "health": 30.64,
-    "profitability": 32.62,
-    "technical": 71.23,
-    "risk": 45.66,
+    "quality": 28.16,
+    "value": 25.98,
+    "growth": 42.52,
+    "momentum": 89.04,
+    "health": 30.7,
+    "profitability": 32.61,
+    "technical": 70.85,
+    "risk": 45.52,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 47738872.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 13913494827.149902,
+    "market_cap": 14092037742.22998,
     "pe_ratio_ttm": null,
     "goodwill": 3076851000.0
   },
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 292.4055456050532,
+        "value": 292.85392707095485,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 209.61573004011808,
+        "value": 211.3172315130257,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 251.01063782258564,
-    "max": 292.4055456050532,
-    "low": 209.61573004011808,
-    "high": 292.4055456050532,
-    "mos_pct": -16.110621739078713,
+    "median": 252.08557929199026,
+    "max": 292.85392707095485,
+    "low": 211.3172315130257,
+    "high": 292.85392707095485,
+    "mos_pct": -17.099122952800176,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 251.01063782258564,
+    "median_trimmed": 252.08557929199026,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,12 +99,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-07-25",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -115,25 +117,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Health Care median (n=163)",
+    "label": "Health Care median (n=162)",
     "values": {
-      "Quality": 51.38,
-      "Value": 51.12,
+      "Quality": 51.2,
+      "Value": 51.57,
       "Growth": 50.31,
-      "Momentum": 60.39,
-      "Health": 55.62,
-      "Profitability": 48.88,
-      "Technical": 62.32,
-      "Risk": 46.79
+      "Momentum": 61.96,
+      "Health": 55.89,
+      "Profitability": 48.56,
+      "Technical": 59.76,
+      "Risk": 47.12
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4357382713200572,
   "recommendation": "neutral",
-  "loss_chance_pct": 50.40980788294277,
-  "price_change_1d_pct": 0.5,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.46,
+  "loss_chance_pct": 50.78855914410946,
+  "price_change_1d_pct": 1.2832,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 39.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,7 +151,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.15,
+  "osap_blended_score": 46.12,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -192,13 +194,13 @@
   "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 18,
-    "latest_filing_date": "2026-08-13",
+    "latest_filing_date": "2026-08-20",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 2.1500701733112233e-08,
+  "cross_source_delta": 0.008983402690630795,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 233970516.9760905,
+  "average_dollar_volume": 234632437.11348265,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Publishing",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 18862751318.359375,
-  "current_price": 33.78,
-  "rank": 926,
-  "composite_score": 47.21,
+  "market_cap": 19292719573.97461,
+  "current_price": 34.55,
+  "rank": 952,
+  "composite_score": 46.47,
   "pillar_scores": {
     "quality": 43.0,
-    "value": 41.67,
+    "value": 41.0,
     "growth": 32.0,
-    "momentum": 63.12,
-    "health": 51.86,
+    "momentum": 58.04,
+    "health": 51.89,
     "profitability": 50.33,
-    "technical": 72.79,
-    "risk": 57.37,
+    "technical": 72.89,
+    "risk": 58.23,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 558400000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 18862751318.359375,
-    "pe_ratio_ttm": 25.387283066432538,
+    "market_cap": 19292719573.97461,
+    "pe_ratio_ttm": 25.965975200504186,
     "goodwill": 4542000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 24.90350684502539,
+        "value": 25.01277732042334,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 38.89681444933686,
+        "value": 39.08780890196553,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 19.514947114169107,
-    "max": 38.89681444933686,
+    "median": 19.569582351868082,
+    "max": 39.08780890196553,
     "low": 10.132087883109786,
-    "high": 38.89681444933686,
-    "mos_pct": -73.09808005972212,
+    "high": 39.08780890196553,
+    "mos_pct": -76.54949715246457,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 19.514947114169107,
+    "median_trimmed": 19.569582351868082,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -104,14 +104,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "multi_class_aggregate_shares_suspected"
+    "multi_class_aggregate_shares_suspected",
+    "insider_sell_cluster",
+    "c_suite_unusual_sell"
   ],
   "has_history": true,
   "tangible_book_value": 3.844914040114613,
@@ -126,22 +128,22 @@
     "label": "Communication Services median (n=50)",
     "values": {
       "Quality": 51.25,
-      "Value": 49.83,
+      "Value": 50.08,
       "Growth": 52.5,
-      "Momentum": 47.22,
-      "Health": 37.44,
+      "Momentum": 47.63,
+      "Health": 37.46,
       "Profitability": 51.0,
-      "Technical": 59.15,
-      "Risk": 42.91
+      "Technical": 55.37,
+      "Risk": 41.68
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4879844808198524,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.39423758865249,
-  "price_change_1d_pct": 0.7456,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.21,
+  "loss_chance_pct": 62.765962931995546,
+  "price_change_1d_pct": 2.2795,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 45.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -157,8 +159,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -189,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.53,
+  "osap_blended_score": 49.16,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -203,10 +205,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03265755562179324,
-  "dividend_yield_pct": 0.6,
+  "cross_source_delta": 0.032657569688854825,
+  "dividend_yield_pct": 0.59,
   "pays_dividend": true,
   "payout_ratio": 0.1942,
-  "average_dollar_volume": 35603766.259142555,
+  "average_dollar_volume": 35073436.38165474,
   "security_type": "Common stock"
 }
