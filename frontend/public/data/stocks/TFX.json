@@ -5,19 +5,19 @@
   "industry": "Health Care Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 5860526125.621765,
-  "current_price": 138.31,
-  "rank": 1424,
-  "composite_score": 34.93,
+  "market_cap": 5939762301.115295,
+  "current_price": 140.18,
+  "rank": 1410,
+  "composite_score": 35.34,
   "pillar_scores": {
     "quality": 12.88,
-    "value": 41.51,
+    "value": 41.41,
     "growth": 38.8,
-    "momentum": 58.51,
+    "momentum": 60.48,
     "health": 52.35,
     "profitability": 15.39,
-    "technical": 50.08,
-    "risk": 31.54,
+    "technical": 53.31,
+    "risk": 32.07,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 42372397.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5860526125.621765,
+    "market_cap": 5939762301.115295,
     "pe_ratio_ttm": null,
     "goodwill": 2292435000.0
   },
@@ -55,13 +55,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 220.59809495187193,
+        "value": 219.27193500506124,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 27.692322353414312,
+        "value": 27.761358432096177,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 124.14520865264312,
-    "max": 220.59809495187193,
-    "low": 27.692322353414312,
-    "high": 220.59809495187193,
-    "mos_pct": -11.409855490745155,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 2,
-    "median_trimmed": 124.14520865264312,
-    "methods_excluded_from_median": []
+    "median": 123.51664671857871,
+    "max": 219.27193500506124,
+    "low": 27.761358432096177,
+    "high": 219.27193500506124,
+    "mos_pct": -13.490769382015715,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate"
+    ],
+    "valuation_methods_applicable": 1,
+    "median_trimmed": null,
+    "methods_excluded_from_median": [
+      "multiples_ev_ebitda"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +106,9 @@
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -118,20 +124,20 @@
       "Quality": 51.07,
       "Value": 51.64,
       "Growth": 50.31,
-      "Momentum": 61.0,
-      "Health": 55.62,
+      "Momentum": 62.76,
+      "Health": 55.61,
       "Profitability": 48.77,
-      "Technical": 60.45,
-      "Risk": 47.97
+      "Technical": 62.35,
+      "Risk": 47.79
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 51.52759082518942,
-  "price_change_1d_pct": -0.3746,
+  "loss_chance_pct": 53.053712790523036,
+  "price_change_1d_pct": 1.352,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.93,
+  "composite_score_adjusted": 35.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,23 +185,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.39,
+  "osap_blended_score": 43.59,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 2,
+  "valuation_methods_applicable": 1,
   "form4_diagnostics": {
     "insider_count": 12,
     "latest_filing_date": "2026-06-09",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 7.784585233271793e-09,
+  "cross_source_delta": 2.1064023957097348e-08,
   "dividend_yield_pct": 0.98,
   "pays_dividend": true,
   "payout_ratio": null,
-  "average_dollar_volume": 77360800.9574646,
+  "average_dollar_volume": 77627143.8856547,
   "security_type": "Common stock"
 }

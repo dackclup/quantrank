@@ -5,90 +5,90 @@
   "industry": "Consumer Staples Merchandise Retail",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 12576580506.846214,
-  "current_price": 98.49,
-  "rank": 362,
-  "composite_score": 56.81,
+  "market_cap": 11920317830.973663,
+  "current_price": 94.37,
+  "rank": 225,
+  "composite_score": 60.18,
   "pillar_scores": {
-    "quality": 82.24,
-    "value": 49.78,
-    "growth": 47.04,
-    "momentum": 48.52,
-    "health": 33.8,
-    "profitability": 51.1,
-    "technical": 46.34,
-    "risk": 57.66,
+    "quality": 84.54,
+    "value": 55.48,
+    "growth": 58.22,
+    "momentum": 44.85,
+    "health": 35.82,
+    "profitability": 52.19,
+    "technical": 49.57,
+    "risk": 59.9,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 21965291000.0,
-    "net_income": 571335000.0,
-    "total_assets": 7928998000.0,
-    "total_liabilities": 5802739000.0,
-    "stockholders_equity": 2126259000.0,
-    "cash": 27826000.0,
-    "operating_cash_flow": 961921000.0,
-    "capex": 743555000.0,
-    "free_cash_flow": 218366000.0,
-    "eps_basic": 4.474251399167292,
-    "eps_diluted": 4.474251399167292,
-    "shares_outstanding": 127693987.0,
+    "revenue": 22811630000.0,
+    "net_income": 594497000.0,
+    "total_assets": 7991786000.0,
+    "total_liabilities": 5794354000.0,
+    "stockholders_equity": 2197432000.0,
+    "cash": 29982000.0,
+    "operating_cash_flow": 1113538000.0,
+    "capex": 755322000.0,
+    "free_cash_flow": 358216000.0,
+    "eps_basic": 4.706475474761083,
+    "eps_diluted": 4.706475474761083,
+    "shares_outstanding": 126314692.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 12576580506.846214,
-    "pe_ratio_ttm": 22.01262045358015,
+    "market_cap": 11920317830.973663,
+    "pe_ratio_ttm": 20.05109837555726,
     "goodwill": 1008816000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 27.143869446362924,
+        "value": 28.240679563281734,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 107.05296411294454,
+        "value": 112.04600814603887,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 52.05547461687152,
+        "value": 53.192064611301404,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 112.4996920187493,
+        "value": 118.23704044554243,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 19.80320784802438,
+        "value": 21.435929309545003,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 27.361344658663832,
+        "value": 28.824534434568694,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 39.70840963776767,
-    "max": 112.4996920187493,
-    "low": 19.80320784802438,
-    "high": 112.4996920187493,
-    "mos_pct": -148.03309616835725,
+    "median": 41.00829952293505,
+    "max": 118.23704044554243,
+    "low": 21.435929309545003,
+    "high": 118.23704044554243,
+    "mos_pct": -130.1241549745386,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 39.70840963776767,
+    "median_trimmed": 41.00829952293505,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -96,12 +96,13 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "research_and_development"
+      "research_and_development",
+      "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 89,
-    "latest_period_end": "2026-05-21",
-    "latest_filed_date": "2026-05-28"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-08-20",
+    "latest_filed_date": "2026-08-25"
   },
   "risk_flags": [
     "altman_distress"
@@ -111,7 +112,7 @@
     "restatement_history"
   ],
   "has_history": true,
-  "tangible_book_value": 8.012937993705217,
+  "tangible_book_value": 8.67358327564936,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,22 +124,22 @@
     "label": "Consumer Staples median (n=76)",
     "values": {
       "Quality": 46.79,
-      "Value": 50.0,
-      "Growth": 48.93,
-      "Momentum": 43.88,
-      "Health": 39.94,
+      "Value": 50.49,
+      "Growth": 49.18,
+      "Momentum": 44.11,
+      "Health": 39.95,
       "Profitability": 48.79,
-      "Technical": 56.78,
-      "Risk": 52.05
+      "Technical": 57.79,
+      "Risk": 51.94
     }
   },
-  "beneish_m_score": -2.6330913132280154,
-  "dechow_f_score": 0.39003030047106024,
+  "beneish_m_score": -2.596267619777288,
+  "dechow_f_score": 0.37655219932016715,
   "recommendation": "cautious",
-  "loss_chance_pct": 69.5933548548899,
-  "price_change_1d_pct": 2.1469,
+  "loss_chance_pct": 67.90795962229376,
+  "price_change_1d_pct": -4.1832,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.81,
+  "composite_score_adjusted": 60.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.33,
+  "osap_blended_score": 56.02,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,10 +201,10 @@
     "latest_filing_date": "2026-08-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 8.04302772526301e-09,
+  "cross_source_delta": 0.010919450544189458,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 167012870.42147955,
+  "average_dollar_volume": 167476790.82231393,
   "security_type": "Common stock"
 }
