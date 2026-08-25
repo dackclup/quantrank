@@ -5,19 +5,19 @@
   "industry": "Diversified Financial Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13351419593.918587,
-  "current_price": 48.9,
-  "rank": 296,
-  "composite_score": 58.12,
+  "market_cap": 13386913414.41513,
+  "current_price": 49.03,
+  "rank": 304,
+  "composite_score": 58.08,
   "pillar_scores": {
-    "quality": 72.56,
-    "value": 55.44,
+    "quality": 72.37,
+    "value": 55.38,
     "growth": 38.62,
-    "momentum": 58.41,
-    "health": 63.33,
-    "profitability": 34.31,
-    "technical": 66.82,
-    "risk": 46.58,
+    "momentum": 60.04,
+    "health": 63.5,
+    "profitability": 34.44,
+    "technical": 62.63,
+    "risk": 46.74,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 273035157.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 13351419593.918587,
+    "market_cap": 13386913414.41513,
     "pe_ratio_ttm": null,
     "goodwill": 4570000000.0
   },
@@ -111,14 +111,12 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-08-04",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "restatement_history"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -129,25 +127,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=256)",
+    "label": "Financials median (n=257)",
     "values": {
-      "Quality": 50.2,
-      "Value": 52.25,
-      "Growth": 50.2,
-      "Momentum": 60.42,
-      "Health": 55.61,
-      "Profitability": 51.17,
-      "Technical": 50.06,
-      "Risk": 61.91
+      "Quality": 50.19,
+      "Value": 52.14,
+      "Growth": 50.19,
+      "Momentum": 61.92,
+      "Health": 55.77,
+      "Profitability": 51.23,
+      "Technical": 50.99,
+      "Risk": 62.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 0.3077,
+  "price_change_1d_pct": 0.2658,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.12,
+  "composite_score_adjusted": 58.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,7 +153,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": true,
+    "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -195,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.99,
+  "osap_blended_score": 54.97,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -206,13 +204,13 @@
   "valuation_methods_applicable": 0,
   "form4_diagnostics": {
     "insider_count": 16,
-    "latest_filing_date": "2026-08-11",
+    "latest_filing_date": "2026-08-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0009865936596425008,
-  "dividend_yield_pct": 2.34,
+  "cross_source_delta": 0.000986573529407386,
+  "dividend_yield_pct": 2.33,
   "pays_dividend": true,
   "payout_ratio": 0.76739997,
-  "average_dollar_volume": 136492647.5536588,
+  "average_dollar_volume": 136976536.41136932,
   "security_type": "Common stock"
 }
