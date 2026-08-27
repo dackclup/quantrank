@@ -5,40 +5,40 @@
   "industry": "Packaged Foods & Meats",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13380764259.343002,
-  "current_price": 125.45,
-  "rank": 1351,
-  "composite_score": 37.56,
+  "market_cap": 13983154002.703033,
+  "current_price": 130.9,
+  "rank": 1271,
+  "composite_score": 40.09,
   "pillar_scores": {
-    "quality": 18.09,
-    "value": 38.93,
+    "quality": 24.01,
+    "value": 38.38,
     "growth": 52.63,
-    "momentum": 70.93,
-    "health": 17.0,
-    "profitability": 23.03,
-    "technical": 58.0,
-    "risk": 62.33,
+    "momentum": 68.43,
+    "health": 18.73,
+    "profitability": 36.84,
+    "technical": 61.81,
+    "risk": 65.43,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9050900000.0,
-    "net_income": -138700000.0,
-    "total_assets": 16219400000.0,
-    "total_liabilities": 10675600000.0,
-    "stockholders_equity": 5543800000.0,
+    "revenue": 9156900000.0,
+    "net_income": 229500000.0,
+    "total_assets": 16203200000.0,
+    "total_liabilities": 10452400000.0,
+    "stockholders_equity": 5750800000.0,
     "cash": 48800000.0,
-    "operating_cash_flow": 1473600000.0,
-    "capex": 317400000.0,
-    "free_cash_flow": 1156200000.0,
-    "eps_basic": -1.3003677696938614,
-    "eps_diluted": -1.3003677696938614,
-    "shares_outstanding": 106662133.0,
+    "operating_cash_flow": 1909900000.0,
+    "capex": 321500000.0,
+    "free_cash_flow": 1588400000.0,
+    "eps_basic": 2.148410050653518,
+    "eps_diluted": 2.148410050653518,
+    "shares_outstanding": 106823183.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 13380764259.343002,
-    "pe_ratio_ttm": null,
-    "goodwill": 5205000000.0
+    "market_cap": 13983154002.703033,
+    "pe_ratio_ttm": 60.928775610906456,
+    "goodwill": 5200000000.0
   },
   "fair_price": {
     "methods": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 56.282419916899016,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 97.25316678939274,
+        "value": 100.00524345733135,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 16.072654125068325,
+        "value": 65.37489803015806,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -73,26 +73,23 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 24.826727737832496,
+        "value": 24.775256284279404,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 24.826727737832496,
-    "max": 97.25316678939274,
-    "low": 16.072654125068325,
-    "high": 97.25316678939274,
-    "mos_pct": -405.3021818782576,
+    "median": 60.82865897352854,
+    "max": 100.00524345733135,
+    "low": 24.775256284279404,
+    "high": 100.00524345733135,
+    "mos_pct": -115.19460745213786,
     "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_dcf_estimate",
-      "extreme_estimate_majority"
+      "extreme_dcf_estimate"
     ],
-    "valuation_methods_applicable": 1,
-    "median_trimmed": null,
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 65.37489803015806,
     "methods_excluded_from_median": [
-      "multiples_ev_ebitda",
       "dcf"
     ]
   },
@@ -104,17 +101,15 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
-    "latest_period_end": "2026-06-02",
-    "latest_filed_date": "2026-06-09"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-08-19",
+    "latest_filed_date": "2026-08-26"
   },
   "risk_flags": [
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_dcf_estimate",
-    "extreme_estimate_majority"
+    "extreme_dcf_estimate"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -129,22 +124,22 @@
     "label": "Consumer Staples median (n=76)",
     "values": {
       "Quality": 46.79,
-      "Value": 50.49,
+      "Value": 50.88,
       "Growth": 49.18,
-      "Momentum": 44.11,
-      "Health": 39.95,
-      "Profitability": 48.79,
-      "Technical": 57.79,
-      "Risk": 51.94
+      "Momentum": 45.83,
+      "Health": 39.96,
+      "Profitability": 48.46,
+      "Technical": 58.49,
+      "Risk": 52.18
     }
   },
-  "beneish_m_score": -2.830709632554824,
-  "dechow_f_score": 0.4409632841216937,
+  "beneish_m_score": -2.979113391595273,
+  "dechow_f_score": 0.4310999206727209,
   "recommendation": "cautious",
-  "loss_chance_pct": 80.22249877519597,
-  "price_change_1d_pct": -0.3337,
+  "loss_chance_pct": 77.95486487786954,
+  "price_change_1d_pct": 4.3444,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.56,
+  "composite_score_adjusted": 40.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.7,
+  "osap_blended_score": 45.97,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,16 +195,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 1,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 7,
     "latest_filing_date": "2026-06-30",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0020490617819421855,
-  "dividend_yield_pct": 3.56,
+  "cross_source_delta": 0.0005383332898651778,
+  "dividend_yield_pct": 3.57,
   "pays_dividend": true,
   "payout_ratio": 0.8606,
-  "average_dollar_volume": 154569915.34313405,
+  "average_dollar_volume": 160988010.3939677,
   "security_type": "Common stock"
 }
