@@ -5,98 +5,42 @@
   "industry": "Systems Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 192634283132.4463,
-  "current_price": 189.18,
-  "rank": 1233,
-  "composite_score": 41.01,
+  "market_cap": 233416193456.88254,
+  "current_price": 227.96,
+  "rank": 1218,
+  "composite_score": 41.32,
   "pillar_scores": {
-    "quality": 25.53,
-    "value": 26.71,
-    "growth": 67.76,
-    "momentum": 73.44,
-    "health": 44.85,
-    "profitability": 33.25,
-    "technical": 34.99,
-    "risk": 53.89,
+    "quality": 27.11,
+    "value": 18.07,
+    "growth": 56.25,
+    "momentum": 89.58,
+    "health": 47.27,
+    "profitability": 34.04,
+    "technical": 52.68,
+    "risk": 55.65,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 5094200000.0,
-    "net_income": -4206000.0,
-    "total_assets": 11270100000.0,
-    "total_liabilities": 6594768000.0,
-    "stockholders_equity": 4633877000.0,
-    "cash": 4552801000.0,
-    "operating_cash_flow": 1819179000.0,
-    "capex": 313981000.0,
-    "free_cash_flow": 1505198000.0,
-    "eps_basic": -0.00413057860862314,
-    "eps_diluted": -0.00413057860862314,
-    "shares_outstanding": 1018259280.0,
+    "revenue": 5396145000.0,
+    "net_income": 78745000.0,
+    "total_assets": 12025001000.0,
+    "total_liabilities": 6885476000.0,
+    "stockholders_equity": 5101724000.0,
+    "cash": 5013847000.0,
+    "operating_cash_flow": 2016615000.0,
+    "capex": 407897000.0,
+    "free_cash_flow": 1608718000.0,
+    "eps_basic": 0.07690430754967903,
+    "eps_diluted": 0.07690430754967903,
+    "shares_outstanding": 1023934842.0,
     "shares_outstanding_listed_class": null,
-    "shares_outstanding_pre_split_raw": 254564820.0,
-    "market_cap": 192634283132.4463,
-    "pe_ratio_ttm": null,
-    "goodwill": 2267493000.0
+    "shares_outstanding_pre_split_raw": null,
+    "market_cap": 233416193456.88254,
+    "pe_ratio_ttm": 2964.203358395867,
+    "goodwill": 2251426000.0
   },
-  "fair_price": {
-    "methods": {
-      "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
-        "tier_used": null
-      },
-      "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
-      },
-      "multiples_pb": {
-        "value": 36.93257839916537,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
-      },
-      "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
-        "tier_used": null
-      },
-      "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
-        "tier_used": null
-      },
-      "dcf": {
-        "value": 16.30304214776694,
-        "applicable": true,
-        "reason": null,
-        "tier_used": null
-      }
-    },
-    "median": null,
-    "max": null,
-    "low": 16.30304214776694,
-    "high": 36.93257839916537,
-    "mos_pct": null,
-    "valuation_warnings": [
-      "goodwill_heavy",
-      "extreme_multiples_pb_estimate",
-      "extreme_dcf_estimate",
-      "extreme_estimate_majority"
-    ],
-    "valuation_methods_applicable": 0,
-    "median_trimmed": null,
-    "methods_excluded_from_median": [
-      "multiples_pb",
-      "dcf"
-    ]
-  },
+  "fair_price": null,
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -108,21 +52,22 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 84,
-    "latest_period_end": "2026-05-28",
-    "latest_filed_date": "2026-06-04"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-08-20",
+    "latest_filed_date": "2026-08-27"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "post_split_share_lag_unreconciled"
+  ],
   "valuation_warnings": [
-    "goodwill_heavy",
+    "extreme_multiples_pe_estimate",
     "extreme_multiples_pb_estimate",
     "extreme_dcf_estimate",
     "extreme_estimate_majority",
-    "post_split_share_lag",
-    "accruals_momentum_high"
+    "valuation_output_anomalous"
   ],
   "has_history": true,
-  "tangible_book_value": 2.043335170979242,
+  "tangible_book_value": 2.5168232335627465,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -133,23 +78,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=190)",
     "values": {
-      "Quality": 48.95,
-      "Value": 50.75,
-      "Growth": 50.72,
-      "Momentum": 48.59,
-      "Health": 64.78,
-      "Profitability": 50.59,
-      "Technical": 49.48,
-      "Risk": 40.82
+      "Quality": 49.54,
+      "Value": 51.54,
+      "Growth": 50.66,
+      "Momentum": 48.92,
+      "Health": 64.95,
+      "Profitability": 50.7,
+      "Technical": 52.97,
+      "Risk": 41.93
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
+  "recommendation": "cautious",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 2.0498,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 40.51,
+  "price_change_1d_pct": 20.499,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 41.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -160,7 +105,7 @@
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
-    "accruals_momentum_high": true,
+    "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
@@ -197,7 +142,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.43,
+  "osap_blended_score": 46.59,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,16 +150,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 0,
+  "valuation_methods_applicable": null,
   "form4_diagnostics": {
     "insider_count": 12,
     "latest_filing_date": "2026-08-21",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.8487974918983905e-08,
+  "cross_source_delta": 1.1306488307743354e-08,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 1576253887.3904927,
+  "average_dollar_volume": 1703774108.914693,
   "security_type": "Common stock"
 }

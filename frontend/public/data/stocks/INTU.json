@@ -5,18 +5,18 @@
   "industry": "Application Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 94610978895.62988,
-  "current_price": 345.88,
-  "rank": 218,
-  "composite_score": 60.38,
+  "market_cap": 95190876000.0,
+  "current_price": 348.0,
+  "rank": 219,
+  "composite_score": 60.49,
   "pillar_scores": {
     "quality": 67.17,
-    "value": 70.92,
-    "growth": 74.61,
-    "momentum": 9.49,
-    "health": 73.6,
-    "profitability": 63.33,
-    "technical": 65.23,
+    "value": 71.23,
+    "growth": 74.47,
+    "momentum": 9.76,
+    "health": 73.59,
+    "profitability": 63.25,
+    "technical": 65.87,
     "risk": 22.83,
     "sentiment": null,
     "ml": null
@@ -36,8 +36,8 @@
     "shares_outstanding": 273537000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 94610978895.62988,
-    "pe_ratio_ttm": 20.639393301838982,
+    "market_cap": 95190876000.0,
+    "pe_ratio_ttm": 20.765897905759164,
     "goodwill": 13982000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 671.8360189582405,
+        "value": 653.9767813631329,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 458.8949545982427,
+        "value": 475.1697342883568,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 510.473821169647,
+        "value": 533.4831533953392,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,18 +79,18 @@
         "tier_used": null
       }
     },
-    "median": 337.63458188535077,
-    "max": 671.8360189582405,
+    "median": 345.7719717304078,
+    "max": 653.9767813631329,
     "low": 8.567557874076574,
-    "high": 671.8360189582405,
-    "mos_pct": -2.442114475187733,
+    "high": 653.9767813631329,
+    "mos_pct": -0.6443634683407308,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 484.68438788394485,
+    "median_trimmed": 504.326443841848,
     "methods_excluded_from_median": [
       "graham",
       "rim"
@@ -105,7 +105,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 99,
+    "filing_lag_days": 100,
     "latest_period_end": "2026-05-14",
     "latest_filed_date": "2026-05-20"
   },
@@ -127,23 +127,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=190)",
     "values": {
-      "Quality": 48.95,
-      "Value": 50.75,
-      "Growth": 50.72,
-      "Momentum": 48.59,
-      "Health": 64.78,
-      "Profitability": 50.59,
-      "Technical": 49.48,
-      "Risk": 40.82
+      "Quality": 49.54,
+      "Value": 51.54,
+      "Growth": 50.66,
+      "Momentum": 48.92,
+      "Health": 64.95,
+      "Profitability": 50.7,
+      "Technical": 52.97,
+      "Risk": 41.93
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 38.66603348853482,
-  "price_change_1d_pct": -3.2395,
+  "loss_chance_pct": 37.98108184601146,
+  "price_change_1d_pct": 0.6129,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 60.38,
+  "composite_score_adjusted": 60.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.11,
+  "osap_blended_score": 56.17,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -205,10 +205,10 @@
     "latest_filing_date": "2026-08-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 6.578126508635005e-08,
-  "dividend_yield_pct": 1.3,
+  "cross_source_delta": 1.6808333605418233e-09,
+  "dividend_yield_pct": 1.39,
   "pays_dividend": true,
-  "payout_ratio": 0.2831,
-  "average_dollar_volume": 1332959742.725248,
+  "payout_ratio": 0.2916,
+  "average_dollar_volume": 1338757425.8646648,
   "security_type": "Common stock"
 }
