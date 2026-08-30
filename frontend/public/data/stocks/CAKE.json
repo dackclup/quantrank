@@ -8,15 +8,15 @@
   "market_cap": 5576674237.19426,
   "current_price": 112.07,
   "rank": 586,
-  "composite_score": 52.97,
+  "composite_score": 52.96,
   "pillar_scores": {
     "quality": 68.36,
     "value": 19.42,
     "growth": 67.01,
-    "momentum": 88.25,
+    "momentum": 88.21,
     "health": 17.84,
     "profitability": 45.27,
-    "technical": 59.7,
+    "technical": 59.68,
     "risk": 74.48,
     "sentiment": null,
     "ml": null
@@ -105,7 +105,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-07-27",
     "latest_filed_date": "2026-08-03"
   },
@@ -113,8 +113,7 @@
   "valuation_warnings": [
     "extreme_graham_estimate",
     "extreme_rim_estimate",
-    "insider_sell_cluster",
-    "c_suite_unusual_sell"
+    "insider_sell_cluster"
   ],
   "has_history": true,
   "tangible_book_value": 5.334960161480257,
@@ -141,10 +140,10 @@
   "beneish_m_score": null,
   "dechow_f_score": 0.33746520825779397,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.51635058515208,
+  "loss_chance_pct": 60.518843936215916,
   "price_change_1d_pct": 1.7985,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 52.17,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 52.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -161,7 +160,7 @@
     "beneish_high": false,
     "dechow_high": false,
     "insider_sell_cluster": true,
-    "c_suite_unusual_sell": true
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -209,6 +208,6 @@
   "dividend_yield_pct": 1.09,
   "pays_dividend": true,
   "payout_ratio": 0.3089,
-  "average_dollar_volume": 197124617.9218989,
+  "average_dollar_volume": 197125118.50123087,
   "security_type": "Common stock"
 }

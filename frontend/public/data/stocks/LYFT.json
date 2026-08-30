@@ -8,16 +8,16 @@
   "market_cap": 6700162696.103291,
   "current_price": 17.7,
   "rank": 356,
-  "composite_score": 57.28,
+  "composite_score": 57.27,
   "pillar_scores": {
     "quality": 70.34,
     "value": 59.0,
     "growth": 72.53,
-    "momentum": 42.37,
+    "momentum": 42.35,
     "health": 14.38,
     "profitability": 68.44,
-    "technical": 69.13,
-    "risk": 29.99,
+    "technical": 69.08,
+    "risk": 29.95,
     "sentiment": null,
     "ml": null
   },
@@ -107,7 +107,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-07"
   },
@@ -118,6 +118,7 @@
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
     "extreme_multiples_ev_ebitda_estimate",
+    "restatement_history",
     "accruals_momentum_high",
     "value_trap_risk"
   ],
@@ -139,17 +140,17 @@
       "Momentum": 45.91,
       "Health": 56.78,
       "Profitability": 50.13,
-      "Technical": 42.54,
-      "Risk": 48.42
+      "Technical": 42.45,
+      "Risk": 48.57
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 45.97095275390657,
+  "loss_chance_pct": 45.97386166348103,
   "price_change_1d_pct": 2.0173,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 54.78,
+  "composite_score_adjusted": 54.77,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -157,7 +158,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
@@ -214,6 +215,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 192858034.36814627,
+  "average_dollar_volume": 192862842.86835352,
   "security_type": "Common stock"
 }

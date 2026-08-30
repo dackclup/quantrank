@@ -97,12 +97,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "restatement_history"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -121,8 +123,8 @@
       "Momentum": 45.91,
       "Health": 56.78,
       "Profitability": 50.13,
-      "Technical": 42.54,
-      "Risk": 48.42
+      "Technical": 42.45,
+      "Risk": 48.57
     }
   },
   "beneish_m_score": -2.2901573464132063,
@@ -139,7 +141,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -196,6 +198,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 24922287.1543869,
+  "average_dollar_volume": 24921983.48505656,
   "security_type": "Common stock"
 }

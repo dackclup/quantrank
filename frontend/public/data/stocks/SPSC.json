@@ -16,7 +16,7 @@
     "momentum": 49.55,
     "health": 80.48,
     "profitability": 62.46,
-    "technical": 72.42,
+    "technical": 72.4,
     "risk": 23.16,
     "sentiment": null,
     "ml": null
@@ -102,13 +102,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-07-23",
     "latest_filed_date": "2026-07-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 6.29510846253132,
@@ -128,14 +129,14 @@
       "Momentum": 45.8,
       "Health": 64.96,
       "Profitability": 50.7,
-      "Technical": 49.83,
+      "Technical": 49.75,
       "Risk": 41.12
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.11510891680742,
+  "loss_chance_pct": 36.115524475318054,
   "price_change_1d_pct": 0.8551,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 57.54,
@@ -146,7 +147,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -203,6 +204,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 41683685.543144226,
+  "average_dollar_volume": 41683628.92981211,
   "security_type": "Common stock"
 }

@@ -8,15 +8,15 @@
   "market_cap": 17570586511.830414,
   "current_price": 68.03,
   "rank": 669,
-  "composite_score": 51.82,
+  "composite_score": 51.81,
   "pillar_scores": {
     "quality": 72.03,
     "value": 40.68,
     "growth": 50.0,
-    "momentum": 44.78,
+    "momentum": 44.76,
     "health": 16.54,
     "profitability": 75.42,
-    "technical": 34.56,
+    "technical": 34.42,
     "risk": 77.59,
     "sentiment": null,
     "ml": null
@@ -84,7 +84,9 @@
     "low": 35.25375721703546,
     "high": 69.63937302535402,
     "mos_pct": -13.438620356371821,
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "stale_filing_soft"
+    ],
     "valuation_methods_applicable": 5,
     "median_trimmed": 59.97075648978981,
     "methods_excluded_from_median": []
@@ -102,12 +104,14 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 120,
+    "filing_lag_days": 121,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "stale_filing_soft"
+  ],
   "has_history": true,
   "tangible_book_value": 28.736584894304794,
   "tier2_events": {
@@ -123,20 +127,20 @@
       "Quality": 51.69,
       "Value": 48.31,
       "Growth": 50.42,
-      "Momentum": 47.16,
+      "Momentum": 47.14,
       "Health": 15.37,
       "Profitability": 51.69,
-      "Technical": 41.11,
-      "Risk": 70.6
+      "Technical": 41.04,
+      "Risk": 70.58
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 43.79596656745913,
+  "loss_chance_pct": 45.80032993182084,
   "price_change_1d_pct": -0.2639,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.82,
+  "composite_score_adjusted": 51.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -202,6 +206,6 @@
   "dividend_yield_pct": 3.14,
   "pays_dividend": true,
   "payout_ratio": 0.65980005,
-  "average_dollar_volume": 172937339.80655316,
+  "average_dollar_volume": 172946836.79438272,
   "security_type": "Common stock"
 }

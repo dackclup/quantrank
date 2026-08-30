@@ -16,7 +16,7 @@
     "momentum": 43.48,
     "health": 67.3,
     "profitability": 25.22,
-    "technical": 49.05,
+    "technical": 49.0,
     "risk": 55.4,
     "sentiment": null,
     "ml": null
@@ -99,7 +99,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 25,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-05"
   },
@@ -125,14 +125,14 @@
       "Momentum": 43.86,
       "Health": 39.86,
       "Profitability": 48.14,
-      "Technical": 57.55,
+      "Technical": 57.85,
       "Risk": 51.4
     }
   },
   "beneish_m_score": -3.104304354957225,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 27.032386203817744,
+  "loss_chance_pct": 27.03363287934966,
   "price_change_1d_pct": -0.4787,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 47.84,
@@ -200,6 +200,6 @@
   "dividend_yield_pct": 7.22,
   "pays_dividend": true,
   "payout_ratio": 4.3157997,
-  "average_dollar_volume": 14341368.68989741,
+  "average_dollar_volume": 14341365.640563965,
   "security_type": "Common stock"
 }

@@ -7,7 +7,7 @@
   "country": "US",
   "market_cap": 14159279790.010834,
   "current_price": 356.53,
-  "rank": 302,
+  "rank": 301,
   "composite_score": 58.51,
   "pillar_scores": {
     "quality": 83.46,
@@ -97,13 +97,14 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-07-23",
     "latest_filed_date": "2026-07-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "beneish_high"
+    "beneish_high",
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -123,8 +124,8 @@
       "Momentum": 45.91,
       "Health": 56.78,
       "Profitability": 50.13,
-      "Technical": 42.54,
-      "Risk": 48.42
+      "Technical": 42.45,
+      "Risk": 48.57
     }
   },
   "beneish_m_score": -2.088286102044492,
@@ -141,7 +142,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -199,6 +200,6 @@
   "dividend_yield_pct": 1.39,
   "pays_dividend": true,
   "payout_ratio": 0.2497,
-  "average_dollar_volume": 162597124.18891907,
+  "average_dollar_volume": 162597017.22991943,
   "security_type": "Common stock"
 }

@@ -16,7 +16,7 @@
     "momentum": 44.93,
     "health": 61.98,
     "profitability": 46.51,
-    "technical": 19.13,
+    "technical": 19.05,
     "risk": 28.59,
     "sentiment": null,
     "ml": null
@@ -99,13 +99,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 60,
+    "filing_lag_days": 61,
     "latest_period_end": "2026-06-25",
     "latest_filed_date": "2026-06-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 7.992028481101522,
@@ -125,14 +126,14 @@
       "Momentum": 45.91,
       "Health": 56.78,
       "Profitability": 50.13,
-      "Technical": 42.54,
-      "Risk": 48.42
+      "Technical": 42.45,
+      "Risk": 48.57
     }
   },
   "beneish_m_score": -2.775063197615764,
   "dechow_f_score": 0.4200883008634647,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 27.599126132391,
+  "loss_chance_pct": 27.60120392494419,
   "price_change_1d_pct": -0.7139,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 55.12,
@@ -143,7 +144,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -183,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.49,
+  "osap_blended_score": 53.48,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -200,6 +201,6 @@
   "dividend_yield_pct": 2.66,
   "pays_dividend": true,
   "payout_ratio": 0.3323,
-  "average_dollar_volume": 6839758.729937744,
+  "average_dollar_volume": 6842255.157051086,
   "security_type": "Common stock"
 }

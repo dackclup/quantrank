@@ -13,11 +13,11 @@
     "quality": 69.16,
     "value": 34.63,
     "growth": 77.27,
-    "momentum": 49.67,
+    "momentum": 49.63,
     "health": 49.72,
     "profitability": 58.01,
-    "technical": 65.71,
-    "risk": 49.42,
+    "technical": 65.64,
+    "risk": 49.41,
     "sentiment": null,
     "ml": null
   },
@@ -98,12 +98,13 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "restatement_history",
     "insider_sell_cluster"
   ],
   "has_history": true,
@@ -124,14 +125,14 @@
       "Momentum": 42.52,
       "Health": 51.88,
       "Profitability": 56.28,
-      "Technical": 56.12,
-      "Risk": 46.38
+      "Technical": 56.03,
+      "Risk": 46.73
     }
   },
   "beneish_m_score": -2.801249152347484,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.79299393536428,
+  "loss_chance_pct": 56.79694174121535,
   "price_change_1d_pct": -2.5121,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 55.91,
@@ -142,7 +143,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -200,6 +201,6 @@
   "dividend_yield_pct": 0.77,
   "pays_dividend": true,
   "payout_ratio": 0.2941,
-  "average_dollar_volume": 995899294.495726,
+  "average_dollar_volume": 995904350.3888575,
   "security_type": "Common stock"
 }

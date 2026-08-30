@@ -16,7 +16,7 @@
     "momentum": 28.62,
     "health": 58.48,
     "profitability": 40.7,
-    "technical": 36.67,
+    "technical": 36.64,
     "risk": 53.19,
     "sentiment": null,
     "ml": null
@@ -85,6 +85,7 @@
     "high": 95.74848830054704,
     "mos_pct": -93.05433816183654,
     "valuation_warnings": [
+      "stale_filing_soft",
       "extreme_graham_estimate"
     ],
     "valuation_methods_applicable": 3,
@@ -102,12 +103,13 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 120,
+    "filing_lag_days": 121,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "stale_filing_soft",
     "extreme_graham_estimate"
   ],
   "has_history": true,
@@ -128,14 +130,14 @@
       "Momentum": 45.8,
       "Health": 64.96,
       "Profitability": 50.7,
-      "Technical": 49.83,
+      "Technical": 49.75,
       "Risk": 41.12
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 64.05066168579694,
+  "loss_chance_pct": 66.05149280281822,
   "price_change_1d_pct": -2.5,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 43.9,
@@ -186,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.88,
+  "osap_blended_score": 47.87,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,10 +202,10 @@
     "latest_filing_date": "2026-06-23",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0011619454772309249,
+  "cross_source_delta": 0.0008720332710769357,
   "dividend_yield_pct": 0.73,
   "pays_dividend": true,
   "payout_ratio": 0.5161,
-  "average_dollar_volume": 1764048168.8066087,
+  "average_dollar_volume": 1764215279.6678162,
   "security_type": "Common stock"
 }

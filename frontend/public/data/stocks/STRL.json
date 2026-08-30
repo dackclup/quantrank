@@ -7,7 +7,7 @@
   "country": "US",
   "market_cap": 14392509153.304504,
   "current_price": 470.52,
-  "rank": 346,
+  "rank": 345,
   "composite_score": 57.51,
   "pillar_scores": {
     "quality": 81.75,
@@ -16,7 +16,7 @@
     "momentum": 44.5,
     "health": 52.41,
     "profitability": 66.16,
-    "technical": 27.98,
+    "technical": 27.94,
     "risk": 46.67,
     "sentiment": null,
     "ml": null
@@ -107,7 +107,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-04"
   },
@@ -116,6 +116,7 @@
     "goodwill_heavy",
     "extreme_graham_estimate",
     "extreme_rim_estimate",
+    "restatement_history",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -136,14 +137,14 @@
       "Momentum": 45.91,
       "Health": 56.78,
       "Profitability": 50.13,
-      "Technical": 42.54,
-      "Risk": 48.42
+      "Technical": 42.45,
+      "Risk": 48.57
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.24532686283978,
+  "loss_chance_pct": 59.24615797986105,
   "price_change_1d_pct": -7.0798,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 57.01,
@@ -154,7 +155,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
@@ -212,6 +213,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 413949259.4550089,
+  "average_dollar_volume": 413967327.4225871,
   "security_type": "Common stock"
 }

@@ -7,7 +7,7 @@
   "country": "US",
   "market_cap": 4612097629.155178,
   "current_price": 46.59,
-  "rank": 86,
+  "rank": 87,
   "composite_score": 65.34,
   "pillar_scores": {
     "quality": 86.69,
@@ -16,7 +16,7 @@
     "momentum": 30.92,
     "health": 65.45,
     "profitability": 74.24,
-    "technical": 49.1,
+    "technical": 49.07,
     "risk": 49.62,
     "sentiment": null,
     "ml": null
@@ -101,7 +101,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-08-04",
     "latest_filed_date": "2026-08-06"
   },
@@ -112,6 +112,7 @@
   ],
   "valuation_warnings": [
     "beneish_high",
+    "late_filing_notification",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -132,17 +133,17 @@
       "Momentum": 42.52,
       "Health": 51.88,
       "Profitability": 56.28,
-      "Technical": 56.12,
-      "Risk": 46.38
+      "Technical": 56.03,
+      "Risk": 46.73
     }
   },
   "beneish_m_score": -1.3809317849371192,
   "dechow_f_score": 0.23512991044684267,
   "recommendation": "neutral",
-  "loss_chance_pct": 48.991937768823256,
+  "loss_chance_pct": 48.992768885844534,
   "price_change_1d_pct": 1.5254,
-  "manipulation_index": 63.0,
-  "composite_score_adjusted": 59.04,
+  "manipulation_index": 68.0,
+  "composite_score_adjusted": 58.54,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -152,7 +153,7 @@
     "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
-    "late_filing_notification": false,
+    "late_filing_notification": true,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
@@ -207,6 +208,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 96235065.06692213,
+  "average_dollar_volume": 96235106.99792226,
   "security_type": "Common stock"
 }

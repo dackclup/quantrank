@@ -13,10 +13,10 @@
     "quality": 72.39,
     "value": 41.21,
     "growth": 75.77,
-    "momentum": 87.48,
+    "momentum": 87.45,
     "health": 77.33,
     "profitability": 88.75,
-    "technical": 65.66,
+    "technical": 65.64,
     "risk": 71.81,
     "sentiment": null,
     "ml": null
@@ -100,13 +100,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 123,
+    "filing_lag_days": 124,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "stale_filing_soft",
+    "restatement_history",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -124,17 +125,17 @@
       "Quality": 51.07,
       "Value": 51.74,
       "Growth": 50.31,
-      "Momentum": 62.23,
+      "Momentum": 62.22,
       "Health": 56.13,
       "Profitability": 48.77,
-      "Technical": 60.02,
-      "Risk": 48.43
+      "Technical": 59.91,
+      "Risk": 48.42
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 25.222826778899197,
+  "loss_chance_pct": 25.22532012996303,
   "price_change_1d_pct": -2.6382,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 68.34,
@@ -145,7 +146,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 60.35,
+  "osap_blended_score": 60.34,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -203,6 +204,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 199699515.0348854,
+  "average_dollar_volume": 199699817.66855875,
   "security_type": "Common stock"
 }

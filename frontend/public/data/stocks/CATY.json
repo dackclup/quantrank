@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 4127583972.1419525,
   "current_price": 61.87,
-  "rank": 184,
-  "composite_score": 61.61,
+  "rank": 169,
+  "composite_score": 62.15,
   "pillar_scores": {
     "quality": 67.51,
     "value": 57.98,
     "growth": 48.74,
-    "momentum": 74.27,
+    "momentum": 74.92,
     "health": 60.44,
     "profitability": 60.83,
-    "technical": 41.76,
-    "risk": 71.7,
+    "technical": 50.68,
+    "risk": 72.03,
     "sentiment": null,
     "ml": null
   },
@@ -106,7 +106,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-07"
   },
@@ -114,7 +114,8 @@
     "data_quality_input_corruption"
   ],
   "valuation_warnings": [
-    "valuation_output_anomalous"
+    "valuation_output_anomalous",
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 40.00036274343157,
@@ -134,17 +135,17 @@
       "Momentum": 64.01,
       "Health": 55.04,
       "Profitability": 51.23,
-      "Technical": 54.31,
-      "Risk": 62.5
+      "Technical": 54.29,
+      "Risk": 62.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 50.821377977787336,
-  "price_change_1d_pct": -0.4024,
+  "loss_chance_pct": 50.551472725127766,
+  "price_change_1d_pct": 0.2106,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.61,
+  "composite_score_adjusted": 62.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -152,7 +153,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -192,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.73,
+  "osap_blended_score": 57.0,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -209,6 +210,6 @@
   "dividend_yield_pct": 2.45,
   "pays_dividend": true,
   "payout_ratio": 0.2818,
-  "average_dollar_volume": 26655194.85882543,
+  "average_dollar_volume": 26497426.250419617,
   "security_type": "Common stock"
 }

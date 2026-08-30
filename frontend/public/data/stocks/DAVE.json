@@ -8,7 +8,7 @@
   "market_cap": 5313987441.2908325,
   "current_price": 378.55,
   "rank": 139,
-  "composite_score": 63.48,
+  "composite_score": 63.47,
   "pillar_scores": {
     "quality": 73.93,
     "value": 28.99,
@@ -16,7 +16,7 @@
     "momentum": 84.28,
     "health": 80.53,
     "profitability": 60.54,
-    "technical": 65.46,
+    "technical": 65.39,
     "risk": 44.78,
     "sentiment": null,
     "ml": null
@@ -115,7 +115,7 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 25,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
@@ -125,7 +125,8 @@
     "extreme_multiples_pb_estimate",
     "extreme_rim_estimate",
     "extreme_estimate_majority",
-    "cross_source_disagreement"
+    "cross_source_disagreement",
+    "restatement_history"
   ],
   "has_history": true,
   "tangible_book_value": 13.797730874543008,
@@ -145,17 +146,17 @@
       "Momentum": 64.01,
       "Health": 55.04,
       "Profitability": 51.23,
-      "Technical": 54.31,
-      "Risk": 62.5
+      "Technical": 54.29,
+      "Risk": 62.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 56.26102868571833,
+  "loss_chance_pct": 56.262690919760885,
   "price_change_1d_pct": 1.2139,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.48,
+  "composite_score_adjusted": 63.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -163,7 +164,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
@@ -220,6 +221,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 158889290.19430542,
+  "average_dollar_volume": 158889479.46929932,
   "security_type": "Common stock"
 }

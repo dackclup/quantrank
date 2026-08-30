@@ -16,7 +16,7 @@
     "momentum": 86.9,
     "health": 64.08,
     "profitability": 56.1,
-    "technical": 64.06,
+    "technical": 64.03,
     "risk": 59.54,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-07-17",
     "latest_filed_date": "2026-07-23"
   },
@@ -106,8 +106,8 @@
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "accruals_momentum_high",
-    "insider_sell_cluster"
+    "restatement_history",
+    "accruals_momentum_high"
   ],
   "has_history": true,
   "tangible_book_value": 10.881371072909985,
@@ -127,17 +127,17 @@
       "Momentum": 47.72,
       "Health": 46.6,
       "Profitability": 52.58,
-      "Technical": 62.72,
+      "Technical": 62.63,
       "Risk": 59.54
     }
   },
   "beneish_m_score": -2.3375152920665485,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 53.61032922379133,
+  "loss_chance_pct": 53.61116034081261,
   "price_change_1d_pct": -1.2107,
-  "manipulation_index": 30.0,
-  "composite_score_adjusted": 65.78,
+  "manipulation_index": 25.0,
+  "composite_score_adjusted": 66.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -145,7 +145,7 @@
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
@@ -153,7 +153,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 60.32,
+  "osap_blended_score": 60.31,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -202,6 +202,6 @@
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 54614596.0740242,
+  "average_dollar_volume": 54614599.44669088,
   "security_type": "Common stock"
 }
