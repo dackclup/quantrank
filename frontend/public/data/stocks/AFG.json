@@ -5,19 +5,19 @@
   "industry": "Multi-line Insurance",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 11909180542.03003,
-  "current_price": 143.62,
-  "rank": 401,
-  "composite_score": 56.27,
+  "market_cap": 11820455231.356232,
+  "current_price": 142.55,
+  "rank": 400,
+  "composite_score": 56.33,
   "pillar_scores": {
-    "quality": 59.73,
-    "value": 60.44,
-    "growth": 34.34,
-    "momentum": 64.01,
-    "health": 58.15,
-    "profitability": 40.4,
-    "technical": 54.29,
-    "risk": 77.32,
+    "quality": 60.7,
+    "value": 60.64,
+    "growth": 34.63,
+    "momentum": 64.06,
+    "health": 58.2,
+    "profitability": 40.6,
+    "technical": 48.59,
+    "risk": 76.68,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 82921466.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 11909180542.03003,
-    "pe_ratio_ttm": 12.496516833189958,
+    "market_cap": 11820455231.356232,
+    "pe_ratio_ttm": 12.403415772671808,
     "goodwill": 327000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 153.10674212437578,
+        "value": 153.33168090340996,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 93.21359507944541,
+        "value": 92.60850388483432,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 101.33696009131606,
-    "max": 153.10674212437578,
+    "median": 101.03441449401052,
+    "max": 153.33168090340996,
     "low": 82.97813495303615,
-    "high": 153.10674212437578,
-    "mos_pct": -41.72518594180213,
+    "high": 153.33168090340996,
+    "mos_pct": -41.090542035267006,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 101.33696009131606,
+    "median_trimmed": 101.03441449401052,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -111,7 +111,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-08-01",
     "latest_filed_date": "2026-08-06"
   },
@@ -130,22 +130,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 52.14,
-      "Growth": 50.19,
-      "Momentum": 64.01,
-      "Health": 55.04,
-      "Profitability": 51.23,
-      "Technical": 54.29,
-      "Risk": 62.48
+      "Value": 52.08,
+      "Growth": 49.61,
+      "Momentum": 64.46,
+      "Health": 55.05,
+      "Profitability": 51.3,
+      "Technical": 49.38,
+      "Risk": 62.53
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 51.46767379965449,
-  "price_change_1d_pct": 0.7012,
+  "loss_chance_pct": 51.21419106627728,
+  "price_change_1d_pct": -0.745,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.27,
+  "composite_score_adjusted": 56.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -193,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.06,
+  "osap_blended_score": 54.09,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -203,14 +203,14 @@
   ],
   "valuation_methods_applicable": 4,
   "form4_diagnostics": {
-    "insider_count": 15,
-    "latest_filing_date": "2026-08-07",
+    "insider_count": 11,
+    "latest_filing_date": "2026-08-26",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.058259456661088e-08,
-  "dividend_yield_pct": 2.47,
+  "cross_source_delta": 2.701725318008852e-08,
+  "dividend_yield_pct": 2.45,
   "pays_dividend": true,
   "payout_ratio": 0.3007,
-  "average_dollar_volume": 51118618.61480713,
+  "average_dollar_volume": 51253804.60548858,
   "security_type": "Common stock"
 }

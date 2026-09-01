@@ -5,25 +5,25 @@
   "industry": "Casinos & Gaming",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2327396101.5877533,
-  "current_price": 17.36,
-  "rank": 1336,
-  "composite_score": 38.04,
+  "market_cap": 2240252612.86837,
+  "current_price": 16.71,
+  "rank": 1279,
+  "composite_score": 39.81,
   "pillar_scores": {
-    "quality": 17.2,
-    "value": 74.91,
-    "growth": 43.43,
-    "momentum": 52.88,
-    "health": 11.06,
-    "profitability": 20.1,
-    "technical": 25.84,
-    "risk": 20.28,
+    "quality": 27.26,
+    "value": 74.53,
+    "growth": 35.37,
+    "momentum": 53.04,
+    "health": 11.05,
+    "profitability": 23.2,
+    "technical": 24.78,
+    "risk": 18.64,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
     "revenue": 7160000000.0,
-    "net_income": -697800000.0,
+    "net_income": 125200000.0,
     "total_assets": 14069200000.0,
     "total_liabilities": 12215400000.0,
     "stockholders_equity": 1861300000.0,
@@ -31,13 +31,13 @@
     "operating_cash_flow": 651200000.0,
     "capex": 281600000.0,
     "free_cash_flow": 369600000.0,
-    "eps_basic": -5.204876135024572,
-    "eps_diluted": -5.204876135024572,
+    "eps_basic": 0.9338642764475156,
+    "eps_diluted": 0.9338642764475156,
     "shares_outstanding": 134066591.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2327396101.5877533,
-    "pe_ratio_ttm": null,
+    "market_cap": 2240252612.86837,
+    "pe_ratio_ttm": 17.893391476584426,
     "goodwill": 1765600000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 14.061776683609034,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 61.810916279064855,
+        "value": 60.298589329645964,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 48.34057002528324,
-    "max": 61.810916279064855,
-    "low": 34.870223771501635,
-    "high": 61.810916279064855,
-    "mos_pct": 64.08813424981982,
+    "median": 34.870223771501635,
+    "max": 60.298589329645964,
+    "low": 14.061776683609034,
+    "high": 60.298589329645964,
+    "mos_pct": 52.079461279140894,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 2,
-    "median_trimmed": 48.34057002528324,
+    "valuation_methods_applicable": 3,
+    "median_trimmed": 34.870223771501635,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,7 +99,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-07-29",
     "latest_filed_date": "2026-08-06"
   },
@@ -120,22 +120,22 @@
     "label": "Consumer Discretionary median (n=194)",
     "values": {
       "Quality": 46.91,
-      "Value": 50.62,
-      "Growth": 48.81,
-      "Momentum": 45.27,
-      "Health": 44.45,
+      "Value": 50.3,
+      "Growth": 48.94,
+      "Momentum": 43.64,
+      "Health": 44.54,
       "Profitability": 50.79,
-      "Technical": 49.16,
-      "Risk": 38.01
+      "Technical": 46.42,
+      "Risk": 37.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 35.54921819955583,
-  "price_change_1d_pct": 0.1731,
+  "loss_chance_pct": 38.86801463121054,
+  "price_change_1d_pct": -3.7442,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.04,
+  "composite_score_adjusted": 39.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,23 +183,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.95,
+  "osap_blended_score": 45.83,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 2,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 8,
     "latest_filing_date": "2026-08-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0014756793697057796,
+  "cross_source_delta": 0.0014757456871780897,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 49383380.313243866,
+  "average_dollar_volume": 48990561.65944977,
   "security_type": "Common stock"
 }

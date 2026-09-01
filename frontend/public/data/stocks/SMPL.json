@@ -5,19 +5,19 @@
   "industry": "Packaged Foods & Meats",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 966873783.8460159,
-  "current_price": 10.93,
-  "rank": 1318,
-  "composite_score": 38.47,
+  "market_cap": 1012873223.37749,
+  "current_price": 11.45,
+  "rank": 1300,
+  "composite_score": 39.18,
   "pillar_scores": {
     "quality": 15.79,
-    "value": 74.12,
+    "value": 74.34,
     "growth": 48.85,
-    "momentum": 4.04,
+    "momentum": 3.73,
     "health": 63.72,
     "profitability": 20.5,
-    "technical": 49.63,
-    "risk": 18.81,
+    "technical": 63.61,
+    "risk": 18.85,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 88460545.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 966873783.8460159,
+    "market_cap": 1012873223.37749,
     "pe_ratio_ttm": null,
     "goodwill": 551974000.0
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 32.25871120680425,
+        "value": 31.94314653005518,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 26.121368825728894,
-    "max": 32.25871120680425,
+    "median": 25.963586487354355,
+    "max": 31.94314653005518,
     "low": 19.984026444653534,
-    "high": 32.25871120680425,
-    "mos_pct": 58.156862383069274,
+    "high": 31.94314653005518,
+    "mos_pct": 55.89977596183835,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 26.121368825728894,
+    "median_trimmed": 25.963586487354355,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -97,14 +97,12 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 52,
+    "filing_lag_days": 54,
     "latest_period_end": "2026-07-02",
     "latest_filed_date": "2026-07-09"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "rem_suspect"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -117,30 +115,30 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=76)",
     "values": {
-      "Quality": 46.79,
-      "Value": 50.66,
+      "Quality": 46.55,
+      "Value": 50.33,
       "Growth": 49.01,
-      "Momentum": 43.86,
-      "Health": 39.86,
-      "Profitability": 48.14,
-      "Technical": 57.85,
-      "Risk": 51.4
+      "Momentum": 44.51,
+      "Health": 40.11,
+      "Profitability": 48.36,
+      "Technical": 58.34,
+      "Risk": 51.19
     }
   },
-  "beneish_m_score": -4.324431740183909,
+  "beneish_m_score": -3.462595276455351,
   "dechow_f_score": 0.614172664830605,
   "recommendation": "neutral",
-  "loss_chance_pct": 25.409676250098954,
-  "price_change_1d_pct": 7.0519,
-  "manipulation_index": 8.0,
-  "composite_score_adjusted": 37.67,
+  "loss_chance_pct": 25.843889201547135,
+  "price_change_1d_pct": 4.7575,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 39.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -181,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.16,
+  "osap_blended_score": 45.52,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -194,10 +192,10 @@
     "latest_filing_date": "2026-07-24",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0002186261015115031,
+  "cross_source_delta": 0.00021856968116091242,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 22832987.050600052,
+  "average_dollar_volume": 23264692.752758663,
   "security_type": "Common stock"
 }

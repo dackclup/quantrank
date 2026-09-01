@@ -5,19 +5,19 @@
   "industry": "Regional Banks",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1787017453.5520935,
-  "current_price": 40.47,
-  "rank": 861,
-  "composite_score": 48.52,
+  "market_cap": 1783926505.377617,
+  "current_price": 40.4,
+  "rank": 846,
+  "composite_score": 48.63,
   "pillar_scores": {
     "quality": 35.6,
-    "value": 52.59,
-    "growth": 27.72,
-    "momentum": 77.03,
-    "health": 55.04,
-    "profitability": 52.33,
-    "technical": 52.29,
-    "risk": 64.44,
+    "value": 52.4,
+    "growth": 27.82,
+    "momentum": 78.19,
+    "health": 55.05,
+    "profitability": 52.4,
+    "technical": 51.84,
+    "risk": 64.59,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 44156595.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1787017453.5520935,
-    "pe_ratio_ttm": 13.861122170226365,
+    "market_cap": 1783926505.377617,
+    "pe_ratio_ttm": 13.837147020916492,
     "goodwill": 155797000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 35.58324217801889,
+        "value": 35.972877384533234,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 41.96089497398357,
+        "value": 41.4542423611351,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 35.58324217801889,
-    "max": 41.96089497398357,
+    "median": 35.972877384533234,
+    "max": 41.4542423611351,
     "low": 34.685103686356435,
-    "high": 41.96089497398357,
-    "mos_pct": -13.733315863226672,
+    "high": 41.4542423611351,
+    "mos_pct": -12.306839105534388,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 35.58324217801889,
+    "median_trimmed": 35.972877384533234,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,6 +98,7 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -108,7 +109,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-07-24",
     "latest_filed_date": "2026-07-31"
   },
@@ -131,22 +132,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 52.14,
-      "Growth": 50.19,
-      "Momentum": 64.01,
-      "Health": 55.04,
-      "Profitability": 51.23,
-      "Technical": 54.29,
-      "Risk": 62.48
+      "Value": 52.08,
+      "Growth": 49.61,
+      "Momentum": 64.46,
+      "Health": 55.05,
+      "Profitability": 51.3,
+      "Technical": 49.38,
+      "Risk": 62.53
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.544389610567535,
-  "price_change_1d_pct": 0.1733,
+  "loss_chance_pct": 59.99403486601505,
+  "price_change_1d_pct": -0.173,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.52,
+  "composite_score_adjusted": 48.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.19,
+  "osap_blended_score": 50.24,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -207,10 +208,10 @@
     "latest_filing_date": "2026-08-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.0323293965300293e-08,
-  "dividend_yield_pct": 2.48,
+  "cross_source_delta": 1.2681230448385055e-08,
+  "dividend_yield_pct": 2.47,
   "pays_dividend": true,
   "payout_ratio": 0.3623,
-  "average_dollar_volume": 12289267.163937887,
+  "average_dollar_volume": 12333027.77020925,
   "security_type": "Common stock"
 }
