@@ -5,19 +5,19 @@
   "industry": "Data Processing & Outsourced Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 5984872571.069183,
-  "current_price": 20.3,
-  "rank": 522,
-  "composite_score": 54.0,
+  "market_cap": 5846306753.106918,
+  "current_price": 19.83,
+  "rank": 545,
+  "composite_score": 53.67,
   "pillar_scores": {
     "quality": 50.19,
     "value": 58.11,
     "growth": 50.19,
-    "momentum": 48.87,
+    "momentum": 47.89,
     "health": 71.22,
     "profitability": 50.19,
-    "technical": 54.82,
-    "risk": 46.51,
+    "technical": 53.21,
+    "risk": 42.89,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 294821320.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5984872571.069183,
+    "market_cap": 5846306753.106918,
     "pe_ratio_ttm": null,
     "goodwill": 8845000000.0
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 131.43220886262762,
+        "value": 128.09569547879525,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -81,8 +81,8 @@
     },
     "median": null,
     "max": null,
-    "low": 131.43220886262762,
-    "high": 131.43220886262762,
+    "low": 128.09569547879525,
+    "high": 128.09569547879525,
     "mos_pct": null,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
@@ -118,13 +118,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-07-01",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
+    "extreme_multiples_pb_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -139,22 +140,22 @@
     "label": "Industrials median (n=263)",
     "values": {
       "Quality": 50.1,
-      "Value": 50.06,
+      "Value": 50.13,
       "Growth": 50.76,
-      "Momentum": 45.76,
+      "Momentum": 45.53,
       "Health": 56.88,
       "Profitability": 50.19,
-      "Technical": 39.89,
-      "Risk": 48.55
+      "Technical": 38.25,
+      "Risk": 47.86
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 0.2964,
+  "price_change_1d_pct": -2.3153,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.0,
+  "composite_score_adjusted": 53.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -202,7 +203,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.93,
+  "osap_blended_score": 52.76,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -215,10 +216,10 @@
     "latest_filing_date": "2026-08-13",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0008677887238439273,
-  "dividend_yield_pct": 1.19,
+  "cross_source_delta": 0.08540319007854676,
+  "dividend_yield_pct": 1.18,
   "pays_dividend": true,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 84705154.99818115,
+  "average_dollar_volume": 84962051.86695258,
   "security_type": "Common stock"
 }
