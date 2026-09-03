@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 3902193750.0,
   "current_price": 48.75,
-  "rank": 216,
-  "composite_score": 60.68,
+  "rank": 230,
+  "composite_score": 60.43,
   "pillar_scores": {
     "quality": 46.1,
     "value": 91.89,
     "growth": 39.83,
-    "momentum": 71.83,
-    "health": 59.4,
+    "momentum": 70.61,
+    "health": 59.38,
     "profitability": 44.68,
-    "technical": 39.05,
-    "risk": 71.49,
+    "technical": 37.23,
+    "risk": 71.59,
     "sentiment": null,
     "ml": null
   },
@@ -99,14 +99,13 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "cross_source_disagreement",
-    "insider_sell_cluster"
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 23.60888250359173,
@@ -123,20 +122,20 @@
       "Quality": 50.1,
       "Value": 50.13,
       "Growth": 50.76,
-      "Momentum": 45.53,
-      "Health": 56.88,
+      "Momentum": 45.48,
+      "Health": 56.9,
       "Profitability": 50.19,
-      "Technical": 38.25,
-      "Risk": 47.86
+      "Technical": 38.43,
+      "Risk": 48.17
     }
   },
   "beneish_m_score": -3.0194510977916686,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 26.852335063846542,
+  "loss_chance_pct": 26.972930143633775,
   "price_change_1d_pct": -4.8223,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 60.18,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 60.43,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -152,7 +151,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -184,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.26,
+  "osap_blended_score": 56.14,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -197,10 +196,10 @@
     "latest_filing_date": "2026-08-14",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.0312025890564762,
-  "dividend_yield_pct": 1.09,
+  "cross_source_delta": 1.0551604276440656,
+  "dividend_yield_pct": 1.15,
   "pays_dividend": true,
   "payout_ratio": 0.2289,
-  "average_dollar_volume": 35583837.24888967,
+  "average_dollar_volume": 35876379.08406751,
   "security_type": "Common stock"
 }

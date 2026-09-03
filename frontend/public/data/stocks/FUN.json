@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 1456984259.4616547,
   "current_price": 14.24,
-  "rank": 1499,
-  "composite_score": 26.71,
+  "rank": 1500,
+  "composite_score": 26.5,
   "pillar_scores": {
-    "quality": 10.05,
+    "quality": 9.92,
     "value": 48.97,
     "growth": 50.26,
-    "momentum": 16.77,
-    "health": 9.77,
-    "profitability": 23.63,
-    "technical": 34.41,
-    "risk": 10.03,
+    "momentum": 16.07,
+    "health": 9.69,
+    "profitability": 23.54,
+    "technical": 32.71,
+    "risk": 10.35,
     "sentiment": null,
     "ml": null
   },
@@ -99,7 +99,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-06"
   },
@@ -107,6 +107,7 @@
     "altman_distress"
   ],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "restatement_history"
   ],
   "has_history": true,
@@ -121,23 +122,23 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=194)",
     "values": {
-      "Quality": 46.91,
+      "Quality": 47.0,
       "Value": 50.43,
       "Growth": 48.94,
-      "Momentum": 42.81,
-      "Health": 44.54,
-      "Profitability": 50.79,
-      "Technical": 42.54,
-      "Risk": 37.17
+      "Momentum": 43.46,
+      "Health": 44.37,
+      "Profitability": 50.88,
+      "Technical": 42.76,
+      "Risk": 37.44
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.3670881568107015,
   "recommendation": "cautious",
-  "loss_chance_pct": 83.64429933693427,
+  "loss_chance_pct": 83.748687492003,
   "price_change_1d_pct": -5.3821,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 26.71,
+  "composite_score_adjusted": 26.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 39.28,
+  "osap_blended_score": 39.18,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -198,10 +199,10 @@
     "latest_filing_date": "2026-08-12",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.155044568517339e-08,
+  "cross_source_delta": 0.08637646407027465,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 35398298.94760863,
+  "average_dollar_volume": 35901450.46935246,
   "security_type": "Common stock"
 }
