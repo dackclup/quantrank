@@ -5,19 +5,19 @@
   "industry": "Investment Banking & Brokerage",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 94504631950.37842,
-  "current_price": 103.51,
-  "rank": 834,
-  "composite_score": 48.85,
+  "market_cap": 97681868049.62158,
+  "current_price": 106.99,
+  "rank": 760,
+  "composite_score": 50.07,
   "pillar_scores": {
     "quality": 64.98,
-    "value": 20.75,
+    "value": 20.62,
     "growth": 71.4,
-    "momentum": 30.25,
-    "health": 51.73,
+    "momentum": 40.86,
+    "health": 51.69,
     "profitability": 56.03,
-    "technical": 73.97,
-    "risk": 32.78,
+    "technical": 71.92,
+    "risk": 33.65,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 913000000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 94504631950.37842,
-    "pe_ratio_ttm": 45.610343605394995,
+    "market_cap": 97681868049.62158,
+    "pe_ratio_ttm": 47.14375871120733,
     "goodwill": 516000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.30678437906795,
+        "value": 33.593038097489355,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 35.98335842513552,
+        "value": 36.321504704350126,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 23.587847095377903,
-    "max": 35.98335842513552,
+    "median": 23.730973954588606,
+    "max": 36.321504704350126,
     "low": 9.183593975235603,
-    "high": 35.98335842513552,
-    "mos_pct": -338.8276798543158,
+    "high": 36.321504704350126,
+    "mos_pct": -350.84537224854193,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 34.645071402101735,
+    "median_trimmed": 34.95727140091974,
     "methods_excluded_from_median": [
       "graham",
       "rim"
@@ -113,7 +113,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 35,
+    "filing_lag_days": 36,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-30"
   },
@@ -123,6 +123,7 @@
   "valuation_warnings": [
     "extreme_graham_estimate",
     "extreme_rim_estimate",
+    "cross_source_disagreement",
     "restatement_history"
   ],
   "has_history": true,
@@ -138,22 +139,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.95,
+      "Value": 51.82,
       "Growth": 49.61,
-      "Momentum": 63.08,
-      "Health": 55.09,
+      "Momentum": 64.03,
+      "Health": 55.07,
       "Profitability": 51.3,
-      "Technical": 44.53,
-      "Risk": 61.55
+      "Technical": 52.54,
+      "Risk": 61.84
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 65.57594954311202,
-  "price_change_1d_pct": -1.2403,
+  "loss_chance_pct": 64.96441897482201,
+  "price_change_1d_pct": 3.362,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 46.85,
+  "composite_score_adjusted": 48.07,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -201,7 +202,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.35,
+  "osap_blended_score": 50.96,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -215,10 +216,10 @@
     "latest_filing_date": "2026-08-27",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.017863496410503953,
+  "cross_source_delta": 0.14794637144978723,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 1896355304.0217168,
+  "average_dollar_volume": 1900580476.5638418,
   "security_type": "Common stock"
 }
