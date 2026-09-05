@@ -5,19 +5,19 @@
   "industry": "Telecom Tower REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 32070829823.271736,
-  "current_price": 75.38,
-  "rank": 1270,
-  "composite_score": 40.03,
+  "market_cap": 32870688126.01087,
+  "current_price": 77.26,
+  "rank": 1260,
+  "composite_score": 40.11,
   "pillar_scores": {
     "quality": 68.03,
-    "value": 25.4,
+    "value": 24.6,
     "growth": 28.12,
-    "momentum": 17.85,
-    "health": 4.97,
-    "profitability": 76.52,
-    "technical": 64.08,
-    "risk": 36.61,
+    "momentum": 17.79,
+    "health": 4.93,
+    "profitability": 76.68,
+    "technical": 68.78,
+    "risk": 37.46,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 425455439.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 32070829823.271736,
-    "pe_ratio_ttm": 37.2051390061157,
+    "market_cap": 32870688126.01087,
+    "pe_ratio_ttm": 38.13304887008222,
     "goodwill": 5127000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 53.31593930301768,
+        "value": 53.372435188907076,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 30.847143257125925,
+        "value": 30.7792963352842,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 42.081541280071804,
-    "max": 53.31593930301768,
-    "low": 30.847143257125925,
-    "high": 53.31593930301768,
-    "mos_pct": -79.12841345741067,
+    "median": 42.07586576209564,
+    "max": 53.372435188907076,
+    "low": 30.7792963352842,
+    "high": 53.372435188907076,
+    "mos_pct": -83.62070687522424,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 42.081541280071804,
+    "median_trimmed": 42.07586576209564,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,16 +100,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "cross_source_disagreement"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -123,22 +121,22 @@
     "label": "Real Estate median (n=104)",
     "values": {
       "Quality": 49.64,
-      "Value": 49.04,
+      "Value": 49.28,
       "Growth": 50.3,
-      "Momentum": 55.34,
-      "Health": 26.59,
+      "Momentum": 50.7,
+      "Health": 26.57,
       "Profitability": 52.04,
-      "Technical": 45.2,
-      "Risk": 62.36
+      "Technical": 46.04,
+      "Risk": 61.76
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.98672983156028,
-  "price_change_1d_pct": -0.6065,
+  "loss_chance_pct": 76.94462203355155,
+  "price_change_1d_pct": 2.494,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.03,
+  "composite_score_adjusted": 40.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.94,
+  "osap_blended_score": 45.98,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -200,10 +198,10 @@
     "latest_filing_date": "2026-08-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05275172566631374,
-  "dividend_yield_pct": 5.64,
+  "cross_source_delta": 0.01850897710685397,
+  "dividend_yield_pct": 5.5,
   "pays_dividend": true,
   "payout_ratio": 1.7347,
-  "average_dollar_volume": 257335937.53456905,
+  "average_dollar_volume": 253526895.78397027,
   "security_type": "Common stock"
 }

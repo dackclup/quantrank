@@ -5,19 +5,19 @@
   "industry": "Insurance Brokers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 67781095809.93652,
-  "current_price": 264.46,
-  "rank": 1271,
-  "composite_score": 40.02,
+  "market_cap": 68344958938.59863,
+  "current_price": 266.66,
+  "rank": 1286,
+  "composite_score": 39.62,
   "pillar_scores": {
     "quality": 31.32,
-    "value": 30.16,
+    "value": 30.42,
     "growth": 45.43,
-    "momentum": 51.55,
-    "health": 41.64,
+    "momentum": 49.04,
+    "health": 41.62,
     "profitability": 45.53,
-    "technical": 73.3,
-    "risk": 48.56,
+    "technical": 70.73,
+    "risk": 48.42,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 256300000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 67781095809.93652,
-    "pe_ratio_ttm": 43.038348980847374,
+    "market_cap": 68344958938.59863,
+    "pe_ratio_ttm": 43.39638004863714,
     "goodwill": 23026000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 81.43256937402052,
+        "value": 82.31952553868422,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 147.9618474757667,
+        "value": 149.13633424773917,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 114.6972084248936,
-    "max": 147.9618474757667,
-    "low": 81.43256937402052,
-    "high": 147.9618474757667,
-    "mos_pct": -130.57229995990065,
+    "median": 115.7279298932117,
+    "max": 149.13633424773917,
+    "low": 82.31952553868422,
+    "high": 149.13633424773917,
+    "mos_pct": -130.41974734030993,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 114.6972084248936,
+    "median_trimmed": 115.7279298932117,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -103,12 +103,15 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster",
+    "c_suite_unusual_sell"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -122,22 +125,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.82,
+      "Value": 51.75,
       "Growth": 49.61,
-      "Momentum": 64.03,
-      "Health": 55.07,
+      "Momentum": 63.26,
+      "Health": 55.05,
       "Profitability": 51.3,
-      "Technical": 52.54,
-      "Risk": 61.84
+      "Technical": 56.1,
+      "Risk": 62.59
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 64.99216631783467,
-  "price_change_1d_pct": 0.9389,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.02,
+  "loss_chance_pct": 65.18763436930831,
+  "price_change_1d_pct": 0.8319,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 38.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,8 +156,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -185,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.93,
+  "osap_blended_score": 45.74,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,13 +199,13 @@
   "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 21,
-    "latest_filing_date": "2026-08-26",
+    "latest_filing_date": "2026-09-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00848017257902185,
-  "dividend_yield_pct": 1.06,
+  "cross_source_delta": 0.014730325838707358,
+  "dividend_yield_pct": 1.05,
   "pays_dividend": true,
   "payout_ratio": 0.44779998,
-  "average_dollar_volume": 357277289.44270694,
+  "average_dollar_volume": 360304477.9292666,
   "security_type": "Common stock"
 }
