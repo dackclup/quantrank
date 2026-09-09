@@ -5,19 +5,19 @@
   "industry": "Tires & Rubber",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1759061321.5086284,
-  "current_price": 6.11,
-  "rank": 1435,
-  "composite_score": 34.22,
+  "market_cap": 1799367106.25,
+  "current_price": 6.25,
+  "rank": 1444,
+  "composite_score": 33.57,
   "pillar_scores": {
     "quality": 16.04,
     "value": 59.06,
     "growth": 41.69,
-    "momentum": 32.88,
+    "momentum": 22.47,
     "health": 23.16,
     "profitability": 19.03,
-    "technical": 61.88,
-    "risk": 16.0,
+    "technical": 74.55,
+    "risk": 16.4,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 287898737.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1759061321.5086284,
+    "market_cap": 1799367106.25,
     "pe_ratio_ttm": null,
     "goodwill": 44000000.0
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 29.211701069581544,
+        "value": 29.487866401980128,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 29.211701069581544,
-    "max": 29.211701069581544,
-    "low": 29.211701069581544,
-    "high": 29.211701069581544,
-    "mos_pct": 79.08372361143729,
+    "median": 29.487866401980128,
+    "max": 29.487866401980128,
+    "low": 29.487866401980128,
+    "high": 29.487866401980128,
+    "mos_pct": 78.80484157517647,
     "valuation_warnings": [],
     "valuation_methods_applicable": 1,
-    "median_trimmed": 29.211701069581544,
+    "median_trimmed": 29.487866401980128,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,12 +100,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 34,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 7.447062888643377,
   "tier2_events": {
@@ -119,22 +121,22 @@
     "label": "Consumer Discretionary median (n=194)",
     "values": {
       "Quality": 47.1,
-      "Value": 50.77,
+      "Value": 51.44,
       "Growth": 48.84,
-      "Momentum": 43.5,
+      "Momentum": 42.42,
       "Health": 44.44,
-      "Profitability": 50.88,
-      "Technical": 44.58,
-      "Risk": 37.18
+      "Profitability": 50.82,
+      "Technical": 46.77,
+      "Risk": 36.9
     }
   },
   "beneish_m_score": -3.2328972114271046,
   "dechow_f_score": 0.30362084517464,
   "recommendation": "neutral",
-  "loss_chance_pct": 20.209509272554676,
-  "price_change_1d_pct": -1.6103,
+  "loss_chance_pct": 20.633331416097025,
+  "price_change_1d_pct": 2.2913,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.22,
+  "composite_score_adjusted": 33.57,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.04,
+  "osap_blended_score": 42.71,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -191,14 +193,14 @@
   ],
   "valuation_methods_applicable": 1,
   "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-07-02",
+    "insider_count": 9,
+    "latest_filing_date": "2026-09-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.02291326970728003,
+  "cross_source_delta": 0.06399999747133313,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 53506257.13751563,
+  "average_dollar_volume": 53008145.866617665,
   "security_type": "Common stock"
 }
