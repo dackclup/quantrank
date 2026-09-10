@@ -5,19 +5,19 @@
   "industry": "Cable & Satellite",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 95178569177.62756,
-  "current_price": 26.49,
-  "rank": 382,
-  "composite_score": 56.45,
+  "market_cap": 94603689725.87585,
+  "current_price": 26.33,
+  "rank": 384,
+  "composite_score": 56.56,
   "pillar_scores": {
     "quality": 53.25,
-    "value": 90.17,
+    "value": 90.0,
     "growth": 54.5,
-    "momentum": 28.84,
-    "health": 34.05,
+    "momentum": 30.45,
+    "health": 34.02,
     "profitability": 48.17,
-    "technical": 65.94,
-    "risk": 36.99,
+    "technical": 64.28,
+    "risk": 37.83,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 3593000000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 95178569177.62756,
-    "pe_ratio_ttm": 8.498086533716746,
+    "market_cap": 94603689725.87585,
+    "pe_ratio_ttm": 8.446758011238915,
     "goodwill": 53070000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 59.42338744779363,
+        "value": 59.37745630331576,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.70355218053224,
+        "value": 61.21210964294677,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 125.14778688616664,
+        "value": 123.61564038365843,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 59.17556142544785,
-    "max": 125.14778688616664,
+    "median": 59.152595853208915,
+    "max": 123.61564038365843,
     "low": 7.292949711473222,
-    "high": 125.14778688616664,
-    "mos_pct": 55.2348991154203,
+    "high": 123.61564038365843,
+    "mos_pct": 55.488005988704714,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 59.17556142544785,
+    "median_trimmed": 59.152595853208915,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -104,13 +104,14 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-23"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 4.733092123573615,
@@ -125,22 +126,22 @@
     "label": "Communication Services median (n=50)",
     "values": {
       "Quality": 52.25,
-      "Value": 52.17,
+      "Value": 52.83,
       "Growth": 52.12,
-      "Momentum": 34.59,
-      "Health": 40.01,
+      "Momentum": 37.23,
+      "Health": 40.0,
       "Profitability": 50.83,
-      "Technical": 60.23,
-      "Risk": 41.93
+      "Technical": 58.97,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 18.44366906403552,
-  "price_change_1d_pct": -0.6004,
+  "loss_chance_pct": 18.300153134449808,
+  "price_change_1d_pct": -0.604,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.45,
+  "composite_score_adjusted": 56.56,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.15,
+  "osap_blended_score": 54.2,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -202,10 +203,10 @@
     "latest_filing_date": "2026-09-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.01831261277288944,
+  "cross_source_delta": 0.07761547723087896,
   "dividend_yield_pct": 4.98,
   "pays_dividend": true,
   "payout_ratio": 0.42310002,
-  "average_dollar_volume": 607992222.8289703,
+  "average_dollar_volume": 597806901.7490124,
   "security_type": "Common stock"
 }

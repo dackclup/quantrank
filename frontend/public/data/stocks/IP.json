@@ -5,19 +5,19 @@
   "industry": "Paper & Plastic Packaging Products & Materials",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 19721183778.665485,
-  "current_price": 37.24,
+  "market_cap": 19324006357.415485,
+  "current_price": 36.49,
   "rank": 1093,
-  "composite_score": 43.9,
+  "composite_score": 43.93,
   "pillar_scores": {
     "quality": 42.21,
-    "value": 45.89,
+    "value": 46.1,
     "growth": 59.09,
-    "momentum": 45.48,
-    "health": 34.45,
+    "momentum": 46.14,
+    "health": 34.44,
     "profitability": 46.1,
-    "technical": 29.26,
-    "risk": 29.4,
+    "technical": 27.33,
+    "risk": 29.37,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 529569895.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 19721183778.665485,
-    "pe_ratio_ttm": 49.80096913804416,
+    "market_cap": 19324006357.415485,
+    "pe_ratio_ttm": 48.79799585205931,
     "goodwill": 5290000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 16.996925969030993,
+        "value": 16.962488563136866,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 70.50917893514233,
+        "value": 69.50492416425418,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 43.75305245208666,
-    "max": 70.50917893514233,
-    "low": 16.996925969030993,
-    "high": 70.50917893514233,
-    "mos_pct": 14.885934600225239,
+    "median": 43.23370636369552,
+    "max": 69.50492416425418,
+    "low": 16.962488563136866,
+    "high": 69.50492416425418,
+    "mos_pct": 15.59825712951501,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 43.75305245208666,
+    "median_trimmed": 43.23370636369552,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -103,13 +103,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 35,
+    "filing_lag_days": 36,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 9.866497414850215,
@@ -124,22 +125,22 @@
     "label": "Materials median (n=77)",
     "values": {
       "Quality": 53.57,
-      "Value": 52.16,
+      "Value": 52.38,
       "Growth": 46.75,
-      "Momentum": 47.21,
-      "Health": 51.72,
+      "Momentum": 47.11,
+      "Health": 51.73,
       "Profitability": 56.49,
-      "Technical": 53.22,
-      "Risk": 46.2
+      "Technical": 52.26,
+      "Risk": 46.14
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.842304310030315,
-  "price_change_1d_pct": 2.1954,
+  "loss_chance_pct": 38.57657794298144,
+  "price_change_1d_pct": -2.014,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.9,
+  "composite_score_adjusted": 43.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.87,
+  "osap_blended_score": 47.89,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -201,10 +202,10 @@
     "latest_filing_date": "2026-08-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.020139631734234668,
-  "dividend_yield_pct": 4.97,
+  "cross_source_delta": 0.0506988972832504,
+  "dividend_yield_pct": 5.07,
   "pays_dividend": true,
   "payout_ratio": 1.5812,
-  "average_dollar_volume": 173526474.96694368,
+  "average_dollar_volume": 168330118.21257493,
   "security_type": "Common stock"
 }

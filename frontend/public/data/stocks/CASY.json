@@ -5,19 +5,19 @@
   "industry": "Food Retail",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 27945213659.61261,
-  "current_price": 756.09,
-  "rank": 602,
-  "composite_score": 52.74,
+  "market_cap": 27109912531.89087,
+  "current_price": 733.49,
+  "rank": 605,
+  "composite_score": 52.63,
   "pillar_scores": {
     "quality": 60.86,
-    "value": 30.04,
+    "value": 30.48,
     "growth": 77.96,
-    "momentum": 65.26,
+    "momentum": 64.03,
     "health": 29.75,
     "profitability": 58.55,
-    "technical": 28.82,
-    "risk": 87.1,
+    "technical": 28.74,
+    "risk": 85.7,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 36960167.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 27945213659.61261,
-    "pe_ratio_ttm": 36.16038247236085,
+    "market_cap": 27109912531.89087,
+    "pe_ratio_ttm": 35.07952445402817,
     "goodwill": 1284216000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 479.2883405451773,
+        "value": 478.6652225967783,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 338.37069618104465,
+        "value": 336.4026550715748,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -80,16 +80,16 @@
       }
     },
     "median": 164.09765916539268,
-    "max": 479.2883405451773,
+    "max": 478.6652225967783,
     "low": 108.24118110347277,
-    "high": 479.2883405451773,
-    "mos_pct": -360.7561318674338,
+    "high": 478.6652225967783,
+    "mos_pct": -346.9838229045647,
     "valuation_warnings": [
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 338.37069618104465,
+    "median_trimmed": 336.4026550715748,
     "methods_excluded_from_median": [
       "rim",
       "dcf"
@@ -109,14 +109,15 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-09-02",
     "latest_filed_date": "2026-09-08"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 76.01959698937507,
@@ -131,22 +132,22 @@
     "label": "Consumer Staples median (n=76)",
     "values": {
       "Quality": 46.55,
-      "Value": 50.22,
+      "Value": 50.55,
       "Growth": 49.01,
-      "Momentum": 44.1,
+      "Momentum": 45.55,
       "Health": 39.86,
       "Profitability": 48.36,
-      "Technical": 45.05,
-      "Risk": 50.93
+      "Technical": 37.54,
+      "Risk": 51.22
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.63047115586507,
-  "price_change_1d_pct": -0.3072,
+  "loss_chance_pct": 60.68626535379339,
+  "price_change_1d_pct": -2.9891,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.74,
+  "composite_score_adjusted": 52.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.3,
+  "osap_blended_score": 52.24,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -208,10 +209,10 @@
     "latest_filing_date": "2026-09-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.028716255076352646,
-  "dividend_yield_pct": 0.34,
+  "cross_source_delta": 0.14137674252479576,
+  "dividend_yield_pct": 0.35,
   "pays_dividend": true,
   "payout_ratio": 0.118999995,
-  "average_dollar_volume": 259941328.425756,
+  "average_dollar_volume": 272201462.58208174,
   "security_type": "Common stock"
 }

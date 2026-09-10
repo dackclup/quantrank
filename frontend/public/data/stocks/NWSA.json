@@ -5,19 +5,19 @@
   "industry": "Publishing",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 16969775659.179688,
-  "current_price": 30.39,
-  "rank": 892,
-  "composite_score": 47.78,
+  "market_cap": 16651487829.589844,
+  "current_price": 29.82,
+  "rank": 867,
+  "composite_score": 48.26,
   "pillar_scores": {
     "quality": 43.0,
-    "value": 48.33,
+    "value": 48.67,
     "growth": 31.5,
-    "momentum": 54.75,
-    "health": 51.79,
+    "momentum": 55.17,
+    "health": 51.78,
     "profitability": 50.67,
-    "technical": 73.82,
-    "risk": 60.23,
+    "technical": 81.58,
+    "risk": 59.43,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 558400000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 16969775659.179688,
-    "pe_ratio_ttm": 22.839536553404695,
+    "market_cap": 16651487829.589844,
+    "pe_ratio_ttm": 22.41115454857314,
     "goodwill": 4542000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 24.1422143361685,
+        "value": 23.81230068977188,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 37.711164507461696,
+        "value": 37.41081112867036,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 19.134300859740662,
-    "max": 37.711164507461696,
+    "median": 18.969344036542353,
+    "max": 37.41081112867036,
     "low": 10.132087883109786,
-    "high": 37.711164507461696,
-    "mos_pct": -58.82471804125448,
+    "high": 37.41081112867036,
+    "mos_pct": -57.20100619915625,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 19.134300859740662,
+    "median_trimmed": 18.969344036542353,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -104,14 +104,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 33,
+    "filing_lag_days": 34,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "cross_source_disagreement",
     "multi_class_aggregate_shares_suspected",
     "insider_sell_cluster",
     "c_suite_unusual_sell"
@@ -129,22 +128,22 @@
     "label": "Communication Services median (n=50)",
     "values": {
       "Quality": 52.25,
-      "Value": 52.17,
+      "Value": 52.83,
       "Growth": 52.12,
-      "Momentum": 34.59,
-      "Health": 40.01,
+      "Momentum": 37.23,
+      "Health": 40.0,
       "Profitability": 50.83,
-      "Technical": 60.23,
-      "Risk": 41.93
+      "Technical": 58.97,
+      "Risk": 42.21
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4879844808198524,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.11158854166667,
-  "price_change_1d_pct": -1.8094,
+  "loss_chance_pct": 61.86967531028369,
+  "price_change_1d_pct": -1.8756,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 46.98,
+  "composite_score_adjusted": 47.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.81,
+  "osap_blended_score": 50.06,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,10 +205,10 @@
     "latest_filing_date": "2026-08-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05688757509634356,
-  "dividend_yield_pct": 0.66,
+  "cross_source_delta": 0.04576831556370395,
+  "dividend_yield_pct": 0.67,
   "pays_dividend": true,
   "payout_ratio": 0.1942,
-  "average_dollar_volume": 114978039.31566435,
+  "average_dollar_volume": 116288736.69538827,
   "security_type": "Common stock"
 }
