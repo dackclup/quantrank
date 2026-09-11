@@ -5,19 +5,19 @@
   "industry": "Cable & Satellite",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 18067280924.863495,
-  "current_price": 145.74,
-  "rank": 925,
-  "composite_score": 47.09,
+  "market_cap": 16598244413.515167,
+  "current_price": 133.89,
+  "rank": 985,
+  "composite_score": 46.17,
   "pillar_scores": {
     "quality": 61.25,
-    "value": 72.33,
+    "value": 72.67,
     "growth": 33.5,
-    "momentum": 20.46,
+    "momentum": 18.73,
     "health": 11.88,
     "profitability": 51.0,
-    "technical": 42.9,
-    "risk": 18.94,
+    "technical": 27.72,
+    "risk": 18.18,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 123969262.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 18067280924.863495,
-    "pe_ratio_ttm": 3.1426823664747774,
+    "market_cap": 16598244413.515167,
+    "pe_ratio_ttm": 2.8871533159706324,
     "goodwill": 29710000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 883.3627383821117,
+        "value": 869.3023623002465,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 335.045765709346,
+        "value": 323.3586264717283,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 609.2042520457289,
-    "max": 335.045765709346,
-    "low": 335.045765709346,
-    "high": 883.3627383821117,
-    "mos_pct": 76.07698813595538,
+    "median": 596.3304943859874,
+    "max": 323.3586264717283,
+    "low": 323.3586264717283,
+    "high": 869.3023623002465,
+    "mos_pct": 77.54768527685164,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate"
     ],
@@ -110,13 +110,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-24"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate"
+    "extreme_multiples_pe_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -133,20 +134,20 @@
       "Quality": 52.25,
       "Value": 52.83,
       "Growth": 52.12,
-      "Momentum": 37.23,
+      "Momentum": 37.52,
       "Health": 40.0,
       "Profitability": 50.83,
-      "Technical": 58.97,
-      "Risk": 42.21
+      "Technical": 52.58,
+      "Risk": 41.84
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 15.825564125819877,
-  "price_change_1d_pct": -4.1121,
+  "loss_chance_pct": 15.775107028101935,
+  "price_change_1d_pct": -8.1309,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.09,
+  "composite_score_adjusted": 46.17,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.47,
+  "osap_blended_score": 49.01,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -208,10 +209,10 @@
     "latest_filing_date": "2026-08-21",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0012134003425676246,
+  "cross_source_delta": 0.14134501890901977,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 402880518.37200296,
+  "average_dollar_volume": 400252692.7355536,
   "security_type": "Common stock"
 }

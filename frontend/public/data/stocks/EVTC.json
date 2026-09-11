@@ -5,19 +5,19 @@
   "industry": "Transaction & Payment Processing Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 1734616335.2888145,
-  "current_price": 29.03,
-  "rank": 608,
-  "composite_score": 52.6,
+  "market_cap": 1776443046.307457,
+  "current_price": 29.73,
+  "rank": 538,
+  "composite_score": 53.8,
   "pillar_scores": {
     "quality": 61.87,
-    "value": 60.38,
+    "value": 58.63,
     "growth": 49.22,
-    "momentum": 48.52,
-    "health": 40.17,
-    "profitability": 44.42,
-    "technical": 36.6,
-    "risk": 30.91,
+    "momentum": 50.13,
+    "health": 40.19,
+    "profitability": 44.36,
+    "technical": 63.33,
+    "risk": 32.5,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 59752542.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1734616335.2888145,
-    "pe_ratio_ttm": 13.077823363506797,
+    "market_cap": 1776443046.307457,
+    "pe_ratio_ttm": 13.39316821957099,
     "goodwill": 1070494000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.543764401393354,
+        "value": 50.27395503903482,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 50.97538963877425,
+        "value": 50.58084410201463,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 50.7595770200838,
-    "max": 50.97538963877425,
-    "low": 50.543764401393354,
-    "high": 50.97538963877425,
-    "mos_pct": 42.80882073710082,
+    "median": 50.42739957052473,
+    "max": 50.58084410201463,
+    "low": 50.27395503903482,
+    "high": 50.58084410201463,
+    "mos_pct": 41.04395666753004,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 50.7595770200838,
+    "median_trimmed": 50.42739957052473,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,13 +99,12 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 35,
+    "filing_lag_days": 36,
     "latest_period_end": "2026-07-30",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "insider_sell_cluster"
   ],
   "has_history": true,
@@ -121,22 +120,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.88,
-      "Growth": 49.61,
-      "Momentum": 61.77,
+      "Value": 51.75,
+      "Growth": 49.81,
+      "Momentum": 60.27,
       "Health": 55.05,
-      "Profitability": 51.3,
-      "Technical": 55.75,
-      "Risk": 62.16
+      "Profitability": 51.23,
+      "Technical": 54.44,
+      "Risk": 62.02
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 23.717474969503193,
-  "price_change_1d_pct": -4.3493,
+  "loss_chance_pct": 23.73461228817714,
+  "price_change_1d_pct": 2.4113,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 52.1,
+  "composite_score_adjusted": 53.3,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.23,
+  "osap_blended_score": 52.83,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -197,10 +196,10 @@
     "latest_filing_date": "2026-08-31",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05612561044801619,
-  "dividend_yield_pct": 0.69,
+  "cross_source_delta": 0.019508884554162526,
+  "dividend_yield_pct": 0.67,
   "pays_dividend": true,
   "payout_ratio": 0.1299,
-  "average_dollar_volume": 12169676.742191972,
+  "average_dollar_volume": 12460462.895222368,
   "security_type": "Common stock"
 }
