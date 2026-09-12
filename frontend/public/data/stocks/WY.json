@@ -5,19 +5,19 @@
   "industry": "Timber REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 16281426349.975586,
-  "current_price": 22.59,
-  "rank": 1481,
-  "composite_score": 30.88,
+  "market_cap": 15848984475.036621,
+  "current_price": 21.99,
+  "rank": 1484,
+  "composite_score": 30.52,
   "pillar_scores": {
     "quality": 26.68,
-    "value": 35.58,
+    "value": 35.9,
     "growth": 8.89,
-    "momentum": 42.35,
-    "health": 40.25,
+    "momentum": 40.96,
+    "health": 40.24,
     "profitability": 30.77,
-    "technical": 30.54,
-    "risk": 44.15,
+    "technical": 25.87,
+    "risk": 43.54,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 720736000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 16281426349.975586,
-    "pe_ratio_ttm": 34.49454735164319,
+    "market_cap": 15848984475.036621,
+    "pe_ratio_ttm": 33.57835693863691,
     "goodwill": 40000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 16.67145369192789,
+        "value": 16.571237091094382,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 24.126359752119416,
+        "value": 24.061026401957943,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 19.045011928150434,
+        "value": 19.010644624568876,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,19 +79,15 @@
         "tier_used": null
       }
     },
-    "median": 16.67145369192789,
-    "max": 24.126359752119416,
+    "median": 16.571237091094382,
+    "max": 24.061026401957943,
     "low": 4.51734665250914,
-    "high": 24.126359752119416,
-    "mos_pct": -35.50108208935425,
-    "valuation_warnings": [
-      "extreme_dcf_estimate"
-    ],
-    "valuation_methods_applicable": 4,
-    "median_trimmed": 17.858232810039162,
-    "methods_excluded_from_median": [
-      "dcf"
-    ]
+    "high": 24.061026401957943,
+    "mos_pct": -32.69980780696151,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 16.571237091094382,
+    "methods_excluded_from_median": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -100,14 +96,12 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 42,
+    "filing_lag_days": 43,
     "latest_period_end": "2026-07-27",
     "latest_filed_date": "2026-07-31"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_dcf_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 13.064423034231675,
   "tier2_events": {
@@ -121,22 +115,22 @@
     "label": "Real Estate median (n=104)",
     "values": {
       "Quality": 49.64,
-      "Value": 49.28,
+      "Value": 49.12,
       "Growth": 50.66,
-      "Momentum": 45.48,
-      "Health": 26.63,
+      "Momentum": 46.88,
+      "Health": 26.6,
       "Profitability": 51.96,
-      "Technical": 37.72,
-      "Risk": 62.66
+      "Technical": 35.98,
+      "Risk": 61.28
     }
   },
   "beneish_m_score": -2.260660114355261,
   "dechow_f_score": 0.5118217867980879,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.98555480021834,
-  "price_change_1d_pct": -0.4407,
+  "loss_chance_pct": 61.18518309045617,
+  "price_change_1d_pct": -2.656,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 30.88,
+  "composite_score_adjusted": 30.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.37,
+  "osap_blended_score": 41.19,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -192,16 +186,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 5,
   "form4_diagnostics": {
     "insider_count": 9,
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.026560435472917542,
-  "dividend_yield_pct": 3.72,
+  "cross_source_delta": 0.0031832674858659885,
+  "dividend_yield_pct": 3.82,
   "pays_dividend": true,
   "payout_ratio": 1.2727,
-  "average_dollar_volume": 129823305.16435689,
+  "average_dollar_volume": 128584217.26175505,
   "security_type": "Common stock"
 }

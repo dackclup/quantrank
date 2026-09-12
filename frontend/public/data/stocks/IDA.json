@@ -5,19 +5,19 @@
   "industry": "Electric Utilities",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 7479993382.5,
-  "current_price": 136.25,
-  "rank": 1288,
-  "composite_score": 39.36,
+  "market_cap": 7436073987.761444,
+  "current_price": 135.45,
+  "rank": 1284,
+  "composite_score": 39.56,
   "pillar_scores": {
     "quality": 43.22,
-    "value": 22.32,
+    "value": 22.6,
     "growth": 51.69,
-    "momentum": 42.12,
+    "momentum": 43.82,
     "health": 16.61,
     "profitability": 52.82,
-    "technical": 53.16,
-    "risk": 82.9,
+    "technical": 52.48,
+    "risk": 81.76,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 54899034.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 7479993382.5,
-    "pe_ratio_ttm": 23.07692639286959,
+    "market_cap": 7436073987.761444,
+    "pe_ratio_ttm": 22.94142832652474,
     "goodwill": null
   },
   "fair_price": {
@@ -103,14 +103,16 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 204,
+    "filing_lag_days": 205,
     "latest_period_end": "2026-02-13",
     "latest_filed_date": "2026-02-19"
   },
   "risk_flags": [
     "stale_filing_hard"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 65.06260201226856,
   "tier2_events": {
@@ -124,22 +126,22 @@
     "label": "Utilities median (n=59)",
     "values": {
       "Quality": 51.69,
-      "Value": 48.31,
+      "Value": 47.46,
       "Growth": 50.85,
-      "Momentum": 41.07,
+      "Momentum": 43.62,
       "Health": 15.13,
       "Profitability": 51.41,
-      "Technical": 50.47,
-      "Risk": 74.81
+      "Technical": 48.47,
+      "Risk": 73.4
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
   "loss_chance_pct": null,
-  "price_change_1d_pct": -1.1894,
+  "price_change_1d_pct": -0.5872,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.36,
+  "composite_score_adjusted": 39.56,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.61,
+  "osap_blended_score": 45.71,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -201,10 +203,10 @@
     "latest_filing_date": "2026-06-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.04742136728755321,
-  "dividend_yield_pct": 2.58,
+  "cross_source_delta": 0.05430774531065779,
+  "dividend_yield_pct": 2.6,
   "pays_dividend": true,
   "payout_ratio": 0.5804,
-  "average_dollar_volume": 65968314.73562306,
+  "average_dollar_volume": 66184181.9793175,
   "security_type": "Common stock"
 }
