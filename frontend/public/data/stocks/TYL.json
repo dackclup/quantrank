@@ -5,18 +5,18 @@
   "industry": "Application Software",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13738669331.43512,
-  "current_price": 335.48,
-  "rank": 1040,
-  "composite_score": 45.21,
+  "market_cap": 13787402637.476257,
+  "current_price": 336.67,
+  "rank": 1048,
+  "composite_score": 45.15,
   "pillar_scores": {
     "quality": 36.58,
-    "value": 46.49,
+    "value": 47.02,
     "growth": 61.18,
-    "momentum": 23.85,
+    "momentum": 24.52,
     "health": 73.99,
     "profitability": 40.79,
-    "technical": 59.61,
+    "technical": 54.4,
     "risk": 30.24,
     "sentiment": null,
     "ml": null
@@ -36,8 +36,8 @@
     "shares_outstanding": 40952274.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 13738669331.43512,
-    "pe_ratio_ttm": 42.3228347691892,
+    "market_cap": 13787402637.476257,
+    "pe_ratio_ttm": 42.47296078282111,
     "goodwill": 2754742000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 283.9303290558788,
+        "value": 294.4419917972279,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 433.59552806547583,
+        "value": 437.62026583713697,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 267.7270131803139,
+        "value": 273.05644676722676,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 275.8286711180964,
-    "max": 433.59552806547583,
+    "median": 283.74921928222733,
+    "max": 437.62026583713697,
     "low": 120.83482688742072,
-    "high": 433.59552806547583,
-    "mos_pct": -21.626228929149985,
+    "high": 437.62026583713697,
+    "mos_pct": -18.650551455040336,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 275.8286711180964,
+    "median_trimmed": 283.74921928222733,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,12 +98,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 45,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-07-27",
     "latest_filed_date": "2026-07-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "restatement_history"
   ],
   "has_history": true,
@@ -119,22 +120,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 48.68,
-      "Value": 51.18,
+      "Value": 51.1,
       "Growth": 50.92,
-      "Momentum": 51.74,
+      "Momentum": 52.53,
       "Health": 65.11,
       "Profitability": 50.31,
-      "Technical": 61.1,
-      "Risk": 41.43
+      "Technical": 62.95,
+      "Risk": 42.15
     }
   },
   "beneish_m_score": -2.6046244543711325,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 49.963120844687374,
-  "price_change_1d_pct": -2.1011,
+  "loss_chance_pct": 48.95093716519917,
+  "price_change_1d_pct": 0.3547,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.21,
+  "composite_score_adjusted": 45.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.53,
+  "osap_blended_score": 48.5,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,10 +197,10 @@
     "latest_filing_date": "2026-09-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0035471345433269706,
+  "cross_source_delta": 0.06792995571029327,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 319533532.0004167,
+  "average_dollar_volume": 312300142.6694673,
   "security_type": "Common stock"
 }

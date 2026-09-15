@@ -5,19 +5,19 @@
   "industry": "Diversified Banks",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 242280682746.5,
-  "current_price": 138.5,
-  "rank": 1015,
-  "composite_score": 45.62,
+  "market_cap": 242840477641.7751,
+  "current_price": 138.82,
+  "rank": 1022,
+  "composite_score": 45.58,
   "pillar_scores": {
     "quality": 32.1,
-    "value": 52.46,
+    "value": 52.33,
     "growth": 28.7,
-    "momentum": 67.95,
+    "momentum": 69.22,
     "health": 45.52,
     "profitability": 41.18,
-    "technical": 63.05,
-    "risk": 70.18,
+    "technical": 59.59,
+    "risk": 70.23,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 1749319009.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 242280682746.5,
-    "pe_ratio_ttm": 16.76450890855937,
+    "market_cap": 242840477641.7751,
+    "pe_ratio_ttm": 16.80324367850644,
     "goodwill": 19098000000.0
   },
   "fair_price": {
@@ -108,7 +108,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 204,
+    "filing_lag_days": 207,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-02-20"
   },
@@ -116,7 +116,9 @@
     "sloan_accruals_top_decile",
     "stale_filing_hard"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 107.99002299071226,
   "tier2_events": {
@@ -132,20 +134,20 @@
       "Quality": 50.19,
       "Value": 51.75,
       "Growth": 49.81,
-      "Momentum": 61.77,
+      "Momentum": 61.97,
       "Health": 55.04,
       "Profitability": 51.23,
-      "Technical": 58.14,
-      "Risk": 62.27
+      "Technical": 57.43,
+      "Risk": 62.46
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 0.508,
+  "price_change_1d_pct": 0.2311,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 43.62,
+  "composite_score_adjusted": 43.58,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -193,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.74,
+  "osap_blended_score": 48.72,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -207,10 +209,10 @@
     "latest_filing_date": "2026-07-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03887593652010239,
-  "dividend_yield_pct": 1.94,
+  "cross_source_delta": 0.059327619537249125,
+  "dividend_yield_pct": 1.93,
   "pays_dividend": true,
   "payout_ratio": 0.2586,
-  "average_dollar_volume": 1144941459.039096,
+  "average_dollar_volume": 1136692656.1385581,
   "security_type": "Common stock"
 }
