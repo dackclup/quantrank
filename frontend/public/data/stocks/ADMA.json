@@ -5,19 +5,19 @@
   "industry": "Biotechnology",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2067378493.8679504,
-  "current_price": 9.23,
-  "rank": 33,
-  "composite_score": 68.23,
+  "market_cap": 2047220052.0990372,
+  "current_price": 9.14,
+  "rank": 43,
+  "composite_score": 67.7,
   "pillar_scores": {
     "quality": 89.11,
-    "value": 67.48,
+    "value": 68.0,
     "growth": 72.55,
-    "momentum": 21.42,
+    "momentum": 19.11,
     "health": 85.39,
     "profitability": 85.28,
-    "technical": 39.03,
-    "risk": 26.0,
+    "technical": 32.0,
+    "risk": 25.95,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 223984680.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2067378493.8679504,
-    "pe_ratio_ttm": 12.23612217231574,
+    "market_cap": 2047220052.0990372,
+    "pe_ratio_ttm": 12.116811094533148,
     "goodwill": 3530000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 17.62750295599931,
+        "value": 17.79482374902378,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 10.175837778216726,
+        "value": 10.262996790258578,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 27.6764477962885,
+        "value": 28.02472133976038,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 7.1687771589329925,
-    "max": 27.6764477962885,
+    "median": 7.212356664953918,
+    "max": 28.02472133976038,
     "low": 1.318521631703528,
-    "high": 27.6764477962885,
-    "mos_pct": -28.75277523077771,
+    "high": 28.02472133976038,
+    "mos_pct": -26.726959964911163,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 10.175837778216726,
+    "median_trimmed": 10.262996790258578,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -100,7 +100,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-05"
   },
@@ -109,6 +109,7 @@
   ],
   "valuation_warnings": [
     "extreme_dcf_estimate",
+    "cross_source_disagreement",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -124,22 +125,22 @@
     "label": "Health Care median (n=163)",
     "values": {
       "Quality": 51.07,
-      "Value": 51.23,
+      "Value": 51.53,
       "Growth": 50.31,
-      "Momentum": 63.53,
+      "Momentum": 64.38,
       "Health": 56.44,
       "Profitability": 48.47,
-      "Technical": 53.91,
-      "Risk": 46.28
+      "Technical": 57.88,
+      "Risk": 46.14
     }
   },
   "beneish_m_score": -2.735972932551074,
   "dechow_f_score": 0.4100722630103921,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.94867839108581,
-  "price_change_1d_pct": -1.7039,
+  "loss_chance_pct": 44.50314666007729,
+  "price_change_1d_pct": -0.9751,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 65.73,
+  "composite_score_adjusted": 65.2,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -187,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 60.04,
+  "osap_blended_score": 59.78,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -200,10 +201,10 @@
     "latest_filing_date": "2026-07-28",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00975076693877905,
+  "cross_source_delta": 0.057986999481233245,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 21059053.659837,
+  "average_dollar_volume": 21250360.47507319,
   "security_type": "Common stock"
 }

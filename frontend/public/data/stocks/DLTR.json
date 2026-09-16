@@ -5,19 +5,19 @@
   "industry": "Consumer Staples Merchandise Retail",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 22172272089.26866,
-  "current_price": 118.17,
-  "rank": 82,
-  "composite_score": 65.16,
+  "market_cap": 22359902388.26866,
+  "current_price": 119.17,
+  "rank": 74,
+  "composite_score": 65.82,
   "pillar_scores": {
     "quality": 89.14,
     "value": 66.45,
     "growth": 54.61,
-    "momentum": 62.25,
+    "momentum": 63.2,
     "health": 37.13,
     "profitability": 68.2,
-    "technical": 30.42,
-    "risk": 42.3,
+    "technical": 40.71,
+    "risk": 43.13,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 187630299.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 22172272089.26866,
-    "pe_ratio_ttm": 13.750246256910797,
+    "market_cap": 22359902388.26866,
+    "pe_ratio_ttm": 13.866606132259635,
     "goodwill": 422100000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 201.53318055260752,
+        "value": 199.72082158756365,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 54.01694678650956,
+        "value": 54.68431032203547,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 183.60978838607696,
+        "value": 184.79302563379744,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 119.61157406654894,
-    "max": 201.53318055260752,
-    "low": 54.01694678650956,
-    "high": 201.53318055260752,
-    "mos_pct": 1.2052143856927842,
+    "median": 120.20319269040917,
+    "max": 199.72082158756365,
+    "low": 54.68431032203547,
+    "high": 199.72082158756365,
+    "mos_pct": 0.8595399991786509,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 119.61157406654894,
+    "median_trimmed": 120.20319269040917,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,12 +99,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-08-25",
     "latest_filed_date": "2026-08-27"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "accruals_momentum_high",
     "value_trap_risk"
   ],
@@ -121,22 +122,22 @@
     "label": "Consumer Staples median (n=76)",
     "values": {
       "Quality": 46.55,
-      "Value": 49.89,
+      "Value": 50.33,
       "Growth": 48.93,
-      "Momentum": 43.26,
+      "Momentum": 44.34,
       "Health": 39.84,
       "Profitability": 48.36,
-      "Technical": 36.64,
-      "Risk": 50.86
+      "Technical": 42.69,
+      "Risk": 52.14
     }
   },
   "beneish_m_score": -2.983843045321185,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 34.00036345651556,
-  "price_change_1d_pct": -0.4129,
+  "loss_chance_pct": 33.789318241795506,
+  "price_change_1d_pct": 0.8462,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 64.66,
+  "composite_score_adjusted": 65.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.5,
+  "osap_blended_score": 58.84,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,10 +199,10 @@
     "latest_filing_date": "2026-09-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.008462376700769027,
+  "cross_source_delta": 0.053536940165567155,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 300993321.059444,
+  "average_dollar_volume": 304199327.5395887,
   "security_type": "Common stock"
 }
