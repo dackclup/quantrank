@@ -5,19 +5,19 @@
   "industry": "Asset Management & Custody Banks",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 40430270987.53903,
-  "current_price": 129.1,
-  "rank": 773,
-  "composite_score": 49.99,
+  "market_cap": 38898866653.194145,
+  "current_price": 124.21,
+  "rank": 797,
+  "composite_score": 49.55,
   "pillar_scores": {
     "quality": 66.34,
-    "value": 24.32,
+    "value": 24.58,
     "growth": 68.19,
-    "momentum": 45.96,
+    "momentum": 45.66,
     "health": 60.13,
     "profitability": 50.32,
-    "technical": 37.17,
-    "risk": 26.27,
+    "technical": 28.41,
+    "risk": 25.78,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 313170171.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 40430270987.53903,
-    "pe_ratio_ttm": 40.02699897288719,
+    "market_cap": 38898866653.194145,
+    "pe_ratio_ttm": 38.51086964155547,
     "goodwill": 3464289000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.97109669985184,
+        "value": 47.1497236230327,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 36.63313695062698,
+        "value": 35.64930895676676,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 36.63313695062698,
-    "max": 47.97109669985184,
+    "median": 35.64930895676676,
+    "max": 47.1497236230327,
     "low": 2.081566402659083,
-    "high": 47.97109669985184,
-    "mos_pct": -252.413188850064,
+    "high": 47.1497236230327,
+    "mos_pct": -248.4218985425685,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 42.30211682523941,
+    "median_trimmed": 41.39951628989973,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -116,14 +116,15 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_rim_estimate"
+    "extreme_rim_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 1.4383809242164383,
@@ -138,22 +139,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.56,
+      "Value": 51.75,
       "Growth": 49.81,
-      "Momentum": 62.57,
+      "Momentum": 61.07,
       "Health": 55.04,
       "Profitability": 51.23,
-      "Technical": 59.28,
-      "Risk": 62.38
+      "Technical": 49.53,
+      "Risk": 62.49
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.0064434745564,
-  "price_change_1d_pct": -1.84,
+  "loss_chance_pct": 62.224310129753434,
+  "price_change_1d_pct": -2.771,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.99,
+  "composite_score_adjusted": 49.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -201,7 +202,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.92,
+  "osap_blended_score": 50.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -215,10 +216,10 @@
     "latest_filing_date": "2026-08-21",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.019283021395064433,
-  "dividend_yield_pct": 4.18,
+  "cross_source_delta": 0.06887844570622849,
+  "dividend_yield_pct": 4.35,
   "pays_dividend": true,
   "payout_ratio": 2.2661,
-  "average_dollar_volume": 271420045.7545313,
+  "average_dollar_volume": 264624754.33204913,
   "security_type": "Common stock"
 }

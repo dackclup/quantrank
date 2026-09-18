@@ -5,19 +5,19 @@
   "industry": "Regional Banks",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 33954437332.25,
-  "current_price": 16.75,
-  "rank": 1272,
-  "composite_score": 39.77,
+  "market_cap": 32069205267.70884,
+  "current_price": 15.82,
+  "rank": 1330,
+  "composite_score": 38.17,
   "pillar_scores": {
     "quality": 32.3,
-    "value": 40.73,
+    "value": 42.09,
     "growth": 18.29,
-    "momentum": 51.48,
+    "momentum": 49.7,
     "health": 49.81,
     "profitability": 48.7,
-    "technical": 59.82,
-    "risk": 52.91,
+    "technical": 28.67,
+    "risk": 49.52,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 2027130587.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 33954437332.25,
-    "pe_ratio_ttm": 15.260421272921349,
+    "market_cap": 32069205267.70884,
+    "pe_ratio_ttm": 14.41312596301521,
     "goodwill": 9527000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 13.795545676940435,
+        "value": 13.653632765059056,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 19.521654747405563,
+        "value": 19.245519013599015,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 15.603121167128865,
-    "max": 19.521654747405563,
+    "median": 15.532164711188177,
+    "max": 19.245519013599015,
     "low": 11.073418362302935,
-    "high": 19.521654747405563,
-    "mos_pct": -7.350316776923243,
+    "high": 19.245519013599015,
+    "mos_pct": -1.8531543348153392,
     "valuation_warnings": [
       "stale_filing_soft"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 15.603121167128865,
+    "median_trimmed": 15.532164711188177,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -109,7 +109,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 140,
+    "filing_lag_days": 141,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -119,8 +119,7 @@
   ],
   "valuation_warnings": [
     "stale_filing_soft",
-    "valuation_output_anomalous",
-    "cross_source_disagreement"
+    "valuation_output_anomalous"
   ],
   "has_history": true,
   "tangible_book_value": 10.498090323571246,
@@ -135,22 +134,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.56,
+      "Value": 51.75,
       "Growth": 49.81,
-      "Momentum": 62.57,
+      "Momentum": 61.07,
       "Health": 55.04,
       "Profitability": 51.23,
-      "Technical": 59.28,
-      "Risk": 62.38
+      "Technical": 49.53,
+      "Risk": 62.49
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.68937871711589,
-  "price_change_1d_pct": -0.1193,
+  "loss_chance_pct": 66.5658685275615,
+  "price_change_1d_pct": -5.5522,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.77,
+  "composite_score_adjusted": 38.17,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -198,7 +197,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.81,
+  "osap_blended_score": 45.01,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -212,10 +211,10 @@
     "latest_filing_date": "2026-09-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05865140372561828,
-  "dividend_yield_pct": 3.7,
+  "cross_source_delta": 0.0004671730454837976,
+  "dividend_yield_pct": 3.92,
   "pays_dividend": true,
   "payout_ratio": 0.47689998,
-  "average_dollar_volume": 372640457.59042543,
+  "average_dollar_volume": 395200731.52088296,
   "security_type": "Common stock"
 }
