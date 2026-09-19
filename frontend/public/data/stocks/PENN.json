@@ -5,19 +5,19 @@
   "industry": "Casinos & Gaming",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2371638066.389284,
-  "current_price": 17.69,
-  "rank": 1256,
-  "composite_score": 40.14,
+  "market_cap": 2340802556.11837,
+  "current_price": 17.46,
+  "rank": 1272,
+  "composite_score": 39.81,
   "pillar_scores": {
     "quality": 27.51,
-    "value": 70.92,
+    "value": 71.26,
     "growth": 35.24,
-    "momentum": 39.61,
-    "health": 11.06,
+    "momentum": 38.91,
+    "health": 11.05,
     "profitability": 23.37,
-    "technical": 75.86,
-    "risk": 23.89,
+    "technical": 69.95,
+    "risk": 23.49,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 134066591.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2371638066.389284,
-    "pe_ratio_ttm": 18.942796057422395,
+    "market_cap": 2340802556.11837,
+    "pe_ratio_ttm": 18.696506039284106,
     "goodwill": 1765600000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 13.165683657366419,
+        "value": 13.118067617048174,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 57.47901371160194,
+        "value": 57.14011990308803,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -80,10 +80,10 @@
       }
     },
     "median": 34.870223771501635,
-    "max": 57.47901371160194,
-    "low": 13.165683657366419,
-    "high": 57.47901371160194,
-    "mos_pct": 49.26903638480487,
+    "max": 57.14011990308803,
+    "low": 13.118067617048174,
+    "high": 57.14011990308803,
+    "mos_pct": 49.928629082265374,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3,
     "median_trimmed": 34.870223771501635,
@@ -99,14 +99,16 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-07-29",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -120,22 +122,22 @@
     "label": "Consumer Discretionary median (n=194)",
     "values": {
       "Quality": 46.78,
-      "Value": 49.96,
+      "Value": 50.06,
       "Growth": 48.84,
-      "Momentum": 39.71,
+      "Momentum": 39.17,
       "Health": 44.29,
       "Profitability": 50.69,
-      "Technical": 43.37,
-      "Risk": 36.76
+      "Technical": 42.95,
+      "Risk": 36.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 39.68789459125783,
-  "price_change_1d_pct": -0.2818,
+  "loss_chance_pct": 39.61809477354498,
+  "price_change_1d_pct": -1.3002,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.14,
+  "composite_score_adjusted": 39.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.99,
+  "osap_blended_score": 45.83,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -196,10 +198,10 @@
     "latest_filing_date": "2026-08-11",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.011545310718920518,
+  "cross_source_delta": 0.0564560952708082,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 47812846.67994401,
+  "average_dollar_volume": 46558035.99415483,
   "security_type": "Common stock"
 }

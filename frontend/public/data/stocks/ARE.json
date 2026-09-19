@@ -5,19 +5,19 @@
   "industry": "Office REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 9325730026.164207,
-  "current_price": 53.52,
-  "rank": 1341,
-  "composite_score": 38.03,
+  "market_cap": 9817108120.38807,
+  "current_price": 56.34,
+  "rank": 1345,
+  "composite_score": 37.75,
   "pillar_scores": {
     "quality": 28.61,
-    "value": 61.22,
+    "value": 60.9,
     "growth": 48.68,
-    "momentum": 15.77,
+    "momentum": 15.39,
     "health": 26.62,
     "profitability": 27.16,
-    "technical": 64.94,
-    "risk": 19.37,
+    "technical": 61.39,
+    "risk": 19.87,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 174247570.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 9325730026.164207,
+    "market_cap": 9817108120.38807,
     "pe_ratio_ttm": null,
     "goodwill": null
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 92.7742407037796,
+        "value": 93.34560621039283,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 92.7742407037796,
-    "max": 92.7742407037796,
-    "low": 92.7742407037796,
-    "high": 92.7742407037796,
-    "mos_pct": 42.31157263938321,
+    "median": 93.34560621039283,
+    "max": 93.34560621039283,
+    "low": 93.34560621039283,
+    "high": 93.34560621039283,
+    "mos_pct": 39.643650687100944,
     "valuation_warnings": [],
     "valuation_methods_applicable": 1,
-    "median_trimmed": 92.7742407037796,
+    "median_trimmed": 93.34560621039283,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -111,12 +111,14 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 46,
+    "filing_lag_days": 47,
     "latest_period_end": "2026-07-15",
     "latest_filed_date": "2026-08-03"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "cross_source_disagreement"
+  ],
   "has_history": true,
   "tangible_book_value": 89.31422113949709,
   "tier2_events": {
@@ -130,22 +132,22 @@
     "label": "Real Estate median (n=104)",
     "values": {
       "Quality": 49.64,
-      "Value": 48.68,
+      "Value": 48.76,
       "Growth": 50.66,
-      "Momentum": 46.28,
+      "Momentum": 48.4,
       "Health": 26.59,
       "Profitability": 51.96,
-      "Technical": 35.83,
-      "Risk": 59.8
+      "Technical": 36.32,
+      "Risk": 60.36
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 31.17559628754976,
-  "price_change_1d_pct": 1.1147,
+  "loss_chance_pct": 32.24869295304986,
+  "price_change_1d_pct": 5.2691,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.03,
+  "composite_score_adjusted": 37.75,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -193,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.94,
+  "osap_blended_score": 44.8,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -204,13 +206,13 @@
   "valuation_methods_applicable": 1,
   "form4_diagnostics": {
     "insider_count": 24,
-    "latest_filing_date": "2026-09-02",
+    "latest_filing_date": "2026-09-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03968787653056551,
-  "dividend_yield_pct": 5.38,
+  "cross_source_delta": 0.06564351298624538,
+  "dividend_yield_pct": 5.11,
   "pays_dividend": true,
   "payout_ratio": 6.8946996,
-  "average_dollar_volume": 94922535.02007847,
+  "average_dollar_volume": 98586400.71988599,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Investment Banking & Brokerage",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8810983752.441406,
-  "current_price": 130.34,
-  "rank": 801,
-  "composite_score": 49.52,
+  "market_cap": 8967816247.558594,
+  "current_price": 132.66,
+  "rank": 778,
+  "composite_score": 50.01,
   "pillar_scores": {
     "quality": 58.37,
-    "value": 40.73,
+    "value": 40.21,
     "growth": 78.5,
-    "momentum": 10.04,
+    "momentum": 12.08,
     "health": 60.01,
     "profitability": 39.43,
-    "technical": 66.36,
-    "risk": 38.89,
+    "technical": 73.32,
+    "risk": 38.97,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 67600000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8810983752.441406,
-    "pe_ratio_ttm": 21.693167667349655,
+    "market_cap": 8967816247.558594,
+    "pe_ratio_ttm": 22.07929862705359,
     "goodwill": 1396000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 83.27658039732363,
+        "value": 84.12847988406902,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 122.5463665038726,
+        "value": 123.7999865039863,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 58.78044730609312,
-    "max": 122.5463665038726,
+    "median": 59.20639704946582,
+    "max": 123.7999865039863,
     "low": 14.314015126887407,
-    "high": 122.5463665038726,
-    "mos_pct": -121.74039550797993,
+    "high": 123.7999865039863,
+    "mos_pct": -124.06363209582652,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3,
-    "median_trimmed": 83.27658039732363,
+    "median_trimmed": 84.12847988406902,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -110,7 +110,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-31"
   },
@@ -119,8 +119,7 @@
   ],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_rim_estimate",
-    "cross_source_disagreement"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 9.70414201183432,
@@ -135,22 +134,22 @@
     "label": "Financials median (n=257)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.75,
+      "Value": 51.82,
       "Growth": 49.81,
-      "Momentum": 61.07,
+      "Momentum": 62.43,
       "Health": 55.04,
       "Profitability": 51.23,
-      "Technical": 49.53,
-      "Risk": 62.49
+      "Technical": 46.29,
+      "Risk": 62.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 65.23829326939662,
-  "price_change_1d_pct": -2.535,
+  "loss_chance_pct": 64.9930935361302,
+  "price_change_1d_pct": 1.78,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.52,
+  "composite_score_adjusted": 50.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -198,7 +197,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.69,
+  "osap_blended_score": 50.93,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -212,10 +211,10 @@
     "latest_filing_date": "2026-09-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05222556986682559,
-  "dividend_yield_pct": 2.15,
+  "cross_source_delta": 0.017380603274943257,
+  "dividend_yield_pct": 2.11,
   "pays_dividend": true,
   "payout_ratio": 0.4202,
-  "average_dollar_volume": 103300058.41835286,
+  "average_dollar_volume": 102103535.83271421,
   "security_type": "Common stock"
 }
