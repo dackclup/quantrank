@@ -5,19 +5,19 @@
   "industry": "IT Consulting & Other Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 118234233348.5852,
-  "current_price": 190.29,
-  "rank": 60,
-  "composite_score": 66.58,
+  "market_cap": 112642199412.5852,
+  "current_price": 181.29,
+  "rank": 59,
+  "composite_score": 66.73,
   "pillar_scores": {
     "quality": 74.21,
-    "value": 86.67,
+    "value": 87.63,
     "growth": 55.92,
-    "momentum": 33.96,
-    "health": 74.86,
+    "momentum": 34.2,
+    "health": 74.87,
     "profitability": 57.98,
-    "technical": 63.95,
-    "risk": 30.15,
+    "technical": 63.3,
+    "risk": 28.5,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 621337104.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 118234233348.5852,
-    "pe_ratio_ttm": 15.163915680795446,
+    "market_cap": 112642199412.5852,
+    "pe_ratio_ttm": 14.446719580410148,
     "goodwill": 25322800000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 190.33368689895798,
+        "value": 186.8033306657352,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 99.88226168685125,
+        "value": 96.63786033105444,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 161.9379229326248,
+        "value": 159.63602952524752,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 130.91009230973802,
+    "median": 128.13694492815097,
     "max": 199.7479498305273,
     "low": 12.185735180955607,
     "high": 199.7479498305273,
-    "mos_pct": -45.35929959922402,
+    "mos_pct": -41.48143877457501,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 161.9379229326248,
+    "median_trimmed": 159.63602952524752,
     "methods_excluded_from_median": [
       "rim"
     ]
@@ -106,15 +106,14 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 93,
+    "filing_lag_days": 96,
     "latest_period_end": "2026-05-31",
     "latest_filed_date": "2026-06-18"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_rim_estimate",
-    "cross_source_disagreement"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 6.548416268409427,
@@ -129,22 +128,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 49.14,
-      "Value": 51.07,
+      "Value": 50.5,
       "Growth": 50.99,
-      "Momentum": 50.12,
-      "Health": 65.12,
+      "Momentum": 49.34,
+      "Health": 65.1,
       "Profitability": 50.26,
-      "Technical": 62.17,
-      "Risk": 42.28
+      "Technical": 65.41,
+      "Risk": 42.37
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.58528529319238,
-  "price_change_1d_pct": 0.3428,
+  "loss_chance_pct": 48.151108197681005,
+  "price_change_1d_pct": -4.7296,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 66.58,
+  "composite_score_adjusted": 66.73,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -192,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.22,
+  "osap_blended_score": 59.29,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -206,10 +205,10 @@
     "latest_filing_date": "2026-09-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.06170176760124017,
-  "dividend_yield_pct": 3.43,
+  "cross_source_delta": 0.01106462155315075,
+  "dividend_yield_pct": 3.6,
   "pays_dividend": true,
   "payout_ratio": 0.5088,
-  "average_dollar_volume": 882038733.2980978,
+  "average_dollar_volume": 932157937.5997609,
   "security_type": "Common stock"
 }

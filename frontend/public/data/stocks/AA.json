@@ -5,19 +5,19 @@
   "industry": "Aluminum",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 12395826953.805084,
-  "current_price": 46.97,
-  "rank": 438,
-  "composite_score": 55.54,
+  "market_cap": 11725496721.888771,
+  "current_price": 44.43,
+  "rank": 441,
+  "composite_score": 55.44,
   "pillar_scores": {
     "quality": 68.83,
-    "value": 54.33,
+    "value": 55.41,
     "growth": 75.0,
-    "momentum": 27.04,
-    "health": 44.97,
+    "momentum": 30.18,
+    "health": 44.98,
     "profitability": 60.39,
-    "technical": 37.9,
-    "risk": 39.15,
+    "technical": 24.2,
+    "risk": 37.62,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 263909445.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 12395826953.805084,
-    "pe_ratio_ttm": 9.706990566801162,
+    "market_cap": 11725496721.888771,
+    "pe_ratio_ttm": 9.182064778299743,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 106.40109293297846,
+        "value": 104.44434218369909,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 46.79209689290055,
+        "value": 46.21734917431467,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 32.01313190859203,
-    "max": 106.40109293297846,
+    "median": 31.725758049299085,
+    "max": 104.44434218369909,
     "low": 11.945951945402179,
-    "high": 106.40109293297846,
-    "mos_pct": -46.72104358554437,
+    "high": 104.44434218369909,
+    "mos_pct": -40.04393602238094,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 32.01313190859203,
+    "median_trimmed": 31.725758049299085,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 54,
     "latest_period_end": "2026-07-27",
     "latest_filed_date": "2026-07-30"
   },
@@ -107,7 +107,6 @@
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "accruals_momentum_high",
     "value_trap_risk"
   ],
@@ -124,22 +123,22 @@
     "label": "Materials median (n=77)",
     "values": {
       "Quality": 53.57,
-      "Value": 51.3,
+      "Value": 50.87,
       "Growth": 46.75,
-      "Momentum": 46.14,
-      "Health": 51.78,
+      "Momentum": 48.92,
+      "Health": 51.74,
       "Profitability": 56.49,
-      "Technical": 50.28,
-      "Risk": 45.58
+      "Technical": 41.79,
+      "Risk": 45.91
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.3063260054509296,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 58.5808792608814,
-  "price_change_1d_pct": 1.5348,
+  "loss_chance_pct": 56.2972858211247,
+  "price_change_1d_pct": -5.4077,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 53.04,
+  "composite_score_adjusted": 52.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -187,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.7,
+  "osap_blended_score": 53.64,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -201,10 +200,10 @@
     "latest_filing_date": "2026-09-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0540771209781463,
-  "dividend_yield_pct": 0.85,
+  "cross_source_delta": 0.004726497087988753,
+  "dividend_yield_pct": 0.9,
   "pays_dividend": true,
   "payout_ratio": 0.0832,
-  "average_dollar_volume": 218831787.15352026,
+  "average_dollar_volume": 225125124.59293234,
   "security_type": "Common stock"
 }

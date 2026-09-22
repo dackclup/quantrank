@@ -1,70 +1,70 @@
 {
-  "ticker": "TAP",
-  "name": "Molson Coors Beverage Company",
-  "sector": "Consumer Staples",
-  "industry": "Brewers",
+  "ticker": "BE",
+  "name": "Bloom Energy",
+  "sector": "Industrials",
+  "industry": "Electrical Components & Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 7370488345.336914,
-  "current_price": 39.08,
-  "rank": 1410,
-  "composite_score": 35.55,
+  "market_cap": 75556826045.72607,
+  "current_price": 265.63,
+  "rank": 1496,
+  "composite_score": 27.27,
   "pillar_scores": {
-    "quality": 10.2,
-    "value": 73.68,
-    "growth": 45.89,
-    "momentum": 31.82,
-    "health": 12.1,
-    "profitability": 14.25,
-    "technical": 52.93,
-    "risk": 45.4,
+    "quality": 11.41,
+    "value": 0.35,
+    "growth": 49.62,
+    "momentum": 53.05,
+    "health": 50.13,
+    "profitability": 16.67,
+    "technical": 66.0,
+    "risk": 49.83,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 13954500000.0,
-    "net_income": -2028900000.0,
-    "total_assets": 24359000000.0,
-    "total_liabilities": 13950300000.0,
-    "stockholders_equity": 10119500000.0,
-    "cash": 2128100000.0,
-    "operating_cash_flow": 1784400000.0,
-    "capex": 716600000.0,
-    "free_cash_flow": 1067800000.0,
-    "eps_basic": -10.757688229056203,
-    "eps_diluted": -10.757688229056203,
-    "shares_outstanding": 188600000.0,
+    "revenue": 2449027000.0,
+    "net_income": 9965000.0,
+    "total_assets": 4664729000.0,
+    "total_liabilities": 3716721000.0,
+    "stockholders_equity": 921469000.0,
+    "cash": 2491433000.0,
+    "operating_cash_flow": 298241000.0,
+    "capex": 68682000.0,
+    "free_cash_flow": 229559000.0,
+    "eps_basic": 0.03503327412211959,
+    "eps_diluted": 0.03503327412211959,
+    "shares_outstanding": 284443868.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 7370488345.336914,
-    "pe_ratio_ttm": null,
-    "goodwill": 2144800000.0
+    "market_cap": 75556826045.72607,
+    "pe_ratio_ttm": 7582.220375888216,
+    "goodwill": 1957000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "non_positive_eps_3y_avg",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
-      },
-      "multiples_pb": {
-        "value": 159.2354179630352,
+        "value": 1.21087776507412,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 15.744800905704864,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
-        "tier_used": null
+        "value": 14.941927365314713,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -79,35 +79,52 @@
         "tier_used": null
       }
     },
-    "median": 159.2354179630352,
-    "max": 159.2354179630352,
-    "low": 159.2354179630352,
-    "high": 159.2354179630352,
-    "mos_pct": 75.45772019129143,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 1,
-    "median_trimmed": 159.2354179630352,
-    "methods_excluded_from_median": []
+    "median": null,
+    "max": null,
+    "low": 1.21087776507412,
+    "high": 15.744800905704864,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "stale_filing_soft",
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_estimate_majority"
+    ],
+    "valuation_methods_applicable": 0,
+    "median_trimmed": null,
+    "methods_excluded_from_median": [
+      "multiples_pe",
+      "multiples_pb",
+      "multiples_ev_ebitda"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
-    "latest_period_end": "2026-06-30",
-    "latest_filed_date": "2026-08-06"
+    "filing_lag_days": 146,
+    "latest_period_end": "2026-04-24",
+    "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
-    "altman_distress"
+    "beneish_manipulation_veto"
   ],
   "valuation_warnings": [
-    "cross_source_disagreement"
+    "stale_filing_soft",
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_estimate_majority",
+    "beneish_high",
+    "cross_source_disagreement",
+    "restatement_history"
   ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 3.232665926199541,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,39 +133,39 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Consumer Staples median (n=76)",
+    "label": "Industrials median (n=263)",
     "values": {
-      "Quality": 46.55,
-      "Value": 51.32,
-      "Growth": 48.93,
-      "Momentum": 45.45,
-      "Health": 39.84,
-      "Profitability": 48.36,
-      "Technical": 46.46,
-      "Risk": 51.57
+      "Quality": 50.1,
+      "Value": 50.06,
+      "Growth": 50.48,
+      "Momentum": 46.19,
+      "Health": 56.79,
+      "Profitability": 50.19,
+      "Technical": 52.2,
+      "Risk": 48.68
     }
   },
-  "beneish_m_score": -2.994056147386701,
+  "beneish_m_score": 0.06467570191853811,
   "dechow_f_score": null,
-  "recommendation": "cautious",
-  "loss_chance_pct": 32.81681608930967,
-  "price_change_1d_pct": -0.0767,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 35.55,
+  "recommendation": "neutral",
+  "loss_chance_pct": null,
+  "price_change_1d_pct": -5.3889,
+  "manipulation_index": 23.0,
+  "composite_score_adjusted": 24.97,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
-    "beneish_manipulation_veto": false,
+    "beneish_manipulation_veto": true,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
-    "restatement_history": false,
+    "restatement_history": true,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
-    "beneish_high": false,
+    "beneish_high": true,
     "dechow_high": false,
     "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
@@ -182,7 +199,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.7,
+  "osap_blended_score": 39.56,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -190,16 +207,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 1,
+  "valuation_methods_applicable": 0,
   "form4_diagnostics": {
     "insider_count": 15,
-    "latest_filing_date": "2026-07-01",
+    "latest_filing_date": "2026-09-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0505898930798553,
-  "dividend_yield_pct": 4.91,
-  "pays_dividend": true,
-  "payout_ratio": 0.35900003,
-  "average_dollar_volume": 110369251.93806352,
+  "cross_source_delta": 0.06374997191331051,
+  "dividend_yield_pct": null,
+  "pays_dividend": null,
+  "payout_ratio": 0.0,
+  "average_dollar_volume": 3591431722.266151,
   "security_type": "Common stock"
 }
