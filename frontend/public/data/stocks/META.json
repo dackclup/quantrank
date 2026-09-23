@@ -5,19 +5,19 @@
   "industry": "Interactive Media & Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 1707648750000.0,
-  "current_price": 665.75,
-  "rank": 285,
-  "composite_score": 58.99,
+  "market_cap": 1901306250000.0,
+  "current_price": 741.25,
+  "rank": 260,
+  "composite_score": 59.8,
   "pillar_scores": {
     "quality": 78.57,
-    "value": 24.15,
+    "value": 22.11,
     "growth": 84.18,
-    "momentum": 26.6,
-    "health": 81.15,
+    "momentum": 36.53,
+    "health": 81.16,
     "profitability": 81.29,
-    "technical": 73.34,
-    "risk": 33.11,
+    "technical": 71.26,
+    "risk": 36.55,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 2565000000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 1707648750000.0,
-    "pe_ratio_ttm": 25.076342183324034,
+    "market_cap": 1901306250000.0,
+    "pe_ratio_ttm": 27.920148168815533,
     "goodwill": 23406000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 373.2131570473609,
+        "value": 371.524411370069,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 315.7943387846983,
+        "value": 310.5761023734611,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 569.9485845084577,
+        "value": 563.9213511277921,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 262.1310801731716,
-    "max": 569.9485845084577,
+    "median": 259.521961967553,
+    "max": 563.9213511277921,
     "low": 194.39257751722454,
-    "high": 569.9485845084577,
-    "mos_pct": -153.9759877234648,
+    "high": 563.9213511277921,
+    "mos_pct": -185.62129939996197,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6,
-    "median_trimmed": 262.1310801731716,
+    "median_trimmed": 259.521961967553,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -98,14 +98,12 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 54,
+    "filing_lag_days": 55,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "cross_source_disagreement"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 91.27602339181287,
   "tier2_events": {
@@ -119,22 +117,22 @@
     "label": "Communication Services median (n=49)",
     "values": {
       "Quality": 51.02,
-      "Value": 52.38,
+      "Value": 52.72,
       "Growth": 52.04,
-      "Momentum": 45.09,
+      "Momentum": 45.06,
       "Health": 37.39,
       "Profitability": 51.36,
-      "Technical": 50.33,
-      "Risk": 42.02
+      "Technical": 56.09,
+      "Risk": 43.11
     }
   },
   "beneish_m_score": -2.930409656050613,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 55.50386955714376,
-  "price_change_1d_pct": -2.427,
+  "recommendation": "cautious",
+  "loss_chance_pct": 55.0990572660489,
+  "price_change_1d_pct": 11.4285,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.99,
+  "composite_score_adjusted": 59.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.42,
+  "osap_blended_score": 55.83,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -196,10 +194,10 @@
     "latest_filing_date": "2026-09-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.10580484106699344,
-  "dividend_yield_pct": 0.32,
+  "cross_source_delta": 0.013057349716280583,
+  "dividend_yield_pct": 0.28,
   "pays_dividend": true,
   "payout_ratio": 0.0791,
-  "average_dollar_volume": 10724329238.77332,
+  "average_dollar_volume": 11655491079.279196,
   "security_type": "Common stock"
 }

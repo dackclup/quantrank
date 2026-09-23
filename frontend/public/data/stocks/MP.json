@@ -5,19 +5,19 @@
   "industry": "Diversified Metals & Mining",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 8417080749.942398,
-  "current_price": 47.26,
-  "rank": 1426,
-  "composite_score": 34.28,
+  "market_cap": 8905079400.0,
+  "current_price": 50.0,
+  "rank": 1414,
+  "composite_score": 35.43,
   "pillar_scores": {
-    "quality": 23.05,
-    "value": 44.48,
+    "quality": 23.7,
+    "value": 43.83,
     "growth": 38.31,
-    "momentum": 26.07,
+    "momentum": 26.68,
     "health": 65.79,
-    "profitability": 20.67,
-    "technical": 23.87,
-    "risk": 21.85,
+    "profitability": 20.89,
+    "technical": 44.36,
+    "risk": 21.92,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 178101588.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 8417080749.942398,
+    "market_cap": 8905079400.0,
     "pe_ratio_ttm": null,
     "goodwill": null
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 25.383781155907595,
+        "value": 25.4282799794992,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 25.383781155907595,
-    "max": 25.383781155907595,
-    "low": 25.383781155907595,
-    "high": 25.383781155907595,
-    "mos_pct": -86.18186956175492,
+    "median": 25.4282799794992,
+    "max": 25.4282799794992,
+    "low": 25.4282799794992,
+    "high": 25.4282799794992,
+    "mos_pct": -96.63146717084688,
     "valuation_warnings": [],
     "valuation_methods_applicable": 1,
-    "median_trimmed": 25.383781155907595,
+    "median_trimmed": 25.4282799794992,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -100,16 +100,14 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 46,
+    "filing_lag_days": 47,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [
-    "cross_source_disagreement"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 10.955326237742472,
   "tier2_events": {
@@ -123,22 +121,22 @@
     "label": "Materials median (n=77)",
     "values": {
       "Quality": 53.57,
-      "Value": 50.87,
+      "Value": 51.3,
       "Growth": 46.75,
-      "Momentum": 48.92,
+      "Momentum": 49.17,
       "Health": 51.74,
       "Profitability": 56.49,
-      "Technical": 41.79,
-      "Risk": 45.91
+      "Technical": 44.36,
+      "Risk": 45.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2674101812774818,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.86079131144045,
-  "price_change_1d_pct": -4.2932,
+  "loss_chance_pct": 70.28582110576951,
+  "price_change_1d_pct": 5.7977,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 32.28,
+  "composite_score_adjusted": 33.43,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -186,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.07,
+  "osap_blended_score": 43.64,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,10 +198,10 @@
     "latest_filing_date": "2026-06-30",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05797711208377578,
+  "cross_source_delta": 0.0207999969096289,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 317178633.1127824,
+  "average_dollar_volume": 306510681.99415535,
   "security_type": "Common stock"
 }

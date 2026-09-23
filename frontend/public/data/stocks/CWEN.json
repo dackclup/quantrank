@@ -5,19 +5,19 @@
   "industry": "Renewable Electricity",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 6326357139.297203,
-  "current_price": 30.82,
-  "rank": 1493,
-  "composite_score": 27.56,
+  "market_cap": 6340725830.844406,
+  "current_price": 30.89,
+  "rank": 1497,
+  "composite_score": 27.13,
   "pillar_scores": {
     "quality": 16.95,
-    "value": 35.31,
+    "value": 35.03,
     "growth": 34.32,
-    "momentum": 28.26,
+    "momentum": 27.71,
     "health": 18.55,
-    "profitability": 12.71,
-    "technical": 47.27,
-    "risk": 56.38,
+    "profitability": 5.65,
+    "technical": 50.0,
+    "risk": 56.65,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 205267917.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 6326357139.297203,
-    "pe_ratio_ttm": 72.71674872755406,
+    "market_cap": 6340725830.844406,
+    "pe_ratio_ttm": 72.88190610165985,
     "goodwill": null
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 8.386959739718172,
+        "value": 8.381069962651154,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 51.14990946982393,
+        "value": 50.538490165867984,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 10.44467686988278,
+        "value": 10.243263691956328,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 23.01690666306756,
-    "max": 51.14990946982393,
-    "low": 8.386959739718172,
-    "high": 51.14990946982393,
-    "mos_pct": -33.9015713361576,
+    "median": 22.91620007410433,
+    "max": 50.538490165867984,
+    "low": 8.381069962651154,
+    "high": 50.538490165867984,
+    "mos_pct": -34.79546909941071,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 23.01690666306756,
+    "median_trimmed": 22.91620007410433,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,7 +99,7 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
@@ -121,23 +121,23 @@
   "pillar_baseline": {
     "label": "Utilities median (n=59)",
     "values": {
-      "Quality": 51.69,
-      "Value": 46.33,
+      "Quality": 52.54,
+      "Value": 47.18,
       "Growth": 50.85,
-      "Momentum": 40.41,
-      "Health": 15.13,
-      "Profitability": 51.41,
-      "Technical": 36.83,
-      "Risk": 70.28
+      "Momentum": 39.73,
+      "Health": 15.11,
+      "Profitability": 51.98,
+      "Technical": 31.46,
+      "Risk": 69.99
     }
   },
   "beneish_m_score": -2.747946179744299,
   "dechow_f_score": 0.4889129767610047,
   "recommendation": "cautious",
-  "loss_chance_pct": 75.08749627088926,
-  "price_change_1d_pct": -0.4522,
+  "loss_chance_pct": 75.61392578138437,
+  "price_change_1d_pct": 0.2271,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 27.56,
+  "composite_score_adjusted": 27.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 39.7,
+  "osap_blended_score": 39.49,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -198,10 +198,10 @@
     "latest_filing_date": "2026-09-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.20426114812202192,
-  "dividend_yield_pct": 6.02,
+  "cross_source_delta": 0.19219683702887713,
+  "dividend_yield_pct": 6.01,
   "pays_dividend": true,
   "payout_ratio": 2.1235,
-  "average_dollar_volume": 38735868.41900267,
+  "average_dollar_volume": 38255779.54786892,
   "security_type": "Common stock"
 }

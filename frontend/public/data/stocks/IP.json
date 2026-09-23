@@ -5,25 +5,25 @@
   "industry": "Paper & Plastic Packaging Products & Materials",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 18286047827.902374,
-  "current_price": 34.53,
-  "rank": 1032,
-  "composite_score": 45.17,
+  "market_cap": 18709705360.02144,
+  "current_price": 35.33,
+  "rank": 1096,
+  "composite_score": 43.89,
   "pillar_scores": {
-    "quality": 42.21,
-    "value": 46.54,
+    "quality": 32.47,
+    "value": 51.95,
     "growth": 59.09,
-    "momentum": 48.42,
-    "health": 34.45,
-    "profitability": 46.1,
-    "technical": 44.67,
-    "risk": 29.11,
+    "momentum": 49.03,
+    "health": 34.43,
+    "profitability": 39.18,
+    "technical": 54.66,
+    "risk": 30.15,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
     "revenue": 24203000000.0,
-    "net_income": 396000000.0,
+    "net_income": -3438000000.0,
     "total_assets": 36521000000.0,
     "total_liabilities": null,
     "stockholders_equity": 14455000000.0,
@@ -31,13 +31,13 @@
     "operating_cash_flow": 2647000000.0,
     "capex": 2155000000.0,
     "free_cash_flow": 492000000.0,
-    "eps_basic": 0.7477766461781216,
-    "eps_diluted": 0.7477766461781216,
+    "eps_basic": -6.492060882728238,
+    "eps_diluted": -6.492060882728238,
     "shares_outstanding": 529569895.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 18286047827.902374,
-    "pe_ratio_ttm": 46.176888454298926,
+    "market_cap": 18709705360.02144,
+    "pe_ratio_ttm": null,
     "goodwill": 5290000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 15.859113784024006,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
       },
       "multiples_pb": {
-        "value": 64.55912599328917,
+        "value": 64.89696970060272,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 40.20911988865659,
-    "max": 64.55912599328917,
-    "low": 15.859113784024006,
-    "high": 64.55912599328917,
-    "mos_pct": 14.12396273553317,
+    "median": 64.89696970060272,
+    "max": 64.89696970060272,
+    "low": 64.89696970060272,
+    "high": 64.89696970060272,
+    "mos_pct": 45.559858967149026,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
-    "valuation_methods_applicable": 2,
-    "median_trimmed": 40.20911988865659,
+    "valuation_methods_applicable": 1,
+    "median_trimmed": 64.89696970060272,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-05"
   },
@@ -124,22 +124,22 @@
     "label": "Materials median (n=77)",
     "values": {
       "Quality": 53.57,
-      "Value": 50.87,
+      "Value": 51.3,
       "Growth": 46.75,
-      "Momentum": 48.92,
+      "Momentum": 49.17,
       "Health": 51.74,
       "Profitability": 56.49,
-      "Technical": 41.79,
-      "Risk": 45.91
+      "Technical": 44.36,
+      "Risk": 45.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.47260492351866,
-  "price_change_1d_pct": -2.8692,
+  "loss_chance_pct": 28.109962004669143,
+  "price_change_1d_pct": 2.3168,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.17,
+  "composite_score_adjusted": 43.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.51,
+  "osap_blended_score": 47.87,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -195,16 +195,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 2,
+  "valuation_methods_applicable": 1,
   "form4_diagnostics": {
     "insider_count": 9,
     "latest_filing_date": "2026-08-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0231683128079308,
-  "dividend_yield_pct": 5.36,
+  "cross_source_delta": 0.01075569177099702,
+  "dividend_yield_pct": 5.24,
   "pays_dividend": true,
   "payout_ratio": 1.5812,
-  "average_dollar_volume": 166700854.12446383,
+  "average_dollar_volume": 168963769.04012746,
   "security_type": "Common stock"
 }
