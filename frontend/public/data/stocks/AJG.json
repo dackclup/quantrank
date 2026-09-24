@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 60643143156.433105,
   "current_price": 236.61,
-  "rank": 1343,
-  "composite_score": 37.99,
+  "rank": 1341,
+  "composite_score": 37.93,
   "pillar_scores": {
     "quality": 31.13,
     "value": 30.74,
     "growth": 45.23,
-    "momentum": 51.22,
+    "momentum": 50.73,
     "health": 41.62,
     "profitability": 45.53,
-    "technical": 34.47,
-    "risk": 45.93,
+    "technical": 34.45,
+    "risk": 45.96,
     "sentiment": null,
     "ml": null
   },
@@ -103,14 +103,12 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "insider_sell_cluster"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -126,20 +124,20 @@
       "Quality": 50.19,
       "Value": 51.62,
       "Growth": 49.81,
-      "Momentum": 59.69,
+      "Momentum": 59.25,
       "Health": 55.03,
       "Profitability": 51.3,
-      "Technical": 46.34,
-      "Risk": 61.24
+      "Technical": 46.07,
+      "Risk": 61.26
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 66.00683977783189,
+  "loss_chance_pct": 66.03679983109421,
   "price_change_1d_pct": -1.1984,
-  "manipulation_index": 5.0,
-  "composite_score_adjusted": 37.49,
+  "manipulation_index": 0.0,
+  "composite_score_adjusted": 37.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,7 +153,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": true,
+    "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -187,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.92,
+  "osap_blended_score": 44.89,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -201,8 +199,8 @@
     "latest_filing_date": "2026-09-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.02587862888941675,
-  "dividend_yield_pct": 1.18,
+  "cross_source_delta": 0.029302569621914444,
+  "dividend_yield_pct": 1.22,
   "pays_dividend": true,
   "payout_ratio": 0.44779998,
   "average_dollar_volume": 341063474.7899549,

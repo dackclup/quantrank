@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 36061821105.95703,
   "current_price": 238.82,
-  "rank": 150,
-  "composite_score": 62.76,
+  "rank": 148,
+  "composite_score": 62.79,
   "pillar_scores": {
     "quality": 83.44,
     "value": 14.72,
     "growth": 61.66,
-    "momentum": 95.19,
+    "momentum": 95.22,
     "health": 64.51,
     "profitability": 75.66,
-    "technical": 74.68,
-    "risk": 52.92,
+    "technical": 75.21,
+    "risk": 52.93,
     "sentiment": null,
     "ml": null
   },
@@ -102,7 +102,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 54,
+    "filing_lag_days": 55,
     "latest_period_end": "2026-07-24",
     "latest_filed_date": "2026-07-31"
   },
@@ -110,6 +110,7 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_dcf_estimate",
+    "cross_source_disagreement",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -125,22 +126,22 @@
     "label": "Health Care median (n=163)",
     "values": {
       "Quality": 51.23,
-      "Value": 52.35,
+      "Value": 52.56,
       "Growth": 50.31,
-      "Momentum": 66.25,
-      "Health": 56.39,
+      "Momentum": 66.71,
+      "Health": 56.4,
       "Profitability": 48.57,
-      "Technical": 58.74,
-      "Risk": 46.97
+      "Technical": 58.52,
+      "Risk": 47.0
     }
   },
   "beneish_m_score": -2.7178421246676474,
   "dechow_f_score": 0.3972368118304023,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 55.6189558264509,
+  "loss_chance_pct": 55.60335163204344,
   "price_change_1d_pct": -0.3339,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 62.26,
+  "composite_score_adjusted": 62.29,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.31,
+  "osap_blended_score": 57.32,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -202,7 +203,7 @@
     "latest_filing_date": "2026-09-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03617785430773645,
+  "cross_source_delta": 0.06934094400545686,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,

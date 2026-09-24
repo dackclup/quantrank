@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 2993178957.6565094,
   "current_price": 22.86,
-  "rank": 1036,
-  "composite_score": 45.04,
+  "rank": 1034,
+  "composite_score": 45.0,
   "pillar_scores": {
     "quality": 38.13,
     "value": 72.83,
     "growth": 48.54,
-    "momentum": 12.95,
+    "momentum": 12.43,
     "health": 52.45,
     "profitability": 37.03,
-    "technical": 38.67,
-    "risk": 26.41,
+    "technical": 39.15,
+    "risk": 26.34,
     "sentiment": null,
     "ml": null
   },
@@ -113,13 +113,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
+    "cross_source_disagreement",
     "restatement_history",
     "value_trap_risk"
   ],
@@ -138,20 +139,20 @@
       "Quality": 50.19,
       "Value": 51.62,
       "Growth": 49.81,
-      "Momentum": 59.69,
+      "Momentum": 59.25,
       "Health": 55.03,
       "Profitability": 51.3,
-      "Technical": 46.34,
-      "Risk": 61.24
+      "Technical": 46.07,
+      "Risk": 61.26
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 26.246211245932667,
+  "loss_chance_pct": 26.26764100625224,
   "price_change_1d_pct": -1.039,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.04,
+  "composite_score_adjusted": 45.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -199,7 +200,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.45,
+  "osap_blended_score": 48.43,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -212,8 +213,8 @@
     "latest_filing_date": "2026-09-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.027996523710068773,
-  "dividend_yield_pct": 4.37,
+  "cross_source_delta": 0.051181142131391945,
+  "dividend_yield_pct": 4.5,
   "pays_dividend": true,
   "payout_ratio": 0.3191,
   "average_dollar_volume": 16041647.54376247,

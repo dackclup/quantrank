@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 5403865954.521217,
   "current_price": 109.1,
-  "rank": 4,
-  "composite_score": 75.75,
+  "rank": 6,
+  "composite_score": 75.64,
   "pillar_scores": {
     "quality": 82.39,
     "value": 63.85,
     "growth": 65.14,
-    "momentum": 88.96,
+    "momentum": 88.18,
     "health": 88.88,
     "profitability": 72.89,
-    "technical": 64.21,
-    "risk": 75.0,
+    "technical": 63.79,
+    "risk": 74.99,
     "sentiment": null,
     "ml": null
   },
@@ -98,7 +98,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-08-06",
     "latest_filed_date": "2026-08-10"
   },
@@ -106,6 +106,7 @@
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -123,20 +124,20 @@
       "Quality": 53.17,
       "Value": 49.06,
       "Growth": 50.7,
-      "Momentum": 64.56,
+      "Momentum": 63.38,
       "Health": 46.9,
       "Profitability": 53.05,
-      "Technical": 44.42,
-      "Risk": 60.31
+      "Technical": 44.52,
+      "Risk": 60.29
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.19581278689301337,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 30.952238816179637,
+  "loss_chance_pct": 31.011742810853406,
   "price_change_1d_pct": -1.8444,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 73.25,
+  "composite_score_adjusted": 73.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -184,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 63.8,
+  "osap_blended_score": 63.74,
   "entered_top5": false,
   "exited_top5": true,
   "index_membership": "sp600",
@@ -197,8 +198,8 @@
     "latest_filing_date": "2026-09-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.04720443413438038,
-  "dividend_yield_pct": 7.5,
+  "cross_source_delta": 0.0654445549718583,
+  "dividend_yield_pct": 7.87,
   "pays_dividend": true,
   "payout_ratio": 0.2494,
   "average_dollar_volume": 67032747.2105092,

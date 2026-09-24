@@ -8,16 +8,16 @@
   "market_cap": 2060339481.7614555,
   "current_price": 4.77,
   "rank": 1306,
-  "composite_score": 39.03,
+  "composite_score": 39.01,
   "pillar_scores": {
     "quality": 26.29,
     "value": 67.91,
     "growth": 40.59,
-    "momentum": 22.04,
-    "health": 36.18,
+    "momentum": 21.84,
+    "health": 36.19,
     "profitability": 39.18,
-    "technical": 35.7,
-    "risk": 22.34,
+    "technical": 35.94,
+    "risk": 22.28,
     "sentiment": null,
     "ml": null
   },
@@ -97,12 +97,13 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "cross_source_disagreement",
     "multi_class_aggregate_shares_suspected"
   ],
   "has_history": true,
@@ -120,20 +121,20 @@
       "Quality": 46.78,
       "Value": 50.26,
       "Growth": 48.78,
-      "Momentum": 39.46,
+      "Momentum": 39.98,
       "Health": 44.29,
       "Profitability": 50.73,
-      "Technical": 43.4,
+      "Technical": 43.62,
       "Risk": 36.84
     }
   },
   "beneish_m_score": -3.117970178478203,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 28.756537748954294,
+  "loss_chance_pct": 28.76357003923392,
   "price_change_1d_pct": -2.2541,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.03,
+  "composite_score_adjusted": 39.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.44,
+  "osap_blended_score": 45.43,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -194,7 +195,7 @@
     "latest_filing_date": "2026-09-02",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.011791156737279984,
+  "cross_source_delta": 0.05557243103625193,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,

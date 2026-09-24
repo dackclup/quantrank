@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 255318159102.3023,
   "current_price": 249.35,
-  "rank": 1188,
-  "composite_score": 41.96,
+  "rank": 1184,
+  "composite_score": 42.03,
   "pillar_scores": {
     "quality": 27.11,
     "value": 18.11,
     "growth": 56.25,
-    "momentum": 88.64,
+    "momentum": 88.9,
     "health": 47.22,
     "profitability": 33.77,
-    "technical": 68.41,
-    "risk": 55.1,
+    "technical": 69.16,
+    "risk": 55.13,
     "sentiment": null,
     "ml": null
   },
@@ -52,7 +52,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-08-20",
     "latest_filed_date": "2026-08-27"
   },
@@ -64,7 +64,8 @@
     "extreme_multiples_pb_estimate",
     "extreme_dcf_estimate",
     "extreme_estimate_majority",
-    "valuation_output_anomalous"
+    "valuation_output_anomalous",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 2.5168232335627465,
@@ -79,13 +80,13 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 49.14,
-      "Value": 50.64,
+      "Value": 50.55,
       "Growth": 50.99,
-      "Momentum": 49.45,
+      "Momentum": 49.65,
       "Health": 65.1,
       "Profitability": 50.26,
-      "Technical": 65.89,
-      "Risk": 42.57
+      "Technical": 66.14,
+      "Risk": 42.58
     }
   },
   "beneish_m_score": null,
@@ -94,7 +95,7 @@
   "loss_chance_pct": null,
   "price_change_1d_pct": 4.9232,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.96,
+  "composite_score_adjusted": 42.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,7 +143,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.91,
+  "osap_blended_score": 46.94,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -156,7 +157,7 @@
     "latest_filing_date": "2026-09-17",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.00284734474137581,
+  "cross_source_delta": 0.052696980304901345,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
