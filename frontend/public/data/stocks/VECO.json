@@ -5,19 +5,19 @@
   "industry": "Semiconductor Materials & Equipment",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 2703152755.4211426,
-  "current_price": 44.22,
+  "market_cap": 2807072956.868286,
+  "current_price": 45.92,
   "rank": 1455,
-  "composite_score": 32.87,
+  "composite_score": 32.7,
   "pillar_scores": {
     "quality": 18.16,
-    "value": 32.11,
+    "value": 31.32,
     "growth": 13.03,
-    "momentum": 46.66,
+    "momentum": 45.01,
     "health": 68.4,
     "profitability": 20.61,
-    "technical": 71.9,
-    "risk": 39.15,
+    "technical": 75.62,
+    "risk": 39.9,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 61129640.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2703152755.4211426,
-    "pe_ratio_ttm": 116.29964959003324,
+    "market_cap": 2807072956.868286,
+    "pe_ratio_ttm": 120.77068179100316,
     "goodwill": 214964000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 16.810110732686102,
+        "value": 17.468530612482773,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 78.35990737624968,
+        "value": 80.92888435380094,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 21.470076951985643,
+        "value": 22.52345694315661,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 16.810110732686102,
-    "max": 78.35990737624968,
+    "median": 17.468530612482773,
+    "max": 80.92888435380094,
     "low": 9.03355423493142,
-    "high": 78.35990737624968,
-    "mos_pct": -163.05597817818284,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 5,
-    "median_trimmed": 16.810110732686102,
-    "methods_excluded_from_median": []
+    "high": 80.92888435380094,
+    "mos_pct": -162.8727005586349,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ],
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 19.99599377781969,
+    "methods_excluded_from_median": [
+      "dcf"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,12 +100,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-07-30",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": 10.82007026378693,
   "tier2_events": {
@@ -115,22 +121,22 @@
     "label": "Information Technology median (n=190)",
     "values": {
       "Quality": 49.14,
-      "Value": 50.55,
+      "Value": 51.21,
       "Growth": 50.99,
-      "Momentum": 49.65,
+      "Momentum": 49.2,
       "Health": 65.1,
       "Profitability": 50.26,
-      "Technical": 66.14,
-      "Risk": 42.58
+      "Technical": 66.3,
+      "Risk": 42.9
     }
   },
   "beneish_m_score": -2.448960930464448,
   "dechow_f_score": 1.3626007858185603,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.56495907503447,
-  "price_change_1d_pct": 3.5112,
+  "loss_chance_pct": 69.6503419417385,
+  "price_change_1d_pct": 3.8444,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 32.87,
+  "composite_score_adjusted": 32.7,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,23 +184,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 42.36,
+  "osap_blended_score": 42.28,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 13,
     "latest_filing_date": "2026-08-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.036810639124741175,
+  "cross_source_delta": 0.011791994499927528,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 25304198.967177294,
+  "average_dollar_volume": 25304321.68334435,
   "security_type": "Common stock"
 }

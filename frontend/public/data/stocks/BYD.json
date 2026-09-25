@@ -5,19 +5,19 @@
   "industry": "Casinos & Gaming",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 5273330081.156036,
-  "current_price": 72.58,
-  "rank": 628,
-  "composite_score": 52.37,
+  "market_cap": 5212299245.151291,
+  "current_price": 71.74,
+  "rank": 614,
+  "composite_score": 52.43,
   "pillar_scores": {
     "quality": 65.53,
-    "value": 56.62,
+    "value": 56.96,
     "growth": 63.27,
-    "momentum": 26.56,
+    "momentum": 26.5,
     "health": 25.09,
     "profitability": 65.98,
-    "technical": 37.81,
-    "risk": 49.67,
+    "technical": 37.8,
+    "risk": 49.2,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 72655414.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 5273330081.156036,
-    "pe_ratio_ttm": 2.901943283935718,
+    "market_cap": 5212299245.151291,
+    "pe_ratio_ttm": 2.868357670683508,
     "goodwill": 990058000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 364.65400175113024,
+        "value": 356.41959063193167,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 139.97428166157545,
+        "value": 137.2733220132809,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 97.66536676370102,
+        "value": 98.22760522941698,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,23 +79,20 @@
         "tier_used": null
       }
     },
-    "median": 76.02132723939714,
-    "max": 139.97428166157545,
+    "median": 76.30244647225513,
+    "max": 356.41959063193167,
     "low": 1.2828592540013044,
-    "high": 364.65400175113024,
-    "mos_pct": 4.526789433056655,
+    "high": 356.41959063193167,
+    "mos_pct": 5.979426374152473,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_multiples_pe_estimate",
-      "extreme_rim_estimate",
-      "extreme_estimate_majority"
+      "extreme_rim_estimate"
     ],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 97.66536676370102,
+    "valuation_methods_applicable": 4,
+    "median_trimmed": 117.75046362134894,
     "methods_excluded_from_median": [
       "graham",
-      "multiples_pe",
       "rim"
     ]
   },
@@ -109,7 +106,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 56,
+    "filing_lag_days": 57,
     "latest_period_end": "2026-07-27",
     "latest_filed_date": "2026-07-30"
   },
@@ -119,9 +116,7 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_multiples_pe_estimate",
     "extreme_rim_estimate",
-    "extreme_estimate_majority",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -137,22 +132,22 @@
     "label": "Consumer Discretionary median (n=194)",
     "values": {
       "Quality": 46.78,
-      "Value": 50.26,
+      "Value": 49.91,
       "Growth": 48.78,
-      "Momentum": 39.98,
+      "Momentum": 39.0,
       "Health": 44.29,
       "Profitability": 50.73,
-      "Technical": 43.62,
-      "Risk": 36.84
+      "Technical": 48.11,
+      "Risk": 37.01
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.3152027129481162,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.22844093009379,
-  "price_change_1d_pct": -0.5345,
+  "loss_chance_pct": 42.69446573019809,
+  "price_change_1d_pct": -1.1573,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 49.87,
+  "composite_score_adjusted": 49.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -200,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.11,
+  "osap_blended_score": 52.14,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -208,16 +203,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 12,
     "latest_filing_date": "2026-08-26",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.011573487002857406,
-  "dividend_yield_pct": 1.11,
+  "cross_source_delta": 0.0013939742342053906,
+  "dividend_yield_pct": 1.12,
   "pays_dividend": true,
   "payout_ratio": 0.0337,
-  "average_dollar_volume": 70088283.73100017,
+  "average_dollar_volume": 69590019.74787219,
   "security_type": "Common stock"
 }
