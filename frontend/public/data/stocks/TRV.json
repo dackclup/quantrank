@@ -5,19 +5,19 @@
   "industry": "Property & Casualty Insurance",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 75168355233.87817,
-  "current_price": 360.39,
-  "rank": 107,
-  "composite_score": 64.4,
+  "market_cap": 75585505277.87817,
+  "current_price": 362.39,
+  "rank": 97,
+  "composite_score": 64.87,
   "pillar_scores": {
-    "quality": 65.95,
-    "value": 56.87,
-    "growth": 73.74,
-    "momentum": 76.65,
-    "health": 57.99,
-    "profitability": 52.59,
-    "technical": 41.71,
-    "risk": 93.28,
+    "quality": 65.99,
+    "value": 56.69,
+    "growth": 73.79,
+    "momentum": 77.51,
+    "health": 57.95,
+    "profitability": 52.58,
+    "technical": 49.3,
+    "risk": 93.68,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 208575022.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 75168355233.87817,
-    "pe_ratio_ttm": 9.053156116328818,
+    "market_cap": 75585505277.87817,
+    "pe_ratio_ttm": 9.10339699841963,
     "goodwill": 4060000000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 394.078364087645,
+        "value": 393.82780768418354,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 272.0706167948665,
+        "value": 272.97023658584703,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 262.27328638241244,
-    "max": 394.078364087645,
+    "median": 262.7230962779027,
+    "max": 393.82780768418354,
     "low": 195.3892562303538,
-    "high": 394.078364087645,
-    "mos_pct": -37.41011126957251,
+    "high": 393.82780768418354,
+    "mos_pct": -37.93610831424936,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 262.27328638241244,
+    "median_trimmed": 262.7230962779027,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -108,7 +108,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 70,
+    "filing_lag_days": 71,
     "latest_period_end": "2026-07-10",
     "latest_filed_date": "2026-07-17"
   },
@@ -124,25 +124,25 @@
     "latest_8k_filing_url": null
   },
   "pillar_baseline": {
-    "label": "Financials median (n=257)",
+    "label": "Financials median (n=258)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.82,
-      "Growth": 49.81,
-      "Momentum": 58.46,
-      "Health": 55.01,
-      "Profitability": 51.3,
-      "Technical": 37.52,
-      "Risk": 60.24
+      "Value": 51.86,
+      "Growth": 49.83,
+      "Momentum": 58.29,
+      "Health": 54.95,
+      "Profitability": 51.28,
+      "Technical": 39.15,
+      "Risk": 61.73
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 45.89283279012626,
-  "price_change_1d_pct": -2.8939,
+  "loss_chance_pct": 45.84092196363496,
+  "price_change_1d_pct": 0.555,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 64.4,
+  "composite_score_adjusted": 64.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.13,
+  "osap_blended_score": 58.36,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -204,10 +204,10 @@
     "latest_filing_date": "2026-08-31",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.005549516107195847,
-  "dividend_yield_pct": 1.39,
+  "cross_source_delta": 0.0017936713345158449,
+  "dividend_yield_pct": 1.38,
   "pays_dividend": true,
   "payout_ratio": 0.1223,
-  "average_dollar_volume": 581320169.8667328,
+  "average_dollar_volume": 558602031.8092083,
   "security_type": "Common stock"
 }
