@@ -5,19 +5,19 @@
   "industry": "Air Freight & Logistics",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 78334552597.0459,
-  "current_price": 92.05,
-  "rank": 510,
-  "composite_score": 54.23,
+  "market_cap": 80206750000.0,
+  "current_price": 94.25,
+  "rank": 436,
+  "composite_score": 55.54,
   "pillar_scores": {
     "quality": 71.77,
-    "value": 72.43,
+    "value": 71.42,
     "growth": 7.7,
-    "momentum": 49.13,
+    "momentum": 53.75,
     "health": 42.46,
     "profitability": 51.84,
-    "technical": 38.22,
-    "risk": 45.2,
+    "technical": 56.09,
+    "risk": 46.89,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 851000000.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 78334552597.0459,
-    "pe_ratio_ttm": 14.134708155367358,
+    "market_cap": 80206750000.0,
+    "pe_ratio_ttm": 14.472527968242511,
     "goodwill": 5770000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 162.83161021541403,
+        "value": 161.3194256569749,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 67.80415210698554,
+        "value": 67.46263396175816,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 160.1867513695757,
+        "value": 159.1241495772694,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,20 @@
         "tier_used": null
       }
     },
-    "median": 69.59578748084675,
-    "max": 162.83161021541403,
+    "median": 69.42502840823306,
+    "max": 161.3194256569749,
     "low": 18.484145694161132,
-    "high": 162.83161021541403,
-    "mos_pct": -32.263756735406744,
+    "high": 161.3194256569749,
+    "mos_pct": -35.757956692204914,
     "valuation_warnings": [
-      "goodwill_heavy"
+      "goodwill_heavy",
+      "extreme_rim_estimate"
     ],
-    "valuation_methods_applicable": 6,
-    "median_trimmed": 69.59578748084675,
-    "methods_excluded_from_median": []
+    "valuation_methods_applicable": 5,
+    "median_trimmed": 71.38742285470796,
+    "methods_excluded_from_median": [
+      "rim"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,13 +105,14 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 52,
+    "filing_lag_days": 55,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 6.278495887191539,
@@ -123,22 +127,22 @@
     "label": "Industrials median (n=263)",
     "values": {
       "Quality": 50.1,
-      "Value": 49.94,
+      "Value": 50.32,
       "Growth": 50.29,
-      "Momentum": 44.61,
+      "Momentum": 46.09,
       "Health": 56.75,
       "Profitability": 50.19,
-      "Technical": 54.08,
-      "Risk": 49.08
+      "Technical": 55.41,
+      "Risk": 49.3
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.177406545450026,
-  "price_change_1d_pct": -3.9345,
+  "loss_chance_pct": 51.74755083024888,
+  "price_change_1d_pct": 0.3086,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.23,
+  "composite_score_adjusted": 55.54,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,7 +190,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.04,
+  "osap_blended_score": 53.69,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -194,16 +198,16 @@
     "sp500",
     "russell1000"
   ],
-  "valuation_methods_applicable": 6,
+  "valuation_methods_applicable": 5,
   "form4_diagnostics": {
     "insider_count": 7,
     "latest_filing_date": "2026-05-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.020487561283583866,
-  "dividend_yield_pct": 7.13,
+  "cross_source_delta": 0.00025667166416791607,
+  "dividend_yield_pct": 6.98,
   "pays_dividend": true,
   "payout_ratio": 1.2193,
-  "average_dollar_volume": 454265659.8022461,
+  "average_dollar_volume": 454963469.93817645,
   "security_type": "Common stock"
 }

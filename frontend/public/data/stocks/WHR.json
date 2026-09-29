@@ -5,19 +5,19 @@
   "industry": "Household Appliances",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 2150275456.5940933,
-  "current_price": 32.98,
-  "rank": 1467,
-  "composite_score": 31.8,
+  "market_cap": 2047260444.328411,
+  "current_price": 31.4,
+  "rank": 1471,
+  "composite_score": 31.48,
   "pillar_scores": {
     "quality": 16.71,
-    "value": 78.45,
+    "value": 78.8,
     "growth": 14.96,
-    "momentum": 17.78,
-    "health": 20.47,
+    "momentum": 17.6,
+    "health": 20.48,
     "profitability": 14.59,
-    "technical": 43.13,
-    "risk": 9.1,
+    "technical": 35.6,
+    "risk": 9.08,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 65199378.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 2150275456.5940933,
-    "pe_ratio_ttm": 11.083894106155121,
+    "market_cap": 2047260444.328411,
+    "pe_ratio_ttm": 10.552888888290779,
     "goodwill": 3103000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 48.697523091512004,
+        "value": 48.63869056011143,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 162.71298436492967,
+        "value": 161.68007521146177,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 76.0344078958179,
+        "value": 76.33839046012463,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 76.0344078958179,
-    "max": 162.71298436492967,
-    "low": 48.697523091512004,
-    "high": 162.71298436492967,
-    "mos_pct": 56.62490120601002,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 3,
-    "median_trimmed": 76.0344078958179,
-    "methods_excluded_from_median": []
+    "median": 76.33839046012463,
+    "max": 76.33839046012463,
+    "low": 48.63869056011143,
+    "high": 161.68007521146177,
+    "mos_pct": 58.86735438189247,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ],
+    "valuation_methods_applicable": 2,
+    "median_trimmed": 62.48854051011803,
+    "methods_excluded_from_median": [
+      "multiples_pb"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +101,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 53,
+    "filing_lag_days": 56,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-04"
   },
@@ -105,6 +109,7 @@
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -120,22 +125,22 @@
     "label": "Consumer Discretionary median (n=193)",
     "values": {
       "Quality": 46.89,
-      "Value": 49.83,
-      "Growth": 48.58,
-      "Momentum": 40.1,
+      "Value": 50.35,
+      "Growth": 48.7,
+      "Momentum": 38.67,
       "Health": 43.9,
       "Profitability": 50.69,
-      "Technical": 47.44,
-      "Risk": 37.07
+      "Technical": 50.47,
+      "Risk": 37.46
     }
   },
   "beneish_m_score": -2.399704100043377,
   "dechow_f_score": 1.3511667765265654,
   "recommendation": "neutral",
-  "loss_chance_pct": 34.28336960729886,
-  "price_change_1d_pct": 0.1518,
+  "loss_chance_pct": 34.65840671767897,
+  "price_change_1d_pct": -0.9776,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 31.8,
+  "composite_score_adjusted": 31.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.82,
+  "osap_blended_score": 41.66,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -191,16 +196,16 @@
     "sp400",
     "russell1000"
   ],
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 14,
     "latest_filing_date": "2026-08-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.03850824243943555,
+  "cross_source_delta": 1.3837228761379138e-08,
   "dividend_yield_pct": 9.9,
   "pays_dividend": true,
   "payout_ratio": 0.8882,
-  "average_dollar_volume": 92898807.04591027,
+  "average_dollar_volume": 94821195.6238683,
   "security_type": "Common stock"
 }
