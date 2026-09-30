@@ -5,19 +5,19 @@
   "industry": "Interactive Media & Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 811197874.0676737,
-  "current_price": 14.21,
-  "rank": 398,
-  "composite_score": 56.25,
+  "market_cap": 824327722.0055895,
+  "current_price": 14.44,
+  "rank": 371,
+  "composite_score": 56.74,
   "pillar_scores": {
     "quality": 53.57,
-    "value": 59.86,
+    "value": 59.52,
     "growth": 79.85,
-    "momentum": 65.53,
+    "momentum": 66.71,
     "health": 48.62,
     "profitability": 42.18,
-    "technical": 23.59,
-    "risk": 32.04,
+    "technical": 31.06,
+    "risk": 33.28,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 57086409.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 811197874.0676737,
-    "pe_ratio_ttm": 9.985817370193557,
+    "market_cap": 824327722.0055895,
+    "pe_ratio_ttm": 10.147445337669593,
     "goodwill": 261421000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 23.19437178957726,
+        "value": 23.457858940340653,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 36.653799131702286,
+        "value": 36.45494650921175,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 16.353590536517096,
+        "value": 16.713575393082287,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 19.77398116304718,
-    "max": 36.653799131702286,
+    "median": 20.08571716671147,
+    "max": 36.45494650921175,
     "low": 6.869859155248549,
-    "high": 36.653799131702286,
-    "mos_pct": 28.137890286342287,
+    "high": 36.45494650921175,
+    "mos_pct": 28.10812050905978,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 19.77398116304718,
+    "median_trimmed": 20.08571716671147,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,11 +99,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 34,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-08-21",
     "latest_filed_date": "2026-08-26"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "goodwill_heavy",
     "beneish_high",
@@ -126,20 +128,20 @@
       "Quality": 51.02,
       "Value": 51.87,
       "Growth": 52.04,
-      "Momentum": 48.6,
+      "Momentum": 48.57,
       "Health": 37.4,
       "Profitability": 51.36,
-      "Technical": 45.54,
-      "Risk": 44.1
+      "Technical": 42.31,
+      "Risk": 44.26
     }
   },
   "beneish_m_score": -2.1847471594332437,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 33.02588437974343,
-  "price_change_1d_pct": -1.3879,
+  "loss_chance_pct": 35.79057276969905,
+  "price_change_1d_pct": 1.6186,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 55.45,
+  "composite_score_adjusted": 55.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -187,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.05,
+  "osap_blended_score": 54.3,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -200,10 +202,10 @@
     "latest_filing_date": "2026-08-18",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.002399550090738934,
+  "cross_source_delta": 0.002399538365151697,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 18170111.208264034,
+  "average_dollar_volume": 18063190.188662212,
   "security_type": "Common stock"
 }
