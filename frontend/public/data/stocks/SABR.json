@@ -5,19 +5,19 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 859632292.0064335,
-  "current_price": 2.13,
-  "rank": 986,
-  "composite_score": 45.75,
+  "market_cap": 855596367.4935665,
+  "current_price": 2.12,
+  "rank": 1073,
+  "composite_score": 44.31,
   "pillar_scores": {
     "quality": 15.16,
-    "value": 60.23,
+    "value": 59.97,
     "growth": 48.45,
-    "momentum": 73.69,
-    "health": 45.33,
+    "momentum": 62.57,
+    "health": 45.31,
     "profitability": 65.03,
-    "technical": 64.4,
-    "risk": 25.26,
+    "technical": 65.06,
+    "risk": 24.56,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 403583214.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 859632292.0064335,
-    "pe_ratio_ttm": 1.1979101350405281,
+    "market_cap": 855596367.4935665,
+    "pe_ratio_ttm": 1.1922860153754358,
     "goodwill": 2383160000.0
   },
   "fair_price": {
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 30.086094391886196,
+        "value": 30.191732525108876,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 3.444708082662098,
+        "value": 3.3600033748201654,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 16.765401237274148,
-    "max": 3.444708082662098,
-    "low": 3.444708082662098,
-    "high": 30.086094391886196,
-    "mos_pct": 87.29526311779921,
+    "median": 16.77586794996452,
+    "max": 3.3600033748201654,
+    "low": 3.3600033748201654,
+    "high": 30.191732525108876,
+    "mos_pct": 87.36280059021587,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate"
     ],
@@ -105,7 +105,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 56,
+    "filing_lag_days": 57,
     "latest_period_end": "2026-07-30",
     "latest_filed_date": "2026-08-06"
   },
@@ -116,7 +116,8 @@
   ],
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
-    "beneish_high"
+    "beneish_high",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -131,22 +132,22 @@
     "label": "Consumer Discretionary median (n=193)",
     "values": {
       "Quality": 46.89,
-      "Value": 50.95,
+      "Value": 49.74,
       "Growth": 48.7,
-      "Momentum": 39.56,
-      "Health": 43.9,
+      "Momentum": 37.18,
+      "Health": 43.89,
       "Profitability": 50.6,
-      "Technical": 52.71,
-      "Risk": 37.43
+      "Technical": 50.23,
+      "Risk": 37.62
     }
   },
   "beneish_m_score": -1.4045738062090387,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 21.57143939614808,
-  "price_change_1d_pct": 1.4286,
+  "loss_chance_pct": 22.268981977696892,
+  "price_change_1d_pct": -0.4695,
   "manipulation_index": 43.0,
-  "composite_score_adjusted": 41.45,
+  "composite_score_adjusted": 40.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.8,
+  "osap_blended_score": 48.08,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -207,10 +208,10 @@
     "latest_filing_date": "2026-05-19",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.004694960908242942,
+  "cross_source_delta": 0.061320745957890034,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 11024452.352430902,
+  "average_dollar_volume": 11096577.037172481,
   "security_type": "Common stock"
 }

@@ -5,19 +5,19 @@
   "industry": "Leisure Facilities",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 3259771186.880871,
-  "current_price": 40.74,
-  "rank": 1182,
-  "composite_score": 42.14,
+  "market_cap": 3378191895.4133606,
+  "current_price": 42.22,
+  "rank": 1186,
+  "composite_score": 42.07,
   "pillar_scores": {
     "quality": 30.7,
-    "value": 50.95,
+    "value": 48.96,
     "growth": 66.45,
-    "momentum": 14.51,
-    "health": 58.36,
+    "momentum": 11.15,
+    "health": 58.35,
     "profitability": 64.94,
-    "technical": 25.95,
-    "risk": 24.61,
+    "technical": 41.53,
+    "risk": 25.08,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 80014017.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3259771186.880871,
-    "pe_ratio_ttm": 13.634075816139825,
+    "market_cap": 3378191895.4133606,
+    "pe_ratio_ttm": 14.12937343851002,
     "goodwill": 712331000.0
   },
   "fair_price": {
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 49.146365638913174,
+        "value": 48.81077307091134,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 49.3226786308226,
+        "value": 49.48451578442769,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,16 +79,16 @@
         "tier_used": null
       }
     },
-    "median": 49.146365638913174,
-    "max": 49.3226786308226,
+    "median": 48.81077307091134,
+    "max": 49.48451578442769,
     "low": 2.990645815812293,
-    "high": 49.3226786308226,
-    "mos_pct": 17.10475200182529,
+    "high": 49.48451578442769,
+    "mos_pct": 13.50269916977809,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 49.23452213486789,
+    "median_trimmed": 49.14764442766952,
     "methods_excluded_from_median": [
       "dcf"
     ]
@@ -105,13 +105,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 56,
+    "filing_lag_days": 57,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
+    "cross_source_disagreement",
     "restatement_history"
   ],
   "has_history": true,
@@ -127,22 +128,22 @@
     "label": "Consumer Discretionary median (n=193)",
     "values": {
       "Quality": 46.89,
-      "Value": 50.95,
+      "Value": 49.74,
       "Growth": 48.7,
-      "Momentum": 39.56,
-      "Health": 43.9,
+      "Momentum": 37.18,
+      "Health": 43.89,
       "Profitability": 50.6,
-      "Technical": 52.71,
-      "Risk": 37.43
+      "Technical": 50.23,
+      "Risk": 37.62
     }
   },
   "beneish_m_score": -2.9185585053752994,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.942442802813076,
-  "price_change_1d_pct": 0.5926,
+  "loss_chance_pct": 40.23908608429198,
+  "price_change_1d_pct": 3.6328,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.14,
+  "composite_score_adjusted": 42.07,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.0,
+  "osap_blended_score": 46.96,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,10 +205,10 @@
     "latest_filing_date": "2026-09-16",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.017613737771518357,
+  "cross_source_delta": 0.060358316438507364,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 108952083.99779221,
+  "average_dollar_volume": 111524620.9475287,
   "security_type": "Common stock"
 }

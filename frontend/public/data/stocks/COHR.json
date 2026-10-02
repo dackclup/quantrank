@@ -5,19 +5,19 @@
   "industry": "Electronic Components",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 57224138930.28876,
-  "current_price": 292.21,
-  "rank": 1077,
-  "composite_score": 44.2,
+  "market_cap": 56362478243.15393,
+  "current_price": 287.81,
+  "rank": 1118,
+  "composite_score": 43.42,
   "pillar_scores": {
     "quality": 30.89,
-    "value": 41.36,
+    "value": 41.62,
     "growth": 46.86,
-    "momentum": 49.03,
-    "health": 73.7,
+    "momentum": 43.29,
+    "health": 73.72,
     "profitability": 30.37,
-    "technical": 64.09,
-    "risk": 51.73,
+    "technical": 61.81,
+    "risk": 51.55,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 195832246.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 57224138930.28876,
-    "pe_ratio_ttm": 71.08606348126176,
+    "market_cap": 56362478243.15393,
+    "pe_ratio_ttm": 70.01567487515985,
     "goodwill": 4375597000.0
   },
   "fair_price": {
@@ -49,13 +49,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 154.5670801996951,
+        "value": 153.53544127039586,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 301.81387386549176,
+        "value": 303.34232316092937,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 87.64547007202334,
-    "max": 301.81387386549176,
+    "median": 87.12965060737372,
+    "max": 303.34232316092937,
     "low": 2.3356422444049203,
-    "high": 301.81387386549176,
-    "mos_pct": -233.39999342230956,
+    "high": 303.34232316092937,
+    "mos_pct": -230.32382840088724,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 228.19047703259344,
+    "median_trimmed": 228.4388822156626,
     "methods_excluded_from_median": [
       "graham",
       "dcf"
@@ -105,7 +105,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-08-10",
     "latest_filed_date": "2026-08-14"
   },
@@ -117,6 +117,7 @@
     "extreme_graham_estimate",
     "extreme_dcf_estimate",
     "beneish_high",
+    "cross_source_disagreement",
     "restatement_history",
     "rem_suspect",
     "accruals_momentum_high",
@@ -135,22 +136,22 @@
     "label": "Information Technology median (n=191)",
     "values": {
       "Quality": 49.48,
-      "Value": 50.87,
+      "Value": 50.96,
       "Growth": 51.18,
-      "Momentum": 52.86,
+      "Momentum": 50.83,
       "Health": 65.05,
       "Profitability": 50.26,
-      "Technical": 64.9,
-      "Risk": 42.29
+      "Technical": 66.2,
+      "Risk": 42.49
     }
   },
   "beneish_m_score": -1.457060264014037,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 70.8999128997288,
-  "price_change_1d_pct": 3.4555,
+  "loss_chance_pct": 71.28902954873432,
+  "price_change_1d_pct": -1.5058,
   "manipulation_index": 61.0,
-  "composite_score_adjusted": 38.1,
+  "composite_score_adjusted": 37.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -198,7 +199,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.03,
+  "osap_blended_score": 47.64,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -212,10 +213,10 @@
     "latest_filing_date": "2026-09-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.015057691149157311,
+  "cross_source_delta": 0.10903022685295953,
   "dividend_yield_pct": null,
   "pays_dividend": null,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 1786154830.0339272,
+  "average_dollar_volume": 1765722974.2018075,
   "security_type": "Common stock"
 }

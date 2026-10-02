@@ -5,19 +5,19 @@
   "industry": "Household Products",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 22522510245.761124,
-  "current_price": 94.95,
-  "rank": 651,
-  "composite_score": 51.77,
+  "market_cap": 22349352407.09555,
+  "current_price": 94.22,
+  "rank": 638,
+  "composite_score": 51.91,
   "pillar_scores": {
     "quality": 59.12,
-    "value": 22.07,
+    "value": 22.3,
     "growth": 69.43,
-    "momentum": 57.89,
+    "momentum": 59.59,
     "health": 51.03,
     "profitability": 63.51,
-    "technical": 59.25,
-    "risk": 69.33,
+    "technical": 56.69,
+    "risk": 69.39,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 237203907.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 22522510245.761124,
-    "pe_ratio_ttm": 30.239675410527823,
+    "market_cap": 22349352407.09555,
+    "pe_ratio_ttm": 30.007186368280813,
     "goodwill": 2649900000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 51.97197662498333,
+        "value": 51.152942799345276,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 77.61322113905271,
+        "value": 74.82807559788739,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 60.376352971331485,
+        "value": 60.34991024735004,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 56.174164798157406,
-    "max": 77.61322113905271,
+    "median": 55.75142652334766,
+    "max": 74.82807559788739,
     "low": 39.45887981355641,
-    "high": 77.61322113905271,
-    "mos_pct": -69.02787480581587,
+    "high": 74.82807559788739,
+    "mos_pct": -69.00016214158312,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 56.174164798157406,
+    "median_trimmed": 55.75142652334766,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -94,7 +94,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 62,
+    "filing_lag_days": 63,
     "latest_period_end": "2026-07-29",
     "latest_filed_date": "2026-07-31"
   },
@@ -112,23 +112,23 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=74)",
     "values": {
-      "Quality": 47.04,
-      "Value": 50.23,
+      "Quality": 46.88,
+      "Value": 51.13,
       "Growth": 49.32,
-      "Momentum": 46.95,
+      "Momentum": 49.92,
       "Health": 40.86,
       "Profitability": 48.87,
-      "Technical": 49.8,
-      "Risk": 53.61
+      "Technical": 42.25,
+      "Risk": 53.83
     }
   },
   "beneish_m_score": -2.532618245959518,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 59.11311775740454,
-  "price_change_1d_pct": -0.7007,
+  "loss_chance_pct": 59.044712343002125,
+  "price_change_1d_pct": -0.7688,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.77,
+  "composite_score_adjusted": 51.91,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -176,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.81,
+  "osap_blended_score": 51.88,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -190,10 +190,10 @@
     "latest_filing_date": "2026-09-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.007688187678534321,
-  "dividend_yield_pct": 1.3,
+  "cross_source_delta": 0.0011675065397987298,
+  "dividend_yield_pct": 1.31,
   "pays_dividend": true,
   "payout_ratio": 0.38619998,
-  "average_dollar_volume": 172386623.8488559,
+  "average_dollar_volume": 174974111.0793015,
   "security_type": "Common stock"
 }
