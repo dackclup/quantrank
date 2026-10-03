@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Exploration & Production",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 19467152769.217804,
-  "current_price": 84.09,
-  "rank": 416,
-  "composite_score": 55.97,
+  "market_cap": 19900065490.49195,
+  "current_price": 85.96,
+  "rank": 357,
+  "composite_score": 57.22,
   "pillar_scores": {
     "quality": 58.1,
-    "value": 86.38,
+    "value": 86.62,
     "growth": 25.0,
-    "momentum": 34.27,
+    "momentum": 37.75,
     "health": 54.38,
     "profitability": 62.68,
-    "technical": 38.53,
-    "risk": 49.66,
+    "technical": 52.95,
+    "risk": 50.73,
     "sentiment": null,
     "ml": null
   },
@@ -36,8 +36,8 @@
     "shares_outstanding": 231503789.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 19467152769.217804,
-    "pe_ratio_ttm": 7.000054933195902,
+    "market_cap": 19900065490.49195,
+    "pe_ratio_ttm": 7.155722937969058,
     "goodwill": 15000000.0
   },
   "fair_price": {
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 122.07861822842881,
+        "value": 125.92499655597305,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 111.8332718958028,
+        "value": 114.75990782857683,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 122.30794766337569,
+        "value": 125.26879640708894,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,14 +79,14 @@
         "tier_used": null
       }
     },
-    "median": 111.93323328940126,
-    "max": 122.30794766337569,
+    "median": 114.75990782857683,
+    "max": 125.92499655597305,
     "low": 47.96035811308825,
-    "high": 122.30794766337569,
-    "mos_pct": 24.874861677159338,
+    "high": 125.92499655597305,
+    "mos_pct": 25.095792850517253,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5,
-    "median_trimmed": 111.93323328940126,
+    "median_trimmed": 114.75990782857683,
     "methods_excluded_from_median": []
   },
   "top5_factors": [],
@@ -99,13 +99,12 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 66,
+    "filing_lag_days": 67,
     "latest_period_end": "2026-07-24",
     "latest_filed_date": "2026-07-28"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "cross_source_disagreement",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -121,22 +120,22 @@
     "label": "Energy median (n=71)",
     "values": {
       "Quality": 53.17,
-      "Value": 49.3,
+      "Value": 49.06,
       "Growth": 50.7,
-      "Momentum": 69.91,
+      "Momentum": 70.07,
       "Health": 46.87,
       "Profitability": 53.05,
-      "Technical": 42.83,
-      "Risk": 57.28
+      "Technical": 51.23,
+      "Risk": 58.38
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 30.31047922355668,
-  "price_change_1d_pct": -0.1069,
+  "loss_chance_pct": 29.608792132483444,
+  "price_change_1d_pct": 2.2238,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.97,
+  "composite_score_adjusted": 57.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.91,
+  "osap_blended_score": 54.53,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -198,10 +197,10 @@
     "latest_filing_date": "2026-06-15",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.05634920544296279,
-  "dividend_yield_pct": 2.73,
+  "cross_source_delta": 0.005118630114087774,
+  "dividend_yield_pct": 2.68,
   "pays_dividend": true,
   "payout_ratio": 0.275,
-  "average_dollar_volume": 289271756.4066569,
+  "average_dollar_volume": 294388558.000262,
   "security_type": "Common stock"
 }
