@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 17903840545.654297,
   "current_price": 30.04,
-  "rank": 622,
-  "composite_score": 52.37,
+  "rank": 647,
+  "composite_score": 51.85,
   "pillar_scores": {
     "quality": 64.63,
-    "value": 21.8,
+    "value": 21.67,
     "growth": 70.54,
-    "momentum": 56.24,
-    "health": 82.44,
+    "momentum": 54.44,
+    "health": 81.08,
     "profitability": 35.21,
-    "technical": 47.15,
-    "risk": 27.8,
+    "technical": 44.79,
+    "risk": 27.42,
     "sentiment": null,
     "ml": null
   },
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 15.174653732988444,
+        "value": 15.135422475872625,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -80,15 +80,15 @@
       }
     },
     "median": 14.767090785635958,
-    "max": 15.174653732988444,
+    "max": 15.135422475872625,
     "low": 1.703184935987428,
-    "high": 15.174653732988444,
+    "high": 15.135422475872625,
     "mos_pct": -103.4253147867652,
     "valuation_warnings": [
       "extreme_graham_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 14.970872259312202,
+    "median_trimmed": 14.95125663075429,
     "methods_excluded_from_median": [
       "graham"
     ]
@@ -102,13 +102,15 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 62,
+    "filing_lag_days": 63,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-08-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_graham_estimate"
+    "extreme_graham_estimate",
+    "insider_sell_cluster",
+    "c_suite_unusual_sell"
   ],
   "has_history": true,
   "tangible_book_value": 3.2231543624161074,
@@ -123,22 +125,22 @@
     "label": "Financials median (n=258)",
     "values": {
       "Quality": 50.19,
-      "Value": 51.91,
+      "Value": 52.05,
       "Growth": 49.83,
-      "Momentum": 58.5,
-      "Health": 54.93,
+      "Momentum": 57.88,
+      "Health": 53.58,
       "Profitability": 51.28,
-      "Technical": 41.82,
-      "Risk": 61.5
+      "Technical": 41.6,
+      "Risk": 61.14
     }
   },
   "beneish_m_score": -2.5241154765816445,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.81427616322079,
+  "loss_chance_pct": 60.07523248502428,
   "price_change_1d_pct": 0.8392,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.37,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 51.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,8 +156,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -186,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.11,
+  "osap_blended_score": 51.85,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -200,10 +202,10 @@
     "latest_filing_date": "2026-09-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.030201364689071867,
+  "cross_source_delta": 0.023421765435465796,
   "dividend_yield_pct": 0.0,
   "pays_dividend": false,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 283188076.24106723,
+  "average_dollar_volume": 283575043.4143001,
   "security_type": "Common stock"
 }
