@@ -7,17 +7,17 @@
   "country": "US",
   "market_cap": 1888287871.2902832,
   "current_price": 38.61,
-  "rank": 1172,
-  "composite_score": 42.35,
+  "rank": 1009,
+  "composite_score": 45.55,
   "pillar_scores": {
     "quality": 35.58,
-    "value": 12.47,
+    "value": 12.58,
     "growth": 34.51,
-    "momentum": 73.4,
-    "health": 86.07,
+    "momentum": 90.72,
+    "health": 86.04,
     "profitability": 48.16,
-    "technical": 56.61,
-    "risk": 48.7,
+    "technical": 74.92,
+    "risk": 51.3,
     "sentiment": null,
     "ml": null
   },
@@ -49,19 +49,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 43.78161499994719,
+        "value": 43.49981442478617,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 15.571919867852069,
+        "value": 15.686690187307779,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 2.0631911667699123,
+        "value": 2.065987798685882,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,17 +79,17 @@
         "tier_used": null
       }
     },
-    "median": 15.571919867852069,
-    "max": 43.78161499994719,
-    "low": 2.0631911667699123,
-    "high": 43.78161499994719,
-    "mos_pct": -147.946309369734,
+    "median": 15.686690187307779,
+    "max": 43.49981442478617,
+    "low": 2.065987798685882,
+    "high": 43.49981442478617,
+    "mos_pct": -146.1322315244755,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 2,
-    "median_trimmed": 29.676767433899627,
+    "median_trimmed": 29.593252306046978,
     "methods_excluded_from_median": [
       "multiples_ev_ebitda"
     ]
@@ -102,7 +102,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 63,
+    "filing_lag_days": 64,
     "latest_period_end": "2026-07-30",
     "latest_filed_date": "2026-08-06"
   },
@@ -116,7 +116,8 @@
     "beneish_high",
     "restatement_history",
     "rem_suspect",
-    "accruals_momentum_high"
+    "accruals_momentum_high",
+    "c_suite_unusual_sell"
   ],
   "has_history": true,
   "tangible_book_value": 4.248129254426959,
@@ -131,22 +132,22 @@
     "label": "Health Care median (n=163)",
     "values": {
       "Quality": 51.23,
-      "Value": 51.94,
+      "Value": 51.02,
       "Growth": 50.31,
-      "Momentum": 65.26,
-      "Health": 56.39,
+      "Momentum": 64.21,
+      "Health": 56.38,
       "Profitability": 48.57,
-      "Technical": 57.17,
-      "Risk": 47.08
+      "Technical": 53.2,
+      "Risk": 47.18
     }
   },
   "beneish_m_score": -1.509886918229736,
   "dechow_f_score": 1.6858960332385455,
   "recommendation": "neutral",
-  "loss_chance_pct": 71.82292857988939,
-  "price_change_1d_pct": null,
-  "manipulation_index": 56.0,
-  "composite_score_adjusted": 36.75,
+  "loss_chance_pct": 70.22358790458713,
+  "price_change_1d_pct": 0.0,
+  "manipulation_index": 59.0,
+  "composite_score_adjusted": 39.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -163,7 +164,7 @@
     "beneish_high": true,
     "dechow_high": false,
     "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.1,
+  "osap_blended_score": 48.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -211,6 +212,6 @@
   "dividend_yield_pct": 0.0,
   "pays_dividend": false,
   "payout_ratio": 0.0,
-  "average_dollar_volume": null,
+  "average_dollar_volume": 40878633.40194702,
   "security_type": "Common stock"
 }
