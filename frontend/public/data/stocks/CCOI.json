@@ -5,19 +5,19 @@
   "industry": "Alternative Carriers",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 489622457.6509781,
-  "current_price": 9.56,
-  "rank": 1124,
-  "composite_score": 43.2,
+  "market_cap": 437382383.4862747,
+  "current_price": 8.54,
+  "rank": 1150,
+  "composite_score": 42.71,
   "pillar_scores": {
     "quality": 54.17,
-    "value": 56.77,
+    "value": 57.47,
     "growth": 61.2,
-    "momentum": 1.57,
-    "health": 28.53,
+    "momentum": 1.29,
+    "health": 28.51,
     "profitability": 15.28,
-    "technical": 75.02,
-    "risk": 3.49,
+    "technical": 62.96,
+    "risk": 3.22,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 51215736.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 489622457.6509781,
+    "market_cap": 437382383.4862747,
     "pe_ratio_ttm": null,
     "goodwill": null
   },
@@ -61,7 +61,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 46.19731953301834,
+        "value": 45.69497988674797,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -79,15 +79,19 @@
         "tier_used": null
       }
     },
-    "median": 46.19731953301834,
-    "max": 46.19731953301834,
-    "low": 46.19731953301834,
-    "high": 46.19731953301834,
-    "mos_pct": 79.30615776791132,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 1,
-    "median_trimmed": 46.19731953301834,
-    "methods_excluded_from_median": []
+    "median": null,
+    "max": null,
+    "low": 45.69497988674797,
+    "high": 45.69497988674797,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate"
+    ],
+    "valuation_methods_applicable": 0,
+    "median_trimmed": null,
+    "methods_excluded_from_median": [
+      "multiples_ev_ebitda"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -101,14 +105,16 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 64,
+    "filing_lag_days": 65,
     "latest_period_end": "2026-07-31",
     "latest_filed_date": "2026-08-06"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -122,22 +128,22 @@
     "label": "Communication Services median (n=48)",
     "values": {
       "Quality": 51.56,
-      "Value": 53.12,
+      "Value": 52.6,
       "Growth": 52.6,
-      "Momentum": 41.59,
-      "Health": 39.95,
+      "Momentum": 41.37,
+      "Health": 39.92,
       "Profitability": 50.87,
-      "Technical": 59.0,
-      "Risk": 44.05
+      "Technical": 54.22,
+      "Risk": 43.49
     }
   },
   "beneish_m_score": -2.7538944583383467,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 27.64036521321157,
-  "price_change_1d_pct": -3.8229,
+  "loss_chance_pct": null,
+  "price_change_1d_pct": -10.6695,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.2,
+  "composite_score_adjusted": 42.71,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,23 +191,23 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.53,
+  "osap_blended_score": 47.28,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
   "index_memberships": [
     "sp600"
   ],
-  "valuation_methods_applicable": 1,
+  "valuation_methods_applicable": 0,
   "form4_diagnostics": {
     "insider_count": 10,
     "latest_filing_date": "2026-09-30",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.2967178715782934e-08,
-  "dividend_yield_pct": 0.81,
+  "cross_source_delta": 3.5406718020512706e-08,
+  "dividend_yield_pct": 0.84,
   "pays_dividend": true,
   "payout_ratio": 5.6232,
-  "average_dollar_volume": 19579914.20897007,
+  "average_dollar_volume": 19575829.60407734,
   "security_type": "Common stock"
 }
