@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 3822958293.2064514,
-  "current_price": 44.83,
-  "rank": 984,
-  "composite_score": 45.8,
+  "market_cap": 3766675304.7935486,
+  "current_price": 44.17,
+  "rank": 1010,
+  "composite_score": 45.34,
   "pillar_scores": {
     "quality": 10.99,
     "value": 76.92,
     "growth": 66.1,
-    "momentum": 61.08,
+    "momentum": 59.79,
     "health": 53.87,
     "profitability": 20.68,
-    "technical": 45.8,
-    "risk": 16.2,
+    "technical": 40.12,
+    "risk": 15.76,
     "sentiment": null,
     "ml": null
   },
@@ -36,7 +36,7 @@
     "shares_outstanding": 85276782.0,
     "shares_outstanding_listed_class": null,
     "shares_outstanding_pre_split_raw": null,
-    "market_cap": 3822958293.2064514,
+    "market_cap": 3766675304.7935486,
     "pe_ratio_ttm": null,
     "goodwill": 2396509000.0
   },
@@ -55,7 +55,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 258.4312015232449,
+        "value": 254.6332844923097,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -79,11 +79,11 @@
         "tier_used": null
       }
     },
-    "median": 148.14741726474202,
+    "median": 146.24845874927442,
     "max": 37.86363300623914,
     "low": 37.86363300623914,
-    "high": 258.4312015232449,
-    "mos_pct": 69.73959947547199,
+    "high": 254.6332844923097,
+    "mos_pct": 69.79797356725001,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pb_estimate"
@@ -104,7 +104,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 51,
+    "filing_lag_days": 54,
     "latest_period_end": "2026-08-13",
     "latest_filed_date": "2026-08-20"
   },
@@ -112,6 +112,7 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_multiples_pb_estimate",
+    "cross_source_disagreement",
     "restatement_history"
   ],
   "has_history": true,
@@ -127,22 +128,22 @@
     "label": "Information Technology median (n=191)",
     "values": {
       "Quality": 49.48,
-      "Value": 51.44,
+      "Value": 51.48,
       "Growth": 51.31,
-      "Momentum": 52.43,
+      "Momentum": 54.15,
       "Health": 65.02,
       "Profitability": 50.26,
-      "Technical": 58.79,
-      "Risk": 42.28
+      "Technical": 56.61,
+      "Risk": 40.9
     }
   },
   "beneish_m_score": -2.700253948360811,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 19.68879432166379,
-  "price_change_1d_pct": -0.3335,
+  "loss_chance_pct": 19.89883474197319,
+  "price_change_1d_pct": -1.4722,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.8,
+  "composite_score_adjusted": 45.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.83,
+  "osap_blended_score": 48.6,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp400",
@@ -204,10 +205,10 @@
     "latest_filing_date": "2026-09-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.1193830877001773e-08,
+  "cross_source_delta": 0.1679231948667047,
   "dividend_yield_pct": 0.0,
   "pays_dividend": false,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 80447376.33041382,
+  "average_dollar_volume": 78026475.48520406,
   "security_type": "Common stock"
 }
