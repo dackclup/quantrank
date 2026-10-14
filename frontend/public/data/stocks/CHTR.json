@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 12704370385.91658,
   "current_price": 102.48,
-  "rank": 944,
-  "composite_score": 46.75,
+  "rank": 943,
+  "composite_score": 46.74,
   "pillar_scores": {
     "quality": 60.68,
     "value": 73.61,
     "growth": 33.85,
-    "momentum": 22.68,
+    "momentum": 22.55,
     "health": 11.83,
     "profitability": 51.04,
-    "technical": 28.51,
+    "technical": 28.65,
     "risk": 16.83,
     "sentiment": null,
     "ml": null
@@ -110,13 +110,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 81,
+    "filing_lag_days": 82,
     "latest_period_end": "2026-06-30",
     "latest_filed_date": "2026-07-24"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate"
+    "extreme_multiples_pe_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -131,22 +132,22 @@
     "label": "Communication Services median (n=48)",
     "values": {
       "Quality": 51.56,
-      "Value": 52.43,
+      "Value": 52.6,
       "Growth": 52.6,
-      "Momentum": 40.98,
-      "Health": 39.92,
+      "Momentum": 42.73,
+      "Health": 39.93,
       "Profitability": 50.87,
-      "Technical": 51.97,
+      "Technical": 53.16,
       "Risk": 43.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 13.304963249539195,
+  "loss_chance_pct": 13.3099599184266,
   "price_change_1d_pct": -0.8706,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.75,
+  "composite_score_adjusted": 46.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,7 +195,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.3,
+  "osap_blended_score": 49.29,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp500",
@@ -208,10 +209,10 @@
     "latest_filing_date": "2026-08-21",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.048304993277252,
+  "cross_source_delta": 0.09403020927410041,
   "dividend_yield_pct": 0.0,
   "pays_dividend": false,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 386087035.40626526,
+  "average_dollar_volume": 384515929.3543059,
   "security_type": "Common stock"
 }

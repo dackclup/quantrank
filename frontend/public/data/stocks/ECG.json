@@ -8,15 +8,15 @@
   "market_cap": 6130213667.63446,
   "current_price": 120.05,
   "rank": 260,
-  "composite_score": 59.53,
+  "composite_score": 59.55,
   "pillar_scores": {
     "quality": 80.7,
-    "value": 45.37,
+    "value": 45.31,
     "growth": 60.55,
-    "momentum": 35.61,
+    "momentum": 35.49,
     "health": 72.18,
     "profitability": 54.12,
-    "technical": 57.2,
+    "technical": 58.14,
     "risk": 44.04,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 69,
+    "filing_lag_days": 70,
     "latest_period_end": "2026-08-03",
     "latest_filed_date": "2026-08-05"
   },
@@ -111,9 +111,9 @@
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
-    "auditor_change": false,
-    "latest_8k_filing_date": null,
-    "latest_8k_filing_url": null
+    "auditor_change": true,
+    "latest_8k_filing_date": "2026-03-18",
+    "latest_8k_filing_url": "https://www.sec.gov/Archives/edgar/data/2015845/000201584526000012/0002015845-26-000012-index.html"
   },
   "pillar_baseline": {
     "label": "Industrials median (n=263)",
@@ -121,20 +121,20 @@
       "Quality": 49.62,
       "Value": 50.13,
       "Growth": 50.57,
-      "Momentum": 42.69,
-      "Health": 57.48,
+      "Momentum": 42.74,
+      "Health": 57.52,
       "Profitability": 50.19,
-      "Technical": 49.43,
+      "Technical": 48.02,
       "Risk": 48.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 38.151382513527324,
+  "loss_chance_pct": 38.1420644226728,
   "price_change_1d_pct": -1.952,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 58.73,
+  "composite_score_adjusted": 58.75,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.69,
+  "osap_blended_score": 55.7,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -195,10 +195,10 @@
     "latest_filing_date": "2026-09-01",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 3.5947448408566866e-08,
+  "cross_source_delta": 0.014077468798532312,
   "dividend_yield_pct": 0.0,
   "pays_dividend": false,
   "payout_ratio": 0.0,
-  "average_dollar_volume": 48544879.737726845,
+  "average_dollar_volume": 48234238.15533868,
   "security_type": "Common stock"
 }

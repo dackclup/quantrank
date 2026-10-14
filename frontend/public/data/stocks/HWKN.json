@@ -7,16 +7,16 @@
   "country": "US",
   "market_cap": 2722532720.916519,
   "current_price": 130.42,
-  "rank": 620,
-  "composite_score": 52.32,
+  "rank": 618,
+  "composite_score": 52.28,
   "pillar_scores": {
     "quality": 74.01,
-    "value": 18.2,
+    "value": 18.42,
     "growth": 82.24,
-    "momentum": 20.85,
-    "health": 62.11,
-    "profitability": 69.3,
-    "technical": 54.36,
+    "momentum": 20.0,
+    "health": 62.13,
+    "profitability": 69.52,
+    "technical": 54.5,
     "risk": 45.95,
     "sentiment": null,
     "ml": null
@@ -49,7 +49,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 77.86574924668416,
+        "value": 77.48508704432031,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -90,7 +90,7 @@
       "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 4,
-    "median_trimmed": 68.39062703186431,
+    "median_trimmed": 68.20029593068239,
     "methods_excluded_from_median": [
       "graham",
       "rim"
@@ -105,7 +105,7 @@
       "income_before_tax"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 76,
+    "filing_lag_days": 77,
     "latest_period_end": "2026-07-24",
     "latest_filed_date": "2026-07-29"
   },
@@ -127,23 +127,23 @@
   "pillar_baseline": {
     "label": "Materials median (n=76)",
     "values": {
-      "Quality": 52.96,
+      "Quality": 53.04,
       "Value": 52.08,
       "Growth": 47.62,
-      "Momentum": 47.2,
-      "Health": 52.36,
-      "Profitability": 56.09,
-      "Technical": 41.41,
+      "Momentum": 48.72,
+      "Health": 52.37,
+      "Profitability": 56.2,
+      "Technical": 39.82,
       "Risk": 47.7
     }
   },
   "beneish_m_score": -2.6182006650919543,
   "dechow_f_score": 0.44320676712434676,
   "recommendation": "cautious",
-  "loss_chance_pct": 61.840623612036424,
+  "loss_chance_pct": 61.85819176104819,
   "price_change_1d_pct": 0.3231,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.32,
+  "composite_score_adjusted": 52.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -191,7 +191,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.09,
+  "osap_blended_score": 52.07,
   "entered_top5": false,
   "exited_top5": false,
   "index_membership": "sp600",
@@ -204,10 +204,10 @@
     "latest_filing_date": "2026-08-31",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.147480700508408e-08,
-  "dividend_yield_pct": 0.62,
+  "cross_source_delta": 0.011271251525362942,
+  "dividend_yield_pct": 0.61,
   "pays_dividend": true,
   "payout_ratio": 0.19690001,
-  "average_dollar_volume": 22451581.21154785,
+  "average_dollar_volume": 22717736.6123331,
   "security_type": "Common stock"
 }
