@@ -51,7 +51,7 @@ dev = [
 # ".[factors]" once openassetpricing is consumed by scoring (Phase 4h);
 # the scout PR installs it solely for offline import + API-surface tests.
 factors = [
-  "openassetpricing==0.0.2",
+  "openassetpricing==0.1.0",
   # Phase 4j scout — Microsoft Qlib (Alpha158). MIT licensed (verified
   # via wheel METADATA 2026-05-19). Pin to 0.9.x so any future feature-
   # set drift in 0.10+ requires a deliberate manual upgrade and
